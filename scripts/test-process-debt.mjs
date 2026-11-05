@@ -6873,14 +6873,19 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // integration, as its historical parent and WO-249's as its branch parent,
   // and both preserve WO-247's oracle, which carries the integrated oracle and
   // both chains below it. WO-253's release-close and planner prune sentences
-  // re-pin the trees over that WO-238 integration oracle, and WO-254's
-  // question pathways, blocked-turn sentence and writer sentences re-pin
-  // them over WO-253's.
-  const current = "wo254-role-baseline.json";
+  // re-pin the trees over that WO-238 integration oracle, WO-254's question
+  // pathways, blocked-turn sentence and writer sentences re-pin them over
+  // WO-253's, and WO-246's planner sentence on the publish helper re-pins them
+  // over WO-254's.
+  const current = "wo246-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo253-role-baseline.json");
-  const closePrune = JSON.parse(
+  assert.equal(baseline.historicalBaseline, "wo254-role-baseline.json");
+  const questions = JSON.parse(
     readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(questions.historicalBaseline, "wo253-role-baseline.json");
+  const closePrune = JSON.parse(
+    readFileSync(join(fixtures, questions.historicalBaseline), "utf8"),
   );
   assert.equal(
     closePrune.historicalBaseline,

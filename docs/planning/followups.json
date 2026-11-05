@@ -44275,6 +44275,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-04T22:40:07.502Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D031 (FINAL-001): its condition occurred, because WO-246's reviewed rules (the gh refusal's row in the instruction every root carries and the planner's publish sentence, D009 and D011) changed the measured overrun again: every role root grew by 140 bytes and the planner's by 359. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-8b1f9bcc240a1483, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-05T14:28:44.889Z"
         }
       ]
     },
@@ -44411,6 +44419,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-04T22:40:07.381Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D031 (FINAL-001): its condition occurred, because this order re-mints the role oracle as wo246-role-baseline.json over WO-254's and the chain list in scripts/test-gate-followups.mjs now selects it; the test keeps its chain walk, its effective-ceiling and acceptance checks and the historical inequality, which this order changes no further. The overruns are boarded by WO-246-D009 as FUP-8b1f9bcc240a1483.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-05T14:28:44.757Z"
         }
       ]
     },
@@ -44587,6 +44603,14 @@
           "reopenWhen": "An operator meets local-terms.configuration on a publish and cannot locate the line; or the next order editing the outward lint (scripts/lib/outward-lint.mjs or scripts/lib/target-publish.mjs)",
           "targets": [],
           "at": "2026-10-24T04:18:36.121Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D031 (FINAL-001): its condition occurred, because WO-246 edits scripts/lib/outward-lint.mjs (the pull-request title admission) and scripts/lib/target-publish.mjs (the draft title's lint and the bounded fetch). The malformed private list's refusal is unchanged and still names no line, and the new publish helper, scripts/lib/launchpad-publish.mjs, now shares it through checkOutwardArtifact. The final review changes no source after the passing complete run. Deferred to the next order editing the outward adapter.",
+          "reopenWhen": "An operator meets local-terms.configuration on a publish and cannot locate the line; or the next order editing the outward lint (scripts/lib/outward-lint.mjs, scripts/lib/target-publish.mjs or scripts/lib/launchpad-publish.mjs).",
+          "targets": [],
+          "at": "2026-11-05T14:28:44.624Z"
         }
       ]
     },
@@ -44964,6 +44988,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-04T22:40:07.983Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-246-D031 (FINAL-001): its condition occurred, because WO-246's reviewed rules (the gh refusal's row in the instruction every root carries and the planner's publish sentence, D009 and D011) changed the measured overrun again: every role root grew by 140 bytes and the planner's by 359. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-8b1f9bcc240a1483, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-05T14:28:45.413Z"
         }
       ]
     },
@@ -52592,6 +52624,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-04T22:40:07.743Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D031 (FINAL-001): its condition occurred, because WO-246's reviewed rules (the gh refusal's row in the instruction every root carries and the planner's publish sentence, D009 and D011) changed the measured overrun again: every role root grew by 140 bytes and the planner's by 359. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-8b1f9bcc240a1483, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-05T14:28:45.153Z"
         }
       ]
     },
@@ -53361,6 +53401,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-04T22:40:07.863Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D031 (FINAL-001): its condition occurred, because WO-246's reviewed rules (the gh refusal's row in the instruction every root carries and the planner's publish sentence, D009 and D011) changed the measured overrun again: every role root grew by 140 bytes and the planner's by 359. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-8b1f9bcc240a1483, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-05T14:28:45.282Z"
         }
       ]
     },
@@ -53852,6 +53900,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-04T22:40:07.623Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D031 (FINAL-001): its condition occurred, because WO-246's reviewed rules (the gh refusal's row in the instruction every root carries and the planner's publish sentence, D009 and D011) changed the measured overrun again: every role root grew by 140 bytes and the planner's by 359. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-8b1f9bcc240a1483, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-05T14:28:45.021Z"
         }
       ]
     },
@@ -53994,6 +54050,123 @@
           "at": "2026-11-04T22:40:06.886Z"
         }
       ]
+    },
+    {
+      "id": "FUP-8b1f9bcc240a1483",
+      "key": "decision:docs/evidence/WO-246/decisions.md#wo-246-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cc4fe426359a6b06105e869a4e111082a1b380db2ce3424516334dd82e3ff78b",
+          "ref": "docs/evidence/WO-246/decisions.md#wo-246-d009",
+          "title": "WO-246-D009: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-246 added the gh refusal's row to every root (140 bytes) and the publish helper's two spellings to the planner's…",
+          "summary": "{ \"id\": \"WO-246-D009\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; step 7\", \"decision\": \"This decision authorizes the role change. The planner root names the publish helper in both spellings in its existing sentence on the planning pull request (188 bytes), and the harness contract's refusals sentence, carried by every root's instruction, gains the gh refusal's row (140 bytes). Every root grows by 140 bytes and the planner's by 328: executor 43,604 to 43,744, verifier 38,233 to 38,373, reviewer 40,656 to 40,796, release-close 28,233 to 28,373, planner 29,284 to 29,612, refuter 27,155 to 27,295 and router 16,984 to 17,124 (installed CLAUDE.md plus the skill, both roots identical). Only t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D009 and WO-246-D011: the gh refusal's row and the planner's publish helper sentence stay whole under product 07's one route for cold-start ceilings; every root grows by 140 bytes and the planner's by 359 (planner 29,643 against its nominal 24,576, router 17,124 against 16,384), and the optimization with equivalent usefulness waits for a planning pass.",
+          "reopenWhen": "A planning pass allocates the optimization, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-05T04:47:47.176Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9b6d69455e1ca796",
+      "key": "decision:docs/evidence/WO-246/decisions.md#wo-246-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bf747260d831a44dfb5e4b9257977d2d194a84225f92bcb05caa2b82f3d93b1c",
+          "ref": "docs/evidence/WO-246/decisions.md#wo-246-d015--a-checkouts-fetch-is-one-call-and-the-drive-route-keeps-its-own-for-now",
+          "title": "WO-246-D015: Move the drive route's merged-base fetch in scripts/lib/drive-route.mjs onto the borrowing lane: its plain lane downloads whole history under a five-minute bound and its read-first…",
+          "summary": "{ \"id\": \"WO-246-D015\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; review round 1\", \"decision\": \"Round 1's criteria findings C4 and C5 and design findings D7, D9 and D10 are fixed, D1, D2 and D5 with them, and D8 and D11 are recorded. fetchIntoCheckout is the one call update --finish, the target close and the target publish make, so they cannot drift apart on the borrowing or the bound, and a test holds all three to it and to no direct fetchRemoteBranch. The default bound lives only there; beforeImport receives the bound in effect, which is how a test sees ten minutes without waiting them. The partial import is now pinned by the checkout's own object count. Not pinned: the two target re",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-246-D015: the drive route keeps its plain lane and its read-first; the order names three callers, and moving this one is a change to a route it does not name, deferred to a planning pass.",
+          "reopenWhen": "A planning pass allocates the move, or a drive stop names a stalled history fetch.",
+          "targets": [],
+          "at": "2026-11-05T05:27:14.620Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-97b67590057d75b4",
+      "key": "decision:docs/evidence/WO-246/decisions.md#wo-246-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3b6b4a9020a8fd17d49a26255528e18cc89cb6cc6f53d3fb9583a227d4a8ea40",
+          "ref": "docs/evidence/WO-246/decisions.md#wo-246-d022--distinct-repository-hosts-must-remain-part-of-identity",
+          "title": "WO-246-D022: VER-001 F1, criterion 3: preserve canonical host as part of repository identity. Admit equivalent aliases only when the existing normalization establishes equivalence; otherwise require…",
+          "summary": "{ \"id\": \"WO-246-D022\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail criterion 3 in VER-001 and route F1 to in-scope repair. ghChoosesUpstream compares only the last two selector components, so two HTTPS repositories on distinct hosts with the same owner and name are treated as one. The real permission evaluator, using the emitted permission configuration and pinned runtime files in a temporary clone, admits all four commands criterion 3 requires it to refuse. This is a repository-identity defect in the declared surface, not a request for broader shell parsing. No remote command was executed by that probe. D019's statement that any server with the same owner and name ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-246-D031 (FINAL-001): the repair rule is carried out. WO-246-D024 and D025 make a repository its canonical host, owner and name; VER-002 judged VER-001 F1 repaired, and the final review reran docs/evidence/WO-246/verification-001-probes.mjs, which exits 0 with all four commands refused across the two hosts and its same-repository and explicit-selector controls admitted. No action remains.",
+          "reopenWhen": "The permission hook again admits a gh pull-request or issue command that names no repository where origin and upstream carry one owner and name on different hosts.",
+          "targets": [],
+          "at": "2026-11-05T14:28:44.492Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b946c5a767a65862",
+      "key": "decision:docs/evidence/WO-246/decisions.md#wo-246-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5e42454fa7e4f6ee8db9d32b925551bcda88c4da2e8b8252439d4f21fc36a81c",
+          "ref": "docs/evidence/WO-246/decisions.md#wo-246-d026--a-remote-named-github-or-a-differently-cased-upstream-stays-outside-the-refusal",
+          "title": "WO-246-D026: Extend the gh repository judgment to the remote gh ranks first, so a remote named github or a differently cased upstream is refused as upstream is. Paths:…",
+          "summary": "{ \"id\": \"WO-246-D026\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: fix; repair review round 1, C4\", \"decision\": \"Recorded and boarded, not fixed. gh ranks remotes upstream, then github, then origin, matching the name case-insensitively, so origin with a remote named github, or with one named Upstream, reaches that remote silently, while the hook reads only origin and upstream exactly. Criterion 3 and D012 keep the refusal to those two names, so this meets no criterion; it is the silent reach the order's objective names, on a spelling the fork has not reported.\", \"evidence\": [ \"docs/control/local/reviews/WO-246/repair-1/round-1-criteria.md C4: origin https://github.com/me/fork.git with a remot",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1b6dd806a8985632",
+      "key": "decision:docs/evidence/WO-246/decisions.md#wo-246-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "66a47ee1458d4c48917d1b9b5026353ad5257ddd96f2d4c124d78cea065432b0",
+          "ref": "docs/evidence/WO-246/decisions.md#wo-246-d027--a-fork-on-an-ssh-alias-cannot-use-the-publish-helper",
+          "title": "WO-246-D027: Let the publish binding read an SSH alias of github.com as github.com, so a fork on github.com-work can use plan publish and update --publish, and name the alias in the refusal until…",
+          "summary": "{ \"id\": \"WO-246-D027\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: fix; repair review round 1, C6\", \"decision\": \"Recorded and boarded, not fixed. The hook reads git@github.com-work:me/fork.git as github.com, while parseGitHubTarget, the binding the publish helper shares with the target publish, reads github.com-work as the host, so ensureGh asks gh about a server it has no login for and plan publish and update --publish refuse before any push with an authentication message the session cannot satisfy. The refusal is loud and pushes nothing. The order's fixtures use a plain GitHub-shaped origin, and criterion 2 is met on them. The target publish has the same binding, so a fix belongs in the sha",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d3faf79614bdf66c",
+      "key": "decision:docs/evidence/WO-246/decisions.md#wo-246-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "df281c765e1cc9b25ce27877b283d6fdff2e2efc293f2d7bc94aa97d05e6602a",
+          "ref": "docs/evidence/WO-246/decisions.md#wo-246-d030--final-review-f1-the-attribution-pattern-holds-invisible-characters",
+          "title": "WO-246-D030: Spell the variation selector and the zero-width joiner in LEADING_GITMOJI (packages/compiler/src/attribution.mjs) as \\uFE0F and \\u200D escapes, as scripts/lib/outward-lint.mjs does, or…",
+          "summary": "{ \"id\": \"WO-246-D030\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: final review; reading the repair's source diff\", \"decision\": \"Recorded and boarded, not fixed. LEADING_GITMOJI in packages/compiler/src/attribution.mjs, which the repair added, holds a literal U+FE0F twice and a literal U+200D once, where scripts/lib/outward-lint.mjs spells the same gitmoji pattern with \\\\uFE0F and \\\\u200D escapes. The characters cannot be seen in an editor or a diff, so a later edit or a tool that normalizes text can drop or double one with nothing to show for it, and the two spellings of one pattern can drift apart unseen. The behavior is correct today: the cases with a variation selector and with a joined s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

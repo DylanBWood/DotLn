@@ -112,6 +112,7 @@ import {
   shellInvocations,
   executableShellInvocations,
   shellGuidance,
+  writtenCommands,
 } from "./harness-command.js";
 import {
   activeGateRuns,
@@ -1885,6 +1886,13 @@ function registeredTargetNearMiss(root: string, input: HarnessInput) {
 }
 const BRANCH_NAME = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
 const COMMIT_SHA = /^[0-9a-f]{40}$/;
+/** A literal gh command's parts. The registered target's admission and the
+ * repository judgment both read gh's words through this. */
+function ghCommand(words: readonly string[]) {
+  return words[0] === "gh"
+    ? { group: words[1], verb: words[2], rest: words.slice(3) }
+    : null;
+}
 function registeredTargetCommand(
   words: readonly string[],
   root: string,
@@ -1925,9 +1933,10 @@ function registeredTargetCommand(
       ...(lease ? { lease } : {}),
     };
   }
-  if (first === "gh") {
-    if (words[1] !== "pr") return null;
-    const verb = words[2];
+  const gh = ghCommand(words);
+  if (gh) {
+    if (gh.group !== "pr") return null;
+    const { verb, rest } = gh;
     if (!["create", "ready", "edit", "view"].includes(verb ?? "")) return null;
     const valued = new Set([
       "--repo",
@@ -1945,14 +1954,14 @@ function registeredTargetCommand(
     let bodyFile: string | undefined;
     let selector: string | undefined;
     let draft = false;
-    for (let at = 3; at < words.length; at += 1) {
-      const word = words[at]!;
+    for (let at = 0; at < rest.length; at += 1) {
+      const word = rest[at]!;
       if (word === "--draft" && verb === "create") {
         draft = true;
         continue;
       }
       if (valued.has(word)) {
-        const value = words[at + 1];
+        const value = rest[at + 1];
         if (value === undefined) return null;
         if (word === "--repo" || word === "-R") repo = value;
         if (word === "--head") head = value;
@@ -2058,6 +2067,249 @@ function gitHubIdentity(remote: string): string | null {
   )
     return null;
   return `${host}/${parts[0]}/${parts[1]}`.toLowerCase();
+}
+/** A remote's host under the one name its spelling establishes. Case, a trailing
+ * dot and a leading www. aside, a name under github.com is github.com and a name
+ * under a ghe.com tenant is that tenant, as gh reads them. An alias exists only
+ * over SSH, where one spelled from github.com with a hyphen or underscore and no
+ * further dot, such as github.com-work, which public DNS cannot serve, is
+ * github.com; an HTTPS host is a server. Every other name is its own server, even
+ * when it merely looks like one of these: a hook cannot read an SSH configuration
+ * or which servers gh is signed in to, and a false refusal has a working remedy
+ * where a silent reach of the parent has none. */
+function remoteHost(host: string, overSsh: boolean): string {
+  const name = host
+    .toLowerCase()
+    .replace(/\.$/u, "")
+    .replace(/^www\./u, "");
+  return /(?:^|\.)github\.com$/u.test(name) ||
+    (overSsh && /^github\.com[-_][^.]*$/u.test(name))
+    ? "github.com"
+    : name.replace(/^.+\.([^.]+\.ghe\.com)$/u, "$1");
+}
+/** A repository as a remote names it. `qualified` is its host, owner and name,
+ * which together are its identity. `selector` is what -R can name: the same,
+ * except that an SSH alias with no dot is no host gh can address, so there it is
+ * the owner and name alone. */
+interface RemoteRepository {
+  readonly host: string;
+  readonly qualified: string;
+  readonly selector: string;
+}
+/** The repository a remote names as gh reads it, which is wider than the
+ * publish helpers' binding: a trailing slash, a user or token, a port and the
+ * git and http schemes all still reach it. gh reads a host without its port. */
+function remoteRepository(remote: string): RemoteRepository | null {
+  let host: string;
+  let pathname: string;
+  let overSsh = true;
+  const scp = /^(?:[^@/:]+@)?([^/:]+):(.+)$/.exec(remote);
+  if (scp && !remote.includes("://")) {
+    host = scp[1]!;
+    pathname = scp[2]!;
+  } else {
+    try {
+      const parsed = new URL(remote);
+      if (
+        !["https:", "http:", "ssh:", "git:", "git+ssh:", "git+https:"].includes(
+          parsed.protocol,
+        )
+      )
+        return null;
+      host = parsed.hostname;
+      pathname = parsed.pathname;
+      overSsh = parsed.protocol === "ssh:" || parsed.protocol === "git+ssh:";
+    } catch {
+      return null;
+    }
+  }
+  const parts = pathname
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/\.git$/, "")
+    .split("/");
+  if (parts.length !== 2 || parts.some((part) => !part)) return null;
+  const name = remoteHost(host, overSsh);
+  const repository = `${parts[0]}/${parts[1]}`;
+  const qualified = `${name}/${repository}`;
+  return {
+    host: name,
+    qualified,
+    selector: overSsh && !name.includes(".") ? repository : qualified,
+  };
+}
+/** Whether gh can act on a repository: the public forges here it cannot address. */
+const ghCanAddress = ({ host }: RemoteRepository) =>
+  !["gitlab.com", "bitbucket.org", "codeberg.org"].includes(host);
+/** Whether gh, offered both remotes, may choose an upstream that is not origin.
+ * gh ranks upstream first among the remotes on hosts it knows and drops a remote
+ * it cannot read as a repository, so it does whenever upstream is another
+ * repository it can address, wherever origin is and whatever origin names. */
+const ghChoosesUpstream = (
+  origin: RemoteRepository | null,
+  upstream: RemoteRepository,
+) =>
+  origin?.qualified.toLowerCase() !== upstream.qualified.toLowerCase() &&
+  ghCanAddress(upstream);
+/** A pull request or issue URL, which names its repository to gh by itself. */
+const GH_ITEM_URL =
+  /^https?:\/\/[^/\s]+\/[^/\s]+\/[^/\s]+\/(?:pull|issues)\/[1-9][0-9]*(?:[/?#]\S*)?$/u;
+/** gh ignores an empty GH_REPO, so only a value names a repository. */
+const GH_REPO_ASSIGNED = /^GH_REPO=./u;
+/** Whether gh would choose the repository of this pull-request or issue
+ * command by itself. Each repository spelling gh reads names one; help and a
+ * bare group reach none. An empty value names nothing, and gh then chooses as if
+ * the flag were absent. A URL counts as the selector it is, not as the value of
+ * a flag such as --body. */
+function ghChoosesRepository(gh: NonNullable<ReturnType<typeof ghCommand>>) {
+  if ((gh.group !== "pr" && gh.group !== "issue") || !gh.verb) return false;
+  const words = [gh.verb, ...gh.rest];
+  return !words.some(
+    (word, at) =>
+      word === "--help" ||
+      word === "-h" ||
+      ((word === "-R" || word === "--repo") && words[at + 1] !== "") ||
+      /^--repo=./u.test(word) ||
+      /^-R./u.test(word) ||
+      (at > 0 && !words[at - 1]!.startsWith("-") && GH_ITEM_URL.test(word)),
+  );
+}
+/** A clone where gh would reach upstream by itself. Origin is null when it names
+ * nothing gh can read as a repository, such as a local path or a subgroup. */
+interface UnsetFork {
+  readonly origin: RemoteRepository | null;
+  readonly upstream: RemoteRepository;
+}
+/** The two repositories of a fork's clone with no gh default set, from the
+ * clone's Git configuration alone, or null when gh has only one to choose or
+ * was told which. With both remotes and no default, gh chooses upstream and
+ * says nothing. `gh repo set-default` stores its answer on the remote it names,
+ * under remote.<name>.gh-resolved, which `--view` reports. */
+function ghUnsetFork(directory: string): UnsetFork | null {
+  const read = spawnSync(
+    "git",
+    [
+      "config",
+      "-z",
+      "--get-regexp",
+      String.raw`^remote\.(origin\.url|upstream\.url|.+\.gh-resolved)$`,
+    ],
+    { cwd: directory, encoding: "utf8", timeout: 10_000 },
+  );
+  // Exit 1 is a configuration with no such key.
+  if (read.status !== 0 && read.status !== 1)
+    throw new Error(read.error?.message ?? `git exited ${read.status}`);
+  const values = new Map<string, string>();
+  for (const record of read.stdout.split("\0").filter(Boolean)) {
+    const end = record.indexOf("\n");
+    const key = end < 0 ? record : record.slice(0, end);
+    const value = end < 0 ? "" : record.slice(end + 1);
+    if (key.endsWith(".gh-resolved")) {
+      if (value) return null;
+    } else if (!values.has(key)) values.set(key, value);
+  }
+  const originUrl = values.get("remote.origin.url");
+  const upstream = remoteRepository(values.get("remote.upstream.url") ?? "");
+  if (originUrl === undefined || !upstream) return null;
+  const origin = remoteRepository(originUrl);
+  return ghChoosesUpstream(origin, upstream) ? { origin, upstream } : null;
+}
+/** What a session reads when gh would reach upstream by itself. It offers only
+ * what works: gh cannot act on an origin it cannot address, takes an owner and
+ * name alone to its default host whatever server an alias is, and refuses
+ * gh repo set-default origin when the remotes are on two servers. Two aliases can
+ * share one such selector, which then names neither apart. */
+function ghForkRefusal(
+  command: string,
+  { origin, upstream }: UnsetFork,
+): string {
+  const named = ({ qualified, selector }: RemoteRepository) =>
+    `-R ${selector}${selector === qualified ? "" : " (on gh's default host; if this alias is another server, name that server instead)"}`;
+  const opening = `DOTLN_HARNESS_REFUSED: ${command} names no repository in a clone`;
+  const closing = "Use operator override: for authorized recovery.";
+  if (!origin || !ghCanAddress(origin))
+    return `${opening} whose origin${origin ? ` (${origin.qualified})` : ""} is no repository gh can address and whose gh default is unset, so gh would reach upstream (${upstream.qualified}) without saying so (WO-246). If upstream is what you mean, name it with ${named(upstream)}. ${closing}`;
+  const parent =
+    upstream.selector.toLowerCase() === origin.selector.toLowerCase()
+      ? ""
+      : `, or ${named(upstream)} to mean the parent`;
+  const setDefault =
+    upstream.host === origin.host
+      ? ", or set this clone's default once with gh repo set-default origin"
+      : "";
+  return `${opening} whose origin (${origin.qualified}) and upstream (${upstream.qualified}) differ and whose gh default is unset, so gh would reach upstream without saying so (WO-246). Name the repository with ${named(origin)}${parent}${setDefault}. ${closing}`;
+}
+/** A pull-request or issue command a fork's clone would send to its parent
+ * without saying so. A session's other gh forms and a program that calls gh
+ * from inside a script stay unobserved. A clone that cannot be read is admitted
+ * with an advisory, because the judgment cannot tell. */
+function ghRepositoryJudgment(
+  input: HarnessInput,
+  tools: HookConfig["tools"],
+): {
+  readonly refusal?: string;
+  readonly command?: string;
+  readonly advisory?: string;
+} | null {
+  if (tools?.[input.tool_name ?? ""] !== "shell") return null;
+  const args = input.tool_input ?? {};
+  const source = args.command ?? args.cmd;
+  if (typeof source !== "string" || !/\bgh\b/u.test(source)) return null;
+  const requested = args.workdir ?? args.cwd;
+  // A literal `cd` moves the clone that is judged; any other leaves it unknown.
+  let directory: string | null = resolve(
+    input.cwd,
+    typeof requested === "string" ? requested : ".",
+  );
+  let commands: ReturnType<typeof writtenCommands>;
+  try {
+    commands = writtenCommands(source);
+  } catch {
+    // An unreadable line is left to the other guards, as a worker's gate is.
+    return null;
+  }
+  const clones = new Map<string, ReturnType<typeof ghUnsetFork>>();
+  for (const [at, command] of commands.entries()) {
+    const [program, ...operands] = command.program;
+    if (program === "cd" || program === "pushd") {
+      const [target, extra] = operands;
+      directory =
+        directory !== null &&
+        target &&
+        extra === undefined &&
+        !/^[-~]|[$\u0000]/u.test(target)
+          ? resolve(directory, target)
+          : null;
+      continue;
+    }
+    const gh = ghCommand(command.program);
+    if (!gh || !ghChoosesRepository(gh) || directory === null) continue;
+    const environment = [
+      ...command.assignments,
+      ...command.words.slice(
+        0,
+        Math.max(0, command.words.length - command.program.length),
+      ),
+      ...commands
+        .slice(0, at)
+        .filter((earlier) => earlier.program[0] === "export")
+        .flatMap((earlier) => earlier.program),
+    ];
+    if (environment.some((word) => GH_REPO_ASSIGNED.test(word))) continue;
+    let fork: ReturnType<typeof ghUnsetFork>;
+    try {
+      if (!clones.has(directory)) clones.set(directory, ghUnsetFork(directory));
+      fork = clones.get(directory)!;
+    } catch (error) {
+      return {
+        advisory: `the gh repository judgment could not read the clone's remotes (${error instanceof Error ? error.message : "unknown failure"}), so a gh command that names no repository is admitted`,
+      };
+    }
+    if (fork) {
+      const written = `gh ${gh.group} ${gh.verb}`;
+      return { command: written, refusal: ghForkRefusal(written, fork) };
+    }
+  }
+  return null;
 }
 /** A host deny rule the emitted settings carry wins over any admission. */
 function emittedDenyMatches(
@@ -6027,6 +6279,20 @@ export async function evaluateHarnessHook(
       ?.permissionDecision === "deny"
   )
     return desktop!;
+  // What a fork's gh would reach depends on the clone the command runs in, so
+  // this judgment needs no worktree root and survives a moved session directory.
+  const ghRepository =
+    config.kind === "permission"
+      ? ghRepositoryJudgment(input, config.tools)
+      : null;
+  if (ghRepository?.refusal) {
+    try {
+      record(root, input, { ghRepositoryRefused: ghRepository.command });
+    } catch {
+      /* Observation cannot change the refusal. */
+    }
+    return protocolRefusal(config.event, ghRepository.refusal);
+  }
   let outside: Record<string, unknown> | null = null;
   let outsideEffect: string | undefined;
   try {
@@ -6076,6 +6342,7 @@ export async function evaluateHarnessHook(
       boundary,
       outsideEffect,
       desktop,
+      ghRepository?.advisory,
     );
   } catch (error) {
     if (outsideDenied) return outside!;
@@ -6096,6 +6363,7 @@ async function evaluateExistingHarnessHook(
   boundary: typeof feedbackBoundary,
   outsideEffect?: string,
   desktop: Record<string, unknown> | null = null,
+  ghAdvisory?: string,
 ): Promise<Record<string, unknown>> {
   if (
     config.event === "SessionStart" &&
@@ -6673,6 +6941,7 @@ async function evaluateExistingHarnessHook(
       record(root, input, { workerGateRefused: workerGate });
       return protocolRefusal(config.event, workerGateRefusal(workerGate));
     }
+    if (ghAdvisory) record(root, input, { advisory: ghAdvisory });
     // A driven worker's helper reviews beside it; only the worker changes the
     // order's worktrees. Its one write is its own session scratch.
     const drivenLane = drivenHelper(input) ? drivenWorkerContext() : null;
@@ -6802,9 +7071,11 @@ async function evaluateExistingHarnessHook(
     );
     record(root, input, { effect, allowed: decision.authorized });
     return decision.authorized
-      ? spawnAdvisory
-        ? subagentAdvisory({ systemMessage: spawnAdvisory })
-        : {}
+      ? ghAdvisory
+        ? protocolAdvisory(ghAdvisory)
+        : spawnAdvisory
+          ? subagentAdvisory({ systemMessage: spawnAdvisory })
+          : {}
       : protocolAdvisory(`compiled authority does not permit ${effect}`);
   }
   if (!config.policy) throw new Error("Missing compiled unit");

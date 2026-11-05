@@ -44,6 +44,7 @@ import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { namedStarterSeed } from "./lib/starter-seeds.mjs";
 import { markdownLinks } from "./docs-check.mjs";
 import { suites } from "./test-runner.mjs";
+import { installLaunchpadForge } from "./test-target-publication-fixture.mjs";
 
 import {
   repository,
@@ -155,6 +156,151 @@ test("WO-226 update finish fast-forwards clean main and preserves every refused 
     git(writer, ["rev-parse", "HEAD"]).stdout,
   );
   assert.equal(git(destination, ["status", "--porcelain"]).stdout, "");
+  // A checkout that already holds origin's main fetches nothing: the lane
+  // reads the remote's commit, and neither a fetch of main nor a bundle runs.
+  const trace = join(scratch, "finish-update-trace.log");
+  const objectsBefore = git(destination, ["count-objects", "-v"]).stdout;
+  const held = ok(
+    run(
+      process.execPath,
+      [
+        join(destination, "scripts/launchpad.mjs"),
+        "update",
+        "--finish",
+        destination,
+      ],
+      { cwd: scratch, env: { ...env, GIT_TRACE: trace } },
+    ),
+    "finish with origin's main already held",
+  );
+  assert.match(
+    held.stdout,
+    /already holds origin main, so nothing was fetched/,
+  );
+  const traced = readFileSync(trace, "utf8");
+  assert.match(
+    traced,
+    /ls-remote --heads \S*finish-update\.git refs\/heads\/main/,
+  );
+  assert.doesNotMatch(traced, /refs\/heads\/main:refs\/heads\/fetched/);
+  assert.doesNotMatch(traced, /bundle (?:create|unbundle)/);
+  assert.equal(git(destination, ["count-objects", "-v"]).stdout, objectsBefore);
+  // Past its bound a finish is refused by name with the by-hand finish, the
+  // checkout unchanged, whether the remote stalls on the read or the fetch.
+  for (const [usage, extra] of [
+    ["a zero bound", ["--fetch-timeout", "0"]],
+    ["a word for a bound", ["--fetch-timeout", "soon"]],
+    ["a bound with no value", ["--fetch-timeout"]],
+  ]) {
+    const result = run(
+      process.execPath,
+      [
+        join(destination, "scripts/launchpad.mjs"),
+        "update",
+        "--finish",
+        destination,
+        ...extra,
+      ],
+      { cwd: scratch },
+    );
+    assert.equal(result.status, 1, usage);
+    assert.match(result.stderr, /usage:/u, usage);
+  }
+  const stalledOrigin = git(destination, [
+    "remote",
+    "get-url",
+    "origin",
+  ]).stdout.trim();
+  const connections = join(scratch, "finish-update-connections");
+  const stall = join(scratch, "finish-update-stall.sh");
+  writeFileSync(
+    stall,
+    `#!/bin/sh\n# The first connection answers the read, after any delay asked for; the next never answers.\ncount=$(cat '${connections}' 2>/dev/null || echo 0)\necho $((count + 1)) > '${connections}'\n[ "$count" -ge 1 ] && exec sleep 30\nsleep "\${DOTLN_FIXTURE_READ_DELAY:-0}"\nexec git upload-pack '${join(scratch, "finish-update.git")}'\n`,
+  );
+  chmodSync(stall, 0o755);
+  commitFile(
+    writer,
+    "stalled.txt",
+    "a commit the stalled fetch never brings\n",
+  );
+  git(writer, ["push", "-q", "origin", "main"]);
+  for (const [label, remote, expectConnections] of [
+    ["the fetch", `ext::${stall}`, true],
+    ["the read", "ext::sleep 30", false],
+  ]) {
+    rmSync(connections, { force: true });
+    git(destination, ["remote", "set-url", "origin", remote]);
+    const before = treeSnapshot(destination);
+    const stalled = run(
+      process.execPath,
+      [
+        join(destination, "scripts/launchpad.mjs"),
+        "update",
+        "--finish",
+        destination,
+        "--fetch-timeout",
+        "2",
+      ],
+      { cwd: scratch, env: { ...env, GIT_ALLOW_PROTOCOL: "ext:file" } },
+    );
+    assert.equal(stalled.status, 1, `${label}: ${stalled.stdout}`);
+    assert.match(
+      stalled.stderr,
+      /update --finish refused: reading origin main passed its bound of 0 h 0 min \(--fetch-timeout 2\); checkout preserved\. Raise the bound or finish by hand:\n  git fetch origin main\n  git merge --ff-only origin\/main\n  node scripts\/bootstrap\.mjs/u,
+      label,
+    );
+    assert.deepEqual(treeSnapshot(destination), before, label);
+    assert.equal(existsSync(connections), expectConnections, label);
+  }
+  // The bound covers the read and the fetch together, so a slow read leaves the
+  // fetch what remains: past six seconds here, well short of the ten that a bound
+  // on each would allow.
+  rmSync(connections, { force: true });
+  git(destination, ["remote", "set-url", "origin", `ext::${stall}`]);
+  const beforeSlowRead = treeSnapshot(destination);
+  const started = Date.now();
+  const slowRead = run(
+    process.execPath,
+    [
+      join(destination, "scripts/launchpad.mjs"),
+      "update",
+      "--finish",
+      destination,
+      "--fetch-timeout",
+      "6",
+    ],
+    {
+      cwd: scratch,
+      env: {
+        ...env,
+        GIT_ALLOW_PROTOCOL: "ext:file",
+        DOTLN_FIXTURE_READ_DELAY: "4",
+      },
+    },
+  );
+  const elapsed = Date.now() - started;
+  assert.equal(slowRead.status, 1, slowRead.stdout);
+  assert.match(slowRead.stderr, /\(--fetch-timeout 6\); checkout preserved/u);
+  assert.ok(elapsed < 9000, `the read and the fetch took ${elapsed} ms`);
+  assert.deepEqual(treeSnapshot(destination), beforeSlowRead);
+  git(destination, ["remote", "set-url", "origin", stalledOrigin]);
+  // The three kit commands that fetch their own remote share the one bounded
+  // call. npm test and its --review both select this suite, so an edit to any of
+  // them alone is caught.
+  for (const caller of [
+    "./launchpad.mjs",
+    "./lib/target-publish.mjs",
+    "./lib/target-worktree-close.mjs",
+  ]) {
+    const source = readFileSync(new URL(caller, import.meta.url), "utf8");
+    assert.match(source, /fetchIntoCheckout\(/u, caller);
+    assert.doesNotMatch(source, /fetchRemoteBranch\(/u, caller);
+  }
+  ok(finish(), "finish once the remote answers again");
+  assert.equal(
+    git(destination, ["rev-parse", "HEAD"]).stdout,
+    git(writer, ["rev-parse", "HEAD"]).stdout,
+  );
   const refused = (pattern) => {
     const before = treeSnapshot(destination);
     const result = finish();
@@ -178,6 +324,206 @@ test("WO-226 update finish fast-forwards clean main and preserves every refused 
   refused(/not a fast-forward/);
   git(destination, ["remote", "remove", "origin"]);
   refused(/origin/);
+});
+
+test("WO-246 update --publish opens the update branch's pull request on origin's repository once the merge, the re-emit and the lineage index are committed", () => {
+  const destination = commitExport(join(scratch, "publish-update"));
+  // An instance has its dependencies installed; the body profile parses with one.
+  symlinkSync(
+    join(repository, "node_modules/prettier"),
+    join(destination, "node_modules/prettier"),
+  );
+  const base = join(scratch, "publish-update-forge");
+  mkdirSync(base);
+  const url = "https://github.invalid/dotln-fixture/instance.git";
+  const selector = "github.invalid/dotln-fixture/instance";
+  const publishEnv = { ...env };
+  const forge = installLaunchpadForge(base, publishEnv, url);
+  git(destination, ["remote", "add", "origin", url]);
+  git(destination, ["push", "-q", forge.bare, "main"]);
+  const pushesAtStart = forge.pushes().length;
+  mkdirSync(join(destination, "docs/control/local"), { recursive: true });
+  writeFileSync(
+    join(destination, "docs/control/local/terms.txt"),
+    "refuse: zephyrcanary\n",
+  );
+  const title = ":arrow_up: Take the starter update";
+  const bodyFile = join(base, "body.md");
+  writeFileSync(bodyFile, "## The update\n\nThe launchpad's kit moves.\n");
+  const publish = (file = bodyFile) =>
+    run(
+      process.execPath,
+      [
+        join(destination, "scripts/launchpad.mjs"),
+        "update",
+        "--publish",
+        "--title",
+        title,
+        "--body-file",
+        file,
+      ],
+      { cwd: destination, env: publishEnv },
+    );
+  const refused = (pattern, file) => {
+    const result = publish(file);
+    assert.equal(result.status, 1, result.stdout);
+    assert.match(result.stderr, pattern);
+    assert.equal(forge.pushes().length, pushesAtStart);
+    assert.deepEqual(forge.calls(), []);
+  };
+  const commitAll = (message) => {
+    git(destination, ["add", "."]);
+    git(destination, ["commit", "-qm", message]);
+  };
+  const rewrite = (path, change) =>
+    writeFileSync(
+      join(destination, path),
+      change(readFileSync(join(destination, path), "utf8")),
+    );
+
+  refused(/update --publish refused: main is not published here/u);
+  git(destination, ["switch", "-q", "-c", "planning/2030-01-02-fixture"]);
+  refused(/is not a chore\/<slug> branch/u);
+  const branch = "chore/starter-update-v9.9.9";
+  git(destination, ["switch", "-q", "-c", branch, "main"]);
+  // Before the merge: HEAD names the commit main names.
+  refused(
+    /carries no update: UPSTREAM\.md names [0-9a-f]{40}, the commit it named where the branch left main/u,
+  );
+  // The merge is under way and uncommitted.
+  const previous = manifestOf(destination).commit;
+  const merged = "a".repeat(40);
+  const provenance = (text) => text.replaceAll(previous, merged);
+  rewrite("UPSTREAM.md", provenance);
+  rewrite("KIT-MANIFEST.json", provenance);
+  refused(/uncommitted changes/u);
+  // One of the two provenance files moved is not the merge.
+  git(destination, ["checkout", "--", "KIT-MANIFEST.json"]);
+  commitAll("move only the upstream provenance");
+  refused(
+    /carries no update: UPSTREAM\.md names a{40} and KIT-MANIFEST\.json names/u,
+  );
+  rewrite("KIT-MANIFEST.json", provenance);
+  commitAll("merge the previewed revision");
+  // The re-emit and the lineage index, each committed.
+  const settings = readFileSync(
+    join(destination, ".claude/settings.json"),
+    "utf8",
+  );
+  rewrite(".claude/settings.json", (text) => `${text}\n`);
+  commitAll("a stale emit");
+  refused(
+    /the re-emit is not committed on chore\/starter-update-v9\.9\.9: harness drift/u,
+  );
+  writeFileSync(join(destination, ".claude/settings.json"), settings);
+  commitAll("re-emit");
+  const index = readFileSync(
+    join(destination, "docs/lineage/README.md"),
+    "utf8",
+  );
+  rewrite("docs/lineage/README.md", (text) => `${text}\nstale\n`);
+  commitAll("a stale lineage index");
+  refused(
+    /the lineage index is not committed on chore\/starter-update-v9\.9\.9: Stale/u,
+  );
+  writeFileSync(join(destination, "docs/lineage/README.md"), index);
+  commitAll("regenerate the lineage index");
+  // The same lint as the planning door, before any push.
+  const refusedBody = join(base, "refused.md");
+  writeFileSync(refusedBody, "## The update\n\nThe zephyrcanary kit.\n");
+  refused(
+    /outward lint: pr-body: vocabulary\.local: refuse \(line 3\)/u,
+    refusedBody,
+  );
+  const attributed = join(base, "attributed.md");
+  for (const footer of [
+    "Co-authored-by: Claude <noreply@anthropic.com>",
+    ":robot: Generated with [Claude Code](https://example.invalid)",
+  ]) {
+    writeFileSync(attributed, `## The update\n\nThe kit.\n\n${footer}\n`);
+    refused(/AI attribution/u, attributed);
+  }
+
+  const head = git(destination, ["rev-parse", "HEAD"]).stdout.trim();
+  const opened = ok(publish(), "publish the update branch");
+  const pullRequest = `https://${selector}/pull/7`;
+  assert.equal(opened.stdout.trim().split("\n").at(-1), pullRequest);
+  assert.equal(forge.pushes().length, pushesAtStart + 1);
+  assert.equal(
+    git(forge.bare, ["rev-parse", `refs/heads/${branch}`]).stdout.trim(),
+    head,
+  );
+  const [create] = forge.calls();
+  assert.deepEqual(create.slice(0, 10), [
+    "pr",
+    "create",
+    "--repo",
+    selector,
+    "--head",
+    branch,
+    "--base",
+    "main",
+    "--title",
+    title,
+  ]);
+  // A retry after a failed create repeats no push and adopts it.
+  forge.script({
+    createFails: true,
+    view: {
+      url: pullRequest,
+      state: "OPEN",
+      headRefOid: head,
+      headRefName: branch,
+      baseRefName: "main",
+    },
+  });
+  const adopted = ok(publish(), "adopt after a failed create");
+  assert.equal(adopted.stdout.trim().split("\n").at(-1), pullRequest);
+  assert.equal(forge.pushes().length, pushesAtStart + 1);
+  // A branch behind main names an older kit commit, which differs from main's
+  // tip with no update on it, whether or not it has commits of its own.
+  git(destination, ["switch", "-q", "main"]);
+  const movedTo = (commit) => (text) => text.replaceAll(previous, commit);
+  rewrite("UPSTREAM.md", movedTo("b".repeat(40)));
+  rewrite("KIT-MANIFEST.json", movedTo("b".repeat(40)));
+  commitAll("a later kit update on main");
+  const refusedStale = () => {
+    const stale = publish();
+    assert.equal(stale.status, 1, stale.stdout);
+    assert.match(
+      stale.stderr,
+      /carries no update: UPSTREAM\.md names [0-9a-f]{40}, the commit it named where the branch left main/u,
+    );
+    assert.equal(forge.pushes().length, pushesAtStart + 1);
+  };
+  git(destination, ["switch", "-q", "-c", "chore/stale", "main~1"]);
+  refusedStale();
+  writeFileSync(join(destination, "ordinary-note.txt"), "ordinary work\n");
+  commitAll("ordinary work on a stale branch");
+  refusedStale();
+  // A real update cut before main moved is still an update.
+  git(destination, ["switch", "-q", "-c", "chore/real", "main~1"]);
+  rewrite("UPSTREAM.md", movedTo("c".repeat(40)));
+  rewrite("KIT-MANIFEST.json", movedTo("c".repeat(40)));
+  commitAll("merge another previewed revision");
+  forge.script({});
+  ok(publish(), "publish an update cut before main moved");
+  assert.equal(forge.pushes().length, pushesAtStart + 2);
+  // One that main already names has nothing left to bring, however it got there.
+  git(destination, ["switch", "-q", "-c", "chore/squashed", "main~1"]);
+  rewrite("UPSTREAM.md", movedTo("b".repeat(40)));
+  rewrite("KIT-MANIFEST.json", movedTo("b".repeat(40)));
+  commitAll("the update main took by squash");
+  const squashed = publish();
+  assert.equal(squashed.status, 1, squashed.stdout);
+  assert.match(squashed.stderr, /carries no update: main already names b{40}/u);
+  // With no local main there is nothing to judge the branch against.
+  git(destination, ["branch", "-m", "main", "moved-main"]);
+  const noMain = publish();
+  assert.equal(noMain.status, 1, noMain.stdout);
+  assert.match(noMain.stderr, /has no merge base with a local main/u);
+  git(destination, ["branch", "-m", "moved-main", "main"]);
+  assert.equal(forge.pushes().length, pushesAtStart + 2);
 });
 
 test("WO-078 criterion 1: an export to a declared sibling writes its receipt inside the manifest step and regenerates the entry, and an update records the sibling by its repository name", (t) => {

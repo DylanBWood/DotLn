@@ -1485,7 +1485,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       "--branch",
       "feat/reviewed-behavior",
       "--title",
-      "feat: preserve reviewed behavior",
+      ":memo: Preserve reviewed behavior",
       "--body-file",
       "draft-body.md",
     ];
@@ -1680,7 +1680,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     assert.notEqual(pushedPreparation, draftHead);
     writeFileSync(ghFile, originalGh);
     const correctedTitle = draftArgs.map((arg) =>
-      arg === "feat: preserve reviewed behavior"
+      arg === ":memo: Preserve reviewed behavior"
         ? "feat: preserve corrected draft behavior"
         : arg,
     );
@@ -1751,7 +1751,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       "--branch",
       branch,
       "--title",
-      "feat: preserve reviewed behavior",
+      ":sparkles: Preserve reviewed behavior",
       "--body-file",
       "reviewed-body.md",
     ];
@@ -1807,7 +1807,10 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     const forgeState = JSON.parse(readFileSync(forge.state, "utf8"));
     assert.equal(forgeState.pulls[7].draft, false);
     assert.equal(forgeState.pulls[7].ready, true);
-    assert.equal(forgeState.pulls[7].title, "feat: preserve reviewed behavior");
+    assert.equal(
+      forgeState.pulls[7].title,
+      ":sparkles: Preserve reviewed behavior",
+    );
     const last = events().at(-1).payload;
     assert.equal(last.reusedDraft, draftHead);
     assert.equal(last.headSha, reviewed);

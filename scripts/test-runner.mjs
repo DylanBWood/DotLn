@@ -452,6 +452,9 @@ export const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    // plan publish runs against this fixture's forge, through the helper.
+    "scripts/test-target-publication-fixture.mjs",
+    "scripts/lib/launchpad-publish.mjs",
     // Plan failures, which the refutation fixtures import, reads the close's
     // blocker classes and step names from here.
     "scripts/lib/release-steps.mjs",
@@ -740,6 +743,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo238-integration-role-baseline.json",
     "packages/skeleton/fixtures/wo253-role-baseline.json",
     "packages/skeleton/fixtures/wo254-role-baseline.json",
+    "packages/skeleton/fixtures/wo246-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -1324,6 +1328,8 @@ export const suites = [
     sources: [
       "scripts/test-launchpad-",
       "scripts/lib/launchpad-fixture.mjs",
+      "scripts/lib/launchpad-publish.mjs",
+      "scripts/test-target-publication-fixture.mjs",
       "scripts/launchpad.mjs",
       "scripts/kit/",
       "docs/KIT.md",

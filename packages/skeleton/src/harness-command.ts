@@ -371,6 +371,62 @@ export function shellInvocations(source: string): string[][] {
   return shellWords(source).map(({ words }) => words.map((word) => word.value));
 }
 
+/** One command a shell line would run, by the words the line wrote. */
+export interface WrittenCommand {
+  /** The `NAME=value` words before its first word. */
+  readonly assignments: readonly string[];
+  /** Its words as the line wrote them, a wrapper among them. */
+  readonly words: readonly string[];
+  /** The program behind any wrapper, named without its path, and its operands;
+   * empty when a wrapper's options cannot be read. */
+  readonly program: readonly string[];
+}
+
+/** Every command a line would run, read without refusing any form: control
+ * syntax, a substitution and a script handed to a shell or to eval are read,
+ * so a program inside one is found, while quoted text stays its command's
+ * argument. Text the shell substitutes stands as U+0000. Unlike the effect
+ * classification this is for a judgment of one program's literal words; a line
+ * too deep to read holds no commands. */
+export function writtenCommands(source: string): WrittenCommand[] {
+  let reading: ShellReading;
+  try {
+    reading = readShellCommand(source);
+  } catch (error) {
+    if (error instanceof ShellReadingLimit) return [];
+    throw error;
+  }
+  const rows: { assignments: string[]; words: string[] }[] = [];
+  const assignments = new Map<number, string[]>();
+  // A substitution inside a word advances the reading's command number, so
+  // the words after it are joined to their command by the scope they stand in.
+  const latest = new Map<string, string[]>();
+  for (const { position, scope, command, text } of reading.words) {
+    const word = asWritten(text);
+    if (position === "assignment")
+      assignments.set(command, [...(assignments.get(command) ?? []), word]);
+    else if (position === "head") {
+      const words = [word];
+      rows.push({ assignments: assignments.get(command) ?? [], words });
+      latest.set(scope, words);
+    } else if (position === "argument") latest.get(scope)?.push(word);
+  }
+  return rows.map((row) => {
+    try {
+      return {
+        ...row,
+        program: invocationProgram(row.words.map(literal)).map(
+          ({ value }) => value,
+        ),
+      };
+    } catch (error) {
+      if (error instanceof HarnessCommandRefused)
+        return { ...row, program: [] };
+      throw error;
+    }
+  });
+}
+
 /** Normalize executable operands for admission without requiring an effect
  * adapter for every operand. Effect classification keeps its own full checks. */
 export function executableShellInvocations(source: string): string[][] {

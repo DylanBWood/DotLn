@@ -1782,7 +1782,21 @@ details the result and provenance contracts.
 
 After the refutation receipt is filed with its holds answered and
 `npm run test:docs` is green, a planning or ideation pass on a planning branch
-pushes that branch and opens its `:memo:` pull request. The dispatch phrase is
+pushes that branch and opens its `:memo:` pull request with `node
+scripts/refute-plan.mjs publish --title <title> --body-file <path>` (`npm run plan
+-- publish` takes the same flags). The emitted `.claude/settings.json` allows that
+node spelling and `node scripts/launchpad.mjs update --publish` and nothing else,
+so that Claude Code resolves them before its auto-mode classifier
+([decision](../evidence/WO-246/decisions.md#wo-246-d010--the-operator-authorizes-the-two-allow-rules)).
+The helper admits a `planning/<date>-<slug>` branch
+with a clean tree and its planning document committed. As the target publish does,
+it lints the title and body, refuses AI attribution, proves gh and its login for
+the repository `origin`'s push URL names, pushes from a host-created lane and
+opens the pull request with `--repo`; a failed create is followed by a lookup that
+adopts the open pull request whose head, branch and base match, so a retry repeats
+no push and opens no second one ([decision](../evidence/WO-246/decisions.md#wo-246-d004--one-helper-with-two-doors-linted-as-the-launchpads-own-text)).
+`node scripts/launchpad.mjs update --publish` is the same helper for an instance's
+update branch. The dispatch phrase is
 the operator's authorization for those two effects; the pass never merges.
 A target-scoped pass publishes its product and planning files with `plan
 target-publish` under the registered profile and operator grant, then records
@@ -3551,6 +3565,10 @@ and generated evidence, including fixtures, manifests and installed guidance.
   live guard's observation history (WO-217).
 
 - **Outward artifacts (WO-063).** The [pure lint and stdin CLI](../evidence/WO-063/implementation.md) check conventional commit subjects, PR titles and branch names plus the configured public vocabulary and redacted local-term check, report absent local coverage as `unavailable`, and leave publication integration to WO-064.
+  A commit subject takes a conventional type, optionally behind a gitmoji, and at
+  most 72 characters; a PR title may instead be a gitmoji and a subject, the form
+  core's own titles take, and has no length limit, except that `plan
+  target-publish` keeps its `docs:` type because its title is the commit's subject ([decision](../evidence/WO-246/decisions.md#wo-246-d002--a-pull-request-title-may-be-a-gitmoji-and-a-subject-at-any-length)).
   What the lint was for, in the operator's correction of 2026-10-21 (the
   planning dispatch's sibling capture, SHA-256 in the planning document §1):
   three things, and no fourth. Launchpad identifiers (work-order numbers,
@@ -4061,8 +4079,13 @@ and generated evidence, including fixtures, manifests and installed guidance.
   and the close consume; release close is the post-merge publish of the tag
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
-  subagents; DotLn has eight hook refusals (WO-135, WO-139, WO-144, WO-234,
-  WO-251 and WO-250): a second writer in a
+  subagents; DotLn has nine hook refusals (WO-135, WO-139, WO-144, WO-234,
+  WO-251, WO-250 and WO-246): a `gh pr` or `gh issue` command naming no
+  repository in a clone whose `origin` and `upstream` differ and whose gh default
+  is unset, refused naming `-R <origin>`, or `-R <upstream>` alone where gh cannot
+  address origin
+  ([decision](../evidence/WO-246/decisions.md#wo-246-d006--the-refusal-reads-the-clone-and-the-command-as-written),
+  [correction](../evidence/WO-246/decisions.md#wo-246-d024--correction-a-repository-is-its-host-its-owner-and-its-name)); a second writer in a
   worktree; a write during the live gate; a classified repository write
   outside `docs/` and root Markdown on a `planning/` branch; an observable
   worker use exceeding `docs/control/budgets.json` `subagentCap`
@@ -4575,8 +4598,8 @@ generated artifacts, publication and bookkeeping being inputs of the
 complete and document selections, and its structural row is partial: it
 never stands in for a complete or document selection's structural pass. A
 later passing partial row preserves an earlier complete pass; a later failed
-partial task still displaces its prior pass. In an export, `launchpad update --finish` fetches and fast-forwards clean
-main before bootstrap, and release-close recovery, `worktree finish` and
+partial task still displaces its prior pass. In an export, `launchpad update --finish` fetches what the checkout lacks and
+fast-forwards clean main before bootstrap, and release-close recovery, `worktree finish` and
 `npm run harness` restore the verified carried runtime instead of building
 omitted sources; bootstrap is the named manual recovery command (WO-226).
 Sync refuses a role oracle without its authorizing

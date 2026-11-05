@@ -76,10 +76,11 @@ import {
   parseGitHubTarget,
   parsePullRequestUrl,
   HOST_GIT_READ,
-  fetchRemoteBranch,
+  fetchIntoCheckout,
   pushUrl,
   pushObservedCommit,
 } from "./github-repository.mjs";
+import { formatDuration } from "./duration.mjs";
 import { redactPaths } from "./git.mjs";
 
 export { pushUrl, pushObservedCommit } from "./github-repository.mjs";
@@ -844,10 +845,13 @@ function describedTargetBase(entry, activationBase, subjectCommit, url) {
     throw refuse("target HEAD does not descend from the activated base commit");
   let fetched;
   try {
-    fetched = fetchRemoteBranch(entry.target, url, entry.baseBranch);
-  } catch {
+    fetched = fetchIntoCheckout(entry.target, url, entry.baseBranch);
+  } catch (error) {
+    const selector = parseGitHubTarget(url).selector;
     throw refuse(
-      `fetch failed for origin base branch ${entry.baseBranch} on ${parseGitHubTarget(url).selector}; prepared work retained; fix the fetch and retry the same command`,
+      error.boundMs
+        ? `fetch of origin base branch ${entry.baseBranch} on ${selector} passed its bound of ${formatDuration(error.boundMs)}; prepared work retained; run git fetch origin ${entry.baseBranch} in the target clone, whose commit this command then finds held, and retry the same command`
+        : `fetch failed for origin base branch ${entry.baseBranch} on ${selector}; prepared work retained; fix the fetch and retry the same command`,
     );
   }
   return targetBase(read, activationBase, subjectCommit, fetched);
@@ -1206,7 +1210,6 @@ export function publishTargetDraft({
       main,
       [
         { kind: "branch", text: branch },
-        { kind: "commit", text: title },
         { kind: "pr-title", text: title },
         { kind: "pr-body", text: publishedBody, sections, rows },
       ],

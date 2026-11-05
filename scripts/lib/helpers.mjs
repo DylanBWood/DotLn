@@ -73,5 +73,24 @@ export const locked = async (root, path, label, directoryMessage, run) => {
   }
 };
 
+/** The values of flags that each appear once with a value, keyed by flag, or
+ * null when the arguments are anything else. */
+export const pairedFlags = (args, keys) => {
+  if (args.length !== keys.length * 2) return null;
+  const values = {};
+  for (let at = 0; at < args.length; at += 2) {
+    const [flag, value] = [args[at], args[at + 1]];
+    if (
+      !keys.includes(flag) ||
+      flag in values ||
+      !value ||
+      value.startsWith("--")
+    )
+      return null;
+    values[flag] = value;
+  }
+  return values;
+};
+
 export const sha256Hex = (value) =>
   createHash("sha256").update(value).digest("hex");

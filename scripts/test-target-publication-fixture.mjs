@@ -1,6 +1,13 @@
-import { chmodSync, mkdirSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { spawnGit } from "./lib/git.mjs";
 
 /** Local forge transport shared by session and exported-instance fixtures. */
 export function installTargetPublicationFixture(base, env, repositories) {
@@ -136,3 +143,70 @@ export const publicationGrant = {
   operations: ["repo.push", "pr.open"],
   reason: "Operator grant for synthetic fixture publication",
 };
+
+/** The launchpad's own publication: an origin on a host no network reaches,
+ * rewritten by the fixture environment to a local bare repository that counts
+ * the pushes it receives, and a gh double whose create and lookup a case can
+ * script. Its Git adapter reports the configured URL, as a real GitHub origin
+ * would, so the repository preflight runs unchanged. */
+export function installLaunchpadForge(base, env, url) {
+  const bare = join(base, "origin.git");
+  const initialized = spawnGit(
+    ["init", "--quiet", "--bare", "--initial-branch=main", bare],
+    { encoding: "utf8" },
+  );
+  if (initialized.status !== 0) throw new Error(initialized.stderr);
+  const pushes = join(base, "origin-pushes.log");
+  mkdirSync(join(bare, "hooks"), { recursive: true });
+  const receive = join(bare, "hooks/pre-receive");
+  writeFileSync(receive, `#!/bin/sh\ncat >> '${pushes}'\n`);
+  chmodSync(receive, 0o755);
+  const forge = installTargetPublicationFixture(base, env, [
+    { url, origin: bare },
+  ]);
+  const script = join(base, "gh-script.json");
+  writeFileSync(script, "{}\n");
+  writeFileSync(
+    join(forge.bin, "gh"),
+    `#!${process.execPath}
+import { appendFileSync, copyFileSync, readFileSync } from 'node:fs';
+const args = process.argv.slice(2);
+appendFileSync(${JSON.stringify(forge.log)}, JSON.stringify(args) + '\\n');
+if (process.env.GH_REPO || process.env.GH_HOST) process.exit(65);
+const scripted = JSON.parse(readFileSync(${JSON.stringify(script)}, 'utf8'));
+if (args[0] === '--version') process.exit(scripted.noGh ? 127 : 0);
+if (args[0] === 'auth') process.exit(0);
+const flag = (name) => args[args.indexOf(name) + 1];
+if (args[0] === 'pr' && args[1] === 'create') {
+  if (scripted.createFails) { console.error('a pull request already exists'); process.exit(1); }
+  copyFileSync(flag('--body-file'), ${JSON.stringify(forge.body)});
+  console.log('https://' + flag('--repo') + '/pull/7'); process.exit(0);
+}
+if (args[0] === 'pr' && args[1] === 'view') {
+  if (!scripted.view) { console.error('no pull requests found'); process.exit(1); }
+  console.log(JSON.stringify(scripted.view)); process.exit(0);
+}
+process.exit(64);
+`,
+  );
+  return {
+    ...forge,
+    bare,
+    /** What the gh double does next: createFails, view, noGh. */
+    script: (value) => writeFileSync(script, `${JSON.stringify(value)}\n`),
+    /** The ref updates the bare repository has received, one per line. */
+    pushes: () =>
+      existsSync(pushes)
+        ? readFileSync(pushes, "utf8").trim().split("\n").filter(Boolean)
+        : [],
+    /** The gh calls that reached past the preflight. */
+    calls: () =>
+      existsSync(forge.log)
+        ? readFileSync(forge.log, "utf8")
+            .trim()
+            .split("\n")
+            .map((line) => JSON.parse(line))
+            .filter((args) => args[0] === "pr")
+        : [],
+  };
+}

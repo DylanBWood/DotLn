@@ -131,6 +131,13 @@ test("WO-011 exact attribution predicate permits subjects and human coauthors bu
     "Improve Claude CLI tests",
     "Co-authored-by: Human <human@example.invalid>",
     "Document Generated with AI examples",
+    // A gitmoji opening a line changes nothing about what the line says.
+    ":memo: Improve Claude CLI tests",
+    "✨ Co-authored-by: Human <human@example.invalid>",
+    ":memo: Document Generated with AI examples",
+    ":robot: Teach the bot a new command",
+    ":memo:",
+    "One line\n:sparkles: Another that names Claude",
   ])
     assert.equal(hasAiAttribution(message), false, message);
   for (const message of [
@@ -140,6 +147,21 @@ test("WO-011 exact attribution predicate permits subjects and human coauthors bu
     "Assisted-by: Claude",
     "Assisted-by: Claude Code <claude@example.invalid>",
     "ASSISTED-BY: Codex <codex@example.invalid>",
+    // Neither form of gitmoji hides attribution, on any line and in any number.
+    "🤖 Generated with Claude Code",
+    ":robot: Generated with Claude Code",
+    ":robot: Generated with [Claude Code](https://example.invalid)",
+    ":ROBOT: Generated with Claude Code",
+    "♻️ Generated with Claude Code",
+    "🧑‍💻 Written by Codex",
+    ":memo: :robot: Generated with Claude Code",
+    ":memo: ✨ Co-authored-by: Claude <noreply@anthropic.com>",
+    ":memo: Co-authored-by: Claude <noreply@anthropic.com>",
+    "✨ Co-authored-by: Claude <noreply@anthropic.com>",
+    ":memo: Assisted-by: Codex",
+    ":memo: Claude-Session: abc",
+    ":link: https://claude.ai/code/session_abc",
+    "A body.\n\n  :robot: Generated with Claude Code\n",
   ])
     assert.equal(hasAiAttribution(message), true, message);
 });

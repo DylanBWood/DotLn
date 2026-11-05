@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-246",
+  "verification": "VER-001",
+  "recordedAt": "2026-11-05T07:05:01.800Z",
+  "subject": {
+    "codeIdentity": "c04f532ae9f08fa1fa7d78daa820914b9aa0dce23e968079ee19193ff1096e7e",
+    "implementationEditedByVerifier": false
+  },
+  "inheritedReviewGate": {
+    "checkId": "npm test",
+    "codeIdentity": "c04f532ae9f08fa1fa7d78daa820914b9aa0dce23e968079ee19193ff1096e7e",
+    "gateSelection": "review",
+    "recordedAt": "2026-11-05T06:44:40.452Z",
+    "executed": true,
+    "exitCode": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunSuites": [],
+    "evidenceRef": "host-gate:c04f532ae9f08fa1fa7d78daa820914b9aa0dce23e968079ee19193ff1096e7e:npm test"
+  },
+  "inheritedReviewMatchesCurrentCode": true,
+  "commands": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "name": "bounded-probe",
+      "durationMs": 9263,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 9263,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 770971176,
+      "peakRssBytes": 840663040,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-05T06:54:26.392Z",
+      "finishedAt": "2026-11-05T06:54:35.655Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern='WO-246|a borrowing lane|WO-226 update finish|WO-039 profile observations' scripts/test-harness.mjs scripts/test-plan-refutation.mjs scripts/test-launchpad-update.mjs scripts/test-drive.mjs packages/compiler/dist/test/harness.test.js",
+      "testCount": 7,
+      "passed": 7,
+      "failed": 0,
+      "name": "bounded-probe",
+      "durationMs": 54950,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 54950,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 646403808,
+      "peakRssBytes": 757874688,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-05T06:55:03.965Z",
+      "finishedAt": "2026-11-05T06:55:58.915Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern='WO-221 the draft form at verified|WO-064 AC1/AC2|gitmoji|typed |bare subject|a commit needs|core.s title|unknown title|the conventional types' scripts/test-target-worktree-publish.mjs scripts/test-target-publish.mjs scripts/test-outward-lint.mjs",
+      "testCount": 24,
+      "passed": 24,
+      "failed": 0,
+      "name": "bounded-probe",
+      "durationMs": 25406,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 25406,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 101594672,
+      "peakRssBytes": 241827840,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-05T06:59:41.812Z",
+      "finishedAt": "2026-11-05T07:00:07.218Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-246/verification-001-probes.mjs",
+      "name": "bounded-probe",
+      "durationMs": 2385,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 2385,
+          "exitCode": 1,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 76948648,
+      "peakRssBytes": 177455104,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-05T06:58:38.869Z",
+      "finishedAt": "2026-11-05T06:58:41.255Z",
+      "exitCode": 1,
+      "executed": true
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+      "exitCode": 0,
+      "generatedSurfaces": 42
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "productHeadingsIndexed": 256,
+      "productHeadings": 256
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/check-role-oracle.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness-context.mjs",
+      "name": "bounded-probe",
+      "durationMs": 159,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 159,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 42653192,
+      "peakRssBytes": 90914816,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-05T07:02:16.712Z",
+      "finishedAt": "2026-11-05T07:02:16.871Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "independent": {
+    "schemaVersion": 1,
+    "workOrder": "WO-246",
+    "verification": "VER-001",
+    "observations": [
+      {
+        "name": "commit lint is unchanged across a varied corpus",
+        "result": "pass",
+        "comparisons": 1920,
+        "admittedTitles": 5,
+        "refusedTitles": 4
+      },
+      {
+        "name": "planning publication from a nested directory and spaced path",
+        "result": "pass",
+        "customDocumentRoot": true,
+        "nestedCwd": true,
+        "spacedPaths": true,
+        "repeatedFlagRefused": true,
+        "pushesIncludingRetry": 1,
+        "forge": "local bare repository and gh double"
+      },
+      {
+        "name": "borrowed-object fetch works in a linked worktree",
+        "result": "pass",
+        "heldFetchSkipped": true,
+        "newHistoryImported": true,
+        "vetoPreservedObjectsAndRefs": true,
+        "linkedObjectStoreMatched": true,
+        "timeoutMs": 600000
+      },
+      {
+        "name": "cross-host repository matrix",
+        "result": "fail",
+        "origin": "github.enterprise.invalid/verification/project",
+        "upstream": "github.com/verification/project",
+        "rows": [
+          {
+            "command": "gh pr list",
+            "expected": "refuse",
+            "observed": "admit"
+          },
+          {
+            "command": "gh pr create --title x",
+            "expected": "refuse",
+            "observed": "admit"
+          },
+          {
+            "command": "gh issue list",
+            "expected": "refuse",
+            "observed": "admit"
+          },
+          {
+            "command": "gh pr view 1",
+            "expected": "refuse",
+            "observed": "admit"
+          }
+        ],
+        "ordinaryDifferentRepositoryControlRefused": true,
+        "sameRepositoryControlAdmitted": true,
+        "explicitRepositoryControlAdmitted": true,
+        "networkCommandsRun": 0
+      },
+      {
+        "name": "repository identity keeps its host when owner and name coincide",
+        "result": "fail",
+        "error": "distinct hosts with the same owner/name were treated as one repository"
+      }
+    ],
+    "passed": false
+  },
+  "plannerRoot": {
+    "claudeBytes": 29643,
+    "codexBytes": 29643,
+    "ceilingBytes": 24576,
+    "disposition": "existing follow-up in WO-246-D009 and WO-246-D011; criterion requires recording rather than fitting the ceiling"
+  },
+  "dependencies": {
+    "addedPackages": [],
+    "removedPackages": [],
+    "addedDependencyNames": []
+  },
+  "newlyAddedTypeOrLintSuppressions": [],
+  "externalDocumentation": [
+    {
+      "url": "https://cli.github.com/manual/gh_repo_set-default",
+      "readOn": "2026-11-05",
+      "observed": "set-default chooses the default API repository; --view reports it; the page does not name the storage key"
+    },
+    {
+      "url": "https://code.claude.com/docs/en/auto-mode-config",
+      "readOn": "2026-11-05",
+      "observed": "narrow shell allow rules precede the classifier subject to documented exceptions; classifyAllShell suspends them; these exact helpers were not tested live"
+    },
+    {
+      "url": "https://code.claude.com/docs/en/permissions",
+      "readOn": "2026-11-05",
+      "observed": "the literal words before the first wildcard limit the rule"
+    }
+  ],
+  "limits": [
+    "No real forge publication",
+    "No live Claude permission-rule probe",
+    "No Linux run",
+    "No claim that the synthetic host is reachable; the repository-identity probe runs the permission evaluator only",
+    "No new worker; verdict owned by this verifier"
+  ],
+  "documentGate": {
+    "state": "passed",
+    "checkId": "npm run test:docs",
+    "recordedAt": "2026-11-05T07:11:08.464Z",
+    "executed": true,
+    "exitCode": 0,
+    "codeIdentity": "c04f532ae9f08fa1fa7d78daa820914b9aa0dce23e968079ee19193ff1096e7e",
+    "documentTreeHash": "f2cba72276f0e8df6988cbd9ee1729846e27cf0c",
+    "documentTreeExcludes": "docs/evidence/WO-246",
+    "gateSelection": "document",
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "license-surfaces",
+      "resume-docs",
+      "launchpad-docs",
+      "docs-check",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ],
+    "unrunSuites": [],
+    "evidenceRef": "host-gate:c04f532ae9f08fa1fa7d78daa820914b9aa0dce23e968079ee19193ff1096e7e:npm run test:docs"
+  }
+}

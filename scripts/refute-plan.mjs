@@ -3,7 +3,7 @@ import {
   planningDocumentPath,
   planningSkeleton,
 } from "./lib/planning-document.mjs";
-import { json as prettyJson } from "./lib/helpers.mjs";
+import { json as prettyJson, pairedFlags } from "./lib/helpers.mjs";
 import { formatDuration } from "./lib/duration.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
@@ -75,7 +75,7 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check | documents [--cursor <revision>:<row>] | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check | documents [--cursor <revision>:<row>] | publish --title <title> --body-file <path> | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const followupsUsage =
   "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json or batch.json> | --touching [<path or WO-NNN>…] [--cursor <cursor>] | --touching --work-order <WO-NNN> [--cursor <cursor>] | --export <file> [--all]";
 const failuresUsage =
@@ -373,27 +373,42 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       cursor: options.cursor,
     });
   }
+  if (command === "publish") {
+    const values = pairedFlags(rest, ["--title", "--body-file"]);
+    if (!values)
+      throw new Error("usage: plan publish --title <title> --body-file <path>");
+    const { publishLaunchpadBranch } =
+      await import("./lib/launchpad-publish.mjs");
+    return publishLaunchpadBranch(root, {
+      kind: "planning",
+      title: values["--title"],
+      bodyFile: values["--body-file"],
+      ready(branch, fail) {
+        const document = planningDocumentPath(root, branch);
+        if (
+          runGit(root, ["cat-file", "-e", `HEAD:${document}`], {
+            onFailure: () => null,
+          }) === null
+        )
+          throw fail(
+            `the planning document ${document} is not committed on ${branch}`,
+          );
+      },
+    }).url;
+  }
   if (command === "target-publish") {
     const [repositoryId, ...flags] = rest;
-    const keys = ["--base", "--from", "--branch", "--title", "--body-file"];
-    if (
-      !repositoryId ||
-      flags.length !== keys.length * 2 ||
-      flags.some(
-        (value, index) =>
-          index % 2 === 0 &&
-          (!keys.includes(value) || flags.indexOf(value) !== index),
-      ) ||
-      flags.some(
-        (value, index) => index % 2 === 1 && (!value || value.startsWith("--")),
-      )
-    )
+    const values = pairedFlags(flags, [
+      "--base",
+      "--from",
+      "--branch",
+      "--title",
+      "--body-file",
+    ]);
+    if (!repositoryId || !values)
       throw new Error(
         "usage: plan target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path>",
       );
-    const values = Object.fromEntries(
-      keys.map((key) => [key, flags[flags.indexOf(key) + 1]]),
-    );
     const { publishTargetPlanning } = await import("./lib/target-planning.mjs");
     return publishTargetPlanning({
       launchpad: root,

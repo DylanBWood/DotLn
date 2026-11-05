@@ -6,7 +6,7 @@
 
 - [x] [WO-253] — Temporary roots leave with the gate that made them, and a prune is a bounded step · **final-reviewed**
 - [x] [WO-254] — The hooks get out of the operator's way · **final-reviewed**
-- [ ] [WO-246] — The launchpad's own pull requests · **queued**
+- [x] [WO-246] — The launchpad's own pull requests · **final-reviewed**
 - [ ] [WO-255] — Reviews find what the complete run finds · **queued**
 - [ ] [WO-257] — Instance returns of 2026-11-03 · **queued**
 - [ ] [WO-242] — Plan-first mode · **queued**
@@ -42,22 +42,6 @@ None.
 None.
 
 ## Open
-
-### WO-246
-
-[WO-246 — The launchpad's own pull requests are opened by a helper on origin's repository: &#96;npm run plan -- publish&#96; and &#96;launchpad update --publish&#96; lint, push and open the pull request where the target publish does; a pull-request title in the form core itself uses, a gitmoji and a subject with or without a conventional type, passes the lint; the hook refuses a &#96;gh pr&#96; or &#96;gh issue&#96; command that names no repository in a clone whose origin and upstream differ; the kit guide names the rule; and &#96;update --finish&#96;, the target close and the target publish fetch a remote branch through a lane that borrows the checkout's objects and bounds the fetch (version assigned at activation)](WO-246-the-launchpads-own-pull-requests.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-218: satisfied-by-close (met) — the gitmoji admission before the conventional type that this order widens for pull-request titles; WO-221: satisfied-by-close (met) — ensureGhFor and the push-URL binding the helper proves the repository with; WO-157: satisfied-by-close (met) — pushUrl and the host-created push the helper reuses; WO-135: satisfied-by-close (met) — the hook's command judgment the gh refusal joins; WO-144: satisfied-by-close (met) — the known-destination refusals that survive grant failures, beside which the gh refusal sits; WO-245: planning-deferral (met) until WO-245 dated 2026-10-31 — the kit guide's file this order writes into is docs/KIT.md once WO-245 merges, otherwise the kit README; step 8 names both.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-246-the-launchpads-own-pull-requests.md](WO-246-the-launchpads-own-pull-requests.md)
 
 ### WO-255
 

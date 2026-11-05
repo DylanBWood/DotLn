@@ -112,7 +112,7 @@ are the boundary; tool availability still grants no authority. See the
 [security note](AI-HARNESS-SECURITY.md#current-mode-choices-and-settings-locations--2026-09-17)
 and [ADR-0003 amendment](decisions/0003-personal-ai-harness-security.md#amendments).
 Re-check effective settings after upgrades.
-DotLn hooks refuse eight conditions: a second writer in one worktree; a write to
+DotLn hooks refuse nine conditions: a second writer in one worktree; a write to
 gate inputs or the success record during any live `npm test`; a repository
 write outside `docs/` and root Markdown on a `planning/` branch; an
 observable worker use (a launch, a re-task or a kit launch) beyond
@@ -120,8 +120,10 @@ observable worker use (a launch, a re-task or a kit launch) beyond
 known outside-project write destination without an active role or support
 grant; a complete gate, bounded probe or worker start past the dispatch's
 bound; desktop control and the operator's own browser sessions without the
-instance's `features.desktop-control` election; and a test-runner gate started
-by a `dotln-worker` review or refutation worker. The bound's stop names `analysis:` and the
+instance's `features.desktop-control` election; a test-runner gate started
+by a `dotln-worker` review or refutation worker; and a `gh pr` or `gh issue`
+command naming no repository in a clone whose `origin` and `upstream` differ and
+whose gh default is unset. The bound's stop names `analysis:` and the
 operator's `resume accept-overrun` route, retaining diagnosis and focused
 reproductions. Descendants count at their first attributable
 tool call; unresolved direct/child overlap is a reported minimum and unobserved

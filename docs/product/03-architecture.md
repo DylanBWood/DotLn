@@ -146,12 +146,13 @@ not a canonical topology or an implemented multi-repo coordinator. It simulates 
 Packaging and the update path exist (WO-074 to WO-078); the license posture
 is decided below; an update shows its plan before writing (WO-203).
 Release close refreshes the starter after each release (WO-215); an instance
-takes a starter update through its own planning pass (WO-207).
+takes a starter update through its own planning pass (WO-207) and opens the
+update's pull request with `node scripts/launchpad.mjs update --publish` (WO-246).
 After the operator merges that update, its route ends on clean `main` with
-`node scripts/launchpad.mjs update --finish`: fetch origin, check the
-fast-forward before checkout writes, advance main and bootstrap the carried
-runtime (WO-226). A dirty tree, another branch or a non-fast-forward refuses
-with the fact named.
+`node scripts/launchpad.mjs update --finish`: read origin's main, fetch only what
+the checkout lacks, check the fast-forward before checkout writes, advance main
+and bootstrap the carried runtime (WO-226, WO-246). A dirty tree, another branch,
+a non-fast-forward or a fetch past its ten-minute bound refuses with the fact named.
 Instance orders and session-driven target orders have publication and close
 routes (WO-210); rollback, channel selection and the first task remain queued
 (WO-207, WO-083).

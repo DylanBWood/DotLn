@@ -7,6 +7,10 @@
     "sessionUrl": false
   },
   "permissions": {
+    "allow": [
+      "Bash(node scripts/launchpad.mjs update --publish *)",
+      "Bash(node scripts/refute-plan.mjs publish *)"
+    ],
     "deny": [
       "Bash(npm publish *)",
       "Bash(scp *)",

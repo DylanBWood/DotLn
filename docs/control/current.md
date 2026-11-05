@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-254
+## WO-246
 
-- Work order: WO-254
-- Work-order path: docs/work-orders/WO-254-the-hooks-get-out-of-the-operators-way.md
+- Work order: WO-246
+- Work-order path: docs/work-orders/WO-246-the-launchpads-own-pull-requests.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-254/VER-001.md
+- Latest verification: VER-002
+- Verification path: docs/verifications/WO-246/VER-002.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-254/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-246/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.318; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-11-04T22:55:25.113Z
-- Elapsed implementation: 6 h 23 min
-- Elapsed verification: 0 h 12 min
-- Elapsed finalReview: 0 h 36 min
-- Latest checkpoint: a8916a8bc4923710a3f687dd38c266b64ef01fcd (restore: `git checkout refs/dotln/checkpoint/WO-254/6 -- .`)
+- Latest recordedAt: 2026-11-05T14:40:29.146Z
+- Elapsed implementation: 3 h 36 min
+- Elapsed verification: 0 h 16 min
+- Elapsed repair: 2 h 7 min
+- Elapsed finalReview: 0 h 25 min
+- Latest checkpoint: 4cf1f5be19589fc41f5c994e3cbf197488b05812 (restore: `git checkout refs/dotln/checkpoint/WO-246/10 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record, retract
 

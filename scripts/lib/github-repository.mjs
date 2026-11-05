@@ -6,8 +6,9 @@ import { spawnGit, spawnGitLimited, runGit, shellQuote } from "./git.mjs";
 import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { formatDuration } from "./duration.mjs";
 
 const failure =
   "origin must identify exactly one matching GitHub HOST/OWNER/REPO fetch and push target";
@@ -136,8 +137,9 @@ export const ensureGhFor = (path, repository) => {
   return repository;
 };
 
+// The bare reason travels with the error, so another publish names it as its own.
 const publishRefusal = (reason) =>
-  new Error(`target publish refused: ${reason}`);
+  Object.assign(new Error(`target publish refused: ${reason}`), { reason });
 /** The push URL origin's configuration names, before any URL rewrite, which
  * must be the GitHub repository ensureGh resolved: a rewrite the target's
  * configuration adds cannot redirect the push (WO-157). */
@@ -256,7 +258,7 @@ function withHostLane(run, { name, prefix, refusal }) {
     });
     if (init.status !== 0)
       throw refusal(`git init failed for the ${name}: ${init.stderr}`);
-    const inLane = (args, options = {}) => {
+    const inLane = (args, { boundMs, ...options } = {}) => {
       // A time-limited read ends its transport helper with the limit; an
       // unlimited call, the publish push among them, keeps the caller's group.
       const result = spawnGitLimited(["-C", lane, ...HOST_GIT_READ, ...args], {
@@ -264,46 +266,127 @@ function withHostLane(run, { name, prefix, refusal }) {
         maxBuffer: 16 * 1024 * 1024,
         ...options,
       });
+      // A call past its limit says so and carries the bound it was given, so a
+      // caller can name it and its remedy instead of a failed transport.
+      if (result.error?.code === "ETIMEDOUT") {
+        const bound = boundMs ?? options.timeout;
+        throw Object.assign(
+          refusal(
+            `git ${args[0]} failed in the ${name}: it passed its bound of ${formatDuration(bound)}`,
+          ),
+          { boundMs: bound },
+        );
+      }
       if (result.status !== 0)
         throw refusal(
           `git ${args[0]} failed in the ${name}: ${String(result.stderr ?? "").trim() || result.error?.message || `ended by ${result.signal}`}`,
         );
       return result.stdout.trim();
     };
-    return run(inLane);
+    return run(inLane, lane);
   } finally {
     rmSync(lane, { recursive: true, force: true });
   }
 }
 const withPublishLane = (run) => withHostLane(run, PUBLISH_LANE);
 const withReadLane = (run) => withHostLane(run, READ_LANE);
+/** The bound fetchIntoCheckout puts on a checkout's fetch of its own remote, the
+ * read before it included: ten minutes, half the nineteen-minute stall that set
+ * it and above every recorded fetch. The drive route's merged-base fetch keeps
+ * its own five-minute bound. */
+export const REMOTE_FETCH_TIMEOUT_MS = 10 * 60 * 1000;
+/** The bound on a remote read that has its own deadline, apart from any fetch
+ * that follows it: the publish helper's and the drive route's lookup. */
+export const REMOTE_READ_TIMEOUT_MS = 60 * 1000;
+const branchTip = (inLane, url, branch, limit) => {
+  const ref = `refs/heads/${branch}`;
+  const row = inLane(["ls-remote", "--heads", url, ref], limit)
+    .split("\n")
+    .find((line) => line.endsWith(`\t${ref}`));
+  return row ? row.split("\t")[0] : null;
+};
 /** Fetch through a host-owned lane, then import its bundle without consulting
- * the clone's transport configuration or moving any branch in the clone. */
+ * the clone's transport configuration or moving any branch in the clone.
+ * `alternates` lends the lane the clone's object store, read only: the lane
+ * reads the remote's commit first and fetches nothing when the clone already
+ * holds it whole, downloads only what the clone lacks otherwise, and the import
+ * carries only those objects. A `timeoutMs` bounds the read and the fetch
+ * together; past it the refusal carries `boundMs`. */
 export function fetchRemoteBranch(
   repo,
   url,
   branch,
-  { beforeImport, timeoutMs } = {},
+  { beforeImport, timeoutMs, alternates = false } = {},
 ) {
-  return withReadLane((inLane) => {
-    inLane(
-      [
-        "fetch",
-        "--quiet",
-        "--no-tags",
-        url,
-        `refs/heads/${branch}:refs/heads/fetched`,
-      ],
-      timeoutMs ? { timeout: timeoutMs } : {},
-    );
+  return withReadLane((inLane, lane) => {
+    // Each call is given what the last one left of the one bound.
+    const deadline = timeoutMs ? Date.now() + timeoutMs : null;
+    const limit = () =>
+      deadline === null
+        ? {}
+        : { timeout: Math.max(1, deadline - Date.now()), boundMs: timeoutMs };
+    // Whole means every object is there: a commit left by an interrupted
+    // import may lack its history, and the walk stops at what refs reach.
+    const held = (commit) =>
+      alternates &&
+      spawnGit(
+        [
+          "-C",
+          repo,
+          ...HOST_GIT_READ,
+          "rev-list",
+          "--objects",
+          "--quiet",
+          commit,
+          "--not",
+          "--all",
+        ],
+        { stdio: "ignore" },
+      ).status === 0;
+    if (alternates) {
+      const store = runGit(repo, [
+        ...HOST_GIT_READ,
+        "rev-parse",
+        "--git-path",
+        "objects",
+      ]);
+      writeFileSync(
+        join(lane, "objects/info/alternates"),
+        `${resolve(repo, store)}\n`,
+      );
+    }
+    const tip = alternates ? branchTip(inLane, url, branch, limit()) : null;
+    const fetched = !(tip && held(tip));
+    if (fetched)
+      inLane(
+        [
+          "fetch",
+          "--quiet",
+          "--no-tags",
+          url,
+          `refs/heads/${branch}:refs/heads/fetched`,
+        ],
+        limit(),
+      );
+    else inLane(["update-ref", "refs/heads/fetched", tip]);
     const commit = inLane(["rev-parse", "refs/heads/fetched^{commit}"]);
     // A caller can judge the fetched history before any object or reference
     // is written to its checkout. The lane is removed on refusal as well.
-    beforeImport?.(inLane, commit);
+    beforeImport?.(inLane, commit, { fetched, timeoutMs });
+    // A borrowing lane reaches the clone's whole history, so its bundle stops
+    // at what the clone's refs already reach; with nothing past them Git
+    // refuses an empty bundle, and there is nothing to import.
+    if (held(commit)) return commit;
     const scratch = createScratchRoot(join(tmpdir(), "dotln-target-fetch-"));
     try {
       const bundle = join(scratch, "fetched.bundle");
-      inLane(["bundle", "create", bundle, "refs/heads/fetched"]);
+      inLane([
+        "bundle",
+        "create",
+        bundle,
+        "refs/heads/fetched",
+        ...(alternates ? ["--not", "--alternate-refs"] : []),
+      ]);
       runGit(repo, [...HOST_GIT_READ, "bundle", "unbundle", bundle]);
     } finally {
       rmSync(scratch, { recursive: true, force: true });
@@ -311,19 +394,26 @@ export function fetchRemoteBranch(
     return commit;
   });
 }
+/** A checkout's fetch of a branch of its own remote, which update --finish, the
+ * target close and the target publish share: the lane borrows the checkout's
+ * objects and the fetch is bounded, ten minutes unless the caller says. */
+export const fetchIntoCheckout = (
+  repo,
+  url,
+  branch,
+  { beforeImport, timeoutMs = REMOTE_FETCH_TIMEOUT_MS } = {},
+) =>
+  fetchRemoteBranch(repo, url, branch, {
+    beforeImport,
+    timeoutMs,
+    alternates: true,
+  });
 /** The commit a remote branch names, or null without one, read through the
  * lane, which costs no objects when the commit is already held. */
 export function remoteBranchCommit(url, branch, { timeoutMs } = {}) {
-  return withReadLane((inLane) => {
-    const ref = `refs/heads/${branch}`;
-    const row = inLane(
-      ["ls-remote", "--heads", url, ref],
-      timeoutMs ? { timeout: timeoutMs } : {},
-    )
-      .split("\n")
-      .find((line) => line.endsWith(`\t${ref}`));
-    return row ? row.split("\t")[0] : null;
-  });
+  return withReadLane((inLane) =>
+    branchTip(inLane, url, branch, timeoutMs ? { timeout: timeoutMs } : {}),
+  );
 }
 /** The commit a remote tag names, peeled, or null when the tag is absent;
  * read through the lane so the checkout's transport configuration stays out. */

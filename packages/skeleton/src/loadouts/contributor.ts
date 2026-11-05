@@ -305,7 +305,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Screen every acceptance criterion before filing against the five defect classes of product 07 §Operator-opened planning pass: bookkeeping (a count, ceiling, cost, duration or token figure as its subject), later-phase (a final-review or release-close judgment, or HEAD or a commit range before the final review's commit), absent-input (data the base lacks and no step creates), host-behavior (a host, service or account behavior the order cannot produce, with no fallback) and contradiction (with another criterion or a non-goal). `npm run work-orders -- index --check` prints a `criteria advisory` line for wording that often marks one; read each before filing.",
       "Use `npm run reader -- score` with one fresh pinned reader outside the repository and record its result only when plan start reports a changed profile with three unscored releases or the operator asks; record surface corrections only through `score --correction <surface> --capture-hash sha256:<digest>`.",
       "After committing the planning subject locally, load dotln-refuter for one independent goal review per pass. Before editing judged text, resolve its refutation hold or record the operator-authorized amendment; judgment reuse never authorizes a repair. Reuse the judgment only while its observed evidence and judged subject remain valid; for a new judgment dispatch one fresh background refuter with no inherited conversation. Use the canonical direct prompt and receipt helper; keep the parent as the sole repository writer. Do not launch an external refutation CLI unless the operator explicitly requests that transport.",
-      "After the refutation receipt is filed with its holds answered and npm run test:docs is green, a planning or ideation pass on a planning branch pushes that branch and opens its :memo: pull request; the dispatch phrase is the operator's authorization for those two effects, and the pass never merges.",
+      "After the refutation receipt is filed with its holds answered and npm run test:docs is green, a planning or ideation pass on a planning branch pushes that branch and opens its :memo: pull request with `node scripts/refute-plan.mjs publish --title <title> --body-file <path>`, the spelling the emitted allow rule admits (`npm run plan -- publish` takes the same flags and has no rule), never with raw git push or gh; the dispatch phrase is the operator's authorization for those two effects, and the pass never merges.",
     ],
   },
   {
@@ -1137,7 +1137,9 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       evidence: `${record}#C6`,
       path: ".claude/settings.json",
       deny: true,
-      allow: false,
+      allow: true,
+      allowEvidence:
+        "docs/evidence/WO-246/decisions.md#wo-246-d010--the-operator-authorizes-the-two-allow-rules",
     },
     instruction: {
       available: true,
@@ -1225,7 +1227,11 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       evidence: `${copilotRecord}#H1`,
       path: ".claude/settings.json",
       deny: false,
-      allow: false,
+      // Copilot shares Claude's settings file, so it carries the same rules; no
+      // contract for them has been read or observed under Copilot itself.
+      allow: true,
+      allowEvidence:
+        "docs/evidence/WO-246/decisions.md#wo-246-d010--the-operator-authorizes-the-two-allow-rules",
     },
     instruction: {
       available: true,
@@ -1246,6 +1252,8 @@ export const targetWorkerProfiles: readonly HarnessProfile[] =
     .filter((profile) => profile.harness !== "copilot-cli")
     .map((profile) => {
       const { codexContinuation: _continuation, ...workerProfile } = profile;
+      const { allowEvidence: _allowEvidence, ...workerSettings } =
+        profile.settings;
       const evidence = "docs/discovery/writing-worker-smoke-2026-09-14.md";
       const unavailable = {
         available: false,
@@ -1294,7 +1302,8 @@ export const targetWorkerProfiles: readonly HarnessProfile[] =
           format: profile.skills.format,
         },
         settings: {
-          ...profile.settings,
+          ...workerSettings,
+          allow: false,
           evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W3" : "X-W3"}`,
         },
         instruction: {
