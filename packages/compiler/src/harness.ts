@@ -258,7 +258,10 @@ export interface HarnessProfile {
   readonly settings: HarnessObservation & {
     readonly path: string;
     readonly deny: boolean;
+    /** Whether the settings file carries the publish helpers' allow rules. */
     readonly allow: boolean;
+    /** Where the host's contract for those rules was read. */
+    readonly allowEvidence?: string;
   };
   readonly instruction: HarnessObservation & { readonly path: string };
   readonly refusal: "claude-command-json-v1" | "unavailable";
@@ -644,8 +647,11 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
     "project-only profile surfaces",
   );
   ensure(
-    !profile.settings.allow,
-    "allow entries have no observed local contract",
+    !profile.settings.allow ||
+      (["claude-code", "copilot-cli"].includes(profile.harness) &&
+        profile.kind !== "target-worker-v1" &&
+        verificationLine(profile.settings.allowEvidence ?? "")),
+    "allow entries need a host contract read at allowEvidence, and only the contributor profiles that share Claude's settings file carry them",
   );
   if (profile.codexContinuation)
     ensure(
@@ -1309,7 +1315,12 @@ process.stdout.write(JSON.stringify(response)); }`;
       ...(feedback.units.some((unit) => unit.trigger === "attribution")
         ? { attribution: { commit: "", pr: "", sessionUrl: false } }
         : {}),
-      permissions: { deny: [...new Set(deny)].sort() },
+      permissions: {
+        ...(profile.settings.allow
+          ? { allow: [...PUBLISH_HELPER_ALLOW_RULES] }
+          : {}),
+        deny: [...new Set(deny)].sort(),
+      },
       hooks: Object.fromEntries(
         [...hookPaths].map(([event, paths]) => [
           event,
@@ -1445,6 +1456,17 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
   );
 }
 
+/** The launchpad's own publish helpers by their node spelling. Claude Code's
+ * auto-mode page says a narrow Bash allow rule is resolved before its classifier
+ * and a wildcarded interpreter is suspended; that a rule naming one script after
+ * node counts as narrow is an inference, never probed live. No rule names
+ * `git push` or `gh`, because one for either would admit every push or gh call
+ * unjudged. Copilot's shared settings file carries the same bytes. */
+export const PUBLISH_HELPER_ALLOW_RULES = [
+  "Bash(node scripts/launchpad.mjs update --publish *)",
+  "Bash(node scripts/refute-plan.mjs publish *)",
+] as const;
+
 /** Each enforced class owns one row, so the count and provenance follow it. */
 export const HARNESS_REFUSALS = [
   {
@@ -1496,6 +1518,12 @@ export const HARNESS_REFUSALS = [
     id: "worker-gate",
     source: "WO-250",
     clause: "refuses a review worker's test-runner gate",
+  },
+  {
+    id: "gh-repository",
+    source: "WO-246",
+    clause:
+      "refuses a gh pr or gh issue command naming no repository in a clone whose origin and upstream differ and whose gh default is unset",
   },
 ] as const;
 const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task with the operator's messages since its dispatch and permits one continuation after premature stopping; it never dispatches a role, and it moves only this session's own reservation: a turn that stops releases it and the next prompt of an outstanding dispatch reserves it again.`;

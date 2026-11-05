@@ -28,7 +28,7 @@ Scope describes ownership: core rows describe core's release surfaces; instance 
 
 Not electable:
 
-- The refusal classes in the generated harness contract (8 in the installed contract).
+- The refusal classes in the generated harness contract (9 in the installed contract).
 - The single-writer reservation.
 - The clean-room floor.
 

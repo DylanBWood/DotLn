@@ -90,6 +90,7 @@ import {
 import { checkLocalTerms } from "./lib/terms.mjs";
 import { fold, parseControlEvents } from "./lib/control.mjs";
 import { runGit } from "./lib/git.mjs";
+import { installLaunchpadForge } from "./test-target-publication-fixture.mjs";
 import { isCorrection } from "./lib/meta.mjs";
 import { main as plan } from "./refute-plan.mjs";
 import {
@@ -9203,6 +9204,294 @@ test("WO-238 the read census counts each document's sessions over the last N rel
         (row) => row.path !== tagged && row.since === started.document,
       ),
     );
+  } finally {
+    rmSync(parent, { recursive: true, force: true });
+  }
+});
+
+test("WO-246 plan publish lints, pushes to origin's repository only and opens the pull request there, adopts it after a failed create and refuses before any push", () => {
+  const parent = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-plan-publish-")),
+  );
+  try {
+    const url = "https://github.invalid/dotln-fixture/launchpad.git";
+    const selector = "github.invalid/dotln-fixture/launchpad";
+    // An ambient target must reach neither the push nor gh.
+    const environment = {
+      ...process.env,
+      GH_REPO: "wrong/target",
+      GH_HOST: "wrong.example",
+    };
+    const forge = installLaunchpadForge(parent, environment, url);
+    const repo = join(parent, "launchpad");
+    mkdirSync(repo);
+    const git = (...args) => runGit(repo, args, { env: environment });
+    git("init", "-q", "-b", "main");
+    excludeFixtureOwnership(repo);
+    for (const [key, value] of [
+      ["user.name", "Plan Fixture"],
+      ["user.email", "fixture@example.invalid"],
+      ["maintenance.auto", "false"],
+    ])
+      git("config", key, value);
+    write(repo, ".gitignore", "docs/control/local/\n");
+    git("add", ".");
+    git("commit", "-qm", "fixture");
+    git("remote", "add", "origin", url);
+    git("push", "-q", "origin", "main");
+    write(
+      repo,
+      "docs/control/local/terms.txt",
+      "refuse: zephyrcanary\nquietcanary\n",
+    );
+    const branch = "planning/2030-01-02-fixture";
+    git("switch", "-q", "-c", branch);
+    write(repo, "docs/planning/passes/fixture-2030-01-02.md", "# Fixture\n");
+    git("add", ".");
+    git("commit", "-qm", "plan the fixture");
+    const head = git("rev-parse", "HEAD");
+    const pushesAtStart = forge.pushes().length;
+    const title = ":memo: Plan the fixture pass";
+    // The launchpad's words and identifiers are what its own body is about.
+    const ownBody = "## The pass\n\nDotLn's launchpad files WO-901.\n";
+    const bodyFile = join(parent, "body.md");
+    writeFileSync(bodyFile, ownBody);
+    const publish = (publishTitle = title, file = bodyFile) =>
+      childProcess.spawnSync(
+        process.execPath,
+        [
+          join(root, "scripts/refute-plan.mjs"),
+          "publish",
+          "--title",
+          publishTitle,
+          "--body-file",
+          file,
+        ],
+        {
+          cwd: repo,
+          encoding: "utf8",
+          env: { ...environment, DOTLN_LAUNCHPAD: repo },
+        },
+      );
+    const refusedBeforeAnyPush = (pattern, publishTitle, file) => {
+      const result = publish(publishTitle, file);
+      assert.notEqual(result.status, 0, result.stdout);
+      assert.match(result.stderr, pattern);
+      assert.equal(forge.pushes().length, pushesAtStart);
+      assert.deepEqual(forge.calls(), []);
+      return result;
+    };
+    const withBody = (text) => {
+      const path = join(parent, "other-body.md");
+      writeFileSync(path, text);
+      return path;
+    };
+
+    // Off the branch the door is for.
+    git("switch", "-q", "main");
+    refusedBeforeAnyPush(/plan publish refused: main is not published here/u);
+    for (const other of ["feature/other", "chore/starter-update"]) {
+      git("switch", "-q", "-c", other);
+      refusedBeforeAnyPush(/is not a planning\/<date>-<slug> branch/u);
+    }
+    git("switch", "-q", "-c", "planning/2030-01-03-no-document", "main");
+    refusedBeforeAnyPush(
+      /the planning document docs\/planning\/passes\/no-document-2030-01-03\.md is not committed/u,
+    );
+    git("switch", "-q", branch);
+    // Work the pull request would not carry.
+    write(repo, "docs/planning/passes/uncommitted.md", "# Later\n");
+    refusedBeforeAnyPush(/uncommitted changes/u);
+    rmSync(join(repo, "docs/planning/passes/uncommitted.md"));
+    // The title and the body, each named without the private term.
+    refusedBeforeAnyPush(
+      /outward lint: pr-title: subject\.shape \(line 1\)/u,
+      "Plan the pass",
+    );
+    const refusedTerm = refusedBeforeAnyPush(
+      /outward lint: pr-body: vocabulary\.local: refuse \(line 3\)/u,
+      title,
+      withBody("## The pass\n\nThe zephyrcanary system.\n"),
+    );
+    assert.doesNotMatch(refusedTerm.stderr, /zephyrcanary/u);
+    const reviewTerm = refusedBeforeAnyPush(
+      /outward lint: pr-body: vocabulary\.local: review \(line 3\)/u,
+      title,
+      withBody("## The pass\n\nThe quietcanary system.\n"),
+    );
+    assert.doesNotMatch(reviewTerm.stderr, /quietcanary/u);
+    refusedBeforeAnyPush(
+      /outward lint: pr-body: identifier\.runtime \(line 3\)/u,
+      title,
+      withBody("## The pass\n\nSee evt_123.\n"),
+    );
+    // A gitmoji and a subject pass the title's lint in either form, so the
+    // title's own attribution check is what refuses these.
+    for (const attributed of [
+      "🤖 Generated with Claude Code",
+      ":robot: Generated with Claude Code",
+      ":memo: Co-authored-by: Claude <noreply@anthropic.com>",
+    ])
+      refusedBeforeAnyPush(/AI attribution/u, attributed);
+    for (const footer of [
+      "Co-authored-by: Claude <noreply@anthropic.com>",
+      ":robot: Generated with [Claude Code](https://example.invalid)",
+    ])
+      refusedBeforeAnyPush(
+        /AI attribution/u,
+        title,
+        withBody(`## The pass\n\nThe pass.\n\n${footer}\n`),
+      );
+    refusedBeforeAnyPush(
+      /soft wrap/u,
+      title,
+      withBody("## The pass\n\nOne sentence\nwrapped by hand.\n"),
+    );
+    refusedBeforeAnyPush(
+      /is not a regular file/u,
+      title,
+      join(parent, "absent.md"),
+    );
+    // An absent list refuses with its remedy; an empty one refuses nothing.
+    const terms = join(repo, "docs/control/local/terms.txt");
+    renameSync(terms, `${terms}.aside`);
+    refusedBeforeAnyPush(/the local-terms list is absent; register it/u);
+    renameSync(`${terms}.aside`, terms);
+    // The repository preflight: origin's push URL and gh, before any push.
+    git("remote", "set-url", "origin", join(parent, "origin.git"));
+    refusedBeforeAnyPush(/not a GitHub repository/u);
+    git("remote", "set-url", "origin", url);
+    forge.script({ noGh: true });
+    refusedBeforeAnyPush(/gh is required before any remote mutation/u);
+    forge.script({});
+    assert.equal(
+      childProcess
+        .spawnSync(
+          process.execPath,
+          [join(root, "scripts/refute-plan.mjs"), "publish", "--title", title],
+          {
+            cwd: repo,
+            encoding: "utf8",
+            env: { ...environment, DOTLN_LAUNCHPAD: repo },
+          },
+        )
+        .stderr.trim(),
+      "usage: plan publish --title <title> --body-file <path>",
+    );
+
+    // Lint and repository pass: one push, one pull request on origin's
+    // repository, ready rather than draft, with this body's bytes. The kit
+    // carries no vocabulary file, and this fixture has none.
+    assert.equal(
+      existsSync(join(repo, "docs/control/outward-vocabulary.json")),
+      false,
+    );
+    const opened = publish();
+    assert.equal(opened.status, 0, opened.stderr);
+    const pullRequest = `https://${selector}/pull/7`;
+    assert.equal(opened.stdout.trim().split("\n").at(-1), pullRequest);
+    assert.equal(forge.pushes().length, pushesAtStart + 1);
+    assert.equal(
+      runGit(forge.bare, ["rev-parse", `refs/heads/${branch}`]),
+      head,
+    );
+    const [create] = forge.calls();
+    const bodyPath = create.at(-1);
+    assert.deepEqual(create, [
+      "pr",
+      "create",
+      "--repo",
+      selector,
+      "--head",
+      branch,
+      "--base",
+      "main",
+      "--title",
+      title,
+      "--body-file",
+      bodyPath,
+    ]);
+    assert.equal(readFileSync(forge.body, "utf8"), ownBody);
+    // The push leaves the checkout's refs and upstream configuration alone.
+    assert.equal(git("rev-parse", "HEAD"), head);
+    assert.equal(git("status", "--porcelain"), "");
+    assert.equal(
+      runGit(repo, ["config", "--get-all", `branch.${branch}.remote`], {
+        env: environment,
+        onFailure: () => "",
+      }),
+      "",
+    );
+    assert.equal(git("for-each-ref", `refs/remotes/origin/${branch}`), "");
+
+    // A retry after a failed create repeats no push and adopts the pull
+    // request whose head, branch and base match.
+    const open = {
+      url: pullRequest,
+      state: "OPEN",
+      headRefOid: head,
+      headRefName: branch,
+      baseRefName: "main",
+    };
+    forge.script({ createFails: true, view: open });
+    const adopted = publish();
+    assert.equal(adopted.status, 0, adopted.stderr);
+    assert.equal(adopted.stdout.trim().split("\n").at(-1), pullRequest);
+    assert.match(adopted.stdout, /keeps its title and body/u);
+    assert.equal(forge.pushes().length, pushesAtStart + 1);
+    assert.deepEqual(forge.calls().at(-1).slice(0, 5), [
+      "pr",
+      "view",
+      branch,
+      "--repo",
+      selector,
+    ]);
+    // A pull request that is not this publication adopts nothing, and the
+    // refusal names the retry.
+    for (const view of [
+      undefined,
+      { ...open, state: "MERGED" },
+      { ...open, headRefOid: "0".repeat(40) },
+      { ...open, headRefName: "planning/other" },
+      { ...open, baseRefName: "develop" },
+      { ...open, url: "https://github.invalid/dotln-fixture/other/pull/7" },
+    ]) {
+      forge.script({ createFails: true, ...(view ? { view } : {}) });
+      const refused = publish();
+      assert.notEqual(refused.status, 0, JSON.stringify(view));
+      assert.match(
+        refused.stderr,
+        /is pushed at [0-9a-f]{40} but no pull request was opened or found on github\.invalid\/dotln-fixture\/launchpad \(gh: a pull request already exists\); inspect the repository, then rerun the same command, which repeats no push/u,
+      );
+      assert.equal(forge.pushes().length, pushesAtStart + 1);
+    }
+    // A later commit is pushed, and the open pull request is still this one.
+    write(repo, "docs/planning/passes/fixture-2030-01-02.md", "# Fixture 2\n");
+    git("add", ".");
+    git("commit", "-qm", "revise the plan");
+    const revised = git("rev-parse", "HEAD");
+    forge.script({ createFails: true, view: { ...open, headRefOid: revised } });
+    const updated = publish();
+    assert.equal(updated.status, 0, updated.stderr);
+    assert.equal(forge.pushes().length, pushesAtStart + 2);
+    assert.equal(
+      runGit(forge.bare, ["rev-parse", `refs/heads/${branch}`]),
+      revised,
+    );
+    // A vocabulary this instance declares is the one read.
+    write(
+      repo,
+      "docs/control/outward-vocabulary.json",
+      JSON.stringify({ types: ["fix"], reviewTerms: [] }),
+    );
+    git("add", ".");
+    git("commit", "-qm", "declare the vocabulary");
+    forge.script({});
+    const pushesBeforeType = forge.pushes().length;
+    const unknownType = publish("docs: plan the pass");
+    assert.notEqual(unknownType.status, 0);
+    assert.match(unknownType.stderr, /pr-title: subject\.type \(line 1\)/u);
+    assert.equal(forge.pushes().length, pushesBeforeType);
   } finally {
     rmSync(parent, { recursive: true, force: true });
   }

@@ -2,7 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   chmodSync,
+  cpSync,
   lstatSync,
+  mkdirSync,
   readdirSync,
   readFileSync,
   rmSync,
@@ -79,7 +81,12 @@ import {
 } from "./lib/target-worktree-fixture.mjs";
 import { forgetTargetWorktree } from "./lib/target-worktrees.mjs";
 import { orderWorktreeGrants } from "./lib/order-worktree-grants.mjs";
-import { remoteBranchCommit } from "./lib/github-repository.mjs";
+import {
+  fetchIntoCheckout,
+  fetchRemoteBranch,
+  remoteBranchCommit,
+  REMOTE_FETCH_TIMEOUT_MS,
+} from "./lib/github-repository.mjs";
 import { originTags } from "./lib/release-tags.mjs";
 import { write } from "./lib/helpers.mjs";
 import {
@@ -1269,6 +1276,201 @@ test("a target order whose branch never left its base has nothing to merge", () 
       }).targetMerged,
       false,
     );
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("a borrowing lane fetches only what the checkout lacks, imports only that and names its bound", () => {
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-lane-borrow-")),
+  );
+  const run = (cwd, ...args) => runGit(cwd, args);
+  const commitIn = (cwd, name) => {
+    writeFileSync(join(cwd, name), `${name}\n`);
+    run(cwd, "add", name);
+    run(
+      cwd,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      name,
+    );
+    return run(cwd, "rev-parse", "HEAD");
+  };
+  try {
+    assert.equal(REMOTE_FETCH_TIMEOUT_MS, 10 * 60 * 1000);
+    const origin = join(base, "origin.git");
+    run(base, "init", "-q", "--bare", "-b", "main", origin);
+    const writer = join(base, "writer");
+    run(base, "clone", "-q", origin, writer);
+    run(writer, "switch", "-q", "-c", "main");
+    for (const name of ["one.txt", "two.txt", "three.txt"])
+      commitIn(writer, name);
+    run(writer, "push", "-q", "origin", "main");
+    const checkout = join(base, "checkout");
+    run(base, "clone", "-q", origin, checkout);
+    const refsBefore = run(checkout, "for-each-ref");
+    const store = join(checkout, ".git/objects");
+    const lane = (inLane) => ({
+      objects: inLane(["count-objects", "-v"]),
+      alternates: readFileSync(
+        join(
+          inLane(["rev-parse", "--absolute-git-dir"]),
+          "objects/info/alternates",
+        ),
+        "utf8",
+      ),
+    });
+
+    // Held whole: the lane downloads nothing, and nothing is imported.
+    let seen;
+    const packsBefore = run(checkout, "count-objects", "-v");
+    const tip = run(writer, "rev-parse", "HEAD");
+    assert.equal(
+      fetchRemoteBranch(checkout, origin, "main", {
+        alternates: true,
+        beforeImport(inLane, commit, { fetched }) {
+          seen = { ...lane(inLane), commit, fetched };
+        },
+      }),
+      tip,
+    );
+    assert.equal(seen.fetched, false);
+    assert.equal(seen.commit, tip);
+    assert.equal(seen.alternates, `${store}\n`);
+    assert.match(seen.objects, /^count: 0$/mu);
+    assert.match(seen.objects, /^in-pack: 0$/mu);
+    assert.equal(run(checkout, "count-objects", "-v"), packsBefore);
+
+    // One commit behind: the lane holds that commit's objects and no others,
+    // the import brings them, and no reference moves in the checkout.
+    const next = commitIn(writer, "four.txt");
+    run(writer, "push", "-q", "origin", "main");
+    const stored = () => {
+      const counted = run(checkout, "count-objects", "-v");
+      return ["count", "in-pack"].reduce(
+        (total, name) =>
+          total +
+          Number(new RegExp(`^${name}: (\\d+)$`, "mu").exec(counted)[1]),
+        0,
+      );
+    };
+    const storedBefore = stored();
+    assert.equal(
+      fetchRemoteBranch(checkout, origin, "main", {
+        alternates: true,
+        timeoutMs: REMOTE_FETCH_TIMEOUT_MS,
+        beforeImport(inLane, _commit, { fetched }) {
+          seen = { ...lane(inLane), fetched };
+        },
+      }),
+      next,
+    );
+    assert.equal(seen.fetched, true);
+    const held = (name) =>
+      Number(new RegExp(`^${name}: (\\d+)$`, "mu").exec(seen.objects)[1]);
+    assert.equal(held("count") + held("in-pack"), 3, seen.objects);
+    // The import stops where the checkout's refs do: a bundle of the whole
+    // history would store all twelve objects again. A thin pack's completed
+    // bases may add a few to the three new ones.
+    const imported = stored() - storedBefore;
+    assert.ok(imported >= 3 && imported <= 6, `imported ${imported} objects`);
+    assert.equal(run(checkout, "for-each-ref"), refsBefore);
+    assert.equal(run(checkout, "rev-parse", `${next}^{commit}`), next);
+    run(checkout, "rev-list", "--objects", "--quiet", next);
+
+    // A checkout's fetch of its own remote borrows and is bounded by default.
+    const bounds = [];
+    for (const options of [{}, { timeoutMs: 1234 }])
+      fetchIntoCheckout(checkout, origin, "main", {
+        ...options,
+        beforeImport(inLane, _commit, { timeoutMs }) {
+          bounds.push(timeoutMs);
+          assert.equal(lane(inLane).alternates, `${store}\n`);
+        },
+      });
+    assert.deepEqual(bounds, [REMOTE_FETCH_TIMEOUT_MS, 1234]);
+
+    // A commit whose objects are not all here is not held: it is fetched and
+    // the checkout comes out whole.
+    const partial = join(base, "partial");
+    run(base, "clone", "-q", origin, partial);
+    const later = commitIn(writer, "five.txt");
+    run(writer, "push", "-q", "origin", "main");
+    const object = `${later.slice(0, 2)}/${later.slice(2)}`;
+    const shard = join(partial, ".git/objects", later.slice(0, 2));
+    mkdirSync(shard, { recursive: true });
+    cpSync(
+      join(writer, ".git/objects", object),
+      join(partial, ".git/objects", object),
+    );
+    assert.equal(run(partial, "cat-file", "-t", later), "commit");
+    fetchRemoteBranch(partial, origin, "main", {
+      alternates: true,
+      beforeImport(_inLane, _commit, { fetched }) {
+        seen = { fetched };
+      },
+    });
+    assert.equal(seen.fetched, true);
+    run(partial, "rev-list", "--objects", "--quiet", later);
+
+    // An absent branch keeps the fetch's own failure.
+    assert.throws(
+      () => fetchRemoteBranch(checkout, origin, "absent", { alternates: true }),
+      /git fetch failed in the host read lane: .*absent/su,
+    );
+    // Without the option a lane borrows nothing and imports the whole branch.
+    const plain = join(base, "plain");
+    run(base, "init", "-q", "-b", "main", plain);
+    assert.equal(
+      fetchRemoteBranch(plain, origin, "main", {
+        beforeImport(inLane, _commit, { fetched }) {
+          seen = {
+            fetched,
+            alternates: existsSync(
+              join(
+                inLane(["rev-parse", "--absolute-git-dir"]),
+                "objects/info/alternates",
+              ),
+            ),
+          };
+        },
+      }),
+      later,
+    );
+    assert.deepEqual(seen, { fetched: true, alternates: false });
+    run(plain, "rev-list", "--objects", "--quiet", later);
+
+    // Past the bound the refusal says so and carries it, and writes nothing.
+    const prior = process.env.GIT_ALLOW_PROTOCOL;
+    process.env.GIT_ALLOW_PROTOCOL = "ext";
+    try {
+      assert.throws(
+        () =>
+          fetchRemoteBranch(checkout, "ext::sleep 30", "main", {
+            alternates: true,
+            timeoutMs: 300,
+          }),
+        (error) => {
+          assert.equal(error.boundMs, 300);
+          assert.match(
+            error.message,
+            /git ls-remote failed in the host read lane: it passed its bound of 0 h 0 min/u,
+          );
+          return true;
+        },
+      );
+    } finally {
+      if (prior === undefined) delete process.env.GIT_ALLOW_PROTOCOL;
+      else process.env.GIT_ALLOW_PROTOCOL = prior;
+    }
+    assert.equal(run(checkout, "for-each-ref"), refsBefore);
   } finally {
     rmSync(base, { recursive: true, force: true });
   }

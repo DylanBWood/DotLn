@@ -4,6 +4,7 @@ import {
   compileFeedbackUnits,
   compileLoadout,
   lowerToHarness,
+  PUBLISH_HELPER_ALLOW_RULES,
   mergeHarnessFragments,
   HARNESS_REFUSALS,
   requireCompiled,
@@ -493,11 +494,52 @@ test("WO-039 one changed unit affects only files naming that unit", () => {
   );
 });
 test("WO-039 profile observations, authority identity and bounded residue refuse unsupported assumptions", () => {
+  // Allow rules need a read host contract, and the flag decides the bytes.
+  const settingsOf = (bundle: ReturnType<typeof lower>) =>
+    JSON.parse(
+      bundle.files.find((file) => file.path === ".claude/settings.json")!
+        .contents,
+    );
   assert.throws(
     () =>
       lower(program, feedback, {
         ...profile,
         settings: { ...profile.settings, allow: true },
+      }),
+    /allow entries/,
+  );
+  assert.deepEqual(
+    settingsOf(
+      lower(program, feedback, {
+        ...profile,
+        settings: {
+          ...profile.settings,
+          allow: true,
+          allowEvidence: "docs/probe.md#read",
+        },
+      }),
+    ).permissions.allow,
+    [...PUBLISH_HELPER_ALLOW_RULES],
+  );
+  assert.equal(settingsOf(lower()).permissions.allow, undefined);
+  // A profile that does not share Claude's settings file carries no rules.
+  assert.throws(
+    () =>
+      lower(program, feedback, {
+        ...profile,
+        profileId: "fixture-codex",
+        harness: "codex-cli",
+        skills: {
+          ...available,
+          format: "agent-skills",
+          root: ".agents/skills",
+        },
+        instruction: { ...available, path: "AGENTS.md" },
+        settings: {
+          ...profile.settings,
+          allow: true,
+          allowEvidence: "docs/probe.md#read",
+        },
       }),
     /allow entries/,
   );

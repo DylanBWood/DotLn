@@ -8,6 +8,7 @@ import {
   HOST_GIT_READ,
   fetchRemoteBranch,
   remoteBranchCommit,
+  REMOTE_READ_TIMEOUT_MS,
 } from "./github-repository.mjs";
 import { parseWorktrees, runGit, spawnGit } from "./git.mjs";
 
@@ -413,7 +414,7 @@ export function routeFacts(root, state, events = [], context = {}) {
 // transport configuration never runs. That lane starts empty, so a commit the
 // clone already holds is named without fetching it. A failed fetch leaves the
 // earlier read, not merged yet, and is returned so the stop can name it.
-const LOOKUP_TIMEOUT_MS = 60000;
+const LOOKUP_TIMEOUT_MS = REMOTE_READ_TIMEOUT_MS;
 // A new tip brings whole history into that empty lane. The drive cannot be
 // cancelled while it waits, so this stays a bounded minutes, not an open wait.
 const HISTORY_TIMEOUT_MS = 300000;

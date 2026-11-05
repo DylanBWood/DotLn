@@ -74,6 +74,7 @@ import {
   outsideWriteEffect,
   fnv1a64,
   OPERATOR_QUESTION_CONTEXT,
+  desktopControlDenyRules,
 } from "../packages/compiler/dist/src/index.js";
 import {
   contributorProgram,
@@ -12343,6 +12344,673 @@ test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals
   } finally {
     removeFixture(root, { recursive: true });
     removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-246 the emitted settings allow the two publish helpers by their node spelling and nothing else, the deny list unchanged", () => {
+  const onDisk = JSON.parse(
+    readFileSync(join(sourceRoot, ".claude/settings.json"), "utf8"),
+  );
+  const emitted = JSON.parse(
+    harnessInstallation().files.find(
+      (file) => file.path === ".claude/settings.json",
+    ).contents,
+  );
+  assert.deepEqual(onDisk.permissions, emitted.permissions);
+  assert.deepEqual(emitted.permissions.allow, [
+    "Bash(node scripts/launchpad.mjs update --publish *)",
+    "Bash(node scripts/refute-plan.mjs publish *)",
+  ]);
+  for (const rule of emitted.permissions.allow)
+    assert.doesNotMatch(rule, /\b(?:git|gh)\b/u, rule);
+  assert.deepEqual(
+    emitted.permissions.deny,
+    [
+      "Bash(npm publish *)",
+      "Bash(scp *)",
+      "Bash(sftp *)",
+      "Bash(ssh *)",
+      ...desktopControlDenyRules,
+    ].sort(),
+  );
+  // Each role that publishes names the spelling the rule admits.
+  const planner = harnessInstallation().files.find((file) =>
+    file.path.endsWith(".claude/skills/dotln-planner/SKILL.md"),
+  ).contents;
+  assert.ok(planner.includes("node scripts/refute-plan.mjs publish"));
+  assert.ok(planner.includes("npm run plan -- publish"));
+});
+
+test("WO-246 a fork's clone refuses a gh pull-request or issue command that names no repository, naming origin, and admits every form that names one", () => {
+  const root = fixture();
+  const elsewhere = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-gh-judgment-")),
+  );
+  try {
+    const remote = (...args) => runGit(root, args, fixtureGitOptions);
+    const origin = "github.com/dotln-fixture/Fork";
+    const parent = "github.com/dotln-fixture/parent";
+    remote("remote", "add", "origin", `https://${origin}.git`);
+    remote(
+      "remote",
+      "add",
+      "upstream",
+      `git@github.com:dotln-fixture/parent.git`,
+    );
+    const judged = (command, extra = {}) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command, ...extra },
+        }),
+      );
+    // gh repo set-default origin fails across two servers, so it is offered only
+    // where both remotes are on one.
+    const refused = (
+      command,
+      extra,
+      names = [origin, parent],
+      oneServer = true,
+    ) => {
+      const result = judged(command, extra).hookSpecificOutput;
+      assert.equal(result?.permissionDecision, "deny", command);
+      assert.match(
+        result.permissionDecisionReason,
+        /^DOTLN_HARNESS_REFUSED: gh /u,
+      );
+      for (const name of names)
+        assert.ok(
+          result.permissionDecisionReason.includes(`-R ${name}`),
+          result.permissionDecisionReason,
+        );
+      if (oneServer)
+        assert.match(
+          result.permissionDecisionReason,
+          /gh repo set-default origin/u,
+        );
+      else assert.doesNotMatch(result.permissionDecisionReason, /set-default/u);
+      assert.match(result.permissionDecisionReason, /operator override:/u);
+    };
+    const admitted = (command, extra) => {
+      const result = judged(command, extra);
+      assert.equal(
+        allowed(result),
+        true,
+        `${command}: ${JSON.stringify(result)}`,
+      );
+      return result;
+    };
+    for (const command of [
+      "gh pr list",
+      "gh pr create --title x",
+      "gh issue list",
+      "gh pr view 1",
+      // However the line spells it: compound, piped, substituted, in a script
+      // handed to a shell, behind a wrapper, by a path.
+      "cd . && gh pr list",
+      "gh issue view 3 | head -5",
+      "true; gh pr checks 1",
+      'echo "$(gh pr list)"',
+      "gh pr view $(gh pr list --json number --jq '.[0].number') -R o/r",
+      "zsh -c 'gh pr list'",
+      "eval 'gh issue list'",
+      "env gh pr list",
+      "nohup gh pr list",
+      "command gh pr list",
+      "/opt/homebrew/bin/gh pr list",
+      "if gh pr list; then true; fi",
+      "for n in 1 2; do gh pr view $n; done",
+      // gh ignores an empty GH_REPO and an empty repository flag, and a URL given
+      // as a flag's value is no selector.
+      "GH_REPO= gh pr list",
+      "gh pr list --repo=",
+      'gh pr list --repo=""',
+      'gh pr list -R ""',
+      "gh pr list --repo ''",
+      "gh pr comment 1 --body https://github.com/dotln-fixture/parent/pull/2",
+    ])
+      refused(command);
+    for (const command of [
+      "gh pr list -R o/r",
+      "gh pr list --repo o/r",
+      "gh pr list -Ro/r",
+      "gh pr list --repo=o/r",
+      "gh pr -R o/r list",
+      "gh issue list -R o/r",
+      "gh pr view 1 --repo o/r",
+      "GH_REPO=o/r gh pr list",
+      "env GH_REPO=o/r gh pr list",
+      "export GH_REPO=o/r; gh pr list",
+      "export GH_REPO=o/r && gh issue list",
+      // A URL selector names its repository by itself.
+      "gh pr view https://github.com/dotln-fixture/Fork/pull/3",
+      "gh issue view https://github.com/dotln-fixture/Fork/issues/4 --json url",
+      // Forms that reach no pull request or issue.
+      "gh repo set-default",
+      "gh repo set-default origin",
+      "gh repo set-default --view",
+      "gh auth status",
+      "gh --version",
+      "gh pr",
+      "gh pr --help",
+      "gh issue list -h",
+      "gh api repos/o/r",
+      // Text that only mentions the command.
+      'echo "gh pr list"',
+      "git log --grep 'gh pr list'",
+      "grep -n 'gh issue list' README.md",
+      "printf '%s' gh pr list",
+      "sighs pr list",
+    ])
+      admitted(command);
+    assert.ok(
+      wo178Rows(root).some((row) => row.ghRepositoryRefused === "gh pr list"),
+    );
+
+    // Every remote spelling gh reads as a repository is one, and the refusal
+    // names it without what the URL carries beside it.
+    for (const [url, selector] of [
+      [
+        "https://github.com/dotln-fixture/fork/",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "https://user@github.com/dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "https://x-access-token:abc@github.com/dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "git://github.com/dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "http://github.com/dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "GIT@github.com:dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "ssh://git@ssh.github.com:443/dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      // A dotted name can be a server of its own, so the remedy names it rather
+      // than sending the session to github.com.
+      [
+        "git@github.com.work:dotln-fixture/fork.git",
+        "github.com.work/dotln-fixture/fork",
+      ],
+      [
+        "git@github.com-work.evil.invalid:dotln-fixture/fork.git",
+        "github.com-work.evil.invalid/dotln-fixture/fork",
+      ],
+      // A name no public DNS can serve is an alias, and gh cannot address one.
+      [
+        "git@github.com_work:dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "https://github.com./dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      [
+        "git@github.com-work:dotln-fixture/fork.git",
+        "github.com/dotln-fixture/fork",
+      ],
+      ["git@github-work:dotln-fixture/fork.git", "dotln-fixture/fork"],
+    ]) {
+      remote("remote", "set-url", "origin", url);
+      const reason = judged("gh pr list").hookSpecificOutput;
+      assert.equal(reason?.permissionDecision, "deny", url);
+      assert.ok(
+        reason.permissionDecisionReason.includes(`-R ${selector} `) ||
+          reason.permissionDecisionReason.includes(`-R ${selector},`),
+        reason.permissionDecisionReason,
+      );
+      assert.doesNotMatch(
+        reason.permissionDecisionReason,
+        /x-access-token|abc@/u,
+      );
+    }
+    // An alias spelled from github.com is github.com, so the parent's own name
+    // there leaves gh nothing to choose.
+    for (const alias of ["github.com-work", "github.com_work"]) {
+      remote(
+        "remote",
+        "set-url",
+        "origin",
+        `git@${alias}:dotln-fixture/parent.git`,
+      );
+      admitted("gh pr list");
+    }
+    // A server or alias the hook cannot place may be GitHub's, so differing
+    // owners and names refuse: gh reached the parent through both of these.
+    for (const other of [
+      "gh.work:dotln-fixture/fork.git",
+      "ghes.example.com:dotln-fixture/fork.git",
+    ]) {
+      remote("remote", "set-url", "origin", `git@${other}`);
+      assert.equal(
+        judged("gh pr list").hookSpecificOutput?.permissionDecision,
+        "deny",
+        other,
+      );
+    }
+    remote("remote", "set-url", "origin", `https://${origin}.git`);
+    remote(
+      "remote",
+      "set-url",
+      "upstream",
+      "git@github.com-work:dotln-fixture/parent.git",
+    );
+    refused("gh pr list");
+    remote(
+      "remote",
+      "set-url",
+      "upstream",
+      "git@github.com:dotln-fixture/parent.git",
+    );
+    remote("remote", "set-url", "origin", `https://${origin}.git`);
+    remote(
+      "remote",
+      "set-url",
+      "upstream",
+      "https://github.com/dotln-fixture/parent/",
+    );
+    refused("gh pr list");
+
+    // A repository is its host as well as its owner and name, so the same owner
+    // and name on two servers are two repositories, and gh reaches upstream. No
+    // remedy may drop the host that tells them apart.
+    const shared = "dotln-fixture/project";
+    const remotes = (originUrl, upstreamUrl) => {
+      remote("remote", "set-url", "origin", originUrl);
+      remote("remote", "set-url", "upstream", upstreamUrl);
+    };
+    const onGitHub = `github.com/${shared}`;
+    remotes(
+      `https://github.enterprise.invalid/${shared}.git`,
+      `https://${onGitHub}.git`,
+    );
+    const onEnterprise = `github.enterprise.invalid/${shared}`;
+    for (const command of [
+      "gh pr list",
+      "gh pr create --title x",
+      "gh issue list",
+      "gh pr view 1",
+    ])
+      refused(command, undefined, [onEnterprise, onGitHub], false);
+    // Each way of saying which one stays admitted on that same pair.
+    for (const command of [
+      `gh pr list -R ${onEnterprise}`,
+      `gh pr view 1 --repo ${onGitHub}`,
+      `GH_REPO=${onEnterprise} gh issue list`,
+      `gh pr view https://${onEnterprise}/pull/3`,
+    ])
+      admitted(command);
+    remote("config", "remote.origin.gh-resolved", "base");
+    admitted("gh pr list");
+    remote("config", "--unset", "remote.origin.gh-resolved");
+    for (const [originUrl, upstreamUrl, originName, upstreamName] of [
+      // The other direction, and two servers neither of which is github.com.
+      [
+        `https://${onGitHub}.git`,
+        `https://ghes-a.invalid/${shared}.git`,
+        onGitHub,
+        `ghes-a.invalid/${shared}`,
+      ],
+      [
+        `https://ghes-a.invalid/${shared}.git`,
+        `https://ghes-b.invalid/${shared}.git`,
+        `ghes-a.invalid/${shared}`,
+        `ghes-b.invalid/${shared}`,
+      ],
+      // Two tenants, whose names under ghe.com differ.
+      [
+        `https://acme.ghe.com/${shared}.git`,
+        `https://other.ghe.com/${shared}.git`,
+        `acme.ghe.com/${shared}`,
+        `other.ghe.com/${shared}`,
+      ],
+      // An HTTPS host is a server, never an SSH alias, however it is spelled.
+      [
+        `https://ghes/${shared}.git`,
+        `https://${onGitHub}.git`,
+        `ghes/${shared}`,
+        onGitHub,
+      ],
+      [
+        `https://github.com-work/${shared}.git`,
+        `https://${onGitHub}.git`,
+        `github.com-work/${shared}`,
+        onGitHub,
+      ],
+      // Names that only resemble github.com.
+      [
+        `https://github.com.evil.invalid/${shared}.git`,
+        `https://${onGitHub}.git`,
+        `github.com.evil.invalid/${shared}`,
+        onGitHub,
+      ],
+      [
+        `https://notgithub.com/${shared}.git`,
+        `https://${onGitHub}.git`,
+        `notgithub.com/${shared}`,
+        onGitHub,
+      ],
+      // Over SSH a name the hook cannot place is its own server.
+      [
+        `git@ghes-a.invalid:${shared}.git`,
+        `git@github.com:${shared}.git`,
+        `ghes-a.invalid/${shared}`,
+        onGitHub,
+      ],
+      [
+        `git@gh.work:${shared}.git`,
+        `git@github.com:${shared}.git`,
+        `gh.work/${shared}`,
+        onGitHub,
+      ],
+      [
+        `git@github.com.work:${shared}.git`,
+        `git@github.com:${shared}.git`,
+        `github.com.work/${shared}`,
+        onGitHub,
+      ],
+      // A further dot makes it a name public DNS can serve, whatever precedes it.
+      [
+        `git@github.com-work.evil.invalid:${shared}.git`,
+        `git@github.com:${shared}.git`,
+        `github.com-work.evil.invalid/${shared}`,
+        onGitHub,
+      ],
+      [
+        `ssh://git@github.com_work.evil.invalid/${shared}.git`,
+        `https://${onGitHub}.git`,
+        `github.com_work.evil.invalid/${shared}`,
+        onGitHub,
+      ],
+      [
+        `git@github-work:${shared}.git`,
+        `git@github.com:${shared}.git`,
+        shared,
+        onGitHub,
+      ],
+    ]) {
+      remotes(originUrl, upstreamUrl);
+      refused("gh pr list", undefined, [originName, upstreamName], false);
+    }
+    // gh cannot address an origin on a public forge and drops one it cannot read
+    // as a repository, so it has only upstream. The remedy is the one that works
+    // there, and nothing a URL carries beside the repository is echoed.
+    for (const [originUrl, upstreamUrl, originName, upstreamName] of [
+      [
+        `https://gitlab.com/${shared}.git`,
+        `https://${onGitHub}.git`,
+        `gitlab.com/${shared}`,
+        onGitHub,
+      ],
+      [
+        "https://bitbucket.org/dotln-fixture/fork.git",
+        "https://github.com/dotln-fixture/parent.git",
+        "bitbucket.org/dotln-fixture/fork",
+        "github.com/dotln-fixture/parent",
+      ],
+      [
+        "https://gitlab.com/group/sub/project.git",
+        `https://${onGitHub}.git`,
+        null,
+        onGitHub,
+      ],
+      [
+        "https://x-access-token:abc@dev.azure.com/org/proj/_git/repo",
+        `git@github.com:${shared}.git`,
+        null,
+        onGitHub,
+      ],
+      [
+        join(elsewhere, "mirror.git"),
+        `https://${onGitHub}.git`,
+        null,
+        onGitHub,
+      ],
+      [
+        "file:///srv/mirror/project.git",
+        `https://${onGitHub}.git`,
+        null,
+        onGitHub,
+      ],
+      [
+        "git@github.com:22/me/fork.git",
+        `https://${onGitHub}.git`,
+        null,
+        onGitHub,
+      ],
+      [
+        "ftp://github.com/dotln-fixture/fork.git",
+        `https://${onGitHub}.git`,
+        null,
+        onGitHub,
+      ],
+    ]) {
+      remotes(originUrl, upstreamUrl);
+      const result = judged("gh pr list").hookSpecificOutput;
+      assert.equal(result?.permissionDecision, "deny", originUrl);
+      const reason = result.permissionDecisionReason;
+      assert.match(reason, /^DOTLN_HARNESS_REFUSED: gh pr list names no /u);
+      assert.ok(
+        reason.includes(
+          originName
+            ? `origin (${originName}) is no repository gh can address`
+            : "origin is no repository gh can address",
+        ),
+        reason,
+      );
+      assert.ok(reason.includes(`name it with -R ${upstreamName}.`), reason);
+      assert.match(reason, /operator override:/u);
+      assert.doesNotMatch(reason, /set-default|x-access-token|abc@/u);
+      admitted(`gh pr list -R ${upstreamName}`);
+    }
+    // Two aliases share a selector, so the reason tells them apart by host and
+    // the remedy does not offer one selector twice.
+    remotes(`git@work:${shared}.git`, `git@home:${shared}.git`);
+    refused("gh pr list", undefined, [shared], false);
+    const aliases =
+      judged("gh pr list").hookSpecificOutput.permissionDecisionReason;
+    assert.ok(
+      aliases.includes(`origin (work/${shared}) and upstream (home/${shared})`),
+      aliases,
+    );
+    assert.doesNotMatch(aliases, /to mean the parent/u);
+    // Selectors that differ only in case name the same repository to gh.
+    remotes(`git@work:Dotln-Fixture/Project.git`, `git@home:${shared}.git`);
+    assert.doesNotMatch(
+      judged("gh pr list").hookSpecificOutput.permissionDecisionReason,
+      /to mean the parent/u,
+    );
+    // gh takes an owner and name alone to its default host, whatever server an
+    // alias is, so the remedy says what to do then; a remote with a host carries
+    // no such note. On the parent's own owner and name that is what stops -R from
+    // reaching the parent while the session means origin.
+    const aliasNote =
+      "(on gh's default host; if this alias is another server, name that server instead)";
+    remotes(`git@ghes-alias:${shared}.git`, `https://${onGitHub}.git`);
+    const aliasOrigin =
+      judged("gh pr list").hookSpecificOutput.permissionDecisionReason;
+    assert.ok(
+      aliasOrigin.includes(
+        `-R ${shared} ${aliasNote}, or -R ${onGitHub} to mean the parent.`,
+      ),
+      aliasOrigin,
+    );
+    remotes(`https://${onGitHub}.git`, `git@ghes-alias:${shared}.git`);
+    const aliasUpstream =
+      judged("gh pr list").hookSpecificOutput.permissionDecisionReason;
+    assert.ok(
+      aliasUpstream.includes(
+        `-R ${onGitHub}, or -R ${shared} ${aliasNote} to mean the parent.`,
+      ),
+      aliasUpstream,
+    );
+    // Spellings that establish one server leave gh nothing to choose.
+    for (const [originUrl, upstreamUrl] of [
+      [`https://www.${onGitHub}.git`, `https://${onGitHub}.git`],
+      [`https://GitHub.COM/${shared}.git`, `https://${onGitHub}.git`],
+      [`https://github.com./${shared}.git`, `https://${onGitHub}.git`],
+      [`https://work.${onGitHub}.git`, `https://${onGitHub}.git`],
+      [`ssh://git@ssh.github.com:443/${shared}.git`, `https://${onGitHub}.git`],
+      [`git@github.com:${shared}.git`, `https://${onGitHub}.git`],
+      [`git@github.com-work:${shared}.git`, `git@github.com:${shared}.git`],
+      [
+        `git@ghes-a.invalid:${shared}.git`,
+        `https://GHES-A.invalid/${shared}.git`,
+      ],
+      [
+        `https://www.ghes-a.invalid/${shared}.git`,
+        `https://ghes-a.invalid/${shared}.git`,
+      ],
+      [
+        `https://ghes-a.invalid:8443/${shared}.git`,
+        `https://ghes-a.invalid/${shared}.git`,
+      ],
+      [
+        `https://ssh.acme.ghe.com/${shared}.git`,
+        `https://acme.ghe.com/${shared}.git`,
+      ],
+      // One alias on both sides is one server, whatever it resolves to.
+      [`git@work:${shared}.git`, `ssh://git@work/${shared}.git`],
+    ]) {
+      remotes(originUrl, upstreamUrl);
+      admitted("gh pr list");
+    }
+    // gh cannot address an upstream on a public forge, and drops one it cannot
+    // read as a repository, which leaves it origin or nothing, whatever the
+    // owner and name.
+    for (const [originUrl, upstreamUrl] of [
+      [`https://${onGitHub}.git`, `https://gitlab.com/${shared}.git`],
+      [
+        `https://ghes-a.invalid/${shared}.git`,
+        "https://bitbucket.org/dotln-fixture/parent.git",
+      ],
+      [
+        "https://gitlab.com/dotln-fixture/fork.git",
+        "https://codeberg.org/dotln-fixture/parent.git",
+      ],
+      [join(elsewhere, "mirror.git"), `https://gitlab.com/${shared}.git`],
+      [`https://${onGitHub}.git`, "https://gitlab.com/group/sub/project.git"],
+      [join(elsewhere, "mirror.git"), join(elsewhere, "parent.git")],
+    ]) {
+      remotes(originUrl, upstreamUrl);
+      admitted("gh pr list");
+    }
+    remotes(`https://${origin}.git`, "git@github.com:dotln-fixture/parent.git");
+
+    // The default, as gh repo set-default stores it and --view reports it.
+    for (const [key, value] of [
+      ["remote.origin.gh-resolved", "base"],
+      ["remote.upstream.gh-resolved", "base"],
+      ["remote.origin.gh-resolved", "dotln-fixture/parent"],
+    ]) {
+      remote("config", key, value);
+      admitted("gh pr list");
+      remote("config", "--unset", key);
+    }
+    refused("gh pr list");
+
+    // A literal cd moves the clone that is judged; any other leaves it unknown.
+    const single = join(elsewhere, "single");
+    mkdirSync(single);
+    runGit(single, ["init", "-q"], fixtureGitOptions);
+    runGit(
+      single,
+      [
+        "remote",
+        "add",
+        "origin",
+        "https://github.com/dotln-fixture/single.git",
+      ],
+      fixtureGitOptions,
+    );
+    admitted(`cd ${single} && gh pr list`);
+    admitted("gh pr list", { workdir: single });
+    admitted('cd "$HOME" && gh pr list');
+    refused(`cd ${single} && cd ${root} && gh pr list`);
+    // A persisted cd moves the session's directory, and the clone it moved to
+    // is still the one judged, with its own repositories named.
+    const moved = (cwd, command) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          cwd,
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+    const nested = join(root, "docs/gh-nested");
+    mkdirSync(nested, { recursive: true });
+    assert.equal(
+      moved(nested, "gh pr list").hookSpecificOutput?.permissionDecision,
+      "deny",
+    );
+    const otherFork = join(elsewhere, "other-fork");
+    mkdirSync(otherFork);
+    runGit(otherFork, ["init", "-q"], fixtureGitOptions);
+    for (const [name, repository] of [
+      ["origin", "other-fork"],
+      ["upstream", "other-parent"],
+    ])
+      runGit(
+        otherFork,
+        [
+          "remote",
+          "add",
+          name,
+          `https://github.com/dotln-fixture/${repository}.git`,
+        ],
+        fixtureGitOptions,
+      );
+    const movedAway = moved(otherFork, "gh issue list").hookSpecificOutput;
+    assert.equal(movedAway?.permissionDecision, "deny");
+    assert.ok(
+      movedAway.permissionDecisionReason.includes(
+        "-R github.com/dotln-fixture/other-fork",
+      ),
+    );
+    assert.equal(allowed(moved(single, "gh pr list")), true);
+    // A clone that cannot be read is admitted with one advisory.
+    const unreadable = admitted("gh pr list", {
+      workdir: join(elsewhere, "absent"),
+    });
+    assert.match(
+      unreadable.systemMessage ?? "",
+      /the gh repository judgment could not read the clone's remotes/u,
+    );
+
+    // Two remotes naming one repository, an upstream gh cannot read as one, and
+    // one remote, whichever it is, all leave gh nothing to choose.
+    remote(
+      "remote",
+      "set-url",
+      "upstream",
+      `https://${origin.toLowerCase()}.git`,
+    );
+    admitted("gh pr list");
+    remote("remote", "set-url", "upstream", join(elsewhere, "parent.git"));
+    admitted("gh pr list");
+    remote("remote", "remove", "upstream");
+    admitted("gh pr list");
+    remote("remote", "rename", "origin", "upstream");
+    admitted("gh pr list");
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+    removeFixture(elsewhere, { recursive: true, force: true });
   }
 });
 

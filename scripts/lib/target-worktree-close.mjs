@@ -26,7 +26,7 @@ import {
   isFinderMetadata,
 } from "./finder-metadata.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
-import { HOST_GIT_READ, fetchRemoteBranch } from "./github-repository.mjs";
+import { HOST_GIT_READ, fetchIntoCheckout } from "./github-repository.mjs";
 import {
   addRemovalChild,
   closeBlocker,
@@ -999,7 +999,7 @@ export const closeTargetWorktree = async (
       if (urls.length !== 1 || !urls[0])
         throw new Error("origin must have one fetch URL");
       fetched = timeRemovalChild(record, "base-fetch", () =>
-        fetchRemoteBranch(entry.clone, urls[0], entry.baseBranch),
+        fetchIntoCheckout(entry.clone, urls[0], entry.baseBranch),
       );
     } catch (error) {
       // A local-path origin is named by role too; it may share the clone's
@@ -1017,7 +1017,7 @@ export const closeTargetWorktree = async (
             [isAbsolute(origin) ? origin : "", "<target origin>"],
             [entry.clone, "<target clone>"],
           ],
-        )}; source retained. Fix the fetch, then rerun ${rerun()}`,
+        )}; source retained. ${error.boundMs ? `Run git fetch origin ${entry.baseBranch} in the target clone, whose commit this close then finds held` : "Fix the fetch"}, then rerun ${rerun()}`,
       );
     }
     let baseMetadata = [];

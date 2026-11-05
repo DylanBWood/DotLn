@@ -33,12 +33,13 @@ const runGit = (root, args, options) =>
 const runGitPathList = (root, args, options) =>
   ordinaryRunGitPathList(root, ["--no-replace-objects", ...args], options);
 import {
-  fetchRemoteBranch,
+  fetchIntoCheckout,
   parseGitHubTarget,
 } from "./lib/github-repository.mjs";
+import { formatDuration } from "./lib/duration.mjs";
 import { bootstrapWorktree } from "./bootstrap.mjs";
 import { moveIndex, referencePath } from "./lib/document-moves.mjs";
-import { json, sha256Hex } from "./lib/helpers.mjs";
+import { json, pairedFlags, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   hasPackageSources,
@@ -2126,10 +2127,80 @@ export async function previewFromRevision(root, ref) {
   };
 }
 
+/** The kit commit a revision's provenance names: UPSTREAM.md's Commit line and
+ * the manifest's, which an update moves together. */
+const kitProvenance = (root, revision) => {
+  const show = (path) =>
+    runGit(root, ["show", `${revision}:${path}`], {
+      trim: false,
+      onFailure: () => null,
+    });
+  const named = /^- \*\*Commit:\*\* `([0-9a-f]{40,64})`$/mu.exec(
+    show(UPSTREAM) ?? "",
+  )?.[1];
+  let manifest = null;
+  try {
+    manifest = JSON.parse(show(KIT_MANIFEST) ?? "null")?.commit;
+  } catch {
+    /* A malformed manifest names no commit. */
+  }
+  return { named: named ?? null, manifest: manifest ?? null };
+};
+
+/** Publish an instance's update branch once it holds the update whole: the
+ * merge of the previewed revision, the re-emit and the lineage index, each
+ * committed. The helper refuses a dirty tree before this proof runs. */
+async function publishUpdate(root, { title, bodyFile }) {
+  const { publishLaunchpadBranch } =
+    await import("./lib/launchpad-publish.mjs");
+  return publishLaunchpadBranch(root, {
+    kind: "update",
+    title,
+    bodyFile,
+    ready(branch, fail) {
+      const head = kitProvenance(root, "HEAD");
+      if (!head.named || head.named !== head.manifest)
+        throw fail(
+          `${branch} carries no update: ${UPSTREAM} names ${head.named ?? "no commit"} and ${KIT_MANIFEST} names ${head.manifest ?? "no commit"}; merge the previewed revision and commit it`,
+        );
+      // Judged where the branch left main as well as at main's tip: a branch
+      // behind main names an older kit commit, which differs from the tip with
+      // no update on it, and one main already holds has nothing left to bring.
+      const left = runGit(root, ["merge-base", "main", "HEAD"], {
+        onFailure: () => null,
+      });
+      if (!left) throw fail(`${branch} has no merge base with a local main`);
+      if (kitProvenance(root, left).named === head.named)
+        throw fail(
+          `${branch} carries no update: ${UPSTREAM} names ${head.named}, the commit it named where the branch left main; merge the previewed revision and commit it`,
+        );
+      if (kitProvenance(root, "main").named === head.named)
+        throw fail(
+          `${branch} carries no update: main already names ${head.named}`,
+        );
+      for (const [what, script, ...args] of [
+        ["the re-emit", "scripts/harness.mjs", "check"],
+        ["the lineage index", "scripts/lineage.mjs", "index", "--check"],
+      ]) {
+        const checked = spawnSync(
+          process.execPath,
+          [join(root, script), ...args],
+          { cwd: root, encoding: "utf8" },
+        );
+        if (checked.status !== 0)
+          throw fail(
+            `${what} is not committed on ${branch}: ${(checked.stderr || checked.stdout).trim()}`,
+          );
+      }
+    },
+  });
+}
+
 /** Finish an operator-merged update without changing a refused checkout. */
 export function finishUpdate(
   root,
   write = (text) => process.stdout.write(text),
+  { fetchTimeoutMs } = {},
 ) {
   root = realpathSync(root);
   const read = (args) => runGit(root, ["--no-optional-locks", ...args]);
@@ -2158,8 +2229,26 @@ export function finishUpdate(
     ? origins[0]
     : resolve(root, origins[0]);
   const before = read(["rev-parse", "HEAD"]);
-  const commit = fetchRemoteBranch(root, origin, "main", {
-    beforeImport(inLane) {
+  let downloaded = true;
+  const fetchMain = (options) => {
+    try {
+      return fetchIntoCheckout(root, origin, "main", options);
+    } catch (error) {
+      if (!error.boundMs) throw error;
+      throw new Error(
+        [
+          `update --finish refused: reading origin main passed its bound of ${formatDuration(error.boundMs)} (--fetch-timeout ${Math.ceil(error.boundMs / 1000)}); checkout preserved. Raise the bound or finish by hand:`,
+          "  git fetch origin main",
+          "  git merge --ff-only origin/main",
+          "  node scripts/bootstrap.mjs",
+        ].join("\n"),
+      );
+    }
+  };
+  const commit = fetchMain({
+    ...(fetchTimeoutMs ? { timeoutMs: fetchTimeoutMs } : {}),
+    beforeImport(inLane, _commit, { fetched }) {
+      downloaded = fetched;
       inLane(["fetch", "--quiet", "--no-tags", root, "HEAD:refs/heads/local"]);
       // rev-list returns a count, so a divergence is an ordinary named
       // refusal, not an opaque failing merge command.
@@ -2182,7 +2271,11 @@ export function finishUpdate(
         );
     },
   });
-  write("Fetched origin main; fast-forward checked before checkout writes.\n");
+  write(
+    downloaded
+      ? "Fetched origin main; fast-forward checked before checkout writes.\n"
+      : "The checkout already holds origin main, so nothing was fetched; fast-forward checked before checkout writes.\n",
+  );
   runGit(root, ["update-ref", "refs/remotes/origin/main", commit]);
   runGit(root, ["merge", "--ff-only", "origin/main"]);
   write("Fast-forwarded main to origin/main.\n");
@@ -2256,15 +2349,29 @@ if (isMainModule(import.meta.url)) {
     const updating = args[0] === "--update";
     const [destination, ...rest] = updating ? args.slice(1) : args;
     const usage =
-      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad update --finish [<dir>] | launchpad preview --from <ref> | launchpad verify [<dir>]";
-    if (action === "update") {
+      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad update --finish [<dir>] [--fetch-timeout <seconds>] | launchpad update --publish --title <title> --body-file <path> | launchpad preview --from <ref> | launchpad verify [<dir>]";
+    if (action === "update" && args[0] === "--publish") {
+      const values = pairedFlags(args.slice(1), ["--title", "--body-file"]);
+      if (!values) throw new Error(usage);
+      const { url } = await publishUpdate(findLaunchpad(), {
+        title: values["--title"],
+        bodyFile: values["--body-file"],
+      });
+      console.log(url);
+    } else if (action === "update") {
+      const rest = args.slice(1);
+      const bound = rest.indexOf("--fetch-timeout");
+      const seconds = bound < 0 ? null : rest.splice(bound, 2)[1];
       if (
         args[0] !== "--finish" ||
-        args.length > 2 ||
-        args[1]?.startsWith("--")
+        rest.length > 1 ||
+        rest[0]?.startsWith("--") ||
+        (bound >= 0 && !/^[1-9][0-9]*$/u.test(seconds ?? ""))
       )
         throw new Error(usage);
-      finishUpdate(args[1] ?? process.cwd());
+      finishUpdate(rest[0] ?? process.cwd(), undefined, {
+        ...(seconds ? { fetchTimeoutMs: Number(seconds) * 1000 } : {}),
+      });
     } else if (action === "preview") {
       if (args.length !== 2 || args[0] !== "--from") throw new Error(usage);
       console.log(

@@ -6,6 +6,20 @@ export const outwardArtifactKinds = Object.freeze([
   "release-body",
 ]);
 export const subjectLengthLimit = 72;
+// The conventional commit types, for a repository with no vocabulary file.
+export const conventionalTypes = Object.freeze([
+  "build",
+  "chore",
+  "ci",
+  "docs",
+  "feat",
+  "fix",
+  "perf",
+  "refactor",
+  "revert",
+  "style",
+  "test",
+]);
 // One finding as a refusal or review line names it: the subject's measured
 // length, the launchpad identifier as written, the listed review word, or the
 // private term's mode (never the term).
@@ -690,19 +704,26 @@ export function lintOutwardArtifact({
 
   if (kind === "commit" || kind === "pr-title") {
     // One leading gitmoji, in its Unicode form or its `:shortcode:` form as
-    // core's own titles spell it, precedes the conventional type.
+    // core's own titles spell it, precedes the conventional type. A
+    // pull-request title may stop at the gitmoji and a subject, the form
+    // core's own titles take; a commit always keeps its type.
     const emoji =
       /^(?:\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?)*|:[a-z0-9_+-]+:) /u.exec(
         subject,
       )?.[0] ?? "";
-    const match =
-      /^([a-z]+)(?:\(([a-z0-9][a-z0-9._/-]*)\))?(!)?: (\S(?:.*\S)?)$/u.exec(
-        subject.slice(emoji.length),
-      );
-    if (!match) add("subject.shape", 0, subject.length);
-    else if (!types.includes(match[1]))
-      add("subject.type", emoji.length, emoji.length + match[1].length);
-    if ([...subject].length > subjectLengthLimit)
+    const rest = subject.slice(emoji.length);
+    if (!(kind === "pr-title" && emoji && /^\S(?:.*\S)?$/u.test(rest))) {
+      const match =
+        /^([a-z]+)(?:\(([a-z0-9][a-z0-9._/-]*)\))?(!)?: (\S(?:.*\S)?)$/u.exec(
+          rest,
+        );
+      if (!match) add("subject.shape", 0, subject.length);
+      else if (!types.includes(match[1]))
+        add("subject.type", emoji.length, emoji.length + match[1].length);
+    }
+    // The limit is a commit subject's. A title is sized by its content, so
+    // the titles core merges, well past this limit, pass as written.
+    if (kind === "commit" && [...subject].length > subjectLengthLimit)
       add("subject.length", 0, subject.length, { limit: subjectLengthLimit });
     if (kind === "commit" && lines.length > 1 && lines[1] !== "")
       add("commit.blank-line", starts[1], starts[1] + lines[1].length);

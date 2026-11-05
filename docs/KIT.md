@@ -439,6 +439,23 @@ not the message's; the operator strikes a rule by removing its entry.
   the former reports that release surfaces are unavailable. With an order,
   it checks the instance's release declaration and license surfaces as described
   below; a target order records no release. These reads do not publish anything.
+- `node scripts/refute-plan.mjs publish --title <title> --body-file <path>` ends
+  a pass; `npm run plan -- publish` takes the same flags. The emitted
+  `.claude/settings.json` allows that node spelling and `node scripts/launchpad.mjs
+  update --publish`, and nothing else: Claude Code resolves a narrow allow rule
+  before its auto-mode classifier, unless `autoMode.classifyAllShell` is set. No
+  rule admits raw `git push` or `gh`, and `npm run` has none. On a `planning/<date>-<slug>` branch with a clean tree and its planning
+  document committed, it lints the title and body, pushes the branch to
+  `origin`, opens the pull request against `main` on the repository `origin`'s
+  push URL names, ready rather than draft, and prints its URL. A title is a
+  gitmoji and a subject, with or without a conventional type, or a conventional
+  type alone, and has no length limit. A listed private term refuses in either
+  mode, because this route has no reviewer's confirmation; so does an absent
+  local-terms list, and so does AI attribution. The public review words pass: a
+  launchpad's own pull request is about them. This route needs no
+  `outward-vocabulary.json`. A retry after a failed create repeats no push and
+  adopts the open pull request whose head, branch and base match; that pull
+  request keeps its title and body, which the command does not edit.
 
 Export writes these instance-owned seeds once; ordinary kit updates leave their bytes alone:
 `docs/planning/sequence.md`, `docs/planning/followups.json` (empty schema-1
@@ -769,6 +786,34 @@ to run a kit command for a state the kit can judge.
   record it could not put back is kept, and a retry of a pending target start
   keeps what its earlier attempt made. A start the host refuses before
   anything is made says so and names the grant to request.
+- **A fork's `gh`.** In a clone whose `origin` and `upstream` remotes name
+  different repositories and whose gh default is unset, gh sends a command that
+  names no repository to `upstream` without saying so. The hook refuses such a
+  `gh pr` or `gh issue` command, naming `-R <origin>`, in the clone the command
+  runs in, including after a session's `cd` has moved it. It admits the command
+  with a value for `-R` or `--repo`, with `GH_REPO=` and a value in the command,
+  with a pull request or issue URL as its selector, and once `gh repo set-default`
+  has set a default, which gh stores as `remote.<name>.gh-resolved` and `gh repo
+  set-default --view` reports. `gh repo set-default`, `gh auth` and `gh --version`
+  reach no pull request or issue, and a clone with one remote sees no change. The
+  judgment reads the command as written: a script that calls `gh` is unobserved,
+  and a clone whose remotes cannot be read is admitted with one advisory.
+
+  Two remotes are one repository only when their hosts, owners and names all
+  match, and the hook reads a host only as far as its spelling establishes the
+  server, because it cannot read an SSH configuration or which servers gh is signed
+  in to. So an SSH alias spelled from `github.com`, such as `github.com-work`, is
+  `github.com`, but any other alias, or the same owner and name on another server,
+  is refused until the command names one. On two
+  servers, name one with `-R`: `gh repo set-default origin` fails there, and the
+  refusal does not offer it. An alias with no dot is named by owner and name alone,
+  which gh takes to its default host, so where that alias is another server, name
+  the server in `-R`. An upstream gh cannot reach, on GitLab.com, Bitbucket or
+  Codeberg or in a form it cannot read as a repository, leaves gh with `origin`, so
+  the command is admitted. An origin of either kind, such as a local path or a
+  subgroup, leaves gh only `upstream`, so the refusal stands and names `-R
+  <upstream>` alone. A self-hosted forge cannot be told from a GitHub server, so
+  there too the refusal stands, and `-R <origin>` is the way past it.
 - **A question.** An unprefixed operator message that ends in a question mark
   is journaled with the class `question`, by its form alone. Claude's hook
   adds a note to that turn: the next message answers it, with the evidence,
@@ -999,20 +1044,34 @@ refuses the preview.
 
 The update reaches the instance's `main` through its own update pull request,
 so a later order's pull request carries only that order's commits. From clean
-`main`, the session creates a branch (for example `chore/starter-update`),
-merges the previewed revision into it (a fast-forward when `main` has no
-commits of its own), runs `node
+`main`, the session creates a `chore/<slug>` branch (for example
+`chore/starter-update`), merges the previewed revision into it (a fast-forward
+when `main` has no commits of its own), runs `node
 scripts/harness.mjs emit` and `node scripts/lineage.mjs index`, and commits
 the regenerated bytes on that update branch. This includes a lineage index
-missing from an older export. It pushes the
-branch to `origin` and opens a pull request against `main`, which the operator
+missing from an older export. It publishes the branch with
+`node scripts/launchpad.mjs update --publish --title <title> --body-file <path>`.
+That command refuses on `main`, off a `chore/<slug>` branch and with uncommitted
+changes, and until the update is whole: `UPSTREAM.md` and `KIT-MANIFEST.json`
+name one commit, neither the one they named where the branch left `main` nor the
+one `main` names now, and `node scripts/harness.mjs check` and
+`node scripts/lineage.mjs index --check` pass. It then does what `plan publish`
+does (§Planning in this instance): it lints the title and body, pushes the branch
+to `origin`, opens a pull request against `main` and prints its URL. The operator
 reviews and merges with a merge commit, so `main` keeps the starter's history
-and the next update does not apply this one again. The session then switches
+and the next update does not apply this one again. A session in a fork that still
+spells raw `gh` names the repository with `-R <fork>`, or runs `gh repo
+set-default origin` once in the clone (§Hooks). The session then switches
 back to clean `main` and runs `node scripts/launchpad.mjs update --finish`.
-That command fetches `origin`, checks the fast-forward before changing the
-checkout, advances `main` to `origin/main` and runs bootstrap; main stays
-ready for the next worktree. It refuses a dirty tree, a non-fast-forward or
-a checkout other than `main`, naming the fact.
+That command reads `origin`'s `main` first and fetches nothing when the checkout
+already holds it; otherwise it downloads only what the checkout lacks. It checks
+the fast-forward before changing the checkout, advances `main` to `origin/main`
+and runs bootstrap; main stays ready for the next worktree. It refuses a dirty
+tree, a non-fast-forward or a checkout other than `main`, naming the fact. A read
+or fetch past its bound, ten minutes unless `--fetch-timeout <seconds>` says
+otherwise, is refused with the checkout unchanged and prints the by-hand finish:
+`git fetch origin main`, `git merge --ff-only origin/main` and `node
+scripts/bootstrap.mjs`.
 Bootstrap prepares local dependencies and harness files without generating
 the tracked lineage index on main. A `.runtime/upstream-preview` left by an interrupted
 preview holds only a detached checkout: the session removes it with `git

@@ -82,9 +82,15 @@ export function readOutwardVocabulary(root) {
 
 export function checkOutwardArtifact(
   root,
-  { kind, text, target = false, sections, exemptText = [] },
+  {
+    kind,
+    text,
+    target = false,
+    sections,
+    exemptText = [],
+    vocabulary = readOutwardVocabulary(root),
+  },
 ) {
-  const vocabulary = readOutwardVocabulary(root);
   const exempt = exemptSpans(text, exemptText);
   // Align line endings with checkLocalTerms, which recognizes LF and CRLF.
   const localTerms = observeLocalTerms(root, text.replace(/\r\n?|\n/g, "\n"));

@@ -5,15 +5,17 @@ import { docRelative } from "./config.mjs";
 import { renderRedTagBlock } from "./document-kinds.mjs";
 import { runGit } from "./git.mjs";
 
+/** The branch `plan start` creates: planning/<date>-<slug>. */
+export const PLANNING_BRANCH =
+  /^planning\/(\d{4}-\d{2}-\d{2})-([a-z][a-z0-9-]*)$/;
+
 /** A pass document is a record of one planning pass: it lives in the
  * planning root's passes directory, named by the branch's slug and date. */
 export function planningDocumentPath(
   root,
   branch = runGit(root, ["branch", "--show-current"]),
 ) {
-  const match = /^planning\/(\d{4}-\d{2}-\d{2})-([a-z][a-z0-9-]*)$/.exec(
-    branch.trim(),
-  );
+  const match = PLANNING_BRANCH.exec(branch.trim());
   return match
     ? docRelative(root, "planning", "passes", `${match[2]}-${match[1]}.md`)
     : null;

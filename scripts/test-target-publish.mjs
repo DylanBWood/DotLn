@@ -1642,6 +1642,20 @@ await test("WO-064 AC1/AC2: lint and target refusals name their rule; the grante
       ]),
     /outward lint: commit refused: subject.length: 90 of 72 characters \(line 1\)/u,
   );
+  // A title in core's own form passes as a title, at core's length, and the
+  // same words stay refused as a commit subject.
+  const coreTitle = `:memo: Plan the pass and synthesize the day's two blind passes${" with more detail".repeat(6)}`;
+  assert.deepEqual(
+    lintArtifacts(subject.launchpad, [{ kind: "pr-title", text: coreTitle }]),
+    { review: null },
+  );
+  assert.throws(
+    () =>
+      lintArtifacts(subject.launchpad, [
+        { kind: "commit", text: ":memo: Plan the pass" },
+      ]),
+    /outward lint: commit refused: subject\.shape \(line 1\)/u,
+  );
 
   fixtureGit(target, "update-ref", `refs/heads/${BRANCH}`, baseCommit);
   refusedBeforeRemote(

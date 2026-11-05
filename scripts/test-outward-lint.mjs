@@ -11,6 +11,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  conventionalTypes,
   launchpadIdentifierForms,
   lintOutwardArtifact,
   matchLaunchpadIdentifiers,
@@ -125,19 +126,74 @@ for (const [name, kind, text, expected] of [
   ["gitmoji title", "pr-title", "✨ feat: handle input", []],
   ["gitmoji shortcode title", "pr-title", ":sparkles: feat: handle input", []],
   ["gitmoji shortcode commit", "commit", ":memo: docs: add the guide", []],
+  ["gitmoji and subject title", "pr-title", "✨ Handle input", []],
   [
-    "gitmoji shortcode requires type",
+    "gitmoji shortcode and subject title",
     "pr-title",
-    ":memo: Fork requests land",
+    ":memo: Plan the pass",
+    [],
+  ],
+  [
+    "a commit needs its type behind a gitmoji",
+    "commit",
+    "✨ Handle input",
     ["subject.shape"],
   ],
-  ["gitmoji requires type", "pr-title", "✨ Handle input", ["subject.shape"]],
+  [
+    "a commit needs its type behind a shortcode",
+    "commit",
+    ":memo: Plan the pass",
+    ["subject.shape"],
+  ],
+  [
+    "typed commit behind a shortcode",
+    "commit",
+    ":sparkles: feat: handle input",
+    [],
+  ],
+  [
+    "typed title behind a shortcode",
+    "pr-title",
+    ":sparkles: feat: handle input",
+    [],
+  ],
+  ["typed commit", "commit", "fix: handle input", []],
+  ["bare subject commit", "commit", "Handle input", ["subject.shape"]],
+  ["a gitmoji with no subject", "pr-title", ":memo: ", ["subject.shape"]],
+  ["a gitmoji alone", "pr-title", "✨", ["subject.shape"]],
+  ["a padded subject", "pr-title", ":memo:  Plan the pass", ["subject.shape"]],
+  [
+    "a title behind a gitmoji may hold a colon after a word",
+    "pr-title",
+    ":bug: parser: handle empty input",
+    [],
+  ],
+  // Core's own merged titles, without the pull-request number the forge adds.
+  [
+    "core's title of #258",
+    "pr-title",
+    ":sparkles: One phrase drives an order through its lifecycle: a router starts a fresh pinned worker for each phase in the order's worktree and stops at the operator's merge",
+    [],
+  ],
+  [
+    "core's title of #257",
+    "pr-title",
+    ":memo: Plan the work-setup pass of 2026-10-30 and synthesize the day's two blind passes: Node 24 beside Node 26, the features file, plan-first mode, closeout scope, paired passes, the device-number fix in WO-237 and the predecessor track archived",
+    [],
+  ],
+  [
+    "a typed title is not limited either",
+    "pr-title",
+    `fix: ${"x".repeat(85)}`,
+    [],
+  ],
   [
     "gitmoji preserves type refusal",
     "commit",
     "🐛 ship: handle input",
     ["subject.type"],
   ],
+  ["unknown title type", "pr-title", "ship: handle input", ["subject.type"]],
   ["conforming PR title", "pr-title", "fix: handle input", []],
   ["PR title shape", "pr-title", "Handle input", ["subject.shape"]],
   [
@@ -165,6 +221,10 @@ for (const [name, kind, text, expected] of [
     assert.equal(result.status, expected.length ? "refused" : "pass");
   });
 }
+
+test("the conventional types a repository with no vocabulary file lints with are core's own", () => {
+  assert.deepEqual([...conventionalTypes], policy.types);
+});
 
 test("WO-227 criterion 2: public review words are review items with exact original spans in every artifact and refuse nothing", () => {
   for (const [kind, text, term] of [

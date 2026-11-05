@@ -94,3 +94,5 @@ records the operator's sandbox-off posture in all three CLIs and supersedes
 the earlier sandbox-on and permission-mode preferences above. DotLn refusals
 plus the host permission mode are the boundary; this cross-reference changes
 no personal setting.
+
+**2026-11-05 — WO-246.** On the operator's word in that order's session, the emitter now writes two allow grants in project `.claude/settings.json`: `Bash(node scripts/launchpad.mjs update --publish *)` and `Bash(node scripts/refute-plan.mjs publish *)`. They let the launchpad's own publish helpers run without a prompt and, by the host's auto-mode page, before its classifier. The WO-039 amendment's statement that the emitter writes no allow grants holds for everything else: no rule names `git push` or `gh`, and the emitter still writes no user settings, default mode, sandbox switch or credential policy ([decision](../evidence/WO-246/decisions.md#wo-246-d010--the-operator-authorizes-the-two-allow-rules)).
