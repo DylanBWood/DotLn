@@ -228,7 +228,10 @@ it lacks, a malformed duplicate declaration is refused, a dispatch is read
 whatever the host wrote before it, a review is split rather than refused,
 a refutation covers every open order a pass files, a rule's row is found
 where the kit moved it, a warning names its remedy, a front page links what
-it likes, and the target publish is admitted.
+it likes, and the target publish is admitted. It unblocks gate P's real
+run from the operator's instance (WO-083), which needs these instance
+edges gone before the run is measured, and serves gate S's update vehicle;
+the critical path table names both.
 
 **Observed gap (dated 2026-11-03 at `main` `eb7c58ff6`, v0.114.0):**
 
@@ -403,7 +406,10 @@ it likes, and the target publish is admitted.
   Claude Code writes before the operator's text when a slash command ran
   in the same message, each matched as a whole element by name, before the
   blanks and the one fence it already skips; nothing else about the line
-  changes, so a quoted later dispatch stays prose. Rejected: telling the
+  changes, so a quoted later dispatch stays prose. A leading element the
+  reader does not know is journaled by name beside the unclassified class,
+  so a changed host shape is read at the next pass instead of failing
+  silently. Rejected: telling the
   operator to dispatch in a message of its own (axis: every planning
   session opens with `/model`; the kit adapts to the host). Rejected:
   reading the prefix from any line (axis: WO-226's quoted-example rule).
@@ -416,7 +422,10 @@ it likes, and the target publish is admitted.
   reads the others in the checkout; the batch reports are merged into the
   round's one report, each finding keyed by its batch and the `## Items`
   rows carried from every batch; the refusal and the dry run print the
-  measured size, the ceiling and the batch plan. Rejected: raising the
+  measured size, the ceiling and the batch plan. Each batch's worker reads
+  the other batches' documents in the checkout through the index, and a
+  round records its merged report only when every batch returned one.
+  Rejected: raising the
   ceiling (axis: it is a worker's context, and a later pass passes any
   figure). Rejected: a diff in place of a whole document (axis: the
   criteria adversary judges an order as written; the executor may carry a
@@ -571,7 +580,9 @@ product 07; the fork's block.
    instruction file counts as a link.
 4. A release whose changed files include a generated page's renderer
    prints `Read before upgrading` naming `npm run work-orders -- index`;
-   one that does not prints `None.`.
+   one whose changed files include neither a renderer nor another trigger
+   of a standing line (the settings emitter of criterion 17) prints
+   `None.`.
 5. An entropy receipt filed for a target subject in the fixture renders
    the frozen copy as `<tmp>/…`, labels the launchpad tree as the planning
    branch in progress, names the uninstalled copy in its confinement
@@ -603,8 +614,11 @@ product 07; the fork's block.
     role `planner`, with `prefixLine` at the dispatch line; the same text
     without the block journals the same; prose followed by a quoted
     dispatch journals none; the generated Codex hook's embedded reader
-    returns the same line; and `harnessWorkerWords` reads `fable` from a
-    line that names it after such a block.
+    returns the same line; `harnessWorkerWords` reads `fable` from a line
+    that names it after such a block; and a prompt whose first content line
+    opens an element outside that set journals the element's name beside
+    its unclassified class, so the next pass can read which block the host
+    wrote.
 12. On a planning-branch fixture whose changed documents render a brief
     past the ceiling, `npm run worker -- review --kind criteria --host
     codex --subject planning --dry-run` prints the measured size, the
@@ -614,8 +628,10 @@ product 07; the fork's block.
     `round-1-criteria` report whose findings are keyed by batch and whose
     `## Items` table carries every batch's rows; a `--since <tree>` round
     carries only the documents changed since that tree; a fixture under
-    the ceiling launches one worker; and a document past the per-document
-    cap stays a pointer to the checkout, as today.
+    the ceiling launches one worker; a document past the per-document cap
+    stays a pointer to the checkout, as today; and a round whose batch
+    worker returns no report records no merged report and names the batch,
+    so a merged report is never recorded over a missing one.
 13. On a fixture export with a `track: separate` workstream whose two open
     members have no sequence entry, the subject `npm run plan -- refute`
     prints names both after the sequenced orders, the receipt filed from

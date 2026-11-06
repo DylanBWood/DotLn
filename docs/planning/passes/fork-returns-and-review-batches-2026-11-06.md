@@ -683,3 +683,27 @@ appended when observed.
   characters, under the ceiling; it inlined the pass document, the
   sequence, the generated index and WO-257 and pointed at the map and the
   history page as documents over `MAX_DOCUMENT_BYTES` (§Readings).
+- Second commit `c1830c0f3`; `npm run test:docs` at it: 25 passed, 2
+  failed, 0 h 2 min; the two (`plan` and `plan-refutation-current`) fail
+  only on "planning pass planning-92d06e6e83aa82b0 needs a receipt".
+- `npm run plan -- refute` at `c1830c0f3` printed the canonical prompt
+  (132,498 bytes; one order judged, WO-257). One fresh `dotln-worker`
+  (claude-opus-5-5 at xhigh, the Claude default) judged it from the prompt
+  file in the session scratch alone, reading no repository file and running
+  no command: 0 h 6 min, 127,712 tokens and three tool uses by the host's
+  usage; `aligned-with-findings`, no holds, twelve known issues. Its
+  statement is kept in the ignored lane
+  `docs/control/local/planning-2026-11-06/judgment-1-statement.txt`. This
+  judgment is not filed: four of its findings are defects of this pass's
+  own amendment and were integrated before the receipt, as the reviewed
+  route integrates its reviewers' findings and refutes the integrated
+  subject: criterion 4's `None.` case now excludes a release that triggers
+  another standing line (its finding 3); criterion 12 and the batches
+  bullet say a round records its merged report only when every batch
+  returned one and that each worker reads the other batches' documents
+  through the index (finding 7); criterion 11 and the dispatch-line bullet
+  journal a leading element the reader does not know by name (finding 9);
+  the objective names gate P's WO-083 and gate S's update vehicle (finding
+  11). The other eight are the executor's and go on WO-257's catalog row
+  with the second receipt's. The integrated subject was committed and
+  judged again by a fresh refuter (below).
