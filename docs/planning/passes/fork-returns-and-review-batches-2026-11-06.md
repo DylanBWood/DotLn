@@ -739,7 +739,12 @@ appended when observed.
   the current subject: existing work-order bytes changed", since a
   disposition admits only the bound criterion and Cost repairs and the
   repair also changed step 2, the Design bullet and a known-issues entry
-  so the order stays coherent. The pass keeps the coherent order and has
-  the final subject judged again by a fresh refuter, as the 2026-11-03
-  pass did after its correction; receipt 064 and its disposition stay as
-  the record of the earlier subject (below).
+  so the order stays coherent. `npm run plan -- refute` for a fresh
+  judgment of that subject was refused: "one judgment per pass;
+  dispositions settle repairs, and another judgment requires changed
+  observed evidence". So the three unbound edits were reverted to the
+  judged text and criterion 2 and the Cost line carry the mechanism alone:
+  the criterion names the refusal and its flags, the Cost line names
+  `scripts/launchpad.mjs` (`update`), and WO-257's catalog row records the
+  planner's reading that the executor takes that file from them and records
+  the step in its decisions. `npm run plan -- check` then passes.

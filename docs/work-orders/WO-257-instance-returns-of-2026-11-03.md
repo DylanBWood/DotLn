@@ -369,17 +369,10 @@ the critical path table names both.
   delta or `unknown`, under the table that already carries the figures.
   Rejected: dropping the comparison (axis: WO-248's reader wanted the
   delta; the duplication was the shape, not the content).
-- **No merge the operator did not ask for.** The kit's sentence, and a
-  typed check beside it: `launchpad update` under a journaled planning or
-  entropy dispatch refuses unless the session records the operator's
-  in-session request with a capture hash, as `accept-overrun` records an
-  operator's words; a session with no journaled dispatch (Codex tool calls
-  are unhooked) keeps the sentence as its only guard. Rejected: a feature
-  election for "update before pass" (axis: the operator's item 12 says
-  nobody wants it; a switch for it is the rule again). Rejected: the
-  sentence alone (axis: the vision answers a correction with a typed
-  mechanism, and this order already emits a typed permission rule; receipt
-  063's known issue of 2026-11-04 and receipt 064's hold of 2026-11-06).
+- **No merge the operator did not ask for.** The kit's sentence: a pass
+  never runs the update; the operator's words in the session do. Rejected:
+  a feature election for "update before pass" (axis: the operator's item
+  12 says nobody wants it; a switch for it is the rule again).
 - **The front page is an entry point.** `README.md` joins the defaults; a
   kit `How to start: <path>.` line is read as a link. Rejected: declaring
   it per instance (axis: every instance has a front page; the fork tried
@@ -493,14 +486,8 @@ the critical path table names both.
 2. `packages/skeleton/src/loadouts/contributor.ts` (the instance planner
    sentence) and the kit guide §Planning in this instance and §Updating:
    no pass runs `launchpad update` or takes a newer starter unless the
-   operator asks in that session; `npm run sync`; and
-   `scripts/launchpad.mjs` (`update`): the refusal under a planning or
-   entropy dispatch read from the session journal, the
-   `--operator-request --capture --capture-hash` flags that record the
-   operator's in-session words as `accept-overrun` does, and the receipt
-   line; `kit.applyInstanceActions` unchanged. Check: `npm test -- --only
-   harness-context`; `npm test -- --only launchpad` with a planted session
-   journal.
+   operator asks in that session; `npm run sync`. Check: `npm test -- --only harness-context`;
+   `npm test -- --only launchpad`.
 3. `scripts/lib/document-kinds.mjs` (`defaultEntryPoints`): `README.md`
    as `front-page`; the `How to start: <path>.` line read as a link; core's
    `documents.json` entry removed as redundant or kept as the override
@@ -762,11 +749,6 @@ row at the integrated code identity when one exists.
 - The fork's item 3 of 2026-11-05 (the record route's host, model, effort
   and tree) landed in WO-255-D006 (v0.118.0) and is not taken here
   (reopen: a record names a host or a tree the worker did not have).
-- Receipt 063's known issue of 2026-11-04 (the no-update rule is prose
-  only) and receipt 064's hold of 2026-11-06 are answered by criterion 2's
-  typed refusal; the sentence stays as the fallback where no session
-  journal exists (reopen: an instance pass takes an update unasked with
-  no journaled dispatch, which no typed check can see).
 - FUP-78158140c6ac12aa (WO-254-D045: the front page's Try it section
   points at the public starter with the two routes): allocated here by the
   2026-11-06 pass, whose own edit docs-check refused; taken in step 18
