@@ -659,6 +659,7 @@ test("multiple workers retain the default definition and bind each opt-in defini
     model: "claude-fable-5-1",
     effort: "xhigh" as const,
     optIn: true,
+    optInLabel: "Fable (fable or fable 5.1)",
   };
   const single = lower({ ...program, worker: pinned });
   const bundle = lower({ ...program, workers: [pinned, fable] });
@@ -698,6 +699,100 @@ test("multiple workers retain the default definition and bind each opt-in defini
   assert.throws(
     () => lower({ ...program, workers: [pinned, pinned] }),
     /unique worker names/,
+  );
+});
+
+test("a Codex worker is a generated Codex custom agent and never a Claude agent type", () => {
+  const pinned = {
+    name: "dotln-worker",
+    model: "claude-opus-5-5",
+    effort: "xhigh" as const,
+  };
+  const astra = {
+    name: "dotln-worker-astra",
+    host: "codex" as const,
+    model: "gpt-6-astra",
+    effort: "max" as const,
+    optIn: true,
+    optInLabel: "Astra (astra)",
+  };
+  const unavailable = {
+    available: false,
+    evidence: "docs/probe.md#unobserved",
+    reason: "No project hook fired",
+  };
+  const codexProfile: HarnessProfile = {
+    ...profile,
+    profileId: "fixture-codex",
+    harness: "codex-cli",
+    skills: { ...profile.skills, root: ".agents/skills" },
+    instruction: { ...profile.instruction, path: "AGENTS.md" },
+    settings: {
+      ...unavailable,
+      path: ".claude/settings.json",
+      deny: false,
+      allow: false,
+    },
+    refusal: "unavailable",
+    events: {
+      PreToolUse: unavailable,
+      PostToolUse: unavailable,
+      Stop: unavailable,
+      UserPromptSubmit: unavailable,
+    },
+  };
+  const claude = lower({ ...program, workers: [pinned, astra] });
+  assert.ok(
+    claude.files.some((file) => file.path === ".claude/agents/dotln-worker.md"),
+  );
+  assert.ok(
+    !claude.files.some((file) => /dotln-worker-astra/u.test(file.path)),
+    "a Claude bundle carries no Codex agent",
+  );
+  const codex = lower(
+    { ...program, workers: [pinned, astra] },
+    feedback,
+    codexProfile,
+  );
+  assert.ok(
+    !codex.files.some((file) => file.path.startsWith(".claude/agents/")),
+  );
+  const added = codex.files.find(
+    (file) => file.path === ".codex/agents/dotln-worker-astra.toml",
+  );
+  assert.ok(added);
+  for (const line of [
+    'name = "dotln-worker-astra"',
+    'model = "gpt-6-astra"',
+    'model_reasoning_effort = "max"',
+  ])
+    assert.ok(added.contents.split("\n").includes(line), line);
+  assert.match(
+    added.contents,
+    /^developer_instructions = ".*dispatch line names Astra \(astra\)\. Record the worker type in the receipt and response\."$/mu,
+  );
+  assert.throws(
+    () =>
+      lower({
+        ...program,
+        workers: [pinned, { ...astra, host: "copilot" as never }],
+      }),
+    /worker host/,
+  );
+  // An opt-in label belongs to an opt-in worker, and every opt-in worker
+  // names its dispatch word.
+  assert.throws(
+    () =>
+      lower({
+        ...program,
+        workers: [{ ...pinned, optInLabel: "Opus (opus)" }],
+      }),
+    /worker opt-in label/,
+  );
+  const { optInLabel: _label, ...unlabelled } = astra;
+  assert.throws(
+    () => lower({ ...program, workers: [pinned, unlabelled] }),
+    /worker opt-in label/,
   );
 });
 

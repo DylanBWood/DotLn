@@ -1,0 +1,50 @@
+{
+  "recordedAt": "2026-11-05T19:28:00Z",
+  "codeIdentity": "be7817ac27345e2ffac2fe9a297e68077ba152db4056002709d85c9656e0a10e",
+  "commands": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "result": "All matched files use Prettier code style!"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-review-worker.mjs",
+      "exitCode": 0,
+      "passed": 23,
+      "failed": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern 'WO-255|WO-054 Codex installation preserves unowned configuration' scripts/test-harness.mjs scripts/test-codex-continuation.mjs",
+      "exitCode": 0,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-126 direct command files' scripts/test-plan-refutation.mjs",
+      "exitCode": 0,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+      "exitCode": 0,
+      "generatedSurfaces": 43
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "result": "256/256 product headings indexed; both editions CURRENT"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- python3 docs/evidence/WO-255/verifier-001/static-audit.py",
+      "exitCode": 0,
+      "base": "ccfba0df927ccc2e76558af701a1075fc0fa4b36",
+      "manifests": 7,
+      "dependencyNamesUnchanged": true,
+      "lockEntriesUnchanged": true,
+      "newSuppressionDirectives": [],
+      "diffCheck": "pass"
+    }
+  ],
+  "provenance": "Commands ran before filing; the static audit and independent probes were run from session scratch, then retained here without changing their tested logic. The probes ran twice; the second added dry-run lane observations and exercised consistency reports with complete tables. No live model launch or subagent ran."
+}

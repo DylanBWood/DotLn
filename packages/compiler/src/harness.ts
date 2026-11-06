@@ -111,14 +111,49 @@ export const OPERATOR_QUESTION_CONTEXT =
   "Operator question: read it as a smell. Your next message answers it one of two ways, with the evidence: why the current course is right, or what the question changes in your reading and what you will now do differently. Keep working either way; if the message also asks for an action, including to pause, stop or wait, do that, since a request is explicit whatever its grammar; it records no rule.";
 
 /** A dispatch may lead following direction after a semicolon or newline.
- * The worker opt-in is a selection, not part of the lifecycle action. */
+ * The worker opt-ins are a selection, not part of the lifecycle action. */
 export function harnessPromptIntent(prompt: string | undefined): string {
   const text = harnessPromptLine(prompt).text;
   return (
-    /^((?:resume: (?:next|fix|verify|final review|release close|status|times)|planning: refute(?: full)?))(?:[ \t]+fable(?:[ \t]+5\.1)?)?(?=$|[ \t]*;)/u.exec(
+    /^((?:resume: (?:next|fix|verify|final review|release close|status|times)|planning: refute(?: full)?))(?:[ \t]+(?:fable(?:[ \t]+5\.1)?|astra)){0,2}(?=$|[ \t]*;)/u.exec(
       text,
     )?.[1] ?? text
   );
+}
+
+/**
+ * The worker options a dispatch line names, by the host whose launches they
+ * select: `fable` picks Claude's opt-in worker and `astra` Codex's. Only the
+ * words that close a `resume:` or `planning:` line select, the way a pass's
+ * label names its worker, and those that close the dispatch phrase before
+ * the line's first semicolon, where a lifecycle phrase carries its suffix
+ * ahead of direction; a model named mid-line as a topic selects nothing. A
+ * version after the word and a joining "and" belong to a closing run. A line
+ * that names neither selects both hosts' defaults, so each dispatch states
+ * its own choice; any other message returns null and changes nothing. The
+ * function is self-contained so the generated Codex hook embeds it with the
+ * line reader it is given.
+ */
+export function harnessWorkerWords(
+  prompt: string | undefined,
+  promptLine: typeof harnessPromptLine = harnessPromptLine,
+): { claude?: "fable"; codex?: "astra" } | null {
+  const text = promptLine(prompt).text;
+  if (!/^(?:resume|planning):/u.test(text)) return null;
+  const selected: { claude?: "fable"; codex?: "astra" } = {};
+  const semicolon = text.indexOf(";");
+  for (const part of semicolon < 0
+    ? [text]
+    : [text, text.slice(0, semicolon)]) {
+    const words = part.toLowerCase().match(/[a-z0-9]+(?:\.[0-9]+)*/gu) ?? [];
+    for (let index = words.length - 1; index >= 0; index--) {
+      const word = words[index];
+      if (word === "fable") selected.claude = "fable";
+      else if (word === "astra") selected.codex = "astra";
+      else if (word !== "and" && word !== "5.1" && word !== "6") break;
+    }
+  }
+  return selected;
 }
 
 /** Source for the emitted stale-main recovery hook. Generated hook text is
@@ -343,9 +378,15 @@ const procedureRoles = (
       : [];
 export interface HarnessWorker {
   readonly name: string;
+  /** The host that launches it: a Claude agent type (the default) or a Codex
+   * custom agent. */
+  readonly host?: "claude" | "codex";
   readonly model: string;
   readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
   readonly optIn?: boolean;
+  /** How an opt-in worker's definition names the dispatch word that selects
+   * it; every opt-in worker carries one. */
+  readonly optInLabel?: string;
   readonly description?: string;
   readonly skills?: readonly string[];
   readonly body?: string;
@@ -1181,8 +1222,12 @@ process.stdout.write(JSON.stringify(response)); }`;
     new Set(workers.map((worker) => worker.name)).size === workers.length,
     "unique worker names",
   );
-  for (const worker of profile.harness === "claude-code" ? workers : []) {
+  for (const worker of workers) {
     ensure(/^[a-z][a-z0-9-]*$/.test(worker.name), "worker name");
+    ensure(
+      worker.host === undefined || ["claude", "codex"].includes(worker.host),
+      "worker host",
+    );
     ensure(/^[a-z][a-z0-9.-]*$/.test(worker.model), "worker model");
     ensure(
       ["low", "medium", "high", "xhigh", "max"].includes(worker.effort),
@@ -1197,11 +1242,28 @@ process.stdout.write(JSON.stringify(response)); }`;
       "worker body",
     );
     ensure(
+      worker.optIn === true
+        ? typeof worker.optInLabel === "string" &&
+            verificationLine(worker.optInLabel)
+        : worker.optInLabel === undefined,
+      "worker opt-in label",
+    );
+    ensure(
       (worker.skills ?? []).every((skill) =>
         program.roles.some((role) => skill === `dotln-${role.name}`),
       ),
       "worker skills name generated roles",
     );
+  }
+  const optInLine = (worker: HarnessWorker) =>
+    `Use this worker only when the operator's planning: or resume: dispatch line names ${worker.optInLabel}. Record the worker type in the receipt and response.`;
+  const workerOrigin = program.roles.map((role) => role.facetId);
+  // Each host reads its own definition format: a Claude agent type is
+  // Markdown with front matter, and a Codex custom agent is a TOML file whose
+  // model and effort take precedence over the spawn call's.
+  for (const worker of profile.harness === "claude-code"
+    ? workers.filter((worker) => (worker.host ?? "claude") === "claude")
+    : []) {
     const specification = workerSpecification(worker);
     emit(
       `.claude/agents/${worker.name}.md`,
@@ -1216,18 +1278,39 @@ process.stdout.write(JSON.stringify(response)); }`;
           : []),
         "---",
         "",
-        `<!-- Origin: ${canonicalStringify(origin(program.roles.map((role) => role.facetId)))} -->`,
+        `<!-- Origin: ${canonicalStringify(origin(workerOrigin))} -->`,
         "",
         specification.prompt,
-        ...(worker.optIn
-          ? [
-              "",
-              "Use this worker only when the operator's planning: or resume: dispatch line names Fable (fable or fable 5.1). Record the worker type in the receipt and response.",
-            ]
-          : []),
+        ...(worker.optIn ? ["", optInLine(worker)] : []),
         "",
       ].join("\n"),
-      program.roles.map((role) => role.facetId),
+      workerOrigin,
+      7,
+    );
+  }
+  for (const worker of profile.harness === "codex-cli"
+    ? workers.filter((worker) => worker.host === "codex")
+    : []) {
+    const specification = workerSpecification(worker);
+    // JSON string syntax is valid TOML basic-string syntax for every value
+    // these fields carry, so no instruction text can end its string early.
+    emit(
+      `.codex/agents/${worker.name}.toml`,
+      [
+        `# Origin: ${canonicalStringify(origin(workerOrigin))}`,
+        `name = ${JSON.stringify(worker.name)}`,
+        `description = ${JSON.stringify(specification.description)}`,
+        `model = ${JSON.stringify(worker.model)}`,
+        `model_reasoning_effort = ${JSON.stringify(worker.effort)}`,
+        `developer_instructions = ${JSON.stringify(
+          [
+            specification.prompt,
+            ...(worker.optIn ? [optInLine(worker)] : []),
+          ].join("\n\n"),
+        )}`,
+        "",
+      ].join("\n"),
+      workerOrigin,
       7,
     );
   }
@@ -1356,7 +1439,7 @@ process.stdout.write(JSON.stringify(response)); }`;
         `const { text } = await import("node:stream/consumers");\n` +
         `try {\nconst source = await text(process.stdin);\n` +
         `if (Buffer.byteLength(source) > 1048576) throw new Error("oversized hook input");\n` +
-        `const output = await (${codexContinuation.toString()})(JSON.parse(source), ${operatorControl.toString()}, (prompt) => (${operatorMessageClass.toString()})(prompt, ${harnessPromptLine.toString()}), undefined, ${harnessSessionPhase.toString()});\n` +
+        `const output = await (${codexContinuation.toString()})(JSON.parse(source), ${operatorControl.toString()}, (prompt) => (${operatorMessageClass.toString()})(prompt, ${harnessPromptLine.toString()}), undefined, ${harnessSessionPhase.toString()}, (prompt) => (${harnessWorkerWords.toString()})(prompt, ${harnessPromptLine.toString()}));\n` +
         `process.stdout.write(JSON.stringify(output));\n` +
         `} catch { process.stdout.write(JSON.stringify({systemMessage:"DotLn Codex continuation input unavailable; native stopping remains available."})); }\n`,
       names,

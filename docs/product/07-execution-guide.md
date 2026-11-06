@@ -1744,8 +1744,9 @@ spawns one fresh background worker without inherited conversation, supplying
 only that prompt and the shared goal card. In Codex this uses `spawn_agent`
 with `fork_turns: none`; in Claude it uses the generated `dotln-worker`
 type pinned to `claude-opus-5-5` at `xhigh`, without a model override
-(or `dotln-worker-fable` only on the operator's dispatch, §Model-specific
-notes). The worker
+(or `dotln-worker-fable`, and in Codex `dotln-worker-astra`, only on the
+operator's dispatch, §Model-specific notes; `npm run plan -- refute --model
+<option>` prints that launch beside the prompt). The worker
 judges the supplied prompt directly, returns its frozen JSON and a truthful
 single-line statement of at most 4000 characters, and makes no repository or
 Git writes. The parent remains the sole writer and can finish independent
@@ -1754,7 +1755,8 @@ worker's judgment and statement in ignored local files,
 then run `npm run plan -- receipt <result.json> --statement <statement.txt>`
 with any required `--dispositions <file>` and `--worker-type
 dotln-worker-fable` when that type ran (the default is `dotln-worker`);
-Codex uses `--worker-type codex-spawn-agent`.
+Codex uses `--worker-type codex-spawn-agent`, or `dotln-worker-astra` for its
+opt-in.
 The response and receipt record the worker type as the parent's launch
 attestation, separately from unavailable effective model/effort. The helper validates, screens,
 files and commits the immutable pair with a plain subject and runs the plan
@@ -2133,12 +2135,15 @@ the counts in its document as `self-review: found N; fixed N; recorded N`,
 commits, and refutes the integrated subject; the reviewers are the pass's
 own self-review and never replace the refuter. The criteria adversary of a
 planning subject reads the operator's dispatch and answers item by item
-where each was acted on or reviewed (the operator's item 15 of 2026-11-03);
-WO-255's `--capture` carries it, and until it lands the pass writes its
-per-item table into its own document so the subject carries it. The helper's
-planning lane is named by UTC date until WO-255 keys it by branch, so a pass
-that crosses midnight or a second pass on one day cannot run a fresh round 1
-through it ([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)). The reviewed route's first
+where each was acted on or reviewed (the operator's item 15 of 2026-11-03):
+`npm run worker -- review --kind criteria --host codex|claude --subject planning --capture <file>`
+gives it the ignored dispatch capture, and its report answers in an `## Items`
+table or is refused (§Verification review and attack). The helper's planning
+lane is named by the pass's branch, so a pass that crosses midnight and a
+second pass on one day each run their own round 1 through it
+([WO-255-D002](../evidence/WO-255/decisions.md#wo-255-d002--the-planning-lane-is-the-branch-and-a---since-round-1-starts-a-ladder-of-its-own),
+[WO-255-D026](../evidence/WO-255/decisions.md#wo-255-d026--a-planning-lane-is-the-branchs-name-escaped-so-it-decodes-back-to-one-branch);
+[the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)). The reviewed route's first
 run is the 2026-10-31 pass
 ([the planning document](../planning/passes/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md)):
 three `codex exec` workers of 4 to 6 minutes each returned twenty findings,
@@ -3250,15 +3255,26 @@ inventories, runtime setup, gate environment and timing assumptions. Use
 relevant retained gate failures to search for the same failure shapes.
 Preserve intentional contract pins; update expectations from requirements,
 replacing incidental prose coupling with semantic assertions. Report concrete
-producer/consumer pairs, their disposition and unsearched boundaries.
+producer/consumer pairs, their disposition and unsearched boundaries in a
+`Traced consumers` table (changed contract, consumer, command, result) with
+a generated pages row and a fixture manifests row, each naming the command
+run; the review helper and `npm run worker -- record` refuse a consistency
+report without that table. A required table must be an actual report section;
+code, HTML and blockquote examples cannot supply it. This applies to the
+capture's `Items` table too, so a review that traced nothing is never recorded
+as one ([WO-255-D004](../evidence/WO-255/decisions.md#wo-255-d004--a-consistency-report-carries-its-traced-consumers-table-or-it-is-not-recorded)).
 It does not duplicate criterion attacks or design review.
 An issue discovered in another reviewer's brief is transferred,
 not reviewed twice. The executor fixes or records every distinct finding.
-Round two is the recheck: each reviewer whose findings were fixed rechecks
-those fixes on the current diff and nothing else, and a new finding is
-admitted only when it breaks an acceptance criterion or a behavior `main`
-had, the verifier's own standard; any other new finding is recorded in the
-handoff, not fixed. Round three, the last, runs only when round two's fixes
+Round two is the recheck: each reviewer whose findings were fixed confirms
+those fixes, then reviews the whole current change against its base again,
+and a new finding is admitted only when it breaks an acceptance criterion or
+a behavior `main` had, the verifier's own standard; any other new finding is
+recorded in the handoff, not fixed. A recheck that read only each repair
+found nothing while the complete run then failed on what the whole change
+held (the operator's item 17 of 2026-11-03), so the recheck reads the whole
+change and the admission rule, not a narrower reading, keeps it from opening
+new fronts ([WO-255-D003](../evidence/WO-255/decisions.md#wo-255-d003--a-recheck-reviews-the-whole-change-again)). Round three, the last, runs only when round two's fixes
 changed code again: one combined worker carrying the three briefs reads the
 delta since round two's reviewed tree under the same rule. After it no
 reviewer runs in that execution or repair; the executor judges the remaining
@@ -3280,8 +3296,9 @@ the operator's items 6 and 6.a of that day;
 
 A recheck resumes the same worker where the host keeps it (Claude's
 `SendMessage`), because that worker holds the diff and its own findings and
-the recheck's question is whether each fix holds, not a new search; where the
-host cannot, a fresh worker reads the prior report. Reuse saves the re-read
+the recheck asks whether each fix holds and whether the whole change still
+holds under its brief; where the host cannot, a fresh worker reads the prior
+report. Reuse saves the re-read
 and keeps the findings' wording consistent; the anchoring it brings is
 accepted for that question. Either way the re-task counts one use against
 `subagentCap`, as every launch does: in a Claude session the hook counts each
@@ -3297,46 +3314,133 @@ and a worker that returns no report costs its use and a retry; `subagentCap`
 in `docs/control/budgets.json` is the operator's knob.
 
 `npm run worker -- review --kind criteria|design|consistency|combined --host
-codex|claude [--order WO-NNN | --subject planning] [--since <tree>] [--round
-N] [--recheck <report>]... [--dry-run]` launches one review worker with the
-canonical brief: the generated `dotln-worker` definition with its probe
-rule, the reviewer brief this section and the role text state (all three for
-`combined`), the round's admission rule, the order's text (or, with
+codex|claude [--model opus|fable|sol|astra] [--order WO-NNN [--target
+<repository-id>] | --subject planning [--capture <file>]...] [--since <tree>]
+[--round N] [--recheck <report>]... [--dry-run]` launches one review worker
+with the canonical brief: the generated `dotln-worker` definition with its
+probe rule, the reviewer brief this section and the role text state (all three
+for `combined`), the round's admission rule, the order's text (or, with
 `--subject planning` on a `planning/` branch, the branch's changed planning
-documents and orders), the diff stat between the base (the merge base with
-`main` for round one, the last reviewed tree for a recheck) and the working
-tree written as a Git tree, and for a recheck the earlier findings to confirm
-or refute, named by kind and round. It is the route to a Codex worker from a
-Claude session, a Claude print worker from Codex, and a planning subject; in a
-Claude session the `Agent` tool with `dotln-worker` stays the ordinary route.
-It launches through the transports the entropy review uses: Codex at
-`gpt-6.1-sol` and `max` under a read-only sandbox with its tool features on,
-and Claude print at `claude-opus-5-5` and `xhigh` with `Read`, `Grep`, `Glob`
-and a pre-approved list of read commands, every other call denied and the
-project's own instructions and hooks off. The brief gives the worker a budget
+documents and orders), the diff stat between the base and the working tree
+written as a Git tree, and for a recheck the earlier findings to confirm or
+refute, named by kind and round, with the tree their round reviewed. The base
+is the merge base with `main` for round one and a recheck, and the tree an
+earlier round reviewed for the combined round; `--since` names another. With
+`--target <repository-id> --order WO-NNN` the subject is a registered target's
+order: its activation names the repository and the base commit, the
+launchpad registers that repository and its target registry names the order's
+worktree on `wo-NNN` (the binding release close and target publication use),
+the diff is that base against the target worktree's tree, written and read
+with the host's safe Git options so the target's own hooks and file monitor
+never run, the worker reads the target worktree and writes nothing there, the
+launch counts as any other does, and the report is the launchpad's
+([WO-255-D008](../evidence/WO-255/decisions.md#wo-255-d008--a-registered-targets-order-is-a-review-subject)).
+It is the route to a Codex worker from a Claude session, a Claude print worker
+from Codex, a planning subject and a target's order; in a Claude session the
+`Agent` tool with `dotln-worker` stays the ordinary route. It launches through
+the transports the entropy review uses, at the option `--model` names, else
+the one the session's dispatch line named for that host, else the host's
+default (§Model-specific notes): Codex under a read-only sandbox with its tool
+features on, and Claude print with `Read`, `Grep`, `Glob` and a pre-approved
+list of read commands, every other call denied and the project's own
+instructions and hooks off. `--dry-run` prints the argv, the option and the
+brief and writes no report. The brief gives the worker a budget
 (about 30 minutes and 120 tool calls) to watch and stay within, returning the
 findings it has and naming what it did not reach as it nears either, because a
 worker stopped at a hard limit (60 minutes) returns nothing; the transcript is
 never a limit, since Codex's event stream echoes every command it ran, so the
 final message has its own file and only the stream's tail is kept for its usage
-counters. A round needs what its brief states: a recheck names its report with
-`--recheck`, and the combined round names an earlier report or its base with
-`--since`. It writes
-`docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md` (a repair's under
-`repair-<n>/`, and never over an existing report) and a `.json` beside
-it in the closed findings shape (`id`, `severity` `blocking|should-fix|note`,
-`summary`, `file`, `line` and a `basis` of `{criterion}` or `{regression}`,
-the vocabulary a verifier's blocking entry carries, or null), prints
-`review: <kind> round <N> found <N> (<B> blocking); <elapsed>` or that the
-worker returned no report, and appends a `WorkerLaunched` row to the
-session's journal. The executor records an `Agent` worker's returned text in
-the same lane under the round and kind name with `npm run worker -- record
---kind <kind> --round <N> --from <file>`, which binds it with the same
-validator and writes the same record, so the verifier reads every round and a
-fresh worker can recheck it whatever the launch route; release close moves the lane into the
-order's retained lane under `reviews/`, beside its journals. The reports are
-the executor's working record; the consolidated account and the handoff line
-are the committed one.
+counters.
+
+A round needs what its brief states: a recheck names its report with
+`--recheck`, and the combined round, round three unless `--round` or its
+report says otherwise, names an earlier report or its base with `--since`. It
+writes `docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md` (a repair's
+under `repair-<n>/`, and never over an existing report), or for a planning
+subject the same names under `planning-<branch>/`: the branch's name after
+`planning/`, with any character other than a letter, digit, dot, underscore or
+hyphen escaped as a URL escapes it (`planning/2030-01-02/recheck` is
+`planning-2030-01-02%2Frecheck/`). A second pass on one day, or a pass that
+crosses midnight, keeps its own rounds, and since every lane decodes back to
+one branch, two branches never share a lane; a name too long for one directory
+is refused before any worker starts. A round one other than the combined round
+that names its base with `--since` starts a ladder of its own under
+`since-<tree>/` inside the lane, and its rechecks follow it there; when it
+reviews the very tree its lane last reviewed, the helper and the record name it
+a re-roll in an advisory
+([WO-255-D002](../evidence/WO-255/decisions.md#wo-255-d002--the-planning-lane-is-the-branch-and-a---since-round-1-starts-a-ladder-of-its-own),
+[WO-255-D026](../evidence/WO-255/decisions.md#wo-255-d026--a-planning-lane-is-the-branchs-name-escaped-so-it-decodes-back-to-one-branch)).
+A `.json` beside each report carries the closed findings shape (`id`,
+`severity` `blocking|should-fix|note`, `summary`, `file`, `line` and a `basis`
+of `{criterion}` or `{regression}`, the vocabulary a verifier's blocking entry
+carries, or null), the base and the reports the round answered with their
+records' digests. A planning subject's criteria review takes the operator's
+dispatch capture with `--capture <file>`: its bytes close the brief under
+`## The operator's dispatch` (the protocol's own budget and output sections
+follow them in the worker's prompt), the record keeps only each capture's
+SHA-256 and byte count, any passage the worker quotes from it (six or more
+of a line's consecutive words, or the three to five words of a whole line of
+twenty characters or more, with or without the line's item marker, each read
+through JSON escapes; the words of the brief's own report rules, such as a
+table's header, are no quotation) is replaced in every string the record keeps
+from the worker's return, a finding's file and basis and each path read among
+them. The report answers every item in an `## Items` table (item, location in
+the subject, and `acted on`, `reviewed` or `missing`, where a row acted on or
+reviewed names its location) or is refused, and the body written with the
+quotations omitted meets the same rules; a numbered item the table names no
+row for is printed as an advisory. Each table's required columns are read from
+header cells of their own, a header cell naming two of them being refused; a
+`Traced consumers` row names the consumer it traced, and a cell that holds a
+dash or a word for nothing done says nothing, while `none` stands as a result
+([WO-255-D007](../evidence/WO-255/decisions.md#wo-255-d007----capture-carries-the-operators-dispatch-and-an-items-table-answers-it),
+[WO-255-D029](../evidence/WO-255/decisions.md#wo-255-d029--the-repairs-round-1-on-astra-seven-distinct-findings-six-fixed-and-one-recorded),
+[WO-255-D031](../evidence/WO-255/decisions.md#wo-255-d031--the-repairs-round-2-on-astra-four-admitted-findings-fixed-the-claim-read-by-what-an-object-is)).
+The helper prints `review: <kind> round <N> found <N> (<B> blocking);
+<elapsed>`, that the worker returned no report, or that its report was refused
+and why, writing nothing then, and appends a `WorkerLaunched` row to the
+session's journal.
+
+The executor records an `Agent` worker's returned text in the same lane under
+the round and kind name with `npm run worker -- record --kind <kind> --round
+<N> --from <file> [--host claude|codex] [--model <model>] [--effort <level>]
+[--tree <object>] [--format prose|json]`, which binds it with the same validator and report rules and
+writes the same record, so the verifier reads every round and a fresh worker
+can recheck it whatever the launch route. The record names the host, model and
+effort the recorder attests, else the host's default, and the tree `--tree`
+names, else the working tree when it records; a report whose opening
+`Reviewed tree:` line, in its prose or in its findings object's report field,
+names another tree is refused until `--tree` names it, and the body that meets
+the report rules is the report recorded.
+
+The recorder declares the intent of mixed text with `--format prose|json`.
+`prose` preserves the complete report, including JSON examples in any position
+or code context, and adopts no findings from them. `json` extracts exactly one
+object carrying the result's `schemaVersion` or `findings` key and validates
+it as the structured return. It accepts genuine results with a preface or
+closing prose, fenced or unfenced, retaining their findings and report-field
+table; a brace in that prose that opens no JSON object refuses the record as
+an invalid object
+([WO-255-D046](../evidence/WO-255/decisions.md#wo-255-d046--the-json-formats-closing-prose-claim-is-wider-than-the-parser)).
+Missing or multiple possible results are refused; put the chosen result
+alone in the input file when the report also quotes result examples or its
+prose holds such a brace. A
+malformed selected result is refused, never replaced by a different valid
+object. The record carries the selected `inputFormat`.
+
+When the flag is omitted, `inputFormat` is `auto`: a whole JSON result or a
+whole fenced result is validated as before, and prose without an embedded
+possible result is preserved. Any possible result embedded in mixed text,
+including one in a same-line or multiline code span, requires the explicit
+flag before a record is written. Its code context, position, schema validity
+and introduction cannot establish intent. Existing mixed structured returns
+therefore use `--format json`; prose reports quoting those same objects use
+`--format prose`. The helper's provider route already declares its structured
+protocol and is unchanged
+([WO-255-D005](../evidence/WO-255/decisions.md#wo-255-d005--worker-record-binds-the-host-model-effort-and-tree-the-worker-ran-on),
+[WO-255-D042](../evidence/WO-255/decisions.md#wo-255-d042--every-embedded-possible-result-requires-declared-intent)).
+Release close moves the lane into the order's retained lane under `reviews/`,
+beside its journals. The reports are the executor's working record; the
+consolidated account and the handoff line are the committed one.
 
 The executor writes a line in `handoff.md` that starts `self-review: found N;
 fixed N; recorded N`, optionally followed by `; rounds R` (with a
@@ -4818,12 +4922,30 @@ Claude `claude-fable-5-1` at `xhigh`, Codex `gpt-6.1-sol` at `max` and
 Codex `gpt-6-astra` at `max`; the first and third are the defaults of their
 harnesses, and the Fable and Astra options run only when the operator asks
 (operator direction of 2026-11-03, ignored capture SHA-256
-`589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`). Today the
-dispatch word `fable` selects the Claude option; the Codex Astra option has no
-kit selector, so a pass the operator asked to review on it captured the
-helper's brief and launched the model through the record route
-([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)); WO-255 adds the selector to the review
-helper, the refuter and the generated worker types.
+`589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`).
+`contributorWorkerOptions` in `packages/skeleton/src/loadouts/contributor.ts`
+is the one table of the four: the generated definitions, the option lookup
+and the receipt's worker types derive from it, and only the transports'
+default pins (`TRANSPORT_DEFAULTS`, which the entropy review reads before any
+build) repeat two of its entries, held equal by a test. A kit launch names its
+option with `--model opus|fable|sol|astra` on `npm run worker -- review` and
+`npm run plan -- refute` (a word or that option's model id); without the flag
+it takes the option the session's latest `planning:` or `resume:` line named
+for its host, `fable` for Claude launches and `astra` for Codex launches, read
+only from the words that close the line (a label such as `planning: standard
+pass, astra`) or close the dispatch phrase before its first `;` (a lifecycle
+phrase's suffix, as in `resume: next astra; keep it short`), so a model named
+mid-line as a topic selects nothing. Claude's prompt hook and the generated Codex prompt hook
+journal that selection as a `WorkerOptionsSelected` row on every such line (one
+that names neither returns to the defaults), the Codex hook making the
+checkout's journal lane for the first such line when it has none; otherwise a
+launch takes its host's default, and an option of the other host and anything
+outside the four are refused by name. The
+direct `plan refute --model <option>` prints the launch the parent makes with
+the receipt's `--worker-type`
+([WO-255-D009](../evidence/WO-255/decisions.md#wo-255-d009--the-operators-four-worker-options-and-the-generated-astra-agent),
+[WO-255-D010](../evidence/WO-255/decisions.md#wo-255-d010--both-prompt-hooks-journal-the-dispatch-lines-worker-words),
+[WO-255-D031](../evidence/WO-255/decisions.md#wo-255-d031--the-repairs-round-2-on-astra-four-admitted-findings-fixed-the-claim-read-by-what-an-object-is)).
 Claude workers use the generated `.claude/agents/dotln-worker.md` type:
 `model: claude-opus-5-5` and `effort: xhigh`. Launch Agent with
 `subagent_type: dotln-worker` and no per-call model override; its definition's
@@ -4835,9 +4957,10 @@ readback (checked 2026-10-05). Codex workers use `spawn_agent` with
 `fork_turns: none`, `model: gpt-6.1-sol`, `reasoning_effort: max`; use the same
 pin for adversaries, reviewers, refuters and research. A review worker on the
 other host launches through `npm run worker -- review --host codex|claude`
-(§Verification review and attack) at these pins, and its `WorkerLaunched`
-journal row records the pinned model and effort with their source and the
-host's own readback where its CLI prints one. Generated-definition
+(§Verification review and attack) at the option it resolves, these pins by
+default, and its `WorkerLaunched` journal row records the model and effort it
+launched with their source, the option and what selected it, and the host's
+own readback where its CLI prints one. Generated-definition
 and call arguments are launch selections, never proof of effective effort.
 Report the host's readback or that it reports none; a root's own selection
 does not decide the worker's. A script that regenerates a dated record keeps the
@@ -4900,12 +5023,17 @@ completion, as before
 The opt-in Claude type `.claude/agents/dotln-worker-fable.md` selects
 `claude-fable-5-1` at `xhigh` only when the operator's `planning:` or
 `resume:` dispatch line names `fable` or `fable 5.1`. Use that type without
-a per-call model override. `dotln-worker` remains the default and the Codex
-pin above is unchanged. The parent records the type that ran in its response
-and the direct refutation receipt's `workerType`, passing `--worker-type
-dotln-worker-fable` to `plan receipt` for the opt-in; an omitted option
-records `dotln-worker`; Codex passes `--worker-type codex-spawn-agent`
-to record its actual launcher. This field attests to the launch type, never to
+a per-call model override. The opt-in Codex type is the generated custom agent
+`.codex/agents/dotln-worker-astra.toml`, `gpt-6-astra` at `max`, used only when
+the line names `astra`: a Codex session spawns it with `spawn_agent`
+(`agent_type: dotln-worker-astra`, `fork_turns: none`), and Codex applies the
+file's model and effort over the call's (the host's custom-agent
+documentation, read 2026-11-05). `dotln-worker` and the Codex pin above remain
+the defaults. The parent records the type that ran in its response and the
+direct refutation receipt's `workerType`, passing `--worker-type
+dotln-worker-fable` or `--worker-type dotln-worker-astra` to `plan receipt`
+for an opt-in; an omitted option records `dotln-worker`; Codex passes
+`--worker-type codex-spawn-agent` to record its actual default launcher. This field attests to the launch type, never to
 effective model or effort. Older receipts lacking it retain their original
 bytes and do not acquire invented readback (WO-226).
 

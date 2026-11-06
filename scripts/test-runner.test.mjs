@@ -980,6 +980,7 @@ test("instance runtime digests reject aliases before selection and frame arbitra
     ".claude/agents/dotln-release-close.md",
     ".agents/skills/dotln-executor/SKILL.md",
     ".codex/hooks/continuation.mjs",
+    ".codex/agents/dotln-worker-astra.toml",
     "CLAUDE.md",
   ]) {
     mkdirSync(dirname(join(repo, path)), { recursive: true });
@@ -999,6 +1000,7 @@ test("instance runtime digests reject aliases before selection and frame arbitra
         ".claude/agents/dotln-release-close.md",
         ".agents/skills/dotln-executor/SKILL.md",
         ".codex/hooks/continuation.mjs",
+        ".codex/agents/dotln-worker-astra.toml",
         "CLAUDE.md",
       ].map((path) => ({ path })),
     }),
@@ -1015,6 +1017,7 @@ test("instance runtime digests reject aliases before selection and frame arbitra
     ".claude/agents/dotln-release-close.md",
     ".agents/skills/dotln-executor/SKILL.md",
     ".codex/hooks/continuation.mjs",
+    ".codex/agents/dotln-worker-astra.toml",
     "CLAUDE.md",
   ]) {
     writeFileSync(join(repo, path), "changed\n");

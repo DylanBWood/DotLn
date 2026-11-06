@@ -408,18 +408,15 @@ export const registeredOrder = (launchpad, cwd) => {
   return entry.workOrderId;
 };
 
-/** Bind a review to clean committed target bytes, never to a local path. */
-export const reviewedTargetSubject = (
-  launchpad,
-  state,
-  { pendingRecordPaths = [] } = {},
-) => {
+/** The registered worktree an activated target order changes, bound to its
+ * activation: the launchpad registers the repository, the registry entry
+ * names the activation's repository, base and branch wo-NNN, and the worktree
+ * is its own Git root on that branch. Every read uses the host's safe Git
+ * options. `remedy` closes the wrong-branch refusal. */
+export const boundTargetWorktree = (launchpad, state, remedy) => {
   const entry = targetWorktreeForOrder(launchpad, state.workOrderId);
   if (!entry) throw new Error("target worktree registry entry is missing");
   const branch = `wo-${state.workOrderId.slice(3)}`;
-  const remedy = state.targetSubject
-    ? `preserve and move aside the unexpected changes, keeping ${branch} at its bound commit; do not add a commit after the passing review`
-    : `commit the reviewed target change on ${branch} before final-review-result pass`;
   if (
     !state.repositoryId ||
     !loadConfig(launchpad).repositories[state.repositoryId] ||
@@ -431,8 +428,10 @@ export const reviewedTargetSubject = (
       "target registry repository, base or branch differs from the activated order",
     );
   const target = physicalDirectory(entry.target);
-  const git = (...args) => runGit(target, [...HOST_GIT_READ, ...args]);
-  if (git("rev-parse", "--show-toplevel") !== target)
+  if (
+    runGit(target, [...HOST_GIT_READ, "rev-parse", "--show-toplevel"]) !==
+    target
+  )
     throw new Error("target is not its registered Git root");
   if (
     runGit(
@@ -444,6 +443,21 @@ export const reviewedTargetSubject = (
     throw new Error(
       `target branch differs from ${branch}; return to the registered branch before continuing; ${remedy}`,
     );
+  return { entry, target, branch };
+};
+
+/** Bind a review to clean committed target bytes, never to a local path. */
+export const reviewedTargetSubject = (
+  launchpad,
+  state,
+  { pendingRecordPaths = [] } = {},
+) => {
+  const branch = `wo-${state.workOrderId.slice(3)}`;
+  const remedy = state.targetSubject
+    ? `preserve and move aside the unexpected changes, keeping ${branch} at its bound commit; do not add a commit after the passing review`
+    : `commit the reviewed target change on ${branch} before final-review-result pass`;
+  const { target } = boundTargetWorktree(launchpad, state, remedy);
+  const git = (...args) => runGit(target, [...HOST_GIT_READ, ...args]);
   const entries = porcelainEntries(
     runGitPathList(target, [
       ...HOST_GIT_READ,

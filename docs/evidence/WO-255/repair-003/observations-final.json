@@ -1,0 +1,240 @@
+{
+  "inputModes": {
+    "plain JSON": "prose",
+    "single-line code span": "prose",
+    "multiline code span": "prose",
+    "multiline double-backtick code span": "prose",
+    "VER-001 schemaVersion example": "prose",
+    "VER-001 findings example": "prose",
+    "valid example in middle": "prose",
+    "valid example at end": "prose",
+    "unfenced malformed claim": "json",
+    "current genuine result with trailing prose": "json"
+  },
+  "originalProbe": "docs/evidence/WO-255/verifier-002/probes.mjs",
+  "checks": 30,
+  "failures": 0,
+  "observations": [
+    {
+      "name": "plain JSON",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "VER-001 schemaVersion example",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "VER-001 findings example",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "valid example in middle",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "valid example at end",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "single-line code span",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "multiline code span",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "multiline double-backtick code span",
+      "passed": true,
+      "expected": "whole prose preserved; no adopted example findings",
+      "accepted": true,
+      "structured": false,
+      "findings": [],
+      "wholeProsePreserved": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "whole valid result",
+      "passed": true,
+      "expected": "structured result",
+      "accepted": true,
+      "structured": true,
+      "findings": [],
+      "wholeProsePreserved": false,
+      "printed": "review: consistency round 1 found 0 (0 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "whole malformed result",
+      "passed": true,
+      "expected": "refused",
+      "accepted": false,
+      "error": "invalid-result: change review result shape"
+    },
+    {
+      "name": "whole fenced malformed result",
+      "passed": true,
+      "expected": "refused",
+      "accepted": false,
+      "error": "invalid-result: change review result shape"
+    },
+    {
+      "name": "unfenced malformed claim",
+      "passed": true,
+      "expected": "refused",
+      "accepted": false,
+      "error": "invalid-result: change review result shape"
+    },
+    {
+      "name": "base genuine result with trailing prose",
+      "passed": true,
+      "expected": "structured result",
+      "accepted": true,
+      "structured": true,
+      "findings": [
+        "F1"
+      ],
+      "wholeProsePreserved": false,
+      "printed": "review: consistency round 1 found 1 (0 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "current genuine result with trailing prose",
+      "passed": true,
+      "expected": "structured result",
+      "accepted": true,
+      "structured": true,
+      "findings": [
+        "F1"
+      ],
+      "wholeProsePreserved": false,
+      "printed": "review: consistency round 1 found 1 (0 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "stale tree without flag",
+      "passed": true,
+      "error": "the report reviewed tree 2886f7db9e88bf3fef757c076ba3376f8a9ca094, and the working tree is now cd853b9be98c6b9d80e2631d95830bed8afb4f02: name the tree it judged with --tree 2886f7db9e88bf3fef757c076ba3376f8a9ca094"
+    },
+    {
+      "name": "explicit earlier tree and actor",
+      "passed": true
+    },
+    {
+      "name": "distinct planning lanes round-trip",
+      "passed": true,
+      "branches": [
+        "planning/2030-01-02/recheck",
+        "planning/2030-01-02-recheck-5cd9ca9c",
+        "planning/2030-01-02%2Frecheck",
+        "planning/2030-01-02+recheck",
+        "planning/2030-01-02/café"
+      ],
+      "lanes": [
+        "docs/control/local/reviews/planning-2030-01-02%2Frecheck",
+        "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c",
+        "docs/control/local/reviews/planning-2030-01-02%252Frecheck",
+        "docs/control/local/reviews/planning-2030-01-02%2Brecheck",
+        "docs/control/local/reviews/planning-2030-01-02%2Fcaf%C3%A9"
+      ]
+    },
+    {
+      "name": "first review for branch 1",
+      "passed": true
+    },
+    {
+      "name": "first review for branch 2",
+      "passed": true
+    },
+    {
+      "name": "first review for branch 3",
+      "passed": true
+    },
+    {
+      "name": "first review for branch 4",
+      "passed": true
+    },
+    {
+      "name": "first review for branch 5",
+      "passed": true
+    },
+    {
+      "name": "five branches retain five first reports",
+      "passed": true,
+      "reports": [
+        "docs/control/local/reviews/planning-2030-01-02%2Frecheck/round-1-criteria.md",
+        "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c/round-1-criteria.md",
+        "docs/control/local/reviews/planning-2030-01-02%252Frecheck/round-1-criteria.md",
+        "docs/control/local/reviews/planning-2030-01-02%2Brecheck/round-1-criteria.md",
+        "docs/control/local/reviews/planning-2030-01-02%2Fcaf%C3%A9/round-1-criteria.md"
+      ]
+    },
+    {
+      "name": "whole-change recheck retains base and original plus later files",
+      "passed": true
+    },
+    {
+      "name": "fresh since ladder names its base",
+      "passed": true
+    },
+    {
+      "name": "reordered traced-consumer columns",
+      "passed": true
+    },
+    {
+      "name": "missing traced consumer refused",
+      "passed": true
+    },
+    {
+      "name": "reordered item columns and missing location",
+      "passed": true
+    },
+    {
+      "name": "acted-on missing location refused",
+      "passed": true
+    },
+    {
+      "name": "capture brief digest and quotation omission",
+      "passed": true
+    }
+  ]
+}

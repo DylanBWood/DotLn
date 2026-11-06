@@ -1,0 +1,5 @@
+# Final handoff readback
+
+The first explicit output read requested 32,768 bytes, beyond the handoff's then-current 27,645 bytes, and was refused before reading. The final read uses the exact file size. Reading the ledger parser also identified the required `unreviewed N lines` spelling; the draft self-review line was put into that form, with its phase detail retained in the following paragraph. These are handoff-only corrections inside the document row's excluded evidence directory. The canonical product and document rows are unchanged.
+
+Correction: the reader's checked implementation (`readHarnessOutput` in `packages/skeleton/src/harness-host.ts`) caps each request at 16,384 bytes and clamps its end to the file size. The initial diagnosis that the first request failed because it exceeded the file size was incorrect; both requests exceeded the per-call cap. The final delivery uses 8,192-byte chunks and follows the returned `nextOffset`, which preserves UTF-8 boundaries. No reader implementation change is needed.

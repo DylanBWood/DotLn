@@ -7,7 +7,7 @@
 - [x] [WO-253] — Temporary roots leave with the gate that made them, and a prune is a bounded step · **final-reviewed**
 - [x] [WO-254] — The hooks get out of the operator's way · **final-reviewed**
 - [x] [WO-246] — The launchpad's own pull requests · **final-reviewed**
-- [ ] [WO-255] — Reviews find what the complete run finds · **queued**
+- [x] [WO-255] — Reviews find what the complete run finds · **final-reviewed**
 - [ ] [WO-257] — Instance returns of 2026-11-03 · **queued**
 - [ ] [WO-242] — Plan-first mode · **queued**
 - [ ] [WO-243] — Closeout checks follow the repositories an order changed · **queued**
@@ -42,22 +42,6 @@ None.
 None.
 
 ## Open
-
-### WO-255
-
-[WO-255 — Reviews find what the complete run finds: the planning reviews lane is keyed by branch so two passes on one day each get their reviews, a recheck reads the whole change again instead of the repair alone, the consistency review carries a traced-consumers table the helper refuses to record without, the criteria adversary on a planning subject receives the operator's dispatch and answers item by item, a registered target's order can be reviewed through the same helper, and every worker launch selects one of the operator's four model options with the harness defaults (version assigned at activation)](WO-255-reviews-find-what-the-complete-run-finds.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-250: satisfied-by-close (met) — the review helper, its ladder, its lane and its record command this order changes.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Authority: [docs/work-orders/WO-255-reviews-find-what-the-complete-run-finds.md](WO-255-reviews-find-what-the-complete-run-finds.md)
 
 ### WO-257
 

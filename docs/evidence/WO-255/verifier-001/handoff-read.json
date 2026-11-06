@@ -1,0 +1,9 @@
+{
+  "phase": "verification handoff",
+  "failure": "The first post-compaction batch combined the verifier skill with a full document-gate record and exceeded the aggregate output budget.",
+  "disposition": "The truncated output was not used as evidence. Separate bounded reads recovered the skill handoff requirements and selected document-gate identity, execution, coverage and cleanup fields. The previously read report was checked against its unchanged SHA-256 before filing.",
+  "relatedDecision": "WO-255-D023",
+  "documentGate": "document-gate.json",
+  "documentGateResult": "27 required suites passed; no retained temporary roots or cleanup blockers",
+  "reportSha256": "9fcdb070e6fa09f0bcf9954fc8cc5d1805b8b3319e3d9ccfdb8225628d455988"
+}

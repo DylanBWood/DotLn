@@ -1,0 +1,103 @@
+{
+  "proseExample": {
+    "accepted": true,
+    "result": {
+      "line": "review: design round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name",
+      "report": "docs/control/local/reviews/WO-901/round-1-design.md",
+      "record": "docs/control/local/reviews/WO-901/round-1-design.json"
+    }
+  },
+  "versionedJsonExample": {
+    "accepted": false,
+    "error": "invalid-result: change review result shape"
+  },
+  "findingsJsonExample": {
+    "accepted": false,
+    "error": "invalid-result: change review result shape"
+  },
+  "staleReport": {
+    "accepted": false,
+    "error": "the report reviewed tree f114716209cbf7f1ffa0ea68aca2cd8dc2d310b1, and the working tree is now 84204d8f3ce6b38a6f67d4bf57f8526fb045f8b5: name the tree it judged with --tree f114716209cbf7f1ffa0ea68aca2cd8dc2d310b1"
+  },
+  "explicitTree": {
+    "accepted": true,
+    "result": {
+      "line": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name",
+      "report": "docs/control/local/reviews/WO-901/round-1-consistency.md",
+      "record": "docs/control/local/reviews/WO-901/round-1-consistency.json"
+    }
+  },
+  "boundRecord": {
+    "model": {
+      "value": "gpt-6-astra",
+      "source": "recorder-attested"
+    },
+    "effort": {
+      "value": "max",
+      "source": "recorder-attested"
+    },
+    "treeMatches": true
+  },
+  "emptyTable": "the `Traced consumers` table is empty: a consistency report carries a `Traced consumers` table (changed contract, consumer, command, result) with a row for each consumer traced",
+  "firstDryReport": "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c/round-1-criteria.md",
+  "firstBranch": {
+    "branch": "planning/2030-01-02/recheck",
+    "accepted": true,
+    "result": {
+      "line": "review: criteria round 1 found 0 (0 blocking); 0 h 0 min",
+      "report": "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c/round-1-criteria.md",
+      "record": "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c/round-1-criteria.json",
+      "findings": 0,
+      "blocking": 0
+    }
+  },
+  "secondDryReport": "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c/round-1-criteria.md",
+  "secondBranch": {
+    "branch": "planning/2030-01-02-recheck-5cd9ca9c",
+    "accepted": false,
+    "error": "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c/round-1-criteria.md already holds this round's criteria report; a later round takes the next --round, a fresh round 1 names its base with --since, and a report you mean to replace is removed by hand first"
+  },
+  "laneCollision": {
+    "first": "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c",
+    "second": "docs/control/local/reviews/planning-2030-01-02-recheck-5cd9ca9c"
+  },
+  "wholeRecheck": {
+    "basePreserved": true,
+    "originalAndNewDocument": true
+  },
+  "capture": {
+    "endsWithCapture": true,
+    "digestMatches": true,
+    "shortQuoteRemoved": true,
+    "itemsPreserved": true
+  },
+  "dispatch": [
+    {
+      "prompt": "planning: pass, astra.",
+      "options": {
+        "codex": "astra"
+      }
+    },
+    {
+      "prompt": "resume: next astra; keep the reviews short",
+      "options": {
+        "codex": "astra"
+      }
+    },
+    {
+      "prompt": "planning: read the astra notes first",
+      "options": {}
+    },
+    {
+      "prompt": "resume: verify fable astra",
+      "options": {
+        "codex": "astra",
+        "claude": "fable"
+      }
+    },
+    {
+      "prompt": "resume: verify",
+      "options": {}
+    }
+  ]
+}

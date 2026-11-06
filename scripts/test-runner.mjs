@@ -296,6 +296,9 @@ export const machinerySources = {
     "scripts/lib/retained-session.mjs",
     // The stopped-apply report its temporary-root cases exercise (WO-237).
     "scripts/lib/temporary-prune-summary.mjs",
+    // The dispatch-word case resolves the session's worker option through
+    // the shared launch module (WO-255).
+    "scripts/lib/worker-launch.mjs",
     "scripts/build.mjs",
     "scripts/lib/planning-document.mjs",
     "scripts/lib/off-ramps.mjs",
@@ -511,6 +514,10 @@ export const machinerySources = {
     "scripts/lib/worker-launch.mjs",
     "scripts/lib/review-worker.mjs",
     "scripts/lib/review-worker-fake.mjs",
+    // A registered target's order is bound through the target registry and
+    // read with the host's safe Git options (WO-255).
+    "scripts/lib/target-worktrees.mjs",
+    "scripts/lib/github-repository.mjs",
     "scripts/lib/checkpoint.mjs",
     "scripts/worker.mjs",
     "scripts/test-review-worker.mjs",
@@ -744,6 +751,8 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo253-role-baseline.json",
     "packages/skeleton/fixtures/wo254-role-baseline.json",
     "packages/skeleton/fixtures/wo246-role-baseline.json",
+    "packages/skeleton/fixtures/wo255-role-baseline.json",
+    "packages/skeleton/fixtures/wo255-repair-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",

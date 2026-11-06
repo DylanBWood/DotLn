@@ -9,10 +9,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  existsSync,
   realpathSync,
   mkdirSync,
   readFileSync,
   readdirSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -22,6 +24,7 @@ import { codexContinuation } from "../packages/compiler/src/codex-continuation.m
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
   harnessSessionPhase,
+  harnessWorkerWords,
   lowerToHarness,
   operatorMessageClass,
 } from "../packages/compiler/dist/src/index.js";
@@ -139,6 +142,7 @@ async function fixture(run) {
       (prompt) => operatorMessageClass(prompt),
       loadRuntime,
       harnessSessionPhase,
+      (prompt) => harnessWorkerWords(prompt),
     );
   const compact = async () => {
     await hook("PostCompact", { trigger: "auto" });
@@ -241,6 +245,62 @@ test("Codex conversation text does not control compaction recovery", async () =>
 
 const journalRows = (path) =>
   readFileSync(path, "utf8").trim().split("\n").filter(Boolean).map(JSON.parse);
+
+test("WO-255 a Codex dispatch line journals the worker options it names for the session's launches, and an ordinary message selects nothing", async () =>
+  fixture(async ({ directory, key, hook }) => {
+    for (const prompt of [
+      "planning: standard pass, astra",
+      "resume: next fable",
+      "resume: next",
+      "use astra for the reviews",
+    ])
+      await hook("UserPromptSubmit", { prompt });
+    const selected = journalRows(join(directory, `${key}.jsonl`)).filter(
+      (row) => row.typedEvent === "WorkerOptionsSelected",
+    );
+    assert.deepEqual(
+      selected.map(({ options, source }) => [options, source]),
+      [
+        [{ codex: "astra" }, "codex-prompt-hook"],
+        [{ claude: "fable" }, "codex-prompt-hook"],
+        [{}, "codex-prompt-hook"],
+      ],
+    );
+  }));
+
+test("WO-255 a checkout's first Codex dispatch line makes its journal lane and keeps the selection, an ordinary message makes nothing, and no lane is made through a link", async () =>
+  fixture(async ({ root, directory, key, hook }) => {
+    // A checkout that has never held a journal: no local control lane.
+    const local = join(root, "docs/control/local");
+    rmSync(local, { recursive: true, force: true });
+    await hook("UserPromptSubmit", { prompt: "use astra for the reviews" });
+    assert.equal(existsSync(local), false, "an ordinary message makes no lane");
+    await hook("UserPromptSubmit", {
+      prompt: "planning: standard pass, astra",
+    });
+    assert.deepEqual(
+      journalRows(join(directory, `${key}.jsonl`))
+        .filter((row) => row.typedEvent === "WorkerOptionsSelected")
+        .map(({ options, source }) => [options, source]),
+      [[{ codex: "astra" }, "codex-prompt-hook"]],
+    );
+    // A local control lane that is a link leads nowhere the hook writes.
+    rmSync(local, { recursive: true, force: true });
+    const elsewhere = realpathSync(
+      createFixtureRoot(join(tmpdir(), "dotln-codex-elsewhere-")),
+    );
+    try {
+      symlinkSync(elsewhere, local);
+      await hook("UserPromptSubmit", { prompt: "resume: status astra" });
+      // Only the fixture root's own ownership marker is there.
+      assert.deepEqual(
+        readdirSync(elsewhere).filter((name) => name !== ".dotln-owner.json"),
+        [],
+      );
+    } finally {
+      rmSync(elsewhere, { recursive: true, force: true });
+    }
+  }));
 
 test("WO-254 Codex operator instructions are captured with their form class and restored verbatim after a compaction, and the first reply is probed", async () =>
   fixture(async ({ root, directory, key, hook, compact }) => {

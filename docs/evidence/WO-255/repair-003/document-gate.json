@@ -1,0 +1,218 @@
+{
+  "checkId": "npm run test:docs",
+  "treeHash": "d7f2092146058f4d7f6be3aceb3c06b841587845",
+  "documentTreeHash": "bb112ac971cc931e8616913a62abc7149860c94f",
+  "documentTreeExcludes": "docs/evidence/WO-255",
+  "codeIdentity": "39bd5b475ad3c259f473ca94796fb86df2ddddac8620f501dbf4a26b8c006c97",
+  "durationMs": 121642,
+  "exitCode": 0,
+  "executed": true,
+  "recordedAt": "2026-11-06T00:05:43.367Z",
+  "startedAt": "2026-11-06T00:03:41.725Z",
+  "gateSelection": "document",
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshSuites": 27,
+  "reusedSuites": 0,
+  "requiredSuites": [
+    "build",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host",
+    "license-surfaces",
+    "resume-docs",
+    "launchpad-docs",
+    "docs-check",
+    "docs-check-fixtures",
+    "comment-labels",
+    "comment-labels-fixtures",
+    "lineage-fixtures",
+    "kernel-docs",
+    "skeleton-docs",
+    "console-docs",
+    "resident-bind",
+    "local-runner-double",
+    "harness-context",
+    "plan-refutation-current",
+    "artifact-corpus",
+    "plan",
+    "reader-profiles",
+    "reader-fixtures",
+    "entropy"
+  ],
+  "unrunSuites": [],
+  "stale": [],
+  "command": "npm run test:docs",
+  "cases": [
+    {
+      "name": "build",
+      "durationMs": 794,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "format",
+      "durationMs": 10165,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "configuration-root",
+      "durationMs": 7592,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "registrations",
+      "durationMs": 701,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "declarations",
+      "durationMs": 1397,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "generated",
+      "durationMs": 29661,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "host",
+      "durationMs": 114,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "license-surfaces",
+      "durationMs": 5509,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "resume-docs",
+      "durationMs": 4790,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "launchpad-docs",
+      "durationMs": 6846,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "docs-check",
+      "durationMs": 32510,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "docs-check-fixtures",
+      "durationMs": 32366,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "comment-labels",
+      "durationMs": 2003,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "comment-labels-fixtures",
+      "durationMs": 924,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "lineage-fixtures",
+      "durationMs": 1027,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "kernel-docs",
+      "durationMs": 1113,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "skeleton-docs",
+      "durationMs": 25335,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "console-docs",
+      "durationMs": 36493,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "resident-bind",
+      "durationMs": 11500,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "local-runner-double",
+      "durationMs": 3985,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "harness-context",
+      "durationMs": 210,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "plan-refutation-current",
+      "durationMs": 20382,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "artifact-corpus",
+      "durationMs": 229,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "plan",
+      "durationMs": 11803,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "reader-profiles",
+      "durationMs": 760,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "reader-fixtures",
+      "durationMs": 10421,
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "name": "entropy",
+      "durationMs": 406,
+      "exitCode": 0,
+      "executed": true
+    }
+  ],
+  "temporaryCleanup": {
+    "removed": 235,
+    "retained": 0,
+    "blockers": 0
+  }
+}

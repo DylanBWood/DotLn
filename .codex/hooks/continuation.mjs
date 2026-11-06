@@ -3,7 +3,7 @@ const { text } = await import("node:stream/consumers");
 try {
 const source = await text(process.stdin);
 if (Buffer.byteLength(source) > 1048576) throw new Error("oversized hook input");
-const output = await (async function codexContinuation(input, operatorControl, classify, loadRuntime, phaseOf) {
+const output = await (async function codexContinuation(input, operatorControl, classify, loadRuntime, phaseOf, workerWords) {
     const event = input?.hook_event_name;
     if (!["PostCompact", "SessionStart", "Stop", "UserPromptSubmit"].includes(event) ||
         typeof input.session_id !== "string" ||
@@ -79,7 +79,7 @@ const output = await (async function codexContinuation(input, operatorControl, c
         return { text: bytes.subarray(0, end).toString("utf8"), truncated: true };
     };
     /** The checkout's ignored harness lane, or null when it has none. */
-    const lane = () => {
+    const lane = ({ create = false } = {}) => {
         const cwd = fs.realpathSync(input.cwd);
         const git = spawnSync("git", ["rev-parse", "--show-toplevel"], {
             cwd,
@@ -90,6 +90,19 @@ const output = await (async function codexContinuation(input, operatorControl, c
             return null;
         const root = fs.realpathSync(git.stdout.trim());
         const directory = join(root, "docs/control/local/harness");
+        // A checkout that has never held a journal gets its lane when a line has
+        // something to keep there, made one level at a time inside the checkout
+        // and never through a link, as the harness makes it.
+        if (create && !fs.existsSync(directory)) {
+            let at = root;
+            for (const part of ["docs", "control", "local", "harness"]) {
+                at = join(at, part);
+                if (!fs.existsSync(at))
+                    fs.mkdirSync(at, { mode: 0o700 });
+                else if (fs.realpathSync(at) !== at)
+                    return null;
+            }
+        }
         return fs.existsSync(directory) && fs.realpathSync(directory) === directory
             ? { root, directory }
             : null;
@@ -153,11 +166,25 @@ const output = await (async function codexContinuation(input, operatorControl, c
         // for a compaction to restore, and a resumed turn reserves its writer.
         // Each step fails alone, so a lost capture never costs the writer and an
         // unreadable state never withholds the operator's prompt.
+        // Every dispatch line states its selection, an empty one included, so a
+        // later dispatch that names no option returns to the defaults.
+        let options = null;
+        try {
+            options =
+                typeof workerWords === "function"
+                    ? workerWords(typeof input.prompt === "string" ? input.prompt : "")
+                    : null;
+        }
+        catch {
+            // The selection is an observation; the launch then takes its default.
+        }
         let found = null;
         /** @type {Record<string, any> | null} */
         let session = null;
         try {
-            found = lane();
+            // A dispatch line makes the lane in a checkout that has none yet, so
+            // the first line's selection is kept for the session's launches.
+            found = lane({ create: Boolean(options) });
             if (found)
                 session = read(join(found.directory, `${key}.json`));
         }
@@ -168,6 +195,18 @@ const output = await (async function codexContinuation(input, operatorControl, c
             return control ?? {};
         const { root, directory } = found;
         const journal = join(directory, `${key}.jsonl`);
+        try {
+            if (options)
+                append(journal, {
+                    event,
+                    typedEvent: "WorkerOptionsSelected",
+                    options,
+                    source: "codex-prompt-hook",
+                });
+        }
+        catch {
+            // The selection is an observation; the launch then takes its default.
+        }
         if (!session || !/^WO-\d{3}$/.test(session.workOrder ?? "")) {
             try {
                 append(journal, { event, codexPromptObserved: true });
@@ -795,6 +834,38 @@ const output = await (async function codexContinuation(input, operatorControl, c
         reviewer: "finalReview",
     };
     return phases[session.role ?? ""] ?? session.role ?? "unknown";
-});
+}, (prompt) => (function harnessWorkerWords(prompt, promptLine = harnessPromptLine) {
+    const text = promptLine(prompt).text;
+    if (!/^(?:resume|planning):/u.test(text))
+        return null;
+    const selected = {};
+    const semicolon = text.indexOf(";");
+    for (const part of semicolon < 0
+        ? [text]
+        : [text, text.slice(0, semicolon)]) {
+        const words = part.toLowerCase().match(/[a-z0-9]+(?:\.[0-9]+)*/gu) ?? [];
+        for (let index = words.length - 1; index >= 0; index--) {
+            const word = words[index];
+            if (word === "fable")
+                selected.claude = "fable";
+            else if (word === "astra")
+                selected.codex = "astra";
+            else if (word !== "and" && word !== "5.1" && word !== "6")
+                break;
+        }
+    }
+    return selected;
+})(prompt, function harnessPromptLine(prompt) {
+    const lines = (prompt ?? "").split(/\r?\n/u);
+    let index = 0;
+    while (index < lines.length && !lines[index].trim())
+        index++;
+    if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
+        index++;
+        while (index < lines.length && !lines[index].trim())
+            index++;
+    }
+    return { text: (lines[index] ?? "").trim(), index };
+}));
 process.stdout.write(JSON.stringify(output));
 } catch { process.stdout.write(JSON.stringify({systemMessage:"DotLn Codex continuation input unavailable; native stopping remains available."})); }

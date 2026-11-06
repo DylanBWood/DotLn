@@ -1,0 +1,53 @@
+{
+  "reviewWorker": {
+    "source": "scripts/test-review-worker.mjs",
+    "tests": 25,
+    "pass": 25,
+    "fail": 0
+  },
+  "harnessAndContinuation": {
+    "sources": [
+      "scripts/test-harness.mjs",
+      "scripts/test-codex-continuation.mjs"
+    ],
+    "selection": "WO-255 and WO-054 Codex installation",
+    "tests": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "directRefutation": {
+    "source": "scripts/test-plan-refutation.mjs",
+    "selection": "WO-126 direct command",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0
+  },
+  "independentProbes": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-255/verifier-002/probes.mjs",
+    "exitCode": 1,
+    "checks": 30,
+    "passed": 26,
+    "failed": 4,
+    "interpretation": "Four failed expectations reproduce three product defects; both multiline code-span cases are F2."
+  },
+  "format": {
+    "command": "npm run format:check",
+    "exitCode": 0,
+    "output": "> format:check\n> prettier --check . --ignore-unknown\n\nChecking formatting...\nAll matched files use Prettier code style!"
+  },
+  "harness": {
+    "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+    "exitCode": 0,
+    "output": "harness check: 43 generated surfaces; local-terms list: present"
+  },
+  "publication": {
+    "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+    "exitCode": 0,
+    "output": "> publication:check\n> node scripts/check-publication.mjs\n\nPASS index coverage: 256/256 product headings indexed\nPASS dual-voice links: 3 identical claim links per voice\nCURRENT everyday-ai-user-toc.md: 29 linked source sections match\nCURRENT software-engineer-toc.md: 45 linked source sections match\nPASS publication bootstrap checks"
+  },
+  "limits": [
+    "No live model or native custom-agent launch; no verifier subagent.",
+    "Product tests used the bounded wrapper outside a gate.",
+    "The activation-base recorder probe changes only import resolution; shared helpers and validator come from the current checkout."
+  ]
+}

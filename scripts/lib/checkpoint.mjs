@@ -10,12 +10,14 @@ import { runGit } from "./git.mjs";
  * ignored files left out. It is written through a temporary index, so the
  * real index is untouched; only the objects land in the repository's store.
  * @param {string} root */
-export function workingTree(root) {
+export function workingTree(root, gitOptions = []) {
   const temporary = createScratchRoot(join(tmpdir(), "dotln-checkpoint-"));
   try {
     const env = { ...process.env, GIT_INDEX_FILE: join(temporary, "index") };
-    runGit(root, ["add", "-A"], { env });
-    return runGit(root, ["write-tree"], { env });
+    // A caller reading a repository it does not own passes the host's safe
+    // options, so that repository's hooks and file monitor never run.
+    runGit(root, [...gitOptions, "add", "-A"], { env });
+    return runGit(root, [...gitOptions, "write-tree"], { env });
   } finally {
     rmSync(temporary, { recursive: true, force: true });
   }

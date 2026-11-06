@@ -1,0 +1,318 @@
+{
+  "checks": 31,
+  "passed": 31,
+  "failed": 0,
+  "observations": [
+    {
+      "name": "auto: prose with a nested non-result JSON example stays prose",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "auto",
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "auto: prose without any brace stays prose",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "auto",
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "auto: a whole pretty-printed result is structured",
+      "passed": true,
+      "expected": "structured",
+      "outcome": "recorded",
+      "structured": true,
+      "inputFormat": "auto",
+      "findings": [
+        "F1"
+      ],
+      "wholeTextKept": false,
+      "printed": "review: consistency round 1 found 1 (1 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "auto: a whole tilde-fenced result is structured",
+      "passed": true,
+      "expected": "structured",
+      "outcome": "recorded",
+      "structured": true,
+      "inputFormat": "auto",
+      "findings": [
+        "F1"
+      ],
+      "wholeTextKept": false,
+      "printed": "review: consistency round 1 found 1 (1 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "auto: VER-001 findings example is refused naming both formats",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "mixed review text contains a possible findings object: use --format prose to preserve examples, or --format json to bind one result, including a result followed by prose; nothing was recorded"
+    },
+    {
+      "name": "auto: a genuine result followed by prose is refused naming both formats",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "mixed review text contains a possible findings object: use --format prose to preserve examples, or --format json to bind one result, including a result followed by prose; nothing was recorded"
+    },
+    {
+      "name": "auto: an example inside a blockquote is refused, not adopted",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "mixed review text contains a possible findings object: use --format prose to preserve examples, or --format json to bind one result, including a result followed by prose; nothing was recorded"
+    },
+    {
+      "name": "prose: VER-001 findings example is preserved",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "prose",
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "prose: a terminal tilde-fenced valid example with a sample finding is preserved",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "prose",
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "prose: examples in a list item and a blockquote are preserved",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "prose",
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "prose: a Traced consumers table only inside a fenced example is refused",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "the returned report is not recorded: a consistency report carries a `Traced consumers` table (changed contract, consumer, command, result), and this report has none"
+    },
+    {
+      "name": "prose: CRLF report with an h3 heading and the table directly under it is recorded",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "prose",
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "prose: a table without the fixture manifests row is refused naming it",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "the returned report is not recorded: the `Traced consumers` table has no fixture manifests row; name the command run there and its result"
+    },
+    {
+      "name": "json: VER-002 F3 genuine fenced result with a closing sentence keeps F1 and its table",
+      "passed": true,
+      "expected": "structured",
+      "outcome": "recorded",
+      "structured": true,
+      "inputFormat": "json",
+      "findings": [
+        "F1"
+      ],
+      "wholeTextKept": false,
+      "printed": "review: consistency round 1 found 1 (1 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "json: an unfenced result inside a sentence keeps F1",
+      "passed": true,
+      "expected": "structured",
+      "outcome": "recorded",
+      "structured": true,
+      "inputFormat": "json",
+      "findings": [
+        "F1"
+      ],
+      "wholeTextKept": false,
+      "printed": "review: consistency round 1 found 1 (1 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "json: a result plus a quoted result example is refused as two",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "--format json needs exactly one findings object; found 2. Put the result alone in the input file when it also quotes result examples."
+    },
+    {
+      "name": "json: a malformed result with prose is refused",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "invalid-result: change review result shape"
+    },
+    {
+      "name": "json: a result whose report and surrounding prose lack the table is refused naming it",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "the returned report is not recorded: a consistency report carries a `Traced consumers` table (changed contract, consumer, command, result), and this report has none"
+    },
+    {
+      "name": "json: closing prose holding a non-JSON brace is refused or keeps F1, never silent prose",
+      "passed": true,
+      "expected": "either",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "--format json: invalid JSON object; put the result alone in the input file"
+    },
+    {
+      "name": "format: an unknown format is refused naming prose or json",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "--format is prose or json; usage: npm run worker -- record --kind criteria|design|consistency|combined --from <returned-text file> [--format prose|json] [--host claude|codex] [--model <model>] [--effort <level>] [--tree <object>] [--order WO-NNN [--target <repository-id>] | --subject planning [--capture <file>]...] [--round N] [--recheck <report>]... [--since <tree>] [--tokens N] [--duration-ms N]"
+    },
+    {
+      "name": "json: host, model, effort and an earlier --tree are recorded beside the format",
+      "passed": true,
+      "expected": "structured",
+      "outcome": "recorded",
+      "structured": true,
+      "inputFormat": "json",
+      "findings": [
+        "F1"
+      ],
+      "wholeTextKept": false,
+      "host": "codex",
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "treeMatches": true,
+      "treeSource": "named with --tree",
+      "printed": "review: consistency round 1 found 1 (1 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "dispatcher: worker record --format prose keeps the example-bearing prose",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "prose",
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": ""
+    },
+    {
+      "name": "dispatcher: worker record without a format refuses the same text",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "mixed review text contains a possible findings object: use --format prose to preserve examples, or --format json to bind one result, including a result followed by prose; nothing was recorded"
+    },
+    {
+      "name": "capture prose: Items table plus a findings example records the digest and no capture bytes",
+      "passed": true,
+      "expected": "prose",
+      "outcome": "recorded",
+      "structured": false,
+      "inputFormat": "prose",
+      "findings": [],
+      "wholeTextKept": true,
+      "captureDigestMatches": true,
+      "captureBytesAbsent": true,
+      "printed": "review: criteria round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    },
+    {
+      "name": "capture prose: an Items table only inside a blockquote is refused naming Items",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "the returned report is not recorded: a criteria review given the operator's dispatch answers it in an `## Items` table (item, location in the subject, disposition), and this report has none"
+    },
+    {
+      "name": "capture json: a genuine result whose report holds the Items table is structured",
+      "passed": true,
+      "expected": "structured",
+      "outcome": "recorded",
+      "structured": true,
+      "inputFormat": "json",
+      "findings": [
+        "F1"
+      ],
+      "wholeTextKept": false,
+      "printed": "review: criteria round 1 found 1 (1 blocking); recorded from the Agent route"
+    },
+    {
+      "name": "helper: a returned consistency report without the table is refused",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "namesTable": true,
+      "printed": "review: consistency round 1: the worker's report is refused, since a consistency report carries a `Traced consumers` table (changed contract, consumer, command, result), and this report has none; it returned 1 findings; 0 h 0 min; nothing written to docs/control/local/reviews/WO-901"
+    },
+    {
+      "name": "helper: a returned consistency report whose table is only in a fence is refused",
+      "passed": true,
+      "expected": "refused",
+      "outcome": "refused",
+      "namesTable": true,
+      "printed": "review: consistency round 1: the worker's report is refused, since a consistency report carries a `Traced consumers` table (changed contract, consumer, command, result), and this report has none; it returned 1 findings; 0 h 0 min; nothing written to docs/control/local/reviews/WO-901"
+    },
+    {
+      "name": "helper: a returned consistency report with the table is recorded",
+      "passed": true,
+      "expected": "recorded",
+      "outcome": "recorded",
+      "namesTable": false,
+      "printed": "review: consistency round 1 found 1 (1 blocking); 0 h 0 min"
+    },
+    {
+      "name": "base: the VER-001 findings example was not kept as prose at main either",
+      "passed": true,
+      "expected": "either",
+      "outcome": "refused",
+      "laneWritten": false,
+      "error": "invalid-result: change review result shape"
+    },
+    {
+      "name": "base: a genuine result with closing prose holding a non-JSON brace lost F1 or was refused at main",
+      "passed": true,
+      "expected": "either",
+      "outcome": "recorded",
+      "structured": false,
+      "findings": [],
+      "wholeTextKept": true,
+      "printed": "review: consistency round 1: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name"
+    }
+  ]
+}
