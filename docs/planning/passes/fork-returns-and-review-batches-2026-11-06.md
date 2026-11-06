@@ -623,10 +623,13 @@ unknown); the exit reading is in §Validation. Subagents: budget 20
 (`subagentCap`); the plan stated before the first spawn: one refuter
 (`dotln-worker`, claude-opus-5-5 at xhigh, the Claude default; the dispatch
 line names no fable worker), launched once with no re-task; in the event
-two launches, the first stopped by this session after about 0 h 5 min when
-the document gate refused the committed subject's front-page edit and the
-subject had to change (its judgment was not read), the second on the
-corrected subject; no review worker (the dispatch carries no `reviewed` label and WO-244's routine is not
+three launches: the first stopped by this session after about 0 h 5 min
+when the document gate refused the committed subject's front-page edit and
+the subject had to change (its judgment was not read); the second on the
+corrected subject (0 h 6 min, 127,712 tokens), whose four defect findings
+were integrated before any receipt; the third on the integrated subject
+(0 h 7 min, 137,725 tokens), filed as receipt 064 with its one hold
+repaired; no review worker (the dispatch carries no `reviewed` label and WO-244's routine is not
 landed; the helper's ceiling against this pass's own subject is measured in
 §Validation with `--dry-run`, which launches nothing). Wall-clock of the
 pass's commands: `plan start` about 0 h 1 min; the rest in §Validation.
@@ -707,3 +710,36 @@ appended when observed.
   11). The other eight are the executor's and go on WO-257's catalog row
   with the second receipt's. The integrated subject was committed and
   judged again by a fresh refuter (below).
+- Third commit `8463e51bd`; `npm run plan -- refute` at it printed the
+  prompt (133,179 bytes). One fresh `dotln-worker` (claude-opus-5-5 at
+  xhigh) judged it from the prompt file alone: 0 h 7 min, 137,725 tokens
+  and three tool uses; `misaligned` with one hold on criterion 2 (the
+  no-update rule is prose only while the same order emits a typed
+  permission rule; the vision's one-paragraph story answers a correction
+  with a typed mechanism) and seven known issues. Its statement named the
+  session scratch's absolute path and was repaired to the `<tmp>/`
+  placeholder without touching the judgment, as on 2026-11-03.
+- `npm run plan -- receipt`: receipt `2026-11-06-planning-92d06e6e83aa82b0-064`
+  filed and committed (`fc2eda5af`); the plan check reported the
+  unanswered hold `hold-7b7353debbfc870a137384d9`.
+- The hold repaired by the first of its two routes: criterion 2 now
+  requires the typed refusal of `launchpad update` under a journaled
+  planning or entropy dispatch unless `--operator-request --capture
+  <file> --capture-hash sha256:<digest>` names the operator's in-session
+  words, as `accept-overrun` records them, with the sentence kept as the
+  fallback where no session journal exists; step 2, the Design bullet, the
+  Cost line and the known issues say so, and the 2026-11-04 receipt's
+  known issue on the same point is answered with it. `npm run plan --
+  dispose` recorded the disposition binding the original and accepted
+  criterion text, binding the source and accepted criterion hashes and
+  the source and accepted Cost hashes. The seven known issues, and the
+  first judgment's three that were not integrated, are on WO-257's catalog
+  row with the planner's readings.
+- `npm run plan -- check` after the disposition: "needs a receipt matching
+  the current subject: existing work-order bytes changed", since a
+  disposition admits only the bound criterion and Cost repairs and the
+  repair also changed step 2, the Design bullet and a known-issues entry
+  so the order stays coherent. The pass keeps the coherent order and has
+  the final subject judged again by a fresh refuter, as the 2026-11-03
+  pass did after its correction; receipt 064 and its disposition stay as
+  the record of the earlier subject (below).

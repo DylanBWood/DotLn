@@ -20,8 +20,12 @@ appeared six times on one pull request, and the table above it already
 carries the per-dispatch figures); in the planner role text for an instance
 and the kit guide §Planning in this instance, the sentence that a planning
 or entropy pass never runs `launchpad update` and never takes a newer
-starter release unless the operator asks for it in that session, with
-`kit.applyInstanceActions` unchanged (the operator's items 12 and 13: the
+starter release unless the operator asks for it in that session, and, on
+receipt 064's hold of 2026-11-06, in `scripts/launchpad.mjs` (`update`) a
+typed refusal under a journaled planning or entropy dispatch unless
+`--operator-request --capture <file> --capture-hash sha256:<digest>` names
+the operator's in-session words, with `kit.applyInstanceActions` unchanged
+(the operator's items 12 and 13: the
 fork's passes of 2026-11-03 took v0.113.0 "under your standing rule" four
 minutes after its publication, and an entropy pass over a sibling target
 took an update too; the operator never gave that rule); in `scripts/lib/document-kinds.mjs` (`defaultEntryPoints`, 44
@@ -365,10 +369,17 @@ the critical path table names both.
   delta or `unknown`, under the table that already carries the figures.
   Rejected: dropping the comparison (axis: WO-248's reader wanted the
   delta; the duplication was the shape, not the content).
-- **No merge the operator did not ask for.** The kit's sentence: a pass
-  never runs the update; the operator's words in the session do. Rejected:
-  a feature election for "update before pass" (axis: the operator's item
-  12 says nobody wants it; a switch for it is the rule again).
+- **No merge the operator did not ask for.** The kit's sentence, and a
+  typed check beside it: `launchpad update` under a journaled planning or
+  entropy dispatch refuses unless the session records the operator's
+  in-session request with a capture hash, as `accept-overrun` records an
+  operator's words; a session with no journaled dispatch (Codex tool calls
+  are unhooked) keeps the sentence as its only guard. Rejected: a feature
+  election for "update before pass" (axis: the operator's item 12 says
+  nobody wants it; a switch for it is the rule again). Rejected: the
+  sentence alone (axis: the vision answers a correction with a typed
+  mechanism, and this order already emits a typed permission rule; receipt
+  063's known issue of 2026-11-04 and receipt 064's hold of 2026-11-06).
 - **The front page is an entry point.** `README.md` joins the defaults; a
   kit `How to start: <path>.` line is read as a link. Rejected: declaring
   it per instance (axis: every instance has a front page; the fork tried
@@ -482,8 +493,14 @@ the critical path table names both.
 2. `packages/skeleton/src/loadouts/contributor.ts` (the instance planner
    sentence) and the kit guide §Planning in this instance and §Updating:
    no pass runs `launchpad update` or takes a newer starter unless the
-   operator asks in that session; `npm run sync`. Check: `npm test -- --only harness-context`;
-   `npm test -- --only launchpad`.
+   operator asks in that session; `npm run sync`; and
+   `scripts/launchpad.mjs` (`update`): the refusal under a planning or
+   entropy dispatch read from the session journal, the
+   `--operator-request --capture --capture-hash` flags that record the
+   operator's in-session words as `accept-overrun` does, and the receipt
+   line; `kit.applyInstanceActions` unchanged. Check: `npm test -- --only
+   harness-context`; `npm test -- --only launchpad` with a planted session
+   journal.
 3. `scripts/lib/document-kinds.mjs` (`defaultEntryPoints`): `README.md`
    as `front-page`; the `How to start: <path>.` line read as a link; core's
    `documents.json` entry removed as redundant or kept as the override
@@ -572,8 +589,14 @@ product 07; the fork's block.
    WO-997, the previous closed order:" listing wall clock, tokens, USD,
    commands, steps, bound stops and bound acceptances each once.
 2. The emitted instance planner root says no pass runs the update or
-   takes a newer starter unless the operator asks in that session;
-   `harness check` passes.
+   takes a newer starter unless the operator asks in that session, and the
+   kit types it: in a fixture instance whose session journal holds a
+   planning or entropy dispatch, `node scripts/launchpad.mjs update` is
+   refused naming the operator's in-session request as the route, is
+   admitted with `--operator-request --capture <file> --capture-hash
+   sha256:<digest>` and records the capture hash in its receipt, and a
+   session with no journaled dispatch is admitted as today; `harness
+   check` passes.
 3. On a fixture export with no `documents.json`, `npm run plan --
    documents` reaches `README.md` and the pages it links through the
    `front-page` default, and a `How to start: README.md.` line in the
@@ -739,6 +762,11 @@ row at the integrated code identity when one exists.
 - The fork's item 3 of 2026-11-05 (the record route's host, model, effort
   and tree) landed in WO-255-D006 (v0.118.0) and is not taken here
   (reopen: a record names a host or a tree the worker did not have).
+- Receipt 063's known issue of 2026-11-04 (the no-update rule is prose
+  only) and receipt 064's hold of 2026-11-06 are answered by criterion 2's
+  typed refusal; the sentence stays as the fallback where no session
+  journal exists (reopen: an instance pass takes an update unasked with
+  no journaled dispatch, which no typed check can see).
 - FUP-78158140c6ac12aa (WO-254-D045: the front page's Try it section
   points at the public starter with the two routes): allocated here by the
   2026-11-06 pass, whose own edit docs-check refused; taken in step 18
