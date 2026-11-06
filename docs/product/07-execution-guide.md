@@ -1553,7 +1553,16 @@ The prompt hook reads a dispatch from the first non-blank content line,
 skipping one leading triple-backtick fence and surrounding blank lines. It
 records that line's zero-based `prefixLine`, prefix, class and resolved role;
 a prefix on a later content line is not a dispatch. Quoted examples remain
-prose, and one message records at most one prefix (WO-226).
+prose, and one message records at most one prefix (WO-226). Claude Code
+writes a slash command's output block (`/model`'s, in every planning
+session) before the operator's text in the same message, and the reader
+takes that block's first line, so such a dispatch is journaled unclassified
+with no role, no outside-write grant and no usage standing (every core
+planning session from 2026-10-29 to 2026-11-06; the fork's item 5 of
+2026-11-05). WO-257 skips the host's block; until it lands, the dispatch, or
+a bare prefix line after it, is sent as a message of its own, which resolves
+the role
+([the 2026-11-06 pass](../planning/passes/fork-returns-and-review-batches-2026-11-06.md)).
 
 **`planning: entropy reducer`.** This exact phrase makes the pass's subject an
 Entropy Reducer review rather than the register's existing rows. The pass opens
@@ -1767,7 +1776,13 @@ planning pass, plus the sequence; unchanged orders carry their latest verdict
 by hash. The receipt records scope, carried identities and dispatch-to-file
 wall-clock. Wall-clock is observed, with no pass-budget refusal.
 Full scope judges every order. Independence remains session-attested; no
-unknown model setting becomes readback.
+unknown model setting becomes readback. The subject is built from the
+sequence, so a `track: separate` workstream's members are outside every
+judgment and outside `amend-order`'s horizon until WO-257 lists the open
+members after the sequenced orders; until then a pass that files such
+members records its own judgment of them in its document, and an authorized
+change to one takes the never-judged route below (the fork's items of
+2026-11-04 and 2026-11-05).
 
 After drafting, commit the planning subject locally and use this background
 worker workflow for independent refutation. External review through
@@ -3335,6 +3350,18 @@ with the host's safe Git options so the target's own hooks and file monitor
 never run, the worker reads the target worktree and writes nothing there, the
 launch counts as any other does, and the report is the launchpad's
 ([WO-255-D008](../evidence/WO-255/decisions.md#wo-255-d008--a-registered-targets-order-is-a-review-subject)).
+A review is never refused or narrowed for its subject's size (operator
+direction, 2026-11-05,
+[the 2026-11-06 pass](../planning/passes/fork-returns-and-review-batches-2026-11-06.md)):
+a brief past a worker's context is split into batches over more workers,
+every document the pass changed is reviewed, and no pass withdraws an
+amendment to fit a reviewer. Today the helper inlines every planning
+document and order the branch changed since its merge base, whatever
+`--since` names, and refuses a brief past its ceiling naming no size (the
+fork's pass of 2026-11-05 withdrew amendments to five orders to be reviewed
+at all; core's map alone is larger than the ceiling); WO-257 bounds a
+round's documents by its base, splits a brief past the ceiling into batches
+with one merged report, and prints the measured size.
 It is the route to a Codex worker from a Claude session, a Claude print worker
 from Codex, a planning subject and a target's order; in a Claude session the
 `Agent` tool with `dotln-worker` stays the ordinary route. It launches through

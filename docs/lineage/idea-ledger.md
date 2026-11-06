@@ -40,6 +40,20 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-06 — Planning pass: fork returns and review batches (WO-257 amended; no order filed); registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass +` with four items, sent at
+2026-11-06T01:48:36.891Z (hook time) in Claude Code 2.1.318 (Fable 5.1 at
+max, operator-selected), captured verbatim in
+`docs/intake/planning-dispatch-2026-11-05-fork-returns-and-review-batches.md`
+(SHA-256 `cd1cb6d60eba1bc4ea82e39f73983da8ab61813fa87c492f5412819bbaa6aa00`).
+The pass amends WO-257 with the fork's returns of 2026-11-04 and 2026-11-05
+and the operator's rule that a review is split over more workers and never
+refused, retires WO-253, WO-254, WO-246 and WO-255 from the sequence as
+closed (v0.115.0 to v0.118.0), binds the 26 red tags of 2026-11-03 where a
+reader looks, and answers the fork's two blocks. Record:
+[the planning document](../planning/passes/fork-returns-and-review-batches-2026-11-06.md).
+
 ## 2026-11-03 — Ideation: skills shipped to end users and a Rust rewrite (two operator ideas; synthesis, not capture)
 
 Dispatch: the `ideation:` entries 1 and 2 of the operator's planning

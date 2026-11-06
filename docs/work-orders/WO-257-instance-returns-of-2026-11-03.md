@@ -1,13 +1,14 @@
-# WO-257 — Instance returns of 2026-11-03: the pull-request body compares in one sentence, no pass takes a newer starter unless the operator asks in that session, README.md is a default reader entry point, a release's Read before upgrading names the index regeneration, the entropy receipt renders the frozen copy as `<tmp>/…` and screens its summary and its Markdown before filing, a target-subject receipt labels the launchpad witness, moved records keep working links, the continuation gate treats product 00 as optional, the index separates the executor's unmet ordinal from the later verdict, bootstrap diagnoses a missing target clone, and the target release classification counts every declaration (version assigned at activation)
+# WO-257 — Instance returns of 2026-11-03 to 2026-11-05: the pull-request body compares in one sentence, no pass takes a newer starter unless the operator asks in that session, README.md is a default reader entry point, a release's Read before upgrading names the index regeneration, the entropy receipt renders the frozen copy as `<tmp>/…` and screens its summary and its Markdown before filing, a target-subject receipt labels the launchpad witness, moved records keep working links, the continuation gate treats product 00 as optional, the index separates the executor's unmet ordinal from the later verdict, bootstrap diagnoses a missing target clone, the target release classification counts every declaration, the dispatch line is read past the host's command block, a review brief past its ceiling is split over more workers and never refused, a separate-track workstream's members are in the judged subject, a standing rule's journal row is read from a retained lane, status names its projection's refresh, the front page may link a record, and the target publish has its allow rule (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
 **Track:** machinery
-**Release classification:** minor. Eleven bounded kit fixes an instance
-meets at its passes, receipts, updates and closes; one default entry
-point added; no registration key moves and no refusal widens. Assigned at
-activation under the standing opt-out default.
+**Release classification:** minor. Eighteen bounded kit fixes an instance
+meets at its passes, receipts, updates, reviews and closes; one default
+entry point and one emitted allow rule added; no registration key moves and
+no refusal widens. Assigned at activation under the standing opt-out
+default.
 **Cost:** adds, in `scripts/lib/meta.mjs` (`renderMetaTable`, 2320 to
 2345), one comparison sentence per pull request ("Against WO-NNN, the
 previous closed order: wall clock 0 h 12 min less; tokens unknown; USD
@@ -70,19 +71,53 @@ clone mapping is absent, naming the registration command (the fork's item
 (`targetReleaseClassification`, 3034) every classification declaration
 counted before the sole value is validated, so a valid header plus a
 malformed duplicate is refused (the fork's item 8 of its first block,
-WO-012-D008 / FUP-2232a29f1061494f). Removes: one sentence six times on a
-pull request; a pass that merges upstream when the operator did not ask;
+WO-012-D008 / FUP-2232a29f1061494f); and, amended by the 2026-11-06 pass
+on the fork's blocks of 2026-11-04 and 2026-11-05 and the operator's items
+3 and 4 of 2026-11-05: in `packages/compiler/src/harness.ts`
+(`harnessPromptLine`, 38 to 52) the host's command block skipped before
+the first content line, which the generated Codex hook (162, 1442) and
+`harnessWorkerWords` take as their reader; in
+`scripts/lib/review-worker.mjs` (`subjectDocuments` 404 to 445,
+`renderReviewBrief`, `runChangeReview` 1230 to 1350) and
+`packages/skeleton/src/change-review-protocol.ts` (186) the round's
+documents bounded by its base, a brief past the ceiling split into batches
+with one worker each and one merged report, and the measured size printed
+by the refusal and the dry run; in `scripts/lib/plan-subject.mjs` (the
+sequence read, 319 to 365) and `scripts/lib/plan-receipts.mjs`
+(`amendPlanOrder`, 1484 to 1500) the open members of every
+`track: separate` workstream in the judged subject; in
+`scripts/lib/planning-document.mjs` (`checkRulesRecorded`, 145 to 200)
+the retained lanes read; in `scripts/resume.mjs`
+(`warnIfProjectionDisagrees` 1075 to 1085, `status`) the warning's command
+and `status --refresh`; in `scripts/lib/document-kinds.mjs`
+(`documentReport`, 883 to 887) the front page's record links admitted;
+and in `packages/compiler/src/harness.ts` (`PUBLISH_HELPER_ALLOW_RULES`,
+1549 to 1552) the target publish's rule. Removes: one sentence six times
+on a pull request; a pass that merges upstream when the operator did not ask;
 thirteen false red tags per instance pass; a failed document gate after an
 update; four historical fingerprints an instance had to declare; a
 closed order that reads as unmet; a fresh clone that fails `plan check` with no diagnosis; a
-classification count that can be fooled. Wall-clock: each change is a
-render or a read the command already makes; measured in the decisions where a command's time changes.
-Context bytes: this file, about 20,000; the instance planner root grows by
-one sentence, measured against its ceiling. Commands: none new. Tokens: unknown until run. Steps: 13. Re-mints:
+classification count that can be fooled; a planning session with no role
+whenever a slash command shares its message; a pass that withdraws
+amendments to fit a reviewer; a refutation that skips a workstream's
+members; a rule the operator must restate; a warning with no remedy; a
+front page reworded around a check; a target publish run by hand.
+Wall-clock: each change is a render or a read the command already makes,
+except the batched review, which launches one worker per batch beyond the
+first (each a review's own duration), and the subject, which grows by the
+members' bytes; measured in the decisions where a command's time changes.
+Context bytes: this file, about 38,000; the instance planner root grows by
+one sentence, measured against its ceiling. Commands: none new; one flag
+(`status --refresh`). Tokens: unknown until run. Steps: 20. Re-mints:
 `document-kinds.mjs` and `contributor.ts` are runtime sources the executor
 checks at activation; `scripts/release.mjs`, `scripts/lib/meta.mjs`,
-`scripts/work-orders.mjs`, `scripts/lib/entropy-review.mjs` are declared machinery sources, so `npm
-test -- --review` runs before handoff; no feedback-judged source changes.
+`scripts/work-orders.mjs`, `scripts/lib/entropy-review.mjs`,
+`scripts/lib/review-worker.mjs`, `scripts/lib/planning-document.mjs`,
+`scripts/resume.mjs`, `scripts/lib/document-kinds.mjs` and
+`packages/compiler/src/harness.ts` are declared machinery sources, so `npm
+test -- --review` runs before handoff; no feedback-judged source changes
+(`packages/compiler/src/harness.ts` is not in `FEEDBACK_SOURCE_PATHS`,
+read 2026-11-05).
 **Nomination provenance:** the operator's items 5, 12 and 13 of the
 2026-11-03 planning dispatch; the DotLn-Enterprise-Starter fork's two
 blocks of 2026-11-03 (items 5 to 9 of the first, on starter v0.112.0;
@@ -94,12 +129,30 @@ operator carried, never direction; captured in ignored intake
 WO-248-D004 (FUP-225e0993974f3f4b: a dispatch-role row only when the
 subject has one) allocated here. Filed by the
 [2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).
+Amended by the
+[2026-11-06 pass](../planning/passes/fork-returns-and-review-batches-2026-11-06.md)
+on the fork's blocks of 2026-11-04 (starter v0.115.0; its items 3, 5 and 6)
+and 2026-11-05 (starter v0.117.0; its items 2, 4, 5, 6 and 8), relayed in
+the operator's dispatch of 2026-11-05 as its items 1 and 2 and read as
+evidence the operator carried, and on the operator's items 3 and 4 of that
+dispatch (a review that leaves orders out of the subject for a reviewer's
+context is split over more reviewers instead; every item goes into this
+order, confirmed twice mid-turn over the planner's proposal of a separate
+order for the hook), captured in ignored intake
+`docs/intake/planning-dispatch-2026-11-05-fork-returns-and-review-batches.md`
+(SHA-256
+`cd1cb6d60eba1bc4ea82e39f73983da8ab61813fa87c492f5412819bbaa6aa00`; the
+message's journal digest
+`8c2abb3ce38557c635cab499e9549af43b3d774fc3327f47bb68c539ad23a5c2`).
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 no stop condition; the fork's blocks are the operator's own public
 instance's.
 **Depends on:** WO-248 (closed, v0.111.1: the pull-request table this
 order's sentence sits under); WO-238 (closed: the entry points and red
-tags this order adds a default to).
+tags this order adds a default to); WO-254 (closed, v0.116.0: the
+rules-recorded block whose check this order extends to retained lanes);
+WO-255 (closed, v0.118.0: the review helper, its planning lane and its
+record route, which this order's batches extend).
 
 <!-- dotln-dependencies:start -->
 [
@@ -112,6 +165,16 @@ tags this order adds a default to).
     "workOrderId": "WO-238",
     "relation": "satisfied-by-close",
     "reason": "the reader entry points and red tags this order adds a default entry point to"
+  },
+  {
+    "workOrderId": "WO-254",
+    "relation": "satisfied-by-close",
+    "reason": "the rules-recorded block whose check this order extends to the retained lanes"
+  },
+  {
+    "workOrderId": "WO-255",
+    "relation": "satisfied-by-close",
+    "reason": "the review helper, its planning lane and its record route, which this order's batches extend"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -129,7 +192,22 @@ criterion lines); `scripts/bootstrap.mjs`; `scripts/release.mjs`
 (`targetReleaseClassification` 3034 to 3050 and its use at 3171);
 `packages/skeleton/src/loadouts/contributor.ts` (the instance planner
 sentences); the kit guide §Planning in this instance and §Updating; the
-fork's two blocks in the nomination capture; this pass's §Readings.
+fork's two blocks in the nomination capture; this pass's §Readings; and,
+for the 2026-11-06 amendment, `packages/compiler/src/harness.ts`
+(`harnessPromptLine` 36 to 52; its embedding at 162 and 1442;
+`PUBLISH_HELPER_ALLOW_RULES` 1543 to 1552); `scripts/lib/review-worker.mjs`
+(`subjectDocuments` 404 to 445; `roundPlan` 460 to 545; `renderReviewBrief`;
+`runChangeReview` 1230 to 1350); `packages/skeleton/src/change-review-protocol.ts`
+(`validateChangeReviewRequest` 134 to 200); `scripts/lib/plan-subject.mjs`
+(296 to 372); `scripts/lib/plan-receipts.mjs` (`amendPlanOrder` 1480 to
+1510); `scripts/lib/work-order-workstream.mjs` (the `track` field, 40 to
+110); `scripts/lib/planning-document.mjs` (`journalRows` and
+`checkRulesRecorded`, 120 to 200); `scripts/lib/worktree-removal.mjs` (the
+retained lane, 72 to 80); `scripts/resume.mjs` (`refreshControlProjection`
+1059 to 1085; the `status` case at 1585); `scripts/lib/document-kinds.mjs`
+(`documentReport` 864 to 912); `scripts/worktree.mjs` (`publish
+--target-worktree`, 1344 to 1380 and 1569); the fork's blocks of 2026-11-04
+and 2026-11-05 in the 2026-11-05 capture; the 2026-11-06 pass's §Readings.
 
 **Objective:** An instance's passes, receipts, updates and closes meet
 the kit's behavior and not its edges: a pull request reads in one
@@ -137,7 +215,11 @@ sentence, no pass merges upstream on its own, a front page is reached, an
 update says what to regenerate, a receipt files on the first try with no
 private path, a moved record says where its links resolve, a closed order reads as
 closed, a fresh clone says what
-it lacks, and a malformed duplicate declaration is refused.
+it lacks, a malformed duplicate declaration is refused, a dispatch is read
+whatever the host wrote before it, a review is split rather than refused,
+a refutation covers every open order a pass files, a rule's row is found
+where the kit moved it, a warning names its remedy, a front page links what
+it likes, and the target publish is admitted.
 
 **Observed gap (dated 2026-11-03 at `main` `eb7c58ff6`, v0.114.0):**
 
@@ -187,6 +269,71 @@ it lacks, and a malformed duplicate declaration is refused.
   duplicate escapes the count; the fork's profile carries a two-count
   precheck as its protection.
 
+**Observed gap, amended (dated 2026-11-05 at `main` `772979eac`, v0.118.0):**
+
+- The fork's item 5 of 2026-11-05 and this pass's own session:
+  `harnessPromptLine` (`packages/compiler/src/harness.ts` 38 to 52) skips
+  blank lines and one opening fence and reads the next line. When a slash
+  command ran in the same message, Claude Code hands the hook a prompt that
+  opens with the command's block (`<local-command-caveat>…`,
+  `<command-name>/model</command-name>`, `<command-message>`,
+  `<command-args>` and `<local-command-stdout>…`) before the operator's
+  text, so the dispatch line is never read. Reproduced on 2026-11-06 from
+  the compiled module: the bare text classes `planning:` at line 0,
+  direction; the same text behind the block classes `unclassified` with no
+  prefix. The session journals' first operator rows: `planning:` read on
+  2026-10-24, 10-26 and 10-28; unclassified on 2026-10-29, 10-30, 10-31,
+  11-01, 11-03 and 11-06, each a planning session (the 2026-11-03 pass
+  document records "no role was active"). The role, its outside-write
+  grants and `harness usage` all hang on that row (`harness-host.ts` 6520
+  to 6532). The generated Codex hook embeds the same reader (162, 1442),
+  and `harnessWorkerWords` (WO-255-D010) reads the worker option from the
+  same line, so a `fable` or `astra` label behind the block selects nothing.
+- The fork's item 8 of 2026-11-05 and the operator's item 3:
+  `subjectDocuments` (`review-worker.mjs` 404 to 445) inlines every
+  planning document and order changed since `plan.documentsBase`, the merge
+  base, whatever `--since` names (the comment at 1260);
+  `validateChangeReviewRequest` (`change-review-protocol.ts` 186) refuses a
+  brief over its ceiling with `profile-refused: change review brief` and no
+  size. The fork's pass of 2026-11-05 measured its documents past the
+  ceiling and withdrew amendments to five orders to be reviewed; the
+  operator's words: split the work over more reviewers instead.
+- The fork's items 6 of 2026-11-04 and 4 of 2026-11-05: `plan-subject.mjs`
+  (319 to 365) builds the judged orders from the sequence block alone;
+  `amendPlanOrder` (`plan-receipts.mjs` 1484 to 1500) admits only an order
+  in the latest receipt's `subject.orders`; the sequence's rule says a
+  `track: separate` member needs no entry. So a separate-track order is
+  never judged and never amendable through `amend-order` (the fork's
+  WO-028-D043 took the never-judged route in its decisions).
+- The fork's item 6 of 2026-11-05: `checkRulesRecorded`
+  (`planning-document.mjs` 145 to 200) reads
+  `dispatchJournalDirectory(root)/<sessionKey>.jsonl` only; a closed order's
+  journals move to `docs/control/local/retained/WO-NNN/harness/` at its
+  close (`worktree-removal.mjs` 79; WO-237), so a rule given to a verifier
+  or final reviewer of a closed order fails "names no operator message".
+- The fork's item 5 of 2026-11-04: `warnIfProjectionDisagrees`
+  (`resume.mjs` 1075 to 1085) prints the warning and names no command;
+  `refreshControlProjection` (1059) is called only by
+  `worktree-integration.mjs` 443; `status` has no `--refresh`.
+- The fork's item 3 of 2026-11-04: `documentReport` (`document-kinds.mjs`
+  883 to 887) lists every record any entry point names, the `front-page`
+  id included, and `test:docs` refuses them; the fork reworded a front-page
+  link to a decision to pass.
+- The fork's item 2 of 2026-11-05: `PUBLISH_HELPER_ALLOW_RULES`
+  (`harness.ts` 1549 to 1552) names the update and planning publish
+  helpers; `node scripts/worktree.mjs publish WO-NNN --target-worktree
+  [--draft] …` (`worktree.mjs` 1344 to 1380, 1569) has no rule and the
+  fork's WO-028 verification saw it denied by the auto-mode classifier
+  (its D057, run by hand in D058). The fork also observed that an update's
+  new rule took effect only in a later session; whether the host re-reads
+  settings mid-session is not on the pages read on 2026-11-03, so the
+  release says to start a new session.
+- Not a gap: the fork's item 3 of 2026-11-05 (the record route's host,
+  model, effort and tree) landed in WO-255-D006 (v0.118.0): `record`
+  accepts `--host`, `--model`, `--effort` and `--tree`, and a target order's
+  record binds the target worktree (`recordAgentReview`, `checkout =
+  resolved.target?.worktree ?? root`).
+
 **Design (scope discipline):**
 
 - **One sentence.** The comparison is one sentence listing each metric's
@@ -228,10 +375,63 @@ it lacks, and a malformed duplicate declaration is refused.
 - **Count, then validate.** Every classification declaration is counted;
   more than one refuses. Rejected: the profile's precheck as the fix (axis:
   the kit's own command is where the count belongs).
+- **The dispatch line is the operator's first line.** The reader skips the
+  host's command block, the `local-command-caveat`, `command-name`,
+  `command-message`, `command-args` and `local-command-stdout` elements
+  Claude Code writes before the operator's text when a slash command ran
+  in the same message, each matched as a whole element by name, before the
+  blanks and the one fence it already skips; nothing else about the line
+  changes, so a quoted later dispatch stays prose. Rejected: telling the
+  operator to dispatch in a message of its own (axis: every planning
+  session opens with `/model`; the kit adapts to the host). Rejected:
+  reading the prefix from any line (axis: WO-226's quoted-example rule).
+- **A brief is split, never refused, and a subject is never narrowed to
+  fit a reviewer** (operator direction, 2026-11-05). A round's documents
+  are those changed since the round's base; when the rendered brief would
+  pass the ceiling, the documents are divided into batches under it, each
+  batch's worker receives the preamble, the stat, the captures, an index of
+  every document in the round naming its batch, and its own documents, and
+  reads the others in the checkout; the batch reports are merged into the
+  round's one report, each finding keyed by its batch and the `## Items`
+  rows carried from every batch; the refusal and the dry run print the
+  measured size, the ceiling and the batch plan. Rejected: raising the
+  ceiling (axis: it is a worker's context, and a later pass passes any
+  figure). Rejected: a diff in place of a whole document (axis: the
+  criteria adversary judges an order as written; the executor may carry a
+  record such as the pass document as its diff when its whole text alone
+  would fill a batch). Rejected: withdrawing amendments (the operator's
+  words).
+- **Every open order a pass files is judged.** The subject lists the
+  sequence's orders and then the open members of each `track: separate`
+  workstream, in workstream and member order, so the receipt's horizon
+  names them and `amend-order` admits them. Rejected: `refute
+  --workstream` (axis: a pass should not have to name what it filed).
+- **A rule's row is wherever the kit moved it.** `checkRulesRecorded`
+  reads the live journal, then every retained lane's
+  `harness/<sessionKey>.jsonl`, and an entry may name `order` to point at
+  the lane; a refusal names both places read. Rejected: a decision as
+  provenance (axis: WO-254-D010's point is the operator's own message; a
+  decision is the executor's writing).
+- **A warning names its remedy.** `status` prints `npm run resume -- status
+  --refresh` in its warning; `--refresh` rewrites the projection from the
+  fold and appends no event; without it status stays read-only. Rejected: a
+  silent rewrite on every status (axis: read-only roles run status).
+- **The front page links what it likes.** The `front-page` entry point's
+  record links are admitted; the four session entry points stay
+  standing-only. Rejected: a Read before upgrading sentence alone (axis:
+  every instance's front page will link a record; a rule one rewords around
+  is the wrong rule).
+- **The target publish has its rule.** `Bash(node scripts/worktree.mjs
+  publish *)` joins the two rules under the same reading of the host's
+  page, and the release's Read before upgrading says a new session reads
+  the emitted settings when a release changed them; the operator's
+  acceptance of this amended order is the authorization WO-246-D010
+  recorded for the first two. Rejected: a rule for `git push` or `gh`
+  (WO-246's reason).
 - **Live-run surfaces at the base.** Each named function and page exists;
   each change is absent.
 
-**Execution plan (the executor follows these steps in order; observed at `eb7c58ff6`, 2026-11-03):**
+**Execution plan (the executor follows these steps in order; steps 1 to 10 observed at `eb7c58ff6`, 2026-11-03, steps 11 to 17 at `772979eac`, 2026-11-05):**
 
 1. `scripts/lib/meta.mjs` (`renderMetaTable`): the one comparison
    sentence; `scripts/test-process-debt.mjs` (11569) asserts it; a
@@ -273,19 +473,51 @@ it lacks, and a malformed duplicate declaration is refused.
 10. `scripts/release.mjs` (`targetReleaseClassification`): count every
     declaration first. Check: `npm test -- --only release` with a valid
     header plus a malformed duplicate refused.
-11. Write-backs: the kit guide (§Planning in this instance, §Updating,
-    §Entropy Reducer); product 07 §Operator-opened planning
-    pass (the front page as an entry point; the no-update sentence) and
-    §Workflow closeout and releases (the Read before upgrading line);
+11. `packages/compiler/src/harness.ts` (`harnessPromptLine`): the host's
+    command block skipped; the generated Codex hook and `harnessWorkerWords`
+    take the reader as they do today; a fixture carrying the prompt shape
+    of this order's 2026-11-05 capture. Check: `npm test -- --only
+    compiler`; `npm test -- --only harness-fixtures`.
+12. `scripts/lib/review-worker.mjs` (`subjectDocuments`,
+    `renderReviewBrief`, `runChangeReview`, the report merge) and
+    `packages/skeleton/src/change-review-protocol.ts` (the brief check):
+    the round's documents bounded by its base, the batches, the merged
+    report, the measured size in the refusal and the dry run; the ceiling
+    half of FUP-6dfaa29e3f0ba4fd. Check: `npm test -- --only
+    plan-refutation` with a planted over-ceiling planning branch under the
+    fixture transport.
+13. `scripts/lib/plan-subject.mjs` (the sequence read) and
+    `scripts/lib/plan-receipts.mjs` (`amendPlanOrder`): the open members of
+    each `track: separate` workstream in the subject. Check: `npm test --
+    --only plan-refutation`; `npm test -- --only launchpad-planning` with a
+    fixture workstream.
+14. `scripts/lib/planning-document.mjs` (`checkRulesRecorded`): the
+    retained lanes. Check: `npm test -- --only plan-refutation` with a row
+    planted in a retained lane.
+15. `scripts/resume.mjs` (`warnIfProjectionDisagrees`, `status`): the
+    command in the warning; `--refresh`. Check: `npm test -- --only resume`.
+16. `scripts/lib/document-kinds.mjs` (`documentReport`): the front page's
+    record links admitted. Check: `npm test -- --only docs-check-fixtures`.
+17. `packages/compiler/src/harness.ts` (`PUBLISH_HELPER_ALLOW_RULES`) and
+    `scripts/lib/release-notes.mjs` (step 4's line): the third rule; the
+    new-session sentence. Check: `npm test -- --only harness`; `npm test --
+    --only launchpad`.
+18. Write-backs: the kit guide (§Planning in this instance, §Updating,
+    §Entropy Reducer; the status warning); product 07 §Operator-opened
+    planning pass (the front page as an entry point; the no-update
+    sentence; the prompt hook's block; the subject's members),
+    §Verification review and attack (the batches) and §Workflow closeout
+    and releases (the Read before upgrading line);
     `docs/evidence/WO-257/decisions.md`; `npm run meta`; `npm run
     publication:check`.
-12. The paste-ready block for the fork's next pass, written into the
-    decisions, naming each item's step.
-13. Handoff: the sequence of WO-253 step 10, with
+19. The paste-ready block for the fork's next pass, written into the
+    decisions, naming each item's step, the items of 2026-11-04 and
+    2026-11-05 included.
+20. Handoff: the sequence of WO-253 step 10, with
     `docs/evidence/WO-257/handoff.md`.
 
-**Deliverables:** the eleven fixes; the kit guide and product 07; the
-fork's block.
+**Deliverables:** the eighteen fixes and the allow rule; the kit guide and
+product 07; the fork's block.
 
 **Acceptance criteria (all required)**
 
@@ -326,26 +558,75 @@ fork's block.
     registration command before any check fails.
 10. A target release with a valid classification header and a malformed
     duplicate is refused naming both lines.
-11. The kit guide and product 07 state the fixes as built; `npm run
+11. A prompt fixture that opens with the host's command block as this
+    order's capture records it (the `local-command-caveat`, `command-name`
+    naming `/model`, `command-message`, `command-args` and
+    `local-command-stdout` elements) and then reads `planning: standard
+    planning pass +` journals prefix `planning:`, class `direction` and
+    role `planner`, with `prefixLine` at the dispatch line; the same text
+    without the block journals the same; prose followed by a quoted
+    dispatch journals none; the generated Codex hook's embedded reader
+    returns the same line; and `harnessWorkerWords` reads `fable` from a
+    line that names it after such a block.
+12. On a planning-branch fixture whose changed documents render a brief
+    past the ceiling, `npm run worker -- review --kind criteria --host
+    codex --subject planning --dry-run` prints the measured size, the
+    ceiling and a batch plan naming each batch's documents; the launch
+    under the fixture transport runs one worker per batch, each brief under
+    the ceiling and carrying the round's document index, and records one
+    `round-1-criteria` report whose findings are keyed by batch and whose
+    `## Items` table carries every batch's rows; a `--since <tree>` round
+    carries only the documents changed since that tree; a fixture under
+    the ceiling launches one worker; and a single document larger than the
+    ceiling refuses naming the document and the measured size.
+13. On a fixture export with a `track: separate` workstream whose two open
+    members have no sequence entry, the subject `npm run plan -- refute`
+    prints names both after the sequenced orders, the receipt filed from
+    it lists them under `subject.orders`, and `npm run plan -- amend-order`
+    on one of them with its recorded decision is admitted; a closed member
+    and an order of a workstream without that track are not added.
+14. A rules-recorded entry whose message row is held only by
+    `docs/control/local/retained/WO-NNN/harness/<sessionKey>.jsonl` passes
+    `npm run plan -- check`, with or without `order` naming the lane, and
+    an entry whose row is in no journal is refused naming the live
+    directory and the retained lanes read.
+15. With `docs/control/current.md` edited away from the fold, `npm run
+    resume -- status` prints the warning naming `npm run resume -- status
+    --refresh`; that command rewrites the file to the fold, appends no
+    control event and prints the same status; the next `status` prints no
+    warning.
+16. A fixture front page that links a decision record passes `npm run
+    test:docs`'s entry-point check, and the same link from the instruction
+    file's Start here fails naming the record.
+17. The emitted `.claude/settings.json` carries `Bash(node
+    scripts/worktree.mjs publish *)` beside the two rules of WO-246, the
+    Copilot settings file carries the same bytes, `harness check` passes,
+    and a release whose changed files include the settings emitter prints
+    a Read before upgrading line naming a new session.
+18. The kit guide and product 07 state the fixes as built; `npm run
     publication:check` is green.
-12. `npm test -- --review` and `npm run test:docs` green; `git diff
+19. `npm test -- --review` and `npm run test:docs` green; `git diff
     --check` clean; no new dependency.
 
 **Preflight:** `npm test -- --only process-debt` for step 1; `npm test --
---only harness-context` and `npm test -- --only launchpad` for step 2; `npm test -- --only
-docs-check-fixtures` for step 3; `npm test -- --only target-worktree` for
-step 6; `npm test -- --only work-orders-fixtures` for step 8; `npm test --
---only launchpad` for step 9; `npm test -- --only
-release` for steps 4 and 10; `npm test -- --only plan-refutation` for
-steps 5 and 7; `npm run test:docs` when a document changes;
-each under `node scripts/harness.mjs bounded --`; then one `npm test --
---review` (07-execution-guide.md §Preflight before the full gate).
+--only harness-context` and `npm test -- --only launchpad` for step 2; `npm
+test -- --only docs-check-fixtures` for steps 3 and 16; `npm test -- --only
+target-worktree` for step 6; `npm test -- --only work-orders-fixtures` for
+step 8; `npm test -- --only launchpad` for steps 9 and 17; `npm test --
+--only release` for steps 4 and 10; `npm test -- --only plan-refutation`
+for steps 5, 7, 12, 13 and 14; `npm test -- --only compiler` and `npm test
+-- --only harness-fixtures` for step 11; `npm test -- --only
+launchpad-planning` for step 13; `npm test -- --only resume` for step 15;
+`npm test -- --only harness` for step 17; `npm run test:docs` when a
+document changes; each under `node scripts/harness.mjs bounded --`; then
+one `npm test -- --review` (07-execution-guide.md §Preflight before the
+full gate).
 
-**Evidence gate:** the fixtures of criteria 1 to 10; `npm test -- --review`
+**Evidence gate:** the fixtures of criteria 1 to 17; `npm test -- --review`
 before `implementation-ready`, final review reusing the passing complete
 row at the integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 11 and criterion 11.
+**Write-back duty:** as listed in step 18 and criterion 18.
 
 **Known issues and carry-ins:**
 
@@ -385,14 +666,35 @@ row at the integrated code identity when one exists.
   fixing in place, allocated here by the 2026-11-03 pass on the operator's
   item 4; the executor takes it in the step that owns its file and records
   the decision (reopen: WO-257 closes with the cycle in place).
+- FUP-6dfaa29e3f0ba4fd (WO-250-D010: the change review's budget and
+  limits as instance configuration): allocated here by the 2026-11-06
+  pass; the ceiling half is taken in step 12, where the per-batch ceiling
+  is one named constant, the budget minutes stay as they are, and the
+  row's remainder is recorded in the decisions (reopen: an operator needs
+  a different review budget for one instance).
+- The journal rows the host's command block left unclassified (2026-10-29
+  to 2026-11-06; the 2026-11-06 pass's §Readings) are records and stay as
+  written; the fix is forward-only (reopen: a dispatch after this order's
+  release journals unclassified with the block in front of it).
+- The fork's item 3 of 2026-11-05 (the record route's host, model, effort
+  and tree) landed in WO-255-D006 (v0.118.0) and is not taken here
+  (reopen: a record names a host or a tree the worker did not have).
 
 **Non-goals:** rewriting moved records' links; a feature election for
 updates before a pass; a baseline exemption for private paths; the review
-helper's target form (WO-255's, moved there on the design improver's F5 of
-2026-11-04); the launch-boundary meter.
+helper's target form (WO-255's, closed in v0.118.0); the launch-boundary
+meter; a `--workstream` flag on `plan refute`; a raised brief ceiling; a
+diff-only brief; rewriting an unclassified journal row; an allow rule for
+`git push` or `gh`; the record route's host and tree (WO-255's).
 
 **Operator-review assumptions:** that the operator wants no update before
 any pass in any instance (items 12 and 13 say so for the fork; the kit
 sentence applies to every instance); that a footer answers the fork's
 item 6; that the eleven fixes are one order because an instance meets
-them together at every pass and close. Reopen on the operator's word.
+them together at every pass and close; that every item of the fork's
+blocks of 2026-11-04 and 2026-11-05 and the operator's item 3 belongs in
+this order (the operator's words of 2026-11-05, twice, over the planner's
+proposal of a separate order for the hook); that batches over more workers
+are the remedy the operator named; and that the operator's acceptance of
+this amended order authorizes the third allow rule as WO-246-D010
+authorized the first two. Reopen on the operator's word.

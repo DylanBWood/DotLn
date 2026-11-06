@@ -134,14 +134,15 @@ judge the product (WO-249, v0.110.0), reviews that converge and count
 (WO-250, v0.111.0), the pull-request table (WO-248, v0.111.1), a release
 close that owns what the kit wrote (WO-252, v0.112.0), the document kinds
 (WO-238, v0.113.0) and the features file (WO-241, v0.114.0) followed on
-2026-11-02 and 2026-11-03. The adoption work after v0.114.0 is temporary
-roots that leave with the gate that made them and a prune that is a bounded
-step (WO-253), the hooks getting out of the operator's way (WO-254), the
-launchpad's own pull requests opened by a helper the host's auto mode admits
-(WO-246), reviews that find what the complete run finds (WO-255), the
-instance returns of 2026-11-03 (WO-257), plan-first mode (WO-242), the closeout selection for target
-orders (WO-243) and the paired and reviewed planning routes (WO-244)
-[operator directions, 2026-10-30, 2026-10-31, 2026-11-01 and 2026-11-03].
+2026-11-02 and 2026-11-03, and temporary roots that leave with the gate
+that made them (WO-253, v0.115.0), the hooks getting out of the operator's
+way (WO-254, v0.116.0), the launchpad's own pull requests (WO-246,
+v0.117.0) and reviews that find what the complete run finds (WO-255,
+v0.118.0) on 2026-11-04 and 2026-11-05. The adoption work after v0.118.0 is
+the instance returns of 2026-11-03 to 2026-11-05 (WO-257), plan-first mode
+(WO-242), the closeout selection for target orders (WO-243) and the paired
+and reviewed planning routes (WO-244) [operator directions, 2026-10-30,
+2026-10-31, 2026-11-01, 2026-11-03 and 2026-11-05].
 The 2026-09-06 redirect superseded the first draft of this
 rung, which exported the process kit with no build in it.
 
