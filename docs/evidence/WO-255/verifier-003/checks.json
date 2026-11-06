@@ -1,0 +1,69 @@
+{
+  "subject": {
+    "codeIdentity": "39bd5b475ad3c259f473ca94796fb86df2ddddac8620f501dbf4a26b8c006c97",
+    "activationBase": "ccfba0df927ccc2e76558af701a1075fc0fa4b36",
+    "dispatchCheckpoint": "refs/dotln/checkpoint/WO-255/11"
+  },
+  "reviewWorker": {
+    "command": "node scripts/harness.mjs bounded -- node --test scripts/test-review-worker.mjs",
+    "tests": 27,
+    "pass": 27,
+    "fail": 0
+  },
+  "harnessAndContinuation": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-255' scripts/test-harness.mjs scripts/test-codex-continuation.mjs",
+    "tests": 4,
+    "pass": 4,
+    "fail": 0
+  },
+  "directRefutation": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-126 direct command' scripts/test-plan-refutation.mjs",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0
+  },
+  "independentProbes": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-255/verifier-003/probes.mjs",
+    "exitCode": 0,
+    "checks": 31,
+    "passed": 31,
+    "failed": 0,
+    "observations": "docs/evidence/WO-255/verifier-003/observations.json",
+    "interpretation": "All expectations hold. Two cases are judged as 'refused or structured, never silent prose': a --format json result whose closing prose holds a non-JSON brace is refused, which the documentation does not state (follow-up D046); the activation-base recorder lost that result's finding silently, so this is no regression."
+  },
+  "format": {
+    "command": "npm run format:check",
+    "exitCode": 0,
+    "output": "All matched files use Prettier code style!"
+  },
+  "harness": {
+    "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+    "exitCode": 0,
+    "output": "harness check: 43 generated surfaces; local-terms list: present"
+  },
+  "publication": {
+    "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+    "exitCode": 0,
+    "output": "PASS index coverage: 256/256 product headings indexed; PASS dual-voice links; CURRENT everyday-ai-user-toc.md: 29; CURRENT software-engineer-toc.md: 45; PASS publication bootstrap checks"
+  },
+  "staticAudit": {
+    "command": "node scripts/harness.mjs bounded -- python3 -I docs/evidence/WO-255/verifier-001/static-audit.py",
+    "exitCode": 0,
+    "manifests": 7,
+    "dependencyNamesUnchanged": true,
+    "lockEntriesUnchanged": true,
+    "newSuppressionDirectives": [],
+    "diffCheck": "pass"
+  },
+  "gateRows": {
+    "source": "node scripts/harness.mjs bounded -- node docs/evidence/WO-255/verifier-002/gate-audit.mjs",
+    "evidence": "docs/evidence/WO-255/verifier-003/gate-evidence.json",
+    "complete": "npm test, review selection, recorded 2026-11-06T00:01:19.355Z, exit 0, intact, passing, stands, 44 required suites, none missing",
+    "document": "npm run test:docs, recorded 2026-11-06T00:05:43.367Z, exit 0, intact, passing, 27 suites; this report's own document row is recorded after it"
+  },
+  "limits": [
+    "No live model, native custom-agent load, live target service or verifier subagent; zero worker uses of twenty.",
+    "Probes and focused tests ran under the bounded wrapper outside any gate, one process at a time.",
+    "The activation-base comparison re-points only relative module specifiers; the helpers and validator it imports are the current checkout's."
+  ]
+}

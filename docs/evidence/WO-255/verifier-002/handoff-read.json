@@ -1,0 +1,27 @@
+{
+  "verification": "VER-002",
+  "verdict": "fail",
+  "phase": "needs-fix",
+  "recordedAt": "2026-11-05T22:27:47.574Z",
+  "report": "docs/verifications/WO-255/VER-002.md",
+  "reportHash": "sha256:27252fb407de9be76f72a868e3fdcea51dc415d2f81be08e1e1ce53d8fd9b152",
+  "reportMatchesFiledHash": true,
+  "readOutputs": [
+    "docs/verifications/WO-255/VER-002.md",
+    "docs/evidence/WO-255/verifier-002/checks.json",
+    "docs/evidence/WO-255/verifier-002/observations.json",
+    "docs/evidence/WO-255/verifier-002/document-gate.json",
+    "docs/evidence/WO-255/verifier-002/process.md",
+    "docs/evidence/WO-255/decisions.md",
+    "docs/lineage/decisions-index.md",
+    "docs/planning/followups.json",
+    "docs/control/current.md",
+    "docs/work-orders/README.md"
+  ],
+  "indexCommand": {
+    "command": "npm run work-orders -- index",
+    "exitCode": 0
+  },
+  "writerReserved": false,
+  "handoffCorrection": "After recording the result, redirecting the index command's output to the earlier session scratch directory failed with no such directory, before the command started. The canonical index command was then run without that redirection, exited 0, and its WO-255 projection was read as needs-fix with VER-002 fail. The result transition was not replayed."
+}

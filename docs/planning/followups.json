@@ -44283,6 +44283,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-05T14:28:44.889Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D048 (FINAL-001): its condition occurred, because WO-255's reviewed rules (the four worker options in the launch sentence every root but the router carries, the whole-change recheck and the Traced consumers rule in the executor's, and the planner's capture sentence; WO-255-D011 and WO-255-D030) changed the measured overrun: the executor reads 44,358 bytes against its 40,194 ceiling, the verifier 38,638 against 35,221, the reviewer 41,061 against 39,600, release-close 28,638 against 26,410, the planner 30,162 against 24,576 and the router 17,124 against 16,384; no ceiling moved and no acceptance was recorded, and npm run meta names the cold start a drift-to-low-performance reopen candidate for the next planning pass.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T00:58:27.755Z"
         }
       ]
     },
@@ -44427,6 +44435,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-05T14:28:44.757Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D048 (FINAL-001): its condition occurred, because WO-255 re-mints the role oracle twice, as wo255-role-baseline.json over WO-246's and wo255-repair-role-baseline.json over that, and the chain list in scripts/test-gate-followups.mjs now selects both; the test keeps its chain walk, its ceiling and acceptance checks and the historical inequality.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-06T00:58:27.892Z"
         }
       ]
     },
@@ -52632,6 +52648,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-05T14:28:45.153Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D048 (FINAL-001): its condition occurred, because WO-255's reviewed rules (the four worker options in the launch sentence every root but the router carries, the whole-change recheck and the Traced consumers rule in the executor's, and the planner's capture sentence; WO-255-D011 and WO-255-D030) changed the measured overrun: the executor reads 44,358 bytes against its 40,194 ceiling, the verifier 38,638 against 35,221, the reviewer 41,061 against 39,600, release-close 28,638 against 26,410, the planner 30,162 against 24,576 and the router 17,124 against 16,384; no ceiling moved and no acceptance was recorded, and npm run meta names the cold start a drift-to-low-performance reopen candidate for the next planning pass.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T00:58:27.481Z"
         }
       ]
     },
@@ -52793,6 +52817,14 @@
             "WO-255"
           ],
           "at": "2026-11-04T00:23:35.809Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-255-D048 (FINAL-001): delivered by WO-255 step 3 through --format prose: a prose report holding JSON examples, in any position or code context, is preserved whole and adopts no example findings (WO-255-D038, WO-255-D040, WO-255-D042), judged under criterion 3 by VER-003 with independent inputs; mixed text with an embedded possible result and no declared format is refused before anything is written.",
+          "reopenWhen": "A declared prose report adopts an example's findings, or an undeclared mixed input is silently classified.",
+          "targets": [],
+          "at": "2026-11-06T00:58:26.790Z"
         }
       ]
     },
@@ -53409,6 +53441,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-05T14:28:45.282Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D048 (FINAL-001): its condition occurred, because WO-255's reviewed rules (the four worker options in the launch sentence every root but the router carries, the whole-change recheck and the Traced consumers rule in the executor's, and the planner's capture sentence; WO-255-D011 and WO-255-D030) changed the measured overrun: the executor reads 44,358 bytes against its 40,194 ceiling, the verifier 38,638 against 35,221, the reviewer 41,061 against 39,600, release-close 28,638 against 26,410, the planner 30,162 against 24,576 and the router 17,124 against 16,384; no ceiling moved and no acceptance was recorded, and npm run meta names the cold start a drift-to-low-performance reopen candidate for the next planning pass.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T00:58:27.618Z"
         }
       ]
     },
@@ -53461,6 +53501,14 @@
             "WO-255"
           ],
           "at": "2026-11-04T00:23:35.683Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-255-D048 (FINAL-001): delivered by WO-255 step 3 and judged under criterion 3 by VER-001 to VER-003: npm run worker -- record takes --host, --model and --effort for what ran and --tree for the tree the worker reviewed, refusing an unknown object or a working tree that differs from the report's named tree without the flag (WO-255-D005); the repair's five Codex records carry the recorder-attested values and their trees.",
+          "reopenWhen": "A recorded report names a model nobody ran or a tree nobody reviewed.",
+          "targets": [],
+          "at": "2026-11-06T00:58:26.649Z"
         }
       ]
     },
@@ -53908,6 +53956,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-05T14:28:45.021Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D048 (FINAL-001): its condition occurred, because WO-255's reviewed rules (the four worker options in the launch sentence every root but the router carries, the whole-change recheck and the Traced consumers rule in the executor's, and the planner's capture sentence; WO-255-D011 and WO-255-D030) changed the measured overrun: the executor reads 44,358 bytes against its 40,194 ceiling, the verifier 38,638 against 35,221, the reviewer 41,061 against 39,600, release-close 28,638 against 26,410, the planner 30,162 against 24,576 and the router 17,124 against 16,384; no ceiling moved and no acceptance was recorded, and npm run meta names the cold start a drift-to-low-performance reopen candidate for the next planning pass.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T00:58:27.344Z"
         }
       ]
     },
@@ -54167,6 +54223,497 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-dec74be4077f5f25",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "05388c0cc7a8f4b70ce1e5ed27a51fad8bff2178b3f76dada30b0814c2b92233",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d003--a-recheck-reviews-the-whole-change-again",
+          "title": "WO-255-D003: Record the round-2 recheck findings counts and durations of the next two orders executed after WO-255 against WO-255-D003's before figures (WO-250, WO-253 and WO-254), and whether each…",
+          "summary": "{ \"id\": \"WO-255-D003\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; steps 2 and 7, criteria 2 and 7\", \"decision\": \"A recheck (round 2 or later, any kind but combined) first confirms or refutes the fixes of the listed earlier findings on the current tree, then reviews the whole current change against the base again under its brief: its base is the merge base with main (a registered target's activation base, or its ladder's --since base), its stat is the whole change, and its brief also names the tree the earlier round reviewed with the git diff that shows what the fixes changed. The admission rule is unchanged, so the ladder keeps WO-250's end: round 1, one recheck, one combined round, th",
+          "missing": false
+        },
+        {
+          "hash": "452d1fd4333ab10799caa7134351af940669686e36d4eb2931107e410cdb5f59",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d003--a-recheck-reviews-the-whole-change-again",
+          "title": "WO-255-D003: Record the round-2 recheck findings counts and durations of the next two orders executed after WO-255 against WO-255-D003's before figures (WO-250, WO-253 and WO-254), and whether each…",
+          "summary": "{ \"id\": \"WO-255-D003\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; steps 2 and 7, criteria 2 and 7\", \"decision\": \"A recheck (round 2 or later, any kind but combined) first confirms or refutes the fixes of the listed earlier findings on the current tree, then reviews the whole current change against the base again under its brief: its base is the merge base with main (a registered target's activation base, or its ladder's --since base), its stat is the whole change, and its brief also names the tree the earlier round reviewed with the git diff that shows what the fixes changed. The admission rule is unchanged, so the ladder keeps WO-250's end: round 1, one recheck, one combined round, th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D003: the recheck now reads the whole change again; its after figures are the next two orders' round-2 rechecks, measured against D003's before figures for WO-250, WO-253 and WO-254, which no order can record until those two orders run.",
+          "reopenWhen": "Two orders executed after WO-255 have recorded their round-2 recheck findings and durations, or the operator asks for the recheck narrower.",
+          "targets": [],
+          "at": "2026-11-05T16:07:40.327Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-255-D003, with four before figures rounded to the nearest minute as the project's duration format rounds them: the recheck now reads the whole change again; its after figures are the next two orders' round-2 rechecks, measured against D003's before figures for WO-250, WO-253 and WO-254, which no order can record until those two orders run.",
+          "reopenWhen": "Two orders executed after WO-255 have recorded their round-2 recheck findings and durations, or the operator asks for the recheck narrower.",
+          "targets": [],
+          "at": "2026-11-05T19:03:57.014Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-06090c778cc07685",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3904bc4cde0f117fe5fb66813321c7597d5f6977839633ffcdd5830ba8fc3b1e",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d008--a-registered-targets-order-is-a-review-subject",
+          "title": "WO-255-D008: Start a target order's review repair lane on a failed target gate row, as a failed launchpad npm test row does: reviewCycle in scripts/lib/review-worker.mjs counts only checkId npm test,…",
+          "summary": "{ \"id\": \"WO-255-D008\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; step 5, criterion 5\", \"decision\": \"--target <repository-id> --order WO-NNN binds the launchpad's order to its registered target: the order's activation must name that repository and a base commit, the launchpad's target registry must name one worktree for the order with the same repository, base and branch wo-NNN, and that worktree must be its own Git root on that branch. The diff is the activation base against the target worktree's working tree written as a Git tree in the target's object store, the worker's working directory is the target worktree and its sandbox and tool list keep it read-only, the brief names the tar",
+          "missing": false
+        },
+        {
+          "hash": "c558088f67843c3b992bdaa729a120dcd4d6149d8d64cc864f0f4b254e7f4872",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d008--a-registered-targets-order-is-a-review-subject",
+          "title": "WO-255-D008: Start a target order's review repair lane on a failed target gate row, as a failed launchpad npm test row does: reviewCycle in scripts/lib/review-worker.mjs counts only checkId npm test,…",
+          "summary": "{ \"id\": \"WO-255-D008\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; step 5, criterion 5\", \"decision\": \"--target <repository-id> --order WO-NNN binds the launchpad's order to its registered target through boundTargetWorktree in scripts/lib/target-worktrees.mjs, the binding target-review publication's reviewedTargetSubject now shares (round 1's design F2): the order's activation must name that repository and a base commit, the launchpad's config must register the repository, the launchpad's target registry must name one worktree for the order with the same repository, base and branch wo-NNN, and that worktree must be its own Git root on that branch. The diff is the activation base against ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D008: a target order's failed target gate does not start a review repair lane, since reviewCycle counts only launchpad npm test rows; a fix dispatch still does. Outside WO-255's criteria and boarded for planning.",
+          "reopenWhen": "A target order's repair ladder is refused by the overwrite rule after a failed target gate, or a planning pass allocates the repair-lane change.",
+          "targets": [],
+          "at": "2026-11-05T16:07:40.462Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-255-D008, revised after round 1 (the shared target binding and the safe snapshot): a target order's failed target gate still does not start a review repair lane, since reviewCycle counts only launchpad npm test rows; a fix dispatch still does. Outside WO-255's criteria and boarded for planning.",
+          "reopenWhen": "A target order's repair ladder is refused by the overwrite rule after a failed target gate, or a planning pass allocates the repair-lane change.",
+          "targets": [],
+          "at": "2026-11-05T16:52:38.909Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-76dda631b58017b1",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "70386f83e69b18ec82fea520e49407b64169310e91adaa048766bca30edecb28",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d011",
+          "title": "WO-255-D011: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-255 added the Astra opt-in, its receipt type and the review helper's --model, --target and --capture forms to the…",
+          "summary": "{ \"id\": \"WO-255-D011\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; step 7, criterion 7\", \"decision\": \"The role text grows by the reviewed duties, and every root over its ceiling is boarded for optimization. Keep the new role sentences whole: the shared launch line every role but the router carries (the Astra opt-in, its receipt type, the helper's --model, --target and --capture forms and the dispatch-line default), the executor's recheck sentence and consistency table rule, and the planner's --capture sentence. Measured as the gate-followups rule measures, the installed instruction plus each skill, with node scripts/harness-context.mjs --check before and after the edit: executor 43,744 ",
+          "missing": false
+        },
+        {
+          "hash": "373dc7ad828d28d34ea0ab324900b53ad6c48b0641b274e8f3d40e29a762cb3d",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d011",
+          "title": "WO-255-D011: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-255 added the Astra opt-in, its receipt type and the review helper's --model, --target and --capture forms to the…",
+          "summary": "{ \"id\": \"WO-255-D011\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; step 7, criterion 7\", \"decision\": \"The role text grows by the reviewed duties, and every root over its ceiling is boarded for optimization. Keep the new role sentences whole: the shared launch line every role but the router carries (the Astra opt-in, its receipt type, the helper's --model, --target and --capture forms and the dispatch-line default), the executor's recheck sentence and consistency table rule, and the planner's --capture sentence. Measured as the gate-followups rule measures, the installed instruction plus each skill, with node scripts/harness-context.mjs --check before and after the edit: executor 43,744 ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D011: the launch line, the whole-change recheck, the Traced consumers rule and the planner's capture sentence stay whole under product 07's one route for cold-start ceilings; the executor reads 44,251 bytes, the verifier 38,638, the reviewer 41,061, release-close 28,638, the planner 30,142 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-05T16:07:40.598Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-255-D011, with round 1's record-command flags: the launch line, the whole-change recheck, the Traced consumers rule, the record command's flags and the planner's capture sentence stay whole under product 07's one route for cold-start ceilings; the executor reads 44,358 bytes, the verifier 38,638, the reviewer 41,061, release-close 28,638, the planner 30,142 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-05T16:53:44.985Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-261c99c30cd0bd6d",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f00445f32f4c3f54015564be3c00ef73934344747312d219c77eef6432282255",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d017--wo-244s-plan-review-takes---capture-the-carry-in-boarded-where-wo-244-reads-it",
+          "title": "WO-255-D017: When WO-244 builds npm run plan -- review, have it pass the operator's dispatch capture to the planning subject's criteria review with npm run worker -- review --kind criteria --subject…",
+          "summary": "{ \"id\": \"WO-255-D017\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; the order's known issue on WO-244 (round 1's criteria F8)\", \"decision\": \"The order's Known issues say WO-244's row names this order's --capture flag, and no WO-244 surface does: not its order, not its queue row, not the register. An executor edits no other order's text, so the duty is boarded as a register row WO-244's executor and planner find with npm run plan -- followups --touching WO-244: when plan review launches a planning subject's criteria review, it passes the operator's dispatch capture with --capture, and its report answers each item in an Items table. Until then the planner's role text names the flag (contri",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D017: WO-244's plan review is not built yet; when it is, it passes the operator's dispatch capture to the planning subject's criteria review with --capture. Until then the planner's role text names the flag.",
+          "reopenWhen": "WO-244 activates, or plan review launches a planning criteria review without --capture.",
+          "targets": [],
+          "at": "2026-11-05T16:52:39.048Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7b9896d099301d15",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7e76693c8e085de4613c6532f6ab58c25f297b006d0d4fef385b95a9fb39224f",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d020--the-first-complete-run-failed-on-a-codex-inventory-the-wo-054-case-still-listed-by-hand",
+          "title": "WO-255-D020: Let a repair's review ladder name the failed complete run's tree as its base: the gate records treeHash but hashes the candidate in process without writing its objects, so npm run worker…",
+          "summary": "{ \"id\": \"WO-255-D020\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; the first complete run and its repair\", \"decision\": \"The first complete run, npm test -- --review, failed in harness-fixtures on 1 case: 'WO-054 Codex installation preserves unowned configuration before any bundle write' (scripts/test-harness.mjs). The case makes every Codex file unowned by dropping the .codex/ entries from the fixture's manifest, then deletes the three Codex files it named, config.toml, hooks.json and hooks/continuation.mjs, before emitting again; the Codex profile now also emits .codex/agents/dotln-worker-astra.toml, which stayed on disk unowned, so the second emit refused it as unowned Codex output. T",
+          "missing": false
+        },
+        {
+          "hash": "a94d6f570845779a35e43fe3a7d0e1eb33e89d40a8d0ffb92ce2ef5ff3557d3f",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d020--the-first-complete-run-failed-on-a-codex-inventory-the-wo-054-case-still-listed-by-hand",
+          "title": "WO-255-D020: Let a repair's review ladder name the failed complete run's tree as its base: the gate records treeHash but hashes the candidate in process without writing its objects, so npm run worker…",
+          "summary": "{ \"id\": \"WO-255-D020\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; the first complete run and its repair\", \"decision\": \"The first complete run, npm test -- --review, failed in harness-fixtures on 1 case: 'WO-054 Codex installation preserves unowned configuration before any bundle write' (scripts/test-harness.mjs). The case makes every Codex file unowned by dropping the .codex/ entries from the fixture's manifest, then deletes the three Codex files it named, config.toml, hooks.json and hooks/continuation.mjs, before emitting again; the Codex profile now also emits .codex/agents/dotln-worker-astra.toml, which stayed on disk unowned, so the second emit refused it as unowned Codex output. T",
+          "missing": false
+        },
+        {
+          "hash": "7e4775fc06744b6dd1944c162423d196a14139750313446ff31f9d670a6187ab",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d020--the-first-complete-run-failed-on-a-codex-inventory-the-wo-054-case-still-listed-by-hand",
+          "title": "WO-255-D020: Let a repair's review ladder name the failed complete run's tree as its base: the gate records treeHash but hashes the candidate in process without writing its objects, so npm run worker…",
+          "summary": "{ \"id\": \"WO-255-D020\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; the first complete run and its repair\", \"decision\": \"The first complete run, npm test -- --review, failed in harness-fixtures on 1 case: 'WO-054 Codex installation preserves unowned configuration before any bundle write' (scripts/test-harness.mjs). The case makes every Codex file unowned by dropping the .codex/ entries from the fixture's manifest, then deletes the three Codex files it named, config.toml, hooks.json and hooks/continuation.mjs, before emitting again; the Codex profile now also emits .codex/agents/dotln-worker-astra.toml, which stayed on disk unowned, so the second emit refused it as unowned Codex output. T",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D020: a repair's review ladder cannot name the failed complete run's tree, which the gate hashes without writing its objects; WO-255's repair based its round 3 on round 3's reviewed tree instead. Changing what the gate keeps is gate machinery outside WO-255's criteria, boarded for planning.",
+          "reopenWhen": "A repair's ladder cannot name its failed run's tree again, or a planning pass allocates the gate's tree retention.",
+          "targets": [],
+          "at": "2026-11-05T17:44:53.769Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-255-D020, with its corrected repair figures: a repair's review ladder cannot name the failed complete run's tree, which the gate hashes without writing its objects; WO-255's repair based its round 3 on round 3's reviewed tree instead. Changing what the gate keeps is gate machinery outside WO-255's criteria, boarded for planning.",
+          "reopenWhen": "A repair's ladder cannot name its failed run's tree again, or a planning pass allocates the gate's tree retention.",
+          "targets": [],
+          "at": "2026-11-05T18:05:07.160Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-255-D020, with its corrected run counts (27 passed and 17 failed of 44 suites; 34 entries never started): a repair's review ladder cannot name the failed complete run's tree, which the gate hashes without writing its objects; WO-255's repair based its round 3 on round 3's reviewed tree instead. Changing what the gate keeps is gate machinery outside WO-255's criteria, boarded for planning.",
+          "reopenWhen": "A repair's ladder cannot name its failed run's tree again, or a planning pass allocates the gate's tree retention.",
+          "targets": [],
+          "at": "2026-11-05T19:01:27.233Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1fa649b8d330505b",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1a2cf848dbaae1daf1d01755eaa0e824b929f137b074f6466e67da2b7785020f",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d022--the-outcome-against-the-orders-aim-its-own-ladder-missed-what-its-first-complete-run-found",
+          "title": "WO-255-D022: Add a third required Traced consumers row to the consistency brief and the helper's report check: tests and fixtures that list generated or emitted files by hand, such as WO-255-D020's…",
+          "summary": "{ \"id\": \"WO-255-D022\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; the handoff's goal alignment\", \"decision\": \"The deliverable matches the order's criteria: the branch-keyed planning lane, the whole-change recheck, the Traced consumers table, the record flags, --capture, --target and the four worker options are built, documented and judged by their fixtures, and the second complete run passed. The order's aim, that reviews find what the complete run finds, held only in part on the order itself: three review rounds passed a change whose first complete run then failed in harness-fixtures, on a test case that listed the Codex files by hand (D020). Round 1's consistency reviewer traced the ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D022: this order's own review ladder missed a test's hand-written list of generated Codex files that its first complete run found; a third required Traced consumers row changes the emitted brief and the helper's report check after the passing complete run, outside WO-255's criteria, so it is boarded for planning.",
+          "reopenWhen": "A later order's complete run fails on a hand-written list of generated files that its consistency review did not trace, or a planning pass allocates the row.",
+          "targets": [],
+          "at": "2026-11-05T19:07:21.645Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bc0fce82bf144d3a",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c02cfccc8f0495ee8145db4676134288050d6616c8d15dc18ec67955cd988565",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d024",
+          "title": "WO-255-D024: Repair WO-255 VER-001 F1 in scripts/lib/review-worker.mjs: give every supported planning branch a distinct lane namespace, including a transformed name and a literal name equal to its…",
+          "summary": "{ \"id\": \"WO-255-D024\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify; VER-001 F1, criterion 1\", \"decision\": \"Fail criterion 1 on a deterministic planning-lane collision. The supported nested branch planning/2030-01-02/recheck and the supported literal branch planning/2030-01-02-recheck-5cd9ca9c both dry-run to planning-2030-01-02-recheck-5cd9ca9c/round-1-criteria.md. The first real fixture launch records; the second is refused as an existing round although it is a distinct branch and pass. This is no hash collision: only names transformed by slugging receive the digest, so a literal name can equal the complete transformed spelling. The existing fixture explicitly supports nested planning",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-255's repair of VER-001 F1 delivers it: a planning lane is the branch's name URL-escaped, so every lane decodes back to one branch, and an over-long name is refused before any worker starts (WO-255-D026).",
+          "reopenWhen": "Two planning branches name one lane.",
+          "targets": [
+            "WO-255"
+          ],
+          "at": "2026-11-05T20:00:38.578Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a7d346e8668f4165",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94de78283899989e5f817d4260d64502f3ca26545ed28c0f6d72a57038d586f3",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d025",
+          "title": "WO-255-D025: Repair WO-255 VER-001 F2 in scripts/lib/review-worker.mjs: distinguish an actual claimed review result from an incidental versioned or findings-bearing JSON example in prose. Preserve…",
+          "summary": "{ \"id\": \"WO-255-D025\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify; VER-001 F2, criterion 3\", \"decision\": \"Fail criterion 3 because an ordinary prose consistency report with a complete Traced consumers table and a fenced JSON example is still rejected when the example contains schemaVersion or findings. The two clearly introduced examples are {\\\"schemaVersion\\\":1,\\\"value\\\":2} and {\\\"findings\\\":[],\\\"total\\\":0}; both return invalid-result: change review result shape. The plain {\\\"value\\\":2} control records. claimedResult treats either field name alone as a claim to be the review result, ignoring the surrounding prose and example fence. This reproduces D006's reopening condition and the s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-255's repair of VER-001 F2 delivers it: worker record reads a claim only where a worker states its own return, so a JSON example in a fence, a code span or a sentence stays prose (WO-255-D027).",
+          "reopenWhen": "A prose report's JSON example is refused as a claimed result, or a stated result is recorded as prose.",
+          "targets": [
+            "WO-255"
+          ],
+          "at": "2026-11-05T20:00:38.700Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7e0f8f889e96cd27",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9551cc11ff2a29babbd2bf4334d8ba12d718ceb57bb5276cbbfeb184f184ec68",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d002--the-planning-lane-is-the-branch-and-a---since-round-1-starts-a-ladder-of-its-own",
+          "title": "WO-255-D002: A planning subject's lane is planning-<branch slug>: the branch without its planning/ prefix, any run of characters outside letters, digits, dot, underscore and hyphen made one hyphen,…",
+          "summary": "{ \"id\": \"WO-255-D002\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; step 1, criterion 1\", \"decision\": \"A planning subject's lane is planning-<branch slug>: the branch without its planning/ prefix, any run of characters outside letters, digits, dot, underscore and hyphen made one hyphen, leading dots and hyphens and trailing hyphens dropped, refused when nothing is left; a branch whose name the slug had to change keeps the first eight hex digits of its name's SHA-256, so two branches never share a lane (round 1's criteria F4: planning/a/b and planning/a-b). A round 1 other than the combined round named with --since <tree> starts a ladder of its own under since-<the first twelve hex digits",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-255-D048 (FINAL-001): WO-255-D002's reopening, two planning branches naming one lane (VER-001 F1), was taken in the same order by WO-255-D026: a planning lane is the branch's name after planning/ with every character outside letters, digits, dot, underscore and hyphen URL-escaped, so each lane decodes back to one branch; VER-002 and VER-003 judged criterion 1 met on it.",
+          "reopenWhen": "Two planning branches name one lane, or a reader of a planning lane cannot decode its branch.",
+          "targets": [],
+          "at": "2026-11-06T00:58:26.933Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-07d9932f484bbc4b",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5898b721988f29152871ce409b8a60a1b3f926a2935ffa73d019b543ad01d92f",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d006--a-prose-report-holding-a-json-example-stays-prose",
+          "title": "WO-255-D006: The record command takes a returned text as a claimed change-review result only when the whole text is a JSON object carrying the result's own schemaVersion or findings key, or, failing…",
+          "summary": "{ \"id\": \"WO-255-D006\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: next; step 3, criterion 3; WO-250-D015 (FUP-60ea250ef102cc46) taken\", \"decision\": \"The record command takes a returned text as a claimed change-review result only when the whole text is a JSON object carrying the result's own schemaVersion or findings key, or, failing that, when the last balanced JSON object found in it carries one. A JSON example such as {\\\"value\\\":2}, fenced or inline, claims nothing, so the text is kept as the worker's prose report. A claimed object is still bound by validateChangeReviewResult, so a malformed one is refused as before.\", \"evidence\": [ \"scripts/lib/review-worker.mjs claimedResult: a string-aw",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-255-D048 (FINAL-001): WO-255-D006's reopening, a JSON example carrying a findings key taken as the claimed result (VER-001 F2), was taken in the same order by WO-255-D027, D031, D032, D038, D040 and D042: the recorder declares mixed text's intent with --format prose|json and refuses an undeclared embedded result; VER-003 judged criterion 3 met on independent inputs.",
+          "reopenWhen": "A declared prose report's example is adopted as findings, or a declared JSON return loses its findings or report table.",
+          "targets": [],
+          "at": "2026-11-06T00:58:27.071Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-df9d4f666035fecc",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cb72ad68907e5c8b10d01e46170c576555b636467ce30fa7802dcad1b9642e7f",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d030--the-planners-capture-sentence-names-the-helpers-host-re-pinned-over-wo-255s-oracle",
+          "title": "WO-255-D030: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-255's repair named --host codex|claude in the planner's capture sentence (20 bytes), leaving the planner at…",
+          "summary": "{ \"id\": \"WO-255-D030\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: fix; round 1's consistency F1\", \"decision\": \"The planner's capture sentence names the host the helper requires: A criteria review of the planning subject through `npm run worker -- review --kind criteria --host codex|claude --subject planning` carries the operator's dispatch capture with `--capture <file>`, and its report answers each item in an `## Items` table; product 07 §Paired passes and the synthesis pass names the same command. The four planner role files change at both economy settings and no other root, so wo255-repair-role-baseline.json pins the role trees over wo255-role-baseline.json, which stays byte-exact with ev",
+          "missing": false
+        },
+        {
+          "hash": "cb72ad68907e5c8b10d01e46170c576555b636467ce30fa7802dcad1b9642e7f",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d030",
+          "title": "WO-255-D030: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-255's repair named --host codex|claude in the planner's capture sentence (20 bytes), leaving the planner at…",
+          "summary": "{ \"id\": \"WO-255-D030\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: fix; round 1's consistency F1\", \"decision\": \"The planner's capture sentence names the host the helper requires: A criteria review of the planning subject through `npm run worker -- review --kind criteria --host codex|claude --subject planning` carries the operator's dispatch capture with `--capture <file>`, and its report answers each item in an `## Items` table; product 07 §Paired passes and the synthesis pass names the same command. The four planner role files change at both economy settings and no other root, so wo255-repair-role-baseline.json pins the role trees over wo255-role-baseline.json, which stays byte-exact with ev",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255-D030: the planner's capture sentence, now naming the helper's required --host, stays whole with every other root's reviewed rules under product 07's one route for cold-start ceilings; the planner reads 30,162 bytes, the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-05T20:27:48.845Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-255-D030: the planner's capture sentence, now naming the helper's required --host, stays whole with every other root's reviewed rules under product 07's one route for cold-start ceilings; the planner reads 30,162 bytes, the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-05T20:29:19.748Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-caec4c27b1b8d84c",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bdf96badd3d7b424eac5278e67873dc63b8e29ab8fac312ea0287e101fdca9aa",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d035--a-terminal-example-still-supplies-findings-that-the-prose-review-did-not-make",
+          "title": "WO-255-D035: Repair WO-255 VER-002 F1 in scripts/lib/review-worker.mjs and its tests: a prose report's explicitly quoted valid terminal example must remain prose with no adopted sample findings. Add…",
+          "summary": "{ \"id\": \"WO-255-D035\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify; VER-002 F1, criterion 3\", \"decision\": \"Fail criterion 3. A prose consistency review with its complete Traced consumers table says it found no issues and ends with an explicitly introduced example of a valid review record carrying sample finding F1. recordAgentReview accepts it as structured and adopts sample F1. The same example in the middle of the report stays prose. readReturn's closing-fence rule uses terminal position and schema validity as the claim boundary; neither distinguishes this supported prose example from a returned result. This reproduces D032's reopening condition that a quoted example's findings becom",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-255 repair of VER-002, implemented by D038: explicit prose/JSON input intent, multiline code spans and genuine trailing-prose results. The review-worker suite and adapted independent cases pass; independent review and complete validation precede handoff.",
+          "reopenWhen": "A declared example supplies findings, a multiline code-span example is rejected, a declared structured return loses findings or table, or undeclared ambiguous input is silently classified.",
+          "targets": [
+            "WO-255"
+          ],
+          "at": "2026-11-05T22:42:31.653Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-89d75a1c3a0d0e5c",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d036",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1824fc47e7e745961d6d16eccb2dd2e2a4244fe53470abdccf9f17ea6216787b",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d036--multiline-code-span-examples-are-read-as-result-blocks-and-refused",
+          "title": "WO-255-D036: Repair WO-255 VER-002 F2 in scripts/lib/review-worker.mjs and its tests: recognize examples inside code spans across line boundaries before considering a JSON line an unfenced result…",
+          "summary": "{ \"id\": \"WO-255-D036\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify; VER-002 F2, criterion 3\", \"decision\": \"Fail criterion 3 on a second supported example context. A prose consistency report introduces a JSON example in a code span whose opening and closing backticks are on separate lines, and carries the required Traced consumers table. The example {\\\"schemaVersion\\\":1,\\\"findings\\\":[]} is refused with invalid-result: change review result shape. Both one-backtick and two-backtick delimiters reproduce it; the same-line code-span control records unchanged. readReturn excludes fenced blocks when testing a standalone JSON line but tracks no enclosing multiline code span, so it treats the ex",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-255 repair of VER-002, implemented by D038: explicit prose/JSON input intent, multiline code spans and genuine trailing-prose results. The review-worker suite and adapted independent cases pass; independent review and complete validation precede handoff.",
+          "reopenWhen": "A declared example supplies findings, a multiline code-span example is rejected, a declared structured return loses findings or table, or undeclared ambiguous input is silently classified.",
+          "targets": [
+            "WO-255"
+          ],
+          "at": "2026-11-05T22:42:31.785Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c249afff3b1a6f1d",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d037",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "10d7fdfffd30d78a81652bd4021f69fdd7b47d0d0db906498733a7883e63d021",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d037--a-genuine-fenced-result-with-trailing-prose-regresses-from-the-activation-base",
+          "title": "WO-255-D037: Repair WO-255 VER-002 F3 in scripts/lib/review-worker.mjs and its tests: preserve genuine structured results with trailing prose, including their findings and report-field table, while…",
+          "summary": "{ \"id\": \"WO-255-D037\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify; VER-002 F3, reproduced regression\", \"decision\": \"Block the reproduced regression separately from the two criterion-3 failures. The activation-base recorder accepts a genuine valid consistency result in a JSON fence followed by That is all., retaining its actual finding F1 and the Traced consumers table in its report field. The current recorder treats the same text as prose and refuses it for lacking a table, because the actual table is encoded inside the report field. The base-to-current comparison executes both recorders against isolated synthetic repositories. The base source is unchanged apart from resolving relativ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-255 repair of VER-002, implemented by D038: explicit prose/JSON input intent, multiline code spans and genuine trailing-prose results. The review-worker suite and adapted independent cases pass; independent review and complete validation precede handoff.",
+          "reopenWhen": "A declared example supplies findings, a multiline code-span example is rejected, a declared structured return loses findings or table, or undeclared ambiguous input is silently classified.",
+          "targets": [
+            "WO-255"
+          ],
+          "at": "2026-11-05T22:42:31.916Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e4417f76298b1d02",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d041",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ea3fd168367834976db12ac4a819b8677e5c205d16df15a8ea2093425f47f434",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d041--keep-the-two-design-notes-as-a-bounded-follow-up",
+          "title": "WO-255-D041: Evaluate a pure prose/structured decoder interface and a capture matcher compiled once per capture set in scripts/lib/review-worker.mjs; preserve current format, refusal, capture…",
+          "summary": "{ \"id\": \"WO-255-D041\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: fix; repair 3 round-1 design F1 and F2\", \"decision\": \"Record both nonblocking maintenance suggestions and keep this repair focused on the reproduced format and section defects. A pure decoder returning explicit prose/structured variants would separate decoding from filesystem orchestration; a compiled capture matcher would avoid rebuilding protocol exemptions and capture indexes for each candidate and retained field. Neither review identifies incorrect behavior or measures a performance defect. D040 reuses an existing parser but does not claim to deliver these two suggested interface changes. The consistency review has no find",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "targets": [],
+          "reason": "WO-255-D041 records the two nonblocking repair-3 design notes; no behavioral defect or measured performance problem requires expanding the Markdown-context repair.",
+          "reopenWhen": "The decoder or omission path next needs substantial maintenance, or measured repeated matcher construction matters.",
+          "at": "2026-11-05T22:59:44.444Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c53447a63c6b1031",
+      "key": "decision:docs/evidence/WO-255/decisions.md#wo-255-d046",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0c6201299fb29df12fa7f8d276198c357cc72728b3109d46c300b68db7ac41c5",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d046--the-json-formats-closing-prose-claim-is-wider-than-the-parser",
+          "title": "WO-255-D046: In scripts/lib/review-worker.mjs readReturn, under --format json skip a brace that does not open a parseable JSON object as auto mode does, and keep refusing a malformed object that…",
+          "summary": "{ \"id\": \"WO-255-D046\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify; VER-003 F1, follow-up\", \"decision\": \"Board a follow-up; it blocks nothing. Product 07 says --format json accepts genuine results with a preface or closing prose, and the kit guide says the same for a fenced result followed by closing prose. readReturn under --format json refuses the whole record when any brace outside the selected result does not begin a parseable JSON object. A genuine fenced result followed by 'Templates such as {name} were unchanged.' is refused with '--format json: invalid JSON object; put the result alone in the input file'. The refusal is loud and its remedy works, so no finding is lost. The acti",
+          "missing": false
+        },
+        {
+          "hash": "f07fecbf70978c9cb2155d2acc9869187eb7ff7f9947834e0c5bce288c0cc0b1",
+          "ref": "docs/evidence/WO-255/decisions.md#wo-255-d046--the-json-formats-closing-prose-claim-is-wider-than-the-parser",
+          "title": "WO-255-D046: In scripts/lib/review-worker.mjs readReturn, under --format json skip a brace that does not open a parseable JSON object, as auto mode does. Keep the refusals for an invalid result shape…",
+          "summary": "{ \"id\": \"WO-255-D046\", \"date\": \"2026-11-05\", \"dispatch\": \"resume: verify; VER-003 F1, follow-up\", \"decision\": \"Board a follow-up; it blocks nothing. Product 07 says --format json accepts genuine results with a preface or closing prose, and the kit guide says the same for a fenced result followed by closing prose. readReturn under --format json refuses the whole record when any brace outside the selected result does not begin a parseable JSON object. A genuine fenced result followed by 'Templates such as {name} were unchanged.' is refused with '--format json: invalid JSON object; put the result alone in the input file'. The refusal is loud and its remedy works, so no finding is lost. The acti",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-255-D047 (FINAL-001): the documentation side of WO-255-D046's rule is done in the final review, product 07 and the kit guide now stating that a brace in the preface or closing prose that opens no JSON object refuses a --format json record; the parser change, skipping such a brace while still refusing a malformed result rather than adopting a valid object nested in it, stays for a planning allocation, since a source edit in final review moves the code identity and reaches the merge without independent verification.",
+          "reopenWhen": "A planning pass allocates the parser change, or a caller's genuine result with ordinary closing prose cannot be recorded with --format json and putting the result alone is not acceptable to its route.",
+          "targets": [],
+          "at": "2026-11-06T00:58:27.208Z"
+        }
+      ]
     }
   ]
 }
