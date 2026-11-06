@@ -635,8 +635,8 @@ landed; the helper's ceiling against this pass's own subject is measured in
 pass's commands: `plan start` about 0 h 1 min; the rest in §Validation.
 Against the NoOp of doing nothing: every planning session keeps losing its
 role to the host's command block, and every pass that edits the map keeps
-being refused a review, until WO-257 lands. The pull request this pass
-opened is named in the last Validation bullet.
+being refused a review, until WO-257 lands. This pass opened pull request
+#278.
 
 ## Validation
 
@@ -755,6 +755,7 @@ appended when observed.
   (24,141,590 cached input, 329,371 cache write, 215,073 output, 1,590
   input; cost unknown); three subagent launches of the cap of twenty
   (all Claude), no re-task, seventeen remaining; 162 tool steps.
-- `node scripts/refute-plan.mjs publish` pushed the branch and opened the
-  `:memo:` pull request (the number is in §Process cost's closing line,
-  written after the publish).
+- `node scripts/refute-plan.mjs publish` pushed the branch at `3d8620190`
+  and opened the `:memo:` pull request #278 on the first try, admitted by
+  the host under WO-246's emitted allow rule; this bullet and the number
+  were committed and pushed through the same helper afterwards.
