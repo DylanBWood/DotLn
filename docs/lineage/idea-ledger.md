@@ -51,7 +51,8 @@ The pass amends WO-257 with the fork's returns of 2026-11-04 and 2026-11-05
 and the operator's rule that a review is split over more workers and never
 refused, retires WO-253, WO-254, WO-246 and WO-255 from the sequence as
 closed (v0.115.0 to v0.118.0), binds the 26 red tags of 2026-11-03 where a
-reader looks, and answers the fork's two blocks. Record:
+reader looks (the front page's share through WO-257), and answers the
+fork's two blocks. Record:
 [the planning document](../planning/passes/fork-returns-and-review-batches-2026-11-06.md).
 
 ## 2026-11-03 — Ideation: skills shipped to end users and a Rust rewrite (two operator ideas; synthesis, not capture)

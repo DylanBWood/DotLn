@@ -131,13 +131,16 @@ and `docs/work-orders/` since `plan.documentsBase`, which `runChangeReview`
 186) refuses `request.brief.length` above its ceiling with
 `profile-refused: change review brief` and prints no size. The fork measured
 426 KB of such documents on 2026-11-05 and withdrew amendments to five orders
-(129 KB of text for a few sentences) to be reviewed at all. Core's own case
-is worse: `docs/planning/work-order-map.md` is 946,832 bytes, and a pass that
-writes its paragraph and candidates there (every pass does) puts the map in
-the brief whole; the 2026-11-03 pass's briefs measured about 230 KB, so the
-reviews it ran were captured before the map was edited or the map was not
-yet in the set, and this pass measures the current brief after its commit
-(§Validation). The operator's question, who the ceiling benefits: nobody.
+(129 KB of text for a few sentences) to be reviewed at all. Measured on this
+pass's own committed subject with the helper's dry run (§Validation): the
+brief is 120,955 characters, under the ceiling, because `renderReviewBrief`
+(686 to 690) replaces a document over `MAX_DOCUMENT_BYTES` (366) with a
+one-line pointer to the checkout, which is what it did with the map (946,832
+bytes) and the history page; the ceiling is met by the sum of documents
+under that cap, which is the fork's case (five orders filed, nine amended
+and the pass document). This corrects the first draft of this paragraph,
+which inferred from `subjectDocuments` alone that a pass puts the map in
+the brief whole. The operator's question, who the ceiling benefits: nobody.
 It was written as a worker's context bound (the same figure as
 `MAX_SUBJECT_CHARS` of the vertical judgment protocol) and the helper's only
 answer to passing it was to refuse, which made the reviewed route cost a
@@ -212,8 +215,11 @@ nothing it links reached `docs/README.md`, the four directory READMEs, the
 template, the fifteen publication examples or the rest (`documentReport`:
 `linkedFrom: []`, `bound: false` for each, read 2026-11-06). The 2026-11-03
 pass read the report's `README.md` row as the 27 and did not check the
-others; this pass binds each where it belongs (§Red tags) and the report
-then shows `unbound 0`.
+others; this pass binds each where it belongs (§Red tags). The six that
+only the front page can reach wait for WO-257's front-page step, since
+`docs-check` refuses a front-page change from a planning branch: this
+pass's first commit linked them from `README.md`'s Map and was refused
+(§Validation), and the page was reverted.
 
 ### The fork's two blocks against the record
 
@@ -245,15 +251,17 @@ known issue).
 
 - [WO-257](../../work-orders/WO-257-instance-returns-of-2026-11-03.md),
   amended: the title now spans 2026-11-03 to 2026-11-05; a second dated
-  observed gap at `772979eac`; seven Design bullets with their rejected
-  alternatives; steps 11 to 17 (the hook's block, the review batches, the
+  observed gap at `772979eac`; eight Design bullets with their rejected
+  alternatives; steps 11 to 18 (the hook's block, the review batches, the
   subject's members, the retained lanes, `status --refresh`, the front
-  page's record links, the third allow rule) before the write-backs, the
-  fork's block and the handoff (now 18 to 20); criteria 11 to 17 before the
-  write-back and gate criteria (now 18 and 19); the Preflight suites for
-  each; WO-254 and WO-255 as closed dependencies; FUP-6dfaa29e3f0ba4fd as a
-  carry-in; the non-goals and the operator-review assumptions extended with
-  the operator's decision of 2026-11-05. The five defect classes were
+  page's record links, the third allow rule, and the front page's own two
+  changes under the order's new `**Front page:** README.md` declaration)
+  before the write-backs, the fork's block and the handoff (now 19 to 21);
+  criteria 11 to 18 before the write-back and gate criteria (now 19 and
+  20); the Preflight suites for each; WO-254 and WO-255 as closed
+  dependencies; FUP-6dfaa29e3f0ba4fd and FUP-78158140c6ac12aa as carry-ins;
+  the non-goals and the operator-review assumptions extended with the
+  operator's decision of 2026-11-05. The five defect classes were
   screened: no criterion's subject is a count or a duration (the measured
   size is a printed output, the figures are in the Cost line and this
   document), none reads `HEAD` or a range, each names the fixture its step
@@ -283,16 +291,20 @@ its ten rows and surfaced five more untriaged rows, the follow-ups the four
 closes since the last pass wrote instead of fixing in place; read against
 their decisions: WO-254-D045 (the operator's direction of 2026-11-04 for the
 next planning pass: the front page's Try it section points at the public
-starter and recommends the two routes to start from it) is taken by this
-pass in `README.md` and settled; WO-246-D026 (a remote named `github` or a
+starter and recommends the two routes to start from it) is allocated to
+WO-257 step 18, because this pass wrote the paragraph and `docs-check`
+refused it, the front page being edited only by an order carrying the
+`**Front page:**` declaration (§Validation); WO-246-D026 (a remote named `github` or a
 cased `upstream`), WO-246-D027 (an SSH alias of github.com), WO-246-D030
 (the invisible characters in `LEADING_GITMOJI`, owed to the next order that
 edits `attribution.mjs` with its live episode) and WO-253-D041 (a prune
 that stops on a restricted entry) are deferred with their conditions, since
 their orders closed and no open order owns their files. One batch of
 sixteen requests at revision `34a8000b…` (one allocation, seven declines,
-three settled, five deferred) left revision `638dbbad…`; the feed then
-reads 0 untriaged.
+three settled, five deferred) left revision `638dbbad…`; a second request
+at that revision re-disposed WO-254-D045's row from settled to allocated
+after the refusal, leaving revision `d1dbbc17…`; the feed then reads 0
+untriaged.
 
 ## Red tags
 
@@ -305,7 +317,7 @@ reads 0 untriaged.
     {
       "path": "docs/README.md",
       "since": "docs/planning/passes/fork-returns-and-review-batches-2026-11-06.md",
-      "disposition": "kept: the documentation index, linked from README.md's Map by this pass; the 2026-11-03 disposition said it was reached from README.md and it was not (the Map linked directories, not pages); npm run plan -- documents now shows it bound"
+      "disposition": "kept: the documentation index; it links the directory pages since this pass, and the front page's Map link to it is WO-257 step 18's, because docs-check refuses a front-page change from a planning branch (this pass's first commit linked it and was refused, and the page was reverted); the 2026-11-03 disposition said it was reached from README.md and it was not (the Map links directories, not pages); unbound until WO-257's release"
     },
     {
       "path": "docs/discovery/local-inference.json",
@@ -315,17 +327,17 @@ reads 0 untriaged.
     {
       "path": "docs/evidence/README.md",
       "since": "docs/planning/passes/fork-returns-and-review-batches-2026-11-06.md",
-      "disposition": "kept: linked from README.md's Map evidence entry by this pass; bound"
+      "disposition": "kept: linked from docs/README.md's directory pages by this pass; bound when WO-257 step 18 links the documentation index from the front page"
     },
     {
       "path": "docs/final-reviews/README.md",
       "since": "docs/planning/passes/fork-returns-and-review-batches-2026-11-06.md",
-      "disposition": "kept: README.md's Map final-reviews link now names the page, not the directory (this pass); bound"
+      "disposition": "kept: linked from docs/README.md's directory pages by this pass; bound when WO-257 step 18 links the documentation index from the front page"
     },
     {
       "path": "docs/lineage/remining/README.md",
       "since": "docs/planning/passes/fork-returns-and-review-batches-2026-11-06.md",
-      "disposition": "kept: linked from README.md's Map lineage entry by this pass; bound"
+      "disposition": "kept: linked from docs/README.md's directory pages by this pass; bound when WO-257 step 18 links the documentation index from the front page"
     },
     {
       "path": "docs/product/10-ir-compatibility.md",
@@ -420,12 +432,12 @@ reads 0 untriaged.
     {
       "path": "docs/retired/README.md",
       "since": "docs/planning/passes/fork-returns-and-review-batches-2026-11-06.md",
-      "disposition": "kept: linked from README.md's Map by this pass; bound"
+      "disposition": "kept: linked from docs/README.md's directory pages by this pass; bound when WO-257 step 18 links the documentation index from the front page"
     },
     {
       "path": "docs/work-orders/TEMPLATE.md",
       "since": "docs/planning/passes/fork-returns-and-review-batches-2026-11-06.md",
-      "disposition": "kept: linked from README.md's Map work-orders entry by this pass; bound"
+      "disposition": "kept: linked from docs/README.md's directory pages by this pass; bound when WO-257 step 18 links the documentation index from the front page"
     },
     {
       "path": "docs/work-orders/codex-downtime-series.md",
@@ -440,15 +452,19 @@ reads 0 untriaged.
 
 The 26 are the 2026-11-03 block's tags raised again: that block's
 dispositions said each was reached from `README.md`, and none was (§Readings).
-This pass binds them where a reader looks: the front page's Map now links
-the documentation index, the evidence and final-review pages, the re-mining
-well, the retired proposals and the work-order template; product 00's
+This pass binds them where a reader looks: the documentation index
+(`docs/README.md`) now links the evidence and final-review pages, the
+re-mining well, the retired proposals and the work-order template, and the
+front page's Map link to the index is WO-257 step 18's, because `docs-check`
+refuses a front-page change from a planning branch (this pass's first
+commit made that link and was refused; the page was reverted); product 00's
 mention of the IR compatibility page is a link; the publication examples
 guide lists its fifteen files; and four dated documents that were never
 standing (an observation of 2026-09-03, a 2026-09-04 move pointer, a
 2026-09-01 demonstration run, a 2026-09-01 runbook marked historical) are
 declared records in `docs/control/documents.json`. `npm run plan --
-documents` then shows no unbound standing document. No document was removed.
+documents` then shows six standing documents unbound (the index and the
+five it links), bound at WO-257's release. No document was removed.
 
 ## NoOps
 
@@ -456,8 +472,9 @@ The map's candidates section of 2026-11-06 holds each in full as a
 `NoOpIntent` with its evidence and reopening condition:
 
 1. **A separate one-file order for the hook fix, placed first.** Proposed
-   mid-turn when the operator said every planning session opens with
-   `/model`; withdrawn on the operator's words (every item into WO-257).
+   mid-turn on the operator's observation of 2026-11-05 (the capture above)
+   that every planning session opens with `/model`; withdrawn on the
+   operator's decision of the same session (every item into WO-257).
    WO-257 is first in the sequence since WO-253, WO-254, WO-246 and WO-255
    closed, so the fix lands at the same release either way. Useful if
    WO-257's first verification fails on the hook item alone and holds the
@@ -531,12 +548,14 @@ operator's direction of 2026-10-13; the rules and the Focus are unchanged.
   until WO-257.
 - Product 06: the rung names the four releases since v0.114.0 and the work
   after v0.118.0.
-- `README.md` (the Map's links), product 00 (one link),
+- `docs/README.md` (the directory pages), product 00 (one link),
   `docs/publication/examples/README.md` (the fifteen files),
   `docs/control/documents.json` (four record kinds): §Red tags.
-- `README.md` §Try it: the public starter and the two routes to start
-  from it (WO-254-D045, the operator's direction of 2026-11-04 for this
-  pass).
+- `docs/README.md`: the directory pages it links (§Red tags). The front
+  page's two changes (the Map's link to the documentation index; the Try
+  it paragraph of WO-254-D045, the operator's direction of 2026-11-04 for
+  this pass) are WO-257 step 18's under its `**Front page:** README.md`
+  declaration, since the page is edited only by such an order.
 - The sequence; the map (the pass paragraph, WO-257's catalog row, the
   candidates section of 2026-11-06); the idea ledger's registration; the
   generated index and history page; the lineage index and the two
@@ -603,8 +622,11 @@ output; source `claude-transcript-message-usage`, scope dispatch, cost
 unknown); the exit reading is in §Validation. Subagents: budget 20
 (`subagentCap`); the plan stated before the first spawn: one refuter
 (`dotln-worker`, claude-opus-5-5 at xhigh, the Claude default; the dispatch
-line names no fable worker), launched once with no re-task; no review
-worker (the dispatch carries no `reviewed` label and WO-244's routine is not
+line names no fable worker), launched once with no re-task; in the event
+two launches, the first stopped by this session after about 0 h 5 min when
+the document gate refused the committed subject's front-page edit and the
+subject had to change (its judgment was not read), the second on the
+corrected subject; no review worker (the dispatch carries no `reviewed` label and WO-244's routine is not
 landed; the helper's ceiling against this pass's own subject is measured in
 §Validation with `--dry-run`, which launches nothing). Wall-clock of the
 pass's commands: `plan start` about 0 h 1 min; the rest in §Validation.
@@ -644,3 +666,20 @@ appended when observed.
 - `npm run plan -- check` at the workspace: "planning pass
   planning-92d06e6e83aa82b0 needs a receipt", which the refutation receipt
   supplies; `git diff --check` clean.
+- First commit `178e58d81`; `npm run test:docs` at it: 10 passed, 17
+  failed, 0 h 2 min, every failure `docs-check`'s or downstream of it:
+  `README.md` changed outside its generated blocks on a branch naming no
+  work order (the front page is edited only by an order carrying the
+  `**Front page:**` declaration), and its two placeholder lines read as
+  raw HTML. Corrected: `README.md` reverted to `main`; WO-257 carries the
+  declaration and a front-page step 18; the directory pages are linked
+  from `docs/README.md`; the register row of WO-254-D045 re-disposed as
+  allocated (`d1dbbc17…`); this document corrected in §Readings, §Red tags,
+  §Register and §Write-backs.
+- The refuter launched on `178e58d81` was stopped by this session after
+  about 0 h 5 min, since its subject could no longer be filed.
+- `npm run worker -- review --kind criteria --host codex --subject planning
+  --dry-run` at `178e58d81` (launches nothing): the brief measured 120,955
+  characters, under the ceiling; it inlined the pass document, the
+  sequence, the generated index and WO-257 and pointed at the map and the
+  history page as documents over `MAX_DOCUMENT_BYTES` (§Readings).

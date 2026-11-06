@@ -4,6 +4,7 @@
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
 **Track:** machinery
+**Front page:** README.md
 **Release classification:** minor. Eighteen bounded kit fixes an instance
 meets at its passes, receipts, updates, reviews and closes; one default
 entry point and one emitted allow rule added; no registration key moves and
@@ -92,7 +93,12 @@ the retained lanes read; in `scripts/resume.mjs`
 and `status --refresh`; in `scripts/lib/document-kinds.mjs`
 (`documentReport`, 883 to 887) the front page's record links admitted;
 and in `packages/compiler/src/harness.ts` (`PUBLISH_HELPER_ALLOW_RULES`,
-1549 to 1552) the target publish's rule. Removes: one sentence six times
+1549 to 1552) the target publish's rule; and in `README.md` (the front
+page, which this order's `**Front page:**` declaration admits) the Map's
+link to the documentation index and a Try it paragraph naming the public
+starter and the two routes to start from it (WO-254-D045, the operator's
+direction of 2026-11-04 for the next planning pass, whose own edit
+docs-check refused on 2026-11-06). Removes: one sentence six times
 on a pull request; a pass that merges upstream when the operator did not ask;
 thirteen false red tags per instance pass; a failed document gate after an
 update; four historical fingerprints an instance had to declare; a
@@ -101,14 +107,14 @@ classification count that can be fooled; a planning session with no role
 whenever a slash command shares its message; a pass that withdraws
 amendments to fit a reviewer; a refutation that skips a workstream's
 members; a rule the operator must restate; a warning with no remedy; a
-front page reworded around a check; a target publish run by hand.
-Wall-clock: each change is a render or a read the command already makes,
+front page reworded around a check; a target publish run by hand; a front
+page that reaches no documentation index. Wall-clock: each change is a render or a read the command already makes,
 except the batched review, which launches one worker per batch beyond the
 first (each a review's own duration), and the subject, which grows by the
 members' bytes; measured in the decisions where a command's time changes.
 Context bytes: this file, about 38,000; the instance planner root grows by
 one sentence, measured against its ceiling. Commands: none new; one flag
-(`status --refresh`). Tokens: unknown until run. Steps: 20. Re-mints:
+(`status --refresh`). Tokens: unknown until run. Steps: 21. Re-mints:
 `document-kinds.mjs` and `contributor.ts` are runtime sources the executor
 checks at activation; `scripts/release.mjs`, `scripts/lib/meta.mjs`,
 `scripts/work-orders.mjs`, `scripts/lib/entropy-review.mjs`,
@@ -207,7 +213,10 @@ retained lane, 72 to 80); `scripts/resume.mjs` (`refreshControlProjection`
 1059 to 1085; the `status` case at 1585); `scripts/lib/document-kinds.mjs`
 (`documentReport` 864 to 912); `scripts/worktree.mjs` (`publish
 --target-worktree`, 1344 to 1380 and 1569); the fork's blocks of 2026-11-04
-and 2026-11-05 in the 2026-11-05 capture; the 2026-11-06 pass's §Readings.
+and 2026-11-05 in the 2026-11-05 capture; the 2026-11-06 pass's §Readings;
+`scripts/lib/front-page-scope.mjs`, `docs/control/front-page.json` and
+product 07 §Documentation freshness and ownership (the front-page rule);
+`docs/evidence/WO-254/decisions.md` WO-254-D045.
 
 **Objective:** An instance's passes, receipts, updates and closes meet
 the kit's behavior and not its edges: a pull request reads in one
@@ -295,9 +304,14 @@ it likes, and the target publish is admitted.
   base, whatever `--since` names (the comment at 1260);
   `validateChangeReviewRequest` (`change-review-protocol.ts` 186) refuses a
   brief over its ceiling with `profile-refused: change review brief` and no
-  size. The fork's pass of 2026-11-05 measured its documents past the
-  ceiling and withdrew amendments to five orders to be reviewed; the
-  operator's words: split the work over more reviewers instead.
+  size. `renderReviewBrief` (686 to 690) already replaces one document over
+  `MAX_DOCUMENT_BYTES` (366) with a pointer to the checkout, so the ceiling
+  is met by the sum of the documents under that cap: core's own brief on
+  2026-11-06 measured 120,955 characters with the map (946,832 bytes) and
+  the history page pointed at, not inlined. The fork's pass of 2026-11-05
+  measured its documents past the ceiling and withdrew amendments to five
+  orders to be reviewed; the operator's words: split the work over more
+  reviewers instead.
 - The fork's items 6 of 2026-11-04 and 4 of 2026-11-05: `plan-subject.mjs`
   (319 to 365) builds the judged orders from the sequence block alone;
   `amendPlanOrder` (`plan-receipts.mjs` 1484 to 1500) admits only an order
@@ -328,6 +342,14 @@ it likes, and the target publish is admitted.
   new rule took effect only in a later session; whether the host re-reads
   settings mid-session is not on the pages read on 2026-11-03, so the
   release says to start a new session.
+- WO-254-D045 and the 2026-11-06 pass: `README.md`'s Map links
+  directories, not pages, so `docs/README.md` (the documentation index) and
+  the pages it reaches are unbound and red-tagged at every pass, and the
+  Try it section names no way to start an instance; the 2026-11-06 pass
+  wrote both and `docs-check` refused them ("changed outside its generated
+  blocks on branch planning/…, which names no work order"), because the
+  front page is edited only by an order carrying the `**Front page:**`
+  declaration (product 07 §Documentation freshness and ownership).
 - Not a gap: the fork's item 3 of 2026-11-05 (the record route's host,
   model, effort and tree) landed in WO-255-D006 (v0.118.0): `record`
   accepts `--host`, `--model`, `--effort` and `--tree`, and a target order's
@@ -428,6 +450,17 @@ it likes, and the target publish is admitted.
   acceptance of this amended order is the authorization WO-246-D010
   recorded for the first two. Rejected: a rule for `git push` or `gh`
   (WO-246's reason).
+- **The front page changes through this order.** Under the `**Front
+  page:** README.md` declaration, the Map gains one line linking the
+  documentation index, and Try it one paragraph naming the public starter
+  with the two routes to start from it (a public fork; a private clone that
+  keeps the starter as its `upstream` remote, as the kit guide's First steps
+  describes), each counted line one whole sentence of Markdown prose with no
+  raw HTML. Rejected: the planning pass editing the page (axis: the
+  front-page rule; the 2026-11-06 pass's edit was refused and reverted).
+  Rejected: the directory pages linked from the front page (axis: the
+  documentation index is where they belong, and it links them since
+  2026-11-06).
 - **Live-run surfaces at the base.** Each named function and page exists;
   each change is absent.
 
@@ -502,7 +535,11 @@ it likes, and the target publish is admitted.
     `scripts/lib/release-notes.mjs` (step 4's line): the third rule; the
     new-session sentence. Check: `npm test -- --only harness`; `npm test --
     --only launchpad`.
-18. Write-backs: the kit guide (§Planning in this instance, §Updating,
+18. `README.md` (the front page, under this order's declaration): the
+    Map's link to `docs/README.md`; the Try it paragraph (WO-254-D045).
+    Check: `npm run test:docs` (the front-page check); `npm run plan --
+    documents` shows `docs/README.md` and the pages it links bound.
+19. Write-backs: the kit guide (§Planning in this instance, §Updating,
     §Entropy Reducer; the status warning); product 07 §Operator-opened
     planning pass (the front page as an entry point; the no-update
     sentence; the prompt hook's block; the subject's members),
@@ -510,10 +547,10 @@ it likes, and the target publish is admitted.
     and releases (the Read before upgrading line);
     `docs/evidence/WO-257/decisions.md`; `npm run meta`; `npm run
     publication:check`.
-19. The paste-ready block for the fork's next pass, written into the
+20. The paste-ready block for the fork's next pass, written into the
     decisions, naming each item's step, the items of 2026-11-04 and
     2026-11-05 included.
-20. Handoff: the sequence of WO-253 step 10, with
+21. Handoff: the sequence of WO-253 step 10, with
     `docs/evidence/WO-257/handoff.md`.
 
 **Deliverables:** the eighteen fixes and the allow rule; the kit guide and
@@ -577,8 +614,8 @@ product 07; the fork's block.
     `round-1-criteria` report whose findings are keyed by batch and whose
     `## Items` table carries every batch's rows; a `--since <tree>` round
     carries only the documents changed since that tree; a fixture under
-    the ceiling launches one worker; and a single document larger than the
-    ceiling refuses naming the document and the measured size.
+    the ceiling launches one worker; and a document past the per-document
+    cap stays a pointer to the checkout, as today.
 13. On a fixture export with a `track: separate` workstream whose two open
     members have no sequence entry, the subject `npm run plan -- refute`
     prints names both after the sequenced orders, the receipt filed from
@@ -603,9 +640,15 @@ product 07; the fork's block.
     Copilot settings file carries the same bytes, `harness check` passes,
     and a release whose changed files include the settings emitter prints
     a Read before upgrading line naming a new session.
-18. The kit guide and product 07 state the fixes as built; `npm run
+18. `README.md` on the order's branch carries, in its Map, a link to
+    `docs/README.md` and, in Try it, the public starter's location with the
+    two routes to start from it, each counted line one whole sentence of
+    Markdown prose with no raw HTML; `npm run test:docs`'s front-page check
+    passes under this order's declaration; and `npm run plan -- documents`
+    shows `docs/README.md` and the five pages it links bound.
+19. The kit guide and product 07 state the fixes as built; `npm run
     publication:check` is green.
-19. `npm test -- --review` and `npm run test:docs` green; `git diff
+20. `npm test -- --review` and `npm run test:docs` green; `git diff
     --check` clean; no new dependency.
 
 **Preflight:** `npm test -- --only process-debt` for step 1; `npm test --
@@ -622,11 +665,12 @@ document changes; each under `node scripts/harness.mjs bounded --`; then
 one `npm test -- --review` (07-execution-guide.md §Preflight before the
 full gate).
 
-**Evidence gate:** the fixtures of criteria 1 to 17; `npm test -- --review`
+**Evidence gate:** the fixtures of criteria 1 to 17 and the front page of
+criterion 18; `npm test -- --review`
 before `implementation-ready`, final review reusing the passing complete
 row at the integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 18 and criterion 18.
+**Write-back duty:** as listed in step 19 and criterion 19.
 
 **Known issues and carry-ins:**
 
@@ -679,6 +723,10 @@ row at the integrated code identity when one exists.
 - The fork's item 3 of 2026-11-05 (the record route's host, model, effort
   and tree) landed in WO-255-D006 (v0.118.0) and is not taken here
   (reopen: a record names a host or a tree the worker did not have).
+- FUP-78158140c6ac12aa (WO-254-D045: the front page's Try it section
+  points at the public starter with the two routes): allocated here by the
+  2026-11-06 pass, whose own edit docs-check refused; taken in step 18
+  (reopen: WO-257 closes without the paragraph).
 
 **Non-goals:** rewriting moved records' links; a feature election for
 updates before a pass; a baseline exemption for private paths; the review
@@ -697,4 +745,7 @@ this order (the operator's words of 2026-11-05, twice, over the planner's
 proposal of a separate order for the hook); that batches over more workers
 are the remedy the operator named; and that the operator's acceptance of
 this amended order authorizes the third allow rule as WO-246-D010
-authorized the first two. Reopen on the operator's word.
+authorized the first two; and that the front page's two changes ride here
+under the declaration, since WO-254-D045 named the planning pass and
+docs-check refuses a planning branch's edit of the page. Reopen on the
+operator's word.

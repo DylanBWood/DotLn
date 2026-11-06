@@ -59,15 +59,6 @@ from the repository's logs, and `npm run dotln -- intent "Describe the work"`
 files a draft work order from one sentence. The
 [skeleton README](/packages/skeleton/README.md) documents every flag.
 
-To start an instance of your own, start from the public starter,
-[DotLn-Enterprise-Starter](https://github.com/DylanBWood/DotLn-Enterprise-Starter),
-by one of two routes: fork it publicly on GitHub, or clone it privately and
-keep the starter as the `upstream` remote (`git clone --no-tags <starter url>
-<name>`, then `git remote rename origin upstream` and `git config
-remote.upstream.tagOpt --no-tags`), as
-[the kit guide's First steps](/docs/KIT.md#first-steps) describes. This
-repository is the kit's source, not the place to start an instance.
-
 ## What runs today
 
 <!-- DOTLN-RELEASE-BEGIN -->
@@ -199,22 +190,17 @@ whole loop.
   witness adapter.
 - [`packages/beacons/`](/packages/beacons/) — the Beacon codebooks.
 - [`scripts/`](/scripts/) — the control plane: resume, worktree, release.
-- [`docs/`](/docs/README.md) — the documentation index.
 - [`docs/product/`](/docs/product/) — the blueprint.
 - [`docs/work-orders/`](/docs/work-orders/) — bounded authority, one file per
-  unit of work, filed from [the template](/docs/work-orders/TEMPLATE.md).
-- [`docs/verifications/`](/docs/verifications/),
-  [`docs/final-reviews/`](/docs/final-reviews/README.md) and
-  [`docs/evidence/`](/docs/evidence/README.md) — immutable evidence.
+  unit of work.
+- [`docs/verifications/`](/docs/verifications/) and
+  [`docs/final-reviews/`](/docs/final-reviews/) — immutable evidence.
 - [`docs/control/`](/docs/control/) — the append-only resume log and the
   control records.
-- [`docs/lineage/`](/docs/lineage/) — the idea ledger, sources and
-  [the re-mining well](/docs/lineage/remining/README.md).
+- [`docs/lineage/`](/docs/lineage/) — the idea ledger and sources.
 - [`docs/decisions/`](/docs/decisions/) — decision records.
 - [`docs/releases/`](/docs/releases/) — release evidence.
 - [`docs/publication/`](/docs/publication/) — compiled editions.
-- [`docs/retired/`](/docs/retired/README.md) — proposals retired before
-  activation, kept byte for byte.
 - [`docs/LEGAL.md`](/docs/LEGAL.md) — the license decision.
 - [`corpus/`](/corpus/) — regenerable test corpora.
 - `docs/intake/` — raw ideation, local only.

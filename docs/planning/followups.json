@@ -54108,6 +54108,16 @@
           "reopenWhen": "The starter's public location or the kit guide's First steps routes change.",
           "targets": [],
           "at": "2026-11-06T02:26:04.869Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-257 step 18 by the 2026-11-06 planning pass, correcting its first disposition of the same night: the pass wrote the Try it paragraph into README.md and docs-check refused it, because the front page is edited only by an order whose leading header carries the Front page declaration (product 07, Documentation freshness and ownership); WO-257 now carries that declaration, the Map's link to the documentation index and the Try it paragraph naming the public starter and the two routes to start from it.",
+          "reopenWhen": "WO-257 closes without the Try it paragraph, or the starter's public location or the kit guide's First steps routes change.",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-06T02:38:14.117Z"
         }
       ]
     },
