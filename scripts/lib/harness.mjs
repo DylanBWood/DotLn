@@ -100,6 +100,7 @@ const allowed = (path) =>
   path === ".codex/hooks.json" ||
   path === manifestPath ||
   /^\.claude\/agents\/dotln-[a-z0-9-]+\.md$/.test(path) ||
+  /^\.codex\/agents\/dotln-[a-z0-9-]+\.toml$/.test(path) ||
   /^\.(?:claude|agents)\/skills\/dotln-[a-z-]+\/SKILL\.md$/.test(path) ||
   /^\.(?:claude|codex)\/hooks\/[a-z0-9.-]+\.mjs$/.test(path);
 const contained = (root, path) => {

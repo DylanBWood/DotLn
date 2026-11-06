@@ -15,10 +15,21 @@ import {
 import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, realpathSync } from "node:fs";
+import {
+  appendFileSync,
+  chmodSync,
+  existsSync,
+  readFileSync,
+  realpathSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { recordAgentReview, runChangeReview } from "./lib/review-worker.mjs";
+import {
+  recordAgentReview,
+  reviewsLane,
+  runChangeReview,
+} from "./lib/review-worker.mjs";
+import { workingTree } from "./lib/checkpoint.mjs";
 import { reviewerBriefs } from "../packages/skeleton/dist/src/loadouts/contributor.js";
 import {
   initializeSubagentCounter,
@@ -73,6 +84,56 @@ function orderRepository(parent) {
   write(repo, "src/added.mjs", "export const added = true;\n");
   return repo;
 }
+
+/** A launchpad on main with one order, then a planning branch whose pass
+ * document is committed; the reviews lane is ignored. */
+function planningRepository(parent, branch) {
+  const repo = realpathSync(createFixtureRoot(join(parent, "planning-")));
+  git(repo, ["init", "--quiet", "-b", "main"]);
+  excludeFixtureOwnership(repo);
+  for (const [key, value] of [
+    ["user.email", "fixture@example.invalid"],
+    ["user.name", "Fixture"],
+    ["commit.gpgsign", "false"],
+  ])
+    git(repo, ["config", key, value]);
+  write(repo, ".gitignore", "docs/control/local/\n.dotln-owner.json\n");
+  write(repo, "README.md", "# Fixture\n");
+  write(repo, "docs/work-orders/WO-901-fixture-order.md", ORDER);
+  commit(repo, "fixture base");
+  git(repo, ["switch", "--quiet", "-c", branch]);
+  write(
+    repo,
+    "docs/planning/fixture-pass.md",
+    "# Fixture pass\n\nPlans WO-901.\n",
+  );
+  commit(repo, "fixture planning pass");
+  return repo;
+}
+
+/** A consistency report's required table, with both named rows filled. */
+const TRACED = [
+  "## Traced consumers",
+  "",
+  "| Changed contract | Consumer | Command | Result |",
+  "| --- | --- | --- | --- |",
+  "| generated pages | docs/README.md | node scripts/meta.mjs --check | current |",
+  "| fixture manifests | scripts/fixtures.json | grep -rn module scripts | no pin names the module |",
+  "| src/module.mjs value | src/consumer.mjs | node --test src | passes |",
+  "",
+].join("\n");
+
+/** A Traced consumers table whose "Command result" header names two required
+ * columns, with every real Command cell empty. */
+const SHARED_HEADER = [
+  "## Traced consumers",
+  "",
+  "| Changed contract | Consumer | Command result | Command |",
+  "| --- | --- | --- | --- |",
+  "| generated pages | docs/README.md | current | |",
+  "| fixture manifests | scripts/fixtures.json | no matches | |",
+  "",
+].join("\n");
 
 const canned = (parent, name, value) => {
   const path = join(parent, `${name}.json`);
@@ -265,13 +326,40 @@ export async function reviewWorkerFixtures() {
       const firstRecord = JSON.parse(
         readFileSync(join(repo, first.result.record), "utf8"),
       );
-      assert.equal(secondRecord.since, firstRecord.reviewedTree);
+      // A recheck reviews the whole change against its base again, and names
+      // the tree the earlier round reviewed so the fixes can be read too.
+      assert.equal(secondRecord.since, firstRecord.since);
+      assert.equal(secondRecord.sinceSource, "the merge base with main");
+      assert.equal(secondRecord.priorReviewedTree, firstRecord.reviewedTree);
       assert.notEqual(secondRecord.reviewedTree, firstRecord.reviewedTree);
       assert.deepEqual(secondRecord.priorFindingIds, [
         "criteria.1.F1",
         "criteria.1.F2",
       ]);
-      assert.match(secondRecord.brief, /This is round 2, a recheck/u);
+      assert.deepEqual(secondRecord.answered, [
+        {
+          path: first.result.record,
+          recordSha256: sha256(
+            readFileSync(join(repo, first.result.record), "utf8"),
+          ),
+        },
+      ]);
+      assert.ok(
+        secondRecord.brief.includes(
+          "This is round 2, a recheck: first confirm or refute the fixes of the earlier findings listed below on the current tree, then review the whole current change against the base below again under your brief.",
+        ),
+      );
+      assert.ok(
+        secondRecord.brief.includes(
+          `\`git diff ${firstRecord.reviewedTree} ${secondRecord.reviewedTree}\` shows what its fixes changed`,
+        ),
+      );
+      // The stat is the whole change since the merge base, not the fix alone.
+      const stat = secondRecord.brief
+        .split("The stat is:")[1]
+        .split("\n## ")[0];
+      for (const path of ["README.md", "src/added.mjs", "src/module.mjs"])
+        assert.ok(stat.includes(path), path);
       assert.match(
         readFileSync(join(repo, second.result.report), "utf8"),
         /^- criteria\.1\.F1: held\. README names it\.$/mu,
@@ -306,7 +394,13 @@ export async function reviewWorkerFixtures() {
       );
       for (const brief of Object.values(reviewerBriefs))
         assert.ok(record.brief.includes(brief));
-      assert.match(record.brief, /This is the last round/u);
+      // The combined round's instruction is WO-250's, word for word.
+      assert.ok(
+        record.brief.includes(
+          `This is the last round: one combined review carrying all three briefs over the change since the base below (the tree ${first.result.record} reviewed). A new finding is admitted only when it breaks an acceptance criterion or a behavior \`main\` had, and any other new finding is recorded in the handoff, not fixed. Recheck the earlier findings listed below where they bear on that change.`,
+        ),
+      );
+      assert.equal(record.since, firstRecord.reviewedTree);
       assert.match(
         record.brief,
         /\*\*criteria\.1\.F1\*\* \(blocking; criterion 2\)/u,
@@ -318,7 +412,7 @@ export async function reviewWorkerFixtures() {
       );
     });
 
-    await test("a planning subject reviews the branch's planning document and changed orders into the day's planning lane", async () => {
+    await test("a planning subject reviews the branch's planning document and changed orders into the branch's planning lane", async () => {
       const repo = orderRepository(parent);
       git(repo, ["switch", "--quiet", "--discard-changes", "main"]);
       rmSync(join(repo, "src/added.mjs"));
@@ -343,7 +437,7 @@ export async function reviewWorkerFixtures() {
       );
       assert.equal(
         result.report,
-        "docs/control/local/reviews/planning-2030-01-02/round-1-criteria.md",
+        "docs/control/local/reviews/planning-2030-01-02-fixture/round-1-criteria.md",
       );
       const record = JSON.parse(
         readFileSync(join(repo, result.record), "utf8"),
@@ -615,11 +709,20 @@ export async function reviewWorkerFixtures() {
       write(
         parent,
         "agent-returned.txt",
-        `Here is my review.\n\n${JSON.stringify(roundOne)}\n`,
+        `Here is my review.\n\n${JSON.stringify(roundOne)}\n\n${TRACED}`,
       );
       const recorded = await recordAgentReview(
         repo,
-        ["--kind", "consistency", "--from", returned, "--tokens", "1234"],
+        [
+          "--kind",
+          "consistency",
+          "--from",
+          returned,
+          "--format",
+          "json",
+          "--tokens",
+          "1234",
+        ],
         { write: () => {} },
       );
       assert.equal(
@@ -636,9 +739,13 @@ export async function reviewWorkerFixtures() {
       });
       assert.equal(record.returnedText.startsWith("Here is my review."), true);
       await assert.rejects(
-        recordAgentReview(repo, ["--kind", "consistency", "--from", returned], {
-          write: () => {},
-        }),
+        recordAgentReview(
+          repo,
+          ["--kind", "consistency", "--from", returned, "--format", "json"],
+          {
+            write: () => {},
+          },
+        ),
         /already holds this round's consistency report/u,
       );
       // A prose report is kept as the round's report, with no findings a
@@ -703,6 +810,7 @@ export async function reviewWorkerFixtures() {
             rechecks: [
               { id: "consistency.1.F1", outcome: "held", note: "Fixed." },
             ],
+            report: TRACED,
           }),
         },
       );
@@ -931,6 +1039,1784 @@ export async function reviewWorkerFixtures() {
       assert.ok(
         !existsSync(join(repo, "docs/control/local/reviews")),
         "a dry run writes nothing",
+      );
+    });
+
+    await test("two planning passes on one date each run their own round 1 in a lane named by the branch, and a --since round 1 starts a ladder of its own", async () => {
+      const repo = planningRepository(parent, "planning/2030-01-02-first");
+      const args = ["--kind", "criteria", "--host", "claude"];
+      const planning = [...args, "--subject", "planning"];
+      const env = {
+        DOTLN_WORKER_FIXTURE: canned(parent, "lane-first", roundOne),
+      };
+      const dry = async () =>
+        JSON.parse(
+          (await review(repo, [...planning, "--dry-run"], {})).printed,
+        );
+      const lane = "docs/control/local/reviews";
+      assert.equal(
+        (await dry()).report,
+        `${lane}/planning-2030-01-02-first/round-1-criteria.md`,
+      );
+      const first = await review(repo, planning, env);
+      assert.equal(
+        first.result.report,
+        `${lane}/planning-2030-01-02-first/round-1-criteria.md`,
+      );
+      // The day's second pass, on its own branch from main.
+      git(repo, ["switch", "--quiet", "main"]);
+      git(repo, ["switch", "--quiet", "-c", "planning/2030-01-02-second"]);
+      write(repo, "docs/planning/second-pass.md", "# Second pass\n");
+      commit(repo, "second pass");
+      assert.equal(
+        (await dry()).report,
+        `${lane}/planning-2030-01-02-second/round-1-criteria.md`,
+      );
+      const second = await review(repo, planning, env);
+      assert.equal(
+        second.result.report,
+        `${lane}/planning-2030-01-02-second/round-1-criteria.md`,
+      );
+      // The first pass's lane holds its round 1; a fresh round 1 names its
+      // base with --since and keeps a ladder of its own beside the first.
+      git(repo, ["switch", "--quiet", "planning/2030-01-02-first"]);
+      await assert.rejects(
+        review(repo, planning, env),
+        /round-1-criteria\.md already holds this round's criteria report; .*a fresh round 1 names its base with --since/u,
+      );
+      const base = git(repo, ["rev-parse", "HEAD^{tree}"]);
+      const fresh = await review(repo, [...planning, "--since", base], env);
+      const ladder = `${lane}/planning-2030-01-02-first/since-${base.slice(0, 12)}`;
+      assert.equal(fresh.result.report, `${ladder}/round-1-criteria.md`);
+      const record = JSON.parse(
+        readFileSync(join(repo, fresh.result.record), "utf8"),
+      );
+      assert.equal(record.since, base);
+      assert.equal(record.sinceSource, "named with --since");
+      assert.deepEqual(record.ladder, {
+        base,
+        lane: `since-${base.slice(0, 12)}`,
+      });
+      assert.ok(existsSync(join(repo, first.result.report)));
+      // Its recheck follows it into that ladder, against the same base.
+      write(
+        repo,
+        "docs/planning/fixture-pass.md",
+        "# Fixture pass\n\nAmended.\n",
+      );
+      const recheck = await review(
+        repo,
+        [...planning, "--recheck", fresh.result.report],
+        {
+          DOTLN_WORKER_FIXTURE: canned(parent, "lane-recheck", {
+            ...roundOne,
+            findings: [],
+            rechecks: [],
+          }),
+        },
+      );
+      assert.equal(recheck.result.report, `${ladder}/round-2-criteria.md`);
+      const recheckRecord = JSON.parse(
+        readFileSync(join(repo, recheck.result.record), "utf8"),
+      );
+      assert.equal(recheckRecord.since, base);
+      assert.equal(recheckRecord.priorReviewedTree, record.reviewedTree);
+      // The record route takes the same lane and the same --since rule.
+      write(parent, "lane-record.txt", "# Design review\n\nNo findings.\n");
+      const recorded = await recordAgentReview(
+        repo,
+        [
+          "--kind",
+          "design",
+          "--subject",
+          "planning",
+          "--since",
+          base,
+          "--from",
+          join(parent, "lane-record.txt"),
+        ],
+        { write: () => {} },
+      );
+      assert.equal(recorded.report, `${ladder}/round-1-design.md`);
+    });
+
+    await test("a consistency report is recorded only with its Traced consumers table, on the helper route and the record route", async () => {
+      const repo = orderRepository(parent);
+      const session = "fixture-traced-session";
+      const refused = await review(
+        repo,
+        ["--kind", "consistency", "--host", "codex"],
+        {
+          DOTLN_WORKER_FIXTURE: canned(parent, "untraced", roundOne),
+          CLAUDE_CODE_SESSION_ID: session,
+        },
+      );
+      assert.equal(refused.result.report, null);
+      assert.match(
+        refused.printed,
+        /^review: consistency round 1: the worker's report is refused, since a consistency report carries a `Traced consumers` table \(changed contract, consumer, command, result\), and this report has none; it returned 2 findings; 0 h 0 min; nothing written to docs\/control\/local\/reviews\/WO-901\n$/u,
+      );
+      assert.ok(
+        !existsSync(
+          join(
+            repo,
+            "docs/control/local/reviews/WO-901/round-1-consistency.md",
+          ),
+        ),
+      );
+      const journal = readFileSync(
+        join(repo, "docs/control/local/harness", `${sha256(session)}.jsonl`),
+        "utf8",
+      );
+      assert.match(journal, /"outcome":"refused-report"/u);
+      const traced = await review(
+        repo,
+        ["--kind", "consistency", "--host", "codex"],
+        {
+          DOTLN_WORKER_FIXTURE: canned(parent, "traced", {
+            ...roundOne,
+            report: `Traced the change.\n\n${TRACED}`,
+          }),
+        },
+      );
+      assert.equal(
+        traced.result.report,
+        "docs/control/local/reviews/WO-901/round-1-consistency.md",
+      );
+      // A table whose rows name no consumer is refused on the helper route.
+      const unnamed = await review(
+        orderRepository(parent),
+        ["--kind", "consistency", "--host", "codex"],
+        {
+          DOTLN_WORKER_FIXTURE: canned(parent, "unnamed-consumer", {
+            ...roundOne,
+            report: TRACED.replace("docs/README.md", "<path>"),
+          }),
+        },
+      );
+      assert.equal(unnamed.result.report, null);
+      assert.match(
+        unnamed.printed,
+        /the worker's report is refused, since the `Traced consumers` table has 1 row without the consumer traced/u,
+      );
+      const sharedHeader = await review(
+        orderRepository(parent),
+        ["--kind", "consistency", "--host", "codex"],
+        {
+          DOTLN_WORKER_FIXTURE: canned(parent, "shared-header", {
+            ...roundOne,
+            report: SHARED_HEADER,
+          }),
+        },
+      );
+      assert.equal(sharedHeader.result.report, null);
+      assert.match(
+        sharedHeader.printed,
+        /refused, since .*each in a column of its own; this report's table names command and result/u,
+      );
+      // The record route refuses the same reports by the same rule.
+      const other = orderRepository(parent);
+      const record = (name, text, extra = []) => {
+        write(parent, name, text);
+        return recordAgentReview(
+          other,
+          ["--kind", "consistency", ...extra, "--from", join(parent, name)],
+          { write: () => {} },
+        );
+      };
+      for (const [name, text, refusal] of [
+        [
+          "untraced.txt",
+          "# Consistency review\n\nEvery write-back agrees.\n",
+          /not recorded: a consistency report carries a `Traced consumers` table/u,
+        ],
+        [
+          "no-manifests.txt",
+          TRACED.replace(/\| fixture manifests[^\n]*\n/u, ""),
+          /has no fixture manifests row/u,
+        ],
+        [
+          "template.txt",
+          TRACED.replace("node scripts/meta.mjs --check", "<command>"),
+          /1 row without the consumer traced, the command run or its result/u,
+        ],
+        // A row names the consumer it traced: an empty cell and the brief's
+        // placeholder each name none, in every row as in one.
+        [
+          "no-consumers.txt",
+          TRACED.replace(
+            /^(\| [^|\n]+ \| )[^|\n]+( \|)/gmu,
+            (row, head, tail) =>
+              /Changed contract|---/u.test(row) ? row : `${head}${tail}`,
+          ),
+          /3 rows without the consumer traced, the command run or its result/u,
+        ],
+        [
+          "placeholder-consumer.txt",
+          TRACED.replace("scripts/fixtures.json", "<path>"),
+          /1 row without the consumer traced/u,
+        ],
+        // Each required column is read from a header cell of its own: a
+        // "Command result" column would otherwise stand for both, leaving the
+        // real Command cells unread.
+        [
+          "shared-header.txt",
+          SHARED_HEADER,
+          /each in a column of its own; this report's table names command and result in a shared or repeated header cell/u,
+        ],
+        [
+          "empty.txt",
+          TRACED.split("| generated pages")[0],
+          /the `Traced consumers` table is empty/u,
+        ],
+        [
+          "no-result.txt",
+          TRACED.replace("| Result |", "| Outcome |"),
+          /has no result column/u,
+        ],
+      ])
+        await assert.rejects(record(name, text), refusal, name);
+      // A claimed result may carry its table in its report field, where the
+      // returned text holds it with escaped newlines.
+      const third = orderRepository(parent);
+      write(
+        parent,
+        "in-field.txt",
+        `${JSON.stringify({ ...roundOne, report: `Traced.\n\n${TRACED}` })}\n`,
+      );
+      const fieldRecord = await recordAgentReview(
+        third,
+        ["--kind", "consistency", "--from", join(parent, "in-field.txt")],
+        { write: () => {} },
+      );
+      assert.equal(
+        JSON.parse(readFileSync(join(third, fieldRecord.record), "utf8"))
+          .structured,
+        true,
+      );
+      // A recorded table carries the host, model and effort the recorder
+      // attests, never the Claude defaults it did not run.
+      const recorded = await record(
+        "traced.txt",
+        `# Consistency review\n\n${TRACED}`,
+        ["--host", "codex", "--model", "gpt-6-astra", "--effort", "max"],
+      );
+      const json = JSON.parse(
+        readFileSync(join(other, recorded.record), "utf8"),
+      );
+      assert.equal(json.host, "codex");
+      assert.equal(json.transport, "codex-spawn-agent");
+      assert.deepEqual(json.model, {
+        value: "gpt-6-astra",
+        source: "recorder-attested",
+      });
+      assert.deepEqual(json.effort, {
+        value: "max",
+        source: "recorder-attested",
+      });
+      assert.deepEqual(json.option, {
+        name: "astra",
+        selection: "recorder-attested",
+      });
+      assert.match(
+        readFileSync(join(other, recorded.report), "utf8"),
+        /model `gpt-6-astra` at effort `max`, as the recorder attests; option astra/u,
+      );
+      await assert.rejects(
+        recordAgentReview(
+          other,
+          [
+            "--kind",
+            "design",
+            "--host",
+            "claude",
+            "--model",
+            "astra",
+            "--from",
+            join(parent, "traced.txt"),
+          ],
+          { write: () => {} },
+        ),
+        /--model astra is a Codex option, and --host names claude/u,
+      );
+    });
+
+    await test("record binds the tree a report reviewed: --tree names it, an unknown object is refused, and a report whose tree is no longer the working tree needs the flag", async () => {
+      const repo = orderRepository(parent);
+      const dry = JSON.parse(
+        (
+          await review(
+            repo,
+            ["--kind", "design", "--host", "claude", "--dry-run"],
+            {},
+          )
+        ).printed,
+      );
+      const tree = dry.reviewedTree;
+      assert.ok(
+        dry.brief.includes(
+          `open your report with the line \`Reviewed tree: ${tree}\``,
+        ),
+      );
+      write(
+        parent,
+        "named-tree.txt",
+        `Reviewed tree: ${tree}\n\nNo findings.\n`,
+      );
+      const from = ["--from", join(parent, "named-tree.txt")];
+      const named = await recordAgentReview(
+        repo,
+        ["--kind", "design", ...from],
+        {
+          write: () => {},
+        },
+      );
+      const namedRecord = JSON.parse(
+        readFileSync(join(repo, named.record), "utf8"),
+      );
+      assert.equal(namedRecord.reviewedTree, tree);
+      assert.equal(
+        namedRecord.reviewedTreeSource,
+        "named in the report; the working tree when it was recorded",
+      );
+      // A later edit: the same report is bound to the tree it judged only
+      // when --tree names it.
+      write(repo, "src/module.mjs", "export const value = 3;\n");
+      await assert.rejects(
+        recordAgentReview(repo, ["--kind", "criteria", ...from], {
+          write: () => {},
+        }),
+        new RegExp(
+          `the report reviewed tree ${tree}, and the working tree is now [0-9a-f]{40}: name the tree it judged with --tree ${tree}`,
+          "u",
+        ),
+      );
+      const bound = await recordAgentReview(
+        repo,
+        ["--kind", "criteria", "--tree", tree, ...from],
+        { write: () => {} },
+      );
+      const boundRecord = JSON.parse(
+        readFileSync(join(repo, bound.record), "utf8"),
+      );
+      assert.equal(boundRecord.reviewedTree, tree);
+      assert.equal(boundRecord.reviewedTreeSource, "named with --tree");
+      const unknown = "0".repeat(40);
+      await assert.rejects(
+        recordAgentReview(
+          repo,
+          [
+            "--kind",
+            "combined",
+            "--round",
+            "3",
+            "--since",
+            tree,
+            "--tree",
+            unknown,
+            ...from,
+          ],
+          { write: () => {} },
+        ),
+        new RegExp(
+          `--tree ${unknown} names no commit or tree in this repository`,
+          "u",
+        ),
+      );
+    });
+
+    await test("record keeps a prose report holding a JSON example as prose, binds a claimed result after an example and refuses a malformed claimed one", async () => {
+      const repo = orderRepository(parent);
+      const text =
+        '# Criteria review\n\nThe order\'s example reads:\n\n```json\n{"value":2}\n```\n\nNo findings.\n';
+      write(parent, "json-example.txt", text);
+      let printed = "";
+      const prose = await recordAgentReview(
+        repo,
+        ["--kind", "criteria", "--from", join(parent, "json-example.txt")],
+        { write: (line) => (printed += line) },
+      );
+      assert.match(printed, /recorded the worker's prose report/u);
+      const proseRecord = JSON.parse(
+        readFileSync(join(repo, prose.record), "utf8"),
+      );
+      assert.equal(proseRecord.structured, false);
+      assert.equal(proseRecord.report, text.trim());
+      write(
+        parent,
+        "example-then-result.txt",
+        `An example {"value":2} first.\n\n${JSON.stringify(roundOne)}\n`,
+      );
+      const structured = await recordAgentReview(
+        repo,
+        [
+          "--kind",
+          "design",
+          "--from",
+          join(parent, "example-then-result.txt"),
+          "--format",
+          "json",
+        ],
+        { write: () => {} },
+      );
+      const structuredRecord = JSON.parse(
+        readFileSync(join(repo, structured.record), "utf8"),
+      );
+      assert.equal(structuredRecord.structured, true);
+      assert.equal(structuredRecord.findings.length, 2);
+      write(
+        parent,
+        "malformed-claim.txt",
+        'Here:\n\n{"schemaVersion":1,"findings":"none"}\n',
+      );
+      await assert.rejects(
+        recordAgentReview(
+          repo,
+          [
+            "--kind",
+            "combined",
+            "--round",
+            "3",
+            "--since",
+            git(repo, ["rev-parse", "HEAD^{tree}"]),
+            "--from",
+            join(parent, "malformed-claim.txt"),
+            "--format",
+            "json",
+          ],
+          { write: () => {} },
+        ),
+        /change review result shape/u,
+      );
+    });
+
+    await test("record separates prose examples from JSON returns by explicit format, keeps trailing prose results, and refuses undeclared mixed input before writing", async () => {
+      const record = async (
+        name,
+        text,
+        kind = "consistency",
+        format = "prose",
+      ) => {
+        const repo = orderRepository(parent);
+        write(parent, `${name}.txt`, text);
+        let printed = "";
+        const recorded = await recordAgentReview(
+          repo,
+          [
+            "--kind",
+            kind,
+            "--from",
+            join(parent, `${name}.txt`),
+            ...(format ? ["--format", format] : []),
+          ],
+          { write: (line) => (printed += line) },
+        );
+        return {
+          ...JSON.parse(readFileSync(join(repo, recorded.record), "utf8")),
+          printed,
+        };
+      };
+      const fenced = (value) => `\`\`\`json\n${JSON.stringify(value)}\n\`\`\``;
+      const shape = { findings: [], rechecks: [], filesRead: [] };
+      const result = { ...roundOne, report: `Read the module.\n\n${TRACED}` };
+      // The same bytes can be an example or the actual result. Declaring
+      // prose preserves every example, including a valid terminal one with
+      // sample findings and a return-shaped object inside a sentence.
+      for (const [name, text, kind = "consistency"] of [
+        [
+          "example-version",
+          `The reviewed payload is this JSON example:\n\n${fenced({ schemaVersion: 1, value: 2 })}\n\nThe consumer handles it.\n\n${TRACED}`,
+        ],
+        [
+          "example-findings",
+          `The API response example below documents an empty search:\n\n${fenced({ findings: [], total: 0 })}\n\nThe response is an example, not this review result.\n\n${TRACED}`,
+        ],
+        [
+          "example-own-keys",
+          `The recorder's malformed control reads:\n\n${fenced({ schemaVersion: 2, findings: [] })}\n\nIt is refused.\n\n${TRACED}`,
+        ],
+        [
+          "example-code-span",
+          `The control \`{"schemaVersion":2,"findings":[]}\` stays refused, as does\n\`{"findings":"none"}\`.\n\n${TRACED}`,
+        ],
+        [
+          "example-sentence",
+          `A record such as {"schemaVersion":1,"findings":[]} names no tree.\n\n${TRACED}`,
+        ],
+        [
+          "example-foreign-key",
+          `The search returns:\n\n{"findings":[],"total":0}\n\nfor an empty query.\n\n${TRACED}`,
+        ],
+        [
+          "example-whole-shape",
+          `The refused control reads:\n\n${fenced({ schemaVersion: 2, ...shape, report: "example" })}\n\nIt is refused.\n\n${TRACED}`,
+        ],
+        [
+          "example-valid-shape",
+          `A recorded result looks like:\n\n${fenced({ schemaVersion: 1, ...shape, report: "example" })}\n\nThis review found nothing else.\n\n${TRACED}`,
+        ],
+        [
+          "example-with-findings",
+          `A recorded result looks like:\n\n${fenced({ ...roundOne, report: "example" })}\n\nThis review found nothing else.\n\n${TRACED}`,
+        ],
+        [
+          "example-at-the-end",
+          `# Consistency review\n\n${TRACED}\nA negative-control example the recorder refuses:\n\n${fenced({ schemaVersion: 2, ...shape, report: "example" })}\n`,
+        ],
+        [
+          "example-alone-at-the-end",
+          `Here:\n\n${fenced({ schemaVersion: 2, ...shape, report: "example" })}\n`,
+          "design",
+        ],
+        [
+          "fenced-then-prose",
+          `Here is my review.\n\n${fenced(result)}\n\nThat is all.\n`,
+          "design",
+        ],
+        [
+          "inline-result",
+          `My result is ${JSON.stringify(result)} and nothing more.\n`,
+          "design",
+        ],
+        [
+          "valid-example-at-end",
+          `# Consistency review\n\nThis review found no issues.\n\n${TRACED}\nThe following JSON is only a documented example of a review record:\n\n${fenced({ ...roundOne, report: "sample report" })}\n`,
+        ],
+        [
+          "valid-example-with-table-at-end",
+          `# Consistency review\n\n${TRACED}\nExample:\n\n${fenced(result)}\n`,
+        ],
+        [
+          "unfenced-example-at-end",
+          `# Consistency review\n\n${TRACED}\nExample:\n\n${JSON.stringify(result)}\n`,
+        ],
+      ]) {
+        const prose = await record(name, text, kind);
+        assert.equal(prose.structured, false, name);
+        assert.deepEqual(prose.findings, [], name);
+        assert.equal(prose.report, text.trim(), name);
+        assert.equal(prose.inputFormat, "prose", name);
+      }
+      // Genuine results keep their findings and report-field table when
+      // they have a closing sentence, a preface, both or neither.
+      for (const [name, text] of [
+        [
+          "printed-result",
+          `Here is my review.\n\n${JSON.stringify(result, null, 2)}\n\nThat is all.\n`,
+        ],
+        ["fenced-result", `Here is my review.\n\n${fenced(result)}\n`],
+        [
+          "fenced-trailing-result",
+          `Here is my review.\n\n${fenced(result)}\n\nThat is all.\n`,
+        ],
+        [
+          "fenced-trailing-result-crlf",
+          `${fenced(result)}\n\nThat is all.\n`.replaceAll("\n", "\r\n"),
+        ],
+        [
+          "inline-result",
+          `My result is ${JSON.stringify(result)} and nothing more.\n`,
+        ],
+      ]) {
+        const structured = await record(name, text, "consistency", "json");
+        assert.equal(structured.structured, true, name);
+        assert.equal(structured.inputFormat, "json", name);
+        assert.equal(structured.report, result.report, name);
+        assert.deepEqual(
+          structured.findings.map((finding) => finding.id),
+          ["F1", "F2"],
+          name,
+        );
+        const repo = orderRepository(parent);
+        write(parent, "ambiguous-return.txt", text);
+        await assert.rejects(
+          recordAgentReview(
+            repo,
+            [
+              "--kind",
+              "consistency",
+              "--from",
+              join(parent, "ambiguous-return.txt"),
+            ],
+            { write: () => {} },
+          ),
+          /use --format prose.*--format json.*nothing was recorded/u,
+          name,
+        );
+        assert.equal(
+          existsSync(join(repo, "docs/control/local/reviews")),
+          false,
+        );
+      }
+      // Whole JSON and a whole fence retain the existing no-flag interface.
+      for (const [name, text] of [
+        ["whole-json", JSON.stringify(result)],
+        ["whole-fence", fenced(result)],
+      ]) {
+        const structured = await record(name, text, "consistency", null);
+        assert.equal(structured.structured, true);
+        assert.deepEqual(structured.findings, roundOne.findings);
+        assert.equal(structured.inputFormat, "auto");
+      }
+      // A declared malformed result is refused, even when prose could have
+      // met the report rules. No search for a different valid object repairs it.
+      for (const [name, text] of [
+        ["fenced-alone", `${fenced({ schemaVersion: 2, findings: [] })}\n`],
+        [
+          "block-then-prose",
+          `Here:\n\n{"schemaVersion":1,"findings":"none"}\n\nMore after it.\n`,
+        ],
+      ])
+        await assert.rejects(
+          record(name, text, "design", "json"),
+          /change review result shape/u,
+          name,
+        );
+      for (const [name, text, message] of [
+        [
+          "empty-json",
+          "No JSON result here.",
+          /exactly one findings object; found 0/u,
+        ],
+        [
+          "two-results",
+          `${fenced(result)}\n\n${fenced(roundOne)}`,
+          /exactly one findings object; found 2/u,
+        ],
+        [
+          "invalid-and-valid",
+          `${fenced({ schemaVersion: 2, findings: [] })}\n\n${fenced(result)}`,
+          /exactly one findings object; found 2/u,
+        ],
+        [
+          "broken-fence",
+          `\`\`\`json\n{"schemaVersion":1, "nested":${JSON.stringify(result)},}\n\`\`\``,
+          /invalid JSON in the result fence/u,
+        ],
+        [
+          "broken-outer",
+          `Here:\n{"schemaVersion":1, "nested":${JSON.stringify(result)},}\n`,
+          /invalid JSON object/u,
+        ],
+      ])
+        await assert.rejects(
+          record(name, text, "design", "json"),
+          message,
+          name,
+        );
+      await assert.rejects(
+        record("bad-format", "No findings.", "design", "yaml"),
+        /--format is prose or json/u,
+      );
+      for (const [name, text] of [
+        [
+          "separate-paragraphs",
+          `Literal backtick (\`).\n\n${JSON.stringify(result)}\n\nAnother backtick (\`).\n\n${TRACED}`,
+        ],
+        [
+          "blockquote-fence",
+          `> \`\`\`json\n> ${JSON.stringify(result)}\n> \`\`\`\n\n${TRACED}`,
+        ],
+        [
+          "list-fence",
+          `- \`\`\`json\n  ${JSON.stringify(result)}\n  \`\`\`\n\n${TRACED}`,
+        ],
+        [
+          "heading-boundary",
+          `Literal backtick (\`).\n# New block\n${JSON.stringify(result)}\nClosing backtick (\`).\n\n${TRACED}`,
+        ],
+        [
+          "setext-heading-boundary",
+          `Literal backtick (\`).\n---\n${JSON.stringify(result)}\nClosing backtick (\`).\n\n${TRACED}`,
+        ],
+        [
+          "list-item-boundary",
+          `- Literal backtick (\`).\n- ${JSON.stringify(result)}\n- Closing backtick (\`).\n\n${TRACED}`,
+        ],
+        [
+          "genuine-same-line-span",
+          `My review result is \`${JSON.stringify(result)}\`.\n\n${TRACED}`,
+        ],
+        [
+          "genuine-multiline-span",
+          `My review result is \`\n${JSON.stringify(result)}\n\`.\n\n${TRACED}`,
+        ],
+        [
+          "genuine-double-backtick-span",
+          `My review result is \`\`\n${JSON.stringify(result)}\n\`\`.\n\n${TRACED}`,
+        ],
+      ]) {
+        await assert.rejects(
+          record(name, text, "consistency", null),
+          /use --format prose.*--format json/u,
+          name,
+        );
+        const structured = await record(name, text, "consistency", "json");
+        assert.deepEqual(structured.findings, result.findings, name);
+        const prose = await record(name, text, "consistency", "prose");
+        assert.equal(prose.report, text.trim(), name);
+        assert.deepEqual(prose.findings, [], name);
+      }
+    });
+
+    await test("record requires explicit prose for possible-result examples inside same-line and multiline code spans", async () => {
+      const payload = '{"schemaVersion":1,"findings":[]}';
+      for (const [name, span] of [
+        ["same-line", `\`${payload}\``],
+        ["multiline-one", `\`\n${payload}\n\``],
+        ["multiline-two", `\`\`\n${payload}\n\`\``],
+        ["different-run-inside", `\`\`\n\`\n${payload}\n\`\``],
+        ["multiline-crlf", `\`\r\n${payload}\r\n\``],
+      ]) {
+        const repo = orderRepository(parent);
+        const text = `An example is ${span}.\n\n${TRACED}`;
+        write(parent, `${name}.txt`, text);
+        await assert.rejects(
+          recordAgentReview(
+            repo,
+            ["--kind", "consistency", "--from", join(parent, `${name}.txt`)],
+            { write: () => {} },
+          ),
+          /use --format prose.*--format json/u,
+          name,
+        );
+        const saved = await recordAgentReview(
+          repo,
+          [
+            "--kind",
+            "consistency",
+            "--from",
+            join(parent, `${name}.txt`),
+            "--format",
+            "prose",
+          ],
+          { write: () => {} },
+        );
+        const record = JSON.parse(
+          readFileSync(join(repo, saved.record), "utf8"),
+        );
+        assert.equal(record.structured, false, name);
+        assert.equal(record.report, text.trim(), name);
+        assert.deepEqual(record.findings, [], name);
+      }
+    });
+
+    await test("required report tables exclude code examples on both routes and a quoted table cannot shadow the real section", async () => {
+      const items =
+        "## Items\n\n| Item | Location in the subject | Disposition |\n| --- | --- | --- |\n| 1 | docs/planning/fixture-pass.md | reviewed |\n";
+      const wrappers = [
+        (table) => `\`\`\`markdown\n${table}\n\`\`\``,
+        (table) => `~~~~markdown\n${table}\n~~~~`,
+        (table) => `\`\`\`\`markdown\n\`\`\`\n${table}\n\`\`\`\``,
+        (table) => `\`\`\`markdown\n- \`\`\`\n${table}\n\`\`\``,
+        (table) =>
+          `- \`\`\`markdown\n${table
+            .split("\n")
+            .map((line) => `  ${line}`)
+            .join("\n")}\n  \`\`\``,
+        (table) =>
+          table
+            .split("\n")
+            .map((line) => `> ${line}`)
+            .join("\n"),
+        (table) => `<!--\n${table}\n-->`,
+        (table) => `<pre>\n${table}\n</pre>`,
+        (table) =>
+          table
+            .split("\n")
+            .map((line) => `    ${line}`)
+            .join("\n"),
+      ];
+      write(
+        parent,
+        "table-context-capture.txt",
+        "1. Review this synthetic pass.\n",
+      );
+      for (const [kind, table] of [
+        ["consistency", TRACED],
+        ["criteria", items],
+      ]) {
+        for (const [number, wrap] of wrappers.entries()) {
+          for (const route of ["record", "helper"]) {
+            const repo =
+              kind === "criteria"
+                ? planningRepository(parent, "planning/2030-01-02-context")
+                : orderRepository(parent);
+            const args = [
+              "--kind",
+              kind,
+              ...(kind === "criteria"
+                ? [
+                    "--subject",
+                    "planning",
+                    "--capture",
+                    join(parent, "table-context-capture.txt"),
+                  ]
+                : []),
+            ];
+            const example = `This is only an example; no report table was supplied.\n\n${wrap(table)}\n`;
+            const name = `${kind}-${number}-${route}`;
+            if (route === "record") {
+              write(parent, `${name}.txt`, example);
+              await assert.rejects(
+                recordAgentReview(
+                  repo,
+                  [
+                    ...args,
+                    "--format",
+                    "prose",
+                    "--from",
+                    join(parent, `${name}.txt`),
+                  ],
+                  { write: () => {} },
+                ),
+                /this report has none/u,
+                name,
+              );
+              write(parent, `${name}.txt`, `${example}\n${table}`);
+              const saved = await recordAgentReview(
+                repo,
+                [
+                  ...args,
+                  "--format",
+                  "prose",
+                  "--from",
+                  join(parent, `${name}.txt`),
+                ],
+                { write: () => {} },
+              );
+              assert.ok(saved.report, name);
+            } else {
+              const absent = await review(repo, [...args, "--host", "codex"], {
+                DOTLN_WORKER_FIXTURE: canned(parent, name, {
+                  ...roundOne,
+                  report: example,
+                }),
+              });
+              assert.equal(absent.result.report, null, name);
+              assert.match(absent.printed, /this report has none/u, name);
+              const present = await review(repo, [...args, "--host", "codex"], {
+                DOTLN_WORKER_FIXTURE: canned(parent, name, {
+                  ...roundOne,
+                  report: `${example}\n${table}`,
+                }),
+              });
+              assert.ok(present.result.report, name);
+            }
+          }
+        }
+      }
+    });
+
+    await test("a planning criteria review carries the operator's dispatch to the worker, requires an Items table and records only the dispatch's digest, the base and the report it answered", async () => {
+      const repo = planningRepository(parent, "planning/2030-01-04-capture");
+      const capturePath = join(parent, "dispatch-capture.md");
+      const captureText =
+        "# Dispatch\n\n1. Key the lane by branch.\n2. Read the whole change at the recheck.\n3. DISPATCH-SENTINEL have the adversary read this.\n12. Fix the lane bug\n";
+      write(parent, "dispatch-capture.md", captureText);
+      const planning = [
+        "--kind",
+        "criteria",
+        "--host",
+        "claude",
+        "--subject",
+        "planning",
+        "--capture",
+        capturePath,
+      ];
+      const dry = JSON.parse(
+        (await review(repo, [...planning, "--dry-run"], {})).printed,
+      );
+      assert.ok(dry.brief.endsWith(captureText));
+      assert.ok(
+        dry.brief.includes(
+          `\n## The operator's dispatch\n\ndispatch-capture.md, ${Buffer.byteLength(captureText)} bytes, sha256 ${sha256(captureText)}:\n\n${captureText}`,
+        ),
+      );
+      assert.ok(
+        dry.brief.includes("| Item | Location in the subject | Disposition |"),
+      );
+      await assert.rejects(
+        review(
+          repo,
+          [
+            "--kind",
+            "design",
+            "--host",
+            "claude",
+            "--subject",
+            "planning",
+            "--capture",
+            capturePath,
+            "--dry-run",
+          ],
+          {},
+        ),
+        /--capture carries the operator's dispatch to a planning subject's criteria review/u,
+      );
+      const items = (rows) =>
+        [
+          "## Items",
+          "",
+          "| Item | Location in the subject | Disposition |",
+          "| --- | --- | --- |",
+          ...rows,
+          "",
+        ].join("\n");
+      const answered = items([
+        "| 1 | docs/planning/fixture-pass.md | acted on |",
+        "| 2 | WO-901 criterion 2 | reviewed |",
+      ]);
+      // The helper route: a report without the table is refused; one with it
+      // is recorded, and the dispatch's bytes reach no record.
+      const missing = await review(repo, planning, {
+        DOTLN_WORKER_FIXTURE: canned(parent, "uncovered", roundOne),
+      });
+      assert.equal(missing.result.report, null);
+      assert.match(missing.printed, /answers it in an `## Items` table/u);
+      // A row acted on or reviewed names its location, and every row its item.
+      const unplaced = await review(repo, planning, {
+        DOTLN_WORKER_FIXTURE: canned(parent, "unplaced", {
+          ...roundOne,
+          report: items(["| 1 |  | acted on |"]),
+        }),
+      });
+      assert.equal(unplaced.result.report, null);
+      assert.match(
+        unplaced.printed,
+        /refused, since the `## Items` table has 1 acted-on or reviewed row without the item's location in the subject/u,
+      );
+      // Every string the record keeps from the return passes the omission:
+      // a finding's file and basis and a path read, beside its summary.
+      const quoted = "DISPATCH-SENTINEL have the adversary read this";
+      const launched = await review(repo, planning, {
+        DOTLN_WORKER_FIXTURE: canned(parent, "covered", {
+          ...roundOne,
+          findings: [
+            {
+              ...roundOne.findings[0],
+              basis: { criterion: `item 3, ${quoted}` },
+            },
+            {
+              ...roundOne.findings[1],
+              file: `notes/${quoted}.md`,
+              basis: { regression: `main had ${quoted}` },
+            },
+          ],
+          filesRead: [...roundOne.filesRead, `notes/${quoted}.md`],
+          report: `Read the pass.\n\n${answered}`,
+        }),
+      });
+      assert.match(
+        launched.printed,
+        /DotLn advisory: the Items table names no row for the dispatch's numbered items 3, 12\./u,
+      );
+      const recordText = readFileSync(
+        join(repo, launched.result.record),
+        "utf8",
+      );
+      const record = JSON.parse(recordText);
+      assert.deepEqual(record.captures, [
+        { sha256: sha256(captureText), bytes: Buffer.byteLength(captureText) },
+      ]);
+      assert.equal(record.since, git(repo, ["merge-base", "HEAD", "main"]));
+      assert.equal(record.briefSha256, dry.briefSha256);
+      assert.ok(
+        !`${recordText}${readFileSync(join(repo, launched.result.report), "utf8")}`.includes(
+          "DISPATCH-SENTINEL",
+        ),
+        "no record keeps the dispatch's words",
+      );
+      // The record route: the same refusals, and a recheck names the report
+      // it answered by its record's digest.
+      const recordWith = (name, text, extra = []) => {
+        write(parent, name, text);
+        return recordAgentReview(
+          repo,
+          [
+            "--kind",
+            "criteria",
+            "--subject",
+            "planning",
+            "--capture",
+            capturePath,
+            ...extra,
+            "--from",
+            join(parent, name),
+          ],
+          { write: () => {} },
+        );
+      };
+      const recheck = ["--recheck", launched.result.report];
+      await assert.rejects(
+        recordWith(
+          "no-items.txt",
+          "# Criteria recheck\n\nNo findings.\n",
+          recheck,
+        ),
+        /not recorded: a criteria review given the operator's dispatch answers it in an `## Items` table/u,
+      );
+      await assert.rejects(
+        recordWith(
+          "bad-items.txt",
+          items(["| 1 | docs/planning/fixture-pass.md | skipped |"]),
+          recheck,
+        ),
+        /disposition is one of acted on, reviewed, missing; 1 row names another/u,
+      );
+      for (const [name, row, refusal] of [
+        [
+          "unplaced-items.txt",
+          "| 2 | — | reviewed |",
+          /1 acted-on or reviewed row without the item's location in the subject/u,
+        ],
+        [
+          "placeholder-items.txt",
+          "| 2 | <document and section, or order and step> | acted on |",
+          /1 acted-on or reviewed row without the item's location/u,
+        ],
+        [
+          "unnamed-items.txt",
+          "|  | docs/planning/fixture-pass.md | reviewed |",
+          /the `## Items` table has 1 row that names no item/u,
+        ],
+      ])
+        await assert.rejects(
+          recordWith(name, items([row]), recheck),
+          refusal,
+          name,
+        );
+      // An Items header cell that names two columns reads neither.
+      const sharedItems =
+        "## Items\n\n| Item location | Where | Disposition |\n| --- | --- | --- |\n| 1 | docs/planning/fixture-pass.md | acted on |\n";
+      await assert.rejects(
+        recordWith("shared-items-header.txt", sharedItems, recheck),
+        /each in a column of its own; this report's table names item and location in a shared or repeated header cell/u,
+      );
+      const sharedLaunch = await review(repo, [...planning, ...recheck], {
+        DOTLN_WORKER_FIXTURE: canned(parent, "shared-items", {
+          ...roundOne,
+          report: sharedItems,
+        }),
+      });
+      assert.equal(sharedLaunch.result.report, null);
+      assert.match(
+        sharedLaunch.printed,
+        /refused, since .*names item and location in a shared or repeated header cell/u,
+      );
+      const rechecked = await recordWith(
+        "items-recheck.txt",
+        `# Criteria recheck\n\n${items(["| 1 | docs/planning/fixture-pass.md | acted on |", "| 2 | WO-901 | reviewed |", "| 3 | — | missing |"])}`,
+        recheck,
+      );
+      const recheckText = readFileSync(join(repo, rechecked.record), "utf8");
+      const recheckRecord = JSON.parse(recheckText);
+      assert.deepEqual(recheckRecord.answered, [
+        { path: launched.result.record, recordSha256: sha256(recordText) },
+      ]);
+      assert.deepEqual(recheckRecord.captures, record.captures);
+      assert.equal(recheckRecord.since, record.since);
+      assert.ok(!recheckText.includes("DISPATCH-SENTINEL"));
+      // A report that quotes the dispatch keeps none of its words, however
+      // it quotes them: in prose without the item's marker or full stop, and
+      // inside its findings object's report field, where JSON escapes the
+      // quotation marks. Each passage is replaced and counted once.
+      const quotingReport = `Item 3: "DISPATCH-SENTINEL have the adversary read this."\n\n${items(["| 3 | WO-901 | reviewed |"])}`;
+      write(
+        parent,
+        "quoting.txt",
+        `The dispatch asks that DISPATCH-SENTINEL have the adversary read this, for item 3, and item 1 says to Key the lane by branch, and it ends with 12. Fix the lane bug as written.\n\n${JSON.stringify({ schemaVersion: 1, findings: [], rechecks: [], filesRead: [], report: quotingReport })}\n`,
+      );
+      let printed = "";
+      const quoting = await recordAgentReview(
+        repo,
+        [
+          "--kind",
+          "criteria",
+          "--subject",
+          "planning",
+          "--capture",
+          capturePath,
+          "--round",
+          "3",
+          "--recheck",
+          rechecked.report,
+          "--from",
+          join(parent, "quoting.txt"),
+          "--format",
+          "json",
+        ],
+        { write: (line) => (printed += line) },
+      );
+      assert.match(
+        printed,
+        /DotLn advisory: 4 quoted passages of the operator's dispatch were omitted from the record\./u,
+      );
+      const quotingText = `${readFileSync(join(repo, quoting.record), "utf8")}${readFileSync(join(repo, quoting.report), "utf8")}`;
+      assert.ok(!/DISPATCH-SENTINEL/iu.test(quotingText));
+      // A short item quoted without its number is the item's whole text,
+      // and one quoted with its number is caught as well.
+      assert.ok(!/key the lane by branch/iu.test(quotingText));
+      assert.ok(!/fix the lane bug/iu.test(quotingText));
+      assert.ok(quotingText.includes("[the operator's words, omitted]"));
+      // The record route omits the same strings from a structured return.
+      write(
+        parent,
+        "basis-quoting.txt",
+        `${JSON.stringify({
+          schemaVersion: 1,
+          findings: [
+            {
+              id: "F1",
+              severity: "note",
+              summary: "The pass names item 3.",
+              file: `notes/${quoted}.md`,
+              line: null,
+              basis: { criterion: `item 3, ${quoted}` },
+            },
+          ],
+          rechecks: [],
+          filesRead: [`notes/${quoted}.md`],
+          report: items(["| 3 | WO-901 | reviewed |"]),
+        })}\n`,
+      );
+      const basisQuoting = await recordAgentReview(
+        repo,
+        [
+          "--kind",
+          "criteria",
+          "--subject",
+          "planning",
+          "--capture",
+          capturePath,
+          "--round",
+          "4",
+          "--recheck",
+          quoting.report,
+          "--from",
+          join(parent, "basis-quoting.txt"),
+        ],
+        { write: () => {} },
+      );
+      const basisRecord = readFileSync(join(repo, basisQuoting.record), "utf8");
+      assert.ok(
+        !/DISPATCH-SENTINEL/iu.test(
+          `${basisRecord}${readFileSync(join(repo, basisQuoting.report), "utf8")}`,
+        ),
+      );
+      assert.deepEqual(JSON.parse(basisRecord).findings[0].basis, {
+        criterion: "item 3, [the operator's words, omitted]",
+      });
+    });
+
+    await test("a record keeps the words the brief's own report rules gave the worker where a capture repeats them, and refuses a report whose table the omission would break, on both routes", async () => {
+      const repo = planningRepository(parent, "planning/2030-01-05-rules");
+      const capturePath = join(parent, "header-capture.md");
+      write(
+        parent,
+        "header-capture.md",
+        "# Dispatch\n\n1. Answer each item in this table:\n\n| Item | Location in the subject | Disposition |\n\n2. Key the lane by branch.\n",
+      );
+      const header = "| Item | Location in the subject | Disposition |";
+      const table = (rows) =>
+        ["## Items", "", header, "| --- | --- | --- |", ...rows, ""].join("\n");
+      const answered = table([
+        "| 1 | docs/planning/fixture-pass.md | acted on |",
+        "| 2 | WO-901 | reviewed |",
+      ]);
+      const planning = [
+        "--kind",
+        "criteria",
+        "--host",
+        "claude",
+        "--subject",
+        "planning",
+        "--capture",
+        capturePath,
+      ];
+      const launched = await review(repo, planning, {
+        DOTLN_WORKER_FIXTURE: canned(parent, "rules-table", {
+          ...roundOne,
+          report: answered,
+        }),
+      });
+      assert.ok(
+        readFileSync(join(repo, launched.result.report), "utf8").includes(
+          header,
+        ),
+      );
+      const record = (name, text, extra) => {
+        write(parent, name, text);
+        return recordAgentReview(
+          repo,
+          [
+            "--kind",
+            "criteria",
+            "--subject",
+            "planning",
+            "--capture",
+            capturePath,
+            ...extra,
+            "--from",
+            join(parent, name),
+          ],
+          { write: () => {} },
+        );
+      };
+      const recorded = await record(
+        "rules-record.txt",
+        `Read the pass.\n\n${answered}`,
+        ["--recheck", launched.result.report],
+      );
+      assert.ok(
+        JSON.parse(
+          readFileSync(join(repo, recorded.record), "utf8"),
+        ).report.includes(header),
+      );
+      // A row that quotes the dispatch across its cells meets the rules as
+      // returned, and its omission would leave a row without a disposition.
+      const split = table(["| 2 Key the | lane by branch | acted on |"]);
+      const later = ["--round", "3", "--recheck", recorded.report];
+      await assert.rejects(
+        record("split-quote.txt", split, later),
+        /not recorded: with the operator's quoted words omitted, the `## Items` table's disposition is one of acted on, reviewed, missing/u,
+      );
+      const launchedSplit = await review(repo, [...planning, ...later], {
+        DOTLN_WORKER_FIXTURE: canned(parent, "split-quote", {
+          ...roundOne,
+          report: split,
+        }),
+      });
+      assert.equal(launchedSplit.result.report, null);
+      assert.match(
+        launchedSplit.printed,
+        /refused, since with the operator's quoted words omitted, the `## Items` table's disposition/u,
+      );
+    });
+
+    await test("a registered target's order is reviewed on the target's base and candidate, read-only in the target, counted once and reported in the launchpad's lane", async () => {
+      const launchpad = orderRepository(parent);
+      const target = realpathSync(createFixtureRoot(join(parent, "target-")));
+      git(target, ["init", "--quiet", "-b", "main"]);
+      excludeFixtureOwnership(target);
+      for (const [key, value] of [
+        ["user.email", "fixture@example.invalid"],
+        ["user.name", "Fixture"],
+        ["commit.gpgsign", "false"],
+      ])
+        git(target, ["config", key, value]);
+      write(target, "lib/service.mjs", "export const service = 1;\n");
+      commit(target, "target base");
+      const baseCommit = git(target, ["rev-parse", "HEAD"]);
+      git(target, ["switch", "--quiet", "-c", "wo-901"]);
+      write(target, "lib/service.mjs", "export const service = 2;\n");
+      write(target, "lib/added.mjs", "export const added = true;\n");
+      write(
+        launchpad,
+        "docs/control/orders/WO-901.jsonl",
+        `${JSON.stringify({
+          type: "WorkOrderActivated",
+          workOrderId: "WO-901",
+          workOrderPath: "docs/work-orders/WO-901-fixture-order.md",
+          repositoryId: "service",
+          baseCommit,
+        })}\n`,
+      );
+      // The launchpad registers the target repository, as worktree start
+      // requires and the binding the close shares checks.
+      write(
+        launchpad,
+        "dotln.config.json",
+        prettyJson({
+          version: 1,
+          classes: { fixture: { checks: [], supports: [] } },
+          repositories: {
+            service: {
+              baseBranch: "main",
+              worktreeParent: "../targets",
+              repositoryClass: "fixture",
+              authorityProfile: {
+                authorityEnvelopeId: "fixture.target",
+                allowedEffects: ["repo.read", "repo.test"],
+                deniedEffects: ["repo.push"],
+                resourceLimits: {},
+                requiredEvidence: [],
+                expiresAt: Number.MAX_SAFE_INTEGER,
+                revocationEventTypes: [],
+              },
+            },
+          },
+        }),
+      );
+      write(
+        launchpad,
+        "docs/control/local/target-worktrees.json",
+        prettyJson({
+          [target]: {
+            target,
+            launchpad,
+            workOrderId: "WO-901",
+            repositoryId: "service",
+            baseCommit,
+            branch: "wo-901",
+          },
+        }),
+      );
+      const args = [
+        "--kind",
+        "criteria",
+        "--host",
+        "claude",
+        "--target",
+        "service",
+        "--order",
+        "WO-901",
+      ];
+      // The target's own file monitor never runs for a review: the helper
+      // reads the target with the host's safe Git options.
+      const marker = join(parent, "fsmonitor-ran");
+      write(parent, "fsmonitor.sh", `#!/bin/sh\ntouch "${marker}"\n`);
+      chmodSync(join(parent, "fsmonitor.sh"), 0o755);
+      git(target, ["config", "core.fsmonitor", join(parent, "fsmonitor.sh")]);
+      const dry = JSON.parse(
+        (await review(launchpad, [...args, "--dry-run"], {})).printed,
+      );
+      assert.ok(!existsSync(marker), "the target's file monitor did not run");
+      git(target, ["config", "--unset", "core.fsmonitor"]);
+      assert.equal(dry.since, baseCommit);
+      assert.equal(dry.reviewedTree, workingTree(target));
+      assert.equal(git(target, ["cat-file", "-t", dry.reviewedTree]), "tree");
+      const stat = dry.brief.split("The stat is:")[1].split("\n## ")[0];
+      for (const path of ["lib/service.mjs", "lib/added.mjs"])
+        assert.ok(stat.includes(path), path);
+      assert.ok(
+        !stat.includes("src/module.mjs"),
+        "the launchpad's change is not reviewed",
+      );
+      assert.ok(dry.brief.includes(`The checkout is ${target}.`));
+      assert.ok(dry.brief.includes("registered target service"));
+      assert.ok(dry.brief.includes(ORDER.trim()));
+      const session = "fixture-target-thread";
+      const harness = join(launchpad, "docs/control/local/harness");
+      assert.equal(initializeSubagentCounter(harness, session), null);
+      const before = git(target, ["status", "--porcelain"]);
+      const { result } = await review(launchpad, args, {
+        DOTLN_WORKER_FIXTURE: canned(parent, "target", roundOne),
+        CODEX_THREAD_ID: session,
+      });
+      assert.equal(
+        result.report,
+        "docs/control/local/reviews/WO-901/round-1-criteria.md",
+      );
+      const record = JSON.parse(
+        readFileSync(join(launchpad, result.record), "utf8"),
+      );
+      assert.deepEqual(record.target, {
+        repositoryId: "service",
+        worktree: target,
+        baseCommit,
+      });
+      assert.equal(record.since, baseCommit);
+      assert.equal(record.branch, "wo-901");
+      assert.equal(record.checkout.unchanged, true);
+      assert.equal(git(target, ["status", "--porcelain"]), before);
+      assert.equal(subagentUsage(launchpad, harness, session).count, 1);
+      assert.match(
+        readFileSync(join(launchpad, result.report), "utf8"),
+        /^- Target: service, worktree `.*`, activation base `[0-9a-f]{40}`\.$/mu,
+      );
+      // The hook charges the literal command one use.
+      const { kitWorkerLaunch } =
+        await import("../packages/skeleton/dist/src/harness-host.js");
+      assert.deepEqual(
+        kitWorkerLaunch(`npm run worker -- review ${args.join(" ")}`),
+        { uses: 1, host: "claude" },
+      );
+      await assert.rejects(
+        review(
+          launchpad,
+          [
+            ...args.slice(0, 4),
+            "--target",
+            "other",
+            "--order",
+            "WO-901",
+            "--dry-run",
+          ],
+          {},
+        ),
+        /WO-901 is activated for target service, not other/u,
+      );
+      await assert.rejects(
+        review(launchpad, [...args.slice(0, 6), "--dry-run"], {}),
+        /--target binds a registered target's order: name it with --order WO-NNN/u,
+      );
+      // A repository the launchpad no longer registers binds nothing, as for
+      // the close and target publication.
+      write(
+        launchpad,
+        "dotln.config.json",
+        prettyJson({
+          version: 1,
+          classes: { fixture: { checks: [], supports: [] } },
+          repositories: {},
+        }),
+      );
+      await assert.rejects(
+        review(launchpad, [...args, "--dry-run"], {}),
+        /target registry repository, base or branch differs from the activated order/u,
+      );
+    });
+
+    await test("each launch runs one of the operator's four options: the host's default, the one --model names or the dispatch line's, and a cross-host option is refused naming the host's", async () => {
+      const repo = planningRepository(parent, "planning/2030-01-05-models");
+      const launch = async (args, env = {}) => {
+        const dry = JSON.parse(
+          (
+            await review(
+              repo,
+              [
+                "--kind",
+                "design",
+                "--subject",
+                "planning",
+                ...args,
+                "--dry-run",
+              ],
+              env,
+            )
+          ).printed,
+        );
+        const at = (flag) => dry.argv[dry.argv.indexOf(flag) + 1];
+        return {
+          model: at("--model"),
+          effort: dry.argv.includes("--effort")
+            ? at("--effort")
+            : dry.argv.find((arg) => arg.startsWith("model_reasoning_effort=")),
+          option: dry.option,
+        };
+      };
+      assert.deepEqual(await launch(["--host", "codex"]), {
+        model: "gpt-6.1-sol",
+        effort: 'model_reasoning_effort="max"',
+        option: { name: "sol", selection: "host-default" },
+      });
+      assert.deepEqual(await launch(["--host", "codex", "--model", "astra"]), {
+        model: "gpt-6-astra",
+        effort: 'model_reasoning_effort="max"',
+        option: { name: "astra", selection: "model-flag" },
+      });
+      assert.deepEqual(await launch(["--host", "claude"]), {
+        model: "claude-opus-5-5",
+        effort: "xhigh",
+        option: { name: "opus", selection: "host-default" },
+      });
+      assert.deepEqual(await launch(["--host", "claude", "--model", "fable"]), {
+        model: "claude-fable-5-1",
+        effort: "xhigh",
+        option: { name: "fable", selection: "model-flag" },
+      });
+      await assert.rejects(
+        launch(["--host", "codex", "--model", "fable"]),
+        /--model fable is a Claude option; a Codex launch takes sol or astra/u,
+      );
+      await assert.rejects(
+        launch(["--host", "claude", "--model", "astra"]),
+        /--model astra is a Codex option; a Claude launch takes opus or fable/u,
+      );
+      await assert.rejects(
+        launch(["--host", "claude", "--model", "gpt-5"]),
+        /--model gpt-5 is not one of the operator's four worker options: opus \(claude-opus-5-5 at xhigh\), fable \(claude-fable-5-1 at xhigh\), sol \(gpt-6.1-sol at max\), astra \(gpt-6-astra at max\)/u,
+      );
+      // The session's latest dispatch line selects its host's non-default
+      // when no --model is named, and one that names none returns to the
+      // defaults; a named --model always wins.
+      const session = "fixture-dispatch-session";
+      const journal = `docs/control/local/harness/${sha256(session)}.jsonl`;
+      const selected = (options) =>
+        `${JSON.stringify({ typedEvent: "WorkerOptionsSelected", options, source: "claude-prompt-hook" })}\n`;
+      write(repo, journal, selected({ codex: "astra" }));
+      const env = { CLAUDE_CODE_SESSION_ID: session };
+      assert.deepEqual((await launch(["--host", "codex"], env)).option, {
+        name: "astra",
+        selection: "dispatch-word",
+      });
+      assert.equal(
+        (await launch(["--host", "codex"], env)).model,
+        "gpt-6-astra",
+      );
+      assert.equal(
+        (await launch(["--host", "claude"], env)).model,
+        "claude-opus-5-5",
+      );
+      assert.equal(
+        (await launch(["--host", "codex", "--model", "sol"], env)).model,
+        "gpt-6.1-sol",
+      );
+      appendFileSync(join(repo, journal), selected({}));
+      assert.deepEqual((await launch(["--host", "codex"], env)).option, {
+        name: "sol",
+        selection: "host-default",
+      });
+    });
+
+    await test("record reads the tree a structured report's field names, ignores a tree line quoted later, and records the body whose table passed", async () => {
+      const repo = orderRepository(parent);
+      const dry = JSON.parse(
+        (
+          await review(
+            repo,
+            ["--kind", "design", "--host", "claude", "--dry-run"],
+            {},
+          )
+        ).printed,
+      );
+      const tree = dry.reviewedTree;
+      write(repo, "src/module.mjs", "export const value = 4;\n");
+      // The closed object alone, its report opening with the tree line.
+      write(
+        parent,
+        "json-tree.txt",
+        `${JSON.stringify({ ...roundOne, report: `Reviewed tree: ${tree}\n\nRead the order.` })}\n`,
+      );
+      await assert.rejects(
+        recordAgentReview(
+          repo,
+          ["--kind", "design", "--from", join(parent, "json-tree.txt")],
+          { write: () => {} },
+        ),
+        new RegExp(
+          `the report reviewed tree ${tree}, and the working tree is now`,
+          "u",
+        ),
+      );
+      // A tree line quoted further down names nothing.
+      write(
+        parent,
+        "quoted-tree.txt",
+        `# Criteria review\n\nThe earlier report said:\n\n- Reviewed tree: ${tree}\n\nNo findings.\n`,
+      );
+      const quoted = await recordAgentReview(
+        repo,
+        ["--kind", "criteria", "--from", join(parent, "quoted-tree.txt")],
+        { write: () => {} },
+      );
+      const quotedRecord = JSON.parse(
+        readFileSync(join(repo, quoted.record), "utf8"),
+      );
+      assert.notEqual(quotedRecord.reviewedTree, tree);
+      assert.equal(
+        quotedRecord.reviewedTreeSource,
+        "the working tree when it was recorded",
+      );
+      // The prose carries the table and the field only a summary: the prose,
+      // without the claimed object, is the report recorded.
+      write(
+        parent,
+        "prose-table.txt",
+        `Reviewed tree: ${quotedRecord.reviewedTree}\n\n${TRACED}\n${JSON.stringify({ ...roundOne, report: "One line." })}\n`,
+      );
+      const table = await recordAgentReview(
+        repo,
+        [
+          "--kind",
+          "consistency",
+          "--from",
+          join(parent, "prose-table.txt"),
+          "--format",
+          "json",
+        ],
+        { write: () => {} },
+      );
+      const tableRecord = JSON.parse(
+        readFileSync(join(repo, table.record), "utf8"),
+      );
+      assert.ok(tableRecord.report.includes("## Traced consumers"));
+      assert.ok(!tableRecord.report.includes('"schemaVersion"'));
+      assert.match(
+        readFileSync(join(repo, table.report), "utf8"),
+        /## Traced consumers/u,
+      );
+    });
+
+    await test("a combined round named by --since alone is the ladder's last round, and a fresh round 1 over the tree its lane last reviewed is named a re-roll", async () => {
+      const repo = orderRepository(parent);
+      const env = { DOTLN_WORKER_FIXTURE: canned(parent, "reroll", roundOne) };
+      const first = await review(
+        repo,
+        ["--kind", "design", "--host", "codex"],
+        env,
+      );
+      const reviewed = JSON.parse(
+        readFileSync(join(repo, first.result.record), "utf8"),
+      ).reviewedTree;
+      const combined = await review(
+        repo,
+        ["--kind", "combined", "--host", "codex", "--since", reviewed],
+        env,
+      );
+      assert.equal(
+        combined.result.report,
+        "docs/control/local/reviews/WO-901/round-3-combined.md",
+      );
+      const reroll = await review(
+        repo,
+        ["--kind", "criteria", "--host", "codex", "--since", reviewed],
+        env,
+      );
+      assert.equal(
+        reroll.result.report,
+        `docs/control/local/reviews/WO-901/since-${reviewed.slice(0, 12)}/round-1-criteria.md`,
+      );
+      assert.match(
+        reroll.printed,
+        /DotLn advisory: this fresh round 1 reviews tree [0-9a-f]{40}, which docs\/control\/local\/reviews\/WO-901\/round-3-combined\.json already reviewed; nothing in it is newer than that review\./u,
+      );
+    });
+
+    await test("a Traced consumers cell of a dash or a word for nothing done says nothing, while none is a result", async () => {
+      const repo = orderRepository(parent);
+      const record = (name, text) => {
+        write(parent, name, text);
+        return recordAgentReview(
+          repo,
+          ["--kind", "consistency", "--from", join(parent, name)],
+          { write: () => {} },
+        );
+      };
+      for (const [name, row] of [
+        ["dash.txt", "| generated pages | - | - | - |"],
+        ["not-run.txt", "| generated pages | docs/README.md | not run | n/a |"],
+        [
+          "none-command.txt",
+          "| generated pages | docs/README.md | none | current |",
+        ],
+      ])
+        await assert.rejects(
+          record(
+            name,
+            TRACED.replace(
+              "| generated pages | docs/README.md | node scripts/meta.mjs --check | current |",
+              row,
+            ),
+          ),
+          /without the consumer traced, the command run or its result/u,
+          name,
+        );
+      const none = await record(
+        "none-result.txt",
+        TRACED.replace("| no pin names the module |", "| none |"),
+      );
+      assert.ok(none.record);
+    });
+
+    await test("every planning branch names a lane of its own that decodes back to it, so passes whose names differ only in escaped characters each run their round 1, and a name too long for a directory is refused before any worker starts", async () => {
+      const lanes = "docs/control/local/reviews";
+      const planning = [
+        "--kind",
+        "criteria",
+        "--host",
+        "claude",
+        "--subject",
+        "planning",
+      ];
+      const env = {
+        DOTLN_WORKER_FIXTURE: canned(parent, "lane-escape", roundOne),
+      };
+      const repo = planningRepository(parent, "planning/2030-01-02/recheck");
+      // One date's passes: a nested name and the literal name an earlier
+      // digest rule gave it the same lane as, then names that rule read as
+      // hyphens too: a percent sign spelling the nested name's own escape, a
+      // plus sign and the hyphen itself.
+      const passes = [
+        ["planning/2030-01-02/recheck", "planning-2030-01-02%2Frecheck"],
+        [
+          "planning/2030-01-02-recheck-5cd9ca9c",
+          "planning-2030-01-02-recheck-5cd9ca9c",
+        ],
+        ["planning/2030-01-02%2Frecheck", "planning-2030-01-02%252Frecheck"],
+        ["planning/2030-01-02+recheck", "planning-2030-01-02%2Brecheck"],
+        ["planning/2030-01-02-recheck", "planning-2030-01-02-recheck"],
+      ];
+      for (const [index, [branch, lane]] of passes.entries()) {
+        if (index) {
+          git(repo, ["switch", "--quiet", "main"]);
+          git(repo, ["switch", "--quiet", "-c", branch]);
+          write(repo, `docs/planning/pass-${index}.md`, `# Pass ${index}\n`);
+          commit(repo, `pass ${index}`);
+        }
+        const report = `${lanes}/${lane}/round-1-criteria.md`;
+        const dry = JSON.parse(
+          (await review(repo, [...planning, "--dry-run"], {})).printed,
+        );
+        assert.equal(dry.report, report, branch);
+        const run = await review(repo, planning, env);
+        assert.equal(run.result.report, report, branch);
+        assert.equal(
+          JSON.parse(readFileSync(join(repo, run.result.record), "utf8"))
+            .branch,
+          branch,
+        );
+      }
+      // The rule over names no fixture branch takes: each lane is distinct
+      // and decodes back to its branch, and a name of letters, digits, dots,
+      // underscores and hyphens alone keeps its spelling.
+      const names = [
+        "planning/a/b",
+        "planning/a-b",
+        "planning/a_b",
+        "planning/a.b",
+        "planning/a+b",
+        "planning/a%2Fb",
+        "planning/a%252Fb",
+        "planning/a/-b",
+        "planning/2030-01-02/café",
+        "planning/2030-01-02-café",
+        "planning/2030-01-02-cafe",
+      ];
+      const named = names.map((branch) =>
+        reviewsLane(repo, "planning", { branch }).replace(`${lanes}/`, ""),
+      );
+      assert.equal(new Set(named).size, names.length, named.join(" "));
+      named.forEach((lane, index) => {
+        assert.match(lane, /^planning-[A-Za-z0-9._%-]+$/u);
+        assert.equal(
+          decodeURIComponent(lane.slice("planning-".length)),
+          names[index].slice("planning/".length),
+        );
+      });
+      assert.equal(named[1], "planning-a-b");
+      // A lane is one directory name: 255 bytes is admitted, one more is
+      // refused, and the helper refuses before it renders or launches.
+      const longest = `planning/${"z".repeat(255 - "planning-".length)}`;
+      assert.equal(
+        reviewsLane(repo, "planning", { branch: longest }),
+        `${lanes}/planning-${"z".repeat(246)}`,
+      );
+      assert.throws(
+        () => reviewsLane(repo, "planning", { branch: `${longest}z` }),
+        /names a reviews lane of 256 bytes, longer than the 255 a directory name holds/u,
+      );
+      git(repo, ["switch", "--quiet", "main"]);
+      git(repo, [
+        "switch",
+        "--quiet",
+        "-c",
+        `planning/${"x".repeat(120)}/${"y".repeat(140)}`,
+      ]);
+      write(repo, "docs/planning/long-pass.md", "# Long pass\n");
+      commit(repo, "long pass");
+      await assert.rejects(
+        review(repo, [...planning, "--dry-run"], {}),
+        /names a reviews lane of 272 bytes/u,
+      );
+      await assert.rejects(
+        review(repo, planning, env),
+        /names a reviews lane of 272 bytes/u,
+      );
+      assert.equal(
+        existsSync(join(repo, lanes, `planning-${"x".repeat(120)}`)),
+        false,
       );
     });
   } finally {

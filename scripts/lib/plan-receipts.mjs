@@ -51,6 +51,7 @@ import {
   criteriaAdvisories,
   readIndex,
 } from "../work-orders.mjs";
+import { receiptWorkerTypes } from "./worker-launch.mjs";
 
 // Default-layout names for peers and fixtures; the reader and writer below
 // resolve the same evidence under a launchpad's configured roots.
@@ -213,6 +214,8 @@ const subjectPrefetch = (root, subject) => ({
 });
 
 export async function validateReceipt(root, receipt) {
+  // The launchers of the operator's four worker options.
+  const workerTypes = await receiptWorkerTypes();
   check(
     exact(receipt, [
       "schemaVersion",
@@ -294,10 +297,7 @@ export async function validateReceipt(root, receipt) {
         (e.review
           ? ["codex", "claude-code", "unknown"].includes(e.harness)
           : e.harness === "codex") &&
-        (e.workerType === undefined ||
-          ["dotln-worker", "dotln-worker-fable", "codex-spawn-agent"].includes(
-            e.workerType,
-          )) &&
+        (e.workerType === undefined || workerTypes.includes(e.workerType)) &&
         e.harnessVersion === "unknown" &&
         e.model === "unknown" &&
         e.effort === "unknown" &&

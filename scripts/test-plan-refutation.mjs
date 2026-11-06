@@ -6719,10 +6719,58 @@ else {
         const repo = makeRepo(parent, "direct-command");
         runGit(repo, ["config", "user.name", "Direct Fixture"]);
         runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
+        // The direct form names one of the operator's four options for the
+        // parent's launch; anything else is refused by name, and the
+        // external transport's own flags still need an explicit transport.
         await assert.rejects(
           plan(["refute", "--model", "fixture"], repo),
+          /--model fixture is not one of the operator's four worker options/u,
+        );
+        await assert.rejects(
+          plan(["refute", "--effort", "max"], repo),
           /explicit --transport/u,
         );
+        const saved = Object.fromEntries(
+          [
+            "CODEX_THREAD_ID",
+            "CLAUDE_CODE_SESSION_ID",
+            "CLAUDE_SESSION_ID",
+          ].map((key) => [key, process.env[key]]),
+        );
+        let astra;
+        try {
+          for (const key of Object.keys(saved)) delete process.env[key];
+          astra = JSON.parse(await plan(["refute", "--model", "astra"], repo));
+          // Without --model, and outside a session, no launch is named.
+          assert.equal(
+            JSON.parse(await plan(["refute"], repo)).launch,
+            undefined,
+          );
+          // A Claude session is pointed at the external transport for it.
+          process.env.CLAUDE_CODE_SESSION_ID = "fixture-direct-claude";
+          assert.match(
+            JSON.parse(await plan(["refute", "--model", "astra"], repo)).launch
+              .note,
+            /this Claude session cannot spawn a Codex worker; npm run plan -- refute --transport codex-cli-exec --model astra/u,
+          );
+        } finally {
+          for (const [key, value] of Object.entries(saved))
+            if (value === undefined) delete process.env[key];
+            else process.env[key] = value;
+        }
+        assert.deepEqual(astra.launch, {
+          option: "astra",
+          selection: "model-flag",
+          host: "codex",
+          model: "gpt-6-astra",
+          effort: "max",
+          tool: "spawn_agent",
+          forkTurns: "none",
+          agentType: "dotln-worker-astra",
+          reasoningEffort: "max",
+          receipt: "--worker-type dotln-worker-astra",
+        });
+        assert.ok(astra.resultSchema, "the prompt and schema are unchanged");
         const prompt = await plan(["refute"], repo);
         assert.ok(typeof prompt === "string");
         assert.ok(JSON.parse(prompt).resultSchema);

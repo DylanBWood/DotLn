@@ -4,11 +4,126 @@
 // host's version readback, the elapsed clock and the usage record are one
 // code path rather than a copy per command.
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { dispatchSession } from "./dispatch-bound.mjs";
+import { sha256Hex } from "./helpers.mjs";
+import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
 
 const skeleton = (name) =>
   import(`../../packages/skeleton/dist/src/${name}.js`);
+
+/** The host a session's own environment names, or null outside a session. */
+export const sessionHost = (env = process.env) =>
+  env.CODEX_THREAD_ID
+    ? "codex"
+    : env.CLAUDE_CODE_SESSION_ID || env.CLAUDE_SESSION_ID
+      ? "claude"
+      : null;
+
+/** The worker option the session's latest `resume:` or `planning:` line named
+ * for this host, from the `WorkerOptionsSelected` row its prompt hook
+ * journals; null when the session, its journal or such a row is absent. */
+export function sessionWorkerOption(root, host) {
+  const session = dispatchSession();
+  if (!session) return null;
+  const path = join(
+    dispatchJournalDirectory(root),
+    `${sha256Hex(session)}.jsonl`,
+  );
+  if (!existsSync(path) || !lstatSync(path).isFile()) return null;
+  let latest = null;
+  for (const line of readFileSync(path, "utf8").split("\n")) {
+    if (!line.includes('"WorkerOptionsSelected"')) continue;
+    try {
+      const row = JSON.parse(line);
+      if (
+        row?.typedEvent === "WorkerOptionsSelected" &&
+        row.options &&
+        typeof row.options === "object"
+      )
+        latest = row.options;
+    } catch {
+      // A torn row selects nothing; an earlier whole row still stands.
+    }
+  }
+  return typeof latest?.[host] === "string" ? latest[host] : null;
+}
+
+/** The option one of the operator's four is named by, its short word or its
+ * model id, as [word, option]; undefined for any other name. */
+export async function workerOptionNamed(requested) {
+  const { contributorWorkerOptions: options } = await skeleton(
+    "loadouts/contributor",
+  );
+  const word = Object.keys(options).find(
+    (name) => name === requested || options[name].model === requested,
+  );
+  return word ? [word, options[word]] : undefined;
+}
+
+/** The worker types a refutation receipt records: each option's launcher. */
+export async function receiptWorkerTypes() {
+  const { contributorWorkerOptions: options } = await skeleton(
+    "loadouts/contributor",
+  );
+  return [
+    ...new Set(Object.values(options).map((option) => option.workerType)),
+  ];
+}
+
+/**
+ * The model and effort a launch on `host` runs, from the operator's four
+ * options: the one `requested` names (its short word or its model id), else
+ * the one the session's dispatch line named for this host, else the host's
+ * default. An option of the other host and anything outside the four are
+ * refused by name. `selection` says which of the three decided.
+ * @param {string} root
+ * @param {"claude"|"codex"} host
+ * @param {string} [requested]
+ * @param {string} [flag] the flag the caller's usage names
+ */
+export async function resolveWorkerOption(
+  root,
+  host,
+  requested,
+  flag = "--model",
+) {
+  const { contributorWorkerOptions: options, contributorWorkerDefaults } =
+    await skeleton("loadouts/contributor");
+  const label = { claude: "Claude", codex: "Codex" };
+  const of = (name, selection) => ({
+    name,
+    ...options[name],
+    selection,
+  });
+  const offered = (side) =>
+    Object.entries(options)
+      .filter(([, option]) => option.host === side)
+      .map(([name]) => name);
+  if (requested !== undefined) {
+    const name = (await workerOptionNamed(requested))?.[0];
+    if (!name)
+      throw new Error(
+        `${flag} ${requested} is not one of the operator's four worker options: ${Object.entries(
+          options,
+        )
+          .map(
+            ([word, option]) => `${word} (${option.model} at ${option.effort})`,
+          )
+          .join(", ")}`,
+      );
+    if (options[name].host !== host)
+      throw new Error(
+        `${flag} ${name} is a ${label[options[name].host]} option; a ${label[host]} launch takes ${offered(host).join(" or ")}`,
+      );
+    return of(name, "model-flag");
+  }
+  const selected = sessionWorkerOption(root, host);
+  if (selected && options[selected]?.host === host)
+    return of(selected, "dispatch-word");
+  return of(contributorWorkerDefaults[host], "host-default");
+}
 
 /** Claude's terminal result carries the denial count, turn count, list cost
  * and the models it used that a receipt reports. Codex exposes none of them,

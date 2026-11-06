@@ -6875,13 +6875,24 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // both chains below it. WO-253's release-close and planner prune sentences
   // re-pin the trees over that WO-238 integration oracle, WO-254's question
   // pathways, blocked-turn sentence and writer sentences re-pin them over
-  // WO-253's, and WO-246's planner sentence on the publish helper re-pins them
-  // over WO-254's.
-  const current = "wo246-role-baseline.json";
+  // WO-253's, WO-246's planner sentence on the publish helper re-pins them
+  // over WO-254's, WO-255's worker options, whole-change recheck,
+  // consistency table and planner capture sentence re-pin them over WO-246's,
+  // and WO-255's repair, naming the helper's required host in the planner's
+  // capture sentence, re-pins them over WO-255's.
+  const current = "wo255-repair-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo254-role-baseline.json");
-  const questions = JSON.parse(
+  assert.equal(baseline.historicalBaseline, "wo255-role-baseline.json");
+  const options = JSON.parse(
     readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(options.historicalBaseline, "wo246-role-baseline.json");
+  const publish = JSON.parse(
+    readFileSync(join(fixtures, options.historicalBaseline), "utf8"),
+  );
+  assert.equal(publish.historicalBaseline, "wo254-role-baseline.json");
+  const questions = JSON.parse(
+    readFileSync(join(fixtures, publish.historicalBaseline), "utf8"),
   );
   assert.equal(questions.historicalBaseline, "wo253-role-baseline.json");
   const closePrune = JSON.parse(
@@ -7036,12 +7047,14 @@ test("WO-145 optional economy support preserves historical snapshots through the
     );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
       // The reviews are a ladder with an end (WO-250): three reviewers over
-      // the whole diff, a recheck of the fixes alone under the admission
-      // rule, one combined last look, then the executor's own judgment; and
-      // every launch, re-task and kit launch counts against the cap.
+      // the whole diff, a recheck that confirms the fixes and reads the whole
+      // change again under the admission rule (WO-255), one combined last
+      // look, then the executor's own judgment; and every launch, re-task and
+      // kit launch counts against the cap.
       for (const rule of [
         /Round 1: three fresh independent `dotln-worker` reviewers over the whole diff against the merge base/,
-        /Round 2, the recheck: each reviewer whose findings were fixed rechecks those fixes on the current diff and nothing else/,
+        /Round 2, the recheck: each reviewer whose findings were fixed confirms those fixes, then reviews the whole current change against the base again/,
+        /a `Traced consumers` table \(changed contract, consumer, command, result\) with a generated pages row and a fixture manifests row, each naming the command run; a consistency report without that table is not recorded/,
         /a new finding is admitted only when it breaks an acceptance criterion or a behavior `main` had, and any other new finding is recorded in the handoff, not fixed/,
         /Round 3, the last: only when round 2's fixes changed code again, one combined worker carrying the three briefs/,
         /After round 3 no reviewer runs in this execution or repair: you judge the remaining delta/,
@@ -7134,6 +7147,9 @@ test("WO-145 optional economy support preserves historical snapshots through the
     planner: [
       "Screen every acceptance criterion before filing against the five defect classes",
       "prints a `criteria advisory` line",
+      // The capture review's command runs as written: the helper requires
+      // its host (WO-255's repair).
+      "`npm run worker -- review --kind criteria --host codex|claude --subject planning` carries the operator's dispatch capture with `--capture <file>`",
     ],
   };
   for (const file of roles) {

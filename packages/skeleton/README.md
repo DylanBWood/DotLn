@@ -844,10 +844,13 @@ permission settings decide execution; emission changes no host setting. The CLI 
 new saved builds need explicit adapter declarations and observed profiles.
 
 The Codex contributor profile also emits `.codex/hooks.json`, a comment-only
-project config and a source-only continuation hook. After compaction it restores
-the saved work order and can request one immediate continuation if that same
-owned task remains unfinished. It preserves explicit pause/recovery controls and
-does not dispatch or release a writer. Review native hook trust with `/hooks`;
+project config, a source-only continuation hook and the opt-in custom agent
+`.codex/agents/dotln-worker-astra.toml` (`gpt-6-astra` at `max`). After
+compaction the hook restores the saved work order and can request one
+immediate continuation if that same owned task remains unfinished; on a
+`resume:` or `planning:` line it journals the worker options the line names. It
+preserves explicit pause/recovery controls and does not dispatch or release a
+writer. Review native hook trust with `/hooks`;
 the checked Codex CLI 0.155.0 loads linked-worktree definitions from the root
 checkout, so integration there is required for those worktrees. Emission never
 overwrites unowned Codex configuration. See [behavior, native proof and activation

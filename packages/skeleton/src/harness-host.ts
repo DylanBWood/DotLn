@@ -78,6 +78,7 @@ import {
   showHarnessAdvisory,
   harnessPromptIntent,
   harnessPromptLine,
+  harnessWorkerWords,
   operatorMessageClass,
   harnessSessionPhase,
   OPERATOR_QUESTION_CONTEXT,
@@ -6493,6 +6494,23 @@ async function evaluateExistingHarnessHook(
     let receipt: string | undefined;
     let scratchAdvisory: string | undefined;
     const intent = harnessPromptIntent(input.prompt);
+    // Each dispatch line journals the worker options it names, an empty
+    // selection included, so a later dispatch that names none returns the
+    // kit's launches to their hosts' defaults.
+    const workerOptions =
+      input.hook_event_name === "UserPromptSubmit" && !input.agent_id
+        ? harnessWorkerWords(input.prompt)
+        : null;
+    if (workerOptions)
+      try {
+        record(root, input, {
+          typedEvent: "WorkerOptionsSelected",
+          options: workerOptions,
+          source: "claude-prompt-hook",
+        });
+      } catch {
+        // The selection is an observation; a launch then takes its default.
+      }
     const role =
       config.roles?.find((role) => role.intents.includes(intent)) ??
       config.roles?.find(
@@ -6668,6 +6686,16 @@ async function evaluateExistingHarnessHook(
       input.hook_event_name === "UserPromptSubmit" &&
       unprefixedQuestion(input.prompt)
         ? OPERATOR_QUESTION_CONTEXT
+        : undefined,
+      workerOptions && Object.keys(workerOptions).length
+        ? `DotLn: this dispatch line selects the opt-in worker ${[
+            workerOptions.claude ? "fable for Claude launches" : null,
+            workerOptions.codex ? "astra for Codex launches" : null,
+          ]
+            .filter(Boolean)
+            .join(
+              " and ",
+            )}; \`npm run worker -- review --host\` with that host and \`npm run plan -- refute\` (directly for this session's own host, with \`--transport\` for the other) take it when a launch names no --model.`
         : undefined,
       observationBoundary(root, observationScope(), {
         ...(input.prompt ? { prompt: input.prompt } : {}),

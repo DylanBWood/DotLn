@@ -7273,6 +7273,18 @@ test("WO-054 Codex installation preserves unowned configuration before any bundl
   try {
     const manifestPath = join(root, ".claude/harness-manifest.json");
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    // Every Codex file the bundle owned becomes unowned, its generated
+    // custom agents included, so the second emit starts from none of them.
+    const codexFiles = manifest.installed
+      .map((file) => file.path)
+      .filter((path) => path.startsWith(".codex/"));
+    for (const path of [
+      ".codex/config.toml",
+      ".codex/hooks.json",
+      ".codex/hooks/continuation.mjs",
+      ".codex/agents/dotln-worker-astra.toml",
+    ])
+      assert.ok(codexFiles.includes(path), path);
     manifest.installed = manifest.installed.filter(
       (file) => !file.path.startsWith(".codex/"),
     );
@@ -7289,12 +7301,7 @@ test("WO-054 Codex installation preserves unowned configuration before any bundl
       "# Operator-owned configuration.\n",
     );
     assert.deepEqual(readFileSync(join(root, "CLAUDE.md")), before);
-    for (const file of [
-      ".codex/config.toml",
-      ".codex/hooks.json",
-      ".codex/hooks/continuation.mjs",
-    ])
-      rmSync(join(root, file));
+    for (const file of codexFiles) rmSync(join(root, file));
     write(
       root,
       ".codex/unrelated.toml",
@@ -7576,6 +7583,147 @@ test("WO-187 harness check covers the spawned-worker model and effort pins", () 
       );
     }
   } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-255 the generated dotln-worker-astra Codex agent sits beside dotln-worker-fable with its pinned model and effort, and a changed pin is drift", () => {
+  const root = fixture();
+  try {
+    emitHarness(root);
+    assert.ok(existsSync(join(root, ".claude/agents/dotln-worker-fable.md")));
+    assert.ok(
+      !existsSync(join(root, ".claude/agents/dotln-worker-astra.md")),
+      "no Claude agent type names a Codex model",
+    );
+    const agent = join(root, ".codex/agents/dotln-worker-astra.toml");
+    const original = readFileSync(agent, "utf8");
+    for (const line of [
+      'name = "dotln-worker-astra"',
+      'model = "gpt-6-astra"',
+      'model_reasoning_effort = "max"',
+    ])
+      assert.ok(original.split("\n").includes(line), line);
+    assert.match(
+      original,
+      /only when the operator's planning: or resume: dispatch line names Astra \(astra\)/u,
+    );
+    checkHarness(root);
+    for (const [before, after] of [
+      ['model = "gpt-6-astra"', 'model = "gpt-6.1-sol"'],
+      ['model_reasoning_effort = "max"', 'model_reasoning_effort = "low"'],
+    ]) {
+      writeFileSync(agent, original.replace(before, after));
+      assert.throws(
+        () => checkHarness(root),
+        /harness drift: \.codex\/agents\/dotln-worker-astra\.toml/,
+      );
+      writeFileSync(agent, original);
+    }
+    checkHarness(root);
+    const installed = harnessInstallation();
+    for (const role of [
+      "executor",
+      "verifier",
+      "reviewer",
+      "release-close",
+      "planner",
+      "refuter",
+    ])
+      assert.ok(
+        installed.files
+          .find((file) => file.path === `.claude/skills/dotln-${role}/SKILL.md`)
+          .contents.includes("Codex `dotln-worker-astra` (gpt-6-astra, max)"),
+        `${role} names the Astra opt-in`,
+      );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-255 a dispatch line's worker words are journaled for the session's launches, a dispatch naming none returns to the defaults, and an ordinary message selects nothing", async () => {
+  const root = fixture();
+  const keys = [
+    "CODEX_THREAD_ID",
+    "CLAUDE_CODE_SESSION_ID",
+    "CLAUDE_SESSION_ID",
+  ];
+  const saved = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  try {
+    const context = (prompt) =>
+      invoke(root, "session", input(root, "UserPromptSubmit", { prompt }))
+        .hookSpecificOutput?.additionalContext ?? "";
+    const selected = () =>
+      wo178Rows(root).filter(
+        (row) => row.typedEvent === "WorkerOptionsSelected",
+      );
+    assert.match(
+      context("planning: standard pass, astra"),
+      /this dispatch line selects the opt-in worker astra for Codex launches; `npm run worker -- review --host` with that host and `npm run plan -- refute` \(directly for this session's own host, with `--transport` for the other\) take it when a launch names no --model\./u,
+    );
+    assert.deepEqual(
+      selected().map(({ options, source }) => [options, source]),
+      [[{ codex: "astra" }, "claude-prompt-hook"]],
+    );
+    // The session's own Codex launches take it; its Claude launches keep
+    // their default.
+    for (const key of keys) delete process.env[key];
+    process.env.CLAUDE_CODE_SESSION_ID = "synthetic-session";
+    const { resolveWorkerOption } = await import("./lib/worker-launch.mjs");
+    const option = async (host) => {
+      const { name, model, effort, selection } = await resolveWorkerOption(
+        root,
+        host,
+      );
+      return { name, model, effort, selection };
+    };
+    assert.deepEqual(await option("codex"), {
+      name: "astra",
+      model: "gpt-6-astra",
+      effort: "max",
+      selection: "dispatch-word",
+    });
+    assert.equal((await option("claude")).name, "opus");
+    // A lifecycle phrase may carry the word; it still resolves its role.
+    assert.match(
+      context("resume: status fable"),
+      /selects the opt-in worker fable for Claude launches/u,
+    );
+    assert.equal((await option("claude")).name, "fable");
+    assert.equal((await option("codex")).name, "sol");
+    // A dispatch line naming none returns to the defaults, and an ordinary
+    // message names nothing.
+    assert.doesNotMatch(context("resume: status"), /opt-in worker/u);
+    context("could the reviews use astra?");
+    assert.deepEqual(
+      selected().map(({ options }) => options),
+      [{ codex: "astra" }, { claude: "fable" }, {}],
+    );
+    assert.equal((await option("claude")).name, "opus");
+    // Only the words that close the line select: a model named mid-line as
+    // a topic selects nothing, while a closing word keeps its full stop.
+    context("planning: standard pass on why fable reviews were slow");
+    context("resume: status; run the reviewers on astra.");
+    context("planning: standard pass, fable and astra");
+    // A lifecycle phrase's suffix still selects when direction follows it.
+    context("resume: status astra; keep the reviews short");
+    context("planning: refute fable; then publish");
+    assert.deepEqual(
+      selected()
+        .slice(3)
+        .map(({ options }) => options),
+      [
+        {},
+        { codex: "astra" },
+        { claude: "fable", codex: "astra" },
+        { codex: "astra" },
+        { claude: "fable" },
+      ],
+    );
+  } finally {
+    for (const [key, value] of Object.entries(saved))
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
     removeFixture(root, { recursive: true, force: true });
   }
 });

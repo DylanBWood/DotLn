@@ -556,7 +556,11 @@ external fallback. Claude defaults to `claude-opus-5-5` at `xhigh` (WO-100) and
 Codex to `gpt-6.1-sol` at `max` (WO-177, replacing WO-100's `gpt-6-sol` at
 `xhigh`; before WO-100, `claude-fable-5-1` at `max` and `gpt-6-astra` with
 effort `unknown`); `npm run plan -- refute --transport <name>` launches with the
-same per-transport defaults; both are recorded from the invocation as
+same per-transport defaults, with the one of the operator's four options
+that `--model opus|fable|sol|astra` names for the transport's host (an effort
+outside that option is refused), or, without `--model`, with the option the
+session's latest `planning:` or `resume:` line named for that host; both are
+recorded from the invocation as
 `command-line-readback-and-invocation`, and effective model and effort stay
 `unknown` because no harness reports them. The receipt reads
 `entropy-reducer@1` only when a launched `claude-cli-print` episode carried the

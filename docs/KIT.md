@@ -586,17 +586,47 @@ brief (the generated worker definition, the reviewer brief from the role text,
 the order and its diff, and for `--recheck <report>` the earlier findings) and
 writes its report and a `.json` record to
 `docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md` (a repair's under
-`repair-<n>/`, and never over an existing report); `--subject planning`
-on a `planning/` branch reviews that branch's planning documents and orders
-into `planning-<date>/`, and `--dry-run` prints the command line it would run.
-`npm run worker -- record --kind <kind> --round <N> --from <file>` writes an
-`Agent` worker's returned text to the same lane as the same record.
+`repair-<n>/`, and never over an existing report). `--model
+opus|fable|sol|astra` picks one of the operator's four worker options for that
+host; without it the launch takes the option the words closing the
+session's `planning:` or `resume:` line, or closing its phrase before a `;`,
+named (`fable` for Claude, `astra` for Codex), else the host's default (opus,
+sol). `--subject planning` on a `planning/` branch reviews that
+branch's planning documents and orders into `planning-<branch>/` (the name
+after `planning/`, any character but a letter, digit, dot, underscore or hyphen
+URL-escaped, so no two branches share it), and
+`--capture <file>` gives its criteria review the operator's dispatch, which
+the report answers item by item in an `## Items` table; `--target <id> --order
+WO-NNN` reviews a registered target's order on the target's base and worktree;
+`--since <tree>` starts a fresh round 1 over that base in a ladder of its own;
+and `--dry-run` prints the command line and the brief it would run. A
+consistency report needs its `Traced consumers` table (changed contract,
+consumer, command, result) with a generated pages row and a fixture manifests
+row, or it is not recorded. Required tables belong to actual report sections;
+tables quoted in code, HTML or blockquotes do not satisfy the requirement.
+`npm run worker -- record --kind <kind> --round <N> --from <file> [--format prose|json]` writes an
+`Agent` worker's returned text to the same lane as the same record, with
+`--host`, `--model` and `--effort` for what ran and `--tree` for the tree it
+reviewed. Use `--format prose` for a prose report containing JSON examples;
+it preserves the report and adopts no example findings. Use `--format json`
+for one structured result, including a fenced result followed by closing
+prose; its findings and report field retain their meaning. Multiple possible
+results are refused, and so is a brace in the surrounding prose that opens no
+JSON object: put the chosen result alone in the input file.
+Without the flag, a whole JSON result (optionally fenced) and plain prose
+remain supported. Mixed text with a possible result, including one inside a
+same-line or multiline code span, is refused before anything is
+recorded, naming the two formats. Position and schema validity do not decide
+whether an object is an example. The record's `inputFormat` names the caller's
+selection, or `auto` when omitted
+([decision](evidence/WO-255/decisions.md#wo-255-d042--every-embedded-possible-result-requires-declared-intent)).
 The worker is told a budget of about 30 minutes and 120 tool calls and returns
 what it has as it nears either, well before the hard limits stop it. An
 execution's or repair's reviews run as a ladder with an end: round 1 is three
 reviewers over the whole diff; round 2 is each reviewer whose findings were
-fixed rechecking those fixes alone, a new finding admitted only when it breaks
-an acceptance criterion or a behavior `main` had; round 3, only when round 2's
+fixed confirming those fixes and reviewing the whole change again, a new
+finding admitted only when it breaks an acceptance criterion or a behavior
+`main` had; round 3, only when round 2's
 fixes changed code, is one combined worker over the remaining delta; then no
 reviewer runs, the executor judges what is left, and the handoff's
 `self-review:` line records the rounds and the unreviewed lines. A round whose

@@ -19,6 +19,7 @@ import {
   planningPassScope,
 } from "./plan-receipts.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import { receiptWorkerTypes } from "./worker-launch.mjs";
 
 const localPlan = (root) => docRelative(root, "control", "local/plan");
 export async function latestPlanningPass(root, history) {
@@ -186,7 +187,7 @@ export async function carryPlanResult(root, subject, review, value) {
 }
 export async function beginDirectRefutation(
   root,
-  { scope = "pass", now = () => new Date().toISOString() } = {},
+  { scope = "pass", launch = null, now = () => new Date().toISOString() } = {},
 ) {
   const subject = buildPlanSubject(root, "HEAD", { goalReview: true }),
     history = await readReceipts(root),
@@ -252,6 +253,9 @@ export async function beginDirectRefutation(
     resultSchema: planResultSchema({ ...subject, judgment: review }),
     workerInstructions:
       "Also return a truthful public session statement as one plain line of at most 4000 characters, naming what you actually read. Return the result and statement to the parent; do not edit the repository or commit a receipt.",
+    // The worker the parent launches when an option other than its default
+    // was named; the receipt records its type.
+    ...(launch ? { launch } : {}),
   });
 }
 export async function fileDirectRefutation(
@@ -265,13 +269,11 @@ export async function fileDirectRefutation(
     commit = true,
   } = {},
 ) {
-  if (
-    !["dotln-worker", "dotln-worker-fable", "codex-spawn-agent"].includes(
-      workerType,
-    )
-  )
+  // The launchers of the operator's four worker options.
+  const workerTypes = await receiptWorkerTypes();
+  if (!workerTypes.includes(workerType))
     throw new Error(
-      "direct refutation worker type must be dotln-worker, dotln-worker-fable or codex-spawn-agent",
+      `direct refutation worker type must be one of ${workerTypes.join(", ")}`,
     );
   for (const path of [resultPath, statementPath])
     if (!containedRegularFile(join(root, path), root))

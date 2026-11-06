@@ -28,9 +28,50 @@ import { goalAlignment } from "./goal-alignment.js";
 import { HARNESS_HOST_VERSION } from "../version.js";
 
 const sharedSupports = [processCost, goalAlignment];
+/** The operator's four options for a worker a session launches (direction of
+ * 2026-11-03), two per host; the first of each host is its default and the
+ * other runs only when a launch or the dispatch line names it. The generated
+ * worker definitions, the review helper and the refuter all read this table;
+ * `workerType` is what a refutation receipt records for that launch. */
+export const contributorWorkerOptions = {
+  opus: {
+    host: "claude",
+    model: "claude-opus-5-5",
+    effort: "xhigh",
+    workerType: "dotln-worker",
+  },
+  fable: {
+    host: "claude",
+    model: "claude-fable-5-1",
+    effort: "xhigh",
+    workerType: "dotln-worker-fable",
+  },
+  sol: {
+    host: "codex",
+    model: "gpt-6.1-sol",
+    effort: "max",
+    workerType: "codex-spawn-agent",
+  },
+  astra: {
+    host: "codex",
+    model: "gpt-6-astra",
+    effort: "max",
+    workerType: "dotln-worker-astra",
+  },
+} as const;
+export const contributorWorkerDefaults = {
+  claude: "opus",
+  codex: "sol",
+} as const;
+const pinsOf = <Option extends keyof typeof contributorWorkerOptions>(
+  option: Option,
+) => ({
+  model: contributorWorkerOptions[option].model,
+  effort: contributorWorkerOptions[option].effort,
+});
 export const contributorWorkerPins = {
-  claude: { model: "claude-opus-5-5", effort: "xhigh" },
-  codex: { model: "gpt-6.1-sol", effort: "max" },
+  claude: pinsOf(contributorWorkerDefaults.claude),
+  codex: pinsOf(contributorWorkerDefaults.codex),
 } as const;
 /** Independent verification runs at this effort on every host (product 07). */
 export const contributorVerifierEffort = "xhigh";
@@ -84,7 +125,7 @@ export const reviewerBriefs = {
   design:
     "The design improver seeks simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design.",
   consistency:
-    "The consistency reviewer solely verifies write-backs, dependencies and versions: product and operational docs, decisions, indexes, cross-references, package and lockfile versions, release metadata, generated artifacts and installed guidance, test dependencies, fixture inputs/manifests/pins, generated test baselines and evidence-source declarations. Give that reviewer the corresponding source and generated surfaces. Trace each changed document, emitted output and helper to every consuming test by path, symbol, old/new text and byte/count pins; follow transitive imports and fixture copy/export manifests. Check oracle selectors, command/field inventories, runtime setup, gate environment and timing assumptions. Use relevant retained gate failures to search for the same failure shapes. Preserve intentional contract pins; update expectations from requirements, replacing incidental prose coupling with semantic assertions. Report concrete producer/consumer pairs, their disposition and unsearched boundaries.",
+    "The consistency reviewer solely verifies write-backs, dependencies and versions: product and operational docs, decisions, indexes, cross-references, package and lockfile versions, release metadata, generated artifacts and installed guidance, test dependencies, fixture inputs/manifests/pins, generated test baselines and evidence-source declarations. Give that reviewer the corresponding source and generated surfaces. Trace each changed document, emitted output and helper to every consuming test by path, symbol, old/new text and byte/count pins; follow transitive imports and fixture copy/export manifests. Check oracle selectors, command/field inventories, runtime setup, gate environment and timing assumptions. Use relevant retained gate failures to search for the same failure shapes. Preserve intentional contract pins; update expectations from requirements, replacing incidental prose coupling with semantic assertions. Report concrete producer/consumer pairs, their disposition and unsearched boundaries in a `Traced consumers` table (changed contract, consumer, command, result) with a generated pages row and a fixture manifests row, each naming the command run; a consistency report without that table is not recorded.",
 } as const;
 /** What a recheck and the last combined round admit; it is what ends them. */
 export const reviewAdmissionRule =
@@ -100,7 +141,7 @@ const questionPathways =
 const blockedTurn =
   "When only the operator can clear what blocks this session, say so once: state the block and the one line that clears it in a single message, then end your turn, because the host holds a `!` command the operator types until the turn ends.";
 const sharedCorrections = [
-  "Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max. Only when the operator's planning: or resume: dispatch line names fable or fable 5.1, use Claude `dotln-worker-fable` (claude-fable-5-1, xhigh); record the actual worker type in the response and direct refutation receipt via --worker-type (Codex: codex-spawn-agent). The default and Codex pin stay unchanged; product 07 §Model-specific notes records the pins and readback limits. Every such worker probes with single tests under node scripts/harness.mjs bounded -- node --test --test-name-pattern and starts no test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs), because a gate run holds the worktree's live-gate refusal against the launching session: the generated Claude definition carries that rule, the hook refuses such a gate from a spawned `dotln-worker` with DOTLN_WORKER_GATE_REFUSED, and a Codex brief states it. For a review worker on the other host (Codex from Claude, a Claude print worker from Codex) or a planning subject, run `npm run worker -- review --kind criteria|design|consistency|combined --host codex|claude [--order WO-NNN | --subject planning] [--round N] [--recheck <report>] [--since <tree>]`, which renders the canonical brief and writes the report to the subject's reviews lane. Every launch, re-task (a `SendMessage` or a resumed agent) and kit launch counts one use against subagentCap, `npm run plan -- review` three; a hooked session counts the literal command, and under Codex the helper counts its own launch.",
+  "Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max. Only when the operator's planning: or resume: dispatch line names fable or fable 5.1, use Claude `dotln-worker-fable` (claude-fable-5-1, xhigh), and only when it names astra, Codex `dotln-worker-astra` (gpt-6-astra, max); record the actual worker type in the response and direct refutation receipt via --worker-type (Codex: codex-spawn-agent or dotln-worker-astra). The defaults stay unchanged; product 07 §Model-specific notes records the four options and readback limits. Every such worker probes with single tests under node scripts/harness.mjs bounded -- node --test --test-name-pattern and starts no test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs), because a gate run holds the worktree's live-gate refusal against the launching session: the generated Claude definition carries that rule, the hook refuses such a gate from a spawned `dotln-worker` with DOTLN_WORKER_GATE_REFUSED, and a Codex brief states it. For a review worker on the other host (Codex from Claude, a Claude print worker from Codex), a planning subject or a registered target's order, run `npm run worker -- review --kind criteria|design|consistency|combined --host codex|claude [--model opus|fable|sol|astra] [--order WO-NNN [--target <id>] | --subject planning [--capture <file>]] [--round N] [--recheck <report>] [--since <tree>]`, which renders the canonical brief and writes the report to the subject's reviews lane; without --model it takes the dispatch line's option, else the host default. Every launch, re-task (a `SendMessage` or a resumed agent) and kit launch counts one use against subagentCap, `npm run plan -- review` three; a hooked session counts the literal command, and under Codex the helper counts its own launch.",
   "Run probes outside gates, one process at a time, under `node scripts/harness.mjs bounded -- <command>`; the host guard also watches attributable session descendants.",
   "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. An executor records an unmet criterion of the five defect classes unmet with its class named for the verifier and asks the operator nothing. Every phase owns decisions, including no-op or deferred outcomes and blockers: record evidence, tradeoffs and reopening conditions in the ADR or decision record; do not ask the operator to arbitrate implementation or change criteria. Preserve scope and authority, and record the safe default for any expressly permitted operator-only packet without demanding a response.",
   "Before acting on an operator message, state its aim in one line and act on the evidence-backed reading; record any consequential assumption and its reopening condition.",
@@ -205,7 +246,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "A comment says what the code does or why, in words a reader who has not seen the order understands; an order, report, finding or decision identifier never leads or replaces that explanation, and a report-local label (a verification or final-review finding label, a bare decision number) never appears in code; fix the comments in the lines you change.",
       `Every execution and fix runs its independent reviews as a ladder with an end, before the complete validation run and only after implementation or repair and its write-backs are complete, never as early scouts. Round 1: three fresh independent \`dotln-worker\` reviewers over the whole diff against the merge base, each given the current order and diff with nonoverlapping briefs. ${reviewerBriefs.criteria} ${reviewerBriefs.design}`,
       reviewerBriefs.consistency,
-      `Fix or record every finding; transfer a finding to the responsible reviewer instead of reviewing it twice. Round 2, the recheck: each reviewer whose findings were fixed rechecks those fixes on the current diff and nothing else, resumed where the host keeps it (Claude \`SendMessage\`) or as a fresh worker given its prior report; ${reviewAdmissionRule}. Round 3, the last: only when round 2's fixes changed code again, one combined worker carrying the three briefs reads the delta since round 2's reviewed tree under the same rule. After round 3 no reviewer runs in this execution or repair: you judge the remaining delta. Skip a round, and say so, when the fixes before it touch only comments, documentation, formatting, test names or regenerated files. A repair after a failed complete run takes the same ladder over its own diff, starting at round 3 when that diff is under fifty changed source lines. Finish the ladder before the complete run and run no reviewer after it passes; you and an earlier run's reviewers cannot stand in for a round. Each round's report lives in \`docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md\`, a repair's under \`repair-<n>/\`: the helper writes its own, and you record an \`Agent\` worker's returned text there with \`npm run worker -- record --kind <kind> --round <N> --from <file>\`. Add handoff.md line \`self-review: found N; fixed N; recorded N; rounds R; unreviewed M lines (<reason>)\` with every round's counts and reports.`,
+      `Fix or record every finding; transfer a finding to the responsible reviewer instead of reviewing it twice. Round 2, the recheck: each reviewer whose findings were fixed confirms those fixes, then reviews the whole current change against the base again, resumed where the host keeps it (Claude \`SendMessage\`) or as a fresh worker given its prior report; ${reviewAdmissionRule}. Round 3, the last: only when round 2's fixes changed code again, one combined worker carrying the three briefs reads the delta since round 2's reviewed tree under the same rule. After round 3 no reviewer runs in this execution or repair: you judge the remaining delta. Skip a round, and say so, when the fixes before it touch only comments, documentation, formatting, test names or regenerated files. A repair after a failed complete run takes the same ladder over its own diff, starting at round 3 when that diff is under fifty changed source lines. Finish the ladder before the complete run and run no reviewer after it passes; you and an earlier run's reviewers cannot stand in for a round. Each round's report lives in \`docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md\`, a repair's under \`repair-<n>/\`: the helper writes its own, and you record an \`Agent\` worker's returned text there with \`npm run worker -- record --kind <kind> --round <N> --from <file> [--host <host> --model <model> --effort <level>] [--tree <tree>]\`, naming what ran and the tree it reviewed. Add handoff.md line \`self-review: found N; fixed N; recorded N; rounds R; unreviewed M lines (<reason>)\` with every round's counts and reports.`,
       actor,
       "Completion refreshes the final index and releases the Codex session's writer reservation after recording the result; Claude releases at Stop. A repair is unfinished until repair-complete records. Report evidence, attestation and limits; leave verification and final review to their separate dispatches. Never leave the writer reserved at handoff or ask the operator to release it.",
     ],
@@ -304,6 +345,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "`plan start` prints each startup step's duration and runs the routine prune as a bounded step within `prune.startBudgetMs`: when it stops there it prints `removed N; remaining M` with the resume command and still opens the branch, and the remainder waits for the next plan start.",
       "Screen every acceptance criterion before filing against the five defect classes of product 07 §Operator-opened planning pass: bookkeeping (a count, ceiling, cost, duration or token figure as its subject), later-phase (a final-review or release-close judgment, or HEAD or a commit range before the final review's commit), absent-input (data the base lacks and no step creates), host-behavior (a host, service or account behavior the order cannot produce, with no fallback) and contradiction (with another criterion or a non-goal). `npm run work-orders -- index --check` prints a `criteria advisory` line for wording that often marks one; read each before filing.",
       "Use `npm run reader -- score` with one fresh pinned reader outside the repository and record its result only when plan start reports a changed profile with three unscored releases or the operator asks; record surface corrections only through `score --correction <surface> --capture-hash sha256:<digest>`.",
+      "A criteria review of the planning subject through `npm run worker -- review --kind criteria --host codex|claude --subject planning` carries the operator's dispatch capture with `--capture <file>`, and its report answers each item in an `## Items` table.",
       "After committing the planning subject locally, load dotln-refuter for one independent goal review per pass. Before editing judged text, resolve its refutation hold or record the operator-authorized amendment; judgment reuse never authorizes a repair. Reuse the judgment only while its observed evidence and judged subject remain valid; for a new judgment dispatch one fresh background refuter with no inherited conversation. Use the canonical direct prompt and receipt helper; keep the parent as the sole repository writer. Do not launch an external refutation CLI unless the operator explicitly requests that transport.",
       "After the refutation receipt is filed with its holds answered and npm run test:docs is green, a planning or ideation pass on a planning branch pushes that branch and opens its :memo: pull request with `node scripts/refute-plan.mjs publish --title <title> --body-file <path>`, the spelling the emitted allow rule admits (`npm run plan -- publish` takes the same flags and has no rule), never with raw git push or gh; the dispatch phrase is the operator's authorization for those two effects, and the pass never merges.",
     ],
@@ -1026,9 +1068,16 @@ export const contributorProgram = (
       { name: "dotln-worker", ...contributorWorkerPins.claude },
       {
         name: "dotln-worker-fable",
-        model: "claude-fable-5-1",
-        effort: "xhigh",
+        ...pinsOf("fable"),
         optIn: true,
+        optInLabel: "Fable (fable or fable 5.1)",
+      },
+      {
+        name: "dotln-worker-astra",
+        host: "codex",
+        ...pinsOf("astra"),
+        optIn: true,
+        optInLabel: "Astra (astra)",
       },
     ],
     roles: contributorRolesFor(loadout),
