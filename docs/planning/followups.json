@@ -52760,6 +52760,16 @@
           "reopenWhen": "A configuration pass takes up worker limits, or an operator needs a different change review budget for one instance.",
           "targets": [],
           "at": "2026-11-02T17:44:51.582Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-257 step 12 by the 2026-11-06 planning pass (docs/planning/passes/fork-returns-and-review-batches-2026-11-06.md) for its ceiling half: the per-batch brief ceiling becomes one named constant when a brief past it is split into batches over more workers; the budget minutes and tool-call limits stay as they are and the remainder is recorded in WO-257's carry-in.",
+          "reopenWhen": "An operator needs a different change review budget for one instance, or a configuration pass takes up worker limits.",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-06T02:26:02.901Z"
         }
       ]
     },
@@ -54028,7 +54038,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-06 pass: WO-253 closed in v0.115.0 and no open order edits scripts/lib/harness-prune.mjs; tonight's plan start pruned 11 candidates with none failing on a grant, so the stop has not been observed since the close.",
+          "reopenWhen": "A prune's apply stops on an EACCES, EPERM or restricted entry, or a bounded prune is observed reading or deleting after its budget expired.",
+          "targets": [],
+          "at": "2026-11-06T02:26:04.740Z"
+        }
+      ]
     },
     {
       "id": "FUP-f86af3151b401757",
@@ -54081,7 +54100,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Taken by the 2026-11-06 pass, the next planning pass the operator's direction of 2026-11-04 named: README.md's Try it section now links the public starter and recommends the two routes to start from it, a public fork of the starter or a private clone that keeps the starter as its upstream remote, as the kit guide's First steps describes.",
+          "reopenWhen": "The starter's public location or the kit guide's First steps routes change.",
+          "targets": [],
+          "at": "2026-11-06T02:26:04.869Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-257 step 18 by the 2026-11-06 planning pass, correcting its first disposition of the same night: the pass wrote the Try it paragraph into README.md and docs-check refused it, because the front page is edited only by an order whose leading header carries the Front page declaration (product 07, Documentation freshness and ownership); WO-257 now carries that declaration, the Map's link to the documentation index and the Try it paragraph naming the public starter and the two routes to start from it.",
+          "reopenWhen": "WO-257 closes without the Try it paragraph, or the starter's public location or the kit guide's First steps routes change.",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-06T02:38:14.117Z"
+        }
+      ]
     },
     {
       "id": "FUP-fea8efc4a8e84a8f",
@@ -54192,7 +54230,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-06 pass: WO-246 closed in v0.117.0 and no open order edits ghUnsetFork in packages/skeleton/src/harness-host.ts; the fork has reported no remote named github or cased upstream, and the refusal's two exact names hold the case the fork reported.",
+          "reopenWhen": "A session reaches a parent through a remote named github, or a fork reports such a remote.",
+          "targets": [],
+          "at": "2026-11-06T02:26:04.351Z"
+        }
+      ]
     },
     {
       "id": "FUP-1b6dd806a8985632",
@@ -54207,7 +54254,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-06 pass: WO-246 closed in v0.117.0 and no open order edits the shared parse in scripts/lib/github-repository.mjs; the fork's origin is a plain GitHub-shaped remote and no SSH alias has been reported; the refusal before any push is loud.",
+          "reopenWhen": "A fork on an SSH alias reports the helper's refusal, or the target publish's binding changes.",
+          "targets": [],
+          "at": "2026-11-06T02:26:04.480Z"
+        }
+      ]
     },
     {
       "id": "FUP-d3faf79614bdf66c",
@@ -54222,7 +54278,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-06 pass to the next order that edits packages/compiler/src/attribution.mjs, a feedback-judged source whose edit owes a live feedback episode; no open order edits it and the behavior is correct today (WO-246-D030).",
+          "reopenWhen": "The next order editing packages/compiler/src/attribution.mjs activates, or an attribution case with a variation selector or a joined emoji stops refusing.",
+          "targets": [],
+          "at": "2026-11-06T02:26:04.609Z"
+        }
+      ]
     },
     {
       "id": "FUP-dec74be4077f5f25",
@@ -54712,6 +54777,246 @@
           "reopenWhen": "A planning pass allocates the parser change, or a caller's genuine result with ordinary closing prose cannot be recorded with --format json and putting the result alone is not acceptable to its route.",
           "targets": [],
           "at": "2026-11-06T00:58:27.208Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-920f59a20d275df9",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::0ac6e57a9bc7406850361f72c55ce35596949fd4be9ad5c6ca85b3db06cd86e1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8bac8b1855f187004e91534c44cf3380651f2f44c43af31a4c9a47a88b83bf16",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "Raising the review brief's ceiling",
+          "summary": "3. **Raising the review brief's ceiling** (the fork's third alternative in its item 8 of 2026-11-05). Declined: the ceiling is a worker's context and a later pass passes any figure; core's own map is 946,832 bytes. Useful never on its own; WO-257's batches make the figure a batch size.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-06 pass: the ceiling is a worker's context and a later pass passes any figure (core's map alone is 946,832 bytes); WO-257 step 12's batches make the figure a batch size (the map's candidate 3 of 2026-11-06).",
+          "reopenWhen": "A single order's text alone passes the ceiling after WO-257's batches land.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.306Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-42d7bc7ee8f4369c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::13ac11a5a0dc6da12dcc49e9e2e7fc2c8b155c3d4b3b61cea0557ecd8d4f1e2b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "afc3fcaf6dfa8ed1fbdf8ac96482ba0d80364ef61e79d490c4497586615d7521",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "Dispatch in a message of its own as the rule",
+          "summary": "7. **Dispatch in a message of its own as the rule** (the fork's second alternative in its item 5 of 2026-11-05). Declined as the fix and kept as the workaround until WO-257's release: the kit adapts to the host. Useful if the host stops writing the block.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as the fix by the 2026-11-06 pass and kept as the workaround until WO-257's release: the kit adapts to the host, and WO-257 step 11 skips the host's command block (the map's candidate 7 of 2026-11-06).",
+          "reopenWhen": "The host stops writing a slash command's output block before the operator's text.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.829Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c26c4ba0d9f6c11e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::3792ad59785075fe759d69e8ae967f62fa56cc19b1b10b5b645c8ea4f80f9570",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d1eda77e74bb318edf799a79c72f4da68ccd72617833a9362a44b1134b30fa93",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "The plan conditions",
+          "summary": "10. **The plan conditions** (five holding on 2026-11-06). Read and left with the 2026-11-01 pass's deferrals, whose conditions name a cause or a reading above 9 s and 600 s, neither met; WO-253's prune no longer pays in `plan start`. Useful when a reading crosses its figure.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-06 pass with the 2026-11-01 pass's deferrals: the five holding conditions name a cause or a reading above 9 s and 600 s, neither met tonight, and WO-253's prune no longer pays in plan start (the map's candidate 10 of 2026-11-06).",
+          "reopenWhen": "A plan condition's reading crosses its figure, or a lifecycle event names a cause.",
+          "targets": [],
+          "at": "2026-11-06T02:26:04.220Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e24c12fe351cf84b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::7a2c942f7bdbb8812830eb83826027b83fa711a4f03c81a0227c5262d01e0f11",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "439a554764675450699c8d4c53a789971dc17eb32dba7ac46a2a262c825044ef",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "A diff in place of a whole document in the brief",
+          "summary": "4. **A diff in place of a whole document in the brief** (the fork's second alternative in the same item). Declined as the fix: the criteria adversary judges an order as written; admitted as the executor's option for a record such as the pass document whose whole text would fill a batch. Useful if one order's text alone passes the ceiling.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as the fix by the 2026-11-06 pass: the criteria adversary judges an order as written; admitted as the executor's option for a record such as the pass document whose whole text would fill a batch (WO-257's Design; the map's candidate 4 of 2026-11-06).",
+          "reopenWhen": "One order's text alone passes the ceiling.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.437Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-03dc485388587134",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::7fc74cc641dd024bb6210e7a77df716d18b1a9c624878e84767fad720f5e21aa",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "21ef40039914a2274745fb708c924b6c225685226fa143e8d9209668bbe1501b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "A silent projection rewrite on every status",
+          "summary": "6. **A silent projection rewrite on every `status`** (one reading of the fork's item 5 of 2026-11-04). Declined: status is read-only by contract and read-only roles run it; `status --refresh` is explicit. Useful if the warning recurs after a refresh on an unchanged fold.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-06 pass: status is read-only by contract and read-only roles run it; WO-257 step 15 adds the explicit status --refresh and names it in the warning (the map's candidate 6 of 2026-11-06).",
+          "reopenWhen": "The warning recurs after a refresh on an unchanged fold.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.698Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-15906a9d95640590",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::a6d1238d4bd34761ce475743c7fb3b335c2872149ed949b72d47cb46842fcbfd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a51d412c24204ae30780f8c73fd48b646e1a00bc075e1842001049c5b59e2761",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "A separate one-file order for the hook fix, placed first",
+          "summary": "1. **A separate one-file order for the hook fix, placed first** (the planner's proposal when the operator said every planning session opens with `/model`). Withdrawn on the operator's words: every item into WO-257, which is first in the sequence since WO-253, WO-254, WO-246 and WO-255 closed, so the fix lands at the same release either way. Useful if WO-257's first verification fails on the hook item alone and holds the rest.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn by the 2026-11-06 pass on the operator's words (every item into WO-257): WO-257 is first in the sequence since WO-253, WO-254, WO-246 and WO-255 closed, so the hook fix lands at the same release either way (the map's candidate 1 of 2026-11-06).",
+          "reopenWhen": "WO-257's first verification fails on the hook item alone and holds the rest.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.038Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7f40ef7e29854459",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::b2d6ae457e193d90429f65be9c1d60a7a0e85f4060369c9cd29483af3048b3f7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1ab1b1b7e35cd2a5ca59eddc557f93cfe59a78496688182ce62d0347ce83dd8f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "The record route's host, model and tree",
+          "summary": "8. **The record route's host, model and tree** (the fork's item 3 of 2026-11-05). Nothing filed: WO-255-D006 landed it in v0.118.0. Useful if a record names a host or a tree the worker did not have.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-06 pass: WO-255-D006 landed the record route's host, model, effort and reviewed tree in v0.118.0; nothing to file (the map's candidate 8 of 2026-11-06).",
+          "reopenWhen": "A record names a host or a tree the worker did not have.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.959Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-73b5571cf15fc04b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::c8d03d33df0e2527896a334cc6d3eb1b35a92eaba2a1fa0d886bbb8aaef936a0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1a74dfc2e54eba2193aa947661fe9ef248a9129e0971b045bb1b07b970d058fb",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "The register's first page and the eight rows --touching matched",
+          "summary": "9. **The register's first page and the eight rows `--touching` matched** (FUP-0044, FUP-0045, FUP-0053, FUP-0055, FUP-0056, FUP-005a8af5234cb3f3, FUP-0067, FUP-0068; FUP-048618f9ee2eb349, FUP-06090c778cc07685, FUP-2ce66cf6a0602982, FUP-2fe2709d9b33c9e7, FUP-589642d0e0c714c8, FUP-770baf2f452c669e). Read and left: no condition fired; FUP-6dfaa29e3f0ba4fd alone is allocated to WO-257 step 12. Useful when a condition fires.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-06 pass: the register's first page and the eight rows --touching matched were read against their decisions; no condition fired and FUP-6dfaa29e3f0ba4fd alone was allocated (the map's candidate 9 of 2026-11-06).",
+          "reopenWhen": "A condition of one of the rows named fires.",
+          "targets": [],
+          "at": "2026-11-06T02:26:04.090Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bacc7e80ea0b8e3a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::cade1f590af7270140b06a6e569a22cfdeef6cbc8eaebbc9f6323aa3d04f688d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "566c8cb23ba36f8f342cddb81d2b55fd560a8bee280c46b5e64e9c5f122f9325",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "plan refute --workstream WS-NNN",
+          "summary": "2. **`plan refute --workstream WS-NNN`** (the fork's alternative in its item 6 of 2026-11-04). Declined: a pass should not have to name what it filed; WO-257 step 13 lists a separate-track workstream's open members in the subject by itself. Useful if a workstream's members must be judged apart from the sequence.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-06 pass: a pass should not have to name what it filed; WO-257 step 13 lists a separate-track workstream's open members in the judged subject by itself (the map's candidate 2 of 2026-11-06).",
+          "reopenWhen": "A workstream's members must be judged apart from the sequence.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.173Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f3f12cd5b229fbf8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06::e65e817955df2c5c5dcdfbf2d5999001de1192c9c393ae3d7ac21095bb9ef04b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "eff2e5169505b318036730c8e7011f6b7466ea5cd42d2a88e34817d8df2850ba",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-returns-and-review-batches-pass-recorded-2026-11-06",
+          "title": "A decision reference as a rule's provenance",
+          "summary": "5. **A decision reference as a rule's provenance** (the fork's alternative in its item 6 of 2026-11-05). Declined: WO-254-D010's point is that a rule enters a standing document only from the operator's own message, and a decision is the executor's writing; WO-257 step 14 reads the retained lanes instead. Useful never.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-06 pass: WO-254-D010's point is that a rule enters a standing document only from the operator's own message, and a decision is the executor's writing; WO-257 step 14 reads the retained lanes instead (the map's candidate 5 of 2026-11-06).",
+          "reopenWhen": "A rule's operator message is held by no journal the kit keeps.",
+          "targets": [],
+          "at": "2026-11-06T02:26:03.569Z"
         }
       ]
     }

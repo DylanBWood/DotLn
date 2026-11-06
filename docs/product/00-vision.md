@@ -251,7 +251,7 @@ mapped influences. Neither surface claims exhaustive causal archaeology.
   single rules with their verbatim originating incidents, recombinable as
   identity fragments. _Old configurations on modern builds_: historical
   artifacts stay runnable rather than becoming import debris, which is the
-  requirement behind `10-ir-compatibility.md`. _The bicameral voice_: an
+  requirement behind [`10-ir-compatibility.md`](10-ir-compatibility.md). _The bicameral voice_: an
   introduced idea can alter later behavior while its acceptance, transformation,
   resistance, or misunderstanding stays inspectable in `προτείνω`; this is an
   interaction shape, not a claim about simulated consciousness. _Exact command

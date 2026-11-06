@@ -25,6 +25,14 @@ for every dimension position. [comparison.json](comparison.json) binds the
 independent comparison to the examples' hashes. `npm run reader -- check`
 checks the choices, anchors and comparison freshness, not prose quality.
 
+The fifteen example files, one per surface and position:
+
+- `prTitle`: [record](prTitle/record.md), [balanced](prTitle/balanced.md), [reader](prTitle/reader.md).
+- `prBody`: [record](prBody/record.md), [balanced](prBody/balanced.md), [reader](prBody/reader.md).
+- `commitSubject`: [record](commitSubject/record.md), [balanced](commitSubject/balanced.md), [reader](commitSubject/reader.md).
+- `releaseNotes`: [record](releaseNotes/record.md), [balanced](releaseNotes/balanced.md), [reader](releaseNotes/reader.md).
+- `releasePage`: [record](releasePage/record.md), [balanced](releasePage/balanced.md), [reader](releasePage/reader.md).
+
 These are historical samples, not a new validation of that release. Their
 front matter and preview disclose two source inconsistencies: the PR's account
 of the first four verification verdicts differs from the release notes, and a

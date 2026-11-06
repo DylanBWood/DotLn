@@ -57,54 +57,31 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
 
 ## The order, serial
 
-- WO-253: temporary roots leave with the gate that made them and a prune
-  is a bounded step: a passed suite removes its own fixture roots, a
-  kit-owned expired root is removed on its record without reading its
-  bytes, one process-table read serves a prune, `plan start` and release
-  close run the prune as a bounded step with progress and a resume, a
-  restricted entry is repaired or retained and never a close blocker, and
-  both commands print where their minutes went (the operator's items 9,
-  19, 20, 21 and 22 of 2026-11-03, ignored capture SHA-256
-  `4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`; the
-  fork's item 3 of its first block of 2026-11-03); first, because every
-  session pays it: this pass's `plan start` took 0 h 17 min and WO-241's
-  close was blocked by it.
-- WO-254: the hooks get out of the operator's way: a zombie is not a live
-  writer, the recovery commands a refusal names are admitted from the
-  refused session, a stopped dispatch releases its writer, a denied
-  activation leaves no worktree, a question is answered and a remark is
-  not a rule, standing instructions survive a Codex compaction, the three
-  shell-classification advisories go quiet, and a blocked session says so
-  once and ends its turn (the operator's items 7, 10, 11, 14, 23 and 24 of
-  2026-11-03); second, because it is what made the operator run commands
-  by hand tonight.
-- WO-246: the launchpad's own pull requests opened by a helper, the
-  emitted allow rule for its node spelling so the host's auto mode admits
-  it, and the finish fetch that borrows the checkout's objects (the fork's
-  items of 2026-10-30, 2026-11-01 and 2026-11-03; the operator's item 8 of
-  2026-11-03: the fourth session whose push the host refused); third,
-  moved up from twelfth.
-- WO-255: reviews find what the complete run finds: the planning lane by
-  branch, a recheck that reads the whole change, the consistency review's
-  traced-consumers table, and the criteria adversary given the operator's
-  dispatch with a per-item answer (the operator's items 15, 16 and 17 of
-  2026-11-03; the fork's item 9); fourth, before the next order pays a
-  review round that finds nothing.
-- WO-257: instance returns of 2026-11-03: the pull-request sentence, no
-  pass takes a newer starter unless the operator asks in that session,
-  `README.md` as a default entry point, the Read before upgrading line,
-  the entropy receipt's paths and screens, the moved records' footer, the
-  continuation gate's optional product 00, the review worker's target
-  form, the index's executor ordinal, the bootstrap diagnostic and the
-  classification count (the operator's items 5, 12 and 13; the fork's two
-  blocks of 2026-11-03); fifth.
+- WO-257: instance returns of 2026-11-03 to 2026-11-05: the pull-request
+  sentence, no pass takes a newer starter unless the operator asks in that
+  session, `README.md` as a default entry point, the Read before upgrading
+  line, the entropy receipt's paths and screens, the moved records' footer,
+  the continuation gate's optional product 00, the index's executor
+  ordinal, the bootstrap diagnostic and the classification count (the
+  operator's items 5, 12 and 13; the fork's two blocks of 2026-11-03), and,
+  amended by the 2026-11-06 pass, the dispatch line read past the host's
+  command block, a review brief past its ceiling split into batches over
+  more workers and never refused, a separate-track workstream's open members
+  in the judged subject, a rule's journal row read from a retained lane,
+  `status --refresh`, the front page's record links and the target
+  publish's allow rule (the fork's blocks of 2026-11-04 and 2026-11-05; the
+  operator's items 3 and 4 of 2026-11-05, ignored capture SHA-256
+  `cd1cb6d60eba1bc4ea82e39f73983da8ab61813fa87c492f5412819bbaa6aa00`);
+  first, because every planning session loses its role to the host's
+  command block and every pass that edits the map is refused a review
+  until it lands.
 - WO-242: plan-first mode: the plan, the conversation and the proposal
   before anything is implemented, the operator's approval as a typed event
-  the hook enforces; sixth; its router step lands against WO-192's
+  the hook enforces; second; its router step lands against WO-192's
   merged router.
 - WO-243: closeout checks follow the repositories an order changed, one
   selection read by the role text, the integrate helper and completion (the
-  fork's item 3 of 2026-10-30); seventh, small and a convenience for the
+  fork's item 3 of 2026-10-30); third, small and a convenience for the
   fork; the operator's staged work in `../DotLn-wo243` is adopted or
   discarded at activation on the operator's word.
 - WO-244: paired planning passes and the synthesis pass as a routine (the
@@ -112,7 +89,7 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   refusals, the pair record and `plan synthesize`, and the reviewed route
   (the operator's fourth message of 2026-10-31): `plan review` running the
   executor's three reviewer types through WO-250's helper before the
-  refuter, with WO-255's capture flag for the criteria review; eighth.
+  refuter, with WO-255's capture flag for the criteria review; fourth.
 - WO-083: the real run from the operator's instance, after the router so
   the measured run is driven the way the operator will drive orders.
 - WO-207: an instance's kit updates: rollback, the extension point and the
@@ -127,11 +104,7 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   approval-burden baseline).
 
 <!-- dotln-work-order-sequence:start -->
-- WO-253 — Temporary roots leave with the gate that made them, and a prune is a bounded step
-- WO-254 — The hooks get out of the operator's way
-- WO-246 — The launchpad's own pull requests
-- WO-255 — Reviews find what the complete run finds
-- WO-257 — Instance returns of 2026-11-03
+- WO-257 — Instance returns of 2026-11-03 to 2026-11-05
 - WO-242 — Plan-first mode
 - WO-243 — Closeout checks follow the repositories an order changed
 - WO-244 — Paired planning passes and the synthesis pass

@@ -71,6 +71,18 @@ docs/instance/     generated and reviewed instance projections; currently the
                    and run evidence
 ```
 
+## Directory pages
+
+- [docs/evidence/](evidence/README.md) — what the evidence root holds and how
+  its editions are read.
+- [docs/final-reviews/](final-reviews/README.md) — the closeout reports and
+  pull-request handoffs.
+- [docs/retired/](retired/README.md) — proposals retired before activation,
+  kept byte for byte.
+- [docs/lineage/remining/](lineage/remining/README.md) — the re-mining well.
+- [docs/work-orders/TEMPLATE.md](work-orders/TEMPLATE.md) — the work-order
+  template.
+
 Pipeline status: founding intake ingested and synthesized (2026-08-30). The
 blueprint is the plan; execution normally proceeds work order by work order. An
 `ideation:` prefix dispatches the full intake → clean-room synthesis → ledger →

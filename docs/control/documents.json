@@ -61,6 +61,26 @@
       "path": "docs/evidence/current.json",
       "kind": "standing",
       "reason": "The evidence editions the gate selects today, changed in place by the order that mints one."
+    },
+    {
+      "path": "docs/discovery/local-inference.json",
+      "kind": "record",
+      "reason": "WO-027's dated observation of 2026-09-03 of a local inference host; its standing summary is docs/discovery/local-inference.md."
+    },
+    {
+      "path": "docs/product/11-proteino.md",
+      "kind": "record",
+      "reason": "The pointer left at the old path when the application thesis moved to 11-protino.md on 2026-09-04, kept so earlier citations resolve."
+    },
+    {
+      "path": "docs/publication/staleness-demonstration.md",
+      "kind": "record",
+      "reason": "The publication staleness demonstration run of 2026-09-01, immutable after its run."
+    },
+    {
+      "path": "docs/work-orders/codex-downtime-series.md",
+      "kind": "record",
+      "reason": "A runbook of 2026-09-01 marked historical by WO-142 on 2026-09-19; kept as the record of that date."
     }
   ]
 }
