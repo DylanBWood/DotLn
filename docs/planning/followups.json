@@ -44291,6 +44291,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T00:58:27.755Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D048 (FINAL-001): its condition occurred, because WO-257's reviewed rule, the planner's no-update sentence of 618 bytes, changes the measured overrun: the planner reads 30,780 bytes against its 24,576-byte ceiling, and the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124 bytes, each over its unchanged ceiling (WO-257-D007 and wo257-role-baseline.json); no ceiling moved and no acceptance is recorded, and the optimization with equivalent usefulness stays a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T20:24:01.560Z"
         }
       ]
     },
@@ -44443,6 +44451,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-06T00:58:27.892Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D048 (FINAL-001): its condition occurred, because WO-257 re-mints the role oracle as wo257-role-baseline.json over WO-255's repair oracle and the chain list in scripts/test-gate-followups.mjs now selects it; the test keeps its chain walk, its ceiling and acceptance checks and the historical inventory, and WO-257-D007 records the planner's no-update sentence (618 bytes) with every root's cold start against its unchanged ceiling. Nothing in the row's ask is delivered here.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-06T20:24:00.720Z"
         }
       ]
     },
@@ -44475,6 +44491,14 @@
           "reopenWhen": "The next order that edits harnessPromptLine in packages/compiler/src/harness.ts or the first-line rule, WO-220's activation, or a second pasted dispatch recorded prefix null.",
           "targets": [],
           "at": "2026-11-04T22:40:07.137Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-257-D048 (FINAL-001): delivered by WO-257. Its condition occurred, because WO-257 edits harnessPromptLine in packages/compiler/src/harness.ts, and the follow-up's action is taken there: the reader skips a pasted message's pasted_content opening tag and a slash command's five block elements before the dispatch line, with cases in the compiler, harness-fixtures and codex-continuation suites (WO-257-D002, WO-257-D016), and a first content line that opens any other element is journaled by name as leadingElement. The journal rows the earlier reader left unclassified are records and stay as written.",
+          "reopenWhen": "A dispatch after v0.119.0 journals unclassified with a known host element before it, or the host changes a shape, which the row's leadingElement names.",
+          "targets": [],
+          "at": "2026-11-06T20:24:00.578Z"
         }
       ]
     },
@@ -45955,6 +45979,14 @@
           "reopenWhen": "An instance reports the bare 'fatal: Needed a single revision' from entropy subject --repository or review --repository, or the next order edits the target subject resolution in scripts/lib/entropy-review.mjs.",
           "targets": [],
           "at": "2026-10-25T00:26:53.567Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D048 (FINAL-001): its condition occurred, because WO-257 edits the target subject resolution in scripts/lib/entropy-review.mjs (subjectSource reads the recorded clone through the shared resolveRecordedClone, WO-257-D014), and the row's ask, a refusal naming the repository id and the missing fetched base in place of Git's bare text, is outside the order's bounded fixes and not taken. It stays low priority: no instance has reported the bare refusal.",
+          "reopenWhen": "An instance reports the bare 'fatal: Needed a single revision' from entropy subject --repository or review --repository, the next order edits the target subject resolution in scripts/lib/entropy-review.mjs, or a planning pass allocates the message.",
+          "targets": [],
+          "at": "2026-11-06T20:24:00.860Z"
         }
       ]
     },
@@ -52656,6 +52688,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T00:58:27.481Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D048 (FINAL-001): its condition occurred, because WO-257's reviewed rule, the planner's no-update sentence of 618 bytes, changes the measured overrun: the planner reads 30,780 bytes against its 24,576-byte ceiling, and the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124 bytes, each over its unchanged ceiling (WO-257-D007 and wo257-role-baseline.json); no ceiling moved and no acceptance is recorded, and the optimization with equivalent usefulness stays a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T20:24:01.280Z"
         }
       ]
     },
@@ -53459,6 +53499,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T00:58:27.618Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D048 (FINAL-001): its condition occurred, because WO-257's reviewed rule, the planner's no-update sentence of 618 bytes, changes the measured overrun: the planner reads 30,780 bytes against its 24,576-byte ceiling, and the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124 bytes, each over its unchanged ceiling (WO-257-D007 and wo257-role-baseline.json); no ceiling moved and no acceptance is recorded, and the optimization with equivalent usefulness stays a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T20:24:01.420Z"
         }
       ]
     },
@@ -53974,6 +54022,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T00:58:27.344Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D048 (FINAL-001): its condition occurred, because WO-257's reviewed rule, the planner's no-update sentence of 618 bytes, changes the measured overrun: the planner reads 30,780 bytes against its 24,576-byte ceiling, and the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124 bytes, each over its unchanged ceiling (WO-257-D007 and wo257-role-baseline.json); no ceiling moved and no acceptance is recorded, and the optimization with equivalent usefulness stays a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-06T20:24:01.140Z"
         }
       ]
     },
@@ -54505,6 +54561,14 @@
           "reopenWhen": "A later order's complete run fails on a hand-written list of generated files that its consistency review did not trace, or a planning pass allocates the row.",
           "targets": [],
           "at": "2026-11-05T19:07:21.645Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D048 (FINAL-001): its condition occurred twice on WO-257: the first complete run failed on outward-lint's hand-written list of the kit modules its copied CLI carries, which lacked scripts/lib/feature-registry.mjs (WO-257-D036), and the second on the hand-maintained declared-cases pin scripts/fixtures/target-worktree-cases.json, which lacked three of the order's declarations (WO-257-D037); neither inventory was traced by round 1's six reviews or their rechecks. The third required Traced consumers row changes the emitted brief and the helper's report check, a planning allocation rather than a final-review edit.",
+          "reopenWhen": "A planning pass allocates the row, or a third order's complete run fails on a hand-written inventory of files, modules or cases that its consistency review did not trace.",
+          "targets": [],
+          "at": "2026-11-06T20:24:01.000Z"
         }
       ]
     },
@@ -55019,6 +55083,164 @@
           "at": "2026-11-06T02:26:03.569Z"
         }
       ]
+    },
+    {
+      "id": "FUP-243b6754001c4051",
+      "key": "decision:docs/evidence/WO-257/decisions.md#wo-257-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "529f2dbe63dc0c78c8c6eb3c0019a305117c853d8cd1dbb36a8b3b888c128af4",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d017--step-12-a-brief-past-the-ceiling-is-split-into-batches-over-more-workers-and-the-ceiling-is-one-constant-in-the-helper",
+          "title": "WO-257-D017: Make the change review's budget (about 30 minutes and 120 tool calls, the 60-minute hard limit), its brief ceiling and its per-document cap instance configuration read from…",
+          "summary": "{ \"id\": \"WO-257-D017\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next\", \"decision\": \"scripts/lib/review-worker.mjs bounds a round's documents by its base (the merge base, or the tree --since names: subjectDocuments), measures the brief and splits one past CHANGE_REVIEW_BRIEF_CEILING (400,000 characters) into batches of whole documents (planBatches), one worker per batch with a brief under the ceiling carrying the round's document index with batch numbers; the batch reports merge into the round's one report (mergeBatchResults: findings keyed b<N>.<id>, the Items and Traced consumers tables merged first, each batch's body under its own heading); a batch returning no report records no merged r",
+          "missing": false
+        },
+        {
+          "hash": "13e66d3fdd9cfc8135f941df72901676998b035cbe256ad89c1a241b177e7469",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d017--step-12-a-brief-past-the-ceiling-is-split-into-batches-over-more-workers-and-the-ceiling-is-one-constant-in-the-helper",
+          "title": "WO-257-D017: Make the change review's budget (about 30 minutes and 120 tool calls, the 60-minute hard limit), its brief ceiling and its per-document cap instance configuration read from…",
+          "summary": "{ \"id\": \"WO-257-D017\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next\", \"decision\": \"scripts/lib/review-worker.mjs bounds a round's documents by its base (the merge base, or the tree --since names: subjectDocuments; a --since tree since which no planning document changed falls back to the branch's base, so a fresh ladder over the branch's own tree reviews the whole branch), measures the brief and splits one past CHANGE_REVIEW_BRIEF_CEILING (400,000 characters) into batches of whole documents (planBatches), one worker per batch with a brief under the ceiling carrying the round's document index with batch numbers; the batch reports merge into the round's one report (mergeBatchResults: finding",
+          "missing": false
+        },
+        {
+          "hash": "47a7ae1ea1af0c08c9c0976fa3f94c742f89f468e72c1b5e7f0011711d654422",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d017--step-12-a-brief-past-the-ceiling-is-split-into-batches-over-more-workers-and-the-ceiling-is-one-constant-in-the-helper",
+          "title": "WO-257-D017: Make the change review's budget (about 30 minutes and 120 tool calls, the 60-minute hard limit), its brief ceiling and its per-document cap instance configuration read from…",
+          "summary": "{ \"id\": \"WO-257-D017\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next\", \"decision\": \"scripts/lib/review-worker.mjs bounds a round's documents by its base (the merge base, or the tree --since names: subjectDocuments; a --since tree since which no planning document changed falls back to the branch's base, so a fresh ladder over the branch's own tree reviews the whole branch), measures the brief and splits one past CHANGE_REVIEW_BRIEF_CEILING (400,000 characters) into batches of whole documents (planBatches), one worker per batch with a brief under the ceiling carrying the round's document index with batch numbers; the batch reports merge into the round's one report (mergeBatchResults: finding",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f191f04206f7ec8a",
+      "key": "decision:docs/evidence/WO-257/decisions.md#wo-257-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a0136848459cfaff2e09f60e08636903963fffefc3fc8a41c56b51e9c5efd08a",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d029--operator-follow-up-an-instance-election-for-taking-upstream-in-a-pass",
+          "title": "WO-257-D029: Add a features row (for example features.auto-update-upstream, off by default) under which a planning or entropy pass may take a newer starter release or merge upstream without the…",
+          "summary": "{ \"id\": \"WO-257-D029\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next; the operator's message of 2026-11-06T05:16:18Z (journal row digest ff293fe9f5cebca26d4252b4341462273b40ba24fd52aa46d1be5d6f4d93498f, 110 bytes)\", \"decision\": \"Not taken here: the operator asked for a dotln.config.json property under which an instance auto-merges upstream (takes a newer starter release or merges upstream in a pass without the in-session request D005 types) and named it a follow-up. This order's non-goals exclude a feature election for updates before a pass and D005 keeps the typed refusal as the default; the follow-up is recorded for the next planning pass.\", \"evidence\": [ \"the operator's words: we can ad",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c61f76f60798e1b2",
+      "key": "decision:docs/evidence/WO-257/decisions.md#wo-257-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ed6bddf99b047c3cd9d036525722defe6cde8036104c06a3002cf3a15c4d0cea",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d007--release-surfaces-the-component-versions-the-role-oracle-baseline-and-the-cold-start-readings",
+          "title": "WO-257-D007: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-257 added the planner's no-update sentence (579 bytes), leaving the planner at 30,741 bytes against its…",
+          "summary": "{ \"id\": \"WO-257-D007\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next\", \"decision\": \"npm run release -- prepare --local assigned v0.119.0 to the order heading, and the changed components were bumped with their workspace pins: @dotln/skeleton 0.86.0 (harness-host.ts, loadouts/contributor.ts and version.ts changed), @dotln/compiler 0.42.0 (harness.ts and artifact-identity.ts changed), the console's pins and package-lock.json; HARNESS_HOST_VERSION reads 0.46.0 and COMPILER_PACKAGE_VERSION 0.42.0; the console's own version is unchanged because its source is unchanged. The role oracle's baseline chain gained packages/skeleton/fixtures/wo257-role-baseline.json over wo255-repair-role-baseline.json",
+          "missing": false
+        },
+        {
+          "hash": "ed6bddf99b047c3cd9d036525722defe6cde8036104c06a3002cf3a15c4d0cea",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d007",
+          "title": "WO-257-D007: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-257 added the planner's no-update sentence (579 bytes), leaving the planner at 30,741 bytes against its…",
+          "summary": "{ \"id\": \"WO-257-D007\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next\", \"decision\": \"npm run release -- prepare --local assigned v0.119.0 to the order heading, and the changed components were bumped with their workspace pins: @dotln/skeleton 0.86.0 (harness-host.ts, loadouts/contributor.ts and version.ts changed), @dotln/compiler 0.42.0 (harness.ts and artifact-identity.ts changed), the console's pins and package-lock.json; HARNESS_HOST_VERSION reads 0.46.0 and COMPILER_PACKAGE_VERSION 0.42.0; the console's own version is unchanged because its source is unchanged. The role oracle's baseline chain gained packages/skeleton/fixtures/wo257-role-baseline.json over wo255-repair-role-baseline.json",
+          "missing": false
+        },
+        {
+          "hash": "b92da536cd2bc36e06ddd2c8545a5c1f40eb77d6a70fb85b4ef9e453e0d7cf09",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d007",
+          "title": "WO-257-D007: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-257 added the planner's no-update sentence (618 bytes), leaving the planner at 30,780 bytes against its…",
+          "summary": "{ \"id\": \"WO-257-D007\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next\", \"decision\": \"npm run release -- prepare --local assigned v0.119.0 to the order heading, and the changed components were bumped with their workspace pins: @dotln/skeleton 0.86.0 (harness-host.ts, loadouts/contributor.ts and version.ts changed), @dotln/compiler 0.42.0 (harness.ts and artifact-identity.ts changed), the console's pins and package-lock.json; HARNESS_HOST_VERSION reads 0.46.0 and COMPILER_PACKAGE_VERSION 0.42.0; the console's own version is unchanged because its source is unchanged. The role oracle's baseline chain gained packages/skeleton/fixtures/wo257-role-baseline.json over wo255-repair-role-baseline.json",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-257-D007: the planner's no-update sentence stays whole with every other root's reviewed rules under product 07's one route for cold-start ceilings; the planner reads 30,741 bytes, the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-06T05:49:51.688Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-257-D007: the planner's no-update sentence stays whole with every other root's reviewed rules under product 07's one route for cold-start ceilings; the planner reads 30,741 bytes, the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-06T05:54:09.164Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-257-D007: the planner's no-update sentence stays whole with every other root's reviewed rules under product 07's one route for cold-start ceilings; the planner reads 30,780 bytes, the executor 44,358, the verifier 38,638, the reviewer 41,061, release-close 28,638 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-06T10:09:43.340Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d8257c65c12af0fa",
+      "key": "decision:docs/evidence/WO-257/decisions.md#wo-257-d036",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6eb4b6c4988b18d2ff30b93478e4e9b3a7cd4a4c4d7c86b36b476a5dcb701352",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d036--the-first-complete-run-failed-on-a-fixture-list-the-one-line-repair-took-a-combined-round-and-the-renderer-boundary-closes-here",
+          "title": "WO-257-D036: Weigh an exhaustive classification of each page writer's import closure: every module either in the renderer table or in a pinned exclusion list with its reason, as…",
+          "summary": "{ \"id\": \"WO-257-D036\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next; the first complete run and the repair ladder\", \"decision\": \"The first complete run (npm test -- --review at tree 45da23035b67, code identity 5cb7286054e9, 11 min, 68 fresh suites) failed on one suite, outward-lint's 'copied CLI runs with relocated documents and no default document tree', whose copied CLI names the kit modules by a fixed list that lacked scripts/lib/feature-registry.mjs; 33 suites were not started after it. The repair adds the module to that list, the fourth fixture list this order's feature split reached (configuration-root, harness-fixtures and dispatch-bound were found before the first run; a grep over",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-33fab5211e3368f5",
+      "key": "decision:docs/evidence/WO-257/decisions.md#wo-257-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6eb7918efb43deb23a650be8bf6e6b36405f029ae915abe17cf59507b08ac1d4",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d039--retain-the-shared-preamble-limit-as-a-bounded-follow-up",
+          "title": "WO-257-D039: Define and document a full-input route for a planning review whose combined dispatch captures and shared index exceed the brief ceiling, including an aggregate preflight diagnostic and a…",
+          "summary": "{ \"id\": \"WO-257-D039\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify; be extra thorough\", \"decision\": \"Record the large-capture limit as a follow-up, not a third blocking finding. Two individually admitted captures of 198,980 bytes each leave the fixed preamble, captures and index over 400,000 characters before a document can be added. planBatches deliberately refuses this case, which round 3 already noted. Criterion 12's document partitioning cannot make a fixed preamble smaller, so this observation is not evidence that its document-size guarantee failed. The repair remains focused on the two merge failures in D038.\", \"evidence\": [ \"docs/evidence/WO-257/ver-001/probes.mjs, F3 observatio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-45b8ce20b8b764d0",
+      "key": "decision:docs/evidence/WO-257/decisions.md#wo-257-d044",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "139b469e68809957e863e9f4766b90dd4dfc1d018797a59c89fe70b1a2295851",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d044--verification-boards-the-record-routes-merge-refusal-of-parts-it-admitted",
+          "title": "WO-257-D044: Make the record route's split-round merge judge and build the merged report from the body each part passed with: keep in the part which body met the report rules (the result's report…",
+          "summary": "{ \"id\": \"WO-257-D044\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Record as a follow-up, not a blocking finding, that the Agent route's split-round merge refuses a part shape the route admits. npm run worker -- record --format json --batch N admits each part whose JSON result is followed by prose carrying the Items table, because the body that passes the report rules is the prose; the merge then builds its refusal check from each part's result.report, which lacks the table, so the round is refused with every part kept. The same text recorded as a single report for a round under the ceiling is admitted. Criterion 12 names the launch under the fixture transport, its dry r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9cfd1cd290f68d1b",
+      "key": "decision:docs/evidence/WO-257/decisions.md#wo-257-d046",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d2fbade14dc6a965782eda84f3fc0cdf268cc57c32bac540598c43f161947c1e",
+          "ref": "docs/evidence/WO-257/decisions.md#wo-257-d046--verification-boards-a-phase-check-for-the-launchpad-publish-form-the-new-allow-rule-admits",
+          "title": "WO-257-D046: Make node scripts/worktree.mjs publish WO-NNN --title --body-file refuse unless the order's committed control record shows a passing final review, as the final target form does, so the…",
+          "summary": "{ \"id\": \"WO-257-D046\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Record as a follow-up, not a blocking finding, that Bash(node scripts/worktree.mjs publish *) also admits the launchpad's own form, node scripts/worktree.mjs publish WO-NNN --title <title> --body-file <path>, which pushes the order branch and opens a pull request, and which the host prompted for on main. That form reads no phase: it requires a clean order worktree, the committed release surfaces, the body's shape, no attribution and the committed record's criterion lines, but not a committed passing final review, which the final target form requires. The emitted rule is criterion 17's exact text, its brea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
