@@ -324,6 +324,7 @@ test("configured lifecycle roots share the installed journal lane and preserve t
   );
   for (const file of [
     "scripts/lib/config.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/features.mjs",
     "scripts/lib/build-overlay.mjs",
     "scripts/lib/validation.mjs",

@@ -4,9 +4,11 @@ import {
   historicalDependencyIdsAt,
 } from "./dependencies.mjs";
 export { sha256Hex } from "./helpers.mjs";
-import { lstatSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
+import { parseWorkstreamDocument } from "./work-order-workstream.mjs";
 import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
+import { readControl } from "./control-store.mjs";
 import { readGitObjects, runGit } from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { hasPackageSources } from "../../packages/skeleton/src/runtime-inputs.mjs";
@@ -283,12 +285,89 @@ export const parsePlanOrder = (
   };
 };
 
+/** The open members of every `track: separate` workstream the sequence does
+ * not list, in workstream file order and then member order. A workstream
+ * document's JSON block, read by the index's own parse, names the members,
+ * and the control fold at the subject's revision says which are closed or
+ * withdrawn, so a receipt rebuilt at its revision reads the members it
+ * judged whatever happened later; a malformed block or a control read
+ * failure refuses. A member with no order file under the same rule as the
+ * sequenced orders (committed, or present in workspace mode) is not judged,
+ * as the index refuses such a document on its own. */
+function separateTrackMembers(
+  root,
+  { workspace, committed, orderRoot, sequenced },
+) {
+  const streamRoot = rootPattern(root, "workstreams");
+  const pattern = new RegExp(`^${streamRoot}/WS-\\d{3}-[^/]+\\.md$`, "u");
+  const streamDirectory = docRelative(root, "workstreams");
+  const files = workspace
+    ? existsSync(join(root, streamDirectory))
+      ? readdirSync(join(root, streamDirectory))
+          .map((name) => `${streamDirectory}/${name}`)
+          .filter((path) => pattern.test(path))
+          .sort()
+      : []
+    : committed.paths.filter((path) => pattern.test(path)).sort();
+  if (!files.length) return [];
+  const read = workspace
+    ? (path) => readFileSync(join(root, path), "utf8")
+    : committed.read;
+  let phases = null;
+  const phaseOf = (id) => {
+    if (!phases)
+      phases = new Map(
+        [
+          ...readControl(root, workspace ? undefined : committed.revision)
+            .orders,
+        ].map(([key, row]) => [key, row.state.phase]),
+      );
+    return phases.get(id) ?? null;
+  };
+  const orderDirectory = docRelative(root, "workOrders");
+  const orderPresent = (orderPattern) =>
+    workspace
+      ? existsSync(join(root, orderDirectory)) &&
+        readdirSync(join(root, orderDirectory)).some((name) =>
+          orderPattern.test(`${orderDirectory}/${name}`),
+        )
+      : committed.paths.some((path) => orderPattern.test(path));
+  const members = [];
+  for (const file of files) {
+    const stream = parseWorkstreamDocument(
+      read(file),
+      file,
+      /\/(WS-\d{3})-[^/]+\.md$/u.exec(file)[1],
+    );
+    if (stream.track !== "separate") continue;
+    for (const member of stream.members) {
+      const id = member?.workOrderId;
+      if (!/^WO-\d{3}$/u.test(id ?? "") || sequenced.has(id)) continue;
+      if (members.includes(id)) continue;
+      if (["closed", "withdrawn"].includes(phaseOf(id))) continue;
+      const orderPattern = new RegExp(`^${orderRoot}/${id}-[^/]+\\.md$`, "u");
+      if (!orderPresent(orderPattern)) continue;
+      members.push(id);
+    }
+  }
+  return members;
+}
+
 export function buildPlanSubject(
   root,
   revision = "HEAD",
-  { workspace = false, costTable = true, goalReview = false } = {},
+  {
+    workspace = false,
+    costTable = true,
+    goalReview = false,
+    // The projection before WO-257 judged the sequence alone; a receipt it
+    // filed carries no separateTrack key and is rebuilt the same way, so it
+    // stays verifiable after the update.
+    separateTrack = true,
+  } = {},
 ) {
-  if (goalReview) return buildGoalSubject(root, revision, { workspace });
+  if (goalReview)
+    return buildGoalSubject(root, revision, { workspace, separateTrack });
   const committed = committedReader(root, revision);
   const read = workspace
     ? (path) => {
@@ -325,7 +404,23 @@ export function buildPlanSubject(
   if (!block) throw new Error("expected a byte-addressable sequence block");
   const parts = [["sequence", block]];
   const orderRoot = rootPattern(root, "workOrders");
-  const orderPaths = sequence.map(({ id }) => {
+  // The open members of every `track: separate` workstream follow the
+  // sequenced orders in the judged subject: a pass files them outside the
+  // serial queue, so a subject built from the sequence alone would never
+  // judge them and amend-order would never admit them.
+  const members = separateTrack
+    ? separateTrackMembers(root, {
+        workspace,
+        committed,
+        orderRoot,
+        sequenced: new Set(sequence.map(({ id }) => id)),
+      })
+    : [];
+  const judged = [
+    ...sequence.map(({ id }) => ({ id })),
+    ...members.map((id) => ({ id })),
+  ];
+  const orderPaths = judged.map(({ id }) => {
     const pattern = new RegExp(`^${orderRoot}/${id}-[^/]+\\.md$`, "u");
     const paths = committed.paths.filter((path) => pattern.test(path));
     // Workspace observation also notices drafts that have not been committed.
@@ -358,7 +453,7 @@ export function buildPlanSubject(
   const historicalIds = workspace
     ? historicalDependencyIds(root)
     : historicalDependencyIdsAt(committed);
-  const orders = sequence.map(({ id }, index) => {
+  const orders = judged.map(({ id }, index) => {
     const path = orderPaths[index];
     const source = read(path);
     parts.push([path, source]);
@@ -428,7 +523,7 @@ export function buildPlanSubject(
     ].map(([, thesis, laterWorkOrderId]) => {
       if (
         !theses.some(({ id }) => id === thesis) ||
-        !sequence.slice(index + 1).some(({ id }) => id === laterWorkOrderId)
+        !judged.slice(index + 1).some(({ id }) => id === laterWorkOrderId)
       )
         throw new Error("invalid named later-order deferral");
       return { thesis, workOrderId: order.workOrderId, laterWorkOrderId };
@@ -529,16 +624,21 @@ export function buildPlanSubject(
       ...(unavailable.length ? { unavailable } : {}),
     },
     orders,
+    ...(separateTrack ? { separateTrack: members } : {}),
     deferrals,
     ...(costs ? { costTable: costs } : {}),
   };
 }
 
 /** New judgment inputs are opt-in so every historical subject hash is stable. */
-function buildGoalSubject(root, revision, { workspace }) {
+function buildGoalSubject(root, revision, { workspace, separateTrack = true }) {
+  // The goal subject projects the plan subject under the same rule, so a
+  // goal-review receipt filed before the separate-track projection rebuilds
+  // without the key too.
   const subject = buildPlanSubject(root, revision, {
     workspace,
     costTable: false,
+    separateTrack,
   });
   const committed = committedReader(root, revision);
   const has = (path) =>

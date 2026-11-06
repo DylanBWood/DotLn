@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { formatDuration } from "./lib/duration.mjs";
+import { renderCriteriaStatus } from "./lib/criteria-status.mjs";
 import { firstDifferingLine } from "./lib/validation.mjs";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
@@ -664,6 +665,11 @@ const renderCard = (row) => {
     `- References: ${cell(row.dependencies.entries.map((entry) => `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state}${entry.detail ? `: ${entry.detail}` : ""})` : `${entry.state}${entry.detail ? `: ${entry.detail}` : ""}`}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`).join("; ") || "none declared")}.`,
     `- Verification: ${report(state?.latestVerificationId, state?.latestVerdict, row.records ? undefined : state?.latestVerificationPath)}.`,
     `- Final review: ${report(state?.finalReviewId, row.finalReviewVerdict, row.records ? undefined : state?.finalReviewPath)}.`,
+    // The criteria the executor left unmet, each by its later judgment with
+    // the executor's ordinal beside it; absent when the handoff left none.
+    ...(renderCriteriaStatus(state)
+      ? [`- ${cell(renderCriteriaStatus(state))}.`]
+      : []),
     ...(row.records
       ? [
           `- Records: ${cell(row.records.repositoryId)} at commit ${cell(row.records.commit)}.`,

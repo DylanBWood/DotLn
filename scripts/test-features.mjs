@@ -118,21 +118,16 @@ test("a feature rename is advisory for its named kit release and refuses afterwa
   );
 });
 
-test("feature inventory reports legacy overlays, budgets, unread switches and escaped notes", (t) => {
+test("feature inventory reports elections, budgets, unread switches and escaped notes, and refuses the retired overlay choice", (t) => {
   const root = fixture(t);
   config(root, {
     roots: { control: "records/control" },
     features: {
       "plan-first": { on: false, note: "A | table\n<script>`note`" },
+      "tinkerer-economy": { on: false, note: "Off for this instance." },
     },
-    build: { overlay: "build/options.json" },
     release: { corpus: false },
   });
-  write(
-    root,
-    "build/options.json",
-    json({ version: 1, unequip: ["tinkerer-economy"] }),
-  );
   write(
     root,
     "records/control/budgets.json",
@@ -141,7 +136,8 @@ test("feature inventory reports legacy overlays, budgets, unread switches and es
   const rows = readFeatureInventory(root);
   const row = (id) => rows.find((entry) => entry.id === id);
   assert.equal(row("tinkerer-economy").value, false);
-  assert.match(row("tinkerer-economy").note, /build\/options.json/u);
+  assert.equal(row("tinkerer-economy").source, "dotln.config.json");
+  assert.equal(row("tinkerer-economy").note, "Off for this instance.");
   assert.equal(readFeatures(root)["tinkerer-economy"], false);
   // The cap is read from the configured control root's budgets, as the spawn
   // guard reads it (WO-254, FUP-a0efaae1b9887fde); the ceiling is four times it.
@@ -159,14 +155,35 @@ test("feature inventory reports legacy overlays, budgets, unread switches and es
     rendered.split("\n").filter((line) => /^\| [a-z]/u.test(line)).length,
     featureRegistry.length,
   );
+  // The overlay's tinkerer-economy choice was accepted with an advisory
+  // through kit release v0.118.0; the elections and the inventory refuse it
+  // now, naming the election and the entry to remove (FUP-3d64b267a45d2f34).
   config(root, {
     features: { "tinkerer-economy": true },
     build: { overlay: "build/options.json" },
   });
-  assert.throws(
-    () => readFeatures(root),
-    /conflicting tinkerer-economy elections/u,
+  write(
+    root,
+    "build/options.json",
+    json({ version: 1, unequip: ["tinkerer-economy"] }),
   );
+  const retired =
+    /the build overlay's tinkerer-economy choice is retired: it was accepted with an advisory through kit release v0\.118\.0; elect features\.tinkerer-economy in dotln\.config\.json and remove the overlay entry \(npm run features -- list\)$/u;
+  assert.throws(() => readFeatures(root), retired);
+  assert.throws(() => readFeatureInventory(root), retired);
+  write(
+    root,
+    "build/options.json",
+    json({ version: 1, equip: ["tinkerer-economy"] }),
+  );
+  assert.throws(() => readFeatures(root), retired);
+  write(
+    root,
+    "build/options.json",
+    json({ version: 1, unequip: ["process-cost"] }),
+  );
+  assert.equal(readFeatures(root)["tinkerer-economy"], true);
+  assert.equal(row("tinkerer-economy").value, false);
 });
 
 test("features render/check obey configured roots and print closed-consumer advisories without refusing", (t) => {

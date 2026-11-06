@@ -407,8 +407,10 @@ export const evidenceImportExclusions = {
       "Resolves the launchpad and its configured document roots; each edition's inputs are registered by the path it resolves, and its repository and portfolio validation is outside every edition's recorded behaviour.",
     "scripts/lib/build-overlay.mjs":
       "Shared instance-overlay schema and file-boundary validation; the editions use the unchanged default Contributor without overlays, while configuration-root and harness fixtures judge this reader.",
+    "scripts/lib/feature-registry.mjs":
+      "The feature registry and its alias resolver, which the configuration reader validates a declared section through; the features and configuration-root fixtures judge them, and editions run the unchanged default Contributor without electing optional instance features.",
     "scripts/lib/features.mjs":
-      "The configuration registry and instance elections are judged by configuration-root and harness fixtures; editions run the unchanged default Contributor and do not elect optional instance features.",
+      "The instance elections reader over the feature registry, judged by the features, configuration-root and harness fixtures; editions run the unchanged default Contributor and do not elect optional instance features.",
     "packages/skeleton/src/local-model-actor.ts":
       "The local-model actor family (WO-110, WO-138), reached through actor-catalog.ts; no edition dispatches a local-model actor: the feedback self-host admits only claude-cli-print and codex-cli-exec, and verification records the fake transport.",
     "packages/skeleton/src/local-model-contract.ts":

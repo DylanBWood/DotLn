@@ -2313,10 +2313,37 @@ export function renderMetaTable(meta, { workOrderId } = {}) {
       : duration
         ? formatDuration(value)
         : display(value);
-  const dispatches = (order?.dispatches ?? []).map(
-    (row) =>
-      `| ${order.workOrder}/${row.role} | ${cell(row.wallClockMs, true)} | ${cell(row.observedTokens)} | ${cell(row.observedCostUsd)} | ${cell(row.commandsRun)} | ${cell(row.stepCount)} | ${cell(row.boundStops?.count)} | ${cell(row.boundAcceptances?.length)} |`,
-  );
+  // A role gets a row only when some record shows it dispatched for this
+  // order: a completed phase attempt, a usage or journal figure, or a bound
+  // event. The roles with no record are named below the table instead, so a
+  // reader can tell "never dispatched" from "dispatched, cost unobserved".
+  const recorded = (row) =>
+    !unobserved(row.attempts) ||
+    [
+      "wallClockMs",
+      "observedTokens",
+      "observedCostUsd",
+      "commandsRun",
+      "stepCount",
+    ].some((key) => !unobserved(row[key])) ||
+    (row.boundStops?.count ?? 0) > 0 ||
+    (row.boundAcceptances?.length ?? 0) > 0;
+  const rows = order?.dispatches ?? [];
+  const dispatches = rows
+    .filter(recorded)
+    .map(
+      (row) =>
+        `| ${order.workOrder}/${row.role} | ${cell(row.wallClockMs, true)} | ${cell(row.observedTokens)} | ${cell(row.observedCostUsd)} | ${cell(row.commandsRun)} | ${cell(row.stepCount)} | ${cell(row.boundStops?.count)} | ${cell(row.boundAcceptances?.length)} |`,
+    );
+  const unrecorded = rows
+    .filter((row) => !recorded(row))
+    .map((row) => row.role);
+  const absence = unrecorded.length
+    ? [
+        `No dispatch is recorded for ${unrecorded.join(", ")}: no completed phase attempt, usage observation, journal row or bound event names ${unrecorded.length === 1 ? "that role" : "those roles"} for ${order.workOrder}.`,
+        "",
+      ]
+    : [];
   const totals = (row) => ({
     "wall clock": row.metrics?.elapsedMs,
     tokens: row.metrics?.tokens,
@@ -2327,10 +2354,13 @@ export function renderMetaTable(meta, { workOrderId } = {}) {
     "bound acceptances": row.boundAcceptances?.length,
   });
   const before = previous ? totals(previous) : {};
-  const comparisons = Object.entries(order ? totals(order) : {}).flatMap(
+  // One sentence lists every metric's delta, or `unknown` where either side
+  // was unobserved; the table above already carries the figures.
+  const clauses = Object.entries(order ? totals(order) : {}).map(
     ([label, value]) => {
       const difference = delta(value, before[label]);
-      if (difference === null) return [];
+      if (difference === null) return `${label} unknown`;
+      if (difference === 0) return `${label} unchanged`;
       const amount = cell(Math.abs(difference), label === "wall clock");
       const direction =
         difference < 0
@@ -2338,12 +2368,16 @@ export function renderMetaTable(meta, { workOrderId } = {}) {
             ? "less"
             : "fewer"
           : "more";
-      return [
-        `Against ${previous.workOrder}, the previous closed order: ${label} ${difference === 0 ? `unchanged (${amount} difference)` : `${amount} ${direction}`}.`,
-        "",
-      ];
+      return `${label} ${amount} ${direction}`;
     },
   );
+  const comparison =
+    order && previous
+      ? [
+          `Against ${previous.workOrder}, the previous closed order: ${clauses.join("; ")}.`,
+          "",
+        ]
+      : [];
   return [
     "",
     `Observation cutoff: ${meta.observedAt ?? "unknown"}; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.`,
@@ -2352,7 +2386,8 @@ export function renderMetaTable(meta, { workOrderId } = {}) {
     "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...dispatches,
     "",
-    ...comparisons,
+    ...absence,
+    ...comparison,
   ].join("\n");
 }
 export function renderMeta(meta) {

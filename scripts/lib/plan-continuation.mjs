@@ -153,16 +153,30 @@ function sectionContent(root, file, source) {
   return replaceDestinations(source, changes);
 }
 
+// Whether a document is on the after side: in the working tree, or in the
+// current revision the committed judgment reads; the judged revision's paths
+// say nothing about it (round 2's design F9).
+const afterPresence = (root, observed, workspace) => (file) =>
+  workspace
+    ? containedRegularFile(join(root, file), root)
+    : observed.paths.includes(file);
+
 function relocatedLinks(
   root,
   original,
   read,
-  { workspace, path, complete = true },
+  { workspace, path, complete = true, afterHas },
 ) {
   const product = docRelative(root, "product");
   const planning = docRelative(root, "planning");
-  const before = original.read(path);
-  const after = read(path);
+  // An export may carry no product 00, which the subject builder reads as
+  // optional by its explicit absence: with none on either side there is
+  // nothing to relocate, and a page present on one side alone is a changed
+  // input the caller judges. A read that fails for another reason refuses.
+  const before = original.paths.includes(path) ? original.read(path) : null;
+  const after = afterHas(path) ? read(path) : null;
+  if (before === null && after === null) return { updates: [] };
+  if (before === null || after === null) return null;
   const left = inlineLinks(before);
   const right = inlineLinks(after);
   if (right.length < left.length || (complete && left.length !== right.length))
@@ -613,6 +627,7 @@ export function checkPlanContinuation(
     : relocatedLinks(root, original, relocationRead, {
         workspace,
         path: docRelative(root, "product", "00-vision.md"),
+        afterHas: afterPresence(root, observed, workspace),
       });
   const linkUpdates = relocation?.updates ?? null;
   requireSamePlan(
@@ -856,6 +871,7 @@ export function checkPlanContinuation(
       workspace,
       path: capabilityTable(root),
       complete: false,
+      afterHas: afterPresence(root, observed, workspace),
     });
     let capabilityUpdates;
     try {

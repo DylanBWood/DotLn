@@ -1491,9 +1491,10 @@ await test("WO-249 criterion 7: one line per defective or waived criterion stand
     criterionRecordProblem(body, []),
     "the body names criterion records the order's record no longer holds",
   );
-  // The pass and publication read one rule: release preparation writes the
-  // lines for a launchpad order in a metered repository, and a target
-  // order's or an unmetered repository's body names none.
+  // The pass and publication read one rule: in a metered repository release
+  // preparation writes the lines for a launchpad order and a target order's
+  // records body carries them by hand; an unmetered repository's body names
+  // none (WO-257).
   const launchpad = {
     workOrderId: "WO-999",
     waivedCriteria: [{ criterionId: "2", ordinal: 7 }],
@@ -1513,21 +1514,26 @@ await test("WO-249 criterion 7: one line per defective or waived criterion stand
       criterionRecordRefusal(metered, "# WO-999\n\nProse.\n", launchpad),
       `the body's criterion lines do not match the 2 waived or defective criteria the order's record holds; release preparation writes these lines above the process table:\n${records.join("\n")}`,
     );
-    for (const [root, state] of [
-      [metered, { ...launchpad, repositoryId: "target" }],
-      [unmetered, launchpad],
-    ]) {
-      assert.equal(criterionRecordsApply(root, state), false);
-      assert.deepEqual(expectedCriterionRecordLines(root, state), []);
-      assert.equal(
-        criterionRecordRefusal(root, "# WO-999\n\nProse.\n", state),
-        null,
-      );
-      assert.equal(
-        criterionRecordRefusal(root, body, state),
-        "the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them",
-      );
-    }
+    // A target order's records publication body carries the same lines,
+    // written by hand, since preparation writes nothing for a target order.
+    const target = { ...launchpad, repositoryId: "target" };
+    assert.equal(criterionRecordsApply(metered, target), true);
+    assert.deepEqual(expectedCriterionRecordLines(metered, target), records);
+    assert.equal(criterionRecordRefusal(metered, body, target), null);
+    assert.equal(
+      criterionRecordRefusal(metered, "# WO-999\n\nProse.\n", target),
+      `the body's criterion lines do not match the 2 waived or defective criteria the order's record holds; a target order's records publication body carries these lines, written by hand as its last block, since release preparation writes nothing for a target order:\n${records.join("\n")}`,
+    );
+    assert.equal(criterionRecordsApply(unmetered, launchpad), false);
+    assert.deepEqual(expectedCriterionRecordLines(unmetered, launchpad), []);
+    assert.equal(
+      criterionRecordRefusal(unmetered, "# WO-999\n\nProse.\n", launchpad),
+      null,
+    );
+    assert.equal(
+      criterionRecordRefusal(unmetered, body, launchpad),
+      "the body names criterion-record lines, which apply only in a repository with a process meter; remove them",
+    );
   } finally {
     rmSync(metered, { recursive: true, force: true });
     rmSync(unmetered, { recursive: true, force: true });

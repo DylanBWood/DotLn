@@ -5,10 +5,11 @@ what to turn on or off. `dotln.config.json` is the one configuration file;
 `scripts/lib/config.mjs` validates it. An absent file keeps the existing
 layout and defaults. The [generated inventory](../control/FEATURES.md) lists
 every registered election and selection with its scope, default, effective
-value, source, election key and consumer. Its single source is
-`scripts/lib/features.mjs`; later orders add a row there with its consumer
-and behavioral test. The [kit guide](../KIT.md#features) gives the entry
-forms and the commands to edit, render and check the choices.
+value, source, election key and consumer. Its single source is the registry
+in `scripts/lib/feature-registry.mjs`, read by `scripts/lib/features.mjs`;
+later orders add a row there with its consumer and behavioral test. The
+[kit guide](../KIT.md#features) gives the entry forms and the commands to
+edit, render and check the choices.
 
 The named `features` elections are Tinkerer economy (on by default),
 private-destination and desktop-control (off), and plan-first (off, reserved

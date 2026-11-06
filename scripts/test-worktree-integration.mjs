@@ -420,6 +420,9 @@ function overlayImplementation(root) {
     "scripts/bootstrap.mjs",
     "scripts/launchpad.mjs",
     "scripts/license-surfaces.mjs",
+    // The emit the integration leaves pending runs this entry point against
+    // the working-tree libraries, so it travels with them (WO-257).
+    "scripts/harness.mjs",
   ])
     cpSync(join(source, path), join(root, path));
   // The fixture's front page holds only what the integration reads: the one

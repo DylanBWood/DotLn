@@ -3577,7 +3577,7 @@ const withAdvisory = (id, args, env) => {
       assert.notEqual(unmetered.status, 0);
       assert.ok(
         unmetered.stderr.includes(
-          `final-review-result pass refused: ${body}: the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them\nThen npm run test:docs runs again before the pass is recorded.`,
+          `final-review-result pass refused: ${body}: the body names criterion-record lines, which apply only in a repository with a process meter; remove them\nThen npm run test:docs runs again before the pass is recorded.`,
         ),
         unmetered.stderr,
       );

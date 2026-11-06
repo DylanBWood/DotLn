@@ -5335,7 +5335,7 @@ function desktopControlResponse(
   let unavailable: string | undefined;
   try {
     const { readFeatures } = createRequire(import.meta.url)(
-      join(root, "scripts/lib/config.mjs"),
+      join(root, "scripts/lib/features.mjs"),
     ) as { readFeatures: (root: string) => { "desktop-control": boolean } };
     on = readFeatures(root)["desktop-control"];
   } catch (error) {

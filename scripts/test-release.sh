@@ -869,7 +869,9 @@ git -C "$main" switch -c wo-099 >/dev/null 2>&1
 mkdir -p "$main/docs/control/orders" "$main/docs/product" "$main/docs/final-reviews/WO-099"
 printf '# WO-099 — fixture (v0.2.0)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
 printf '# Roadmap\n\n## Release boundary\n\nPreserve the existing boundary.\n' >"$main/docs/product/06-roadmap.md"
-printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md"}' >"$main/docs/control/orders/WO-099.jsonl"
+# A completed executor attempt gives the executor its row; the roles with
+# no record are named below the table (WO-257 criterion 1).
+printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md"}' '{"schemaVersion":1,"type":"ImplementationReady","workOrderId":"WO-099"}' >"$main/docs/control/orders/WO-099.jsonl"
 cp "$script_dir/../docs/control/budgets.json" "$main/docs/control/budgets.json"
 # Another open order must never contribute rows to this order's stored body.
 printf '# WO-100 — other fixture\n' >"$main/docs/work-orders/WO-100-fixture.md"
@@ -889,6 +891,8 @@ assert.doesNotMatch(body, /stale meter/u);
 assert.equal(body.split("\n").filter((line) => line.startsWith("| Dispatch |")).length, 1);
 assert.match(body, /^\| Dispatch \| Wall clock \| Tokens \| USD \| Commands \| Steps \| Bound stops \| Bound acceptances \|$/m);
 assert.match(body, /^\| WO-099\/executor \|/m);
+assert.match(body, /^No dispatch is recorded for verifier, reviewer, release-close, planner, refuter, router: no completed phase attempt, usage observation, journal row or bound event names those roles for WO-099\.$/m);
+assert.doesNotMatch(body, /^\| WO-099\/(?:verifier|reviewer|release-close|planner|refuter|router) \|/m);
 assert.doesNotMatch(body, /WO-100|\| Work \||omitted|Δ/);
 for (const row of body.split("\n").filter((line) => line.startsWith("| WO-"))) {
   const cells = row.split("|").slice(1, -1).map((cell) => cell.trim());

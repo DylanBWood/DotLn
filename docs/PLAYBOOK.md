@@ -146,7 +146,9 @@ state-changing `npm run resume -- ...` command so its recovery checkpoint can be
 created. `status`, `times` and `briefing` are read-only; `next` appends no event
 and creates no checkpoint but does refresh the workspace projection. `status --json` exposes
 the same control fields for lifecycle scripts; both status forms are read-only
-and warn without rewriting if the Markdown projection is stale. Do not run a transition
+and warn without rewriting if the Markdown projection is stale, naming
+`npm run resume -- status --refresh`, which rewrites it from the fold and
+appends no event. Do not run a transition
 sandboxed and then retry it: the transition records even when the optional
 checkpoint does not. The approval unsandboxes the whole project-controlled `npm`
 process, so first inspect the exact command, `package.json` mapping, and current
@@ -663,7 +665,9 @@ The agent first runs `npm run resume --silent -- status --json`, adding
 transition and follows the emitted authoritative paths. The JSON and human
 status forms expose the same control fields, are read-only, append nothing, and
 do not rewrite `docs/control/current.md`. If that human projection disagrees
-with the canonical log fold, status warns and still returns the folded state;
+with the canonical log fold, status warns and still returns the folded state,
+and `npm run resume -- status --refresh` rewrites the projection from the
+fold without appending an event;
 lifecycle scripts consume JSON and never parse the Markdown. `next` means
 “execute the active order” in phase `active`; in phase `closed` it reports the
 other in-flight orders, or the between-work-orders state and start syntax

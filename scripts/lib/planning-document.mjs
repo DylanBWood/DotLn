@@ -1,9 +1,10 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
-import { docRelative } from "./config.mjs";
+import { journalLane } from "./worktree-removal.mjs";
+import { docPath, docRelative } from "./config.mjs";
 import { renderRedTagBlock } from "./document-kinds.mjs";
-import { runGit } from "./git.mjs";
+import { mainWorktree, runGit } from "./git.mjs";
 
 /** The branch `plan start` creates: planning/<date>-<slug>. */
 export const PLANNING_BRANCH =
@@ -109,18 +110,18 @@ export function rulesRecordedBlock(source, file) {
         !/^[0-9a-f]{64}$/u.test(entry.message.sessionKey ?? "") ||
         !Number.isFinite(Date.parse(entry.message.recordedAt ?? "")) ||
         !/^(?:sha256:)?[0-9a-f]{64}$/u.test(entry.captureDigest ?? "") ||
-        (entry.class !== undefined && !text(entry.class)),
+        (entry.class !== undefined && !text(entry.class)) ||
+        (entry.order !== undefined && !/^WO-\d{3}$/u.test(entry.order)),
     )
   )
     throw new Error(
-      `${file}: each recorded rule needs a rule, the document and section it is written into, the message's journal reference {sessionKey, recordedAt} and its capture digest`,
+      `${file}: each recorded rule needs a rule, the document and section it is written into, the message's journal reference {sessionKey, recordedAt} and its capture digest; an optional order names the closed order whose retained lane holds the journal`,
     );
   return rules;
 }
 
-/** One session journal's rows; a line that is not JSON is skipped. */
-const journalRows = (root, sessionKey) => {
-  const file = join(dispatchJournalDirectory(root), `${sessionKey}.jsonl`);
+/** One journal file's rows; a line that is not JSON is skipped. */
+const journalFileRows = (file) => {
   if (!existsSync(file)) return [];
   return readFileSync(file, "utf8")
     .split("\n")
@@ -132,6 +133,41 @@ const journalRows = (root, sessionKey) => {
         return [];
       }
     });
+};
+
+/** Where a session's journal can be: the live directory, then the retained
+ * lane of every closed order (a close moves the order's journals there), in
+ * this checkout and in the main checkout when that is another one. An entry
+ * that names an `order` reads that order's lane alone after the live
+ * directory. Each place is reported by its display path. */
+const journalPlaces = (root, sessionKey, order) => {
+  const name = `${sessionKey}.jsonl`;
+  const places = [
+    {
+      display: docRelative(root, "control", "local/harness"),
+      file: join(dispatchJournalDirectory(root), name),
+    },
+  ];
+  const bases = [root];
+  try {
+    const main = mainWorktree(root);
+    if (main !== root) bases.push(main);
+  } catch {
+    // A checkout with no main worktree reads its own lanes alone.
+  }
+  for (const base of bases) {
+    const retained = docPath(base, "control", "local/retained");
+    if (!existsSync(retained)) continue;
+    for (const lane of readdirSync(retained).sort())
+      if (/^WO-\d{3}$/u.test(lane) && (!order || lane === order))
+        places.push({
+          // The lane the close writes the journals to, by its own helper.
+          display: journalLane(base, lane),
+          file: join(base, journalLane(base, lane), name),
+          order: lane,
+        });
+  }
+  return places;
 };
 
 /**
@@ -155,14 +191,19 @@ export function checkRulesRecorded(
     const { sessionKey, recordedAt } = entry.message;
     const named = `${document}: the rule "${entry.rule.replace(/\s+/gu, " ").slice(0, 160)}"`;
     const at = `session ${sessionKey.slice(0, 12)} at ${recordedAt}`;
-    const row = journalRows(root, sessionKey).find(
-      (candidate) =>
-        candidate.typedEvent === "OperatorMessageObserved" &&
-        candidate.recordedAt === recordedAt,
-    );
+    // The row is wherever the kit moved the journal: the live directory or a
+    // closed order's retained lane.
+    const places = journalPlaces(root, sessionKey, entry.order);
+    const row = places
+      .flatMap((place) => journalFileRows(place.file))
+      .find(
+        (candidate) =>
+          candidate.typedEvent === "OperatorMessageObserved" &&
+          candidate.recordedAt === recordedAt,
+      );
     if (!row)
       throw new Error(
-        `${named} names no operator message in the session journal (${at}); a standing rule is recorded only from an operator message the journal holds`,
+        `${named} names no operator message in the session journal (${at}); read ${places.map((place) => place.display).join(", ")}${entry.order && !places.some((place) => place.order === entry.order) ? ` (the entry names ${entry.order}'s lane, which is not retained here)` : ""}; a standing rule is recorded only from an operator message a journal holds`,
       );
     if (
       row.source === "host-task-notification" ||

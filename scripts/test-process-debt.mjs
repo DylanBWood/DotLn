@@ -6880,11 +6880,17 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // consistency table and planner capture sentence re-pin them over WO-246's,
   // and WO-255's repair, naming the helper's required host in the planner's
   // capture sentence, re-pins them over WO-255's.
-  const current = "wo255-repair-role-baseline.json";
+  // WO-257's planner sentence (no pass takes a newer starter unless the
+  // operator asks in that session) pins the role trees over WO-255's repair.
+  const current = "wo257-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo255-role-baseline.json");
-  const options = JSON.parse(
+  assert.equal(baseline.historicalBaseline, "wo255-repair-role-baseline.json");
+  const repair = JSON.parse(
     readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(repair.historicalBaseline, "wo255-role-baseline.json");
+  const options = JSON.parse(
+    readFileSync(join(fixtures, repair.historicalBaseline), "utf8"),
   );
   assert.equal(options.historicalBaseline, "wo246-role-baseline.json");
   const publish = JSON.parse(
@@ -11530,6 +11536,7 @@ test("the subject meter has one value per cell and labelled closed-order compari
       },
       {
         role: "verifier",
+        attempts: 1,
         wallClockMs: null,
         observedTokens: null,
         observedCostUsd: null,
@@ -11546,6 +11553,20 @@ test("the subject meter has one value per cell and labelled closed-order compari
         boundStops: { count: 0 },
         boundAcceptances: [],
       },
+      // No record of any kind: the collector's row for a role that never
+      // dispatched for this order (WO-248-D004).
+      {
+        role: "release-close",
+        attempts: null,
+        wallClockMs: null,
+        observedTokens: null,
+        observedCostUsd: null,
+        commandsRun: null,
+        stepCount: null,
+        boundStops: { count: 0 },
+        boundAcceptances: [],
+      },
+      { role: "planner", wallClockMs: null, observedTokens: null },
     ],
   };
   const meta = {
@@ -11569,7 +11590,14 @@ test("the subject meter has one value per cell and labelled closed-order compari
   assert.equal(
     rows.length,
     5,
-    "one header, one separator and every subject dispatch",
+    "one header, one separator and every recorded subject dispatch",
+  );
+  // A role with no record of a dispatch gets no row of unknowns; it is named
+  // once below the table (WO-248-D004).
+  assert.doesNotMatch(rendered, /WO-999\/(?:release-close|planner)/);
+  assert.match(
+    rendered,
+    /^No dispatch is recorded for release-close, planner: no completed phase attempt, usage observation, journal row or bound event names those roles for WO-999\.$/m,
   );
   assert.equal(
     rows[0],
@@ -11599,21 +11627,33 @@ test("the subject meter has one value per cell and labelled closed-order compari
       assert.match(value, /^(unknown|[\d,]+(?:\.\d+)?)$/);
   }
   assert.doesNotMatch(rendered, /\| Work \||omitted|Δ|declared prompt/);
+  // One comparison sentence lists every metric once (WO-257 criterion 1);
+  // the table above carries the figures, so no metric gets a sentence of
+  // its own.
   const sentences = rendered
     .split("\n")
     .filter((line) => line.startsWith("Against "));
-  assert.deepEqual(
-    sentences,
-    [
-      "wall clock 1 h 1 min less",
-      "tokens 1,000 more",
-      "USD 0.25 more",
-      "commands 3 fewer",
-      "steps unchanged (0 difference)",
-      "bound stops 1 more",
-      "bound acceptances 1 more",
-    ].map((value) => `Against WO-997, the previous closed order: ${value}.`),
+  assert.deepEqual(sentences, [
+    "Against WO-997, the previous closed order: wall clock 1 h 1 min less; tokens 1,000 more; USD 0.25 more; commands 3 fewer; steps unchanged; bound stops 1 more; bound acceptances 1 more.",
+  ]);
+  assert.equal(
+    rendered.split("Against WO-997, the previous closed order:").length,
+    2,
   );
+  for (const metric of [
+    "wall clock",
+    "tokens",
+    "USD",
+    "commands",
+    "steps",
+    "bound stops",
+    "bound acceptances",
+  ])
+    assert.equal(
+      sentences[0].split(`; ${metric} `).length,
+      metric === "wall clock" ? 1 : 2,
+      metric,
+    );
   subject.phase = "closed";
   assert.equal(
     renderMetaTable(meta, { workOrderId: "WO-999" }),
@@ -11628,8 +11668,12 @@ test("the subject meter has one value per cell and labelled closed-order compari
   prior.metrics.tokens = null;
   subject.metrics.costUsd = undefined;
   const missing = renderMetaTable(meta, { workOrderId: "WO-999" });
-  assert.doesNotMatch(missing, /previous closed order: (tokens|USD)/);
-  assert.match(missing, /previous closed order: wall clock 1 h 1 min less/);
+  // A metric unobserved on either side reads `unknown` in its place; the
+  // sentence still lists every metric once.
+  assert.match(
+    missing,
+    /^Against WO-997, the previous closed order: wall clock 1 h 1 min less; tokens unknown; USD unknown; commands 3 fewer; steps unchanged; bound stops 1 more; bound acceptances 1 more\.$/m,
+  );
   const absent = renderMetaTable(meta, { workOrderId: "WO-994" });
   assert.doesNotMatch(
     absent,

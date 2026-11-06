@@ -21,16 +21,20 @@ import {
   existsSync,
   readFileSync,
   realpathSync,
+  writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  itemsTable,
   recordAgentReview,
   reviewsLane,
   runChangeReview,
+  tracedConsumersRefusal,
 } from "./lib/review-worker.mjs";
 import { workingTree } from "./lib/checkpoint.mjs";
 import { reviewerBriefs } from "../packages/skeleton/dist/src/loadouts/contributor.js";
+import { validateChangeReviewResult } from "../packages/skeleton/dist/src/change-review-protocol.js";
 import {
   initializeSubagentCounter,
   subagentUsage,
@@ -474,6 +478,697 @@ export async function reviewWorkerFixtures() {
           {},
         ),
         /--subject planning reviews a planning\/ branch/u,
+      );
+    });
+
+    await test("WO-257 criterion 12: a planning brief past the ceiling is split into batches over more workers with one merged report, a --since round carries only the documents changed since that tree, a batch that returns no report records nothing, and the dry run prints the measured size, the ceiling and the batch plan", async () => {
+      const repo = planningRepository(parent, "planning/2030-01-03-batches");
+      // Three orders under the per-document cap whose sum passes the ceiling.
+      const filler = (id) =>
+        `# ${id} — Fixture order\n\n${`${id} carries a long paragraph of fixture prose for the review. `.repeat(2400)}\n`;
+      for (const id of ["WO-903", "WO-904", "WO-905"])
+        write(repo, `docs/work-orders/${id}-fixture-order.md`, filler(id));
+      commit(repo, "three large orders");
+      const large = git(repo, ["rev-parse", "HEAD"]).trim();
+      const capture = join(parent, "batch-dispatch.md");
+      write(
+        parent,
+        "batch-dispatch.md",
+        "planning: fixture\n\n1. first item\n2. second item\n",
+      );
+      const planning = [
+        "--kind",
+        "criteria",
+        "--host",
+        "codex",
+        "--subject",
+        "planning",
+        "--capture",
+        capture,
+      ];
+      const documents = [
+        "docs/planning/fixture-pass.md",
+        "docs/work-orders/WO-903-fixture-order.md",
+        "docs/work-orders/WO-904-fixture-order.md",
+        "docs/work-orders/WO-905-fixture-order.md",
+      ];
+      const dry = JSON.parse(
+        (await review(repo, [...planning, "--dry-run"], {})).printed,
+      );
+      assert.equal(dry.measured.ceiling, 400_000);
+      assert.ok(
+        dry.measured.brief > dry.measured.ceiling,
+        "the whole brief is past the ceiling",
+      );
+      assert.equal(dry.measured.batches.length, 2);
+      assert.deepEqual(
+        dry.measured.batches.flatMap((batch) => batch.documents),
+        documents,
+        "every document of the round is in exactly one batch, in order",
+      );
+      for (const batch of dry.measured.batches)
+        assert.ok(batch.brief <= dry.measured.ceiling, `batch ${batch.number}`);
+      assert.ok(dry.brief.includes("this is batch 1 of 2"));
+      assert.ok(
+        dry.brief.includes(
+          "- batch 2: docs/work-orders/WO-905-fixture-order.md",
+        ),
+      );
+      assert.ok(!existsSync(join(repo, "docs/control/local/reviews")));
+      const items = (rows) =>
+        `Read the orders against the dispatch.\n\n## Items\n\n| Item | Location in the subject | Disposition |\n| --- | --- | --- |\n${rows.map((row) => `| ${row} |`).join("\n")}\n`;
+      const first = canned(parent, "batch-one", {
+        ...roundOne,
+        report: items(["1 | WO-903 criterion 1 | acted on"]),
+      });
+      const second = canned(parent, "batch-two", {
+        ...roundOne,
+        findings: [roundOne.findings[1]],
+        report: items(["2 | WO-905 criterion 1 | reviewed"]),
+      });
+      // A batch that returns no report ends the round naming the batch, and
+      // no merged report is recorded over the missing one.
+      const missing = await review(repo, planning, {
+        DOTLN_WORKER_FIXTURE: `${first},none`,
+      });
+      assert.equal(missing.result.report, null);
+      assert.match(
+        missing.printed,
+        /^review: criteria round 1: batch 2 of 2 returned no report \(/u,
+      );
+      const lane = join(
+        repo,
+        "docs/control/local/reviews/planning-2030-01-03-batches",
+      );
+      assert.ok(!existsSync(join(lane, "round-1-criteria.md")));
+      // One worker per batch, each brief under the ceiling with the round's
+      // index, and one report keyed by batch.
+      const { result, printed } = await review(repo, planning, {
+        DOTLN_WORKER_FIXTURE: `${first},${second}`,
+      });
+      assert.match(
+        printed,
+        /^review: criteria round 1 found 3 \(1 blocking\); 0 h 0 min; 2 batches\n/u,
+      );
+      assert.equal(result.batches, 2);
+      const record = JSON.parse(
+        readFileSync(join(repo, result.record), "utf8"),
+      );
+      assert.deepEqual(
+        record.findings.map((finding) => finding.id),
+        ["b1.F1", "b1.F2", "b2.F2"],
+      );
+      assert.deepEqual(
+        record.batches.map((batch) => batch.documents),
+        dry.measured.batches.map((batch) => batch.documents),
+      );
+      for (const batch of record.batches) {
+        assert.ok(batch.briefLength <= 400_000);
+        assert.ok(batch.brief.includes(`this is batch ${batch.number} of 2`));
+        for (const path of documents)
+          assert.ok(
+            batch.brief.includes(`: ${path} (`),
+            `${path} in the index`,
+          );
+        assert.match(batch.episodeId, new RegExp(`_b${batch.number}$`, "u"));
+      }
+      const report = readFileSync(join(repo, result.report), "utf8");
+      assert.match(
+        report,
+        /^- Batches: 1 of 2 \(docs\/planning\/fixture-pass\.md, docs\/work-orders\/WO-903-fixture-order\.md, docs\/work-orders\/WO-904-fixture-order\.md; brief \d+ characters; 0 h 0 min\); 2 of 2 \(docs\/work-orders\/WO-905-fixture-order\.md; brief \d+ characters; 0 h 0 min\); each finding is keyed by its batch\.$/mu,
+      );
+      // The merged Items table carries every batch's rows ahead of the
+      // batches' own reports, whose headings are demoted.
+      const merged = report.slice(report.indexOf("## The worker's report"));
+      assert.ok(merged.indexOf("## Items") < merged.indexOf("## Batch 1 of 2"));
+      assert.match(
+        merged,
+        /\| 1 \| WO-903 criterion 1 \| acted on \|\n\| 2 \| WO-905 criterion 1 \| reviewed \|/u,
+      );
+      assert.match(
+        merged,
+        /## Batch 2 of 2\n\nDocuments: docs\/work-orders\/WO-905-fixture-order\.md\.\n\n.*\n\n### Items/su,
+      );
+      // A --since round carries only the documents changed since that tree.
+      write(
+        repo,
+        "docs/work-orders/WO-906-fixture-order.md",
+        "# WO-906 — Small\n\nOne line.\n",
+      );
+      commit(repo, "one small order");
+      const since = JSON.parse(
+        (await review(repo, [...planning, "--dry-run", "--since", large], {}))
+          .printed,
+      );
+      assert.deepEqual(
+        since.measured.batches.flatMap((batch) => batch.documents),
+        ["docs/work-orders/WO-906-fixture-order.md"],
+      );
+      assert.equal(since.measured.batches.length, 1);
+      // A round under the ceiling has one batch and no batch fields.
+      const small = planningRepository(parent, "planning/2030-01-04-small");
+      const under = JSON.parse(
+        (await review(small, [...planning.slice(0, 6), "--dry-run"], {}))
+          .printed,
+      );
+      assert.equal(under.measured.batches.length, 1);
+      assert.ok(under.measured.brief <= under.measured.ceiling);
+      assert.ok(!under.brief.includes("this is batch"));
+    });
+
+    await test("WO-257 round 1: a split round is recorded batch by batch through the record route, a single report never stands for it, and the dry run prints every batch's prompt", async () => {
+      const repo = planningRepository(
+        parent,
+        "planning/2030-01-05-record-batches",
+      );
+      const filler = (id) =>
+        `# ${id} — Fixture order\n\n${`${id} carries a long paragraph of fixture prose for the review. `.repeat(2400)}\n`;
+      for (const id of ["WO-903", "WO-904", "WO-905"])
+        write(repo, `docs/work-orders/${id}-fixture-order.md`, filler(id));
+      commit(repo, "three large orders");
+      const capture = join(parent, "record-batch-dispatch.md");
+      write(
+        parent,
+        "record-batch-dispatch.md",
+        "planning: fixture\n\n1. first item\n2. second item\n",
+      );
+      const planning = [
+        "--kind",
+        "criteria",
+        "--host",
+        "claude",
+        "--subject",
+        "planning",
+        "--capture",
+        capture,
+      ];
+      const dry = JSON.parse(
+        (await review(repo, [...planning, "--dry-run"], {})).printed,
+      );
+      assert.equal(dry.measured.batches.length, 2);
+      // Every batch's worker input, with its Budget and Output sections, is
+      // printed with its digest, so the Agent route reads the whole round.
+      assert.equal(dry.batches.length, 2);
+      for (const batch of dry.batches) {
+        assert.ok(batch.prompt.includes(`this is batch ${batch.number} of 2`));
+        assert.ok(batch.prompt.includes("## Budget"));
+        assert.ok(batch.prompt.includes("## Output"));
+        assert.deepEqual(
+          batch.documents,
+          dry.measured.batches[batch.number - 1].documents,
+        );
+      }
+      const items = (rows) =>
+        `Read the orders against the dispatch.\n\n## Items\n\n| Item | Location in the subject | Disposition |\n| --- | --- | --- |\n${rows.map((row) => `| ${row} |`).join("\n")}\n`;
+      const part = (name, result) => {
+        write(parent, `${name}.json`, JSON.stringify(result));
+        return join(parent, `${name}.json`);
+      };
+      const first = part("record-batch-one", {
+        ...roundOne,
+        report: items(["1 | WO-903 criterion 1 | acted on"]),
+      });
+      const second = part("record-batch-two", {
+        ...roundOne,
+        findings: [roundOne.findings[1]],
+        report: items(["2 | WO-905 criterion 1 | reviewed"]),
+      });
+      // Every part names the dry run's tree, so a document edited between
+      // the parts is caught by the plan the brief digest binds, not by the
+      // tree the working tree would name.
+      const record = (args) =>
+        recordAgentReview(
+          repo,
+          [
+            ...planning,
+            "--format",
+            "json",
+            "--tree",
+            dry.reviewedTree,
+            ...args,
+          ],
+          { write: () => {} },
+        );
+      // One report cannot stand for the split round.
+      await assert.rejects(
+        record(["--from", first]),
+        /this round's brief is split into 2 batches \(the dry run prints each batch's prompt under batches\[\]\); record each batch's report with --batch 1 to 2/u,
+      );
+      await assert.rejects(
+        record(["--from", first, "--batch", "3"]),
+        /--batch 1 to 2/u,
+      );
+      const one = await record(["--from", first, "--batch", "1"]);
+      assert.equal(one.report, null);
+      assert.match(
+        one.line,
+        /^review: criteria round 1: recorded batch 1 of 2 from the Agent route; waiting for batch 2 before the merged report is recorded$/u,
+      );
+      assert.ok(
+        existsSync(
+          join(
+            repo,
+            "docs/control/local/reviews/planning-2030-01-05-record-batches/round-1-criteria.batch-1.json",
+          ),
+        ),
+      );
+      await assert.rejects(
+        record(["--from", first, "--batch", "1"]),
+        /already holds batch 1 of 2/u,
+      );
+      // The dry run's brief digest binds a part to the prompt its worker
+      // received: another digest is refused before anything is recorded
+      // (round 3's F3).
+      await assert.rejects(
+        record([
+          "--from",
+          second,
+          "--batch",
+          "2",
+          "--brief-sha256",
+          "0".repeat(64),
+        ]),
+        /--brief-sha256 0{64} is not the digest of batch 2's brief now \([0-9a-f]{64}\): the documents or the tree changed since the dry run/u,
+      );
+      // A part recorded under a plan that changed since (a document edited
+      // between the record and the merge) is refused naming the part
+      // (round 2's design F2).
+      const edited = join(repo, "docs/work-orders/WO-905-fixture-order.md");
+      const original = readFileSync(edited, "utf8");
+      writeFileSync(
+        edited,
+        `${original}\nAn amendment after batch 1 was recorded.\n`,
+      );
+      await assert.rejects(
+        record(["--from", second, "--batch", "2"]),
+        /the brief of batch 1 differs from the plan now/u,
+      );
+      writeFileSync(edited, original);
+      rmSync(
+        join(
+          repo,
+          "docs/control/local/reviews/planning-2030-01-05-record-batches/round-1-criteria.batch-2.json",
+        ),
+        { force: true },
+      );
+      const two = await record([
+        "--from",
+        second,
+        "--batch",
+        "2",
+        "--brief-sha256",
+        dry.batches[1].briefSha256,
+      ]);
+      assert.match(
+        two.line,
+        /^review: criteria round 1 found 3 \(1 blocking\); recorded from the Agent route; 2 batches$/u,
+      );
+      const merged = JSON.parse(readFileSync(join(repo, two.record), "utf8"));
+      assert.deepEqual(
+        merged.findings.map((finding) => finding.id),
+        ["b1.F1", "b1.F2", "b2.F2"],
+      );
+      assert.deepEqual(
+        merged.batches.map((batch) => batch.documents),
+        dry.measured.batches.map((batch) => batch.documents),
+      );
+      const report = readFileSync(join(repo, two.report), "utf8");
+      assert.match(
+        report,
+        /^- Batches: 1 of 2 \(.*; brief \d+ characters; duration unknown\); 2 of 2/mu,
+      );
+      assert.match(
+        report,
+        /\| 1 \| WO-903 criterion 1 \| acted on \|\n\| 2 \| WO-905 criterion 1 \| reviewed \|/u,
+      );
+    });
+
+    await test("WO-257 repair: both batch routes preserve semantic table columns and unique recheckable finding IDs", async () => {
+      const table = (title, header, rows) =>
+        [
+          `## ${title}`,
+          "",
+          `| ${header.join(" | ")} |`,
+          `| ${header.map(() => "---").join(" | ")} |`,
+          ...rows.map((row) => `| ${row.join(" | ")} |`),
+          "",
+        ].join("\n");
+      const capture = join(parent, "merge-dispatch.md");
+      write(
+        parent,
+        "merge-dispatch.md",
+        "planning: fixture\n1. First item\n2. Second item\n",
+      );
+      for (const kind of ["criteria", "consistency"]) {
+        const reports =
+          kind === "criteria"
+            ? [
+                table(
+                  "Items",
+                  ["Evidence", "**Status**", "Item", "Where"],
+                  [["proof one", "reviewed", "1", "WO-903 criterion 1"]],
+                ),
+                table(
+                  "Items",
+                  [
+                    "Item number",
+                    "Disposition",
+                    "Location in the subject",
+                    "Evidence",
+                  ],
+                  [["2", "acted on", "WO-905 criterion 1", "proof two"]],
+                ),
+              ]
+            : [
+                TRACED,
+                table(
+                  "Traced consumers",
+                  [
+                    "Result summary",
+                    "Run command",
+                    "Downstream consumer",
+                    "Contract changed",
+                  ],
+                  [
+                    [
+                      "current",
+                      "node scripts/meta.mjs --check",
+                      "docs/OTHER.md",
+                      "generated pages",
+                    ],
+                    [
+                      "none",
+                      "rg module scripts/other.json",
+                      "scripts/other.json",
+                      "fixture manifests",
+                    ],
+                  ],
+                ),
+              ];
+        for (const report of reports)
+          assert.equal(
+            kind === "criteria"
+              ? itemsTable(report).refusal
+              : tracedConsumersRefusal(report),
+            null,
+          );
+        // Short ids occupy the fallback's first choices both before and
+        // after long ids. The second batch repeats an id from the first.
+        const results = reports.map((report, at) => ({
+          ...roundOne,
+          report,
+          findings: (at === 0
+            ? ["L".repeat(64), "F1", "F3", "M".repeat(52), "F4", "F5"]
+            : ["F2"]
+          ).map((id) => ({ ...roundOne.findings[1], id })),
+        }));
+        for (const route of ["transport", "record"]) {
+          const label = `${kind}-${route}`;
+          const repo = planningRepository(
+            parent,
+            `planning/2030-01-06-merge-${label}`,
+          );
+          for (const id of ["WO-903", "WO-904", "WO-905"])
+            write(
+              repo,
+              `docs/work-orders/${id}-fixture-order.md`,
+              `# ${id}\n\n${"Ordinary planning document text. ".repeat(5000)}\n`,
+            );
+          commit(repo, "large planning subject");
+          const args = [
+            "--kind",
+            kind,
+            "--host",
+            "codex",
+            "--subject",
+            "planning",
+            ...(kind === "criteria" ? ["--capture", capture] : []),
+          ];
+          const dry = JSON.parse(
+            (await review(repo, [...args, "--dry-run"], {})).printed,
+          );
+          assert.equal(dry.batches.length, 2);
+          const files = results.map((result, at) =>
+            canned(parent, `merge-${label}-${at}`, result),
+          );
+          let merged;
+          if (route === "transport") {
+            merged = (
+              await review(repo, args, {
+                DOTLN_WORKER_FIXTURE: files.join(","),
+              })
+            ).result;
+          } else {
+            for (const [at, file] of files.entries())
+              merged = await recordAgentReview(
+                repo,
+                [
+                  ...args,
+                  "--from",
+                  file,
+                  "--format",
+                  "json",
+                  "--batch",
+                  String(at + 1),
+                  "--tree",
+                  dry.reviewedTree,
+                  "--brief-sha256",
+                  dry.batches[at].briefSha256,
+                ],
+                { write: () => {} },
+              );
+          }
+          assert.ok(merged.report, `${label} files the merged report`);
+          const record = JSON.parse(
+            readFileSync(join(repo, merged.record), "utf8"),
+          );
+          const ids = record.findings.map(({ id }) => id);
+          assert.equal(ids.length, 7);
+          assert.equal(new Set(ids).size, ids.length);
+          for (const id of ["F1", "F3", "F4", "F5"])
+            assert.ok(ids.includes(`b1.${id}`), "short ids keep their names");
+          assert.ok(ids.every((id) => `consistency.999.${id}`.length <= 64));
+          validateChangeReviewResult(
+            {
+              schemaVersion: 1,
+              findings: record.findings,
+              rechecks: record.rechecks,
+              filesRead: record.filesRead,
+              report: record.report,
+            },
+            { review: { priorFindingIds: [] } },
+          );
+          // Inspect the merged table, not the retained original batch bodies.
+          const summary = record.report.split("## Batch 1 of 2")[0];
+          if (kind === "criteria") {
+            assert.equal(itemsTable(summary).refusal, null);
+            assert.match(
+              summary,
+              /\| proof one \| reviewed \| 1 \| WO-903 criterion 1 \|/u,
+            );
+            assert.match(
+              summary,
+              /\| proof two \| acted on \| 2 \| WO-905 criterion 1 \|/u,
+            );
+          } else {
+            assert.equal(tracedConsumersRefusal(summary), null);
+            assert.match(
+              summary,
+              /\| generated pages \| docs\/OTHER.md \| node scripts\/meta.mjs --check \| current \|/u,
+            );
+            assert.match(
+              summary,
+              /\| fixture manifests \| scripts\/other.json \| rg module scripts\/other.json \| none \|/u,
+            );
+          }
+          // A later worker must be able to address every merged finding,
+          // not just deserialize a list whose identifiers appear valid.
+          const rechecks = ids.map((id) => ({
+            id: `${kind}.1.${id}`,
+            outcome: "held",
+            note: "Checked the fixture finding.",
+          }));
+          const recheckFiles = reports.map((report, at) =>
+            canned(parent, `merge-recheck-${label}-${at}`, {
+              schemaVersion: 1,
+              findings: [],
+              rechecks,
+              filesRead: [],
+              report,
+            }),
+          );
+          const rechecked = (
+            await review(
+              repo,
+              [...args, "--round", "2", "--recheck", merged.record],
+              {
+                DOTLN_WORKER_FIXTURE: recheckFiles.join(","),
+              },
+            )
+          ).result;
+          assert.ok(rechecked.report, `${label} can be rechecked`);
+          const next = JSON.parse(
+            readFileSync(join(repo, rechecked.record), "utf8"),
+          );
+          assert.deepEqual(
+            next.rechecks.map(({ id }) => id),
+            rechecks.map(({ id }) => id),
+          );
+        }
+      }
+    });
+
+    await test("WO-257 round 2: a document past the room a batch's captures leave is a pointer, and an untracked document unchanged since the named tree is left out", async () => {
+      const repo = planningRepository(parent, "planning/2030-01-06-pointers");
+      const filler = (id, repeats) =>
+        `# ${id} — Fixture order\n\n${`${id} carries a long paragraph of fixture prose for the review. `.repeat(repeats)}\n`;
+      write(
+        repo,
+        "docs/work-orders/WO-903-fixture-order.md",
+        filler("WO-903", 2400),
+      );
+      write(
+        repo,
+        "docs/work-orders/WO-904-fixture-order.md",
+        filler("WO-904", 400),
+      );
+      commit(repo, "two orders");
+      // Two captures, each under the document cap, that together leave the
+      // larger order no room beside them under the ceiling: the order becomes
+      // a pointer to the checkout, never a refusal (round 1's Codex criteria
+      // F5; round 2's criteria F10).
+      const captureText = (name) =>
+        `planning: fixture ${name}\n\n1. first item\n${"a wide capture line of operator prose that fills the brief. ".repeat(2500)}\n`;
+      write(parent, "pointer-dispatch-1.md", captureText("one"));
+      write(parent, "pointer-dispatch-2.md", captureText("two"));
+      const planning = [
+        "--kind",
+        "criteria",
+        "--host",
+        "claude",
+        "--subject",
+        "planning",
+        "--capture",
+        join(parent, "pointer-dispatch-1.md"),
+        "--capture",
+        join(parent, "pointer-dispatch-2.md"),
+      ];
+      const dry = JSON.parse(
+        (await review(repo, [...planning, "--dry-run"], {})).printed,
+      );
+      assert.ok(dry.measured.brief > dry.measured.ceiling, "the round splits");
+      const pointed = dry.batches.find((batch) =>
+        batch.pointers.includes("docs/work-orders/WO-903-fixture-order.md"),
+      );
+      assert.ok(pointed, "the large order is a pointer in its batch");
+      assert.match(
+        pointed.prompt,
+        /docs\/work-orders\/WO-903-fixture-order\.md is \d+ bytes; read it from the checkout\./u,
+      );
+      assert.ok(
+        !dry.batches.some((batch) =>
+          batch.pointers.includes("docs/work-orders/WO-904-fixture-order.md"),
+        ),
+        "the order that fits is carried whole",
+      );
+      for (const batch of dry.measured.batches)
+        assert.ok(batch.brief <= dry.measured.ceiling, `batch ${batch.number}`);
+      // An untracked document the named tree already holds unchanged is
+      // left out of a --since round; a changed one is in (criteria F4).
+      write(
+        repo,
+        "docs/planning/untracked-pass.md",
+        "# Untracked\n\nOne line.\n",
+      );
+      const withUntracked = JSON.parse(
+        (await review(repo, [...planning, "--dry-run"], {})).printed,
+      );
+      assert.ok(
+        withUntracked.measured.batches
+          .flatMap((batch) => batch.documents)
+          .includes("docs/planning/untracked-pass.md"),
+      );
+      const snapshot = withUntracked.reviewedTree;
+      // A tracked order changes after the snapshot, so the since set is not
+      // empty and the branch-base fallback never runs.
+      write(
+        repo,
+        "docs/work-orders/WO-904-fixture-order.md",
+        `${filler("WO-904", 400)}An amendment after the snapshot.\n`,
+      );
+      const unchanged = JSON.parse(
+        (
+          await review(
+            repo,
+            [...planning, "--dry-run", "--since", snapshot],
+            {},
+          )
+        ).printed,
+      );
+      assert.deepEqual(
+        unchanged.measured.batches.flatMap((batch) => batch.documents),
+        ["docs/work-orders/WO-904-fixture-order.md"],
+        "an untracked document unchanged since the tree is not carried",
+      );
+      write(
+        repo,
+        "docs/planning/untracked-pass.md",
+        "# Untracked\n\nTwo lines.\n",
+      );
+      const changed = JSON.parse(
+        (
+          await review(
+            repo,
+            [...planning, "--dry-run", "--since", snapshot],
+            {},
+          )
+        ).printed,
+      );
+      assert.deepEqual(
+        changed.measured.batches.flatMap((batch) => batch.documents),
+        [
+          "docs/planning/untracked-pass.md",
+          "docs/work-orders/WO-904-fixture-order.md",
+        ],
+      );
+    });
+
+    await test("WO-257 round 1: the helper's brief ceiling is the figure the protocol admits, one character past it refused", async () => {
+      const { validateChangeReviewRequest, CHANGE_REVIEW_EFFECT } =
+        await import("../packages/skeleton/dist/src/change-review-protocol.js");
+      const { CHANGE_REVIEW_BRIEF_CEILING } =
+        await import("./lib/review-worker.mjs");
+      const capture = realpathSync(
+        createFixtureRoot(join(parent, "ceiling-capture-")),
+      );
+      const request = (length) => ({
+        kind: "change-review",
+        command: {
+          commandId: "cmd_review_ceiling",
+          workstreamId: "ws_change_review",
+          intent: { kind: "Act", effect: CHANGE_REVIEW_EFFECT, payload: {} },
+        },
+        episodeId: "ep_review_ceiling",
+        model: "claude-opus-5-5",
+        effort: "xhigh",
+        // The capture lane sits beside the checkout, never inside it.
+        cwd: join(parent, "ceiling-checkout"),
+        capture,
+        review: {
+          kind: "criteria",
+          round: 1,
+          subject: "WO-901",
+          priorFindingIds: [],
+        },
+        brief: "x".repeat(length),
+        profile: {
+          profileId: "change-review-v1",
+          modelTools: ["Read", "Grep", "Glob", "Bash"],
+        },
+      });
+      validateChangeReviewRequest(request(CHANGE_REVIEW_BRIEF_CEILING));
+      assert.throws(() =>
+        validateChangeReviewRequest(request(CHANGE_REVIEW_BRIEF_CEILING + 1)),
       );
     });
 

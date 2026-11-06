@@ -33,20 +33,76 @@ export function showHarnessAdvisory(
   }
 }
 
-/** Read only the first content line, allowing blanks and one opening paste
- * fence. A later quoted dispatch never becomes the operator's instruction. */
+/** Read only the first content line, allowing blanks, the host's own elements
+ * before the operator's text and one opening paste fence. Claude Code hands a
+ * pasted message wrapped in a `pasted_content` element, whose opening tag is
+ * skipped so the paste's own first line is read, and can write a slash
+ * command's output block (`local-command-caveat`, `command-name`,
+ * `command-message`, `command-args` and `local-command-stdout`) before the
+ * operator's text, each skipped as a whole element. Nothing else about the
+ * line changes: a later quoted dispatch never becomes the operator's
+ * instruction, and a first content line that opens any other element, or a
+ * known element whose closing tag never comes, is reported by that element's
+ * name, so a changed host shape is read at the next pass instead of failing
+ * silently; text after a closing tag on its own line is read. The function
+ * is self-contained so the generated Codex hook embeds it. */
 export function harnessPromptLine(prompt: string | undefined): {
   text: string;
   index: number;
+  element: string | null;
 } {
   const lines = (prompt ?? "").split(/\r?\n/u);
+  const blocks = [
+    "local-command-caveat",
+    "command-name",
+    "command-message",
+    "command-args",
+    "local-command-stdout",
+  ];
+  const wrappers = ["pasted_content"];
   let index = 0;
-  while (index < lines.length && !lines[index]!.trim()) index++;
+  const skipBlanks = () => {
+    while (index < lines.length && !lines[index]!.trim()) index++;
+  };
+  skipBlanks();
+  for (;;) {
+    const opening = /^\s*<([A-Za-z][\w-]*)(?:\s[^<>]*)?>/u.exec(
+      lines[index] ?? "",
+    );
+    if (!opening) break;
+    const name = opening[1]!;
+    if (blocks.includes(name)) {
+      const closing = `</${name}>`;
+      const opened = index;
+      while (index < lines.length && !lines[index]!.includes(closing)) index++;
+      if (index >= lines.length) {
+        index = opened;
+        break;
+      }
+      const line = lines[index]!;
+      const after = line.slice(line.indexOf(closing) + closing.length);
+      if (after.trim()) {
+        lines[index] = after;
+        break;
+      }
+      index++;
+    } else if (wrappers.includes(name)) {
+      const rest = lines[index]!.slice(opening[0].length);
+      if (rest.trim()) {
+        lines[index] = rest;
+        break;
+      }
+      index++;
+    } else break;
+    skipBlanks();
+  }
   if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
     index++;
-    while (index < lines.length && !lines[index]!.trim()) index++;
+    skipBlanks();
   }
-  return { text: (lines[index] ?? "").trim(), index };
+  const text = (lines[index] ?? "").trim();
+  const element = /^<([A-Za-z][\w-]*)(?:[\s/>]|$)/u.exec(text)?.[1] ?? null;
+  return { text, index, element };
 }
 
 /**
@@ -61,7 +117,12 @@ export function harnessPromptLine(prompt: string | undefined): {
 export function operatorMessageClass(
   prompt: string | undefined,
   promptLine: typeof harnessPromptLine = harnessPromptLine,
-): { prefix: string | null; prefixLine: number | null; class: string } {
+): {
+  prefix: string | null;
+  prefixLine: number | null;
+  class: string;
+  leadingElement?: string;
+} {
   const prefixes: Record<string, string> = {
     "resume:": "direction",
     "planning:": "direction",
@@ -77,13 +138,23 @@ export function operatorMessageClass(
     Object.keys(prefixes).find((candidate) =>
       line.text.startsWith(candidate),
     ) ?? null;
-  return prefix
-    ? { prefix, prefixLine: line.index, class: prefixes[prefix]! }
-    : {
-        prefix: null,
-        prefixLine: null,
-        class: /\?\s*$/u.test(prompt ?? "") ? "question" : "unclassified",
-      };
+  if (prefix)
+    return { prefix, prefixLine: line.index, class: prefixes[prefix]! };
+  const unprefixed: {
+    prefix: null;
+    prefixLine: null;
+    class: string;
+    leadingElement?: string;
+  } = {
+    prefix: null,
+    prefixLine: null,
+    class: /\?\s*$/u.test(prompt ?? "") ? "question" : "unclassified",
+  };
+  // A first content line that opens an element the reader does not skip is
+  // journaled by the element's name, so the next pass can read which block
+  // the host wrote before the operator's text.
+  if (line.element) unprefixed.leadingElement = line.element;
+  return unprefixed;
 }
 
 /**
@@ -1539,15 +1610,19 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
   );
 }
 
-/** The launchpad's own publish helpers by their node spelling. Claude Code's
- * auto-mode page says a narrow Bash allow rule is resolved before its classifier
- * and a wildcarded interpreter is suspended; that a rule naming one script after
- * node counts as narrow is an inference, never probed live. No rule names
- * `git push` or `gh`, because one for either would admit every push or gh call
- * unjudged. Copilot's shared settings file carries the same bytes. */
+/** The launchpad's own publish helpers by their node spelling: the update
+ * and planning publishes (WO-246) and the target publish (WO-257). Claude
+ * Code's auto-mode page says a narrow Bash allow rule is resolved before its
+ * classifier and a wildcarded interpreter is suspended; that a rule naming one
+ * script after node counts as narrow is an inference, never probed live. No
+ * rule names `git push` or `gh`, because one for either would admit every push
+ * or gh call unjudged. Copilot's shared settings file carries the same bytes,
+ * and a release that changes them says a new session reads the emitted
+ * settings. */
 export const PUBLISH_HELPER_ALLOW_RULES = [
   "Bash(node scripts/launchpad.mjs update --publish *)",
   "Bash(node scripts/refute-plan.mjs publish *)",
+  "Bash(node scripts/worktree.mjs publish *)",
 ] as const;
 
 /** Each enforced class owns one row, so the count and provenance follow it. */

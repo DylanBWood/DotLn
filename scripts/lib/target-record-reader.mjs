@@ -2,11 +2,11 @@ import { createHash } from "node:crypto";
 import { posix } from "node:path";
 import { docRelative } from "./config.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
-import { mainWorktree, primaryWorktree, runGit } from "./git.mjs";
+import { runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import {
   physicalDirectory,
-  recordedRepositoryClone,
+  resolveRecordedClone,
   targetRecordSources,
 } from "./target-worktrees.mjs";
 
@@ -54,21 +54,7 @@ export function readTargetRecord(root, state, record) {
     record.path.includes("\\")
   )
     throw new Error("target record binding differs from its reviewed subject");
-  let clone = recordedRepositoryClone(root, state.repositoryId);
-  if (!clone) {
-    const primary = primaryWorktree(root);
-    if (primary) clone = recordedRepositoryClone(primary, state.repositoryId);
-  }
-  if (!clone) {
-    let main;
-    try {
-      main = mainWorktree(root);
-    } catch (error) {
-      if (error.message !== "no main-branch control-plane worktree found")
-        throw error;
-    }
-    if (main) clone = recordedRepositoryClone(main, state.repositoryId);
-  }
+  const { clone } = resolveRecordedClone(root, state.repositoryId);
   if (!clone)
     throw new Error(
       `${state.workOrderId}: recorded target clone unavailable; checked the running checkout, the primary checkout (common Git directory owner), and the main-branch worktree when present. Keep the ignored local clone mapping in one of those launchpad checkouts; the primary checkout may be on any branch`,

@@ -342,13 +342,16 @@ includes the shared goal card and the refuter's separate subject boundary.
    and verdict, final review, latest actor attestation, effort drift, latest
    checkpoint, and legal next actions. Both `status` forms fold the canonical
    append-only legacy `docs/control/resume.jsonl` and per-order
-   `docs/control/orders/WO-NNN.jsonl` segments; both are read-only and neither
-   appends an event nor rewrites `docs/control/current.md`. The Markdown file is
+   `docs/control/orders/WO-NNN.jsonl` segments; both are read-only, append no
+   event and rewrite `docs/control/current.md` only under `status --refresh`.
+   The Markdown file is
    a disposable human projection, never an API: lifecycle peers consume the
    JSON status, while an operator may read the Markdown. If either status form
-   warns that the projection disagrees with the fold, trust the returned fold,
-   report the mismatch, and let the next legal state-changing command refresh
-   the projection; never repair it by hand.
+   warns that the projection disagrees with the fold, trust the returned fold
+   and run `npm run resume -- status --refresh`, which rewrites the file from
+   the fold, appends no control event and prints the same status (WO-257);
+   the next legal state-changing command also refreshes it; never repair it
+   by hand.
    Timing is projection data: `recordedAt` is the latest event's append time or
    `null`; `elapsed` maps each phase's latest completed attempt to signed
    milliseconds or `"unknown"` when an endpoint predates the migration.
@@ -462,7 +465,15 @@ active line, the sequence with its lane pairs and the Active and Open cards;
 `HISTORY.md` holds the settled cards, the sources and limits and the tag
 record), observes current headers and control evidence with a
 recorded snapshot of local annotated release tag objects and the control
-segments contained in each tagged revision. Prefix checks are per segment; a
+segments contained in each tagged revision. Each card's criteria line shows a
+criterion the handoff left unmet by its later criterion-level judgment (met
+by a verification, waived or defective by ordinal) with the executor's
+ordinal beside it, and as the current state only while no later judgment
+exists. A failed final review or repair dispatch preserves that later
+verification judgment; a fresh executor handoff needs its own later
+verification, determined by the events' ordinals
+([WO-257-D042](../evidence/WO-257/decisions.md#wo-257-d042--retain-later-criterion-judgments-and-name-the-feature-registry-regeneration)).
+Prefix checks are per segment; a
 sibling merge cannot shift another order's close ordinal. Run
 `npm run work-orders -- index` after executor dispatch and before its evidence gate.
 `implementation-ready` and `repair-complete` refresh the final index automatically,
@@ -809,8 +820,11 @@ contributor sign-off exemption, so `status --json`, `current.md`, the generated
 index, `times`, `usage` and a release manifest derived over the real log are
 unchanged by its introduction. `features` accepts `"<id>": true|false` or
 `"<id>": { "on": boolean, "note": "operator reason" }`. The registry in
-`scripts/lib/features.mjs` defines each default, scope, meaning, election key
-and consumer. `npm run features -- list` shows the inventory (`--json` for
+`scripts/lib/feature-registry.mjs` defines each default, scope, meaning,
+election key and consumer; `scripts/lib/features.mjs` reads the elections
+through it and `scripts/lib/config.mjs` validates a declared section through
+it, so neither reader imports the other. `npm run features -- list` shows
+the inventory (`--json` for
 data); `render` writes the effective table at `docs/control/FEATURES.md`
 under the configured control root, and `check` refuses stale output.
 `npm run meta` renders it and the document gate checks it. `npm run sync`
@@ -1277,8 +1291,11 @@ fold validates each event's shape; the route judges its legality.
   after preparation would leave the lines stale, and preparation refuses once
   the order closes, so `final-review-result pass` refuses a stored body whose
   lines differ from the record while preparation can still rewrite them, and
-  `worktree publish` refuses one changed after the pass; a target order's or
-  an unmetered repository's body names none. `plan failures` counts the
+  `worktree publish` refuses one changed after the pass. A target order's
+  records publication body carries the same lines, written by the reviewer by
+  hand as its last block since preparation writes nothing for a target order,
+  and `worktree publish` refuses one without them, printing the lines; an
+  unmetered repository's body names none. `plan failures` counts the
   records by class, leaving out a record
   the operator retracted, while the plan start block carries the off-ramp
   counts by kind and leaves the class breakdown to `plan failures`.
@@ -1549,20 +1566,35 @@ and non-authoritative suggestions, goes through blinded refutation, and stops at
 operator disposition without planning or fixing; the Repo Gardener is the
 walking skeleton's founding identity, not a session.
 
-The prompt hook reads a dispatch from the first non-blank content line,
-skipping one leading triple-backtick fence and surrounding blank lines. It
-records that line's zero-based `prefixLine`, prefix, class and resolved role;
-a prefix on a later content line is not a dispatch. Quoted examples remain
-prose, and one message records at most one prefix (WO-226). Claude Code
-writes a slash command's output block (`/model`'s, in every planning
-session) before the operator's text in the same message, and the reader
-takes that block's first line, so such a dispatch is journaled unclassified
-with no role, no outside-write grant and no usage standing (every core
-planning session from 2026-10-29 to 2026-11-06; the fork's item 5 of
-2026-11-05). WO-257 skips the host's block; until it lands, the dispatch, or
-a bare prefix line after it, is sent as a message of its own, which resolves
-the role
-([the 2026-11-06 pass](../planning/passes/fork-returns-and-review-batches-2026-11-06.md)).
+No planning or entropy pass takes a newer starter release or merges upstream;
+only the operator's words in that session do. `node scripts/launchpad.mjs
+update --finish`, `update --publish` and core's `export --update` refuse under
+a journaled `planning:` or `ideation:` dispatch or a pending entropy review
+or refutation dispatch, naming the operator's in-session request as the
+route, and `--operator-request --capture <ignored intake file>
+--capture-hash sha256:<digest>` records that request with its hash in the
+session journal and, for a from-core update, in the sibling receipt
+([WO-257-D005](../evidence/WO-257/decisions.md#wo-257-d005--step-2-the-kits-sentence-and-a-typed-refusal-of-an-update-under-a-journaled-planning-or-entropy-dispatch)).
+
+The prompt hook reads a dispatch from the first non-blank content line after
+the host's own elements: a slash command's output block (`local-command-caveat`,
+`command-name`, `command-message`, `command-args` and
+`local-command-stdout`, each skipped whole), a `<pasted_content>` wrapper's
+opening tag (text on the tag's own line is kept), then one leading
+triple-backtick fence and surrounding blank lines. It records that line's
+zero-based `prefixLine`, prefix, class and resolved role; a prefix on a later
+content line is not a dispatch. Quoted examples remain prose, and one message
+records at most one prefix (WO-226). A message whose first content line opens
+an element outside that set, or a known element whose closing tag never
+comes, is journaled unclassified with the element's name as
+`leadingElement`, so the next pass can read which block the host wrote, and
+text after a closing tag on that tag's own line is read as the content line.
+The generated Codex hook's embedded reader and `harnessWorkerWords` read the
+same line. A dispatch row journaled unclassified before the reader skipped
+the host's elements (a pasted dispatch whose wrapper tag it took as the first
+line) is a record and stays as written, since the fix is forward-only;
+[WO-257-D002](../evidence/WO-257/decisions.md#wo-257-d002--correction-the-hook-received-the-planning-dispatch-behind-the-hosts-pasted-content-wrapper-not-the-slash-commands-block)
+records the host shapes observed and the cause.
 
 **`planning: entropy reducer`.** This exact phrase makes the pass's subject an
 Entropy Reducer review rather than the register's existing rows. The pass opens
@@ -1714,7 +1746,10 @@ Preconditions and inputs:
    one in its document's `Rules recorded` block, which `plan start` writes
    empty, as `{rule, document, section, message: {sessionKey, recordedAt},
 captureDigest}` with an optional `class`, and the plan check reads that
-   message's journal row and refuses a rule with no row, one from the host's
+   message's journal row, in the live journal directory or in a closed
+   order's retained lane under `docs/control/local/retained/WO-NNN/harness/`
+   in this checkout or main's (WO-257), and refuses a rule with no row, naming
+   the places read, one from the host's
    task notification, one from a message the hook classed a question, a
    `class` the row contradicts and a digest that is not the message's. The
    operator reads every new rule in one place and strikes one by removing its
@@ -1722,11 +1757,13 @@ captureDigest}` with an optional `class`, and the plan check reads that
    ([WO-254](../evidence/WO-254/decisions.md#wo-254-d010--a-rule-is-written-once-in-the-open-the-rules-recorded-block)).
    The reader entry points are the root instruction file's Start here, the
    generated skills' and role roots' `Read:` lines, this guide's cold-start
-   read order, the kit guide's First steps and, since the 2026-11-03 pass,
-   the repository's front page `README.md`, declared in `documents.json`
-   as `front-page` because every page it links was red-tagged as unreached
-   (WO-257 makes it a kit default); `npm run test:docs` refuses an
-   entry point that names a record and reports a standing document that no
+   read order, the kit guide's First steps and the repository's front page
+   `README.md`, the kit's `front-page` default entry point (every line of
+   the page is in scope, and its `How to start: <path>.` line counts as a
+   link; an instance that declares `documents.json` lists it there, since a
+   declared list replaces the defaults; WO-257); `npm run test:docs` refuses
+   an entry point that names a record, the front page excepted since it may
+   link a record (WO-257), and reports a standing document that no
    entry point names, no standing or generated page a reader reaches links to
    and no program reads. `npm run plan -- documents` adds the read census:
    the sessions whose journals read each document over the last N releases (N
@@ -1777,12 +1814,11 @@ by hash. The receipt records scope, carried identities and dispatch-to-file
 wall-clock. Wall-clock is observed, with no pass-budget refusal.
 Full scope judges every order. Independence remains session-attested; no
 unknown model setting becomes readback. The subject is built from the
-sequence, so a `track: separate` workstream's members are outside every
-judgment and outside `amend-order`'s horizon until WO-257 lists the open
-members after the sequenced orders; until then a pass that files such
-members records its own judgment of them in its document, and an authorized
-change to one takes the never-judged route below (the fork's items of
-2026-11-04 and 2026-11-05).
+sequence and then the open members of each `track: separate` workstream, in
+the workstream's member order, so those members are judged and inside
+`amend-order`'s horizon; a closed member and an order of a workstream
+without that track are not added (WO-257, the fork's items of 2026-11-04
+and 2026-11-05).
 
 After drafting, commit the planning subject locally and use this background
 worker workflow for independent refutation. External review through
@@ -1801,10 +1837,14 @@ After the refutation receipt is filed with its holds answered and
 `npm run test:docs` is green, a planning or ideation pass on a planning branch
 pushes that branch and opens its `:memo:` pull request with `node
 scripts/refute-plan.mjs publish --title <title> --body-file <path>` (`npm run plan
--- publish` takes the same flags). The emitted `.claude/settings.json` allows that
-node spelling and `node scripts/launchpad.mjs update --publish` and nothing else,
-so that Claude Code resolves them before its auto-mode classifier
-([decision](../evidence/WO-246/decisions.md#wo-246-d010--the-operator-authorizes-the-two-allow-rules)).
+-- publish` takes the same flags). The emitted `.claude/settings.json` allows
+three publish helpers by their node spelling, that one,
+`node scripts/launchpad.mjs update --publish` and
+`node scripts/worktree.mjs publish`, and nothing else, so that Claude Code
+resolves them before its auto-mode classifier
+([decision](../evidence/WO-246/decisions.md#wo-246-d010--the-operator-authorizes-the-two-allow-rules);
+the third rule is WO-257's, authorized as the first two were,
+[D022](../evidence/WO-257/decisions.md#wo-257-d022--step-17-the-target-publish-helpers-allow-rule-and-the-new-session-line)).
 The helper admits a `planning/<date>-<slug>` branch
 with a clean tree and its planning document committed. As the target publish does,
 it lints the title and body, refuses AI attribution, proves gh and its login for
@@ -2584,7 +2624,17 @@ records the previous release admitted, or the release is held until it does.
 The core-only `instance-history` suite updates a committed fixture instance
 and runs its own sync, index, planning and document checks against accumulated
 record shapes. A new field refusal reported by an instance adds a shape at
-the next planning pass. A Read before upgrading line never asks an instance
+the next planning pass. Release preparation writes the Read before upgrading
+lines from the release's changed files: a changed renderer of a generated
+page (the writer script, the module that renders the work-order index, the
+meta table, the lineage index or the sibling index, or a module whose render
+or format function one of them imports) names, in one line for every changed
+renderer, the regeneration commands to run after the merge
+before the next document gate reads the pages, and a changed host settings
+emitter or a changed committed `.claude/settings.json` names a re-emit and a
+new session, since the host reads the emitted settings when a session starts;
+a release that changes neither adds no such line, and the derived block then
+carries only its standing source-only line (WO-257). A Read before upgrading line never asks an instance
 to edit a closed record by hand; a necessary migration needs its own planning
 decision before release. Ordinary instance kit updates still preserve seed ownership;
 the instance's own session previews the refreshed starter with the incoming
@@ -2808,8 +2858,11 @@ tag; if the remote tag disappeared, it can only
 recreate the tag at the recorded commit
 (WO-221).
 
-A target order's records branch is versionless and requires one well-formed
-README release claim at least as new as the latest release. It needs no
+A target order's records branch is versionless. Where its README carries a
+release block, the one well-formed claim there stays at least as new as the
+latest release; a kit root whose README carries no release markers carries no
+claim, which the release-block rule reports as not carried and the kit guide
+states in the same conditional form. It needs no
 release notes; `release prepare --local` reports no release without assigning
 a version or changing files. An instance self order keeps the version, notes, component and
 workspace-pin checks; its manifest uses the carried tag template and compiled
@@ -3009,7 +3062,13 @@ command definitions deciding;
 the launchpad document gate still judges its documents. Passing final review
 records `targetGate` at the clean reviewed commit. `npm run resume --
 target-records` copies the order and moves decisions and every filed report
-into that root as one records-only commit, recording paths and hashes in
+into that root as one records-only commit, each filed record ending with one
+provenance line naming the launchpad by its release display name, the
+launchpad tree at filing (the commit kept in the pending operation, so a
+retried filing writes the same bytes) and the record's path there, against
+which its relative links resolve (WO-257; the display name is screened as
+its own surface, and the path and commit are the kit's frame), and recording
+the filed paths and hashes in
 `TargetRecordsCommitted`. Metadata, follow-up indexes and status resolve moved
 records through the recorded repository, commit, root, path and hash, reading
 regular blobs without replacement refs; current registration paths and working
@@ -3355,13 +3414,32 @@ direction, 2026-11-05,
 [the 2026-11-06 pass](../planning/passes/fork-returns-and-review-batches-2026-11-06.md)):
 a brief past a worker's context is split into batches over more workers,
 every document the pass changed is reviewed, and no pass withdraws an
-amendment to fit a reviewer. Today the helper inlines every planning
-document and order the branch changed since its merge base, whatever
-`--since` names, and refuses a brief past its ceiling naming no size (the
-fork's pass of 2026-11-05 withdrew amendments to five orders to be reviewed
-at all; core's map alone is larger than the ceiling); WO-257 bounds a
-round's documents by its base, splits a brief past the ceiling into batches
-with one merged report, and prints the measured size.
+amendment to fit a reviewer. A round's documents are those changed since its
+base, the branch's merge base or the tree `--since` names (a named tree since
+which no document changed falls back to the merge base, so a fresh ladder
+over the branch's own tree reviews the whole branch); each is inlined
+under the per-document cap (200,000 bytes), and a larger one stays a pointer
+to the checkout. A brief past the ceiling (400,000 characters, the one
+constant `CHANGE_REVIEW_BRIEF_CEILING` in `scripts/lib/review-worker.mjs`)
+is split into batches of whole documents, one worker per batch, each brief
+under the ceiling and carrying the round's whole document index with its
+batch numbers; the batch reports are merged into the round's one report, its
+findings keyed by batch (`b2.F1`), its `## Items` and `## Traced consumers`
+tables carrying every batch's rows and each batch's body under its own
+heading. Required columns keep their meaning across accepted heading names
+and column orders. Short finding IDs keep their batch prefix; long IDs receive
+an unused batch ordinal, with room reserved for the later recheck's kind and
+round prefix. Both the launched and recorded-part routes validate the merged
+result before filing it
+([WO-257-D041](../evidence/WO-257/decisions.md#wo-257-d041--preserve-batch-table-semantics-and-unique-finding-identities)).
+A batch whose worker returns no report records no merged report and
+is named, so a merged report is never recorded over a missing one.
+`--dry-run` prints the measured size, the ceiling and the batch plan, with
+every batch's full worker prompt and digest under `batches[]`, so the ordinary
+Claude route reads the whole round: `npm run worker -- record --batch N` keeps
+each batch's report as a part under the lane and records the merged report
+when every batch is in, and a single report is refused for a split round
+(WO-257).
 It is the route to a Codex worker from a Claude session, a Claude print worker
 from Codex, a planning subject and a target's order; in a Claude session the
 `Agent` tool with `dotln-worker` stays the ordinary route. It launches through
@@ -3430,11 +3508,15 @@ session's journal.
 The executor records an `Agent` worker's returned text in the same lane under
 the round and kind name with `npm run worker -- record --kind <kind> --round
 <N> --from <file> [--host claude|codex] [--model <model>] [--effort <level>]
-[--tree <object>] [--format prose|json]`, which binds it with the same validator and report rules and
+[--tree <object>] [--format prose|json] [--batch N] [--brief-sha256 <digest>]`, which binds it with the same validator and report rules and
 writes the same record, so the verifier reads every round and a fresh worker
 can recheck it whatever the launch route. The record names the host, model and
 effort the recorder attests, else the host's default, and the tree `--tree`
-names, else the working tree when it records; a report whose opening
+names, else the working tree when it records, and refuses a `--brief-sha256
+<digest>` from the dry run (each batch's `briefSha256` under `batches[]`, the
+top-level one for a round of one batch) that is not the digest of the brief
+the plan renders now, so a part is bound to the prompt its worker received and
+a verified digest is kept in the record; a report whose opening
 `Reviewed tree:` line, in its prose or in its findings object's report field,
 names another tree is refused until `--tree` names it, and the body that meets
 the report rules is the report recorded.

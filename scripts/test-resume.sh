@@ -537,6 +537,22 @@ node "$fixture_repo/scripts/resume.mjs" status --json \
 grep -q 'Legal next actions: release-close, next, activate' "$test_root/status-drift-human.txt"
 grep -Fq 'warning: docs/control/current.md disagrees with the canonical fold' "$test_root/status-drift-human.err"
 grep -Fq 'warning: docs/control/current.md disagrees with the canonical fold' "$test_root/status-drift-json.err"
+# The warning names its remedy, and status --refresh (WO-257 criterion 15)
+# rewrites the projection from the fold, appends no control event and prints
+# the same status; the next status prints no warning.
+grep -Fq 'run npm run resume -- status --refresh to rewrite it from the fold (no control event is appended)' "$test_root/status-drift-human.err"
+node "$fixture_repo/scripts/resume.mjs" status --refresh \
+  >"$test_root/status-refresh.txt" \
+  2>"$test_root/status-refresh.err"
+! grep -q 'disagrees with the canonical fold' "$test_root/status-refresh.err"
+cmp -s "$fixture_repo/docs/control/current.md" "$test_root/current.closed"
+grep -q 'Legal next actions: release-close, next, activate' "$test_root/status-refresh.txt"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "20"
+node "$fixture_repo/scripts/resume.mjs" status >/dev/null 2>"$test_root/status-after-refresh.err"
+! grep -q 'disagrees with the canonical fold' "$test_root/status-after-refresh.err"
+# Put the drifted projection back so the read-only assertions below still
+# judge the two status forms against it.
+cp "$test_root/current.drifted" "$fixture_repo/docs/control/current.md"
 node - "$test_root/status-drift.json" <<'NODE'
 const assert = require("node:assert/strict");
 const fs = require("node:fs");

@@ -189,8 +189,35 @@ export function commitTargetRecords(root, state, control) {
       .filter((row) => row.kind !== "order")
       .map((row) => ({
         source: row.source,
+        path: row.path,
         sha256: records.find((record) => record.path === row.path)?.sha256,
       }));
+  // A record moved into the target keeps its bytes and gains one provenance
+  // footer naming the launchpad by its release display name, the launchpad
+  // tree at filing and the record's path there, so a relative link that
+  // resolves to nothing in the target has a line saying what it resolves
+  // against. The display name is the launchpad's public name: a target may
+  // be public while the launchpad's address is private. The commit is the
+  // launchpad's HEAD when the operation began, kept in the pending
+  // operation, so a retried filing writes the same bytes; the footer claims
+  // the tree's layout, not that the record's bytes are committed there.
+  const config = loadConfig(root);
+  const declaredName = config.present
+    ? JSON.parse(readFileSync(config.path, "utf8")).release?.displayName
+    : undefined;
+  const launchpadName = config.release?.displayName ?? "DotLn";
+  if (declaredName === undefined)
+    console.warn(
+      `DotLn advisory: release.displayName is unset, so the provenance footer names the launchpad ${launchpadName}, the kit's own name; declare the instance's release.displayName in dotln.config.json to name it.`,
+    );
+  const launchpadCommit =
+    pending?.binding?.launchpadCommit ??
+    runGit(root, [...HOST_GIT_READ, "rev-parse", "HEAD"]);
+  const provenanceFooter = (source) =>
+    Buffer.from(
+      provenanceFooterText(launchpadName, launchpadCommit, source),
+      "utf8",
+    );
   if (state.targetRecords) {
     const observed = reviewedTargetSubject(root, state);
     if (observed.commit !== state.targetRecords.commit)
@@ -238,16 +265,28 @@ export function commitTargetRecords(root, state, control) {
       throw refuse(`${row.source}: report has no recorded hash`);
     const destination = targetRecordDestination(entry.target, row.path);
     const stat = lstatSync(destination, { throwIfNoEntry: false });
-    if (stat && (!readFileSync(destination).equals(bytes) || stat.mode & 0o111))
+    // The filed bytes are the source's with the footer; the recorded hash is
+    // the filed bytes', which the target's commit check reads back. The
+    // screens below read the source bytes: the footer is the kit's own frame,
+    // naming the record's path and the launchpad's public name.
+    const filed = Buffer.concat([bytes, provenanceFooter(row.source)]);
+    if (stat && (!readFileSync(destination).equals(filed) || stat.mode & 0o111))
       throw refuse(
         `${row.path}: destination already holds different bytes or mode`,
       );
-    return { ...row, bytes, sha256, destination };
+    return {
+      ...row,
+      bytes: filed,
+      sourceBytes: bytes,
+      sha256: hash(filed),
+      destination,
+    };
   });
   const binding = {
     repositoryId: state.repositoryId,
     branch: state.targetSubject.branch,
     parent: state.targetSubject.commit,
+    launchpadCommit,
     root: repository.documentationRoot,
     records: rows.map(({ kind, path, sha256 }) => ({ kind, path, sha256 })),
   };
@@ -260,18 +299,25 @@ export function commitTargetRecords(root, state, control) {
       "pending records differ from the current review or source bytes",
     );
   const main = mainWorktree(root);
+  // The source bytes and the display name the footer carries are screened;
+  // the record's own path and the commit are the kit's frame.
+  const footerSurface = "release.displayName (the provenance footer)";
   if (
-    checkLocalTerms(
-      main,
-      rows.map((row) => ({
+    checkLocalTerms(main, [
+      ...rows.map((row) => ({
         name: row.source,
-        text: row.bytes.toString("utf8"),
+        text: row.sourceBytes.toString("utf8"),
       })),
-    ).status !== "present"
+      { name: footerSurface, text: launchpadName },
+    ]).status !== "present"
   )
     throw refuse("local-terms list absent");
+  if (privatePathLines(`${footerSurface}.md`, launchpadName)[0] !== undefined)
+    throw refuse(
+      `${footerSurface}: names a private absolute path, which every filed record would carry; declare a public release.displayName`,
+    );
   for (const row of rows) {
-    const [line] = privatePathLines(row.path, row.bytes.toString("utf8"));
+    const [line] = privatePathLines(row.path, row.sourceBytes.toString("utf8"));
     if (line !== undefined)
       throw refuse(
         `${row.path}:${line}: private absolute path; write a repository-relative path or a placeholder such as <home>/, <worktree>/ or <tmp>/`,
@@ -342,15 +388,66 @@ export function commitTargetRecords(root, state, control) {
   return { payload, moved: movedSources(payload.records) };
 }
 
+/** The provenance footer a filed record ends with. */
+export const provenanceFooterText = (name, commit, source) =>
+  `\n\nFiled from the launchpad ${name} (its tree at commit ${commit}); this record's launchpad path was ${source}, and its relative links resolve against that path there, not in this repository.\n`;
+
+/** Whether this source's bytes with the provenance footer after them are the
+ * filed record the recorded hash names: rebuilt from the pending operation's
+ * commit and the launchpad's display name when the operation is still
+ * recorded, else read back from the target worktree. */
+const filedWithFooter = (
+  root,
+  workOrderId,
+  source,
+  recordPath,
+  bytes,
+  sha256,
+) => {
+  if (!recordPath) return false;
+  const pending = readTargetOperation(root, "records", workOrderId);
+  if (pending?.binding?.launchpadCommit) {
+    const name = loadConfig(root).release?.displayName ?? "DotLn";
+    const rebuilt = Buffer.concat([
+      bytes,
+      Buffer.from(
+        provenanceFooterText(name, pending.binding.launchpadCommit, source),
+        "utf8",
+      ),
+    ]);
+    if (hash(rebuilt) === sha256) return true;
+  }
+  try {
+    const entry = targetWorktreeForOrder(root, workOrderId);
+    const filed = readFileSync(
+      targetRecordDestination(entry.target, recordPath),
+    );
+    return (
+      hash(filed) === sha256 &&
+      filed.length > bytes.length &&
+      filed.subarray(0, bytes.length).equals(bytes) &&
+      /^\n\nFiled from the launchpad /u.test(
+        filed.subarray(bytes.length).toString("utf8"),
+      )
+    );
+  } catch {
+    return false;
+  }
+};
+
 export function removeMovedTargetRecords(root, paths, workOrderId) {
   const present = [];
-  // Check the complete removal set before deleting any remaining source.
-  for (const { source, sha256 } of paths ?? []) {
+  // Check the complete removal set before deleting any remaining source: a
+  // source matches its record by the recorded hash, or by the filed bytes
+  // when the record carries the provenance footer.
+  for (const { source, path: recordPath, sha256 } of paths ?? []) {
     const path = join(root, source);
     if (!movedSourceStat(path)) continue;
+    const bytes = containedRegularFile(path, root) ? readFileSync(path) : null;
     if (
-      !containedRegularFile(path, root) ||
-      hash(readFileSync(path)) !== sha256
+      bytes === null ||
+      (hash(bytes) !== sha256 &&
+        !filedWithFooter(root, workOrderId, source, recordPath, bytes, sha256))
     )
       throw refuse(
         `${source}: moved source differs from its recorded bytes; source retained. The target's records commit holds the recorded bytes: move the changed file out of the launchpad or restore those bytes, then rerun ${launchpadInvocation(root, "resume")} target-records <actor flags> to finish removing the moved sources`,

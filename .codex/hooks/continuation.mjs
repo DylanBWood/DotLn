@@ -807,24 +807,76 @@ const output = await (async function codexContinuation(input, operatorControl, c
     };
     const line = promptLine(prompt);
     const prefix = Object.keys(prefixes).find((candidate) => line.text.startsWith(candidate)) ?? null;
-    return prefix
-        ? { prefix, prefixLine: line.index, class: prefixes[prefix] }
-        : {
-            prefix: null,
-            prefixLine: null,
-            class: /\?\s*$/u.test(prompt ?? "") ? "question" : "unclassified",
-        };
+    if (prefix)
+        return { prefix, prefixLine: line.index, class: prefixes[prefix] };
+    const unprefixed = {
+        prefix: null,
+        prefixLine: null,
+        class: /\?\s*$/u.test(prompt ?? "") ? "question" : "unclassified",
+    };
+    // A first content line that opens an element the reader does not skip is
+    // journaled by the element's name, so the next pass can read which block
+    // the host wrote before the operator's text.
+    if (line.element)
+        unprefixed.leadingElement = line.element;
+    return unprefixed;
 })(prompt, function harnessPromptLine(prompt) {
     const lines = (prompt ?? "").split(/\r?\n/u);
+    const blocks = [
+        "local-command-caveat",
+        "command-name",
+        "command-message",
+        "command-args",
+        "local-command-stdout",
+    ];
+    const wrappers = ["pasted_content"];
     let index = 0;
-    while (index < lines.length && !lines[index].trim())
-        index++;
-    if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
-        index++;
+    const skipBlanks = () => {
         while (index < lines.length && !lines[index].trim())
             index++;
+    };
+    skipBlanks();
+    for (;;) {
+        const opening = /^\s*<([A-Za-z][\w-]*)(?:\s[^<>]*)?>/u.exec(lines[index] ?? "");
+        if (!opening)
+            break;
+        const name = opening[1];
+        if (blocks.includes(name)) {
+            const closing = `</${name}>`;
+            const opened = index;
+            while (index < lines.length && !lines[index].includes(closing))
+                index++;
+            if (index >= lines.length) {
+                index = opened;
+                break;
+            }
+            const line = lines[index];
+            const after = line.slice(line.indexOf(closing) + closing.length);
+            if (after.trim()) {
+                lines[index] = after;
+                break;
+            }
+            index++;
+        }
+        else if (wrappers.includes(name)) {
+            const rest = lines[index].slice(opening[0].length);
+            if (rest.trim()) {
+                lines[index] = rest;
+                break;
+            }
+            index++;
+        }
+        else
+            break;
+        skipBlanks();
     }
-    return { text: (lines[index] ?? "").trim(), index };
+    if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
+        index++;
+        skipBlanks();
+    }
+    const text = (lines[index] ?? "").trim();
+    const element = /^<([A-Za-z][\w-]*)(?:[\s/>]|$)/u.exec(text)?.[1] ?? null;
+    return { text, index, element };
 }), undefined, function harnessSessionPhase(session) {
     if (session.intent === "resume: fix")
         return "repair";
@@ -857,15 +909,61 @@ const output = await (async function codexContinuation(input, operatorControl, c
     return selected;
 })(prompt, function harnessPromptLine(prompt) {
     const lines = (prompt ?? "").split(/\r?\n/u);
+    const blocks = [
+        "local-command-caveat",
+        "command-name",
+        "command-message",
+        "command-args",
+        "local-command-stdout",
+    ];
+    const wrappers = ["pasted_content"];
     let index = 0;
-    while (index < lines.length && !lines[index].trim())
-        index++;
-    if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
-        index++;
+    const skipBlanks = () => {
         while (index < lines.length && !lines[index].trim())
             index++;
+    };
+    skipBlanks();
+    for (;;) {
+        const opening = /^\s*<([A-Za-z][\w-]*)(?:\s[^<>]*)?>/u.exec(lines[index] ?? "");
+        if (!opening)
+            break;
+        const name = opening[1];
+        if (blocks.includes(name)) {
+            const closing = `</${name}>`;
+            const opened = index;
+            while (index < lines.length && !lines[index].includes(closing))
+                index++;
+            if (index >= lines.length) {
+                index = opened;
+                break;
+            }
+            const line = lines[index];
+            const after = line.slice(line.indexOf(closing) + closing.length);
+            if (after.trim()) {
+                lines[index] = after;
+                break;
+            }
+            index++;
+        }
+        else if (wrappers.includes(name)) {
+            const rest = lines[index].slice(opening[0].length);
+            if (rest.trim()) {
+                lines[index] = rest;
+                break;
+            }
+            index++;
+        }
+        else
+            break;
+        skipBlanks();
     }
-    return { text: (lines[index] ?? "").trim(), index };
+    if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
+        index++;
+        skipBlanks();
+    }
+    const text = (lines[index] ?? "").trim();
+    const element = /^<([A-Za-z][\w-]*)(?:[\s/>]|$)/u.exec(text)?.[1] ?? null;
+    return { text, index, element };
 }));
 process.stdout.write(JSON.stringify(output));
 } catch { process.stdout.write(JSON.stringify({systemMessage:"DotLn Codex continuation input unavailable; native stopping remains available."})); }

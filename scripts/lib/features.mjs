@@ -1,232 +1,45 @@
 import { existsSync, readFileSync } from "node:fs";
 import { docPath, docRelative, loadConfig } from "./config.mjs";
 import { readBuildOverlayFile } from "./build-overlay.mjs";
+import {
+  featureAliases,
+  featureRegistry,
+  resolveFeatureId,
+} from "./feature-registry.mjs";
 
-const row = (id, scope, defaultValue, what, readFrom, readBy) =>
-  Object.freeze({ id, scope, default: defaultValue, what, readFrom, readBy });
-
-/** One inventory: selections and existing budget keys stay at their own addresses. */
-export const featureRegistry = Object.freeze([
-  row(
-    "tinkerer-economy",
-    "instance",
-    true,
-    "Equips the executor to compare two credible approaches when a useful fork appears.",
-    "features.tinkerer-economy",
-    "scripts/lib/harness.mjs",
-  ),
-  row(
-    "plan-first",
-    "instance",
-    false,
-    "Reserves a plan and operator conversation before implementation; pending its consumer.",
-    "features.plan-first",
-    "WO-242",
-  ),
-  row(
-    "private-destination",
-    "instance",
-    false,
-    "Admits the owner's ordinary project links and identifiers inside an exported instance; credentials and outward publication screens stay protected.",
-    "features.private-destination",
-    "scripts/lib/harness.mjs",
-  ),
-  row(
-    "desktop-control",
-    "instance",
-    false,
-    "Permits desktop and operator-browser tools only with the operator's explicit request in the session.",
-    "features.desktop-control",
-    "packages/skeleton/src/harness-host.ts",
-  ),
-  row(
-    "kit-instance-actions",
-    "instance",
-    false,
-    "Allows a kit update to apply its declared instance actions.",
-    "kit.applyInstanceActions",
-    "scripts/launchpad.mjs",
-  ),
-  ...[
-    ["readme-block", "readmeBlock", "the README release block"],
-    ["component-versions", "componentVersions", "component version surfaces"],
-    ["corpus", "corpus", "release corpus surfaces"],
-    ["publication-check", "publicationCheck", "the publication check"],
-  ].map(([id, key, what]) =>
-    row(
-      `release-${id}`,
-      "core",
-      true,
-      `Declares an election for ${what}; no consumer implements this switch yet.`,
-      `release.${key}`,
-      "unread",
-    ),
-  ),
-  row(
-    "build-loadout",
-    "both",
-    null,
-    "Stores a build selection; no consumer reads this key yet (the CLI has a separate --loadout option).",
-    "build.loadout",
-    "unread",
-  ),
-  row(
-    "build-profile",
-    "both",
-    null,
-    "Stores a harness profile selection; no consumer reads this key yet (the CLI has a separate --profile option).",
-    "build.profile",
-    "unread",
-  ),
-  row(
-    "build-overlay",
-    "instance",
-    null,
-    "Selects the instance-owned equipment and authority overlay, including build none.",
-    "build.overlay",
-    "scripts/lib/harness.mjs",
-  ),
-  row(
-    "drive-sandbox",
-    "instance",
-    "host",
-    "Uses the host's sandbox policy, or off for unsandboxed driven phase sessions.",
-    "drive.sandbox",
-    "scripts/lib/drive-worker.mjs",
-  ),
-  row(
-    "subagent-cap",
-    "both",
-    20,
-    "Bounds worker uses per spawning session; null removes this bound. It is read from the configured control root, as the process readers are.",
-    "budgets.subagentCap",
-    "packages/skeleton/src/subagent-budget.ts",
-  ),
-  row(
-    "dispatch-bounds",
-    "both",
-    null,
-    "Declares per-role process limits; null leaves a bound unset and local-median uses this instance's history.",
-    "budgets.dispatches",
-    "scripts/lib/process-budget.mjs",
-  ),
-  row(
-    "driven-session-ceiling",
-    "both",
-    80,
-    "Bounds all descendant worker uses in a drive; null removes this bound.",
-    "budgets.drivenSessionCeiling",
-    "scripts/lib/drive-session.mjs",
-  ),
-  row(
-    "driven-phase-timeout",
-    "both",
-    null,
-    "Optionally bounds a driven phase's host timeout; null sets no extra timeout.",
-    "budgets.drivenPhaseTimeoutMs",
-    "scripts/lib/drive-session.mjs",
-  ),
-  row(
-    "retention",
-    "both",
-    Object.freeze({
-      "gate-fixture-passed": 0,
-      "gate-fixture-failed": 24,
-      "session-scratch": 24,
-      "worker-capture": 1,
-      "warm-fixture": 0,
-      "legacy-backfill": 48,
-      coordination: null,
-      "closed-journal": 720,
-    }),
-    "Sets temporary-root retention by class; null keeps a class and an absent contract uses runtime defaults.",
-    "budgets.retention",
-    "packages/skeleton/src/temporary-root-records.mjs",
-  ),
-  row(
-    "prune-start-budget",
-    "both",
-    1800000,
-    "Bounds the routine prune at plan start and release close; the prune stops there, says what remains and how to resume, and the command goes on. null removes the bound.",
-    "budgets.prune.startBudgetMs",
-    "scripts/lib/temporary-prune-summary.mjs",
-  ),
-]);
-
-/** A rename ships with { successor, release }; in the following kit release
- * the same tombstone refuses. No existing feature has been renamed yet. */
-export const featureAliases = Object.freeze({});
-export function resolveFeatureId(
-  id,
-  {
-    registry = featureRegistry,
-    aliases = featureAliases,
-    release,
-    advisory = (message) => console.warn(`Advisory: ${message}`),
-  } = {},
-) {
-  const alias = Object.hasOwn(aliases, id) ? aliases[id] : undefined;
-  if (alias) {
-    if (release !== alias.release)
-      throw new Error(
-        `retired feature ${JSON.stringify(id)}; use features.${alias.successor}; npm run features -- list`,
-      );
-    advisory(
-      `feature ${id} is renamed to ${alias.successor}; use features.${alias.successor} before the next kit release`,
-    );
-    id = alias.successor;
-  }
-  const entry = registry.find((candidate) => candidate.id === id);
-  if (!entry)
-    throw new Error(
-      `unknown features key ${JSON.stringify(id)}; known ids: ${registry.map((candidate) => candidate.id).join(", ")}; npm run features -- list`,
-    );
-  if (entry.readFrom !== `features.${id}`)
-    throw new Error(
-      `features.${id} is not an election here; edit ${entry.readFrom}; npm run features -- list`,
-    );
-  return id;
-}
+export { featureAliases, featureRegistry, resolveFeatureId };
 
 const at = (value, key) =>
   key.split(".").reduce((entry, part) => entry?.[part], value);
 const election = (value) => (typeof value === "boolean" ? value : value.on);
 
-function legacyTinkerer(root, config) {
-  if (!config.build.overlay) return undefined;
+/** The build overlay's tinkerer-economy choice was accepted with a migration
+ * advisory through kit release v0.118.0 and is refused since: the election
+ * lives in features.tinkerer-economy, so a reader never has two sources. */
+export const RETIRED_OVERLAY_TINKERER =
+  "the build overlay's tinkerer-economy choice is retired: it was accepted with an advisory through kit release v0.118.0; elect features.tinkerer-economy in dotln.config.json and remove the overlay entry (npm run features -- list)";
+function refuseRetiredOverlay(root, config) {
+  if (!config.build.overlay) return;
   const { value: overlay } = readBuildOverlayFile(root, config.build.overlay);
-  const equipped = overlay.equip?.includes("tinkerer-economy");
-  const unequipped = overlay.unequip?.includes("tinkerer-economy");
-  if (equipped && unequipped)
-    throw new Error("conflicting tinkerer-economy overlay choices");
-  if (!equipped && !unequipped) return undefined;
-  const value = Boolean(equipped);
   if (
-    config.features["tinkerer-economy"] !== undefined &&
-    election(config.features["tinkerer-economy"]) !== value
+    [...(overlay.equip ?? []), ...(overlay.unequip ?? [])].includes(
+      "tinkerer-economy",
+    )
   )
-    throw new Error(
-      "conflicting tinkerer-economy elections; use features.tinkerer-economy in dotln.config.json and remove the old overlay choice",
-    );
-  console.warn(
-    "Advisory: overlay tinkerer-economy is accepted for this kit release; use features.tinkerer-economy in dotln.config.json before the next release",
-  );
-  return value;
+    throw new Error(RETIRED_OVERLAY_TINKERER);
 }
 
 /** Hot-path elections do not read budgets, histories or generated documents. */
 export function readFeatures(root) {
   const config = loadConfig(root);
-  const legacy = legacyTinkerer(root, config);
+  refuseRetiredOverlay(root, config);
   return Object.fromEntries(
     featureRegistry
       .filter((entry) => entry.readFrom === `features.${entry.id}`)
       .map((entry) => [
         entry.id,
         config.features[entry.id] === undefined
-          ? entry.id === "tinkerer-economy" && legacy !== undefined
-            ? legacy
-            : entry.default
+          ? entry.default
           : election(config.features[entry.id]),
       ]),
   );
@@ -242,18 +55,13 @@ export function readFeatureInventory(root) {
   const budgets = existsSync(budgetPath)
     ? JSON.parse(readFileSync(budgetPath, "utf8"))
     : {};
-  const legacy = legacyTinkerer(root, config);
+  refuseRetiredOverlay(root, config);
   return featureRegistry.map((entry) => {
     const budget = entry.readFrom.startsWith("budgets.");
     const key = budget
       ? entry.readFrom.slice("budgets.".length)
       : entry.readFrom;
-    let value = at(budget ? budgets : declared, key);
-    const fromOverlay =
-      entry.id === "tinkerer-economy" &&
-      value === undefined &&
-      legacy !== undefined;
-    if (fromOverlay) value = legacy;
+    const value = at(budget ? budgets : declared, key);
     const named = entry.readFrom.startsWith("features.");
     let effective =
       value === undefined ? entry.default : named ? election(value) : value;
@@ -271,11 +79,6 @@ export function readFeatureInventory(root) {
             ? docRelative(root, "control", "budgets.json")
             : "dotln.config.json",
       ...(named && value?.note !== undefined ? { note: value.note } : {}),
-      ...(fromOverlay
-        ? {
-            note: `Legacy choice in ${config.build.overlay}; migrate to features.tinkerer-economy.`,
-          }
-        : {}),
     };
   });
 }

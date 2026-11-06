@@ -175,24 +175,35 @@ export function readDeclaration(root) {
   return { path, ...decodeDeclaration(source, path) };
 }
 
-/** A receipt's typed form: exactly the five fields, each in its shape. */
+/** A receipt's typed form: exactly the five fields, each in its shape, plus
+ * the operator request an update recorded when it ran under a journaled
+ * planning or entropy dispatch: the hash of the operator's captured words. */
 export const decodeReceipt = (source, path) => {
   const parsed = parseJson(source, path);
-  if (!exact(parsed, RECEIPT_FIELDS))
-    throw refuse(path, `a receipt holds exactly ${RECEIPT_FIELDS.join(", ")}`);
+  const fields =
+    parsed &&
+    typeof parsed === "object" &&
+    Object.hasOwn(parsed, "operatorRequest")
+      ? [...RECEIPT_FIELDS, "operatorRequest"]
+      : RECEIPT_FIELDS;
+  if (!exact(parsed, fields))
+    throw refuse(
+      path,
+      `a receipt holds exactly ${RECEIPT_FIELDS.join(", ")}, and operatorRequest only when an update recorded one`,
+    );
   const shapes = {
     sibling: (value) => typeof value === "string" && SIBLING_ID.test(value),
     coreCommit: (value) => typeof value === "string" && COMMIT.test(value),
     manifestHash: validDigest,
     buildHash: (value) => typeof value === "string" && BUILD_HASH.test(value),
     date: timestamp,
+    operatorRequest: (value) =>
+      exact(value, ["captureHash"]) && validDigest(value.captureHash),
   };
-  for (const field of RECEIPT_FIELDS)
+  for (const field of fields)
     if (!shapes[field](parsed[field]))
       throw refuse(path, `${field} is not in its declared shape`);
-  return Object.fromEntries(
-    RECEIPT_FIELDS.map((field) => [field, parsed[field]]),
-  );
+  return Object.fromEntries(fields.map((field) => [field, parsed[field]]));
 };
 
 // A receipt is named by its date with the characters a file name cannot
@@ -263,6 +274,7 @@ export function writeReceipt(
     manifestBytes,
     buildHash,
     date = new Date().toISOString(),
+    operatorRequest = null,
   },
   { pending = false } = {},
 ) {
@@ -272,6 +284,11 @@ export function writeReceipt(
     manifestHash: `sha256:${sha256Hex(manifestBytes)}`,
     buildHash,
     date,
+    // An update run under a journaled planning or entropy dispatch records
+    // the operator's in-session request by the hash of its captured words.
+    ...(operatorRequest
+      ? { operatorRequest: { captureHash: operatorRequest.captureHash } }
+      : {}),
   };
   const path = (pending ? pendingReceiptPath : receiptPath)(
     root,

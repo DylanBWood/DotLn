@@ -37,6 +37,7 @@ import {
 } from "./lib/harness-runtime.mjs";
 import { exportSiblings, readDeclaration } from "./lib/siblings.mjs";
 import {
+  TOOL_ROOT,
   docPath,
   docRelative,
   findLaunchpad,
@@ -1627,10 +1628,76 @@ const releaseNoteEntries = (root, previousRelease) => {
     };
   });
 };
-const criticalNotes = (files, evidence) => {
+// A generated page's renderers: its writer, the module that renders its page,
+// every kit module whose render or format function one of them imports,
+// transitively, and the modules whose projected words or constants the page
+// carries (the index's dependency states and workstream snapshot, the
+// sibling index's file names, the features inventory npm run meta rewrites),
+// with the command that rewrites the page. A release that changes a renderer
+// leaves the merged page stale until that command runs, so the notes name
+// the regeneration where the reader looks, in one line for every changed
+// renderer. scripts/test-release-preparation.mjs derives the render and
+// format closure from the sources and pins it inside this table; the other
+// entries are named by hand, and a helper outside the table prints no line.
+export const GENERATED_PAGE_RENDERERS = Object.freeze([
+  [
+    [
+      "scripts/work-orders.mjs",
+      "scripts/lib/criteria-status.mjs",
+      "scripts/lib/control-actor.mjs",
+      "scripts/lib/duration.mjs",
+      "scripts/lib/dependencies.mjs",
+      "scripts/lib/work-order-workstream.mjs",
+    ],
+    "npm run work-orders -- index",
+  ],
+  [
+    [
+      "scripts/meta.mjs",
+      "scripts/lib/meta.mjs",
+      "scripts/lib/duration.mjs",
+      "scripts/lib/target-record-reader.mjs",
+      "scripts/features.mjs",
+      "scripts/lib/features.mjs",
+      "scripts/lib/feature-registry.mjs",
+    ],
+    "npm run meta",
+  ],
+  [["scripts/lineage.mjs"], "node scripts/lineage.mjs index"],
+  [
+    ["scripts/siblings.mjs", "scripts/lib/siblings.mjs"],
+    "node scripts/siblings.mjs index",
+  ],
+]);
+// The compiler source that emits the host settings and the committed emitted
+// file: a change to either reaches a session only after a re-emit and a new
+// session. Criterion 17 names the emitter; the committed file catches an
+// emit of a changed loadout that leaves the emitter alone.
+const SETTINGS_EMITTER = "packages/compiler/src/harness.ts";
+const EMITTED_SETTINGS = ".claude/settings.json";
+export const criticalNotes = (files, evidence) => {
   const notes = [
     "Source-only release: no package, binary, container, or hosted artifact is published.",
   ];
+  const changedRenderers = new Set();
+  const commands = [];
+  for (const [renderers, command] of GENERATED_PAGE_RENDERERS) {
+    const changed = renderers.filter((path) => files.includes(path));
+    if (!changed.length) continue;
+    for (const path of changed) changedRenderers.add(path);
+    commands.push(command);
+  }
+  if (changedRenderers.size)
+    notes.push(
+      `A generated page's renderer changed (${[...changedRenderers].join(", ")}): after merging this release, regenerate ${commands.length === 1 ? "its page" : "the pages"} with ${commands.join(" and ")} before the next document gate reads ${commands.length === 1 ? "it" : "them"}.`,
+    );
+  const settingsTriggers = [SETTINGS_EMITTER, EMITTED_SETTINGS].filter((path) =>
+    files.includes(path),
+  );
+  if (settingsTriggers.length)
+    notes.push(
+      `The emitted host settings changed (${settingsTriggers.join(", ")}): after the update, re-emit with node scripts/harness.mjs emit and start a new session, since the host reads the emitted settings when a session starts.`,
+    );
   if (files.some((path) => /^packages\/[^/]+\/package\.json$/.test(path)))
     notes.push(
       "Component version metadata changed; inspect the manifest's separate version axes.",
@@ -3102,16 +3169,33 @@ const refreshPublishedStartersOperation = async (
 // differing one refuses. Absent policy keeps today's no-release.
 const targetReleaseClassification = (root, state, revision) => {
   const markdown = repositoryFile(root, state.workOrderPath, revision);
+  // Every declaration is counted before the sole value is read, so a valid
+  // header beside a malformed duplicate is refused naming both lines. The
+  // value is read as the reader before WO-257 read it: patch, minor or
+  // major at a word boundary after the label, across a line break as well,
+  // whatever follows it, so a header admitted then stays admitted.
+  const valueAt = (index) => {
+    const reader =
+      /\*\*Target release classification:\*\*\s*(patch|minor|major)\b/uy;
+    reader.lastIndex = index;
+    return reader.exec(markdown)?.[1] ?? null;
+  };
   const headers = [
-    ...markdown.matchAll(
-      /^\*\*Target release classification:\*\*\s*(patch|minor|major)\b/gmu,
-    ),
-  ];
+    ...markdown.matchAll(/^\*\*Target release classification:\*\*(.*)$/gmu),
+  ].map((match) => ({
+    value: valueAt(match.index) ?? match[1].trim(),
+    line: markdown.slice(0, match.index).split("\n").length,
+  }));
   if (headers.length !== 1)
     throw new Error(
-      `repositories.${state.repositoryId}.release.policy is declared, but ${state.workOrderPath} carries ${headers.length ? `${headers.length} **Target release classification:** headers` : "no **Target release classification:** patch | minor | major header"}; exactly one is needed`,
+      `repositories.${state.repositoryId}.release.policy is declared, but ${state.workOrderPath} carries ${headers.length ? `${headers.length} **Target release classification:** headers (lines ${headers.map((header) => header.line).join(", ")})` : "no **Target release classification:** patch | minor | major header"}; exactly one is needed`,
     );
-  return headers[0][1];
+  const [{ value, line }] = headers;
+  if (!["patch", "minor", "major"].includes(value))
+    throw new Error(
+      `repositories.${state.repositoryId}.release.policy is declared, but ${state.workOrderPath} line ${line} declares **Target release classification:** ${value || "(nothing)"}; patch, minor or major is needed`,
+    );
+  return value;
 };
 // The order title and the close line of a target Release text name the
 // closing order on purpose: that is the text WO-221-D006 chose, and the legacy

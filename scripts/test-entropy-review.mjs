@@ -9,6 +9,7 @@ import {
 import { runGit, spawnGit } from "./lib/git.mjs";
 import { write, json as prettyJson, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { privatePathLines } from "./lib/private-paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -231,6 +232,132 @@ export async function entropyFixtures() {
   );
   process.env.DOTLN_ENTROPY_FIXTURE = "1";
   try {
+    await test("WO-257 criterion 5: a target-subject receipt renders the frozen copy as <tmp>/…, labels the launchpad witness, names an uninstalled copy and unobserved host coordination, refuses a stray private path naming the line, and refiles from the retained original with its placeholders", async () => {
+      const repo = fixtureRepository(parent);
+      registeredTarget(parent, repo, "service");
+      commit(repo, "register fixture target");
+      await entropy(
+        ["review", "--repository", "service", "--transport", "fake"],
+        repo,
+      );
+      const pending = currentDispatch(repo, "review");
+      const returned = JSON.parse(
+        readFileSync(join(pending.capture, "result.json"), "utf8"),
+      );
+      const summary = returned.resultEnvelope.summary;
+      // A temporary path no placeholder covers refuses naming the text and
+      // the line; nothing is filed and the dispatch stays for the correction.
+      returned.resultEnvelope.summary = `${summary}\nInspected /private/var/folders/zz/T/stray/x.`;
+      write(pending.capture, "result.json", JSON.stringify(returned));
+      await assert.rejects(
+        fileReview(repo),
+        /the result\.resultEnvelope\.summary names a private absolute path at line 2 that no placeholder covers; rewrite it to <home>\/, <worktree>\/ or <tmp>\/ and refile with the same command/u,
+      );
+      assert.equal(
+        existsSync(join(repo, runsRoot(repo), "REVIEW-001.json")),
+        false,
+      );
+      assert.ok(currentDispatch(repo, "review"));
+      // The rejection is written to the pending dispatch with the retained
+      // lane and the rejected return's digest, so the refile records the
+      // correction it answers (round 1's criteria F7, design F8).
+      const rejectedSha256 = sha256Hex(
+        readFileSync(join(pending.capture, "result.json")),
+      );
+      const afterRejection = currentDispatch(repo, "review");
+      assert.equal(afterRejection.rejected.length, 1);
+      assert.equal(afterRejection.rejected[0].resultSha256, rejectedSha256);
+      assert.match(
+        afterRejection.rejected[0].retained,
+        /^<worktree>\/docs\/control\/local\/entropy\/rejected\/rejected-/u,
+      );
+      // Paths under the launchpad, the system temporary directory and a home
+      // directory read as their placeholders in the statement and in every
+      // string of the worker's output; the same command refiles.
+      returned.resultEnvelope.summary = `${summary}\nInspected ${repo}/src, ${pending.subject.scratchRepository}/src and /Users/fixture-user/notes.`;
+      returned.findings[0].observed = `${returned.findings[0].observed} Seen under ${pending.subject.scratchRepository}/src/index.mjs.`;
+      write(pending.capture, "result.json", JSON.stringify(returned));
+      const refiledSha256 = sha256Hex(
+        readFileSync(join(pending.capture, "result.json")),
+      );
+      write(
+        pending.capture,
+        "statement.txt",
+        `Statement from ${tmpdir()}/elsewhere.\n`,
+      );
+      const review = await fileReview(repo);
+      const rendered = readFileSync(
+        join(repo, runsRoot(repo), `${review.receiptId}.md`),
+        "utf8",
+      );
+      assert.deepEqual(
+        privatePathLines(`${review.receiptId}.md`, rendered),
+        [],
+      );
+      assert.match(rendered, /frozen copy: `<tmp>\/dotln-entropy\/[^`]+`/u);
+      assert.ok(review.confinement.frozenCopy.startsWith("<tmp>/"));
+      assert.equal(
+        review.subject.scratchRepository,
+        pending.subject.scratchRepository,
+      );
+      assert.match(
+        rendered,
+        /^Launchpad working tree, the planning branch in progress \(not the subject\): tracked status unchanged across the episode: \*\*(?:true|false)\*\*; dirty at dispatch: \*\*(?:true|false)\*\*\.$/mu,
+      );
+      assert.match(
+        rendered,
+        /Installed dependencies: absent \(an uninstalled frozen copy limits the probes a reviewer can run to reading and the kit's dependency-free commands\)\./u,
+      );
+      assert.match(
+        rendered,
+        /Host coordination state outside the frozen copy and the episode temporary directory \(other sessions' writers, gates and scratch roots\) is not observed\./u,
+      );
+      assert.match(
+        review.reviewerOutput.resultEnvelope.summary,
+        /Inspected <worktree>\/src, <tmp>\/dotln-entropy\/\S+\/src and <home>\/notes\.$/u,
+      );
+      assert.match(review.statement, /^Statement from <tmp>\/elsewhere\.$/u);
+      assert.match(
+        review.reviewerOutput.findings[0].observed,
+        /Seen under <tmp>\/dotln-entropy\/\S+\/src\/index\.mjs\.$/u,
+      );
+      // The receipt binds the returned result and statement by digest, names
+      // the lane that retains the originals, and carries the rejected return
+      // this filing corrected.
+      assert.equal(review.publicProjection.rewrittenTexts, 3);
+      assert.equal(
+        review.publicProjection.original.resultSha256,
+        refiledSha256,
+      );
+      assert.equal(
+        review.publicProjection.original.statementSha256,
+        sha256Hex(`Statement from ${tmpdir()}/elsewhere.`),
+      );
+      assert.match(
+        review.publicProjection.retained,
+        /^<worktree>\/docs\/control\/local\/entropy\/rejected\/rewritten-/u,
+      );
+      assert.ok(
+        existsSync(
+          join(
+            repo,
+            review.publicProjection.retained.slice("<worktree>/".length),
+            "result.json",
+          ),
+        ),
+      );
+      assert.equal(review.publicProjection.corrections.length, 1);
+      assert.equal(
+        review.publicProjection.corrections[0].resultSha256,
+        rejectedSha256,
+      );
+      assert.equal(
+        renderReceipt(review),
+        rendered,
+        "the Markdown is the current projection of the JSON",
+      );
+    });
+
     await test("registered subjects freeze the fetched base, bind the id and witness both repositories through review and refutation", async () => {
       const repo = fixtureRepository(parent);
       const target = registeredTarget(parent, repo, "service");
@@ -2128,6 +2255,8 @@ export async function entropyFixtures() {
       const review = JSON.parse(
         readFileSync(join(repo, runsRoot(repo), "REVIEW-001.json"), "utf8"),
       );
+      // A refuter's reason that cites the launchpad reads as its placeholder
+      // in the receipt, with the original retained (round 1's criteria F8).
       const attempts = review.selection.selectedFindingIds.map((findingId) => ({
         findingId,
         result:
@@ -2136,7 +2265,10 @@ export async function entropyFixtures() {
             : findingId === "ER-F02"
               ? "blocked"
               : "survived",
-        reason: "Fixture attempt.",
+        reason:
+          findingId === "ER-F01"
+            ? `Fixture attempt under ${repo}/src.`
+            : "Fixture attempt.",
         evidenceRefs: ["fixture://entropy/attempt"],
       }));
       mkdirSync(refutation.capture, { recursive: true });
@@ -2156,6 +2288,20 @@ export async function entropyFixtures() {
       );
       assert.deepEqual(bound.refuted, ["ER-F01"]);
       assert.deepEqual(bound.blocked, ["ER-F02"]);
+      const refutationReceipt = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REFUTATION-001.json"), "utf8"),
+      );
+      assert.match(
+        refutationReceipt.report.attempts.find(
+          (attempt) => attempt.findingId === "ER-F01",
+        ).reason,
+        /^Fixture attempt under <worktree>\/src\.$/u,
+      );
+      assert.equal(refutationReceipt.publicProjection.rewrittenTexts, 1);
+      assert.match(
+        refutationReceipt.publicProjection.retained,
+        /^<worktree>\/docs\/control\/local\/entropy\/rejected\/rewritten-/u,
+      );
       for (const [id, reason] of [
         ["ER-F01", /is refuted in REFUTATION-001/u],
         ["ER-F02", /is blocked in REFUTATION-001/u],

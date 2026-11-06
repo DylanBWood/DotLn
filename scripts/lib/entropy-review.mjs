@@ -32,7 +32,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve, sep } from "node:path";
+import { join, relative, resolve, sep } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
 import {
   deliveredPackets,
@@ -52,6 +52,7 @@ export {
 };
 import { committedReader, sha256, sha256Hex } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
+import { privatePathLines, withoutHomeDirectories } from "./private-paths.mjs";
 import {
   mainWorktree,
   primaryWorktree,
@@ -60,7 +61,7 @@ import {
 } from "./git.mjs";
 import {
   physicalDirectory,
-  recordedRepositoryClone,
+  resolveRecordedClone,
 } from "./target-worktrees.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
 import {
@@ -318,7 +319,13 @@ const witnessSentence = (confinement) => {
   const refsSentence = refs
     ? ` Source refs unchanged: **${refs.identical}** (${refs.before.count} before, ${refs.after.count} after; refused for a HEAD subject, recorded for a named commit).`
     : "";
-  return `Source repository: tracked-path status unchanged across the episode: **${confinement.trackedStatusByteIdentical}**; untracked, non-ignored path listing unchanged: **${listing.identical}** (${listing.before.count} before, ${listing.after.count} after; recorded, never a refusal condition).${refsSentence} Ignored paths and file contents are not observed. Frozen copy path-and-size inventory: ${delta.counts.added} path(s) added, ${delta.counts.removed} removed, ${delta.counts.resized} resized${delta.observed ? "" : " (not observed)"}.${confinement.temporaryDirectory ? ` Episode temporary directory: ${confinement.temporaryDirectory.count ?? "unknown"} path(s), ${confinement.temporaryDirectory.bytes ?? "unknown"} bytes${confinement.temporaryDirectory.observed ? "" : " (not observed)"}.` : ""}`;
+  // Receipts that record it say what the inventories never see: host
+  // coordination state outside the copy and the episode's temporary lane.
+  const coordination =
+    confinement.hostCoordination === "unobserved"
+      ? " Host coordination state outside the frozen copy and the episode temporary directory (other sessions' writers, gates and scratch roots) is not observed."
+      : "";
+  return `Source repository: tracked-path status unchanged across the episode: **${confinement.trackedStatusByteIdentical}**; untracked, non-ignored path listing unchanged: **${listing.identical}** (${listing.before.count} before, ${listing.after.count} after; recorded, never a refusal condition).${refsSentence} Ignored paths and file contents are not observed. Frozen copy path-and-size inventory: ${delta.counts.added} path(s) added, ${delta.counts.removed} removed, ${delta.counts.resized} resized${delta.observed ? "" : " (not observed)"}.${confinement.temporaryDirectory ? ` Episode temporary directory: ${confinement.temporaryDirectory.count ?? "unknown"} path(s), ${confinement.temporaryDirectory.bytes ?? "unknown"} bytes${confinement.temporaryDirectory.observed ? "" : " (not observed)"}.` : ""}${coordination}`;
 };
 // Only episodes with this observation get the new sentence; earlier receipts
 // keep their exact witness and hashes.
@@ -455,21 +462,7 @@ function subjectSource(root, id = ".") {
     Object.hasOwn(registrations, id),
     `unregistered repository ${JSON.stringify(id)}`,
   );
-  let clone = recordedRepositoryClone(root, id);
-  if (!clone) {
-    const primary = primaryWorktree(root);
-    if (primary) clone = recordedRepositoryClone(primary, id);
-  }
-  if (!clone) {
-    let main;
-    try {
-      main = mainWorktree(root);
-    } catch (error) {
-      if (error.message !== "no main-branch control-plane worktree found")
-        throw error;
-    }
-    if (main) clone = recordedRepositoryClone(main, id);
-  }
+  const { clone } = resolveRecordedClone(root, id);
   check(
     clone,
     `repository ${id}: recorded target clone unavailable; checked the running checkout, the primary checkout (common Git directory owner), and the main-branch worktree when present. Keep the ignored local clone mapping in one of those launchpad checkouts; the primary checkout may be on any branch`,
@@ -885,18 +878,42 @@ const appendControl = (root, ...events) => {
 const paragraph = (value, limit) =>
   value.replace(/\s+/gu, " ").trim().slice(0, limit);
 
+/** The frozen copy's path as a receipt's Markdown shows it: the system
+ * temporary directory rendered as `<tmp>`, the placeholder the Markdown
+ * private-path rule admits. The JSON keeps the real path, which filing
+ * reopens; receipts filed before the field keep their rendered line. */
+const publicTemporaryPath = (path) => {
+  for (const base of new Set([realpathSync(tmpdir()), tmpdir()]))
+    if (path === base || path.startsWith(`${base}${sep}`))
+      return `<tmp>${path.slice(base.length)}`;
+  return path;
+};
+/** The launchpad witness of a target-subject receipt, labelled as what it
+ * is: the planning branch in progress, never the subject. Earlier receipts
+ * render their original line. */
+const labelledLaunchpad = (witness) =>
+  witness.launchpad
+    ? { launchpad: { ...witness.launchpad, witness: "planning-branch" } }
+    : witness;
+/** The installed-dependencies clause, naming what an uninstalled frozen copy
+ * takes from a reviewer on receipts that record it. */
+const dependenciesSentence = (confinement) =>
+  `Installed dependencies: ${confinement.dependencies}${confinement.uninstalled ? " (an uninstalled frozen copy limits the probes a reviewer can run to reading and the kit's dependency-free commands)" : ""}`;
+
 const subjectLabel = (receipt) =>
   `${receiptRepository(receipt) === "." ? "self" : receiptRepository(receipt)}@${receipt.subject.baseCommit}`;
 const subjectDetails = (receipt) => [
   ...(receiptRepository(receipt) !== "." || receipt.workstream
     ? [
-        `Repository: \`${subjectLabel(receipt)}\`; frozen copy: \`${receipt.subject.scratchRepository}\`.${receipt.workstream ? ` Workstream: \`${receipt.workstream.id}\`, sequence ${receipt.workstream.sequence}.` : ""}`,
+        `Repository: \`${subjectLabel(receipt)}\`; frozen copy: \`${receipt.confinement?.frozenCopy ?? receipt.subject.scratchRepository}\`.${receipt.workstream ? ` Workstream: \`${receipt.workstream.id}\`, sequence ${receipt.workstream.sequence}.` : ""}`,
         "",
       ]
     : []),
   ...(receipt.confinement.launchpad
     ? [
-        `Launchpad tracked status unchanged across the episode: **${receipt.confinement.launchpad.trackedStatusByteIdentical}**; dirty at dispatch: **${receipt.confinement.launchpad.workingTreeDirtyAtDispatch}** (recorded, never the target subject).`,
+        receipt.confinement.launchpad.witness === "planning-branch"
+          ? `Launchpad working tree, the planning branch in progress (not the subject): tracked status unchanged across the episode: **${receipt.confinement.launchpad.trackedStatusByteIdentical}**; dirty at dispatch: **${receipt.confinement.launchpad.workingTreeDirtyAtDispatch}**.`
+          : `Launchpad tracked status unchanged across the episode: **${receipt.confinement.launchpad.trackedStatusByteIdentical}**; dirty at dispatch: **${receipt.confinement.launchpad.workingTreeDirtyAtDispatch}** (recorded, never the target subject).`,
         "",
       ]
     : []),
@@ -923,8 +940,8 @@ export function renderReviewReceipt(receipt) {
     `Findings: ${counts.total} — ${counts.measured} measured, ${counts.byInspection} by inspection; ${counts.blocking} blocking, ${counts.major} major, ${counts.minor} minor. Proposal packets: ${counts.proposalPackets}.`,
     "",
     confinement.untrackedListing === undefined
-      ? `Subject binding: ${confinement.subjectBinding}. Tracked status byte-identical across the episode: **${confinement.trackedStatusByteIdentical}**. Scratch delta: ${confinement.scratchDelta.deltaCount} path(s)${confinement.scratchDelta.observed ? "" : " (not observed)"}. Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`
-      : `Subject binding: ${confinement.subjectBinding}. ${witnessSentence(confinement)} Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`,
+      ? `Subject binding: ${confinement.subjectBinding}. Tracked status byte-identical across the episode: **${confinement.trackedStatusByteIdentical}**. Scratch delta: ${confinement.scratchDelta.deltaCount} path(s)${confinement.scratchDelta.observed ? "" : " (not observed)"}. ${dependenciesSentence(confinement)}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`
+      : `Subject binding: ${confinement.subjectBinding}. ${witnessSentence(confinement)} ${dependenciesSentence(confinement)}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`,
     "",
     ...(receipt.compilation?.compileInputs?.route
       ? [
@@ -1016,7 +1033,7 @@ export function renderRefutationReceipt(receipt) {
     "",
     `Measured denominator: ${selection.measuredDenominator} (**${selection.measuredStatus}**). By-inspection denominator: ${selection.inspectionDenominator} (**${selection.inspectionStatus}**); sample size ${selection.inspectionSampleSize}. Rule: ${selection.selectionRule}.`,
     "",
-    `Survived: ${receipt.report.promotedFindingIds.length}. Refuted: ${receipt.report.refutedFindingIds.length}. Blocked: ${receipt.report.blockedFindingIds.length}. Unselected: ${receipt.report.unselectedFindingIds.length}. Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`,
+    `Survived: ${receipt.report.promotedFindingIds.length}. Refuted: ${receipt.report.refutedFindingIds.length}. Blocked: ${receipt.report.blockedFindingIds.length}. Unselected: ${receipt.report.unselectedFindingIds.length}. ${dependenciesSentence(confinement)}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`,
     "",
     ...afterState,
     `**Process cost:** ${receipt.cost.line}`,
@@ -1073,6 +1090,21 @@ async function fileReceipt(root, { payload, kind }) {
       { name: `${receiptId}.json`, text: JSON.stringify(receipt) },
       { name: `${receiptId}.md`, text: rendered },
     ]);
+    // The pair meets the private-path rules before it is immutable: the
+    // Markdown projection refuses any private absolute path, the JSON record
+    // a home directory. Nothing is filed on a refusal; the pending dispatch
+    // and the worker's retained inputs stay, and the same command refiles
+    // once the text reads <home>/, <worktree>/ or <tmp>/.
+    for (const [name, text] of [
+      [`${receiptId}.md`, rendered],
+      [`${receiptId}.json`, prettyJson(receipt)],
+    ]) {
+      const [line] = privatePathLines(name, text);
+      check(
+        line === undefined,
+        `entropy receipt ${name} line ${line}: private absolute path; nothing is filed, the pending dispatch and the worker's retained inputs stay for the correction, and the same command refiles once the text reads <home>/, <worktree>/ or <tmp>/`,
+      );
+    }
     ensureDirectory(root, runsRoot(root));
     for (const extension of ["json", "md"])
       check(
@@ -1443,6 +1475,87 @@ export async function beginEntropyReview(
 }
 
 /**
+ * The worker's prose a receipt renders, with the paths it may name rewritten
+ * to the placeholders the Markdown private-path rule admits: the launchpad
+ * checkout as `<worktree>`, the system temporary directory as `<tmp>` and a
+ * home directory as `<home>`. A path none of those covers refuses the filing
+ * naming the text and the line; the caller retains the original for the
+ * correction, and the same command refiles once the text is corrected.
+ */
+/** Every string inside a worker's returned value, named by its path, screened
+ * and rewritten as screenWorkerText rewrites a text, so a frozen-copy path a
+ * finding cites in its observed, expected or reproduction text reads as its
+ * placeholder too. Returns the rebuilt value and the rewrite count. */
+function screenWorkerValue(root, value, retain, prefix) {
+  const texts = {};
+  const collect = (node, path) => {
+    if (typeof node === "string") texts[path] = node;
+    else if (Array.isArray(node))
+      node.forEach((item, index) => collect(item, `${path}[${index}]`));
+    else if (node && typeof node === "object")
+      for (const [key, item] of Object.entries(node))
+        collect(item, `${path}.${key}`);
+  };
+  collect(value, prefix);
+  const screened = screenWorkerText(root, texts, retain);
+  const rebuild = (node, path) => {
+    if (typeof node === "string") return screened.texts[path];
+    if (Array.isArray(node))
+      return node.map((item, index) => rebuild(item, `${path}[${index}]`));
+    if (node && typeof node === "object")
+      return Object.fromEntries(
+        Object.entries(node).map(([key, item]) => [
+          key,
+          rebuild(item, `${path}.${key}`),
+        ]),
+      );
+    return node;
+  };
+  return { value: rebuild(value, prefix), rewritten: screened.rewritten };
+}
+
+/** The retained lane as the receipt may name it: a path under the launchpad
+ * reads as <worktree>/…, so the receipt binds the original without naming a
+ * private absolute path. */
+const retainedLabel = (root, lane) =>
+  lane ? `<worktree>/${relative(root, lane)}` : null;
+
+function screenWorkerText(root, texts, retain) {
+  const escape = (value) => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+  const prefixes = [
+    ...[...new Set([realpathSync(root), resolve(root)])].map((base) => [
+      base,
+      "<worktree>",
+    ]),
+    ...[...new Set([realpathSync(tmpdir()), tmpdir()])].map((base) => [
+      base,
+      "<tmp>",
+    ]),
+  ];
+  let rewritten = 0;
+  const out = {};
+  for (const [name, text] of Object.entries(texts)) {
+    let value = text;
+    for (const [base, label] of prefixes)
+      value = value.replace(
+        new RegExp(`${escape(base)}(?=/|$|[\\s"'\`)>])`, "gu"),
+        label,
+      );
+    value = withoutHomeDirectories(value);
+    if (value !== text) rewritten++;
+    const [line] = privatePathLines(`${name}.md`, value);
+    if (line !== undefined) {
+      const lane = retain("rejected");
+      throw new Error(
+        `entropy review result rejected: the ${name} names a private absolute path at line ${line} that no placeholder covers; rewrite it to <home>/, <worktree>/ or <tmp>/ and refile with the same command; the rejected result and statement are retained at ${lane}`,
+      );
+    }
+    out[name] = value;
+  }
+  return { texts: out, rewritten };
+}
+
+/**
  * Bind a returned review with the loadout's own validators against the exact
  * WorkOrder and episode, refuse a subject whose tracked status moved, and file
  * the next numbered immutable pair with its attestation, cost and confinement.
@@ -1458,9 +1571,39 @@ export async function fileEntropyReview(
   const result = namedInput(root, pending.scratchParent, resultPath);
   const statementFile = namedInput(root, pending.scratchParent, statementPath);
   const returned = readJson(result, resultPath);
-  const statement = readFileSync(statementFile, "utf8").trim();
+  let statement = readFileSync(statementFile, "utf8").trim();
   const { validateReviewerOutput, selectFindingsForRefutation } =
     await skeleton("loadouts/entropy-reducer");
+  // The worker's result and statement as returned, kept outside the receipt
+  // when the filing rejects or rewrites them; the receipt binds them by
+  // digest and names the lane, and a rejection is written to the pending
+  // dispatch so the refile records the correction it answers.
+  const originalResultSha256 = hex(readFileSync(result));
+  const originalStatementSha256 = hex(statement);
+  let retainedLane = null;
+  const retainOriginal = (why) => {
+    const lane = createScratchRoot(join(retentionLane(root), `${why}-`));
+    writeFileSync(join(lane, "result.json"), readFileSync(result), {
+      mode: 0o600,
+    });
+    writeFileSync(join(lane, "statement.txt"), statement, { mode: 0o600 });
+    promoteTemporaryRoot(lane);
+    retainedLane = lane;
+    if (why === "rejected")
+      writePending(root, "review", {
+        ...pending,
+        rejected: [
+          ...(pending.rejected ?? []),
+          {
+            at: now(),
+            retained: retainedLabel(root, lane),
+            resultSha256: originalResultSha256,
+            statementSha256: originalStatementSha256,
+          },
+        ],
+      });
+    return lane;
+  };
   let reviewerOutput;
   try {
     reviewerOutput = validateReviewerOutput(returned, {
@@ -1468,16 +1611,28 @@ export async function fileEntropyReview(
       episodeId: pending.episodeId,
     });
   } catch (error) {
-    const lane = createScratchRoot(join(retentionLane(root), "rejected-"));
-    writeFileSync(join(lane, "result.json"), readFileSync(result), {
-      mode: 0o600,
-    });
-    writeFileSync(join(lane, "statement.txt"), statement, { mode: 0o600 });
-    promoteTemporaryRoot(lane);
+    const lane = retainOriginal("rejected");
     throw new Error(
       `entropy review result rejected: ${error instanceof Error ? error.message : "invalid output"}; rejected result and statement retained at ${lane}`,
     );
   }
+  // Every text the receipt renders meets the Markdown private-path rule
+  // before filing: paths under the launchpad, the system temporary directory
+  // and a home directory read as their placeholders in the statement and in
+  // every string of the worker's output (a finding's observed, expected and
+  // reproduction texts included), and a path none covers refuses naming the
+  // text and the line, with the original retained.
+  const screenedOutput = screenWorkerValue(
+    root,
+    reviewerOutput,
+    retainOriginal,
+    "result",
+  );
+  const screened = screenWorkerText(root, { statement }, retainOriginal);
+  const rewrittenTexts = screenedOutput.rewritten + screened.rewritten;
+  if (rewrittenTexts) retainOriginal("rewritten");
+  reviewerOutput = screenedOutput.value;
+  statement = screened.texts.statement;
   const sourceRepository = dispatchSource(root, pending);
   const trackedStatusAfterSha256 = hex(trackedStatus(sourceRepository));
   const trackedStatusByteIdentical =
@@ -1564,7 +1719,7 @@ export async function fileEntropyReview(
             : "an explicitly named commit; bound by its tree object, with the working tree's own drift recorded rather than refused",
         ...temporaryWitness(pending),
         ...refs,
-        ...launchpadWitness(root, pending),
+        ...labelledLaunchpad(launchpadWitness(root, pending)),
         trackedStatusBeforeSha256: pending.subject.trackedStatusSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,
@@ -1590,6 +1745,12 @@ export async function fileEntropyReview(
             }),
         excludedFromManifest: SCRATCH_EXCLUDED,
         dependencies: pending.dependencies ?? "unobserved",
+        uninstalled: (pending.dependencies ?? "unobserved") !== "copied",
+        hostCoordination: "unobserved",
+        // The frozen copy under the system temporary directory, as the
+        // Markdown private-path rule admits it; the subject keeps the
+        // protocol's exact keys, which the refuter revalidates.
+        frozenCopy: publicTemporaryPath(pending.subject.scratchRepository),
         commandExecution:
           pending.transport === "codex-cli-exec"
             ? "host-enforced workspace sandbox rooted at the frozen copy"
@@ -1609,6 +1770,20 @@ export async function fileEntropyReview(
         episode?.wire,
       ),
       statement,
+      // How many of the worker's texts the filing rewrote to placeholders,
+      // the digests of the result and statement as returned, the lane that
+      // retains them when a rewrite or a rejection kept them, and each
+      // rejected return this filing corrects; the originals stay in the
+      // local retention lane, never in the receipt.
+      publicProjection: {
+        rewrittenTexts,
+        original: {
+          resultSha256: originalResultSha256,
+          statementSha256: originalStatementSha256,
+        },
+        retained: retainedLabel(root, retainedLane),
+        corrections: pending.rejected ?? [],
+      },
       disposition: {
         findingCount: findings.length,
         proposalPacketCount: reviewerOutput.proposalPackets.length,
@@ -1863,11 +2038,39 @@ export async function fileEntropyRefutation(
     "the review receipt changed after this refutation was dispatched",
   );
   const { buildRefutationReport } = await skeleton("loadouts/entropy-reducer");
-  const attempts = Array.isArray(returned) ? returned : returned?.attempts;
+  const returnedAttempts = Array.isArray(returned)
+    ? returned
+    : returned?.attempts;
   check(
-    Array.isArray(attempts),
+    Array.isArray(returnedAttempts),
     "entropy refutation result must carry an attempts array",
   );
+  // The refuter's reasons and evidence references are rendered too: every
+  // string reads as its placeholder or refuses, with the original retained.
+  const refutationOriginal = {
+    resultSha256: hex(readFileSync(attemptsFile)),
+    statementSha256: statement === null ? null : hex(statement),
+  };
+  let refutationRetained = null;
+  const retainAttempts = (why) => {
+    const lane = createScratchRoot(join(retentionLane(root), `${why}-`));
+    writeFileSync(join(lane, "result.json"), readFileSync(attemptsFile), {
+      mode: 0o600,
+    });
+    if (statement !== null)
+      writeFileSync(join(lane, "statement.txt"), statement, { mode: 0o600 });
+    promoteTemporaryRoot(lane);
+    refutationRetained = lane;
+    return lane;
+  };
+  const screenedAttempts = screenWorkerValue(
+    root,
+    returnedAttempts,
+    retainAttempts,
+    "attempts",
+  );
+  if (screenedAttempts.rewritten) retainAttempts("rewritten");
+  const attempts = screenedAttempts.value;
   let report;
   try {
     report = buildRefutationReport(review.reviewerOutput.findings, attempts);
@@ -1939,7 +2142,7 @@ export async function fileEntropyRefutation(
           "the commit the challenged review receipt names, re-frozen for this episode; the working tree's own drift is recorded rather than refused",
         ...temporaryWitness(pending),
         ...sourceRefsWitness(sourceRepository, pending),
-        ...launchpadWitness(root, pending),
+        ...labelledLaunchpad(launchpadWitness(root, pending)),
         trackedStatusBeforeSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,
@@ -1965,6 +2168,12 @@ export async function fileEntropyRefutation(
             }),
         excludedFromManifest: SCRATCH_EXCLUDED,
         dependencies: pending.dependencies ?? "unobserved",
+        uninstalled: (pending.dependencies ?? "unobserved") !== "copied",
+        hostCoordination: "unobserved",
+        // The frozen copy under the system temporary directory, as the
+        // Markdown private-path rule admits it; the subject keeps the
+        // protocol's exact keys, which the refuter revalidates.
+        frozenCopy: publicTemporaryPath(pending.subject.scratchRepository),
         commandExecution:
           pending.transport === "codex-cli-exec"
             ? "host-enforced workspace sandbox rooted at the frozen copy"
@@ -1997,6 +2206,11 @@ export async function fileEntropyRefutation(
         episode?.wire,
       ),
       liveness: pending.fixture ? "fixture" : "live",
+      publicProjection: {
+        rewrittenTexts: screenedAttempts.rewritten,
+        original: refutationOriginal,
+        retained: retainedLabel(root, refutationRetained),
+      },
     },
   });
   clearPending(root, "refutation", pending);

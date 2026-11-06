@@ -2770,3 +2770,166 @@ await check(
     );
   },
 );
+
+check(
+  "WO-257 criterion 8: the index shows an executor-unmet criterion by its later judgment with the executor's ordinal beside it, and as the current state only while no later judgment exists",
+  () => {
+    const repo = makeRepo("criteria-status");
+    write(
+      repo,
+      authorityPath("WO-030"),
+      `${header("WO-030", "(v1.0.0)")}\n**Acceptance criteria (all required)**\n\n1. First.\n2. Second.\n3. Third.\n4. Fourth.\n\n**Non-goals:** None.\n`,
+    );
+    const human = {
+      harness: "human",
+      harnessVersion: "not-applicable",
+      model: "human",
+      effort: "unknown",
+      source: "operator-attested",
+    };
+    const captured = {
+      capture: "docs/intake/notes/operator.md",
+      captureHash: `sha256:${"a".repeat(64)}`,
+      actor: human,
+    };
+    const handoff = [
+      activation("WO-030"),
+      {
+        type: "ImplementationReady",
+        workOrderId: "WO-030",
+        unmetCriteria: ["1", "2", "3"],
+      },
+    ];
+    writeLog(repo, handoff);
+    // No later judgment yet: the executor's record is the current state.
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /^- Unmet criteria: 1, 2, 3 \(recorded unmet by the executor at ordinal 2\)\.$/mu,
+    );
+    const judged = [
+      ...handoff,
+      {
+        type: "CriterionWaived",
+        workOrderId: "WO-030",
+        criterionId: "2",
+        reason: "accepted deviation",
+        ...captured,
+      },
+      {
+        type: "CriterionDefectRecorded",
+        workOrderId: "WO-030",
+        criterionId: "3",
+        criterionHash: `sha256:${"c".repeat(64)}`,
+        class: "bookkeeping",
+        evidence: "a count as its subject",
+        actor: human,
+      },
+      {
+        type: "VerificationRequested",
+        workOrderId: "WO-030",
+        verificationId: "VER-001",
+        reportPath: "docs/verifications/WO-030/VER-001.md",
+      },
+      {
+        type: "VerificationCompleted",
+        workOrderId: "WO-030",
+        verificationId: "VER-001",
+        reportPath: "docs/verifications/WO-030/VER-001.md",
+        verdict: "pass",
+      },
+      {
+        type: "FinalReviewRequested",
+        workOrderId: "WO-030",
+        finalReviewId: "FINAL-001",
+        reportPath: "docs/final-reviews/WO-030/FINAL-001.md",
+      },
+      {
+        type: "FinalReviewCompleted",
+        workOrderId: "WO-030",
+        finalReviewId: "FINAL-001",
+        reportPath: "docs/final-reviews/WO-030/FINAL-001.md",
+        verdict: "pass",
+      },
+    ];
+    writeLog(repo, judged);
+    const projection = readIndex(repo);
+    assert.equal(
+      projection.rows.find((row) => row.id === "WO-030").phase,
+      "closed",
+    );
+    // Closed and passing: each criterion by its later judgment, the
+    // executor's ordinal beside it, so the accepted unmet history stays.
+    const history = renderHistory(projection);
+    assert.match(
+      history,
+      /^- Criteria: 1 met by VER-001 \(executor: unmet at handoff, ordinal 2\); 2 unmet, waived by ordinal 3 \(executor: unmet at handoff, ordinal 2\); 3 defective \(bookkeeping\) by ordinal 4 \(executor: unmet at handoff, ordinal 2\)\.$/mu,
+    );
+    assert.doesNotMatch(history, /Unmet criteria:/u);
+
+    // A failed final review and a repair dispatch do not erase the later
+    // verification. A new handoff does require a new judgment, even if it
+    // lists the same criterion the earlier verification met.
+    const failed = judged.map((event) =>
+      event.type === "FinalReviewCompleted"
+        ? { ...event, verdict: "fail" }
+        : event,
+    );
+    const repair = { type: "RepairRequested", workOrderId: "WO-030" };
+    for (const events of [failed, [...failed, repair]]) {
+      writeLog(repo, events);
+      const current = readIndex(repo);
+      assert.equal(
+        current.rows.find((row) => row.id === "WO-030").state
+          .latestVerificationOrdinal,
+        6,
+      );
+      assert.match(
+        renderIndex(current),
+        /Criteria: 1 met by VER-001 \(executor: unmet at handoff, ordinal 2\)/u,
+      );
+    }
+    const nextHandoff = [
+      ...failed,
+      repair,
+      {
+        type: "RepairCompleted",
+        workOrderId: "WO-030",
+        unmetCriteria: ["1"],
+      },
+    ];
+    writeLog(repo, nextHandoff);
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /Unmet criteria: 1 \(recorded unmet by the executor at ordinal 10\)/u,
+    );
+    const request = {
+      type: "VerificationRequested",
+      workOrderId: "WO-030",
+      verificationId: "VER-002",
+      reportPath: "docs/verifications/WO-030/VER-002.md",
+    };
+    writeLog(repo, [...nextHandoff, request]);
+    assert.equal(
+      readIndex(repo).rows.find((row) => row.id === "WO-030").state
+        .latestVerificationOrdinal,
+      undefined,
+    );
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /Unmet criteria: 1 \(recorded unmet by the executor at ordinal 10\)/u,
+    );
+    writeLog(repo, [
+      ...nextHandoff,
+      request,
+      {
+        ...request,
+        type: "VerificationCompleted",
+        verdict: "pass",
+      },
+    ]);
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /Criteria: 1 met by VER-002 \(executor: unmet at handoff, ordinal 10\)/u,
+    );
+  },
+);

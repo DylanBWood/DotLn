@@ -3,6 +3,8 @@ import {
   createFixtureRoot,
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
+import { posix } from "node:path";
+import { fileURLToPath } from "node:url";
 import { execGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -395,6 +397,56 @@ test("a kit front page without markers stays untouched through assignment, retim
   // A manifest in a source checkout does not waive core's block requirement.
   writeFileSync(join(f.root, "packages/skeleton/tsconfig.json"), "{}\n");
   assert.throws(() => f.plan(), /one exact ordered README release block/);
+});
+
+test("WO-245-D010: the no-observed-tag remedy names only the heading for a kit root whose README carries no release block, and the README claim where the block is carried or required", (t) => {
+  const kitRoot = fixture({ target: null, claim: "v0.13.1", phase: "active" });
+  t.after(kitRoot.dispose);
+  writeFileSync(join(kitRoot.root, "KIT-MANIFEST.json"), "{}\n");
+  writeFileSync(join(kitRoot.root, "README.md"), "# Our project\n");
+  assert.throws(
+    () =>
+      planReleasePreparation(
+        kitRoot.root,
+        kitRoot.state,
+        undefined,
+        "2026-09-07",
+      ),
+    /^Error: release prepare cannot assign a target without an observed release tag; assign the heading by hand \(this kit root's README carries no release block, so it holds no claim to assign\)$/u,
+  );
+  // With the block carried, or outside a kit root, the claim is the owner's.
+  writeFileSync(
+    join(kitRoot.root, "README.md"),
+    readmeWith("This source prepares `v0.13.1`."),
+  );
+  assert.throws(
+    () =>
+      planReleasePreparation(
+        kitRoot.root,
+        kitRoot.state,
+        undefined,
+        "2026-09-07",
+      ),
+    /^Error: release prepare cannot assign a target without an observed release tag; assign the heading and README claim by hand$/u,
+  );
+  const launchpad = fixture({
+    target: null,
+    claim: "v0.13.1",
+    phase: "active",
+  });
+  t.after(launchpad.dispose);
+  writeFileSync(join(launchpad.root, "README.md"), "# Our project\n");
+  assert.throws(
+    () =>
+      planReleasePreparation(
+        launchpad.root,
+        launchpad.state,
+        undefined,
+        "2026-09-07",
+      ),
+    /release block/u,
+    "a launchpad's README always carries the block",
+  );
 });
 
 test("kit roots retain every release-marker refusal", (t) => {
@@ -1044,4 +1096,148 @@ test("reference images rewrite their definition with raw bytes and retain exact 
     [],
     "author-written absolute destinations never become renderer attribution",
   );
+});
+
+test("WO-257 the derived Read before upgrading notices name a generated page's regeneration and the new session an emitted-settings change needs", async () => {
+  const { criticalNotes, GENERATED_PAGE_RENDERERS } =
+    await import("./release.mjs");
+  const sourceOnly =
+    "Source-only release: no package, binary, container, or hosted artifact is published.";
+  // The renderers of a page are its writer, the module that renders the
+  // page, every kit module whose render or format function one of them
+  // imports, transitively, and the modules named by hand whose projected
+  // words the page carries: this closure over the sources pins the first
+  // three inside the table (round 1's consistency F1, round 3's F1, the
+  // repair round's F1).
+  const kitRoot = fileURLToPath(new URL("..", import.meta.url));
+  const renderingImports = (path) => {
+    const source = readFileSync(join(kitRoot, path), "utf8");
+    const found = new Set();
+    for (const match of source.matchAll(
+      /import\s*\{([^}]*)\}\s*from\s*["'](\.\.?\/[^"']+)["']/gu,
+    )) {
+      const target = posix.normalize(posix.join(posix.dirname(path), match[2]));
+      const names = match[1]
+        .split(",")
+        .map((name) => name.trim().split(/\s+as\s+/u)[0]);
+      if (
+        target.startsWith("scripts/") &&
+        names.some((name) => /^(?:render|format)[A-Z]/u.test(name))
+      )
+        found.add(target);
+    }
+    return found;
+  };
+  for (const [renderers] of GENERATED_PAGE_RENDERERS) {
+    const closure = new Set();
+    const queue = [renderers[0]];
+    while (queue.length) {
+      const path = queue.shift();
+      if (closure.has(path)) continue;
+      closure.add(path);
+      queue.push(...renderingImports(path));
+    }
+    for (const path of closure)
+      assert.ok(renderers.includes(path), `${renderers[0]} reaches ${path}`);
+  }
+  const index = criticalNotes(
+    ["docs/product/07-execution-guide.md", "scripts/work-orders.mjs"],
+    [],
+  );
+  assert.deepEqual(index, [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/work-orders.mjs): after merging this release, regenerate its page with npm run work-orders -- index before the next document gate reads it.",
+  ]);
+  // The settings line keys on the emitter criterion 17 names and on the
+  // committed emitted file, which an emit of a changed loadout rewrites
+  // without touching the emitter (round 2's consistency F1).
+  for (const [files, named] of [
+    [["packages/compiler/src/harness.ts"], "packages/compiler/src/harness.ts"],
+    [[".claude/settings.json"], ".claude/settings.json"],
+    [
+      ["packages/compiler/src/harness.ts", ".claude/settings.json"],
+      "packages/compiler/src/harness.ts, .claude/settings.json",
+    ],
+  ])
+    assert.deepEqual(criticalNotes(files, []), [
+      sourceOnly,
+      `The emitted host settings changed (${named}): after the update, re-emit with node scripts/harness.mjs emit and start a new session, since the host reads the emitted settings when a session starts.`,
+    ]);
+  // A page's shape lives in the modules that render its text as well as in
+  // its writer script: the meta renderer, the index card's criteria line,
+  // the attestation line and the duration formatter name their pages, every
+  // changed renderer shares one line with the union of the commands, and a
+  // renderer two pages share is named once (round 2's criteria F1 and design
+  // F1, round 3's F1).
+  assert.deepEqual(criticalNotes(["scripts/lib/meta.mjs"], []), [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/lib/meta.mjs): after merging this release, regenerate its page with npm run meta before the next document gate reads it.",
+  ]);
+  assert.deepEqual(criticalNotes(["scripts/lib/control-actor.mjs"], []), [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/lib/control-actor.mjs): after merging this release, regenerate its page with npm run work-orders -- index before the next document gate reads it.",
+  ]);
+  // The modules whose projected words the pages carry name their pages
+  // (the repair round's F1).
+  assert.deepEqual(criticalNotes(["scripts/lib/dependencies.mjs"], []), [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/lib/dependencies.mjs): after merging this release, regenerate its page with npm run work-orders -- index before the next document gate reads it.",
+  ]);
+  assert.deepEqual(criticalNotes(["scripts/lib/features.mjs"], []), [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/lib/features.mjs): after merging this release, regenerate its page with npm run meta before the next document gate reads it.",
+  ]);
+  assert.deepEqual(criticalNotes(["scripts/lib/feature-registry.mjs"], []), [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/lib/feature-registry.mjs): after merging this release, regenerate its page with npm run meta before the next document gate reads it.",
+  ]);
+  assert.deepEqual(criticalNotes(["scripts/lib/siblings.mjs"], []), [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/lib/siblings.mjs): after merging this release, regenerate its page with node scripts/siblings.mjs index before the next document gate reads it.",
+  ]);
+  assert.deepEqual(criticalNotes(["scripts/lib/duration.mjs"], []), [
+    sourceOnly,
+    "A generated page's renderer changed (scripts/lib/duration.mjs): after merging this release, regenerate the pages with npm run work-orders -- index and npm run meta before the next document gate reads them.",
+  ]);
+  assert.deepEqual(
+    criticalNotes(
+      ["scripts/lib/criteria-status.mjs", "scripts/lib/meta.mjs"],
+      [],
+    ),
+    [
+      sourceOnly,
+      "A generated page's renderer changed (scripts/lib/criteria-status.mjs, scripts/lib/meta.mjs): after merging this release, regenerate the pages with npm run work-orders -- index and npm run meta before the next document gate reads them.",
+    ],
+  );
+  // Neither a renderer nor another trigger of a standing line: no line, a
+  // helper a writer imports without rendering page text included.
+  assert.deepEqual(
+    criticalNotes(
+      [
+        "docs/KIT.md",
+        "README.md",
+        "scripts/lib/config.mjs",
+        "scripts/lib/git.mjs",
+        "scripts/lib/helpers.mjs",
+        "scripts/lib/release-records.mjs",
+      ],
+      [],
+    ),
+    [sourceOnly],
+  );
+  // Every renderer the kit writes a page with names its own command.
+  for (const [renderer, command] of [
+    ["scripts/meta.mjs", "npm run meta"],
+    ["scripts/lineage.mjs", "node scripts/lineage.mjs index"],
+    ["scripts/siblings.mjs", "node scripts/siblings.mjs index"],
+  ])
+    assert.ok(
+      criticalNotes([renderer], []).some(
+        (line) =>
+          line.startsWith(
+            `A generated page's renderer changed (${renderer})`,
+          ) && line.includes(command),
+      ),
+      renderer,
+    );
 });

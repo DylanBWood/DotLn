@@ -9,7 +9,8 @@
   "permissions": {
     "allow": [
       "Bash(node scripts/launchpad.mjs update --publish *)",
-      "Bash(node scripts/refute-plan.mjs publish *)"
+      "Bash(node scripts/refute-plan.mjs publish *)",
+      "Bash(node scripts/worktree.mjs publish *)"
     ],
     "deny": [
       "Bash(npm publish *)",

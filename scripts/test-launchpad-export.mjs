@@ -2256,6 +2256,151 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
   });
   assert.equal(again.status, 0, again.stderr);
   assert.doesNotMatch(again.stdout, /snapshot-missing/u);
+  // A registered target with no local clone mapping is named before any
+  // preparation step, with the registration command (WO-257 criterion 9).
+  const configPath = join(clone, "dotln.config.json");
+  const config = existsSync(configPath)
+    ? JSON.parse(readFileSync(configPath, "utf8"))
+    : { version: 1 };
+  writeFileSync(
+    configPath,
+    `${JSON.stringify({
+      ...config,
+      classes: {
+        ...(config.classes ?? {}),
+        fixture: { checks: [], supports: [] },
+      },
+      repositories: {
+        ...(config.repositories ?? {}),
+        "fixture-target": {
+          baseBranch: "main",
+          worktreeParent: "../targets",
+          repositoryClass: "fixture",
+          authorityProfile: {
+            authorityEnvelopeId: "fixture.target",
+            allowedEffects: ["repo.read", "repo.test"],
+            deniedEffects: ["repo.push"],
+            resourceLimits: {},
+            requiredEvidence: [],
+            expiresAt: Number.MAX_SAFE_INTEGER,
+            revocationEventTypes: [],
+          },
+        },
+      },
+    })}\n`,
+  );
+  const diagnosed = ok(
+    run(process.execPath, ["scripts/bootstrap.mjs"], { cwd: clone }),
+    "bootstrap with a registered target and no clone mapping",
+  );
+  assert.match(
+    diagnosed.stdout,
+    /^Registered target fixture-target has no local clone recorded in docs\/control\/local\/repository-clones\.json of this checkout, the primary checkout or the main worktree \(read: [^)]+\); plan check and the document gate refuse with "recorded target clone unavailable" until it is registered: node scripts\/worktree\.mjs clone fixture-target <absolute path to its clone>$/mu,
+  );
+  assert.ok(
+    diagnosed.stdout.indexOf("Registered target fixture-target") <
+      diagnosed.stdout.indexOf("Worktree ready"),
+    "the diagnostic precedes the preparation steps",
+  );
+  mkdirSync(join(clone, "docs/control/local"), { recursive: true });
+  writeFileSync(
+    join(clone, "docs/control/local/repository-clones.json"),
+    `${JSON.stringify({ "fixture-target": clone })}\n`,
+  );
+  assert.doesNotMatch(
+    ok(
+      run(process.execPath, ["scripts/bootstrap.mjs"], { cwd: clone }),
+      "bootstrap with the mapping recorded",
+    ).stdout,
+    /Registered target/u,
+  );
+  // A linked worktree keeps no ignored mapping of its own; the diagnostic
+  // reads the primary checkout's as the gates do (round 1's criteria F2).
+  // The registration is committed first, so the linked worktree's own
+  // configuration registers the target (round 2's consistency F2).
+  ok(
+    run("git", ["-C", clone, "add", "dotln.config.json"]),
+    "stage the registration",
+  );
+  ok(
+    run("git", [
+      "-C",
+      clone,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "fixture: register the target",
+    ]),
+    "commit the registration",
+  );
+  const linked = join(scratch, "bootstrap-linked-worktree");
+  ok(
+    run("git", [
+      "-C",
+      clone,
+      "worktree",
+      "add",
+      "-q",
+      "-b",
+      "fixture-linked",
+      linked,
+    ]),
+    "linked worktree",
+  );
+  try {
+    assert.match(
+      readFileSync(join(linked, "dotln.config.json"), "utf8"),
+      /"fixture-target"/u,
+      "the linked worktree registers the target",
+    );
+    assert.doesNotMatch(
+      ok(
+        run(process.execPath, ["scripts/bootstrap.mjs"], { cwd: linked }),
+        "bootstrap in a linked worktree with the primary checkout's mapping",
+      ).stdout,
+      /Registered target/u,
+    );
+    // With no mapping anywhere, the linked worktree's diagnostic names the
+    // places read, the primary checkout among them.
+    rmSync(join(clone, "docs/control/local/repository-clones.json"));
+    const unmapped = ok(
+      run(process.execPath, ["scripts/bootstrap.mjs"], { cwd: linked }),
+      "bootstrap in a linked worktree with no mapping anywhere",
+    ).stdout;
+    assert.match(
+      unmapped,
+      /^Registered target fixture-target has no local clone recorded in docs\/control\/local\/repository-clones\.json of this checkout, the primary checkout or the main worktree \(read: [^)]+\); plan check and the document gate refuse/mu,
+    );
+    assert.ok(
+      unmapped.includes(clone),
+      "the primary checkout is among the places read",
+    );
+    writeFileSync(
+      join(clone, "docs/control/local/repository-clones.json"),
+      `${JSON.stringify({ "fixture-target": clone })}\n`,
+    );
+  } finally {
+    run("git", ["-C", clone, "worktree", "remove", "--force", linked]);
+  }
+  // A mapping that does not parse is named, not reported as every target
+  // missing.
+  writeFileSync(join(clone, "docs/control/local/repository-clones.json"), "{");
+  assert.match(
+    ok(
+      run(process.execPath, ["scripts/bootstrap.mjs"], { cwd: clone }),
+      "bootstrap with a malformed mapping",
+    ).stdout,
+    /^Registered target fixture-target: the local clone mapping could not be read \(/mu,
+  );
+  writeFileSync(
+    join(clone, "docs/control/local/repository-clones.json"),
+    `${JSON.stringify({ "fixture-target": clone })}\n`,
+  );
 });
 
 test("WO-226 a fast-forwarded export restores its selected runtime for recovery, harness entry and finish", () => {

@@ -183,6 +183,7 @@ export const machinerySources = {
   ],
   "launchpad-planning": [
     "scripts/features.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/features.mjs",
     "scripts/lib/build-overlay.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
@@ -256,6 +257,7 @@ export const machinerySources = {
   "harness-probe": [
     "scripts/meta.mjs",
     "scripts/features.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/features.mjs",
     "scripts/lib/build-overlay.mjs",
     "scripts/lib/planning-document.mjs",
@@ -287,6 +289,7 @@ export const machinerySources = {
   ],
   "harness-fixtures": [
     "scripts/features.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/features.mjs",
     "scripts/lib/build-overlay.mjs",
     "scripts/outward-lint.mjs",
@@ -425,6 +428,9 @@ export const machinerySources = {
     "packages/skeleton/src/presence-signals.ts",
     "packages/skeleton/src/resident-store.ts",
     "scripts/harness.mjs",
+    "scripts/lib/feature-registry.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
     "packages/skeleton/src/harness-host.ts",
     // Every generated hook embeds its tool map (WO-250).
     "packages/skeleton/src/harness-command.ts",
@@ -462,6 +468,7 @@ export const machinerySources = {
     // blocker classes and step names from here.
     "scripts/lib/release-steps.mjs",
     "scripts/features.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/features.mjs",
     "scripts/lib/build-overlay.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
@@ -636,6 +643,7 @@ export const machinerySources = {
   ],
   "process-debt": [
     "scripts/features.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/features.mjs",
     "scripts/lib/build-overlay.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
@@ -753,6 +761,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo246-role-baseline.json",
     "packages/skeleton/fixtures/wo255-role-baseline.json",
     "packages/skeleton/fixtures/wo255-repair-role-baseline.json",
+    "packages/skeleton/fixtures/wo257-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -824,6 +833,7 @@ export const machinerySources = {
   "feedback-evidence": recordedSources["feedback"],
   meta: [
     "scripts/features.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/features.mjs",
     "scripts/lib/build-overlay.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).

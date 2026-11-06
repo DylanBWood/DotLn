@@ -260,6 +260,9 @@ export async function validateReceipt(root, receipt) {
       receipt.subject,
       buildPlanSubject(root, receipt.subject.revision, {
         goalReview: Boolean(receipt.subject.goalReview),
+        // A receipt filed before the separate-track projection carries no
+        // separateTrack key and is rebuilt by the rule it was filed under.
+        separateTrack: receipt.subject.separateTrack !== undefined,
       }),
     ),
     "receipt subject does not match committed sources",

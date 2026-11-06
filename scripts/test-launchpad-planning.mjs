@@ -732,6 +732,55 @@ test("planning and release-close reads run in a fresh exported instance", async 
     }
     write(kit, guidePath, guide);
     commit(kit, "docs: retain undeclared instance purpose fixture");
+    // The open members of a track: separate workstream follow the sequenced
+    // orders in the export's judged subject (WO-257 criterion 13); the
+    // fixture is restored before the receipt below is filed.
+    {
+      const memberOrder = (id, title) =>
+        `# ${id} — ${title}\n\n**Workstream:** WS-001\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Nomination provenance:** the export fixture.\n\n**Objective:** ${title}.\n\n**Design:** a bounded fixture.\n\n**Acceptance criteria (all required)**\n\n1. Evidence confirms a useful shape.\n\n**Evidence gate:** the fixture suite.\n\n**Non-goals:** other shapes.\n\n**Operator-review assumptions**\n\n1. None.\n`;
+      const fixtureFiles = [
+        "docs/work-orders/WO-903-separate-member.md",
+        "docs/work-orders/WO-902-separate-member.md",
+        "docs/workstreams/WS-001-separate-fixture.md",
+      ];
+      write(
+        kit,
+        fixtureFiles[0],
+        memberOrder("WO-903", "Separate member three"),
+      );
+      write(kit, fixtureFiles[1], memberOrder("WO-902", "Separate member two"));
+      write(
+        kit,
+        fixtureFiles[2],
+        `# WS-001 — Separate fixture\n\n<!-- dotln-workstream:start -->\n${JSON.stringify(
+          {
+            id: "WS-001",
+            track: "separate",
+            members: [
+              { workOrderId: "WO-903", repositoryId: "self" },
+              { workOrderId: "WO-902", repositoryId: "self" },
+            ],
+            edges: [],
+          },
+        )}\n<!-- dotln-workstream:end -->\n`,
+      );
+      commit(kit, "fixture: a separate-track workstream with two open members");
+      const separate = parse(
+        observe(
+          ["plan", "--", "refute"],
+          "the subject with a separate-track workstream",
+        ),
+      );
+      const judged = separate.subject.orders.map((row) => row.workOrderId);
+      assert.deepEqual(
+        judged.slice(-2),
+        ["WO-903", "WO-902"],
+        "the workstream's open members follow the sequenced orders in member order",
+      );
+      assert.ok(judged.indexOf("WO-001") < judged.indexOf("WO-903"));
+      for (const file of fixtureFiles) rmSync(join(kit, file));
+      commit(kit, "fixture: remove the separate-track workstream");
+    }
     const prompt = observe(["plan", "--", "refute"]);
     const promptValue = parse(prompt);
     assert.equal(promptValue.subject.goalReview.goalStandard, expectedStandard);
@@ -765,6 +814,137 @@ test("planning and release-close reads run in a fresh exported instance", async 
       "docs/control/local/statement.txt",
     ]);
     observe(["plan", "--", "check"]);
+    // The continuation gate reads product 00 as optional (WO-257 criterion
+    // 7): this export carries none, and an order's release label after the
+    // receipt passes plan check here as it does in core.
+    {
+      const first = "docs/work-orders/WO-001-environment-truth.md";
+      const filed = readFileSync(join(kit, first), "utf8");
+      write(kit, first, filed.replace(/ \(v0\.1\.0\)$/mu, " (v0.1.1)"));
+      observe(
+        ["plan", "--", "check"],
+        "an order's release label after the receipt, in an export without product 00",
+      );
+      write(kit, first, filed);
+    }
+    // The committed judgment reads the after side at the current revision: a
+    // product 00 present at the receipt's revision and removed by a later
+    // commit is a changed input refused by name, where a judgment that read
+    // the judged revision's paths would have read the removed page at the
+    // current revision and thrown (round 2's design F9, the repair round's
+    // combined.3.F5).
+    {
+      const vision = "docs/product/00-vision.md";
+      const commit = (message) =>
+        run(kit, "git", [
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-qm",
+          message,
+        ]);
+      // A receipt answers the refutation dispatched over the subject as it
+      // stands, so the prompt is drawn first.
+      // A receipt answers the refutation dispatched over the subject as it
+      // stands: the prompt names the orders judged afresh (the rest carry
+      // their earlier verdicts), and the result judges exactly those.
+      const receipt = () => {
+        const prompt = parse(
+          ok(
+            observe(
+              ["plan", "--", "refute"],
+              "the prompt over the subject as it stands",
+            ),
+            "the prompt over the subject as it stands",
+          ),
+        );
+        const judged =
+          prompt.review?.judgedOrderIds ?? prompt.judgedOrderIds ?? [];
+        write(kit, "docs/control/local/result.json", {
+          schemaVersion: "plan-goal-review-v1",
+          orders: judged.map((workOrderId) => ({
+            workOrderId,
+            verdict: "aligned",
+            criticalPathAndNoOp: "Synthetic fixture; no observed NoOp cost.",
+            systemTraps: "Synthetic fixture considers all eight system traps.",
+            removalBalance: "Unknown fixture process cost; no structural hold.",
+            failureBehavior: "Synthetic fixture preserves existing behavior.",
+            findings: [],
+          })),
+          planVerdict: "aligned",
+          holdReasons: [],
+        });
+        return ok(
+          observe(
+            [
+              "plan",
+              "--",
+              "receipt",
+              "docs/control/local/result.json",
+              "--statement",
+              "docs/control/local/statement.txt",
+            ],
+            "a receipt over the subject as it stands",
+          ),
+          "a receipt over the subject as it stands",
+        );
+      };
+      // A vision page the subject builder admits: the five theses and the
+      // exclusions, as the planning fixtures write it.
+      const visionText =
+        "# Vision\n\n## The one-paragraph story\n\nEvidence describes the shape.\n\n## The core bet\n\nEvidence describes the shape.\n\n## The differentiated interface\n\nEvidence describes the shape.\n\n## Three horizons, one kernel\n\nEvidence describes the shape.\n\n## Mission — increase the chance of operator flow\n\nEvidence describes the shape.\n\n## What DotLn is not\n\n- Not a fixture-shaped dead end.\n- Not a compulsory doctrine.\n\n";
+      const commitVision = (message) => {
+        write(kit, vision, visionText);
+        ok(run(kit, "git", ["add", vision]), "stage product 00");
+        ok(commit(message), message);
+      };
+      commitVision("fixture: add product 00");
+      receipt();
+      ok(
+        observe(
+          ["plan", "--", "check"],
+          "plan check with product 00 at the receipt",
+        ),
+        "plan check with product 00 at the receipt",
+      );
+      ok(run(kit, "git", ["rm", "-q", vision]), "remove product 00");
+      ok(
+        commit("fixture: remove product 00 after the receipt"),
+        "commit the removal",
+      );
+      const refused = run(kit, "npm", [
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "check",
+      ]);
+      assert.notEqual(
+        refused.status,
+        0,
+        "product 00 removed after the receipt is a changed input",
+      );
+      const output = `${refused.stdout}${refused.stderr}`;
+      assert.match(
+        output,
+        /sequence, vision, roles or order inventory changed/u,
+      );
+      assert.doesNotMatch(output, /requires a committed regular file/u);
+      // The page returns with the receipt's bytes, so the subject matches
+      // its receipt again and the export carries product 00 from here on.
+      commitVision("fixture: restore product 00");
+      ok(
+        observe(
+          ["plan", "--", "check"],
+          "after product 00 was restored to the receipt's bytes",
+        ),
+        "after product 00 was restored to the receipt's bytes",
+      );
+    }
     const entropySubject = observe(["entropy", "--", "subject"]);
     observe(["work-orders", "--", "index"]);
     observe(["work-orders", "--", "index", "--check"]);
@@ -1792,9 +1972,10 @@ test("planning and release-close reads run in a fresh exported instance", async 
     assert.equal(existsSync(forge.log), false);
     rmSync(join(kit, "docs/evidence/WO-002/decisions.md"));
     commit(kit, "docs: retain target record links");
-    // The body names exactly the criterion-record lines release preparation
-    // writes, so the operator never merges on a stale reading; for a target
-    // order it writes none, so a body naming one is refused (WO-249).
+    // The body names exactly the criterion-record lines the order's record
+    // gives, so the operator never merges on a stale reading; a target order's
+    // records body carries them by hand, and this order's record holds none,
+    // so a body naming one is refused (WO-249, WO-257).
     const reviewedBody = readFileSync(join(kit, "publication-body.md"), "utf8");
     write(
       kit,
@@ -1806,7 +1987,7 @@ test("planning and release-close reads run in a fresh exported instance", async 
     assert.notEqual(staleRecords.status, 0);
     assert.match(
       staleRecords.stderr,
-      /publication-body\.md: the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them\nCommit the body and publish again\./u,
+      /publication-body\.md: the body names criterion records the order's record no longer holds; a target order's records publication body carries these lines, written by hand as its last block, since release preparation writes nothing for a target order:\n\(none\)\nRemove the lines, commit the body and publish again\./u,
     );
     assert.equal(existsSync(forge.log), false);
     write(kit, "publication-body.md", reviewedBody);

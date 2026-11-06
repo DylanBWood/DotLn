@@ -3145,8 +3145,20 @@ test("WO-178 Stop names only journaled dispatches without terminal observations"
 
 test("WO-226 pasted prefixes select one role and retain the first content line", () => {
   const root = fixture();
+  // The block Claude Code writes before the operator's text when a slash
+  // command shared the message, and the wrapper it puts around a pasted
+  // message (WO-257 criterion 11): each is skipped before the dispatch line.
+  const block =
+    "<local-command-caveat>The command below was run directly in Claude Code, not sent to you as a request, and its output goes straight to the user. It's recorded here as context for later messages.</local-command-caveat>\n<command-name>/model</command-name>\n            <command-message>model</command-message>\n            <command-args></command-args>\n<local-command-stdout>Set model to `fixture` and saved as your default for new sessions · `max` effort for this session only</local-command-stdout>\n";
   try {
-    for (const [prompt, prefix, role, prefixLine, classification] of [
+    for (const [
+      prompt,
+      prefix,
+      role,
+      prefixLine,
+      classification,
+      leadingElement,
+    ] of [
       [
         "\n```text\n\nplanning: fixture\n```",
         "planning:",
@@ -3165,6 +3177,42 @@ test("WO-226 pasted prefixes select one role and retain the first content line",
       ["Example follows\nresume: next", null, "unknown", null, "unclassified"],
       ["No dispatch", null, "unknown", null, "unclassified"],
       ["```\n```\nplanning: fixture", null, "unknown", null, "unclassified"],
+      [
+        `${block}planning: standard planning pass +`,
+        "planning:",
+        "planner",
+        5,
+        "direction",
+      ],
+      [
+        '\n\n<pasted_content id="f1x7">\nplanning: standard planning pass +\n\n1) instance planning pass:\n</pasted_content id="f1x7">\n',
+        "planning:",
+        "planner",
+        3,
+        "direction",
+      ],
+      [
+        `${block}\n<pasted_content id="f1x7">\nresume: next\n</pasted_content>\n`,
+        "resume:",
+        "executor",
+        7,
+        "direction",
+      ],
+      [
+        `${block}Example follows\nresume: next`,
+        null,
+        "unknown",
+        null,
+        "unclassified",
+      ],
+      [
+        "<task-notification>\nresume: next\n</task-notification>\n",
+        null,
+        "unknown",
+        null,
+        "unclassified",
+        "task-notification",
+      ],
     ]) {
       const session_id = `prefix-${sha256(prompt).slice(0, 12)}`;
       invoke(
@@ -3185,6 +3233,9 @@ test("WO-226 pasted prefixes select one role and retain the first content line",
         },
         { prefix, role, prefixLine, class: classification },
       );
+      // An element the reader does not skip is journaled by name, so the
+      // next pass can read which block the host wrote.
+      assert.equal(rows[0].leadingElement, leadingElement, prompt);
       releaseHarnessWriter(root, input(root, "Stop", { session_id }));
     }
   } finally {
@@ -6984,7 +7035,7 @@ test("WO-076 identity replacement, two unequips and a newly equipped switch reac
     const options = overlayFixture(root, {
       version: 1,
       identity,
-      unequip: ["tinkerer-economy", "communication-intent"],
+      unequip: ["process-cost", "communication-intent"],
       equip: ["communication-observation"],
     });
     emitHarness(root, options);
@@ -6993,9 +7044,9 @@ test("WO-076 identity replacement, two unequips and a newly equipped switch reac
       readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
     );
     const body = Object.values(installedOverlayBytes(root)).join("\n");
-    for (const id of ["tinkerer-economy", "communication-intent"])
+    for (const id of ["process-cost", "communication-intent"])
       assert.ok(!manifest.origin.ids.includes(id), `${id} is absent`);
-    assert.doesNotMatch(body, /Tinkerer — Economy:|Intent to Act:/);
+    assert.doesNotMatch(body, /Process Cost:|Intent to Act:/);
     assert.match(body, /Observation: Report the finding/);
     assert.match(body, /Instance identity: Instance curator/);
     for (const text of [
@@ -7028,6 +7079,29 @@ test("WO-076 identity replacement, two unequips and a newly equipped switch reac
       original.manifest.overlay.sha256,
       changed.manifest.overlay.sha256,
     );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-257 an overlay naming tinkerer-economy is refused with the election's route", () => {
+  const root = fixture();
+  try {
+    // The choice was accepted with an advisory through kit release v0.118.0;
+    // the election lives in features.tinkerer-economy (FUP-3d64b267a45d2f34).
+    const retired =
+      /the build overlay's tinkerer-economy choice is retired: it was accepted with an advisory through kit release v0\.118\.0; elect features\.tinkerer-economy in dotln\.config\.json and remove the overlay entry \(npm run features -- list\)/u;
+    for (const value of [
+      { version: 1, unequip: ["tinkerer-economy"] },
+      { version: 1, equip: ["tinkerer-economy"] },
+    ]) {
+      const options = overlayFixture(root, value);
+      assert.throws(() => emitHarness(root, options), retired);
+      assert.throws(() => checkHarness(root, options), retired);
+    }
+    const refused = overlayCommand(root, "emit");
+    assert.notEqual(refused.status, 0);
+    assert.match(refused.stderr, retired);
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
@@ -12495,7 +12569,7 @@ test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals
   }
 });
 
-test("WO-246 the emitted settings allow the two publish helpers by their node spelling and nothing else, the deny list unchanged", () => {
+test("WO-246 the emitted settings allow the three publish helpers by their node spelling and nothing else, the deny list unchanged", () => {
   const onDisk = JSON.parse(
     readFileSync(join(sourceRoot, ".claude/settings.json"), "utf8"),
   );
@@ -12508,6 +12582,7 @@ test("WO-246 the emitted settings allow the two publish helpers by their node sp
   assert.deepEqual(emitted.permissions.allow, [
     "Bash(node scripts/launchpad.mjs update --publish *)",
     "Bash(node scripts/refute-plan.mjs publish *)",
+    "Bash(node scripts/worktree.mjs publish *)",
   ]);
   for (const rule of emitted.permissions.allow)
     assert.doesNotMatch(rule, /\b(?:git|gh)\b/u, rule);

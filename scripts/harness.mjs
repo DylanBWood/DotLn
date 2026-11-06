@@ -25,7 +25,8 @@ import {
   readBuildOverlay,
   harnessInstallation,
 } from "./lib/harness.mjs";
-import { docPath, findLaunchpad, readFeatures } from "./lib/config.mjs";
+import { docPath, findLaunchpad } from "./lib/config.mjs";
+import { readFeatures } from "./lib/features.mjs";
 import { judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   activeGateRuns,
