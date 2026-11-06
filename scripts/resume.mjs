@@ -65,6 +65,7 @@ import {
   requireReceiptCostLine,
 } from "./lib/receipt-cost.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
+import { renderCriteriaStatus } from "./lib/criteria-status.mjs";
 import {
   declaredCriteria as declaredCriteriaOf,
   describeHandoff,
@@ -891,9 +892,9 @@ const renderOffRamps = (state) =>
       `- Retracted off-ramps: ${state.retractedOffRamps.map((row) => `ordinal ${row.ordinal} retracts ordinal ${row.subject.ordinal} (${row.subject.type}, criterion ${row.subject.criterionId}${row.pullRequest ? `; pull request ${row.pullRequest}` : ""})`).join(", ")}`,
     state.reopenedHandoffs?.length &&
       `- Reopened handoffs: ${state.reopenedHandoffs.map((row) => `ordinal ${row.ordinal} reopens ordinal ${row.handoff.ordinal} (${row.handoff.type})`).join(", ")}`,
-    // What the executor's handoff ledger recorded unmet (WO-173).
-    state.unmetCriteria?.length &&
-      `- Unmet criteria: ${state.unmetCriteria.map((row) => row.criterionId).join(", ")} (recorded unmet by the executor at ordinal ${state.unmetCriteria[0].ordinal})`,
+    // What the executor's handoff ledger recorded unmet (WO-173), each by its
+    // later criterion-level judgment once one exists.
+    renderCriteriaStatus(state) && `- ${renderCriteriaStatus(state)}`,
     state.corrections?.length &&
       `- Corrections: ${state.corrections
         .map(
@@ -1080,7 +1081,7 @@ const warnIfProjectionDisagrees = (rendered, emptyFold = false) => {
   }
   if (current !== rendered)
     process.stderr.write(
-      `warning: ${docRelative(repoRoot, "control", "current.md")} disagrees with the canonical fold of control segments; status is read-only and did not rewrite the projection\n`,
+      `warning: ${docRelative(repoRoot, "control", "current.md")} disagrees with the canonical fold of control segments; status is read-only and did not rewrite the projection; run npm run resume -- status --refresh to rewrite it from the fold (no control event is appended)\n`,
     );
 };
 
@@ -1244,7 +1245,9 @@ const storedBodyPath = (state) =>
 const storedBodyHint = (state) =>
   existsSync(join(repoRoot, storedBodyPath(state))) &&
   criterionRecordsApply(repoRoot, state)
-    ? " The stored pull-request body's criterion lines are now stale: npm run release -- prepare --local rewrites them before the final review's pass."
+    ? state.repositoryId
+      ? " The stored pull-request body's criterion lines are now stale: a target order's records body carries the record's lines written by hand, before the final review's pass."
+      : " The stored pull-request body's criterion lines are now stale: npm run release -- prepare --local rewrites them before the final review's pass."
     : "";
 // The order's own executor judges its own work, so it never records a waiver,
 // a defect or a retraction for its criteria (WO-158 criterion 2, WO-249). The
@@ -1583,16 +1586,21 @@ const run = async (argv) => {
       break;
     }
     case "status": {
+      // `--refresh` rewrites the projection from the fold and appends no
+      // event; without it status stays read-only and only warns.
+      const refresh = args.includes("--refresh");
+      if (refresh) args.splice(args.indexOf("--refresh"), 1);
       if (
         allOrders
           ? workOrder || args.length !== 2 || !args.includes("--json")
           : args.length > 1 || (args.length === 1 && args[0] !== "--json")
       )
         throw new Error(
-          "usage: resume status [--json] | resume status --all --json",
+          "usage: resume status [--json] [--refresh] | resume status --all --json",
         );
       const rendered = render(control, latestClosed, storage, branch);
-      warnIfProjectionDisagrees(rendered, control.orders.size === 0);
+      if (refresh) project(rendered);
+      else warnIfProjectionDisagrees(rendered, control.orders.size === 0);
       if (allOrders) {
         // One fold returns the per-order form's objects for every order, in
         // id order; the release set dependency edges read is read once.
@@ -2034,7 +2042,7 @@ const run = async (argv) => {
         );
         if (problem)
           throw new Error(
-            `final-review-result pass refused: ${storedBodyPath(state)}: ${problem}\n${criterionRecordsApply(repoRoot, state) ? "While the order is in final-review, npm run release -- prepare --local rewrites the lines; npm run test:docs then runs again" : "Then npm run test:docs runs again"} before the pass is recorded.`,
+            `final-review-result pass refused: ${storedBodyPath(state)}: ${problem}\n${criterionRecordsApply(repoRoot, state) ? (state.repositoryId ? "Write the record's lines into the stored body by hand; npm run test:docs then runs again" : "While the order is in final-review, npm run release -- prepare --local rewrites the lines; npm run test:docs then runs again") : "Then npm run test:docs runs again"} before the pass is recorded.`,
           );
       }
       const findings = reviewFindings(

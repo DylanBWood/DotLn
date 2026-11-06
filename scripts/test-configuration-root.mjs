@@ -39,11 +39,11 @@ import {
   docRelative,
   findLaunchpad,
   loadConfig,
-  readFeatures,
   rootPattern,
   targetDocRelative,
   validReleaseDisplayName,
 } from "./lib/config.mjs";
+import { readFeatures } from "./lib/features.mjs";
 
 import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
 import "./test-features.mjs";

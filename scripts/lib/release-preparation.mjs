@@ -214,9 +214,13 @@ export function planReleasePreparation(
         "release prepare requires the README release block to hold only its version line; move other text out of the block",
       );
   }
+  // The remedy follows the page: a kit root whose README carries no release
+  // markers carries no claim, so only the heading is the owner's to assign.
   if (unassigned && !latest)
     throw new Error(
-      "release prepare cannot assign a target without an observed release tag; assign the heading and README claim by hand",
+      carriesClaim
+        ? "release prepare cannot assign a target without an observed release tag; assign the heading and README claim by hand"
+        : "release prepare cannot assign a target without an observed release tag; assign the heading by hand (this kit root's README carries no release block, so it holds no claim to assign)",
     );
   // The order's decisions record holds any assignment or collision this
   // command records (WO-086). It is refused while conflicted in every mode,

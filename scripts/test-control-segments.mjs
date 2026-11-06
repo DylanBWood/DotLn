@@ -751,7 +751,7 @@ await test("test-control-segments", async (t) => {
         assert.equal(refused.status, 1);
         assert.match(
           refused.stderr,
-          /usage: resume status \[--json\] \| resume status --all --json/,
+          /usage: resume status \[--json\] \[--refresh\] \| resume status --all --json/,
         );
       }
       assert.deepEqual(controlBytes(), before);
@@ -782,12 +782,36 @@ await test("test-control-segments", async (t) => {
 
       result = foldSegments(legacy);
 
+      // The historical oracle predates verification chronology. Check the
+      // derived ordinal against its source event before comparing the fields
+      // that the original record captured.
+      const historicalState = (state) => {
+        const { latestVerificationOrdinal, ...recorded } = state;
+        const completedAt = legacy.findLastIndex(
+          (event) =>
+            event.type === "VerificationCompleted" &&
+            event.workOrderId === state.workOrderId &&
+            event.verificationId === state.latestVerificationId,
+        );
+        assert.equal(
+          latestVerificationOrdinal,
+          completedAt < 0 ? undefined : completedAt + 1,
+        );
+        return recorded;
+      };
       assert.deepEqual(
-        JSON.parse(JSON.stringify([...result.orders])),
+        JSON.parse(
+          JSON.stringify(
+            [...result.orders].map(([id, row]) => [
+              id,
+              { ...row, state: historicalState(row.state) },
+            ]),
+          ),
+        ),
         expected.orders,
       );
       assert.deepEqual(
-        JSON.parse(JSON.stringify(result.legacy)),
+        JSON.parse(JSON.stringify(historicalState(result.legacy))),
         expected.current,
       );
     },

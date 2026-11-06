@@ -26,6 +26,38 @@ export const parseWorkstreamDeclaration = (markdown, path) => {
   return match[1];
 };
 
+/** The one dotln-workstream block of a workstream document, in the contract's
+ * shape: the id its filename names, members, edges and an optional separate
+ * track; a malformed block refuses by its path. The index and the planning
+ * subject read the same parse. */
+export const parseWorkstreamDocument = (text, path, expectedId) => {
+  const lines = text.split(/\r?\n/u);
+  const positions = (marker) =>
+    lines.flatMap((line, index) => (line === marker ? [index] : []));
+  const starts = positions("<!-- dotln-workstream:start -->");
+  const ends = positions("<!-- dotln-workstream:end -->");
+  if (starts.length !== 1 || ends.length !== 1 || starts[0] >= ends[0])
+    throw new Error(`${path}: expected one dotln-workstream block`);
+  const stream = parseJson(
+    lines.slice(starts[0] + 1, ends[0]).join("\n"),
+    path,
+  );
+  if (
+    !stream ||
+    typeof stream !== "object" ||
+    Array.isArray(stream) ||
+    stream.id !== expectedId ||
+    Object.keys(stream).some(
+      (key) => !["id", "members", "edges", "track"].includes(key),
+    ) ||
+    (stream.track !== undefined && stream.track !== "separate") ||
+    !Array.isArray(stream.members) ||
+    !Array.isArray(stream.edges)
+  )
+    throw new Error(`${path}: invalid or duplicate workstream document`);
+  return stream;
+};
+
 /** Read the document contract without observing any target checkout. */
 export const readWorkstreams = (root, rows) => {
   const directory = docPath(root, "workstreams");
@@ -42,30 +74,12 @@ export const readWorkstreams = (root, rows) => {
     const file = join(directory, name);
     if (!containedRegularFile(file, root))
       throw new Error(`${path}: expected a contained regular file`);
-    const lines = readFileSync(file, "utf8").split(/\r?\n/u);
-    const positions = (marker) =>
-      lines.flatMap((line, index) => (line === marker ? [index] : []));
-    const starts = positions("<!-- dotln-workstream:start -->");
-    const ends = positions("<!-- dotln-workstream:end -->");
-    if (starts.length !== 1 || ends.length !== 1 || starts[0] >= ends[0])
-      throw new Error(`${path}: expected one dotln-workstream block`);
-    const stream = parseJson(
-      lines.slice(starts[0] + 1, ends[0]).join("\n"),
+    const stream = parseWorkstreamDocument(
+      readFileSync(file, "utf8"),
       path,
+      filename[1],
     );
-    if (
-      !stream ||
-      typeof stream !== "object" ||
-      Array.isArray(stream) ||
-      stream.id !== filename[1] ||
-      seen.has(stream.id) ||
-      Object.keys(stream).some(
-        (key) => !["id", "members", "edges", "track"].includes(key),
-      ) ||
-      (stream.track !== undefined && stream.track !== "separate") ||
-      !Array.isArray(stream.members) ||
-      !Array.isArray(stream.edges)
-    )
+    if (seen.has(stream.id))
       throw new Error(`${path}: invalid or duplicate workstream document`);
     seen.add(stream.id);
     const members = new Set();

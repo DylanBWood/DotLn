@@ -7,6 +7,7 @@
     "scripts/harness.mjs",
     "scripts/kit/CLAUDE.template.md",
     "scripts/lib/config.mjs",
+    "scripts/lib/feature-registry.mjs",
     "scripts/lib/validation.mjs",
     "scripts/lib/harness.mjs",
     "scripts/lib/terms.mjs",

@@ -59,10 +59,17 @@ from the repository's logs, and `npm run dotln -- intent "Describe the work"`
 files a draft work order from one sentence. The
 [skeleton README](/packages/skeleton/README.md) documents every flag.
 
+To run DotLn on work of your own, start from the public starter,
+[DotLn-Enterprise-Starter](https://github.com/DylanBWood/DotLn-Enterprise-Starter),
+the exported kit with no orders of its own, by one of two routes: fork it
+publicly, or clone it privately and keep the starter as your `upstream`
+remote so later starter releases merge in, as the
+[kit guide](/docs/KIT.md)'s First steps describes.
+
 ## What runs today
 
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.118.0`.
+This source prepares DotLn `v0.119.0`.
 <!-- DOTLN-RELEASE-END -->
 
 <!-- dotln-what-runs:start -->
@@ -190,6 +197,8 @@ whole loop.
   witness adapter.
 - [`packages/beacons/`](/packages/beacons/) — the Beacon codebooks.
 - [`scripts/`](/scripts/) — the control plane: resume, worktree, release.
+- [`docs/README.md`](/docs/README.md) — the documentation index: every page
+  under docs/ and what it holds.
 - [`docs/product/`](/docs/product/) — the blueprint.
 - [`docs/work-orders/`](/docs/work-orders/) — bounded authority, one file per
   unit of work.

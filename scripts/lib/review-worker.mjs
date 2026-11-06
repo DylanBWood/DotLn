@@ -364,6 +364,14 @@ function readPrior(root, path) {
 }
 
 const MAX_DOCUMENT_BYTES = 200_000;
+/** The most characters one brief carries, a worker's context bound: the
+ * figure validateChangeReviewRequest in change-review-protocol.ts refuses a
+ * brief past, named here so the helper measures against it and splits a round
+ * whose brief would pass it into batches over more workers, each under it,
+ * never refusing or narrowing the round for its size (operator direction,
+ * 2026-11-05). The protocol's check keeps its own literal because it is a
+ * feedback-judged source. */
+export const CHANGE_REVIEW_BRIEF_CEILING = 400_000;
 const fence = (text) => {
   const longest = Math.max(
     2,
@@ -400,8 +408,11 @@ function readCaptures(root, paths) {
 }
 
 /** The documents a brief carries: the order's text, or the planning
- * branch's changed planning documents and orders. */
-function subjectDocuments(root, resolved, since) {
+ * branch's planning documents and orders changed since the round's base. A
+ * base since which nothing changed (a fresh --since ladder over the branch's
+ * own tree) falls back to the branch's base, so the round reviews the whole
+ * branch rather than nothing. */
+function subjectDocuments(root, resolved, since, fallback = since) {
   if (resolved.workOrder)
     return [
       {
@@ -409,28 +420,47 @@ function subjectDocuments(root, resolved, since) {
         text: readFileSync(join(root, resolved.orderPath), "utf8"),
       },
     ];
-  const changed = runGit(root, [
-    "diff",
-    "--name-only",
-    "--diff-filter=AM",
-    since,
-    "--",
+  const roots = [
     relative(root, docPath(root, "planning")),
     relative(root, docPath(root, "workOrders")),
-  ])
-    .split("\n")
-    .concat(
-      runGit(root, [
-        "ls-files",
-        "--others",
-        "--exclude-standard",
-        "--",
-        relative(root, docPath(root, "planning")),
-        relative(root, docPath(root, "workOrders")),
-      ]).split("\n"),
-    )
-    .filter((path) => path.endsWith(".md"));
-  const unique = [...new Set(changed)].sort();
+  ];
+  // An untracked document is changed since a base tree only when that tree
+  // lacks it or holds other bytes: a --since tree written from this working
+  // tree already carries the untracked files it snapshotted.
+  const untrackedChangedSince = (base) =>
+    runGit(root, ["ls-files", "--others", "--exclude-standard", "--", ...roots])
+      .split("\n")
+      .filter((path) => path.endsWith(".md"))
+      .filter((path) => {
+        let committed;
+        try {
+          committed = runGit(root, [
+            "rev-parse",
+            "--verify",
+            "--quiet",
+            `${base}:${path}`,
+          ]).trim();
+        } catch {
+          return true;
+        }
+        return runGit(root, ["hash-object", "--", path]).trim() !== committed;
+      });
+  const changedSince = (base) => {
+    const changed = runGit(root, [
+      "diff",
+      "--name-only",
+      "--diff-filter=AM",
+      base,
+      "--",
+      ...roots,
+    ])
+      .split("\n")
+      .filter((path) => path.endsWith(".md"))
+      .concat(untrackedChangedSince(base));
+    return [...new Set(changed)].sort();
+  };
+  let unique = changedSince(since);
+  if (!unique.length && fallback !== since) unique = changedSince(fallback);
   if (!unique.length)
     refuse(
       "this planning branch changes no planning document or work order since its base",
@@ -439,6 +469,91 @@ function subjectDocuments(root, resolved, since) {
     path,
     text: readFileSync(join(root, path), "utf8"),
   }));
+}
+
+/**
+ * The round's documents, its whole brief measured, and the batches it takes,
+ * each rendered under the ceiling: one for a brief under it, or the batches
+ * a brief past it is split into. The launch and the record route plan the
+ * same briefs, so a split round is recorded batch by batch on either route.
+ */
+async function planRoundBriefs(
+  root,
+  checkout,
+  { options, resolved, plan, priors, captures, reviewedTree },
+) {
+  const { round, since, sinceSource } = plan;
+  const stat = runGit(checkout, [
+    ...HOST_GIT_READ,
+    "diff",
+    "--stat=160,120",
+    "--find-renames",
+    since,
+    reviewedTree,
+  ]);
+  // A round's documents are those the branch changed since the round's
+  // base: the merge base for round 1 and a recheck, the tree the earlier
+  // round reviewed for the combined round, or what --since names; a base
+  // since which nothing changed falls back to the branch's own base.
+  const documents = subjectDocuments(root, resolved, since, plan.documentsBase);
+  const render = (batch) =>
+    renderReviewBrief(root, {
+      kind: options.kind,
+      round,
+      resolved,
+      since,
+      sinceSource,
+      reviewedTree,
+      priorTree: plan.priorTree,
+      stat,
+      priors,
+      documents: batch
+        ? documents
+            .filter((document) => batch.paths.includes(document.path))
+            .map((document) =>
+              batch.pointers?.includes(document.path)
+                ? { ...document, pointer: true }
+                : document,
+            )
+        : documents,
+      captures,
+      ...(batch?.brief
+        ? { batch: batch.brief, ceiling: CHANGE_REVIEW_BRIEF_CEILING }
+        : {}),
+    });
+  // The whole brief is measured first; past the ceiling the round is split
+  // into batches over more workers, never refused or narrowed for its size.
+  const whole = await render(null);
+  const measured = whole.brief.length;
+  const planned = await planBatches(
+    render,
+    documents,
+    measured,
+    CHANGE_REVIEW_BRIEF_CEILING,
+  );
+  const batches = [];
+  for (const batch of planned) {
+    // One batch that points at a document is rendered again: the whole
+    // brief carried that document in full.
+    const rendered =
+      planned.length === 1 && !planned[0].pointers?.length
+        ? whole
+        : await render({
+            paths: batch.paths,
+            pointers: batch.pointers,
+            brief: {
+              number: batch.number,
+              count: batch.count,
+              index: batch.index,
+            },
+          });
+    if (rendered.brief.length > CHANGE_REVIEW_BRIEF_CEILING)
+      refuse(
+        `batch ${batch.number} of ${batch.count} renders ${rendered.brief.length} characters against the ceiling of ${CHANGE_REVIEW_BRIEF_CEILING}; shorten the captures before launching`,
+      );
+    batches.push({ ...batch, ...rendered });
+  }
+  return { stat, documents, measured, batches };
 }
 
 /** The inputs a round needs, required rather than defaulted, so a round's
@@ -620,6 +735,8 @@ export async function renderReviewBrief(
     priors,
     documents,
     captures = [],
+    batch = null,
+    ceiling = null,
   },
 ) {
   const { reviewerBriefs, reviewAdmissionRule, contributorConfiguredProgram } =
@@ -682,14 +799,20 @@ export async function renderReviewBrief(
     "",
     `## ${resolved.workOrder ? "The order" : "The planning documents"}`,
     "",
-    ...documents.flatMap((document) =>
-      Buffer.byteLength(document.text) > MAX_DOCUMENT_BYTES
-        ? [
-            `${document.path} is ${Buffer.byteLength(document.text)} bytes; read it from the checkout.`,
-            "",
-          ]
-        : [`${document.path}:`, "", fence(document.text), ""],
-    ),
+    // A round split into batches tells each worker which batch it holds and
+    // where the rest of the round's documents are.
+    ...(batch
+      ? [
+          `This round's documents are split into ${batch.count} batches by their size, each under the brief ceiling of ${ceiling} characters; this is batch ${batch.number} of ${batch.count}. Review the documents below in full. The index names every document in the round and the batch that carries it; read the other batches' documents in the checkout where your review needs them, and judge the round's whole change.`,
+          "",
+          ...batch.index.map(
+            (entry) =>
+              `- batch ${entry.batch}: ${entry.path} (${entry.bytes} bytes${entry.batch === batch.number ? ", below" : ", in the checkout"})`,
+          ),
+          "",
+        ]
+      : []),
+    ...documents.flatMap(documentBlock),
     ...(rules.length ? ["## Report", "", ...rules] : []),
   ].join("\n");
   if (!captures.length) return { brief: head, recordedBrief: head };
@@ -712,6 +835,255 @@ export async function renderReviewBrief(
     brief: `${head}${dispatch((capture) => capture.text)}`,
     recordedBrief: `${head}${dispatch(() => "(carried to the worker; its bytes are not recorded)")}`,
   };
+}
+
+/** One document's lines in a brief: its text fenced, or a pointer to the
+ * checkout when it is past the per-document cap. */
+const documentBlock = (document) =>
+  Buffer.byteLength(document.text) > MAX_DOCUMENT_BYTES || document.pointer
+    ? [
+        `${document.path} is ${Buffer.byteLength(document.text)} bytes; read it from the checkout.`,
+        "",
+      ]
+    : [`${document.path}:`, "", fence(document.text), ""];
+
+/**
+ * The batches a round's documents take when the whole brief would pass the
+ * ceiling: the documents are divided in order into the fewest groups whose
+ * blocks fit beside the preamble, the captures and the round's index, and
+ * each group gets a brief of its own. A document that cannot fit beside the
+ * preamble even alone stays a pointer to the checkout, as the per-document
+ * cap already makes a larger document, so a round is never refused for its
+ * documents' size; only a preamble and captures past the ceiling on their own
+ * refuse, since a capture is the operator's dispatch and cannot be pointed at.
+ */
+async function planBatches(render, documents, measured, ceiling) {
+  if (measured <= ceiling)
+    return [
+      {
+        number: 1,
+        count: 1,
+        paths: documents.map((document) => document.path),
+      },
+    ];
+  const blocks = documents.map((document) => ({
+    path: document.path,
+    bytes: Buffer.byteLength(document.text),
+    length: documentBlock(document).join("\n").length + 1,
+  }));
+  // The preamble, the captures and the index are what every batch carries.
+  const index = blocks.map((block, at) => ({
+    path: block.path,
+    batch: at + 1,
+    bytes: block.bytes,
+  }));
+  const fixed = (
+    await render({
+      paths: [],
+      brief: { number: 1, count: blocks.length, index },
+    })
+  ).brief.length;
+  const room = ceiling - fixed;
+  if (room <= 0)
+    refuse(
+      `the brief's preamble, captures and document index alone are ${fixed} characters against the ceiling of ${ceiling}; shorten the captures before launching`,
+    );
+  const groups = [];
+  let current = [];
+  let used = 0;
+  for (const block of blocks) {
+    if (block.length > room) {
+      block.pointer = true;
+      block.length =
+        documentBlock({ path: block.path, text: "", pointer: true }).join("\n")
+          .length + 1;
+    }
+    if (used + block.length > room && current.length) {
+      groups.push(current);
+      current = [];
+      used = 0;
+    }
+    current.push(block);
+    used += block.length;
+  }
+  if (current.length) groups.push(current);
+  return groups.map((group, at) => ({
+    number: at + 1,
+    count: groups.length,
+    paths: group.map((block) => block.path),
+    pointers: group.filter((block) => block.pointer).map((block) => block.path),
+    index: groups.flatMap((members, batch) =>
+      members.map((block) => ({
+        path: block.path,
+        batch: batch + 1,
+        bytes: block.bytes,
+      })),
+    ),
+  }));
+}
+
+/** A report's headings one level deeper, outside fenced code, so a batch's
+ * own `## Items` never stands where the merged table must. */
+const demoteHeadings = (text) => {
+  let fenced = false;
+  return text
+    .split("\n")
+    .map((line) => {
+      if (/^ {0,3}(?:`{3,}|~{3,})/u.test(line)) fenced = !fenced;
+      return !fenced && /^#{1,5}\s/u.test(line) ? `#${line}` : line;
+    })
+    .join("\n");
+};
+
+/** Reserve every short prefixed id before assigning fallbacks for long ids,
+ * so a fallback cannot take another finding's name in either input order.
+ * Leave room for a later recheck's kind and round prefix. */
+const MERGED_ID_ROOM = 64 - "consistency.".length - "999.".length;
+function mergeFindings(parts) {
+  const named = parts.flatMap(({ batch, result }) =>
+    result.findings.map((finding, at) => ({
+      finding,
+      prefix: `b${batch.number}.`,
+      id: `b${batch.number}.${finding.id}`,
+      ordinal: at + 1,
+    })),
+  );
+  const used = new Set(
+    named.filter(({ id }) => id.length <= MERGED_ID_ROOM).map(({ id }) => id),
+  );
+  return named.map(({ finding, prefix, id, ordinal }) => {
+    if (id.length > MERGED_ID_ROOM) {
+      do id = `${prefix}F${ordinal++}`;
+      while (used.has(id));
+      used.add(id);
+    }
+    return { ...finding, id };
+  });
+}
+
+const ITEM_COLUMNS = [
+  ["item", /item/iu],
+  ["location", /location|where/iu],
+  ["disposition", /disposition|status/iu],
+];
+const TRACED_COLUMNS = [
+  ["changed contract", /contract/iu],
+  ["consumer", /consumer/iu],
+  ["command", /command/iu],
+  ["result", /result/iu],
+];
+/** The cells of a later batch's table row in the first table's column order,
+ * using the validator's semantic columns. Extra columns match by name. */
+const alignRow = (header, table, row, required) => {
+  const name = (cell) => plain(cell).toLowerCase();
+  const target = headerColumns(header, required).columns;
+  const source = headerColumns(table.header, required).columns;
+  return header.map((cell, index) => {
+    const column = target.indexOf(index);
+    const at =
+      column < 0
+        ? table.header.findIndex((other) => name(other) === name(cell))
+        : source[column];
+    return at < 0 ? "" : (row[at] ?? "");
+  });
+};
+/** One validated result for a round reviewed in batches, with unique findings,
+ * joined rechecks, and every batch's table rows ahead of the original bodies. */
+async function mergeBatchResults(parts, kind, priors = []) {
+  const findings = mergeFindings(parts);
+  // A prior finding is expected from the batch that carried its file; a
+  // batch that carried it and returned no recheck leaves it not held, so
+  // incomplete coverage never reads as confirmation.
+  const expectedBatches = (id) => {
+    const file = priors
+      .flatMap((report) => report.findings)
+      .find((finding) => finding.id === id)?.file;
+    return parts
+      .filter(({ batch }) => file && batch.paths.includes(file))
+      .map(({ batch }) => batch.number);
+  };
+  const rechecks = [];
+  for (const { batch, result } of parts)
+    for (const recheck of result.rechecks) {
+      const note = `batch ${batch.number}: ${recheck.note}`;
+      const existing = rechecks.find((row) => row.id === recheck.id);
+      if (!existing)
+        rechecks.push({
+          id: recheck.id,
+          outcome: recheck.outcome,
+          note,
+          judgedBy: [batch.number],
+        });
+      else {
+        existing.outcome =
+          existing.outcome === "held" && recheck.outcome === "held"
+            ? "held"
+            : "not-held";
+        existing.note = `${existing.note}; ${note}`;
+        existing.judgedBy.push(batch.number);
+      }
+    }
+  for (const recheck of rechecks) {
+    const missing = expectedBatches(recheck.id).filter(
+      (number) => !recheck.judgedBy.includes(number),
+    );
+    if (missing.length) {
+      recheck.outcome = "not-held";
+      recheck.note = `${recheck.note}; not judged by ${missing.map((number) => `batch ${number}`).join(", ")}, which carried its file`;
+    }
+    delete recheck.judgedBy;
+  }
+  const filesRead = [
+    ...new Set(parts.flatMap(({ result }) => result.filesRead)),
+  ];
+  const tables = [
+    ["Items", ITEM_COLUMNS],
+    ...(kind === "consistency" ? [["Traced consumers", TRACED_COLUMNS]] : []),
+  ]
+    .map(([title, required]) => {
+      const found = parts
+        .map(({ result }) => tableUnder(result.report, title))
+        .filter(Boolean);
+      if (!found.length) return null;
+      const header = found[0].header;
+      const rows = found.flatMap((table) =>
+        table.rows.map((row) => alignRow(header, table, row, required)),
+      );
+      return [
+        `## ${title}`,
+        "",
+        `| ${header.join(" | ")} |`,
+        `| ${header.map(() => "---").join(" | ")} |`,
+        ...rows.map((row) => `| ${row.join(" | ")} |`),
+        "",
+      ];
+    })
+    .filter(Boolean)
+    .flat();
+  const report = [
+    ...tables,
+    ...parts.flatMap(({ batch, result }) => [
+      `## Batch ${batch.number} of ${batch.count}`,
+      "",
+      `Documents: ${batch.paths.join(", ")}.`,
+      "",
+      demoteHeadings(result.report.trim()),
+      "",
+    ]),
+  ].join("\n");
+  const { validateChangeReviewResult } = await skeleton(
+    "change-review-protocol",
+  );
+  return validateChangeReviewResult(
+    { schemaVersion: 1, findings, rechecks, filesRead, report },
+    {
+      review: {
+        priorFindingIds: priors.flatMap((prior) =>
+          prior.findings.map(({ id }) => id),
+        ),
+      },
+    },
+  );
 }
 
 /** One Markdown pipe table under a heading named `title`: its header cells
@@ -801,12 +1173,10 @@ export function tracedConsumersRefusal(text) {
     "a consistency report carries a `Traced consumers` table (changed contract, consumer, command, result)";
   const table = tableUnder(text, "Traced consumers");
   if (!table) return `${named}, and this report has none`;
-  const { missing, ambiguous, columns } = headerColumns(table.header, [
-    ["changed contract", /contract/iu],
-    ["consumer", /consumer/iu],
-    ["command", /command/iu],
-    ["result", /result/iu],
-  ]);
+  const { missing, ambiguous, columns } = headerColumns(
+    table.header,
+    TRACED_COLUMNS,
+  );
   if (missing.length)
     return `${named}; this report's table has no ${missing.join(", ")} column`;
   if (ambiguous.length)
@@ -843,11 +1213,10 @@ export function itemsTable(text) {
     "a criteria review given the operator's dispatch answers it in an `## Items` table (item, location in the subject, disposition)";
   const table = tableUnder(text, "Items");
   if (!table) return { refusal: `${named}, and this report has none` };
-  const { missing, ambiguous, columns } = headerColumns(table.header, [
-    ["item", /item/iu],
-    ["location", /location|where/iu],
-    ["disposition", /disposition|status/iu],
-  ]);
+  const { missing, ambiguous, columns } = headerColumns(
+    table.header,
+    ITEM_COLUMNS,
+  );
   if (missing.length)
     return {
       refusal: `${named}; this report's table lacks one of those columns`,
@@ -1162,6 +1531,11 @@ export function renderReport(record) {
           `- The operator's dispatch: ${record.captures.map((capture) => `${capture.bytes} bytes, sha256 \`${capture.sha256}\``).join("; ")}; its bytes are not recorded.`,
         ]
       : []),
+    ...(record.batches?.length
+      ? [
+          `- Batches: ${record.batches.map((batch) => `${batch.number} of ${batch.count} (${batch.documents.join(", ")}; brief ${batch.briefLength} characters; ${batch.durationMs === null ? "duration unknown" : formatDuration(batch.durationMs)})`).join("; ")}; each finding is keyed by its batch.`,
+        ]
+      : []),
     "",
     "## Findings",
     "",
@@ -1249,33 +1623,15 @@ export async function runChangeReview(
   const option = await resolveWorkerOption(root, options.host, options.model);
   const captures = readCaptures(root, options.capture);
   const reviewedTree = snapshot(resolved, checkout);
-  const stat = runGit(checkout, [
-    ...HOST_GIT_READ,
-    "diff",
-    "--stat=160,120",
-    "--find-renames",
-    since,
-    reviewedTree,
-  ]);
-  // A planning branch's documents are what the branch changed since its base,
-  // whatever a recheck's narrower delta touched.
-  const documents = subjectDocuments(root, resolved, plan.documentsBase);
-  const { brief, recordedBrief } = await renderReviewBrief(root, {
-    kind: options.kind,
-    round,
-    resolved,
-    since,
-    sinceSource,
-    reviewedTree,
-    priorTree: plan.priorTree,
-    stat,
-    priors,
-    documents,
-    captures,
-  });
   const { CHANGE_REVIEW_TOOLS, CHANGE_REVIEW_EFFECT } = await skeleton(
     "change-review-protocol",
   );
+  const { documents, measured, batches } = await planRoundBriefs(
+    root,
+    checkout,
+    { options, resolved, plan, priors, captures, reviewedTree },
+  );
+  const { brief, recordedBrief } = batches[0];
   const fixture = process.env.DOTLN_WORKER_FIXTURE;
   const transport = fixture ? "fake" : REVIEW_HOSTS[options.host];
   const name = `round-${round}-${options.kind}`;
@@ -1291,38 +1647,62 @@ export async function runChangeReview(
     report.findings.map((finding) => finding.id),
   );
   const episode = `${resolved.subject.toLowerCase()}_${name}_${randomUUID().slice(0, 8)}`;
-  // The transport writes its wire records here; it is removed afterward.
-  const wireDirectory = createScratchRoot(
-    join(tmpdir(), "dotln-review-capture-"),
-  );
+  // Each launch's transport writes its wire records in a lane of its own;
+  // every lane is removed afterward.
+  const wireDirectories = [];
+  const wireLane = () => {
+    const directory = createScratchRoot(
+      join(tmpdir(), "dotln-review-capture-"),
+    );
+    wireDirectories.push(directory);
+    return directory;
+  };
   try {
-    const request = {
-      kind: "change-review",
-      command: {
-        commandId: `cmd_review_${episode}`,
-        workstreamId: "ws_change_review",
-        intent: {
-          kind: "Act",
-          effect: CHANGE_REVIEW_EFFECT,
-          payload: { subject: resolved.subject, kind: options.kind, round },
+    // A batch beyond the first carries its number in its command and episode
+    // ids, so each launch is recorded as its own.
+    const requestFor = (batch, capture) => {
+      const suffix = batch.count > 1 ? `_b${batch.number}` : "";
+      return {
+        kind: "change-review",
+        command: {
+          commandId: `cmd_review_${episode}${suffix}`,
+          workstreamId: "ws_change_review",
+          intent: {
+            kind: "Act",
+            effect: CHANGE_REVIEW_EFFECT,
+            payload: { subject: resolved.subject, kind: options.kind, round },
+          },
         },
-      },
-      episodeId: `ep_review_${episode}`.replace(/[^a-zA-Z0-9_-]/gu, "_"),
-      model: option.model,
-      effort: option.effort,
-      cwd: checkout,
-      capture: wireDirectory,
-      review: {
-        kind: options.kind,
-        round,
-        subject: resolved.subject,
-        priorFindingIds,
-      },
-      brief,
-      profile: {
-        profileId: "change-review-v1",
-        modelTools: [...CHANGE_REVIEW_TOOLS],
-      },
+        episodeId: `ep_review_${episode}${suffix}`.replace(
+          /[^a-zA-Z0-9_-]/gu,
+          "_",
+        ),
+        model: option.model,
+        effort: option.effort,
+        cwd: checkout,
+        capture,
+        review: {
+          kind: options.kind,
+          round,
+          subject: resolved.subject,
+          priorFindingIds,
+        },
+        brief: batch.brief,
+        profile: {
+          profileId: "change-review-v1",
+          modelTools: [...CHANGE_REVIEW_TOOLS],
+        },
+      };
+    };
+    const request = requestFor(batches[0], wireLane());
+    const batchPlan = {
+      brief: measured,
+      ceiling: CHANGE_REVIEW_BRIEF_CEILING,
+      batches: batches.map((batch) => ({
+        number: batch.number,
+        documents: batch.paths,
+        brief: batch.brief.length,
+      })),
     };
     if (options.dryRun) {
       // The argv does not depend on the CLI's version, so a dry run reads
@@ -1335,6 +1715,7 @@ export async function runChangeReview(
         "<output schema file>",
         OBSERVED_CLI_VERSIONS[options.host],
       );
+      const { changeReviewPrompt } = await skeleton("change-review-protocol");
       const dry = {
         dryRun: true,
         host: options.host,
@@ -1345,6 +1726,26 @@ export async function runChangeReview(
         since,
         reviewedTree,
         briefSha256: sha256(brief),
+        measured: batchPlan,
+        // Every batch's worker input, the brief with its Budget and Output
+        // sections, so a route outside the helper's transports reads the
+        // whole round; a split round is recorded batch by batch.
+        batches: batches.map((batch) => {
+          // A capture lane the transport would make, named for the prompt's
+          // validation and never created by a dry run.
+          const prompt = changeReviewPrompt(
+            requestFor(batch, join(tmpdir(), "dotln-review-capture-dry-run")),
+          );
+          return {
+            number: batch.number,
+            count: batch.count,
+            documents: batch.paths,
+            pointers: batch.pointers ?? [],
+            briefSha256: sha256(batch.brief),
+            promptSha256: sha256(prompt),
+            prompt,
+          };
+        }),
         ...(rerollAdvisory(root, plan, reviewedTree)
           ? { advisory: rerollAdvisory(root, plan, reviewedTree).trim() }
           : {}),
@@ -1353,30 +1754,158 @@ export async function runChangeReview(
       write(`${JSON.stringify(dry)}\n`);
       return dry;
     }
-    const admission = await admitCodexLaunch(root, options.host);
-    if (admission?.refusal) {
-      write(`${admission.refusal}\n`);
-      return { refused: admission.refusal };
-    }
-    if (admission?.advisory) write(`${admission.advisory}\n`);
-    const attemptStarted = new Date();
-    let launched;
-    let failure = null;
-    try {
-      launched = await launchWorker(root, request, {
-        transport,
-        role: `review-${options.kind}`,
-        dispatch: request.episodeId,
-        workOrder: resolved.workOrder,
-        label: "review worker",
-        fake: async () => {
-          const { fakeReviewTransport } =
-            await import("./review-worker-fake.mjs");
-          return fakeReviewTransport(fixture, request);
-        },
+    const host = (launched) => ({
+      host: options.host,
+      transport: launched?.transport ?? transport,
+      harnessVersion: launched?.harnessVersion ?? "unknown",
+      model: { value: option.model, source: "command-line" },
+      effort: { value: option.effort, source: "command-line" },
+      option: { name: option.name, selection: option.selection },
+    });
+    const journalBase = {
+      workOrder: resolved.workOrder,
+      subject: resolved.subject,
+      branch: resolved.branch,
+      ...(resolved.target ? { target: resolved.target.repositoryId } : {}),
+      kind: options.kind,
+      round,
+    };
+    // A journal that cannot take the row costs an advisory, never the line
+    // or the report the caller reads.
+    const journal = (row) => {
+      try {
+        journalLaunch(root, { ...journalBase, ...row });
+        return "";
+      } catch (error) {
+        return `DotLn advisory: the launch was not journaled: ${error instanceof Error ? error.message : String(error)}.\n`;
+      }
+    };
+    const batchLabel = (batch) =>
+      batch.count > 1 ? `batch ${batch.number} of ${batch.count} ` : "";
+    // A batch read before a later one fails keeps its observation: its row
+    // is appended as soon as the round stops, named unpublished, so the
+    // session journal carries every launch's tokens, cost and duration.
+    const journalCompleted = (reason) =>
+      results
+        .map(({ observed, result }) =>
+          journal({
+            ...observed,
+            outcome: "batch-unpublished",
+            findings: result.findings.length,
+            failure: reason,
+          }),
+        )
+        .join("");
+    // One worker per batch, each launch admitted, journaled and read on its
+    // own; a batch that returns no report, or a refused one, ends the round
+    // with nothing written, naming the batch.
+    const results = [];
+    for (const batch of batches) {
+      const admission = await admitCodexLaunch(root, options.host);
+      if (admission?.refusal) {
+        write(`${admission.refusal}\n${journalCompleted(admission.refusal)}`);
+        return { refused: admission.refusal };
+      }
+      if (admission?.advisory) write(`${admission.advisory}\n`);
+      const batchRequest =
+        batch.number === 1 ? request : requestFor(batch, wireLane());
+      const attemptStarted = new Date();
+      let launched;
+      let failure = null;
+      try {
+        launched = await launchWorker(root, batchRequest, {
+          transport,
+          role: `review-${options.kind}`,
+          dispatch: batchRequest.episodeId,
+          workOrder: resolved.workOrder,
+          label: "review worker",
+          fake: async () => {
+            const { fakeReviewTransport } =
+              await import("./review-worker-fake.mjs");
+            return fakeReviewTransport(fixture, batchRequest, {
+              launch: batch.number,
+            });
+          },
+        });
+      } catch (error) {
+        failure = error instanceof Error ? error.message : String(error);
+      }
+      const wire = launched
+        ? readWire(batchRequest.capture, launched.transport)
+        : null;
+      const attemptEnded = new Date();
+      // A usage observation carries its counters under `usage`.
+      const tokens = {
+        value: launched?.usage?.usage?.totalTokens ?? null,
+        source: launched?.usage?.source ?? "unavailable",
+      };
+      const observed = {
+        ...host(launched),
+        readback: wire?.models?.length
+          ? { models: wire.models, source: "claude-print-result-modelUsage" }
+          : null,
+        startedAt: launched?.startedAt ?? attemptStarted.toISOString(),
+        endedAt: launched?.endedAt ?? attemptEnded.toISOString(),
+        durationMs: launched?.durationMs ?? attemptEnded - attemptStarted,
+        tokens,
+        costUsd: wire?.costUsd ?? null,
+        turns: wire?.turns ?? null,
+        ...(batch.count > 1
+          ? {
+              batch: {
+                number: batch.number,
+                count: batch.count,
+                documents: batch.paths,
+              },
+            }
+          : {}),
+      };
+      if (!launched) {
+        const line = `review: ${options.kind} round ${round}: ${batchLabel(batch) || "the worker "}returned no report (${failure}); ${formatDuration(observed.durationMs)}; nothing written to ${relative(root, lane)}`;
+        const advisory = journal({
+          ...observed,
+          outcome: "no-report",
+          failure,
+        });
+        write(`${line}\n${advisory}${journalCompleted(failure)}`);
+        return { line, report: null, failure };
+      }
+      const result = launched.returned;
+      // No record keeps a passage of the operator's dispatch the worker
+      // quoted, and the report written meets the rules the returned one met.
+      const omitted = omitDispatch(captures, options.kind, {
+        report: result.report,
+        findings: result.findings,
+        rechecks: result.rechecks,
+        filesRead: result.filesRead,
       });
-    } catch (error) {
-      failure = error instanceof Error ? error.message : String(error);
+      const refusal = recordedReportRefusal(
+        options.kind,
+        captures.length > 0,
+        result.report,
+        omitted.report,
+      );
+      if (refusal) {
+        // A report that lacks what its brief required is not a review: the
+        // round is run again, and the findings it returned are only counted.
+        const line = `review: ${options.kind} round ${round}: ${batchLabel(batch)}the worker's report is refused, since ${refusal}; it returned ${result.findings.length} findings; ${formatDuration(launched.durationMs)}; nothing written to ${relative(root, lane)}`;
+        const advisory = journal({
+          ...observed,
+          outcome: "refused-report",
+          failure: refusal,
+          findings: result.findings.length,
+        });
+        write(`${line}\n${advisory}${journalCompleted(refusal)}`);
+        return { line, report: null, failure: refusal };
+      }
+      results.push({
+        batch,
+        request: batchRequest,
+        launched,
+        observed,
+        result,
+        omitted,
+      });
     }
     // The checkout's contents are compared, not its status lines, so a
     // change to an already modified or untracked file is seen too.
@@ -1393,81 +1922,39 @@ export async function runChangeReview(
           ])
             .split("\n")
             .filter(Boolean);
-    const wire = launched ? readWire(wireDirectory, launched.transport) : null;
-    const host = {
-      host: options.host,
-      transport: launched?.transport ?? transport,
-      harnessVersion: launched?.harnessVersion ?? "unknown",
-      model: { value: option.model, source: "command-line" },
-      effort: { value: option.effort, source: "command-line" },
-      option: { name: option.name, selection: option.selection },
-      readback: wire?.models?.length
-        ? { models: wire.models, source: "claude-print-result-modelUsage" }
-        : null,
-    };
-    // A usage observation carries its counters under `usage`.
-    const tokens = {
-      value: launched?.usage?.usage?.totalTokens ?? null,
-      source: launched?.usage?.source ?? "unavailable",
-    };
-    const attemptEnded = new Date();
-    const journalBase = {
-      workOrder: resolved.workOrder,
-      subject: resolved.subject,
-      branch: resolved.branch,
-      ...(resolved.target ? { target: resolved.target.repositoryId } : {}),
-      kind: options.kind,
-      round,
-      ...host,
-      startedAt: launched?.startedAt ?? attemptStarted.toISOString(),
-      endedAt: launched?.endedAt ?? attemptEnded.toISOString(),
-      durationMs: launched?.durationMs ?? attemptEnded - attemptStarted,
-      tokens,
-      costUsd: wire?.costUsd ?? null,
-    };
-    // A journal that cannot take the row costs an advisory, never the line
-    // or the report the caller reads.
-    const journal = (row) => {
-      try {
-        journalLaunch(root, { ...journalBase, ...row });
-        return "";
-      } catch (error) {
-        return `DotLn advisory: the launch was not journaled: ${error instanceof Error ? error.message : String(error)}.\n`;
-      }
-    };
-    if (!launched) {
-      const line = `review: ${options.kind} round ${round}: the worker returned no report (${failure}); ${formatDuration(journalBase.durationMs)}; nothing written to ${relative(root, lane)}`;
-      const advisory = journal({ outcome: "no-report", failure });
-      write(`${line}\n${advisory}`);
-      return { line, report: null, failure };
+    const first = results[0];
+    const last = results.at(-1);
+    const single = results.length === 1;
+    // A round in batches records one merged result; a single batch records
+    // the worker's result as it was returned.
+    const parts = (field) =>
+      results.map(({ batch, [field]: value }) => ({ batch, result: value }));
+    const returned = single
+      ? first.result
+      : await mergeBatchResults(parts("result"), options.kind, priors);
+    const written = single
+      ? first.omitted
+      : {
+          ...(await mergeBatchResults(parts("omitted"), options.kind, priors)),
+          count: results.reduce((sum, row) => sum + row.omitted.count, 0),
+        };
+    const mergedRefusal = single
+      ? null
+      : recordedReportRefusal(
+          options.kind,
+          captures.length > 0,
+          returned.report,
+          written.report,
+        );
+    if (mergedRefusal) {
+      const line = `review: ${options.kind} round ${round}: the merged report is refused, since ${mergedRefusal}; nothing written to ${relative(root, lane)}`;
+      write(`${line}\n${journalCompleted(mergedRefusal)}`);
+      return { line, report: null, failure: mergedRefusal };
     }
-    const result = launched.returned;
-    // No record keeps a passage of the operator's dispatch the worker quoted,
-    // and the report written meets the rules the returned one met.
-    const omitted = omitDispatch(captures, options.kind, {
-      report: result.report,
-      findings: result.findings,
-      rechecks: result.rechecks,
-      filesRead: result.filesRead,
-    });
-    const refusal = recordedReportRefusal(
-      options.kind,
-      captures.length > 0,
-      result.report,
-      omitted.report,
-    );
-    if (refusal) {
-      // A report that lacks what its brief required is not a review: the
-      // round is run again, and the findings it returned are only counted.
-      const line = `review: ${options.kind} round ${round}: the worker's report is refused, since ${refusal}; it returned ${result.findings.length} findings; ${formatDuration(launched.durationMs)}; nothing written to ${relative(root, lane)}`;
-      const advisory = journal({
-        outcome: "refused-report",
-        failure: refusal,
-        findings: result.findings.length,
-      });
-      write(`${line}\n${advisory}`);
-      return { line, report: null, failure: refusal };
-    }
+    const sumKnown = (values) =>
+      values.every((value) => value === null)
+        ? null
+        : values.reduce((sum, value) => sum + (value ?? 0), 0);
     const record = {
       schemaVersion: 1,
       kind: "change-review-report",
@@ -1475,25 +1962,54 @@ export async function runChangeReview(
       subject: resolved.subject,
       branch: resolved.branch,
       review: { kind: options.kind, round },
-      ...host,
+      ...host(first.launched),
+      readback: first.observed.readback,
       ...roundFields(plan, resolved, priors, captures),
       reviewedTree,
       reviewedTreeSource: "the working tree the helper launched the worker on",
-      startedAt: launched.startedAt,
-      endedAt: launched.endedAt,
-      durationMs: launched.durationMs,
-      tokens,
-      costUsd: wire?.costUsd ?? null,
-      turns: wire?.turns ?? null,
+      startedAt: first.launched.startedAt,
+      endedAt: last.launched.endedAt,
+      durationMs: results.reduce(
+        (sum, row) => sum + row.launched.durationMs,
+        0,
+      ),
+      tokens: single
+        ? first.observed.tokens
+        : {
+            value: sumKnown(results.map((row) => row.observed.tokens.value)),
+            source: first.observed.tokens.source,
+          },
+      costUsd: sumKnown(results.map((row) => row.observed.costUsd)),
+      turns: sumKnown(results.map((row) => row.observed.turns)),
       checkout: { unchanged: !changed.length, changed },
       priorFindingIds,
       briefSha256: sha256(brief),
       brief: recordedBrief,
-      findings: omitted.findings,
-      rechecks: omitted.rechecks,
-      filesRead: omitted.filesRead,
-      report: omitted.report,
-      omittedDispatchLines: omitted.count,
+      ...(single
+        ? {}
+        : {
+            batches: results.map(
+              ({ batch, request: batchRequest, launched, observed }) => ({
+                number: batch.number,
+                count: batch.count,
+                documents: batch.paths,
+                episodeId: batchRequest.episodeId,
+                briefSha256: sha256(batch.brief),
+                briefLength: batch.brief.length,
+                brief: batch.recordedBrief,
+                startedAt: launched.startedAt,
+                endedAt: launched.endedAt,
+                durationMs: launched.durationMs,
+                tokens: observed.tokens,
+                costUsd: observed.costUsd,
+              }),
+            ),
+          }),
+      findings: written.findings,
+      rechecks: written.rechecks,
+      filesRead: written.filesRead,
+      report: written.report,
+      omittedDispatchLines: written.count,
     };
     mkdirSync(lane, { recursive: true, mode: 0o700 });
     writeFileSync(jsonPath, `${JSON.stringify(record, null, 2)}\n`, {
@@ -1504,34 +2020,43 @@ export async function runChangeReview(
       flag: "wx",
       mode: 0o600,
     });
-    const blocking = result.findings.filter(
+    const blocking = returned.findings.filter(
       (finding) => finding.severity === "blocking",
     ).length;
-    const advisory = journal({
-      outcome: "report",
-      findings: result.findings.length,
-      blocking,
-      report: relative(root, reportPath),
-    });
-    const unanswered = unansweredItems(captures, result.report);
-    const line = `review: ${options.kind} round ${round} found ${result.findings.length} (${blocking} blocking); ${formatDuration(launched.durationMs)}`;
+    const advisory = results
+      .map(({ observed, result }) =>
+        journal({
+          ...observed,
+          outcome: "report",
+          findings: result.findings.length,
+          blocking: result.findings.filter(
+            (finding) => finding.severity === "blocking",
+          ).length,
+          report: relative(root, reportPath),
+        }),
+      )
+      .join("");
+    const unanswered = unansweredItems(captures, returned.report);
+    const line = `review: ${options.kind} round ${round} found ${returned.findings.length} (${blocking} blocking); ${formatDuration(record.durationMs)}${single ? "" : `; ${results.length} batches`}`;
     write(
-      `${line}\n${changed.length ? `DotLn advisory: the checkout's contents changed during the review: ${changed.join(", ")}.\n` : ""}${unanswered.length ? `DotLn advisory: the Items table names no row for the dispatch's numbered items ${unanswered.join(", ")}.\n` : ""}${omittedAdvisory(omitted.count)}${rerollAdvisory(root, plan, reviewedTree)}${advisory}`,
+      `${line}\n${changed.length ? `DotLn advisory: the checkout's contents changed during the review: ${changed.join(", ")}.\n` : ""}${unanswered.length ? `DotLn advisory: the Items table names no row for the dispatch's numbered items ${unanswered.join(", ")}.\n` : ""}${omittedAdvisory(written.count)}${rerollAdvisory(root, plan, reviewedTree)}${advisory}`,
     );
     return {
       line,
       report: relative(root, reportPath),
       record: relative(root, jsonPath),
-      findings: result.findings.length,
+      findings: returned.findings.length,
       blocking,
+      ...(single ? {} : { batches: results.length }),
     };
   } finally {
-    removeTemporaryPath(wireDirectory, { recursive: true, force: true });
+    for (const directory of wireDirectories)
+      removeTemporaryPath(directory, { recursive: true, force: true });
   }
 }
 
 export const RECORD_USAGE =
-  "usage: npm run worker -- record --kind criteria|design|consistency|combined --from <returned-text file> [--format prose|json] [--host claude|codex] [--model <model>] [--effort <level>] [--tree <object>] [--order WO-NNN [--target <repository-id>] | --subject planning [--capture <file>]...] [--round N] [--recheck <report>]... [--since <tree>] [--tokens N] [--duration-ms N]";
+  "usage: npm run worker -- record --kind criteria|design|consistency|combined --from <returned-text file> [--format prose|json] [--host claude|codex] [--model <model>] [--effort <level>] [--tree <object>] [--order WO-NNN [--target <repository-id>] | --subject planning [--capture <file>]...] [--round N] [--recheck <report>]... [--since <tree>] [--batch N] [--brief-sha256 <digest>] [--tokens N] [--duration-ms N]";
 const isPlainObject = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 /** Whether an object carries a key that only the result itself carries. */
@@ -1737,12 +2262,14 @@ export async function recordAgentReview(
     };
     if (arg === "--from") extra.from = value();
     else if (arg === "--format") extra.format = value();
+    else if (arg === "--batch") extra.batch = value();
     else if (arg === "--tokens") extra.tokens = value();
     else if (arg === "--duration-ms") extra.durationMs = value();
     else if (arg === "--host") extra.host = value();
     else if (arg === "--model") extra.model = value();
     else if (arg === "--effort") extra.effort = value();
     else if (arg === "--tree") extra.tree = value();
+    else if (arg === "--brief-sha256") extra.briefSha256 = value();
     else if (arg === "--dry-run")
       refuse(`${arg} is the launch's; ${RECORD_USAGE}`);
     else reviewArgs.push(arg);
@@ -1872,13 +2399,168 @@ export async function recordAgentReview(
       `${relative(root, reportPath)} already holds this round's ${options.kind} report; a later round takes the next --round, a fresh round 1 names its base with --since, and a report you mean to replace is removed by hand first`,
     );
   // No record keeps a passage of the operator's dispatch the worker quoted.
-  const omitted = omitDispatch(captures, options.kind, {
+  let omitted = omitDispatch(captures, options.kind, {
     report: passing.body,
     text,
     findings: result.findings,
     rechecks: result.rechecks,
     filesRead: result.filesRead,
   });
+  // A round whose brief is split into batches is recorded batch by batch:
+  // each part keeps its worker's result under the lane until every batch is
+  // in, and the merged report is then recorded as the launch records it; a
+  // single report never stands for a split round.
+  const { batches } = await planRoundBriefs(root, checkout, {
+    options,
+    resolved,
+    plan,
+    priors,
+    captures,
+    reviewedTree,
+  });
+  // The dry run's digest of the brief a worker received: a plan that moved
+  // since (a document edited, or a tree the plan was not made for) refuses
+  // before anything is recorded, so a part never stands for a prompt no
+  // worker saw (round 3's F3).
+  if (extra.briefSha256 !== undefined) {
+    const planned =
+      batches[(extra.batch === undefined ? 1 : Number(extra.batch)) - 1];
+    const now = planned ? sha256(planned.brief) : null;
+    if (planned && now !== extra.briefSha256)
+      refuse(
+        `--brief-sha256 ${extra.briefSha256} is not the digest of ${extra.batch === undefined ? "this round's brief" : `batch ${extra.batch}'s brief`} now (${now}): the documents or the tree changed since the dry run that printed it; make a fresh dry run and launch the workers again`,
+      );
+  }
+  let recordedBatches = null;
+  if (batches.length > 1 || extra.batch !== undefined) {
+    const count = batches.length;
+    if (count === 1)
+      refuse(
+        `this round's brief is one batch; record its report without --batch`,
+      );
+    const number = Number(extra.batch);
+    if (!Number.isSafeInteger(number) || number < 1 || number > count)
+      refuse(
+        `this round's brief is split into ${count} batches (the dry run prints each batch's prompt under batches[]); record each batch's report with --batch 1 to ${count}, and the merged report is recorded when every batch is in`,
+      );
+    const partPath = (at) => join(lane, `${name}.batch-${at}.json`);
+    if (existsSync(partPath(number)))
+      refuse(
+        `${relative(root, partPath(number))} already holds batch ${number} of ${count}; a part you mean to replace is removed by hand first`,
+      );
+    const batch = batches[number - 1];
+    mkdirSync(lane, { recursive: true, mode: 0o700 });
+    writeFileSync(
+      partPath(number),
+      `${JSON.stringify(
+        {
+          schemaVersion: 1,
+          kind: "change-review-report-batch",
+          batch: {
+            number,
+            count,
+            documents: batch.paths,
+            pointers: batch.pointers ?? [],
+            briefLength: batch.brief.length,
+            briefSha256: sha256(batch.brief),
+          },
+          reviewedTree,
+          result,
+          omitted,
+          tokens: extra.tokens === undefined ? null : Number(extra.tokens),
+          durationMs:
+            extra.durationMs === undefined ? null : Number(extra.durationMs),
+        },
+        null,
+        2,
+      )}\n`,
+      { flag: "wx", mode: 0o600 },
+    );
+    const present = Array.from({ length: count }, (_, at) => at + 1).filter(
+      (at) => existsSync(partPath(at)),
+    );
+    if (present.length < count) {
+      const line = `review: ${options.kind} round ${round}: recorded batch ${number} of ${count} from the Agent route; waiting for ${Array.from(
+        { length: count },
+        (_, at) => at + 1,
+      )
+        .filter((at) => !present.includes(at))
+        .map((at) => `batch ${at}`)
+        .join(", ")} before the merged report is recorded`;
+      write(`${line}\n`);
+      return {
+        line,
+        report: null,
+        record: null,
+        part: relative(root, partPath(number)),
+      };
+    }
+    const parts = present.map((at) =>
+      JSON.parse(readFileSync(partPath(at), "utf8")),
+    );
+    if (parts.some((part) => part.reviewedTree !== reviewedTree))
+      refuse(
+        `the batches' parts name different reviewed trees (${parts.map((part) => part.reviewedTree.slice(0, 12)).join(", ")}); every batch reviews one tree`,
+      );
+    // Each part is bound to the plan rendered when it was recorded, and
+    // through --brief-sha256 to the brief its worker received: a plan that
+    // changed since a part was recorded (a document edited, or a tree named
+    // that the plan was not made for) refuses naming the part.
+    const stale = parts.filter(
+      (part) =>
+        part.batch.briefSha256 !== sha256(batches[part.batch.number - 1].brief),
+    );
+    if (stale.length)
+      refuse(
+        `the brief of ${stale.map((part) => `batch ${part.batch.number}`).join(", ")} differs from the plan now (the documents or the tree changed since the part was recorded); remove the parts under ${relative(root, lane)} and record the round again from a fresh dry run`,
+      );
+    const asParts = (field) =>
+      parts.map((part) => ({
+        batch: {
+          number: part.batch.number,
+          count,
+          paths: part.batch.documents,
+        },
+        result: part[field],
+      }));
+    const merged = await mergeBatchResults(
+      asParts("result"),
+      options.kind,
+      priors,
+    );
+    omitted = {
+      ...(await mergeBatchResults(asParts("omitted"), options.kind, priors)),
+      text: parts.map((part) => part.omitted.text).join("\n\n"),
+      count: parts.reduce((sum, part) => sum + part.omitted.count, 0),
+    };
+    const mergedRefusal = recordedReportRefusal(
+      options.kind,
+      captures.length > 0,
+      merged.report,
+      omitted.report,
+    );
+    if (mergedRefusal)
+      refuse(
+        `the merged report is not recorded: ${mergedRefusal}; the parts ${present.map((at) => relative(root, partPath(at))).join(", ")} stay and are removed by hand before the round is recorded again`,
+      );
+    recordedBatches = parts.map((part) => ({
+      number: part.batch.number,
+      count,
+      documents: part.batch.documents,
+      pointers: part.batch.pointers,
+      briefLength: part.batch.briefLength,
+      briefSha256: part.batch.briefSha256,
+      episodeId: null,
+      startedAt: null,
+      endedAt: null,
+      durationMs: part.durationMs,
+      tokens: {
+        value: part.tokens,
+        source: part.tokens === null ? "unavailable" : "agent-tool-usage",
+      },
+      costUsd: null,
+    }));
+  }
   const fallback =
     contributorWorkerOptions[contributorWorkerDefaults[hostName]];
   const attested = extra.model !== undefined || extra.effort !== undefined;
@@ -1932,8 +2614,11 @@ export async function recordAgentReview(
     turns: null,
     checkout: { unchanged: true, changed: [] },
     priorFindingIds,
-    briefSha256: null,
+    // A digest the recorder gave and the plan confirmed is kept, so a reader
+    // sees that the brief was proved; the Agent route holds no brief bytes.
+    briefSha256: extra.briefSha256 ?? null,
     brief: null,
+    ...(recordedBatches ? { batches: recordedBatches } : {}),
     findings: omitted.findings,
     rechecks: omitted.rechecks,
     filesRead: omitted.filesRead,
@@ -1950,14 +2635,16 @@ export async function recordAgentReview(
     mode: 0o600,
   });
   writeFileSync(reportPath, renderReport(record), { flag: "wx", mode: 0o600 });
-  const blocking = result.findings.filter(
+  const blocking = omitted.findings.filter(
     (finding) => finding.severity === "blocking",
   ).length;
-  const unanswered = unansweredItems(captures, passing.body);
+  const unanswered = unansweredItems(captures, omitted.report);
   const notes = `${unanswered.length ? `DotLn advisory: the Items table names no row for the dispatch's numbered items ${unanswered.join(", ")}.\n` : ""}${omittedAdvisory(omitted.count)}${rerollAdvisory(root, plan, reviewedTree)}`;
-  const line = structured
-    ? `review: ${options.kind} round ${round} found ${result.findings.length} (${blocking} blocking); recorded from the Agent route`
-    : `review: ${options.kind} round ${round}: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name`;
+  const line = recordedBatches
+    ? `review: ${options.kind} round ${round} found ${omitted.findings.length} (${blocking} blocking); recorded from the Agent route; ${recordedBatches.length} batches`
+    : structured
+      ? `review: ${options.kind} round ${round} found ${result.findings.length} (${blocking} blocking); recorded from the Agent route`
+      : `review: ${options.kind} round ${round}: recorded the worker's prose report from the Agent route; it holds no findings object a recheck can name`;
   write(`${line}\n${notes}`);
   return {
     line,

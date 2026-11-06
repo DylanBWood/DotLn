@@ -193,7 +193,16 @@ Each new review and refutation receives `TMPDIR` in a directory beside the
 frozen copy, inside the episode scratch parent. The instructions admit writes
 only inside those two roots; the receipt inventories the temporary directory's
 file paths and bytes as well as the copy. Historical receipts keep their
-original rendering. Filing removes the parent, repairing read-only directory
+original rendering. A receipt filed since v0.119.0 renders the frozen copy as
+`<tmp>/…`, labels a target subject's launchpad tree as the planning branch in
+progress, names an uninstalled copy and the unobserved host coordination in
+its confinement sentences, and screens the statement and every text of the
+worker's output for private absolute paths before filing: the launchpad, the
+temporary directory and a home directory read as `<worktree>`, `<tmp>` and
+`<home>`, a path none covers refuses naming the text and the line with the
+original retained, the same command refiles, and the receipt binds the
+returned result and statement by digest, names the retained lane and lists
+the rejected returns the filing corrected. Filing removes the parent, repairing read-only directory
 permissions without following links; a remaining cleanup failure names the
 leftover path in one line after filing and does not undo the filed receipt.
 Codex's workspace sandbox remains rooted at the copy; the sibling directory is

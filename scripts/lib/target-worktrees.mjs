@@ -20,8 +20,10 @@ import {
 } from "./config.mjs";
 import { exportSiblings, readDeclaration } from "./siblings.mjs";
 import {
+  mainWorktree,
   porcelainEntries,
   porcelainEntryName,
+  primaryWorktree,
   runGit,
   runGitPathList,
   shellQuote,
@@ -281,6 +283,30 @@ export const recordRepositoryClone = (
 
 export const recordedRepositoryClone = (launchpad, id) =>
   readMap(cloneMapPath(launchpad))[id];
+
+/** The recorded clone of a registered repository, read where the kit keeps
+ * the ignored mapping: the running checkout, then the primary checkout that
+ * owns the common Git directory, then the main-branch worktree. The places
+ * read come back beside the clone, so a reader names them; a mapping that
+ * does not parse refuses by its path. */
+export const resolveRecordedClone = (launchpad, id) => {
+  const places = [launchpad];
+  const primary = primaryWorktree(launchpad);
+  if (primary && !places.includes(primary)) places.push(primary);
+  let main = null;
+  try {
+    main = mainWorktree(launchpad);
+  } catch (error) {
+    if (error.message !== "no main-branch control-plane worktree found")
+      throw error;
+  }
+  if (main && !places.includes(main)) places.push(main);
+  for (const place of places) {
+    const clone = recordedRepositoryClone(place, id);
+    if (clone) return { clone, place, places };
+  }
+  return { clone: null, place: null, places };
+};
 
 export const resolveTargetStart = (launchpad, id) => {
   try {

@@ -610,7 +610,10 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
 
 // The declared-release fixture of WO-227: an order header naming the body
 // source, reviewed notes on the order branch, and the merges a close reads.
-const releaseFixture = (f, { header = "", notes = null } = {}) => {
+const releaseFixture = (
+  f,
+  { header = "", notes = null, classification = "minor" } = {},
+) => {
   const forge = publicationSetup(f);
   f.config.repositories.target.release = {
     policy: "declared",
@@ -635,7 +638,7 @@ const releaseFixture = (f, { header = "", notes = null } = {}) => {
     ]),
   );
   const orderText = (notesHeader) =>
-    `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${f.baseCommit}\n**Target release classification:** minor\n${notesHeader}\n**Objective:** The fixture's objective paragraph.\n`;
+    `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${f.baseCommit}\n**Target release classification:** ${classification}\n${notesHeader}\n**Objective:** The fixture's objective paragraph.\n`;
   write(f.main, f.order, orderText(header));
   git(f.main, "add", "-A");
   git(
@@ -1251,3 +1254,45 @@ test("WO-221 a registration without a release policy closes with no-release and 
     );
     assert.deepEqual(staleOrderHostRules(f.main), []);
   }));
+
+test("WO-257 criterion 10: every classification declaration is counted before the sole value is read, so a valid header beside a malformed duplicate is refused naming both lines", () =>
+  withFixture((f) => {
+    const r = releaseFixture(f, {
+      header: "**Target release classification:** majorly\n",
+      notes: notesText("The fixture product gains a board."),
+    });
+    const refused = r.close("--publish");
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.match(
+      `${refused.stdout}${refused.stderr}`,
+      /carries 2 \*\*Target release classification:\*\* headers \(lines 6, 7\); exactly one is needed/u,
+    );
+    assert.deepEqual(r.releases(), {});
+    assert.equal(r.tags(), "");
+  }));
+
+for (const [shape, classification] of [
+  ["a note after a period", "minor. The fixture's note follows the value."],
+  [
+    "text at a word boundary",
+    "minor—the fixture's note follows without a space",
+  ],
+  [
+    "a line break before the value",
+    "\nminor. The note follows on the value's line.",
+  ],
+])
+  test(`WO-257 criterion 10: a classification value followed by ${shape} is read as the reader before this order read it, so the count admits that header`, () =>
+    withFixture((f) => {
+      const r = releaseFixture(f, {
+        classification,
+        header: "**Target release notes:** objective\n",
+        notes: notesText("The fixture product gains a board."),
+      });
+      f.ok(r.close("--publish"));
+      assert.ok(
+        Object.hasOwn(r.releases(), "v0.1.0"),
+        "the Release is published",
+      );
+      assert.match(r.tags(), /v0\.1\.0/u);
+    }));

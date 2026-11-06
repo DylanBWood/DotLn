@@ -1431,13 +1431,16 @@ export const criterionRecordProblem = (body, records) => {
  * pull-request body carries (docs/control/budgets.json). */
 export const processMetered = (root) =>
   existsSync(docPath(root, "control", "budgets.json"));
-/** Whether release preparation writes the order's criterion-record lines:
- * for a launchpad order in a repository with a process meter, above whose
- * table they stand. A target order's or an unmetered repository's body
- * names none. Preparation, the regenerated body, the pass and publication
- * all read this one rule. */
+/** Whether the order's publication carries its criterion-record lines: in a
+ * repository with a process meter, a launchpad order's stored body carries
+ * them above its table, where release preparation writes them, and a target
+ * order's records publication body carries the same lines, written by hand,
+ * since preparation writes nothing for a target order (WO-249-D012's
+ * follow-up, taken by WO-257). An unmetered repository's body names none.
+ * Preparation, the regenerated body, the pass and publication all read this
+ * one rule. */
 export const criterionRecordsApply = (root, state) =>
-  Boolean(state) && !state.repositoryId && processMetered(root);
+  Boolean(state) && processMetered(root);
 /** The lines release preparation writes for the order, none where they do
  * not apply. */
 export const expectedCriterionRecordLines = (root, state) =>
@@ -1450,8 +1453,11 @@ export const criterionRecordRefusal = (root, body, state) => {
   const problem = criterionRecordProblem(body, records);
   if (!problem) return null;
   if (!applies)
-    return "the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them";
-  return `${problem}; release preparation writes these lines above the process table:\n${records.length ? records.join("\n") : "(none)"}`;
+    return "the body names criterion-record lines, which apply only in a repository with a process meter; remove them";
+  const written = state.repositoryId
+    ? "a target order's records publication body carries these lines, written by hand as its last block, since release preparation writes nothing for a target order"
+    : "release preparation writes these lines above the process table";
+  return `${problem}; ${written}:\n${records.length ? records.join("\n") : "(none)"}`;
 };
 // The source with one block lifted from wherever it stood, the blank lines
 // around its old place collapsed to one.

@@ -335,7 +335,10 @@ waived or defective criterion, `release prepare` and the regenerated body
 write one line per record between `<!-- dotln-criterion-records:start -->`
 and `<!-- dotln-criterion-records:end -->` directly above the meter block,
 each naming the `resume -- retract` command that undoes a wrong record before
-the merge; a target order's body names none. Those lines are release
+the merge; a target order's records publication body carries the same lines,
+written by the reviewer by hand as its last block, since preparation writes
+nothing for a target order, and an unmetered repository's body names none.
+Those lines are release
 preparation's and never satisfy the prose rule; `final-review-result pass`
 refuses a stored body whose lines differ from the record, while preparation
 can still rewrite them, and `worktree publish` refuses one changed after the

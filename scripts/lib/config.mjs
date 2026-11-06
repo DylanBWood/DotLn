@@ -13,8 +13,7 @@ import {
 } from "node:fs";
 import { dirname, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { featureAliases, resolveFeatureId } from "./features.mjs";
-export { readFeatures } from "./features.mjs";
+import { featureAliases, resolveFeatureId } from "./feature-registry.mjs";
 
 export const CONFIG_FILENAME = "dotln.config.json";
 export const CONFIG_SCHEMA_VERSION = 1;

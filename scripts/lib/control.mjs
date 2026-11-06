@@ -310,6 +310,7 @@ const emptyState = () => ({
   phase: "none",
   latestVerificationId: undefined,
   latestVerificationPath: undefined,
+  latestVerificationOrdinal: undefined,
   latestVerdict: undefined,
   finalReviewId: undefined,
   finalReviewPath: undefined,
@@ -414,6 +415,7 @@ const scanControl = (events, visit) => {
           phase: "active",
           latestVerificationId: undefined,
           latestVerificationPath: undefined,
+          latestVerificationOrdinal: undefined,
           latestVerdict: undefined,
           finalReviewId: undefined,
           finalReviewPath: undefined,
@@ -438,6 +440,7 @@ const scanControl = (events, visit) => {
           phase: "verifying",
           latestVerificationId: event.verificationId,
           latestVerificationPath: event.reportPath,
+          latestVerificationOrdinal: undefined,
           latestVerdict: undefined,
         });
         break;
@@ -446,6 +449,7 @@ const scanControl = (events, visit) => {
           phase: event.verdict === "pass" ? "verified" : "needs-fix",
           latestVerificationId: event.verificationId,
           latestVerificationPath: event.reportPath,
+          latestVerificationOrdinal: index + 1,
           latestVerdict: event.verdict,
           failureSourceId:
             event.verdict === "fail" ? event.verificationId : undefined,

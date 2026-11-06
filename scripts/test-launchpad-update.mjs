@@ -156,6 +156,145 @@ test("WO-226 update finish fast-forwards clean main and preserves every refused 
     git(writer, ["rev-parse", "HEAD"]).stdout,
   );
   assert.equal(git(destination, ["status", "--porcelain"]).stdout, "");
+  // Under a journaled planning dispatch the finish is refused until the
+  // operator's in-session request is named by its capture; the admission
+  // journals the capture hash, and a session with no journaled dispatch is
+  // admitted as before (WO-257 criterion 2).
+  const holdSession = "wo257-update-hold";
+  const holdKey = sha256(holdSession);
+  const holdJournal = join(
+    destination,
+    "docs/control/local/harness",
+    `${holdKey}.jsonl`,
+  );
+  mkdirSync(dirname(holdJournal), { recursive: true });
+  writeFileSync(
+    holdJournal,
+    `${JSON.stringify({
+      recordedAt: "2030-01-02T10:00:00.000Z",
+      event: "UserPromptSubmit",
+      typedEvent: "OperatorMessageObserved",
+      prefix: "planning:",
+      prefixLine: 0,
+      class: "direction",
+      digest: sha256("planning: fixture"),
+      bytes: 17,
+    })}\n`,
+  );
+  const heldFinish = (extra = []) =>
+    run(
+      process.execPath,
+      [
+        join(destination, "scripts/launchpad.mjs"),
+        "update",
+        "--finish",
+        destination,
+        ...extra,
+      ],
+      {
+        cwd: scratch,
+        // The fixture's own session, whichever host identity this process
+        // inherited: the journal lookup takes the first host variable set.
+        env: {
+          ...env,
+          CLAUDE_CODE_SESSION_ID: "",
+          CLAUDE_SESSION_ID: holdSession,
+        },
+      },
+    );
+  const refusedFinish = heldFinish();
+  assert.equal(refusedFinish.status, 1, refusedFinish.stdout);
+  assert.match(
+    refusedFinish.stderr,
+    /^error: update --finish refused: this session's journal holds a planning: dispatch \(2030-01-02T10:00:00\.000Z\); no planning or entropy pass takes a newer starter release or merges upstream unless the operator asks for it in that session\. Record the operator's in-session request with --operator-request --capture <ignored intake file> --capture-hash sha256:<digest> and rerun\.$/mu,
+  );
+  const requestText =
+    "Take the starter's newer release now, in this session.\n";
+  mkdirSync(join(destination, "docs/intake"), { recursive: true });
+  writeFileSync(
+    join(destination, "docs/intake/update-request.md"),
+    requestText,
+  );
+  const requestHash = `sha256:${sha256(requestText)}`;
+  assert.match(
+    heldFinish([
+      "--operator-request",
+      "--capture",
+      "docs/intake/update-request.md",
+    ]).stderr,
+    /--operator-request needs --capture-hash <value>/u,
+  );
+  assert.match(
+    heldFinish([
+      "--operator-request",
+      "--capture",
+      "docs/intake/update-request.md",
+      "--capture-hash",
+      `sha256:${"0".repeat(64)}`,
+    ]).stderr,
+    /operator capture hash mismatch/u,
+  );
+  const admitted = ok(
+    heldFinish([
+      "--operator-request",
+      "--capture",
+      "docs/intake/update-request.md",
+      "--capture-hash",
+      requestHash,
+    ]),
+    "finish on the operator's in-session request",
+  );
+  assert.match(
+    admitted.stdout,
+    new RegExp(
+      `^operator request recorded: docs/intake/update-request\\.md ${requestHash}$`,
+      "mu",
+    ),
+  );
+  const journaled = readFileSync(holdJournal, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  assert.equal(journaled.length, 2);
+  assert.deepEqual(journaled[1], {
+    ...journaled[1],
+    event: "LaunchpadUpdateAdmitted",
+    session: holdKey,
+    command: "update --finish",
+    hold: "this session's journal holds a planning: dispatch (2030-01-02T10:00:00.000Z)",
+    capture: "docs/intake/update-request.md",
+    captureHash: requestHash,
+  });
+  rmSync(holdJournal);
+  ok(heldFinish(), "a session with no journaled dispatch finishes as before");
+  // The entropy half of the hold: a pending review dispatch pointer in the
+  // launchpad holds the finish the same way (round 1's criteria F7).
+  const entropyPointer = join(
+    destination,
+    "docs/control/local/entropy/current-review.json",
+  );
+  const entropyPending = join(
+    destination,
+    "docs/control/local/entropy/review-fixture.json",
+  );
+  mkdirSync(dirname(entropyPointer), { recursive: true });
+  writeFileSync(entropyPending, "{}\n");
+  writeFileSync(
+    entropyPointer,
+    `${JSON.stringify({ path: "docs/control/local/entropy/review-fixture.json" })}\n`,
+  );
+  const heldByEntropy = heldFinish();
+  assert.equal(heldByEntropy.status, 1, heldByEntropy.stdout);
+  assert.match(
+    heldByEntropy.stderr,
+    /^error: update --finish refused: an entropy review dispatch is pending in this launchpad \(docs\/control\/local\/entropy\/current-review\.json\); no planning or entropy pass takes a newer starter release/mu,
+  );
+  rmSync(entropyPointer);
+  rmSync(entropyPending);
+  ok(
+    heldFinish(),
+    "a launchpad with no pending entropy dispatch finishes as before",
+  );
   // A checkout that already holds origin's main fetches nothing: the lane
   // reads the remote's commit, and neither a fetch of main nor a bundle runs.
   const trace = join(scratch, "finish-update-trace.log");
@@ -724,6 +863,87 @@ test("WO-078 criterion 1: an export to a declared sibling writes its receipt ins
   );
   ok(generator(["index"]), "siblings index after the update");
   assert.equal(readFileSync(registryPath, "utf8"), regenerated);
+  assert.equal("operatorRequest" in later, false);
+  // Under a journaled planning dispatch in core's session the from-core
+  // update is refused until the operator's in-session request is named; a
+  // preview still reads, and the admission records the capture hash in the
+  // sibling receipt (WO-257 criterion 2).
+  const holdSession = "wo257-export-update-hold";
+  const holdJournal = join(
+    source,
+    "docs/control/local/harness",
+    `${sha256(holdSession)}.jsonl`,
+  );
+  mkdirSync(dirname(holdJournal), { recursive: true });
+  writeFileSync(
+    holdJournal,
+    `${JSON.stringify({
+      recordedAt: "2030-01-02T10:00:00.000Z",
+      event: "UserPromptSubmit",
+      typedEvent: "OperatorMessageObserved",
+      prefix: "planning:",
+      prefixLine: 0,
+      class: "direction",
+      digest: sha256("planning: fixture"),
+      bytes: 17,
+    })}\n`,
+  );
+  const heldUpdate = (extra = []) =>
+    run(
+      process.execPath,
+      [
+        join(source, "scripts/launchpad.mjs"),
+        "export",
+        "--update",
+        worktree,
+        ...extra,
+      ],
+      {
+        cwd: scratch,
+        env: {
+          ...env,
+          CLAUDE_CODE_SESSION_ID: "",
+          CLAUDE_SESSION_ID: holdSession,
+        },
+      },
+    );
+  const refusedUpdate = heldUpdate();
+  assert.equal(refusedUpdate.status, 1, refusedUpdate.stdout);
+  assert.match(
+    refusedUpdate.stderr,
+    /^error: export --update refused: this session's journal holds a planning: dispatch \(2030-01-02T10:00:00\.000Z\); no planning or entropy pass takes a newer starter release or merges upstream unless the operator asks for it in that session\./mu,
+  );
+  ok(heldUpdate(["--preview"]), "a preview reads under the hold");
+  const requestText =
+    "Take the kit change into the starter now, in this session.\n";
+  mkdirSync(join(source, "docs/intake"), { recursive: true });
+  writeFileSync(join(source, "docs/intake/update-request.md"), requestText);
+  const requestHash = `sha256:${sha256(requestText)}`;
+  const admittedUpdate = ok(
+    heldUpdate([
+      "--operator-request",
+      "--capture",
+      "docs/intake/update-request.md",
+      "--capture-hash",
+      requestHash,
+    ]),
+    "update on the operator's in-session request",
+  );
+  assert.match(
+    admittedUpdate.stdout,
+    new RegExp(
+      `^operator request recorded: docs/intake/update-request\\.md ${requestHash}$`,
+      "mu",
+    ),
+  );
+  const third = receiptLine.exec(admittedUpdate.stdout);
+  assert.ok(third && third[1] !== second[1], admittedUpdate.stdout);
+  const requested = JSON.parse(readFileSync(join(source, third[1]), "utf8"));
+  assert.deepEqual(requested.operatorRequest, { captureHash: requestHash });
+  assert.equal(requested.coreCommit, next);
+  ok(generator(["index", "--check"]), "the page the requested update wrote");
+  rmSync(holdJournal);
+  rmSync(join(source, "docs/intake/update-request.md"));
   t.diagnostic(
     `sibling receipts ${basename(line[1])} and ${basename(second[1])}; generator wall-clock ${Math.round(generatorMs)} ms; registry ${Buffer.byteLength(regenerated)} bytes`,
   );

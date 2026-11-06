@@ -243,6 +243,27 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
           .digest("hex"),
         row.sha256,
       );
+    // Each filed record keeps its bytes and ends with one provenance footer
+    // naming the launchpad repository, the commit that holds the record and
+    // its path there; the launchpad's HEAD at filing is that commit (WO-257
+    // criterion 6).
+    const filedDecisions = readFileSync(
+      join(f.target, "docs/evidence/WO-999/decisions.md"),
+      "utf8",
+    );
+    assert.ok(filedDecisions.startsWith(decisionBytes.toString("utf8")));
+    assert.match(
+      filedDecisions,
+      new RegExp(
+        `\\n\\nFiled from the launchpad .+ \\(its tree at commit ${git(f.orderRoot, "rev-parse", "HEAD")}\\); this record's launchpad path was records/evidence/WO-999/decisions\\.md, and its relative links resolve against that path there, not in this repository\\.\\n$`,
+        "u",
+      ),
+    );
+    for (const row of event.records)
+      assert.match(
+        readFileSync(join(f.target, row.path), "utf8"),
+        /\n\nFiled from the launchpad .+ \(its tree at commit [0-9a-f]{40,64}\); this record's launchpad path was \S+, and its relative links resolve against that path there, not in this repository\.\n$/u,
+      );
     assert.ok(existsSync(join(f.orderRoot, f.order)));
     assert.ok(!existsSync(join(f.orderRoot, decisions)));
     assert.ok(!existsSync(reports.verification));
@@ -864,15 +885,55 @@ test("target records screen a hash-bound verification before writing and admit i
         assert.deepEqual(readFileSync(reports.verification), verification);
       } else {
         f.ok(result);
-        assert.deepEqual(
-          readFileSync(join(f.target, "docs/verifications/WO-999/VER-001.md")),
-          verification,
+        // The filed report is the verification's bytes with the provenance
+        // footer after them (WO-257 criterion 6).
+        const filed = readFileSync(
+          join(f.target, "docs/verifications/WO-999/VER-001.md"),
+        );
+        assert.ok(filed.subarray(0, verification.length).equals(verification));
+        assert.match(
+          filed.subarray(verification.length).toString("utf8"),
+          /^\n\nFiled from the launchpad .+ \(its tree at commit [0-9a-f]{40}\); this record's launchpad path was \S+, and its relative links resolve against that path there, not in this repository\.\n$/u,
         );
       }
       assert.equal(git(join(f.base, "target.git"), "show-ref"), origin);
       assert.equal(existsSync(forge.log), false);
     });
 });
+
+test("WO-257 the provenance footer's display name is screened like the record bytes it joins, and an unset name is an advisory", () =>
+  withFixture((f) => {
+    f.config.release = { displayName: "Fixture private name" };
+    publicationSetup(f);
+    f.mapClone();
+    f.start();
+    closeOrder(f, {}, "\nInspected <tmp>/x.\n");
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      "# Decisions\n\nPreserve the reviewed fixture behavior.\n",
+    );
+    const termsFile = docPath(f.main, "control", "local/terms.txt");
+    const originalTerms = readFileSync(termsFile, "utf8");
+    writeFileSync(
+      termsFile,
+      `${originalTerms}\nrefuse: fixture private name\n`,
+    );
+    const refused = f.resume(["target-records", ...actorArgs]);
+    assert.notEqual(refused.status, 0);
+    assert.match(
+      refused.stderr,
+      /release\.displayName \(the provenance footer\)/u,
+    );
+    assert.doesNotMatch(refused.stderr, /Fixture private name/u);
+    writeFileSync(termsFile, originalTerms);
+    const filed = f.ok(f.resume(["target-records", ...actorArgs]));
+    assert.doesNotMatch(filed, /release\.displayName is unset/u);
+    assert.match(
+      readFileSync(join(f.target, "docs/evidence/WO-999/decisions.md"), "utf8"),
+      /Filed from the launchpad Fixture private name \(its tree at commit /u,
+    );
+  }));
 
 test("target records resume interrupted commits and removals with literal document roots", async () => {
   const { commitTargetRecords, targetRecordSources } =

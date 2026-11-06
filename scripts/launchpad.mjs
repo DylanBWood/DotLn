@@ -41,6 +41,9 @@ import { bootstrapWorktree } from "./bootstrap.mjs";
 import { moveIndex, referencePath } from "./lib/document-moves.mjs";
 import { json, pairedFlags, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { dispatchSession } from "./lib/dispatch-bound.mjs";
+import { requireOperatorCapture } from "./lib/off-ramps.mjs";
+import { dispatchJournalDirectory } from "../packages/skeleton/src/dispatch-journal.mjs";
 import {
   hasPackageSources,
   runtimeEntryName,
@@ -61,6 +64,7 @@ import {
 } from "./lineage.mjs";
 import { spawnSync } from "node:child_process";
 import {
+  appendFileSync,
   closeSync,
   constants,
   existsSync,
@@ -162,6 +166,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/derived-contract.mjs",
   "scripts/lib/dispatch-bound.mjs",
   "scripts/lib/duration.mjs",
+  "scripts/lib/feature-registry.mjs",
   "scripts/lib/features.mjs",
   "scripts/lib/gate-evidence.mjs",
   "scripts/lib/git.mjs",
@@ -2042,6 +2047,9 @@ export function applyKitUpdate(planned) {
         manifestBytes,
         buildHash,
         date: planned.receipt.date,
+        ...(planned.operatorRequest
+          ? { operatorRequest: planned.operatorRequest }
+          : {}),
       },
       "update",
       target,
@@ -2054,7 +2062,16 @@ export function applyKitUpdate(planned) {
 }
 
 export async function updateKit(destination, options = {}) {
-  return applyKitUpdate(await planKitUpdate(destination, options));
+  const { operatorRequest = null, ...planning } = options;
+  // The hold is this launchpad's session's: a from-core update runs under
+  // core's dispatch, and the receipt it writes records the request.
+  const request = admitUpdate(
+    planning.launchpad ?? TOOL_ROOT,
+    "export --update",
+    operatorRequest,
+  );
+  const planned = await planKitUpdate(destination, planning);
+  return applyKitUpdate({ ...planned, operatorRequest: request });
 }
 
 const installedBuildHash = (root) => {
@@ -2150,7 +2167,13 @@ const kitProvenance = (root, revision) => {
 /** Publish an instance's update branch once it holds the update whole: the
  * merge of the previewed revision, the re-emit and the lineage index, each
  * committed. The helper refuses a dirty tree before this proof runs. */
-async function publishUpdate(root, { title, bodyFile }) {
+async function publishUpdate(
+  root,
+  { title, bodyFile, operatorRequest = null },
+) {
+  admitUpdate(root, "update --publish", operatorRequest, (text) =>
+    process.stdout.write(text),
+  );
   const { publishLaunchpadBranch } =
     await import("./lib/launchpad-publish.mjs");
   return publishLaunchpadBranch(root, {
@@ -2196,11 +2219,123 @@ async function publishUpdate(root, { title, bodyFile }) {
   });
 }
 
+// The operator's rule of 2026-11-03: no planning or entropy pass takes a
+// newer starter release or merges upstream; only the operator's words in that
+// session do. The session's own journal shows the dispatch it runs under, and
+// a pending entropy dispatch shows an entropy pass in progress, so an update
+// under either is refused unless the operator's in-session request is named
+// by its capture. A session with no journaled dispatch is admitted as before.
+const UPDATE_REQUEST_FLAGS =
+  "--operator-request --capture <ignored intake file> --capture-hash sha256:<digest>";
+const sessionJournalFile = (root, session) =>
+  join(dispatchJournalDirectory(root), `${sha256Hex(session)}.jsonl`);
+/** Why an update is held in this launchpad for this session, or null. */
+export function updateDispatchHold(root, env = process.env) {
+  const session = dispatchSession(env);
+  if (session) {
+    const file = sessionJournalFile(root, session);
+    if (lstatSync(file, { throwIfNoEntry: false })?.isFile()) {
+      const dispatch = readFileSync(file, "utf8")
+        .split("\n")
+        .filter(Boolean)
+        .flatMap((line) => {
+          try {
+            return [JSON.parse(line)];
+          } catch {
+            return [];
+          }
+        })
+        .find(
+          (row) =>
+            row.typedEvent === "OperatorMessageObserved" &&
+            ["planning:", "ideation:"].includes(row.prefix),
+        );
+      if (dispatch)
+        return `this session's journal holds a ${dispatch.prefix} dispatch (${dispatch.recordedAt})`;
+    }
+  }
+  for (const kind of ["review", "refutation"]) {
+    const pointer = docRelative(
+      root,
+      "control",
+      `local/entropy/current-${kind}.json`,
+    );
+    try {
+      const { path } = JSON.parse(readFileSync(join(root, pointer), "utf8"));
+      if (typeof path === "string" && existsSync(join(root, path)))
+        return `an entropy ${kind} dispatch is pending in this launchpad (${pointer})`;
+    } catch {
+      // No pointer, or one naming no pending file, holds no dispatch.
+    }
+  }
+  return null;
+}
+/** Admit an update: under a hold the operator's in-session request must be
+ * named by its capture, and the admission is journaled with the capture's
+ * hash in the session journal that holds the dispatch; without a hold the
+ * update runs as before, and a request given anyway is still recorded. */
+function admitUpdate(root, command, operatorRequest, write) {
+  const hold = updateDispatchHold(root);
+  if (!hold && !operatorRequest) return null;
+  if (!operatorRequest)
+    throw new Error(
+      `${command} refused: ${hold}; no planning or entropy pass takes a newer starter release or merges upstream unless the operator asks for it in that session. Record the operator's in-session request with ${UPDATE_REQUEST_FLAGS} and rerun.`,
+    );
+  const request = requireOperatorCapture(
+    root,
+    operatorRequest.capture,
+    operatorRequest.captureHash,
+  );
+  const session = dispatchSession();
+  if (session) {
+    const file = sessionJournalFile(root, session);
+    mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
+    appendFileSync(
+      file,
+      `${JSON.stringify({
+        recordedAt: new Date().toISOString(),
+        event: "LaunchpadUpdateAdmitted",
+        session: sha256Hex(session),
+        command,
+        hold,
+        ...request,
+      })}\n`,
+      { mode: 0o600 },
+    );
+  }
+  write?.(
+    `operator request recorded: ${request.capture} ${request.captureHash}\n`,
+  );
+  return { ...request, hold };
+}
+/** The `--operator-request --capture <file> --capture-hash <digest>` flags
+ * any update form may carry, taken out of its arguments. */
+const takeOperatorRequest = (args) => {
+  const at = args.indexOf("--operator-request");
+  if (at < 0) return { args, operatorRequest: null };
+  const rest = [...args];
+  rest.splice(at, 1);
+  const values = {};
+  for (const flag of ["--capture", "--capture-hash"]) {
+    const index = rest.indexOf(flag);
+    if (index < 0 || !rest[index + 1] || rest[index + 1].startsWith("--"))
+      throw new Error(`--operator-request needs ${flag} <value>`);
+    values[flag] = rest.splice(index, 2)[1];
+  }
+  return {
+    args: rest,
+    operatorRequest: {
+      capture: values["--capture"],
+      captureHash: values["--capture-hash"],
+    },
+  };
+};
+
 /** Finish an operator-merged update without changing a refused checkout. */
 export function finishUpdate(
   root,
   write = (text) => process.stdout.write(text),
-  { fetchTimeoutMs } = {},
+  { fetchTimeoutMs, operatorRequest = null } = {},
 ) {
   root = realpathSync(root);
   const read = (args) => runGit(root, ["--no-optional-locks", ...args]);
@@ -2218,6 +2353,7 @@ export function finishUpdate(
       );
   };
   ready();
+  admitUpdate(root, "update --finish", operatorRequest, write);
   const origins = read(["remote", "get-url", "--all", "origin"])
     .split("\n")
     .filter(Boolean);
@@ -2302,6 +2438,10 @@ export function renderUpdatePlan(planned, { preview = false } = {}) {
     `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused${planned.revision ? `; ${counts.unchanged} unchanged` : ""}.`,
   ];
   if (planned.pruneSummary) lines.push(planned.pruneSummary);
+  if (planned.operatorRequest)
+    lines.push(
+      `operator request recorded: ${planned.operatorRequest.capture} ${planned.operatorRequest.captureHash}`,
+    );
   if (preview)
     lines.push(
       `incoming: ${planned.commit} (${planned.tag ?? "untagged"})`,
@@ -2345,17 +2485,18 @@ export function renderUpdatePlan(planned, { preview = false } = {}) {
 
 if (isMainModule(import.meta.url)) {
   try {
-    const [action, ...args] = process.argv.slice(2);
+    const [action, ...given] = process.argv.slice(2);
+    const { args, operatorRequest } = takeOperatorRequest(given);
     const updating = args[0] === "--update";
     const [destination, ...rest] = updating ? args.slice(1) : args;
-    const usage =
-      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad update --finish [<dir>] [--fetch-timeout <seconds>] | launchpad update --publish --title <title> --body-file <path> | launchpad preview --from <ref> | launchpad verify [<dir>]";
+    const usage = `usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad update --finish [<dir>] [--fetch-timeout <seconds>] | launchpad update --publish --title <title> --body-file <path> | launchpad preview --from <ref> | launchpad verify [<dir>]; an update under a journaled planning or entropy dispatch adds ${UPDATE_REQUEST_FLAGS}`;
     if (action === "update" && args[0] === "--publish") {
       const values = pairedFlags(args.slice(1), ["--title", "--body-file"]);
       if (!values) throw new Error(usage);
       const { url } = await publishUpdate(findLaunchpad(), {
         title: values["--title"],
         bodyFile: values["--body-file"],
+        operatorRequest,
       });
       console.log(url);
     } else if (action === "update") {
@@ -2371,6 +2512,7 @@ if (isMainModule(import.meta.url)) {
         throw new Error(usage);
       finishUpdate(rest[0] ?? process.cwd(), undefined, {
         ...(seconds ? { fetchTimeoutMs: Number(seconds) * 1000 } : {}),
+        operatorRequest,
       });
     } else if (action === "preview") {
       if (args.length !== 2 || args[0] !== "--from") throw new Error(usage);
@@ -2404,6 +2546,8 @@ if (isMainModule(import.meta.url)) {
         ? await (preview ? planKitUpdate : updateKit)(destination, {
             apply: rest.includes("--apply"),
             launchpad: findLaunchpad(),
+            // A preview reads and writes nothing, so it needs no request.
+            ...(preview ? {} : { operatorRequest }),
           })
         : await exportKit(destination, {
             license: rest.length ? "none" : "default",

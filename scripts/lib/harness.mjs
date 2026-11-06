@@ -27,8 +27,8 @@ import {
   docRelative,
   findLaunchpad,
   loadConfig,
-  readFeatures,
 } from "./config.mjs";
+import { RETIRED_OVERLAY_TINKERER, readFeatures } from "./features.mjs";
 import {
   cpSync,
   existsSync,
@@ -155,20 +155,20 @@ export function harnessInstallation(options = {}) {
   const switches = { ...options.supports };
   for (const id of value?.unequip ?? []) switches[id] = false;
   for (const id of value?.equip ?? []) switches[id] = true;
-  // The old support/overlay route maps to the same election for this release.
-  // A conflict needs an edit, never silent precedence between two choices.
-  if (Object.hasOwn(switches, "tinkerer-economy")) {
-    if (
-      options.declaredFeatures?.["tinkerer-economy"] !== undefined &&
-      switches["tinkerer-economy"] !== options.features?.["tinkerer-economy"]
+  // The overlay's tinkerer-economy choice was accepted with an advisory
+  // through kit release v0.118.0 and is refused since: the election lives in
+  // features.tinkerer-economy, which the kit's own programmatic switches
+  // (a caller's supports) still carry for the compiler's two settings.
+  if (
+    [...(value?.unequip ?? []), ...(value?.equip ?? [])].includes(
+      "tinkerer-economy",
     )
-      throw new Error(
-        "conflicting tinkerer-economy elections; use features.tinkerer-economy in dotln.config.json and remove the old support/overlay choice",
-      );
-    console.warn(
-      "Advisory: support/overlay tinkerer-economy is accepted for this kit release; use features.tinkerer-economy in dotln.config.json before the next release",
-    );
-  } else if (options.features?.["tinkerer-economy"] !== undefined)
+  )
+    throw new Error(RETIRED_OVERLAY_TINKERER);
+  if (
+    !Object.hasOwn(switches, "tinkerer-economy") &&
+    options.features?.["tinkerer-economy"] !== undefined
+  )
     switches["tinkerer-economy"] = options.features["tinkerer-economy"];
   let program;
   try {

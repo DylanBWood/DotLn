@@ -3626,3 +3626,76 @@ test("home-path baseline maintenance reports stale entries, shrinks only existin
     assert.doesNotMatch(cli.stdout + cli.stderr, /fixture-user|fixture-other/u);
   }
 });
+
+test("WO-257 the front page is a default entry point that may link a record, and a `How to start: <path>.` line in the instruction file counts as a link", (t) => {
+  // No documents.json: the kit defaults apply, the front page among them.
+  const f = fixture(t);
+  const decision = f.record("resume: next").path;
+  f.write(
+    "CLAUDE.md",
+    "# Contract\n\n## Start here\n\nHow to start: README.md.\n",
+  );
+  f.write(
+    "README.md",
+    `# Fixture\n\nRead [the guide](docs/guide.md), [the thesis](docs/product/00-fixture.md) and [a decision](${decision}#wo-999-d001).\n`,
+  );
+  f.write("docs/guide.md", "# Guide\n\n[next](linked.md)\n");
+  f.write("docs/linked.md", "# Linked\n");
+  const report = documentReport(f.root);
+  assert.deepEqual(
+    report.names.find((row) => row.entryPoint === "instruction-start-here")
+      .names,
+    ["README.md"],
+    "the How to start line names the front page",
+  );
+  assert.deepEqual(
+    report.names.find((row) => row.entryPoint === "front-page").names,
+    [decision, "docs/guide.md", "docs/product/00-fixture.md"].sort(),
+  );
+  // The front page links what it likes: its record link is admitted.
+  assert.deepEqual(report.recordsNamed, []);
+  for (const path of ["README.md", "docs/guide.md", "docs/linked.md"])
+    assert.equal(report.bindings.get(path).bound, true, path);
+  assert.deepEqual(report.bindings.get("README.md").entryPoints, [
+    "front-page",
+    "instruction-start-here",
+  ]);
+  assert.deepEqual(report.unbound, []);
+  assert.deepEqual(
+    documentRows(f.root, { report, census: { documents: {} } }).filter(
+      (row) => row.kind === "record-named",
+    ),
+    [],
+  );
+  assert.deepEqual(
+    f.check().failures.filter((line) => /names the record/u.test(line)),
+    [],
+  );
+  // The same record link from the instruction file's Start here still fails
+  // naming the record: the four session entry points stay standing-only.
+  f.write(
+    "CLAUDE.md",
+    `# Contract\n\n## Start here\n\nHow to start: README.md. Read [a decision](${decision}#wo-999-d001).\n`,
+  );
+  assert.match(
+    f.check().failures.join("\n"),
+    /CLAUDE\.md: entry point instruction-start-here names the record docs\/evidence\/WO-999\/decisions\.md; an entry point names standing documents only/u,
+  );
+  // A declared documents.json replaces the defaults, so an instance that
+  // declares the front page under the kit's id keeps the admission.
+  f.write(
+    "docs/control/documents.json",
+    JSON.stringify({
+      schemaVersion: 1,
+      entryPoints: [
+        { id: "front-page", files: ["README.md"], heading: "Fixture" },
+      ],
+      kinds: [],
+    }),
+  );
+  f.write(
+    "CLAUDE.md",
+    "# Contract\n\n## Start here\n\nHow to start: README.md.\n",
+  );
+  assert.deepEqual(documentReport(f.root).recordsNamed, []);
+});

@@ -1,0 +1,86 @@
+{
+  "workOrder": "WO-257",
+  "historicalBaseline": "wo255-repair-role-baseline.json",
+  "historicalSha256": "a8278f31313e4a8a4a623de5ddf2b4ad97df3f6113c25f29d9b99dc3fc3c8631",
+  "method": "Pin each role in both economy settings after the planner's no-update sentence (no planning or entropy pass runs launchpad update, merges upstream or takes a newer starter release unless the operator asks in that session; the command refuses under a journaled planning: or ideation: dispatch or a pending entropy dispatch unless the request is captured); every other root is unchanged; retain all prior role oracles through the unchanged WO-255 repair parent.",
+  "decision": "docs/evidence/WO-257/decisions.md#wo-257-d007",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "7010c9cabf04d91b9bf981d970e326d786e7dba80c13a345eeea4c3b2603e2fb",
+    ".agents/skills/dotln-planner/SKILL.md": "e3867c55d8e88628461d71ae17744fd834496e6a8805f6dd75db63c4b42be272",
+    ".agents/skills/dotln-refuter/SKILL.md": "27398fb62a0bf711f05448f3be9e89f1f528b039354b39362b40c67cb4d79a09",
+    ".agents/skills/dotln-release-close/SKILL.md": "0d5a6be384774c11e499676c8e6b7d7ce8e0f92f444aa99db785ff8362d58d25",
+    ".agents/skills/dotln-reviewer/SKILL.md": "029a4a3371f322a22c168f4cd0c9d24963a427bee3ea4af4c336aadb2eb1ad49",
+    ".agents/skills/dotln-router/SKILL.md": "dff5368532ab4f4f3e927a7d2a9a912aee9a23faebd9b613b897363ed500eeca",
+    ".agents/skills/dotln-verifier/SKILL.md": "4fdc37376b1a5f277d76ef39fe4519c814468c6324576648ceed76cb2d54574f",
+    ".claude/skills/dotln-executor/SKILL.md": "7010c9cabf04d91b9bf981d970e326d786e7dba80c13a345eeea4c3b2603e2fb",
+    ".claude/skills/dotln-planner/SKILL.md": "e3867c55d8e88628461d71ae17744fd834496e6a8805f6dd75db63c4b42be272",
+    ".claude/skills/dotln-refuter/SKILL.md": "27398fb62a0bf711f05448f3be9e89f1f528b039354b39362b40c67cb4d79a09",
+    ".claude/skills/dotln-release-close/SKILL.md": "0d5a6be384774c11e499676c8e6b7d7ce8e0f92f444aa99db785ff8362d58d25",
+    ".claude/skills/dotln-reviewer/SKILL.md": "029a4a3371f322a22c168f4cd0c9d24963a427bee3ea4af4c336aadb2eb1ad49",
+    ".claude/skills/dotln-router/SKILL.md": "dff5368532ab4f4f3e927a7d2a9a912aee9a23faebd9b613b897363ed500eeca",
+    ".claude/skills/dotln-verifier/SKILL.md": "4fdc37376b1a5f277d76ef39fe4519c814468c6324576648ceed76cb2d54574f"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "4e278269a13ea8b049e6a4477213cda8ee1ab58b5a609814b6dfbdc984e7e8ff",
+    ".agents/skills/dotln-planner/SKILL.md": "b9a4f32531edda608f52273648d2789eec2f3c8def867e662d20aa441ff38b78",
+    ".agents/skills/dotln-refuter/SKILL.md": "5e56eb59a3a96915fb870c90b812ebd1c388ac845813f0ce3c6693a0441c0924",
+    ".agents/skills/dotln-release-close/SKILL.md": "bd458ea83e64a163ce86ee66bbd5d8be40103b9e888df55f88b3eec6916f58d0",
+    ".agents/skills/dotln-reviewer/SKILL.md": "1c968b3e56e60ca5acc1ea08f65ea013199581f4022cc75e07473560274a99da",
+    ".agents/skills/dotln-router/SKILL.md": "69446716ba2818a512873d266cd92aac911c502af489bfbd4cb7e92645d4a27a",
+    ".agents/skills/dotln-verifier/SKILL.md": "8e6efcffc5d031c0deda272d59f157c0b17cc5ddab477ec378b4cc3655b9498a",
+    ".claude/skills/dotln-executor/SKILL.md": "4e278269a13ea8b049e6a4477213cda8ee1ab58b5a609814b6dfbdc984e7e8ff",
+    ".claude/skills/dotln-planner/SKILL.md": "b9a4f32531edda608f52273648d2789eec2f3c8def867e662d20aa441ff38b78",
+    ".claude/skills/dotln-refuter/SKILL.md": "5e56eb59a3a96915fb870c90b812ebd1c388ac845813f0ce3c6693a0441c0924",
+    ".claude/skills/dotln-release-close/SKILL.md": "bd458ea83e64a163ce86ee66bbd5d8be40103b9e888df55f88b3eec6916f58d0",
+    ".claude/skills/dotln-reviewer/SKILL.md": "1c968b3e56e60ca5acc1ea08f65ea013199581f4022cc75e07473560274a99da",
+    ".claude/skills/dotln-router/SKILL.md": "69446716ba2818a512873d266cd92aac911c502af489bfbd4cb7e92645d4a27a",
+    ".claude/skills/dotln-verifier/SKILL.md": "8e6efcffc5d031c0deda272d59f157c0b17cc5ddab477ec378b4cc3655b9498a"
+  },
+  "startupCost": {
+    "decision": "WO-257-D007",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 44358,
+        "bytes": 44358,
+        "growthBytes": 0,
+        "followup": "FUP-c61f76f60798e1b2"
+      },
+      "planner": {
+        "beforeBytes": 30162,
+        "bytes": 30780,
+        "growthBytes": 618,
+        "followup": "FUP-c61f76f60798e1b2"
+      },
+      "refuter": {
+        "beforeBytes": 27560,
+        "bytes": 27560,
+        "growthBytes": 0
+      },
+      "release-close": {
+        "beforeBytes": 28638,
+        "bytes": 28638,
+        "growthBytes": 0,
+        "followup": "FUP-c61f76f60798e1b2"
+      },
+      "reviewer": {
+        "beforeBytes": 41061,
+        "bytes": 41061,
+        "growthBytes": 0,
+        "followup": "FUP-c61f76f60798e1b2"
+      },
+      "router": {
+        "beforeBytes": 17124,
+        "bytes": 17124,
+        "growthBytes": 0,
+        "ceiling": 16384,
+        "followup": "FUP-c61f76f60798e1b2"
+      },
+      "verifier": {
+        "beforeBytes": 38638,
+        "bytes": 38638,
+        "growthBytes": 0,
+        "followup": "FUP-c61f76f60798e1b2"
+      }
+    }
+  }
+}

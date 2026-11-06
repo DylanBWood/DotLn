@@ -36,6 +36,7 @@ import {
   assertPullRequestBodyShape,
   criterionRecordRefusal,
   criterionRecordsApply,
+  expectedCriterionRecordLines,
   withTemporaryBody,
 } from "./lib/github-body.mjs";
 import {
@@ -1679,7 +1680,7 @@ const main = async () => {
     const recordProblem = criterionRecordRefusal(subject, body, state);
     if (recordProblem)
       throw new Error(
-        `${bodyFile}: ${recordProblem}\n${criterionRecordsApply(subject, state) ? "Restore the reviewed lines, commit" : "Commit"} the body and publish again.`,
+        `${bodyFile}: ${recordProblem}\n${criterionRecordsApply(subject, state) ? (state?.repositoryId ? (expectedCriterionRecordLines(subject, state).length ? "Add the lines, commit" : "Remove the lines, commit") : "Restore the reviewed lines, commit") : "Commit"} the body and publish again.`,
       );
     let gateBlock;
     if (state?.repositoryId) {

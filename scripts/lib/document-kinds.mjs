@@ -40,9 +40,11 @@ const RECORD_ROOTS = [
   "orders",
 ];
 
-/** The four places a session starts reading. Product 07 and the kit guide
- * may live under another document root, so the defaults resolve through the
- * configuration; an instance's `documents.json` may replace them. */
+/** The five places a reader starts: the four a session starts from and the
+ * repository's front page, where a stranger starts. Product 07 and the kit
+ * guide may live under another document root, so the defaults resolve through
+ * the configuration; an instance's `documents.json` may replace them. */
+export const FRONT_PAGE_ENTRY_POINT = "front-page";
 export const defaultEntryPoints = (root) => [
   {
     id: "instruction-start-here",
@@ -67,6 +69,13 @@ export const defaultEntryPoints = (root) => [
     id: "kit-first-steps",
     files: [docRelative(root, "docs", "KIT.md")],
     heading: "First steps",
+  },
+  // Every line of the front page is in scope: whatever it links or quotes
+  // is a page a reader reaches from it.
+  {
+    id: FRONT_PAGE_ENTRY_POINT,
+    files: ["README.md"],
+    lines: "^",
   },
 ];
 
@@ -448,6 +457,16 @@ export function entryPointNames(
           const path = quotedPath(moves, file, value, documents);
           if (path) named.add(path);
         }
+      // The kit's instruction file says where to start in prose, as `How to
+      // start: <path>.`; that line names the page the way a link does.
+      for (const [index, text] of source.split("\n").entries())
+        if (inScope(index + 1))
+          for (const match of text.matchAll(
+            /\bHow to start: ([^\s`]+?)\.?(?=\s|$)/gu,
+          )) {
+            const path = quotedPath(moves, file, match[1], documents);
+            if (path) named.add(path);
+          }
       rows.push({
         entryPoint: entry.id,
         file,
@@ -880,11 +899,15 @@ export function documentReport(root, { files } = {}) {
   const kit = kitFiles(root);
   const counts = Object.fromEntries(DOCUMENT_KINDS.map((kind) => [kind, 0]));
   for (const { kind } of kinds.values()) counts[kind]++;
-  const recordsNamed = names.flatMap((row) =>
-    row.names
-      .filter((path) => kinds.get(path)?.kind === "record")
-      .map((path) => ({ entryPoint: row.entryPoint, file: row.file, path })),
-  );
+  // A session entry point names standing documents only; the front page
+  // links what it likes, so a record it names is admitted.
+  const recordsNamed = names
+    .filter((row) => row.entryPoint !== FRONT_PAGE_ENTRY_POINT)
+    .flatMap((row) =>
+      row.names
+        .filter((path) => kinds.get(path)?.kind === "record")
+        .map((path) => ({ entryPoint: row.entryPoint, file: row.file, path })),
+    );
   const missingEntryPoints = control.entryPoints
     .filter((entry) => !names.some((row) => row.entryPoint === entry.id))
     .map((entry) => entry.id);

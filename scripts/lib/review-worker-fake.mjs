@@ -9,8 +9,18 @@ import { join } from "node:path";
 const skeleton = (name) =>
   import(`../../packages/skeleton/dist/src/${name}.js`);
 
-/** @param {string} fixture @param {{command: {commandId: string}}} expected */
-export async function fakeReviewTransport(fixture, expected) {
+/** The fixture a launch takes: one file for every launch, or a comma-separated
+ * list whose Nth entry serves the Nth batch of a round (the last entry serves
+ * the batches past it), so a round in batches can give one batch no report.
+ * @param {string} fixtures @param {{command: {commandId: string}}} expected
+ * @param {{launch?: number}} [options] */
+export async function fakeReviewTransport(
+  fixtures,
+  expected,
+  { launch = 1 } = {},
+) {
+  const entries = fixtures.split(",");
+  const fixture = entries[Math.min(launch, entries.length) - 1];
   const { transportPrompt, parseTransportResult } = await skeleton(
     "verification-protocol",
   );

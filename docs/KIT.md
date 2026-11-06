@@ -22,13 +22,14 @@ The overlay is instance-owned and stays outside `KIT-MANIFEST.json`; its path
 and file SHA-256 appear in `.claude/harness-manifest.json`. Repositories and
 classes remain in `dotln.config.json`, independently of this build.
 
-For example, this overlay reduces writer authority and removes two optional
-supports:
+For example, this overlay reduces writer authority and removes one optional
+support; Tinkerer economy is elected in `features.tinkerer-economy`, never in
+an overlay:
 
 ```json
 {
   "version": 1,
-  "unequip": ["tinkerer-economy", "process-cost"],
+  "unequip": ["process-cost"],
   "narrow": { "resourceLimits": { "writers": 0 } }
 }
 ```
@@ -48,10 +49,12 @@ Overlay version 1 has only these keys:
 - `equip` and `unequip`: distinct arrays of existing support switch IDs:
   `adjacent-repair`, `decision-receipts`, `follow-up-queue`,
   `operator-check-in`, `communication-observation`,
-  `communication-recommendation`, `communication-intent`, `tinkerer-economy`,
-  `process-cost`, `goal-alignment`. An ID cannot appear in both arrays;
-  competing communication supports still refuse. These switches do not
-  define new units or remove the locked floor.
+  `communication-recommendation`, `communication-intent`,
+  `process-cost`, `goal-alignment`. Tinkerer economy is not an overlay
+  switch: elect it in `features.tinkerer-economy` (§Features), and an
+  overlay that names `tinkerer-economy` refuses. An ID cannot appear in
+  both arrays; competing communication supports still refuse. These
+  switches do not define new units or remove the locked floor.
 - `narrow`: optional `allowedEffects` replaces the kit's pre-grant allow
   list; `deniedEffects`, `requiredEvidence`, `revocationEventTypes` and
   `revocationConditions` add restrictions. A narrowing that excludes an
@@ -114,7 +117,11 @@ the line §Taking upstream updates gives an existing clone. The clone already
 holds the starter's commit, so step 1 below does not apply, and the last two
 lines do steps 2 and 3. `harness check` then passes and reports `local-terms
 list: unavailable`: the recipe does not replace step 4's local-terms list or
-step 7's `npm run meta`, so the numbered steps continue from step 4.
+step 7's `npm run meta`, so the numbered steps continue from step 4. With a
+registered target, bootstrap names before its preparation steps any target
+whose clone mapping none of the launchpad's checkouts records (this one, the
+primary checkout, the main worktree), with the registration command, since
+the plan check and the document gate refuse until it is recorded.
 
 The gate runner needs host access beyond the checkout: the shared Git metadata
 for linked worktrees, sibling worktree destinations, the ignored local control
@@ -276,7 +283,10 @@ operator sandbox settings.
    main checkout's ignored local-terms list into it when one was registered
    there (step 4); otherwise the session registers its own from the terms
    the operator states. It runs `npm run resume -- status` (`--json` is the
-   canonical record). It runs `npm run meta` to generate the decision index
+   canonical record); when status warns that `docs/control/current.md`
+   disagrees with the fold, `npm run resume -- status --refresh` rewrites
+   the file from the fold and appends no event. It runs `npm run meta` to
+   generate the decision index
    from this instance's own records before its first gate, and again whenever
    its decisions change. The export seeds the lineage index; for an older
    export, step 1 or the update branch of §Taking upstream updates generates
@@ -364,8 +374,9 @@ CLI options remain separate. The subagent cap still reads the default
 `docs/control/budgets.json` if you relocate your control root; the table names
 that actual source, while process bounds and retention follow the relocation.
 
-The table comes from `scripts/lib/features.mjs`: each row names its scope,
-default, effective value, source, meaning, election key and consumer.
+The table comes from the registry in `scripts/lib/feature-registry.mjs`:
+each row names its scope, default, effective value, source, meaning, election
+key and consumer.
 `unread` means the switch has no effect; a queued order identifies a future
 consumer. Core rows describe core's choices, not a rule this instance must
 adopt. An order that closes without updating its reader produces a planning
@@ -373,10 +384,11 @@ advisory, not a refusal of another order's gate.
 
 After changing an emitted election, run `node scripts/harness.mjs emit`
 and `node scripts/harness.mjs check`. Turning Tinkerer economy off removes
-its executor support. The old overlay `equip`/`unequip` choice remains
-accepted for this kit release with a migration advisory; move it to
-`features.tinkerer-economy` and remove that overlay entry. Conflicting
-choices refuse instead of silently choosing one.
+its executor support. The old overlay `equip`/`unequip` choice for it was
+accepted with a migration advisory through kit release v0.118.0 and is
+refused since v0.119.0: an overlay that names `tinkerer-economy` refuses the
+emit, the feature table and the elections read until the entry is removed
+and the election made in `features.tinkerer-economy`.
 
 Private-destination changes only the exported instance's known §Secrets
 paragraph: it admits the owner's ordinary project links and identifiers
@@ -407,6 +419,15 @@ journal lacks, one from the host's task notification, one from a message
 journaled as a question, a class the journal contradicts and a digest that is
 not the message's; the operator strikes a rule by removing its entry.
 
+No planning or entropy pass takes a newer starter release or merges upstream;
+only the operator's words in that session do. `node scripts/launchpad.mjs
+update --finish`, `update --publish` and core's `export --update` refuse under
+a journaled `planning:` or `ideation:` dispatch or a pending entropy review or
+refutation dispatch, naming the operator's in-session request as the route; `--operator-request --capture
+<ignored intake file> --capture-hash sha256:<digest>` records that request,
+with its hash in the session journal and, for a from-core update, in the
+sibling receipt. A session with no journaled dispatch is admitted as before.
+
 - `npm run plan -- followups` pages the register; `--export <file>` exports it;
   `--apply <batch.json>` applies dispositions against the revision read.
   `npm run plan -- followups --sync` reconciles changed public sources.
@@ -424,7 +445,14 @@ not the message's; the operator strikes a rule by removing its entry.
   `npm run plan -- check` checks the receipt and continuing subject.
 - `npm run entropy -- subject` names the next review action. Live review and
   refutation belong to the operator's instance; the export fixture exercises
-  only `review --transport fake` and its receipt, never a live model.
+  only `review --transport fake` and its receipt, never a live model. A filed
+  receipt renders the frozen copy as `<tmp>/…`, labels a target subject's
+  launchpad tree as the planning branch in progress, names the uninstalled
+  copy and the unobserved host coordination in its confinement sentences,
+  and screens its summary and its Markdown for private absolute paths before
+  filing: a refused text is named with its line, the rejected result is
+  retained at the lane the refusal prints, and the same command refiles once
+  the text is corrected.
 - Refresh `npm run work-orders -- index` and `node scripts/lineage.mjs index`;
   their `--check` forms check the projections. `index --check` also prints
   `criteria advisory: WO-NNN criterion N: <what matched>` for each active or
@@ -441,10 +469,13 @@ not the message's; the operator strikes a rule by removing its entry.
   below; a target order records no release. These reads do not publish anything.
 - `node scripts/refute-plan.mjs publish --title <title> --body-file <path>` ends
   a pass; `npm run plan -- publish` takes the same flags. The emitted
-  `.claude/settings.json` allows that node spelling and `node scripts/launchpad.mjs
-  update --publish`, and nothing else: Claude Code resolves a narrow allow rule
-  before its auto-mode classifier, unless `autoMode.classifyAllShell` is set. No
-  rule admits raw `git push` or `gh`, and `npm run` has none. On a `planning/<date>-<slug>` branch with a clean tree and its planning
+  `.claude/settings.json` allows three publish helpers by their node spelling,
+  that one, `node scripts/launchpad.mjs update --publish` and
+  `node scripts/worktree.mjs publish` (a target order's publication, admitted by
+  WO-257 as WO-246 admitted the first two), and nothing else: Claude Code
+  resolves a narrow allow rule before its auto-mode classifier, unless
+  `autoMode.classifyAllShell` is set. No rule admits raw `git push` or `gh`,
+  and `npm run` has none. On a `planning/<date>-<slug>` branch with a clean tree and its planning
   document committed, it lints the title and body, pushes the branch to
   `origin`, opens the pull request against `main` on the repository `origin`'s
   push URL names, ready rather than draft, and prints its URL. A title is a
@@ -604,7 +635,13 @@ consistency report needs its `Traced consumers` table (changed contract,
 consumer, command, result) with a generated pages row and a fixture manifests
 row, or it is not recorded. Required tables belong to actual report sections;
 tables quoted in code, HTML or blockquotes do not satisfy the requirement.
-`npm run worker -- record --kind <kind> --round <N> --from <file> [--format prose|json]` writes an
+When a round is split into batches, the merger reads required columns by
+meaning, including accepted alternative headings and reordered columns.
+Finding IDs stay unique across the merged
+result and leave room for a later recheck's prefix; the helper validates the
+merged result before filing it, including on the recorded-part route
+([decision](evidence/WO-257/decisions.md#wo-257-d041--preserve-batch-table-semantics-and-unique-finding-identities)).
+`npm run worker -- record --kind <kind> --round <N> --from <file> [--format prose|json] [--batch N] [--brief-sha256 <digest>]` writes an
 `Agent` worker's returned text to the same lane as the same record, with
 `--host`, `--model` and `--effort` for what ran and `--tree` for the tree it
 reviewed. Use `--format prose` for a prose report containing JSON examples;
@@ -1016,7 +1053,12 @@ Instance files are yours and are outside the kit-file refusal list;
 explicitly opted-in instance actions have their own checks below.
 
 Inside an instance, its own session takes a starter update on the operator's
-word. It previews the revision with that revision's own launchpad, run from a
+word, never on a planning or entropy pass's own initiative (§Planning in this
+instance): under a journaled `planning:` or `ideation:` dispatch or a pending
+entropy dispatch, `update --finish`
+and `update --publish` refuse unless the operator's in-session request is
+recorded with `--operator-request --capture <ignored intake file>
+--capture-hash sha256:<digest>`. It previews the revision with that revision's own launchpad, run from a
 temporary detached worktree under the ignored `.runtime/` directory. The
 instance's launchpad knows only the kit paths of its export and refuses a
 manifest naming a later one; the incoming launchpad knows every path it
@@ -1394,12 +1436,16 @@ kit's own commands write are built in: filed proposal packets, entropy
 receipts and the idea ledger are records, the follow-up feed and register and
 the planning cost table are generated, and the carried release manifest
 template is standing. Without a `docs/control/documents.json` of its own, the
-instance's reader entry points are `CLAUDE.md`'s Start here, the skills'
-`Read:` lines, the execution guide's cold-start order and §First steps; the instance
-adds that file to name other entry points or the documents whose kind their
-path does not say. `npm run test:docs` refuses an entry point that names a
-record and reports a standing document no entry point, link or program
-reaches. `npm run plan -- documents` adds the read census from this
+instance's reader entry points are `CLAUDE.md`'s Start here (where a
+`How to start: <path>.` line counts as a link), the skills' `Read:` lines,
+the execution guide's cold-start order, §First steps and the front page
+`README.md`, every line of it; the instance adds that file to name other
+entry points or the documents whose kind their path does not say, and a
+declared `entryPoints` list replaces the defaults, so an instance that
+declares one lists its front page there under the kit's id `front-page`.
+`npm run test:docs` refuses an entry point that names a record, the front
+page excepted since it may link one, and reports a standing document no
+entry point, link or program reaches. `npm run plan -- documents` adds the read census from this
 instance's session journals over the last five releases (a lower bound: Codex
 reads are unobserved); a standing document nobody reaches and nobody read is
 red-tagged by `plan start`, and the next planning pass removes it or folds it

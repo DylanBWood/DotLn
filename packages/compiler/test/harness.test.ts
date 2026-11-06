@@ -16,6 +16,8 @@ import {
   outsideWriteEffect,
   harnessPromptIntent,
   harnessPromptLine,
+  harnessWorkerWords,
+  operatorMessageClass,
   projectAuthorityInspection,
   type FeedbackHandler,
   type FeedbackUnit,
@@ -75,6 +77,132 @@ test("a pasted dispatch uses the first content line and keeps its original index
     assert.equal(harnessPromptIntent(prompt), expected);
     assert.equal(harnessPromptLine(prompt).index, index);
   }
+});
+
+test("WO-257 the host's command block and its pasted-content wrapper are skipped before the dispatch line, an unknown leading element is reported by name, and the embedded reader agrees", () => {
+  // The block Claude Code writes before the operator's text when a slash
+  // command shared the message, as the 2026-11-05 capture records it, and
+  // the wrapper it puts around a pasted message.
+  const block =
+    "<local-command-caveat>The command below was run directly in Claude Code, not sent to you as a request, and its output goes straight to the user. It's recorded here as context for later messages.</local-command-caveat>\n<command-name>/model</command-name>\n            <command-message>model</command-message>\n            <command-args></command-args>\n<local-command-stdout>Set model to `fixture` and saved as your default for new sessions · `max` effort for this session only</local-command-stdout>\n";
+  const dispatch =
+    "planning: standard planning pass +\n\n1) instance planning pass:\n";
+  // The generated Codex hook embeds the reader's own source.
+  const embedded = new Function(
+    `return (${harnessPromptLine.toString()});`,
+  )() as typeof harnessPromptLine;
+  for (const [prompt, index] of [
+    [`${block}${dispatch}`, 5],
+    [dispatch, 0],
+    [
+      `\n\n<pasted_content id="f1x7">\n${dispatch}</pasted_content id="f1x7">\n`,
+      3,
+    ],
+    [`${block}\n<pasted_content id="f1x7">\n${dispatch}</pasted_content>\n`, 7],
+    [`<pasted_content id="f1x7">${dispatch}</pasted_content>\n`, 0],
+    [`${block}\`\`\`text\n${dispatch}\`\`\`\n`, 6],
+  ] as const) {
+    assert.deepEqual(harnessPromptLine(prompt), {
+      text: "planning: standard planning pass +",
+      index,
+      element: null,
+    });
+    assert.deepEqual(embedded(prompt), harnessPromptLine(prompt));
+    assert.deepEqual(operatorMessageClass(prompt), {
+      prefix: "planning:",
+      prefixLine: index,
+      class: "direction",
+    });
+    assert.equal(
+      harnessPromptIntent(prompt),
+      "planning: standard planning pass +",
+    );
+  }
+  // Prose before a quoted dispatch stays prose, block or no block.
+  for (const prompt of [
+    `${block}Example follows\nresume: next`,
+    "Example follows\nresume: next",
+  ])
+    assert.deepEqual(operatorMessageClass(prompt), {
+      prefix: null,
+      prefixLine: null,
+      class: "unclassified",
+    });
+  // The worker words still close the line after the block.
+  assert.deepEqual(
+    harnessWorkerWords(`${block}planning: standard planning pass fable`),
+    { claude: "fable" },
+  );
+  // A known element whose closing tag never comes is reported by its name
+  // at its own line instead of swallowing the dispatch below it; text after
+  // a closing tag on the same line is read; and an operator line that
+  // merely begins like a tag is reported, not swallowed (round 1's design F3).
+  assert.deepEqual(
+    harnessPromptLine(
+      "<command-message>model is running\nplanning: standard planning pass",
+    ),
+    {
+      text: "<command-message>model is running",
+      index: 0,
+      element: "command-message",
+    },
+  );
+  assert.deepEqual(
+    operatorMessageClass(
+      "<command-message>model is running\nplanning: standard planning pass",
+    ),
+    {
+      prefix: null,
+      prefixLine: null,
+      class: "unclassified",
+      leadingElement: "command-message",
+    },
+  );
+  assert.deepEqual(
+    harnessPromptLine("<command-args></command-args>planning: x"),
+    { text: "planning: x", index: 0, element: null },
+  );
+  assert.deepEqual(
+    harnessPromptLine(`${block}<command-args></command-args>planning: x`),
+    { text: "planning: x", index: 5, element: null },
+  );
+  assert.deepEqual(harnessPromptLine("<command-name> is the tag I mean"), {
+    text: "<command-name> is the tag I mean",
+    index: 0,
+    element: "command-name",
+  });
+  for (const prompt of [
+    "<command-message>model is running\nplanning: standard planning pass",
+    "<command-args></command-args>planning: x",
+    "<command-name> is the tag I mean",
+  ])
+    assert.deepEqual(embedded(prompt), harnessPromptLine(prompt));
+  // A first content line that opens an element outside the skipped set is
+  // reported by the element's name, so the next pass can read which block
+  // the host wrote.
+  const notification =
+    "<task-notification>\n<task-id>abc</task-id>\n</task-notification>\n";
+  assert.deepEqual(harnessPromptLine(notification), {
+    text: "<task-notification>",
+    index: 0,
+    element: "task-notification",
+  });
+  assert.deepEqual(operatorMessageClass(notification), {
+    prefix: null,
+    prefixLine: null,
+    class: "unclassified",
+    leadingElement: "task-notification",
+  });
+  assert.deepEqual(embedded(notification), harnessPromptLine(notification));
+  // A block with no dispatch after it reads as an empty line, not as the
+  // block's own text.
+  // The block alone, ending in a newline, leaves the reader past its last
+  // line with nothing to read.
+  assert.deepEqual(harnessPromptLine(block), {
+    text: "",
+    index: 6,
+    element: null,
+  });
 });
 
 const unit = (trigger: FeedbackHandler): FeedbackUnit => ({

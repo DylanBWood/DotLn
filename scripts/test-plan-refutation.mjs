@@ -1666,9 +1666,12 @@ export async function fixtures() {
           fs.statSync = original;
           syncBuiltinESMExports();
         }
+        // The projection's shape pin: WO-257 added the separateTrack key (the
+        // open separate-track members, none in this fixture), so the pin moved
+        // from sha256:85f125dae614… with that one key.
         assert.equal(
           sha256(JSON.stringify(subject)),
-          "sha256:85f125dae6144d26d6f714021665654645a8a5c985292f04083a135be42f87ef",
+          "sha256:9585046eac1436435044cfcac24861a6d99f416ae52b2c42de59f45999984a2a",
         );
         assert.ok(calls < 100, `subject builder made ${calls} statSync calls`);
         t.diagnostic(`subject builder statSync calls: ${calls}`);
@@ -7169,6 +7172,60 @@ else {
           document: started.document,
           rules: 1,
         });
+        // A closed order's journals move to its retained lane; the row is
+        // read there, with or without the entry naming the order, and a
+        // refusal names the live directory and the lanes read (WO-257).
+        const live = join(
+          repo,
+          `docs/control/local/harness/${sessionKey}.jsonl`,
+        );
+        const retainedLane = join(
+          repo,
+          "docs/control/local/retained/WO-901/harness",
+        );
+        mkdirSync(retainedLane, { recursive: true });
+        writeFileSync(
+          join(retainedLane, `${sessionKey}.jsonl`),
+          readFileSync(live),
+        );
+        rmSync(live);
+        assert.deepEqual(checkRulesRecorded(repo), {
+          document: started.document,
+          rules: 1,
+        });
+        recorded([
+          rule("2030-01-02T10:05:00.000Z", directed, { order: "WO-901" }),
+        ]);
+        assert.deepEqual(checkRulesRecorded(repo), {
+          document: started.document,
+          rules: 1,
+        });
+        recorded([
+          rule("2030-01-02T10:05:00.000Z", directed, { order: "WO-902" }),
+        ]);
+        assert.throws(
+          () => checkRulesRecorded(repo),
+          /names no operator message in the session journal \(.*\); read docs\/control\/local\/harness \(the entry names WO-902's lane, which is not retained here\)/u,
+        );
+        recorded([rule("2030-01-02T10:07:00.000Z", directed)]);
+        assert.throws(
+          () => checkRulesRecorded(repo),
+          /names no operator message in the session journal \(.*\); read docs\/control\/local\/harness, docs\/control\/local\/retained\/WO-901\/harness; a standing rule is recorded only from an operator message a journal holds/u,
+        );
+        recorded([rule("2030-01-02T10:05:00.000Z", directed, { order: "x" })]);
+        assert.throws(
+          () => checkRulesRecorded(repo),
+          /an optional order names the closed order whose retained lane holds the journal/u,
+        );
+        writeFileSync(
+          live,
+          readFileSync(join(retainedLane, `${sessionKey}.jsonl`)),
+        );
+        rmSync(join(repo, "docs/control/local/retained"), {
+          recursive: true,
+          force: true,
+        });
+        recorded([rule("2030-01-02T10:05:00.000Z", directed)]);
         // The rules check runs first in plan check; this unreviewed fixture
         // pass then stops at its receipt, past every rule.
         await assert.rejects(
@@ -7194,6 +7251,231 @@ else {
           rules: 1,
         });
         assert.equal(checked.passes, 1);
+      },
+    );
+    await check(
+      "WO-257 criterion 13: the open members of a track: separate workstream follow the sequenced orders in the judged subject, the receipt lists them and amend-order admits one; a closed member and a workstream without the track add nothing",
+      async () => {
+        const repo = makeRepo(parent, "separate-track");
+        for (const [id, stream] of [
+          ["WO-903", "WS-001"],
+          ["WO-904", "WS-001"],
+          ["WO-905", "WS-001"],
+          ["WO-906", "WS-002"],
+        ])
+          write(
+            repo,
+            orderPath(id),
+            order(id).replace(
+              "**Model:**",
+              `**Workstream:** ${stream}\n**Model:**`,
+            ),
+          );
+        const stream = (id, members, track) =>
+          `# ${id} — Fixture\n\n<!-- dotln-workstream:start -->\n${JSON.stringify({ id, ...(track ? { track } : {}), members: members.map((workOrderId) => ({ workOrderId, repositoryId: "self" })), edges: [] })}\n<!-- dotln-workstream:end -->\n`;
+        write(
+          repo,
+          "docs/workstreams/WS-001-fixture.md",
+          stream("WS-001", ["WO-905", "WO-903", "WO-904"], "separate"),
+        );
+        write(
+          repo,
+          "docs/workstreams/WS-002-fixture.md",
+          stream("WS-002", ["WO-906"]),
+        );
+        // A closed member, WO-904: its control segment ends in a passing
+        // final review.
+        write(
+          repo,
+          "docs/control/orders/WO-904.jsonl",
+          [
+            {
+              type: "WorkOrderActivated",
+              workOrderId: "WO-904",
+              workOrderPath: orderPath("WO-904"),
+            },
+            { type: "ImplementationReady", workOrderId: "WO-904" },
+            {
+              type: "VerificationRequested",
+              workOrderId: "WO-904",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-904/VER-001.md",
+            },
+            {
+              type: "VerificationCompleted",
+              workOrderId: "WO-904",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-904/VER-001.md",
+              verdict: "pass",
+            },
+            {
+              type: "FinalReviewRequested",
+              workOrderId: "WO-904",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-904/FINAL-001.md",
+            },
+            {
+              type: "FinalReviewCompleted",
+              workOrderId: "WO-904",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-904/FINAL-001.md",
+              verdict: "pass",
+            },
+          ]
+            .map((event) => JSON.stringify({ schemaVersion: 1, ...event }))
+            .join("\n") + "\n",
+        );
+        commit(repo, "separate-track workstream");
+        const subject = buildPlanSubject(repo);
+        assert.deepEqual(
+          subject.orders.map((row) => row.workOrderId),
+          ["WO-901", "WO-902", "WO-905", "WO-903"],
+          "the sequence, then WS-001's open members in member order; the closed member and WS-002's member are not judged",
+        );
+        assert.equal(
+          buildPlanSubject(repo, "HEAD", { workspace: true }).hash,
+          subject.hash,
+        );
+        await writeDirectReceipt(repo);
+        commit(repo, "record planning judgment");
+        assert.deepEqual(
+          (await readReceipts(repo))
+            .at(-1)
+            .subject.orders.map((row) => row.workOrderId),
+          ["WO-901", "WO-902", "WO-905", "WO-903"],
+        );
+        // A member is in the judged horizon, so amend-order admits it.
+        write(
+          repo,
+          "docs/evidence/WO-903/decisions.md",
+          `# Decisions\n\n${failureDecision("WO-903-D001", "2030-01-02", {
+            decision: "Authorize a bounded change to the member order.",
+          })}`,
+        );
+        write(
+          repo,
+          orderPath("WO-903"),
+          read(repo, orderPath("WO-903")).replace(
+            "useful shape",
+            "different shape",
+          ),
+        );
+        const amended = await amendPlanOrder(repo, {
+          workOrderId: "WO-903",
+          decisionId: "WO-903-D001",
+          reason: "Synthetic member authorization",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        assert.equal(amended.workOrderId, "WO-903");
+        await assert.rejects(
+          amendPlanOrder(repo, {
+            workOrderId: "WO-906",
+            decisionId: "WO-906-D001",
+            reason: "Synthetic authorization",
+          }),
+          /requires an order in the current judged horizon/u,
+        );
+        // A member that closes after a receipt was filed stays in that
+        // receipt's subject, which is rebuilt from the control fold at the
+        // receipt's own revision, so the receipt still validates; the
+        // current subject drops the closed member (round 1's criteria F1).
+        write(
+          repo,
+          "docs/control/orders/WO-903.jsonl",
+          [
+            {
+              type: "WorkOrderActivated",
+              workOrderId: "WO-903",
+              workOrderPath: orderPath("WO-903"),
+            },
+            { type: "ImplementationReady", workOrderId: "WO-903" },
+            {
+              type: "VerificationRequested",
+              workOrderId: "WO-903",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-903/VER-001.md",
+            },
+            {
+              type: "VerificationCompleted",
+              workOrderId: "WO-903",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-903/VER-001.md",
+              verdict: "pass",
+            },
+            {
+              type: "FinalReviewRequested",
+              workOrderId: "WO-903",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-903/FINAL-001.md",
+            },
+            {
+              type: "FinalReviewCompleted",
+              workOrderId: "WO-903",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-903/FINAL-001.md",
+              verdict: "pass",
+            },
+          ]
+            .map((event) => JSON.stringify({ schemaVersion: 1, ...event }))
+            .join("\n") + "\n",
+        );
+        commit(repo, "close the member after the receipt");
+        const afterClose = await readReceipts(repo);
+        assert.deepEqual(
+          afterClose
+            .find((row) => row.subject.orders.length === 4)
+            .subject.orders.map((row) => row.workOrderId),
+          ["WO-901", "WO-902", "WO-905", "WO-903"],
+          "the filed receipt keeps the member it judged",
+        );
+        assert.deepEqual(
+          buildPlanSubject(repo).orders.map((row) => row.workOrderId),
+          ["WO-901", "WO-902", "WO-905"],
+          "the current subject reads the closed member out",
+        );
+        // A receipt filed under the sequence-only projection carries no
+        // separateTrack key and is rebuilt by that rule, so an instance's
+        // receipts from before the update stay verifiable (criteria F1,
+        // design F2): one minted from the earlier builder validates, and
+        // the same subject claiming the new projection with no members does
+        // not, since the key selects the rule.
+        const filed = afterClose.find((row) => row.subject.orders.length === 4);
+        const legacySubject = buildPlanSubject(repo, filed.subject.revision, {
+          separateTrack: false,
+        });
+        assert.equal(legacySubject.separateTrack, undefined);
+        assert.deepEqual(
+          legacySubject.orders.map((row) => row.workOrderId),
+          ["WO-901", "WO-902"],
+        );
+        const legacyResult = validatePlanResult(
+          passResult(legacySubject),
+          legacySubject,
+        );
+        const legacy = rehash({
+          ...filed,
+          subject: legacySubject,
+          result: legacyResult,
+          // The stored episode carries the frozen result hash, not the result.
+          episode: Object.fromEntries(
+            Object.entries(directEpisode(legacyResult)).filter(
+              ([key]) => key !== "result",
+            ),
+          ),
+          holds: [],
+        });
+        await validateReceipt(repo, legacy);
+        await assert.rejects(
+          validateReceipt(
+            repo,
+            rehash({
+              ...legacy,
+              subject: { ...legacySubject, separateTrack: [] },
+            }),
+          ),
+          /receipt subject does not match committed sources/u,
+        );
+        assert.deepEqual(buildPlanSubject(repo).separateTrack, ["WO-905"]);
       },
     );
     await check(
