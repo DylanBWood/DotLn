@@ -635,7 +635,8 @@ landed; the helper's ceiling against this pass's own subject is measured in
 pass's commands: `plan start` about 0 h 1 min; the rest in §Validation.
 Against the NoOp of doing nothing: every planning session keeps losing its
 role to the host's command block, and every pass that edits the map keeps
-being refused a review, until WO-257 lands.
+being refused a review, until WO-257 lands. The pull request this pass
+opened is named in the last Validation bullet.
 
 ## Validation
 
@@ -747,4 +748,13 @@ appended when observed.
   the criterion names the refusal and its flags, the Cost line names
   `scripts/launchpad.mjs` (`update`), and WO-257's catalog row records the
   planner's reading that the executor takes that file from them and records
-  the step in its decisions. `npm run plan -- check` then passes.
+  the step in its decisions. `npm run plan -- check` then passes at
+  `e91e9104d`: 64 receipts, 52 passes, one rule recorded.
+- `npm run test:docs` at `e91e9104d`: 27 passed, 0 failed, 0 h 2 min.
+- Usage at exit (03:07Z, `harness usage`): 24,687,624 tokens in all
+  (24,141,590 cached input, 329,371 cache write, 215,073 output, 1,590
+  input; cost unknown); three subagent launches of the cap of twenty
+  (all Claude), no re-task, seventeen remaining; 162 tool steps.
+- `node scripts/refute-plan.mjs publish` pushed the branch and opened the
+  `:memo:` pull request (the number is in §Process cost's closing line,
+  written after the publish).
