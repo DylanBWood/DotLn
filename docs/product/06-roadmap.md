@@ -138,11 +138,14 @@ close that owns what the kit wrote (WO-252, v0.112.0), the document kinds
 that made them (WO-253, v0.115.0), the hooks getting out of the operator's
 way (WO-254, v0.116.0), the launchpad's own pull requests (WO-246,
 v0.117.0) and reviews that find what the complete run finds (WO-255,
-v0.118.0) on 2026-11-04 and 2026-11-05. The adoption work after v0.118.0 is
-the instance returns of 2026-11-03 to 2026-11-05 (WO-257), plan-first mode
-(WO-242), the closeout selection for target orders (WO-243) and the paired
-and reviewed planning routes (WO-244) [operator directions, 2026-10-30,
-2026-10-31, 2026-11-01, 2026-11-03 and 2026-11-05].
+v0.118.0) on 2026-11-04 and 2026-11-05, and the instance returns of
+2026-11-03 to 2026-11-05 (WO-257, v0.119.0), plan-first mode (WO-242,
+v0.120.0) and the closeout selection for target orders (WO-243, v0.120.1)
+on 2026-11-06 and 2026-11-07. The adoption work after v0.120.1 is an
+instance's first cycle meeting the kit (WO-258), committed words and filed
+records (WO-259) and the paired and reviewed planning routes (WO-244)
+[operator directions, 2026-10-30, 2026-10-31, 2026-11-01, 2026-11-03,
+2026-11-05 and 2026-11-07].
 The 2026-09-06 redirect superseded the first draft of this
 rung, which exported the process kit with no build in it.
 

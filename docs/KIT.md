@@ -1527,7 +1527,14 @@ instance's session journals over the last five releases (a lower bound: Codex
 reads are unobserved); a standing document nobody reaches and nobody read is
 red-tagged by `plan start`, and the next planning pass removes it or folds it
 into another with a recorded disposition. Nothing removes a document by itself,
-and size never decides.
+and size never decides. No operator message is saved verbatim in a committed
+artifact: a session paraphrases the operator in committed text and cites
+the ignored intake capture by its SHA-256, and a quotation is written only
+where the operator asks for that message to be saved, as a typed
+`operatorQuote` naming the capture's digest and the request's, or where
+this instance turns the rule off in its configuration (operator direction,
+2026-11-07; WO-259 carries the check, the election and the typed exception,
+and until it lands the role text and the reviewer carry the rule).
 
 Artifacts follow their declared contract and check, never the preceding
 instance's shape. Writing guidance identifies the contract, meaning the document sections
