@@ -372,8 +372,27 @@ host-route-unavailable` and `attribution: unattributed`, the dispatch
 included, so the transcript-based attribution `promptRoute` tries first
 finds no matching row on Claude Code 2.1.319; the dispatch row carries
 `prefixLine` 1 behind the pasted wrapper and class `direction`; the
-mid-turn message is `unclassified`. The refuter's hand-back is recorded
-here when it arrives, as the shape WO-259 step 5 reads.
+mid-turn message is `unclassified`.
+
+The refuter's hand-back arrived at 19:31:40Z as two host messages. The
+first is the report: a prompt whose first content line opens an
+`agent-message` element carrying the worker's identifier in its `from`
+attribute, then a host-written frame line saying the text is a subagent's
+final report and not the operator's, then the report with every line
+indented by the host; the prompt hook journaled it as
+`OperatorMessageObserved` with source `claude-prompt-hook`, class
+`unclassified`, `leadingElement` `agent-message`, `prefix` null,
+attribution `unattributed` (6,137 bytes), the shape the private instance
+reported, now with WO-257's reader naming the element. The second is the
+host's `task-notification` envelope (status, task id, tool-use id, a
+summary and a usage block), which `terminalTaskNotification` recognizes.
+WO-259 step 5 keys on the first: an `agent-message` leading element with
+the host's frame is a hand-back, journaled under `host-agent-handback`.
+One more observation for WO-259's executor: the worker's one `node`
+command (to print the prompt's keys) was refused by this session's
+live-gate hook, because the parent's document gate was running at that
+moment; the worker wrote its files with its editor and the parent validated
+the JSON, as the worker definition's gate rule intends.
 
 ## Orders filed and amended
 
