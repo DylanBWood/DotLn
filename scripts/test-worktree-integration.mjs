@@ -32,10 +32,7 @@ import { unionFollowups } from "./lib/planning-followups.mjs";
 import { linkDependencies } from "./fixtures/instance-with-history/support.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { executionAmendmentSource } from "./lib/plan-continuation.mjs";
-import {
-  integrationTestCommand,
-  releaseLine,
-} from "./lib/worktree-integration.mjs";
+import { mergedMachinery, releaseLine } from "./lib/worktree-integration.mjs";
 import { recordTargetWorktree } from "./lib/target-worktrees.mjs";
 
 // Per-case durations from the whole-suite run alone (WO-197), rounded up to
@@ -1224,10 +1221,13 @@ for (const reviewed of [false, true])
     assert.match(first.stdout, new RegExp(`Pending: ${receipt.pending[0]}`));
     // The checks and the draft decision describe the generated tree, so the
     // completing pass prints them.
-    assert.doesNotMatch(first.stdout, /Affected checks|Reviewer: complete/);
+    assert.doesNotMatch(
+      first.stdout,
+      /Affected by main's merge|Owed by this order|Reviewer: complete/,
+    );
     assert.match(
       first.stdout,
-      /--continue; the completing pass prints the affected checks and writes the draft decision\. No lifecycle event or acceptance result was appended\./,
+      /--continue; the completing pass prints what main's merge affected apart from the checks this order owes, and writes the draft decision\. No lifecycle event or acceptance result was appended\./,
     );
     assert.doesNotMatch(
       text(f.subject, "docs/work-orders/WO-998-fixture.md"),
@@ -1319,14 +1319,18 @@ for (const reviewed of [false, true])
     );
     assert.match(
       continued.stdout,
-      /Affected checks \(not run\):\n  npm test -- --review/,
+      /Affected by main's merge \(what it touched; gated on main, owed by no order here\): the launchpad machinery suites [^\n]*\bprocess-debt\b[^\n]*\.\n/,
     );
     assert.match(
       continued.stdout,
       /Reviewer: complete the integration decision/,
     );
-    assert.match(continued.stdout, /npm run publication:check/);
-    assert.match(continued.stdout, /node scripts\/harness.mjs check/);
+    // The affected line names what main touched and nothing to run; the
+    // owed document gate runs these checks in its structural phase.
+    assert.doesNotMatch(
+      continued.stdout,
+      /^ {2}(?:npm run publication:check|node scripts\/harness\.mjs check|npm run release -- check-surfaces --local)$/m,
+    );
     checked(f.subject, process.execPath, ["scripts/harness.mjs", "check"]);
     checked(f.subject, process.execPath, [
       "scripts/console-fixtures.mjs",
@@ -1875,7 +1879,12 @@ test("WO-169 a first invocation with no authored conflict generates at once", (t
   assert.doesNotMatch(first.stdout, /Pending: /);
   assert.match(
     first.stdout,
-    /Affected checks \(not run\):\n  npm test -- --review/,
+    /Affected by main's merge \(what it touched; gated on main, owed by no order here\): the launchpad machinery suites [^\n]*\bprocess-debt\b[^\n]*\.\n/,
+  );
+  // A launchpad order owes its own repository's gate, the complete run.
+  assert.match(
+    first.stdout,
+    /Owed by this order \(its closeout selection; not run\):\n  npm test -- --review\n  npm run test:docs\nThe complete launchpad run is owed because this is a launchpad order, and the complete run is its own repository's gate\.\n/,
   );
   const receipt = JSON.parse(
     text(f.subject, "docs/control/local/integration.json"),
@@ -2048,7 +2057,12 @@ test("WO-169 a pass whose generator fails keeps its checks and names the pending
     /Pending: integration decision stub: awaits release preparation/,
   );
   assert.doesNotMatch(first.stdout, /Regenerated: integration decision stub/);
-  assert.match(first.stdout, /Affected checks \(not run\):/);
+  assert.match(first.stdout, /Affected by main's merge \(what it touched;/);
+  // A pending generation leaves the selection uncertain, so it keeps the run.
+  assert.match(
+    first.stdout,
+    /Owed by this order \(its closeout selection; not run\):\n  npm test -- --review\n/,
+  );
   assert.match(
     first.stdout,
     /Generation ran and left the pending steps above; repair their cause, then run npm run worktree -- integrate WO-998 --continue/,
@@ -2611,7 +2625,7 @@ test("WO-169 the integration record holds each release message as one line with 
   }
 });
 
-test("printed checks use the runner's declared machinery sources, including package code", async (t) => {
+test("the affected line names the machinery suites main's merge touched, including package code, and not the order's own edits", async (t) => {
   const root = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-integrate-checks-")),
   );
@@ -2631,16 +2645,29 @@ test("printed checks use the runner's declared machinery sources, including pack
     ["-c", "maintenance.auto=false", "commit", "-qm", "baseline"],
     fixtureGitOptions,
   );
-  assert.equal(await integrationTestCommand(root, "HEAD"), "npm test");
+  const base = runGit(root, ["rev-parse", "HEAD"], fixtureGitOptions);
+  assert.deepEqual(await mergedMachinery(root, base, base), []);
+  // A machinery edit in the working tree is the order's, not main's.
   put(
     root,
     "packages/compiler/src/verification.ts",
     "// changed machinery source\n",
   );
-  assert.equal(
-    await integrationTestCommand(root, "HEAD"),
-    "npm test -- --review",
+  assert.deepEqual(await mergedMachinery(root, base, base), []);
+  runGit(root, ["add", "-A"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "main moves"],
+    fixtureGitOptions,
   );
+  const merged = runGit(root, ["rev-parse", "HEAD"], fixtureGitOptions);
+  assert.deepEqual((await mergedMachinery(root, base, merged)).sort(), [
+    "artifact-evidence",
+    "authority-evidence",
+    "feedback-evidence",
+    "harness-evidence",
+    "verification-evidence",
+  ]);
 });
 
 assert.deepEqual(
@@ -2894,6 +2921,10 @@ for (const phase of ["active", "repairing", "final-review"]) {
     );
     assert.equal(result.status, 0, result.stdout + result.stderr);
     assert.match(result.stdout, /took in nothing/);
+    assert.match(
+      result.stdout,
+      /took in nothing: the worktree is not behind main\.\nOwed by this order \(its closeout selection; not run\):\n  npm test -- --review\n  npm run test:docs\n/,
+    );
     assert.deepEqual(
       observations,
       [],

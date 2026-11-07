@@ -217,7 +217,10 @@ const readDeclaredCriteria = (root, state) => {
   }
 };
 
-const criterionGateClaims = (declared, met, state) => {
+/** The gates the met criteria's own words name: `document`, `review` and
+ * `plain` lists of criterion ids. A target order's state adds the target
+ * gate's spellings; the closeout selection reads the same words. */
+export const criterionGateClaims = (declared, met, state) => {
   const claims = { document: [], review: [], plain: [] };
   const gates = state.repositoryId
     ? [...GATE_NAMES, ...TARGET_GATE_NAMES]

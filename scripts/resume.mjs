@@ -90,6 +90,9 @@ import {
 } from "./lib/plan-first.mjs";
 import { screenPlanFirst } from "./lib/plan-first-screen.mjs";
 import {
+  closeoutBriefing,
+  closeoutCompletionAdvisory,
+  closeoutRunnerFor,
   executorEntryBriefing,
   requirePlanApproval,
 } from "./lib/executor-readiness.mjs";
@@ -1444,7 +1447,7 @@ const executionBriefing = (state) => {
     );
   return briefingCommands(
     state,
-    `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}`,
+    `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
   );
 };
 // A retraction that returned a closed order to repair is its failure source:
@@ -1461,7 +1464,7 @@ const repairSource = (state) => {
 const repairBriefing = (state) =>
   briefingCommands(
     state,
-    `Repair ${state.workOrderPath} using ${repairSource(state)}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}`,
+    `Repair ${state.workOrderPath} using ${repairSource(state)}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
   );
 const preflightBriefing = (state) => {
   if (state.repositoryId) return "";
@@ -1474,12 +1477,17 @@ const preflightBriefing = (state) => {
   return `\nHandoff evidence: the structural row and ${names.length ? names.map((name) => `suite:${name}`).join(", ") : "no declared --only suites"} at the current code identity; the document row for the exact candidate tree. Consume the recorded rows; probe with npm test -- --only <suite>.`;
 };
 // The order's own known-issues text is quoted as written, outside the rewrite.
+// A target order's verifier reads the selection its target clause names; a
+// launchpad order's verifier consumes the executor's complete row, which the
+// handoff evidence line above it already names.
+const verifierCloseout = (state) =>
+  state.repositoryId ? closeoutBriefing(repoRoot, state, closeoutRunner) : "";
 const verificationBriefing = (state, reportPath) =>
-  `${briefingCommands(state, `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`)}${preflightBriefing(state)}${verificationKnownIssues(repoRoot, state)}${briefingCommands(state, targetBriefing(state))}`;
+  `${briefingCommands(state, `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`)}${preflightBriefing(state)}${verificationKnownIssues(repoRoot, state)}${briefingCommands(state, `${targetBriefing(state)}${verifierCloseout(state)}`)}`;
 const finalReviewBriefing = (state, reportPath) =>
   briefingCommands(
     state,
-    `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}${targetBriefing(state, true)}`,
+    `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}${targetBriefing(state, true)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
   );
 // A result's own advisories print once and ride on its evidence.
 const recordAdvisories = (evidence, lines) => {
@@ -1508,6 +1516,10 @@ const recordedBriefings = {
   "final-review": (state) => finalReviewBriefing(state, state.finalReviewPath),
 };
 
+// The runner's suite declarations, which the closeout selection reads to
+// classify a target order's launchpad paths; loaded once, after the order is
+// selected, by an action that prints that selection.
+let closeoutRunner;
 const run = async (argv) => {
   let [action = "status", ...rawArgs] = argv;
   let releaseExecutorWriter;
@@ -1618,6 +1630,18 @@ const run = async (argv) => {
   const orderEvents = selected ? eventsForOrder(control, selected) : [];
   let message;
   let statuses;
+  if (
+    [
+      "next",
+      "fix",
+      "verify",
+      "briefing",
+      "final-review",
+      "implementation-ready",
+      "repair-complete",
+    ].includes(action)
+  )
+    closeoutRunner = await closeoutRunnerFor(repoRoot, state);
 
   switch (action) {
     case "usage": {
@@ -1889,6 +1913,9 @@ const run = async (argv) => {
         handoffStart: handoffStartedAt(orderEvents),
       });
       completionHandoff(evidence, handoff, gates);
+      recordAdvisories(evidence, [
+        closeoutCompletionAdvisory(repoRoot, state, closeoutRunner),
+      ]);
       appendTransition(action, {
         type: "ImplementationReady",
         ...(evidence ? { evidence } : {}),
@@ -2048,6 +2075,9 @@ const run = async (argv) => {
         handoffStart: handoffStartedAt(orderEvents),
       });
       completionHandoff(evidence, handoff, gates);
+      recordAdvisories(evidence, [
+        closeoutCompletionAdvisory(repoRoot, state, closeoutRunner),
+      ]);
       appendTransition(action, {
         type: "RepairCompleted",
         ...(evidence ? { evidence } : {}),

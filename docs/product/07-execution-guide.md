@@ -1002,12 +1002,13 @@ the current intake; `npm run backup:intake -- <authorized-directory>` creates
 one. The helper is admitted in `active`, `repairing` and `final-review`. An active
 worktree uses local main; repair and final review fetch origin/main and tags
 first. When that upstream is already an ancestor of HEAD, the helper reports
-that it took in nothing before any checkpoint, stash or merge scratch. It
+that it took in nothing before any checkpoint, stash or merge scratch, and
+prints the checks the order owes (§Preflight before the full gate). It
 refuses while a live host lane names either the worktree or main's checkout,
 naming the holder and retry; while a planning pass has the primary checkout
 off main, that primary checkout stands for main's.
 Executors integrate only at these lifecycle points: before formatting, sync
-and the complete handoff run when main moved; never during a live gate or on
+and the closeout checks when main moved; never during a live gate or on
 their own initiative inside a handoff. Final review integrates at its named
 entry point.
 The helper records that phase,
@@ -1055,10 +1056,18 @@ resolution, because renumbering source revisions would change past meaning.
 The helper invokes existing build, harness, index, meta, release-preparation
 and publication-lock producers. Console expected outputs are regenerated when
 their inputs changed, preserving the authored fixture manifest's selection.
+After a completed generation it prints two lists. Affected by main's merge
+names the launchpad machinery suites whose declared sources main's change
+touched, from the old head to the main commit taken in, and nothing to run:
+main gated that change, and the integration's harness, publication and
+release-surface checks run in the structural phase of the document gate
+every order owes. Owed by this order is the order's closeout selection,
+spelled for the target worktree of a target order
+([WO-243-D007](../evidence/WO-243/decisions.md#wo-243-d007--the-integrate-helpers-two-lists)).
 It writes a dated draft integration decision naming both bases and resolved
 paths. The reviewer completes carried-forward claims, checks component-version
-collisions and evidence-edition changes, runs the printed affected checks,
-and reviews the helper-recorded merge commit. The helper runs no product gate and records no
+collisions and evidence-edition changes, runs the checks the helper prints
+as owed, and reviews the helper-recorded merge commit. The helper runs no product gate and records no
 repair, verification or acceptance event. A new base is not itself a finding.
 
 The integrating final review runs this list and nothing else counts as a
@@ -1066,12 +1075,13 @@ finding: preserve the branch's work and intake; merge main; regenerate the
 harness bundle and manifest, the work-order index, `npm run meta` and the
 publication locks; union the follow-up register by entry id; retime an
 unpublished release under its recorded classification with a dated decision
-record (a version collision is bookkeeping); re-run the affected checks and
-the one product gate on the integrated tree; and record both bases and the
+record (a version collision is bookkeeping); run the checks the order owes,
+its closeout selection, on the integrated tree; and record both bases and the
 carried-forward claims in the final report. A step this list does not name
 is the reopening observation for this rule [R1 replan pass, 2026-09-16](../planning/passes/r1-replan-2026-09-16.md).
 `npm run worktree -- integrate WO-NNN` runs the list's mechanical steps and
-prints the affected checks; the list remains its definition. A final review
+prints what main's merge affected apart from what the order owes; the list
+remains its definition. A final review
 records a merge blocker only with the command and line that enforces it; a
 sentence nothing checks is a documented condition, not a gate
 [vision-into-use pass, 2026-09-17](../planning/passes/vision-into-use-2026-09-17.md).
@@ -3402,7 +3412,8 @@ says so. A repair after a failed complete run takes the same ladder over its
 own diff, and a repair diff under fifty changed source lines starts at round
 three; that threshold is the planner's figure, and the executor records the
 repair diffs that meet it so a later pass can re-read it. The ladder
-finishes before the complete run and no reviewer runs after it passes; the
+finishes before the closeout's selected runs and no reviewer runs after
+they pass; the
 executor's own pass and an earlier run's reviewers cannot stand in for a
 round. The admission rule is what ends the ladder: WO-237 ran four recheck
 rounds (19, 13, 4 and 12 distinct findings) and a fifth from one reviewer
@@ -4876,9 +4887,10 @@ route; an operator override suspends Claude's hook refusal.
 
 Each order's **Preflight:** field names the suites its change touches, each
 as `npm test -- --only <suite>`, the spelling the handoff reads. The
-executor and each repair finish formatting and regeneration, then start one
-complete run, `npm test -- --review`, in the background and never under the
-bounded probe wrapper. If it fails and a repair changes code, finish the repair
+executor and each repair finish formatting and regeneration, then run the
+checks the order's closeout selection names (below): for a launchpad order,
+one complete run, `npm test -- --review`, in the background and never under
+the bounded probe wrapper. If it fails and a repair changes code, finish the repair
 and its write-backs, format, then take the repair's diff through the review
 ladder of §Verification review and attack (round three alone when the diff is
 under fifty changed source lines) and finish it before starting a fresh
@@ -4939,11 +4951,39 @@ tree, and runs no gate itself; a newer failed run at the same identity displaces
 pass crosses a code identity. Source changes require a complete row at the
 new identity; report and generated-document edits do not. Target orders
 retain their repository's declared target gate and the launchpad document
-gate: a target order whose criteria name only those owes no launchpad
-complete run at its closeout, and the integrate helper's affected-check list
-reports what main's merge touched, never a duty the order owes (the fork's
-WO-019-D031, 2026-10-28; the executor role's closeout sentence follows in
-WO-242).
+gate.
+
+The checks an order owes at its closeout are one selection, `closeoutScope`
+in `scripts/lib/closeout-scope.mjs`, and every reader names the same checks:
+the executor's and the reviewer's briefings end with it, as a target order's
+verifier's does, and `npm run resume -- briefing` prints it again, read-only,
+as the order stands; `worktree integrate` prints it as owed by this order,
+apart from what main's merge touched; `implementation-ready` and `repair-complete` record it as one
+advisory. Every order owes the launchpad document gate. A launchpad order also
+owes one complete run, its own repository's gate. A target order owes its
+registered target gate, with `--review` when a criterion names a review
+form, and the complete launchpad run only where its launchpad changes reach
+what that run judges: machinery it changed (launchpad source or
+configuration, a kit file, a declared input of a suite the complete run
+executes, or a record the gates read as input, such as
+`docs/control/budgets.json` and `docs/evidence/current.json` with its
+editions), a machinery conflict it resolved at integration, or a criterion
+that names `npm test`. A target order whose criteria name only its target
+gate and the document gate therefore owes no launchpad complete run when its
+launchpad changes are documents and records. The order's changes are the
+paths that differ from the commit its activation checkpoint was taken on, or
+from the main commit its latest integration took in, plus every conflict its
+integrations resolved; paths main's merge brought in unchanged are main's,
+gated there, so an integration that only adopted main's kit changes adds no
+run. An input the selection cannot read or classify (the order, its
+registration, its activation base, an integration receipt, the runner's
+suite declarations or a path outside the known locations) keeps the complete
+run and names the uncertainty in its reason. The selection runs no gate,
+supplies no passing row and adds no refusal: completion still consumes only
+the rows its criteria name
+([WO-243-D003](../evidence/WO-243/decisions.md#wo-243-d003--one-closeout-selection-three-readers),
+[WO-243-D004](../evidence/WO-243/decisions.md#wo-243-d004--what-counts-as-the-orders-launchpad-change-and-how-a-path-is-classified),
+[WO-243-D005](../evidence/WO-243/decisions.md#wo-243-d005--a-criterions-words-take-precedence-over-the-changed-paths)).
 
 Scheduling adds priority leads to each task's declared priority: unresolved
 failures receive 3000, sources changed since the last product gate receive

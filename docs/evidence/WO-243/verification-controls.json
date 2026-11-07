@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "recordedAt": "2026-11-07T14:29:02.239929+00:00",
+  "source": "independent verifier rerun of docs/evidence/WO-243/closeout-control.mjs under the selected worktree bounded wrapper",
+  "baselineRevision": "e4fe2dae25a76b5be3d60a95f987e4726845d3cd",
+  "baselinePreparation": "git archive of baseline into session scratch; baseline scripts/build.mjs; existing node_modules linked as dependency inputs; corrected build exit 0",
+  "expectedProcessExitCodes": {
+    "base": 1,
+    "candidate": 0
+  },
+  "observedProcessExitCodes": {
+    "base": 1,
+    "candidate": 0
+  },
+  "results": [
+    {
+      "arm": "base",
+      "roleStep": "8. Start one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper.",
+      "exitCode": 1,
+      "cases": [
+        {
+          "case": "target-only",
+          "integrationExitCode": 0,
+          "helperList": "affected checks",
+          "helper": [
+            "complete run",
+            "npm run publication:check",
+            "node scripts/harness.mjs check",
+            "npm run release -- check-surfaces --local"
+          ],
+          "briefing": null,
+          "briefingExitCode": 0,
+          "briefingMs": 110,
+          "completeRunRequested": true
+        },
+        {
+          "case": "mixed",
+          "integrationExitCode": 0,
+          "helperList": "affected checks",
+          "helper": [
+            "complete run",
+            "npm run publication:check",
+            "node scripts/harness.mjs check",
+            "npm run release -- check-surfaces --local"
+          ],
+          "briefing": null,
+          "briefingExitCode": 0,
+          "briefingMs": 90,
+          "completeRunRequested": true
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "roleStep": "8. Run the checks the closeout selection names, which `npm run resume -- briefing` and `worktree integrate` print: a launchpad order's one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper.",
+      "exitCode": 0,
+      "cases": [
+        {
+          "case": "target-only",
+          "integrationExitCode": 0,
+          "helperList": "owed by this order",
+          "helper": [
+            "target gate --review",
+            "document gate"
+          ],
+          "briefing": [
+            "target gate --review",
+            "document gate"
+          ],
+          "briefingExitCode": 0,
+          "briefingMs": 142,
+          "completeRunRequested": false
+        },
+        {
+          "case": "mixed",
+          "integrationExitCode": 0,
+          "helperList": "owed by this order",
+          "helper": [
+            "target gate --review",
+            "complete run",
+            "document gate"
+          ],
+          "briefing": [
+            "target gate --review",
+            "complete run",
+            "document gate"
+          ],
+          "briefingExitCode": 0,
+          "briefingMs": 138,
+          "completeRunRequested": true
+        }
+      ]
+    }
+  ]
+}

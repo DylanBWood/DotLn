@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "criterion": "3",
+  "recordedAt": "2026-11-07T14:26:33.592Z",
+  "input": "the current worktree, through the exported changedAgainstMain(root) used by lifecycle evidence and plan followups --touching",
+  "consumer": "scripts/lib/planning-followups.mjs",
+  "line": 787,
+  "observedBase": "e4fe2dae25a76b5be3d60a95f987e4726845d3cd",
+  "currentMergeBaseWithMain": "e4fe2dae25a76b5be3d60a95f987e4726845d3cd",
+  "sameBase": true,
+  "changedPathCount": 70,
+  "callers": [
+    {
+      "path": "scripts/lib/lifecycle-evidence.mjs",
+      "callsChangedAgainstMain": true
+    },
+    {
+      "path": "scripts/refute-plan.mjs",
+      "callsChangedAgainstMain": true
+    }
+  ],
+  "listedInD006": false,
+  "expected": "D006 names this comparison-base reader and states whether its existing semantics are kept or moved, with the reason",
+  "result": "fail"
+}

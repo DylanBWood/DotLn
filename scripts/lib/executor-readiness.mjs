@@ -2,6 +2,28 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { nextAdjacentItem, readAdjacentQueue } from "./adjacent-queue.mjs";
 import { readFeatures } from "./features.mjs";
+import {
+  closeoutAdvisory,
+  closeoutHeadings,
+  closeoutRunnerFor,
+  closeoutScope,
+  closeoutText,
+} from "./closeout-scope.mjs";
+
+export { closeoutRunnerFor, closeoutScope };
+
+/** The closeout selection as a lifecycle briefing prints it, spelled for
+ * the target worktree of a target order. It describes the order's changes as
+ * they stand, so the role reads it again at closeout. */
+export const closeoutBriefing = (root, state, runner) =>
+  `\n${closeoutText(root, closeoutScope(root, state, { runner }), {
+    heading: closeoutHeadings.briefing,
+    qualified: true,
+  })}`;
+
+/** The same selection as one line a completion records. */
+export const closeoutCompletionAdvisory = (root, state, runner) =>
+  closeoutAdvisory(root, closeoutScope(root, state, { runner }));
 
 /** Project installed equipment, never infer chat delivery or defect recognition. */
 export function executorEntryBriefing(

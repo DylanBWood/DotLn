@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "recordedAt": "2026-11-07T14:23:06.368Z",
+  "checks": [
+    {
+      "name": "plain target gate and launchpad document gate",
+      "result": "pass"
+    },
+    {
+      "name": "nondefault product document root",
+      "result": "pass"
+    },
+    {
+      "name": "own evidence program remains a record",
+      "result": "pass"
+    },
+    {
+      "name": "gate budget record is machinery",
+      "result": "pass"
+    },
+    {
+      "name": "edition selection is machinery",
+      "result": "pass"
+    },
+    {
+      "name": "minted evidence is machinery",
+      "result": "pass"
+    },
+    {
+      "name": "another order's program is unclassifiable",
+      "result": "pass"
+    },
+    {
+      "name": "non-document under product root is unclassifiable",
+      "result": "pass"
+    },
+    {
+      "name": "root Markdown is a document",
+      "result": "pass"
+    },
+    {
+      "name": "unknown root text file is conservative",
+      "result": "pass"
+    },
+    {
+      "name": "untracked machinery is not hidden",
+      "result": "pass"
+    },
+    {
+      "name": "staged deletion of tracked machinery",
+      "result": "pass"
+    },
+    {
+      "name": "rename cannot disguise a deleted machinery source",
+      "result": "pass"
+    },
+    {
+      "name": "named complete criterion overrides document-only paths",
+      "result": "pass"
+    },
+    {
+      "name": "missing order retains qualified target and launchpad commands",
+      "result": "pass"
+    },
+    {
+      "name": "malformed local registration is conservative",
+      "result": "pass"
+    },
+    {
+      "name": "foreign and pending integration receipts retain the complete run",
+      "result": "pass"
+    },
+    {
+      "name": "missing, erroneous and empty suite declarations are conservative",
+      "result": "pass"
+    },
+    {
+      "name": "selection supplies no passing gate row",
+      "result": "pass"
+    }
+  ],
+  "currentCodeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+  "consumedProductEvidence": {
+    "advisories": [],
+    "productGate": {
+      "evidenceRefs": [
+        "host-gate:67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "bd786c1d79ca50e369f8b40d21ca7a0b2b91bc5f",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "durationMs": 2410617,
+      "evidenceRef": "host-gate:67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc:npm test",
+      "recordedAt": "2026-11-07T09:04:58.237Z",
+      "executed": true,
+      "exitCode": 0
+    }
+  },
+  "completeRow": {
+    "checkId": "npm test",
+    "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+    "recordedAt": "2026-11-07T09:04:58.237Z",
+    "exitCode": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ]
+  }
+}

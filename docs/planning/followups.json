@@ -44320,6 +44320,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T20:24:01.560Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D023 (FINAL-001): its condition occurred, because WO-243's closeout-selection sentences change the measured overrun and the reviewed rules again: the executor reads 44,563 bytes against its 29,246-byte ceiling (accepted under WO-242-D009's 51,226-byte acceptance), the reviewer 41,289 against 28,884 and the verifier 38,715 against 29,831, while the planner 30,780, release-close 28,638 and the router 17,124 are unchanged and over their ceilings; no ceiling raised, no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-07T17:43:52.833Z"
         }
       ]
     },
@@ -44480,6 +44488,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-06T20:24:00.720Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D023 (FINAL-001): its condition occurred, because WO-243 re-mints the role oracle as wo243-role-baseline.json over WO-257's and the chain list in scripts/test-gate-followups.mjs now selects it; the tracked pins moved with the oracle, and no role grew past its pin without the oracle changing.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-07T17:43:53.104Z"
         }
       ]
     },
@@ -52717,6 +52733,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T20:24:01.280Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D023 (FINAL-001): its condition occurred, because WO-243's closeout-selection sentences change the measured overrun and the reviewed rules again: the executor reads 44,563 bytes against its 29,246-byte ceiling (accepted under WO-242-D009's 51,226-byte acceptance), the reviewer 41,289 against 28,884 and the verifier 38,715 against 29,831, while the planner 30,780, release-close 28,638 and the router 17,124 are unchanged and over their ceilings; no ceiling raised, no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-07T17:43:52.556Z"
         }
       ]
     },
@@ -53528,6 +53552,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T20:24:01.420Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D023 (FINAL-001): its condition occurred, because WO-243's closeout-selection sentences change the measured overrun and the reviewed rules again: the executor reads 44,563 bytes against its 29,246-byte ceiling (accepted under WO-242-D009's 51,226-byte acceptance), the reviewer 41,289 against 28,884 and the verifier 38,715 against 29,831, while the planner 30,780, release-close 28,638 and the router 17,124 are unchanged and over their ceilings; no ceiling raised, no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-07T17:43:52.696Z"
         }
       ]
     },
@@ -54051,6 +54083,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-06T20:24:01.140Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D023 (FINAL-001): its condition occurred, because WO-243's closeout-selection sentences change the measured overrun and the reviewed rules again: the executor reads 44,563 bytes against its 29,246-byte ceiling (accepted under WO-242-D009's 51,226-byte acceptance), the reviewer 41,289 against 28,884 and the verifier 38,715 against 29,831, while the planner 30,780, release-close 28,638 and the router 17,124 are unchanged and over their ceilings; no ceiling raised, no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-07T17:43:52.412Z"
         }
       ]
     },
@@ -55208,6 +55248,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-06T10:09:43.340Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-243-D023 (FINAL-001): its condition occurred, because WO-243's closeout-selection sentences change the measured overrun and the reviewed rules again: the executor reads 44,563 bytes against its 29,246-byte ceiling (accepted under WO-242-D009's 51,226-byte acceptance), the reviewer 41,289 against 28,884 and the verifier 38,715 against 29,831, while the planner 30,780, release-close 28,638 and the router 17,124 are unchanged and over their ceilings; no ceiling raised, no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-07T17:43:52.969Z"
         }
       ]
     },
@@ -55360,6 +55408,108 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-d91a2e2780a65b70",
+      "key": "decision:docs/evidence/WO-243/decisions.md#wo-243-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7e4b000ed49748ed5f591610d85282b80153951877af9053e523ec8800ffd1ee",
+          "ref": "docs/evidence/WO-243/decisions.md#wo-243-d008",
+          "title": "WO-243-D008: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-243's closeout-selection sentences added 202 bytes to the executor (44,560 against its 29,246-byte ceiling), 155…",
+          "summary": "{ \"id\": \"WO-243-D008\", \"date\": \"2026-11-07\", \"dispatch\": \"resume: next\", \"decision\": \"npm run release -- prepare --local assigned v0.120.1 (WO-243-D001). @dotln/skeleton moves from 0.87.0 to 0.87.1 for the role text in loadouts/contributor.ts, a compatible instruction fix; the console's pin and package-lock.json follow; no other component's source changed, and HARNESS_HOST_VERSION stays 0.46.0 because harness-host.ts is unchanged. npm run sync re-minted the authority edition as WO-243 revision 001 (contributor.ts is an authority source); the artifact-identity, verification and feedback editions stayed current, so no live feedback episode runs. The role oracle's chain gains packages/skeleton/",
+          "missing": false
+        },
+        {
+          "hash": "41bfbee384f3376fd5f0ae6b1ca57a549010c4d3d3185b44a3825080e295003c",
+          "ref": "docs/evidence/WO-243/decisions.md#wo-243-d008",
+          "title": "WO-243-D008: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-243's closeout-selection sentences added 205 bytes to the executor (44,563 against its 29,246-byte ceiling), 228…",
+          "summary": "{ \"id\": \"WO-243-D008\", \"date\": \"2026-11-07\", \"dispatch\": \"resume: next\", \"decision\": \"npm run release -- prepare --local assigned v0.120.1 (WO-243-D001). @dotln/skeleton moves from 0.87.0 to 0.87.1 for the role text in loadouts/contributor.ts, a compatible instruction fix; the console's pin and package-lock.json follow; no other component's source changed, and HARNESS_HOST_VERSION stays 0.46.0 because harness-host.ts is unchanged. Each npm run sync after a change to contributor.ts or the skeleton's version re-minted the authority edition (contributor.ts is an authority source): revision 001 after the first role text, 002 after the version bump and 003 after the round-1 review fixes; docs/evi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D008: the closeout-selection sentences stay whole with every other root's reviewed rules under product 07's one route for cold-start ceilings; the executor reads 44,560 bytes, the reviewer 41,216, the verifier 38,715, the planner 30,780, release-close 28,638 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-07T07:02:02.365Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-243-D008: the closeout-selection sentences stay whole with every other root's reviewed rules under product 07's one route for cold-start ceilings; the executor reads 44,563 bytes, the reviewer 41,289, the verifier 38,715, the planner 30,780, release-close 28,638 and the router 17,124, all over their unchanged ceilings, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-07T07:39:26.357Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0560f7b8644b36f2",
+      "key": "decision:docs/evidence/WO-243/decisions.md#wo-243-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "77fd3f118d421792d1ccec6289f5eba764b83a9bedc94c24f60d6d429ac9d2aa",
+          "ref": "docs/evidence/WO-243/decisions.md#wo-243-d013--review-round-1-every-finding-fixed-or-recorded",
+          "title": "WO-243-D013: Give the closeout classifier one source for the records the gates read as input: have the product suites that read records declare them as sources (or export one list from…",
+          "summary": "{ \"id\": \"WO-243-D013\", \"date\": \"2026-11-07\", \"dispatch\": \"resume: next; review round 1 (criteria, design, consistency) over tree e124dd38\", \"decision\": \"Of 23 findings (18 distinct after the three reports' overlaps), 17 are fixed and one is recorded. Fixed: the case inventory lists the matrix test (consistency F1, blocking, fixed in the tree before the report arrived); the decisions index regenerated (consistency F2); D008 names the selected authority revision (consistency F3, criteria F5); D006 lists review-worker.mjs, document-failures.mjs, docs-check.mjs and reviewedLaunchpadIdentity (consistency F4, criteria F1); the reviewer's step 4, its two complete-run rules and the helper's conflict",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D013: the closeout classifier's hand-kept list of gate-input records (budgets.json, doc-ceilings.json, outward-vocabulary.json, evidence current.json and the minted editions) stays as the refutation receipt named it; product suites declare no sources, so one shared source needs the runner's whole table to declare the records its suites read, a change beyond WO-243.",
+          "reopenWhen": "A product suite starts to read a record under a record root that the classifier does not list, or a planning pass allocates the runner's record declarations.",
+          "targets": [],
+          "at": "2026-11-07T08:05:53.234Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dcaad50cf7affa85",
+      "key": "decision:docs/evidence/WO-243/decisions.md#wo-243-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "aa9801249e4b16337e6e96616600ae369935f9b4cce42a3010c3e930adbf69c7",
+          "ref": "docs/evidence/WO-243/decisions.md#wo-243-d014--review-round-2-the-admitted-finding-fixed-the-notes-boarded",
+          "title": "WO-243-D014: Make the integrate helper's affected line say unknown when changedMachinery cannot compare the old head with the main commit taken in, instead of naming every machinery suite through…",
+          "summary": "{ \"id\": \"WO-243-D014\", \"date\": \"2026-11-07\", \"dispatch\": \"resume: next; review round 2 rechecks over tree 9551026b\", \"decision\": \"Every round-1 fix the rechecks named holds, apart from design F8, which D013 recorded and now boards as a follow-up. Of round 2's eight new findings, one was admitted and is fixed: a runner that imports without a suite table makes the selection uncertain again, as round 1's guard did, with a regression case (design F1, criterion 2). Round 1's verifier fix printed the selection in every verifier briefing, although its finding concerned the target clause. For a launchpad order the printed complete run contradicted the handoff evidence line beside it, which tells the",
+          "missing": false
+        },
+        {
+          "hash": "27fa2249ebad1cde9c5ba80d2a5752880adac14dd3af3faf6521dca177a2cc78",
+          "ref": "docs/evidence/WO-243/decisions.md#wo-243-d014--review-round-2-the-admitted-finding-fixed-the-notes-boarded",
+          "title": "WO-243-D014: Make the integrate helper's affected line say unknown when changedMachinery cannot compare the old head with the main commit taken in, instead of naming every machinery suite through…",
+          "summary": "{ \"id\": \"WO-243-D014\", \"date\": \"2026-11-07\", \"dispatch\": \"resume: next; review round 2 rechecks over tree 9551026b\", \"decision\": \"Every round-1 fix the rechecks named holds, apart from design F8, which D013 recorded and now boards as a follow-up. Round 2 raised eight new findings, and each was disposed on a named basis. Admitted on criterion 2 and fixed with a regression case: a runner that imports without a suite table makes the selection uncertain again, as round 1's guard did (design F1; criteria F1 read the same lines as a note). Admitted as a regression of the briefing main had and fixed: round 1's verifier fix printed the selection in every verifier briefing, although its finding conce",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-243-D014: on a Git failure inside changedMachinery the integrate helper's informational affected line would name every machinery suite instead of saying unknown; the line names nothing to run, so the round-2 admission rule records the fix for a later order.",
+          "reopenWhen": "An affected line names suites main's merge did not touch, or a reader acts on that line.",
+          "targets": [],
+          "at": "2026-11-07T08:05:53.358Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-243-D014: on a Git failure inside changedMachinery the integrate helper's informational affected line would name every machinery suite instead of saying unknown; the line names nothing to run, so the round-2 admission rule records the fix for a later order.",
+          "reopenWhen": "An affected line names suites main's merge did not touch, or a reader acts on that line.",
+          "targets": [],
+          "at": "2026-11-07T09:06:19.103Z"
+        }
+      ]
     }
   ]
 }

@@ -42,9 +42,15 @@ import { strictVersionsIn } from "./release-records.mjs";
 import { decisionsConflicted } from "./release-preparation.mjs";
 import { refreshControlProjection } from "../resume.mjs";
 import { dropInventoriedStash } from "./stash-drop.mjs";
+import {
+  closeoutHeadings,
+  closeoutRunnerFor,
+  closeoutScope,
+  closeoutText,
+  integrationReceiptPath,
+} from "./closeout-scope.mjs";
 
-const receiptFile = (root) =>
-  docRelative(root, "control", "local/integration.json");
+const receiptFile = integrationReceiptPath;
 const manifest = ".claude/harness-manifest.json";
 const editionPages = (root) =>
   ["everyday-ai-user-toc.md", "software-engineer-toc.md"].map((name) =>
@@ -412,7 +418,7 @@ Resolved projections: ${receipt.resolved.join(", ") || "none"}.
 Release preparation: ${releaseLine(receipt.release || "pending")}
 Carried-forward claims: **reviewer to complete; no acceptance judgment recorded**.
 Authored conflicts observed: ${receipt.authored.join(", ") || "none"}.
-Affected checks are printed by the command; results remain untested until executed.\n`,
+The command prints what main's merge touched apart from the checks this order owes; results remain untested until executed.\n`,
   );
 }
 
@@ -546,18 +552,33 @@ function regenerate(root, receipt) {
   return pending;
 }
 
-export async function integrationTestCommand(root, before) {
+/** The launchpad machinery suites whose declared sources main's merge
+ * changed, from the old head to the main commit taken in: what that merge
+ * touched, which main's own gates judged. Null when the runner cannot be
+ * read, as when its own source holds an authored conflict. */
+export async function mergedMachinery(root, before, upstream) {
   try {
     const { changedMachinery } = await import("../test-runner.mjs");
-    return changedMachinery(root, undefined, before).length
-      ? "npm test -- --review"
-      : "npm test";
+    return changedMachinery(root, undefined, before, { head: upstream }).map(
+      (row) => row.name,
+    );
   } catch {
-    // An authored runner conflict cannot justify omitting machinery. --review
-    // will make the ordinary selection when that source has been resolved.
-    return "npm test -- --review";
+    return null;
   }
 }
+
+// The checks this order owes at its closeout, from the selection its briefing
+// and completion also print, spelled for the target worktree of a target
+// order. The selection never throws; what it cannot read keeps the run.
+const owedChecks = async (root, workOrder, receipt) =>
+  closeoutText(
+    root,
+    closeoutScope(root, workOrder, {
+      runner: await closeoutRunnerFor(root, workOrder),
+      receipt,
+    }),
+    { heading: closeoutHeadings.owed, qualified: true },
+  );
 
 export async function integrateWorktree(root, workOrder, args = []) {
   root = realpathSync(root);
@@ -692,6 +713,7 @@ async function integrateOwnedWorktree(root, workOrder, args) {
     console.log(
       "Integration took in nothing: the worktree is not behind main.",
     );
+    console.log(await owedChecks(root, workOrder));
     return { complete: true, noop: true, workOrder };
   }
   verifyIntake(root, backup ?? previous?.backup);
@@ -933,6 +955,17 @@ async function integrateOwnedWorktree(root, workOrder, args) {
       backup,
       resolved: [],
       authored: [],
+      // Conflicts an earlier integration of this order resolved stay the
+      // order's own change; this receipt replaces that one.
+      priorAuthored:
+        previous?.complete && previous.workOrder === workOrder
+          ? [
+              ...new Set([
+                ...(previous.priorAuthored ?? []),
+                ...(previous.authored ?? []),
+              ]),
+            ]
+          : [],
       ...checkpoint,
       complete: false,
       consoleSelected: [...changed, ...local].some(
@@ -1088,17 +1121,23 @@ async function integrateOwnedWorktree(root, workOrder, args) {
     console.log(
       `Untracked stash collisions require explicit resolution; original bytes remain at ${receipt.stash}^3. Stage the chosen content and use --continue to acknowledge the resolution.`,
     );
-  // The affected checks and the draft decision describe the generated tree,
+  // The two lists and the draft decision describe the generated tree,
   // so a pass that held generation leaves them to the one that runs it.
   if (receipt.stage !== "applied" || unresolved.length) {
     console.log(
-      `Resolve authored conflicts explicitly, git add resolved paths, then run npm run worktree -- integrate ${workOrder} --continue; the completing pass prints the affected checks and writes the draft decision. No lifecycle event or acceptance result was appended.`,
+      `Resolve authored conflicts explicitly, git add resolved paths, then run npm run worktree -- integrate ${workOrder} --continue; the completing pass prints what main's merge affected apart from the checks this order owes, and writes the draft decision. No lifecycle event or acceptance result was appended.`,
     );
     return receipt;
   }
+  // What main's merge touched is main's change, gated there: the line
+  // reports it and names nothing to run. The order owes its own selection,
+  // whose document gate also runs the integration's harness, publication and
+  // release-surface checks in its structural phase.
+  const touched = await mergedMachinery(root, receipt.before, receipt.upstream);
   console.log(
-    `Affected checks (not run):\n  ${await integrationTestCommand(root, receipt.before)}\n  npm run publication:check\n  node scripts/harness.mjs check\n  npm run release -- check-surfaces --local`,
+    `Affected by main's merge (what it touched; gated on main, owed by no order here): ${touched === null ? "unknown, because the runner's suite declarations cannot be read" : touched.length ? `the launchpad machinery suites ${touched.join(", ")}` : "no launchpad machinery suite"}.`,
   );
+  console.log(await owedChecks(root, workOrder, receipt));
   console.log(
     "Reviewer: complete the integration decision's carried-forward claims; assess component-version collisions and changed evidence inputs. No lifecycle event or acceptance result was appended.",
   );

@@ -6,7 +6,7 @@
 
 - [x] [WO-257] — Instance returns of 2026-11-03 to 2026-11-05 · **final-reviewed**
 - [x] [WO-242] — Plan-first mode · **final-reviewed**
-- [ ] [WO-243] — Closeout checks follow the repositories an order changed · **queued**
+- [x] [WO-243] — Closeout checks follow the repositories an order changed · **final-reviewed**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -38,22 +38,6 @@ None.
 None.
 
 ## Open
-
-### WO-243
-
-[WO-243 — Closeout checks follow the repositories an order changed: one scope selection, read by the executor's closeout, the integrate helper's affected-check list and completion's advisory, so a target-only order runs its registered target gate and the document gate, a change that touches launchpad machinery still pays the complete run, and an adopted kit merge alone demands no second one (version assigned at activation)](WO-243-closeout-checks-follow-the-repositories-an-order-changed.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-210: satisfied-by-close (met) — the target gate contract a target-only order's closeout selects; WO-239: satisfied-by-close (met) — the integrate helper's current refusal and no-op behavior the owed-checks print extends; WO-236: satisfied-by-close (met) — the registered target worktree whose authored changes the selection reads.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-243-closeout-checks-follow-the-repositories-an-order-changed.md](WO-243-closeout-checks-follow-the-repositories-an-order-changed.md)
 
 ### WO-244
 

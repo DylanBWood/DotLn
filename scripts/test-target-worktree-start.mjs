@@ -25,6 +25,7 @@ import {
   targetRegistryPath,
 } from "./lib/target-worktrees.mjs";
 import { readControl } from "./lib/control-store.mjs";
+import { closeoutScope } from "./lib/closeout-scope.mjs";
 import {
   gateTreeHash,
   readGateChecks,
@@ -238,7 +239,43 @@ const postReviewCommands = [
   "scripts/worktree.mjs publish",
 ];
 const documentGate = "scripts/test-runner.mjs --document";
+// The closeout selection an executor or reviewer briefing prints last: its
+// re-read command, then the checks. This fixture's launchpad holds the queue
+// script and harness manifest it plants, which are launchpad machinery, so
+// the complete run is owed beside the document gate.
+const closeoutPrinted = [
+  "scripts/resume.mjs briefing",
+  "scripts/test-runner.mjs --review",
+  documentGate,
+];
 const names = (commands) => commands.map(({ command }) => command);
+// The checks a reader prints, by kind. A target session's spelling (the
+// launchpad's absolute script path, with DOTLN_LAUNCHPAD for its runner) and
+// the launchpad-relative spelling a completion records name the same check.
+const checkKinds = (commands) =>
+  commands.map((command) =>
+    /target-gate\.mjs'? WO-\d{3} --review$/u.test(command)
+      ? "target gate --review"
+      : /target-gate\.mjs'? WO-\d{3}$/u.test(command)
+        ? "target gate"
+        : /test-runner\.mjs'? --review$|^npm test -- --review$/u.test(command)
+          ? "complete run"
+          : /test-runner\.mjs'? --document$|^npm run test:docs$/u.test(command)
+            ? "document gate"
+            : `unrecognized: ${command}`,
+  );
+// The commands indented under a reader's heading and the reason that follows.
+const printedSelection = (text, heading) => {
+  const lines = text.split("\n");
+  const start = lines.findIndex((line) => line.startsWith(heading));
+  assert.ok(start >= 0, `${heading} is printed:\n${text}`);
+  let end = start + 1;
+  while (lines[end]?.startsWith("  ")) end++;
+  return {
+    checks: checkKinds(lines.slice(start + 1, end).map((line) => line.trim())),
+    reason: lines[end],
+  };
+};
 const comparableGateResult = (result) =>
   `${result.status}\n${result.stdout}`
     .replace(/[0-9]+\.[0-9]+ s/gu, "<t>")
@@ -250,6 +287,26 @@ const comparableGateResult = (result) =>
       '"$1":"<sample>"',
     )
     .replace(/(dotln-[a-z-]+-)[A-Za-z0-9]{6}\b/gu, "$1<tmp>");
+
+// The closeout selection a completion recorded as an advisory on its event.
+const recordedSelection = (journal, type) => {
+  const advisory = readFileSync(journal, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line))
+    .findLast((event) => event.type === type)
+    .evidence.advisories.find((line) =>
+      line.startsWith("Closeout selection for "),
+    );
+  const [, commands, owed, reason] =
+    /^Closeout selection for WO-\d{3}: (.*?)\. (The complete launchpad run is owed|No complete launchpad run is owed) because (.*)\. Completion consumes only the rows its criteria name\.$/u.exec(
+      advisory,
+    );
+  return {
+    checks: checkKinds(commands.split("; ")),
+    reason: `${owed} because ${reason}.`,
+  };
+};
 
 test("document gate route comparison ignores measured churn but preserves outcomes", () => {
   const result = {
@@ -374,7 +431,14 @@ test("target briefings name a missing repository throughout dispatch and print l
       "scripts/resume.mjs implementation-ready",
       "scripts/adjacent-work.mjs apply",
       documentGate,
+      ...closeoutPrinted,
     ]);
+    // The re-read the closeout selection names answers from the target
+    // worktree with the same selection.
+    assert.match(
+      f.ok(execution[3].run()),
+      /Closeout checks owed as the order stands/u,
+    );
     queueRefuses(execution[1]);
     // The completion the execution briefing prints records from the target
     // worktree as printed.
@@ -388,6 +452,7 @@ test("target briefings name a missing repository throughout dispatch and print l
       "scripts/resume.mjs waive",
       "scripts/refute-plan.mjs amend-order",
       documentGate,
+      ...closeoutPrinted,
     ]);
     // The defect route's class placeholder names no class, so it answers
     // from the launchpad's own script and records nothing.
@@ -430,8 +495,10 @@ test("target briefings name a missing repository throughout dispatch and print l
       documentGate,
       "scripts/worktree.mjs integrate",
       ...postReviewCommands,
+      ...closeoutPrinted,
     ]);
-    const [, , , gate, , records, ...publications] = printed;
+    const [, , , gate, , records, ...rest] = printed;
+    const publications = rest.slice(0, postReviewCommands.length - 1);
     assert.match(
       briefing,
       /scripts\/worktree\.mjs' integrate WO-999, directly from this target root/u,
@@ -476,12 +543,23 @@ test("target briefings name a missing repository throughout dispatch and print l
     );
     f.ok(f.resume(["final-review-result", "fail", ...actorArgs]));
     missing(["fix"], "repairing");
-    const repair = launchpadCommands(f, f.ok(f.resume(["briefing"])));
+    const repairText = f.ok(f.resume(["briefing"]));
+    const repair = launchpadCommands(f, repairText);
     assert.deepEqual(names(repair), [
       "scripts/adjacent-work.mjs apply",
       documentGate,
+      ...closeoutPrinted,
     ]);
     queueRefuses(repair[0]);
+    // The repair's completion records the selection its briefing names.
+    f.ok(f.resume(["repair-complete", ...actorArgs]));
+    assert.deepEqual(
+      recordedSelection(
+        docPath(f.orderRoot, "orders", "WO-999.jsonl"),
+        "RepairCompleted",
+      ),
+      printedSelection(repairText, "Closeout checks owed as the order stands"),
+    );
     rmSync(join(f.orderRoot, ".claude"), { recursive: true });
     rmSync(queueScript);
   });
@@ -512,6 +590,35 @@ test("target briefings name a missing repository throughout dispatch and print l
       briefing,
       /Repo-native|target-gate|target-records|DOTLN_LAUNCHPAD|--target-worktree/u,
     );
+    // A launchpad order owes its own repository's gate, the complete run,
+    // and its briefing, the integrate helper and completion all say so.
+    const selected = {
+      checks: ["complete run", "document gate"],
+      reason:
+        "The complete launchpad run is owed because this is a launchpad order, and the complete run is its own repository's gate.",
+    };
+    assert.deepEqual(
+      printedSelection(briefing, "Closeout checks owed as the order stands"),
+      selected,
+    );
+    const helper = f.ok(
+      f.call(f.orderRoot, f.orderRoot, "worktree", ["integrate", "WO-999"]),
+    );
+    assert.match(helper, /took in nothing/u);
+    assert.deepEqual(printedSelection(helper, "Owed by this order"), selected);
+    f.ok(f.resume(["implementation-ready", ...actorArgs], {}, f.orderRoot));
+    assert.deepEqual(
+      recordedSelection(
+        docPath(f.orderRoot, "orders", "WO-999.jsonl"),
+        "ImplementationReady",
+      ),
+      selected,
+    );
+    // Its verifier consumes the executor's rows, so its briefing prints no
+    // selection beside the handoff evidence line.
+    const verification = f.ok(f.resume(["verify"], {}, f.orderRoot));
+    assert.match(verification, /^Handoff evidence: /mu);
+    assert.doesNotMatch(verification, /Closeout checks owed/u);
   });
 });
 
@@ -1921,4 +2028,293 @@ test("malformed literal settings refuse target start before either worktree is c
     assert.equal(existsSync(f.orderRoot), false);
     assert.equal(existsSync(f.target), false);
     assert.equal(existsSync(targetRegistryPath(f.main)), false);
+  }));
+
+test("closeout checks follow the repositories a target order changed, and its briefing, the integrate helper and completion name the same checks", () =>
+  withFixture((f) => {
+    const criteria = [
+      "1. The registered target gate passes: `node scripts/target-gate.mjs WO-999 --review`.",
+      "2. `npm run test:docs` is green.",
+    ];
+    const orderText = (lines) =>
+      `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${f.baseCommit}\n\n**Acceptance criteria (all required)**\n\n${lines.join("\n")}\n`;
+    write(f.main, f.order, orderText(criteria));
+    // What an integration regenerates must succeed here, so an integration
+    // can complete: a build script, the planning sequence and map the
+    // work-order index reads, and one machinery file both sides will change.
+    write(
+      f.main,
+      "package.json",
+      '{"private":true,"scripts":{"build":"node -e 0"}}\n',
+    );
+    write(f.main, "records/planning/work-order-map.md", "# Work-order map\n");
+    write(
+      f.main,
+      "records/planning/sequence.md",
+      "# Fixture sequence\n\n<!-- dotln-work-order-sequence:start -->\n- WO-999 — target lifecycle fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    write(
+      f.main,
+      "scripts/lib/fixture-shared.mjs",
+      "export const shared = 'base';\n",
+    );
+    const commitMain = (message) => {
+      git(f.main, "add", "-A");
+      git(f.main, "-c", "maintenance.auto=false", "commit", "-qm", message);
+    };
+    commitMain("Order with gate criteria");
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    const journal = docPath(f.orderRoot, "orders", "WO-999.jsonl");
+    const handoff = join(f.orderRoot, "records/evidence/WO-999/handoff.md");
+    const integrate = (...args) =>
+      f.call(f.target, f.orderRoot, "worktree", [
+        "integrate",
+        "WO-999",
+        ...args,
+      ]);
+    // Each reader runs as the session runs it, from the target worktree. The
+    // completion's advisory is read from the event it records; the control
+    // record is then put back, so the next case completes again.
+    const completion = (ids) => {
+      const recorded = readFileSync(journal);
+      write(
+        f.orderRoot,
+        "records/evidence/WO-999/handoff.md",
+        `${ids.map((id) => `**Criterion ${id}:** unmet. Not run in the fixture.\n`).join("")}\nself-review: found 0; fixed 0; recorded 0\n`,
+      );
+      f.ok(f.resume(["implementation-ready", ...actorArgs]));
+      const selection = recordedSelection(journal, "ImplementationReady");
+      writeFileSync(journal, recorded);
+      rmSync(handoff);
+      return selection;
+    };
+    const readers = ({ helper, ids = ["1", "2"] } = {}) => {
+      const briefing = printedSelection(
+        f.ok(f.resume(["briefing"])),
+        "Closeout checks owed as the order stands",
+      );
+      let printed = helper;
+      if (!printed) {
+        printed = f.ok(integrate());
+        assert.match(printed, /took in nothing/u);
+      }
+      const owed = printedSelection(printed, "Owed by this order");
+      const recorded = completion(ids);
+      assert.deepEqual(
+        owed,
+        briefing,
+        "the helper names the briefing's checks",
+      );
+      assert.deepEqual(recorded, briefing, "completion names the same checks");
+      return briefing;
+    };
+    const documentOnly = ["target gate --review", "document gate"];
+    const withComplete = [
+      "target gate --review",
+      "complete run",
+      "document gate",
+    ];
+    const documentReason =
+      /^No complete launchpad run is owed because the order's launchpad changes are documents and records/u;
+
+    // A target-only order: its change is in the target worktree.
+    write(f.target, "source.txt", "target change\n");
+    let selected = readers();
+    assert.deepEqual(selected.checks, documentOnly);
+    assert.match(selected.reason, documentReason);
+
+    // Its launchpad changes are documents and records.
+    write(f.orderRoot, "records/evidence/WO-999/decisions.md", "# Decisions\n");
+    write(f.orderRoot, "records/product/notes.md", "# Product notes\n");
+    selected = readers();
+    assert.deepEqual(selected.checks, documentOnly);
+    assert.match(selected.reason, documentReason);
+
+    // An integration that only adopted main's kit changes adds no run: the
+    // helper reports what main's merge touched apart from what is owed.
+    write(f.main, "scripts/lib/fixture-kit.mjs", "export const kit = 1;\n");
+    write(f.main, "records/product/main-note.md", "# Main note\n");
+    commitMain("Main takes a kit change");
+    let integration = integrate();
+    assert.equal(
+      integration.status,
+      0,
+      integration.stdout + integration.stderr,
+    );
+    assert.match(
+      integration.stdout,
+      /Affected by main's merge \(what it touched; gated on main, owed by no order here\): the launchpad machinery suites configuration-root\.\n/u,
+    );
+    selected = readers({ helper: integration.stdout });
+    assert.deepEqual(selected.checks, documentOnly);
+    assert.match(selected.reason, documentReason);
+
+    // A criterion that names npm test keeps the complete run.
+    const order = join(f.orderRoot, f.order);
+    const filed = readFileSync(order, "utf8");
+    writeFileSync(
+      order,
+      orderText([...criteria, "3. `npm test -- --review` is green."]),
+    );
+    selected = readers({ ids: ["1", "2", "3"] });
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(selected.reason, /because criterion 3 names npm test\.$/u);
+    writeFileSync(order, filed);
+
+    // A path the selection cannot classify keeps it and says so.
+    write(f.orderRoot, "notes.txt", "scratch\n");
+    selected = readers();
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /because the scope is uncertain \(unclassifiable launchpad paths \(notes\.txt\)\)\.$/u,
+    );
+    rmSync(join(f.orderRoot, "notes.txt"));
+
+    // A launchpad machinery edit beside the target change pays it.
+    write(
+      f.orderRoot,
+      "scripts/lib/fixture-local.mjs",
+      "export const local = 1;\n",
+    );
+    selected = readers();
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /because launchpad machinery changed \(scripts\/lib\/fixture-local\.mjs\)\.$/u,
+    );
+    rmSync(join(f.orderRoot, "scripts/lib/fixture-local.mjs"));
+
+    // An unreadable registration keeps it, with the uncertainty named.
+    const configFile = join(f.orderRoot, "dotln.config.json");
+    const configured = readFileSync(configFile);
+    const { gate, ...ungated } = f.config.repositories.target;
+    assert.ok(gate);
+    writeFileSync(
+      configFile,
+      JSON.stringify({
+        ...f.config,
+        repositories: { ...f.config.repositories, target: ungated },
+      }),
+    );
+    selected = readers();
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /the scope is uncertain \(the registration cannot be read: repositories\.target declares no gate\)/u,
+    );
+    writeFileSync(
+      configFile,
+      JSON.stringify({ ...f.config, repositories: {} }),
+    );
+    selected = readers();
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /the scope is uncertain \(the registration cannot be read: repositories\.target is not registered\)/u,
+    );
+    writeFileSync(configFile, configured);
+    // The selection carries the registration's commands for the selected
+    // target gate; a registry entry bound to another base cannot be read.
+    const state = readControl(f.orderRoot).orders.get("WO-999").state;
+    assert.deepEqual(closeoutScope(f.orderRoot, state).target, {
+      repositoryId: "target",
+      selection: "review",
+      commands: [{ name: "test", ...gate.commands.test }],
+    });
+    const rebased = closeoutScope(f.orderRoot, {
+      ...state,
+      baseCommit: "0".repeat(40),
+    });
+    assert.equal(rebased.target.commands, null);
+    assert.ok(
+      rebased.reasons.includes(
+        "the scope is uncertain (the registration cannot be read: the target worktree registration is missing or differs from the activation)",
+      ),
+    );
+    // A runner that imports without a suite table classifies nothing, so it
+    // keeps the complete run whatever the paths are.
+    for (const runner of [{}, { suites: undefined }, { suites: [] }]) {
+      const tableless = closeoutScope(f.orderRoot, state, { runner });
+      assert.equal(tableless.launchpad, "complete");
+      assert.ok(
+        tableless.reasons.includes(
+          "the scope is uncertain (the runner's suite declarations cannot be read: the runner exports no suite table)",
+        ),
+      );
+    }
+
+    // A missing activation base keeps it, with the uncertainty named.
+    const activated = readFileSync(journal, "utf8");
+    const [first, ...rest] = activated.split("\n");
+    const { checkpointSha, checkpointRef, ...unanchored } = JSON.parse(first);
+    assert.ok(checkpointSha && checkpointRef);
+    writeFileSync(journal, [JSON.stringify(unanchored), ...rest].join("\n"));
+    selected = readers();
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /because the scope is uncertain \(the activation base is unknown: its activation recorded no checkpoint\)\.$/u,
+    );
+    writeFileSync(journal, activated);
+
+    // A machinery conflict the executor resolved at integration is the
+    // order's change, even where the resolution kept main's bytes.
+    write(
+      f.orderRoot,
+      "scripts/lib/fixture-shared.mjs",
+      "export const shared = 'order';\n",
+    );
+    write(
+      f.main,
+      "scripts/lib/fixture-shared.mjs",
+      "export const shared = 'main';\n",
+    );
+    commitMain("Main changes the shared file");
+    integration = integrate();
+    assert.equal(
+      integration.status,
+      1,
+      integration.stdout + integration.stderr,
+    );
+    assert.match(
+      integration.stdout,
+      /Authored conflicts: 'scripts\/lib\/fixture-shared\.mjs'/u,
+    );
+    write(
+      f.orderRoot,
+      "scripts/lib/fixture-shared.mjs",
+      "export const shared = 'main';\n",
+    );
+    git(f.orderRoot, "add", "scripts/lib/fixture-shared.mjs");
+    integration = integrate("--continue");
+    assert.equal(
+      integration.status,
+      0,
+      integration.stdout + integration.stderr,
+    );
+    assert.equal(git(f.orderRoot, "diff", "HEAD", "--", "scripts/lib"), "");
+    selected = readers({ helper: integration.stdout });
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /because a machinery conflict was resolved at integration \(scripts\/lib\/fixture-shared\.mjs\)\.$/u,
+    );
+
+    // A later integration replaces the receipt and keeps that resolution.
+    write(f.main, "records/product/later-note.md", "# Later note\n");
+    commitMain("Main takes a document");
+    integration = integrate();
+    assert.equal(
+      integration.status,
+      0,
+      integration.stdout + integration.stderr,
+    );
+    assert.deepEqual(
+      readers({ helper: integration.stdout }),
+      selected,
+      "an earlier resolution stays the order's",
+    );
   }));

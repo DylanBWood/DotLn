@@ -6882,11 +6882,18 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // capture sentence, re-pins them over WO-255's.
   // WO-257's planner sentence (no pass takes a newer starter unless the
   // operator asks in that session) pins the role trees over WO-255's repair.
-  const current = "wo257-role-baseline.json";
+  // The closeout sentences that name the closeout selection, in the executor,
+  // the reviewer and the target clause the execution roles share (WO-243),
+  // pin them over WO-257's.
+  const current = "wo243-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo255-repair-role-baseline.json");
-  const repair = JSON.parse(
+  assert.equal(baseline.historicalBaseline, "wo257-role-baseline.json");
+  const noUpdate = JSON.parse(
     readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(noUpdate.historicalBaseline, "wo255-repair-role-baseline.json");
+  const repair = JSON.parse(
+    readFileSync(join(fixtures, noUpdate.historicalBaseline), "utf8"),
   );
   assert.equal(repair.historicalBaseline, "wo255-role-baseline.json");
   const options = JSON.parse(
@@ -7077,7 +7084,9 @@ test("WO-145 optional economy support preserves historical snapshots through the
       );
       const completeRunStep = file.contents
         .split("\n")
-        .find((line) => /^\d+\. Start one complete run,/.test(line));
+        .find((line) =>
+          /^\d+\. Run the checks the closeout selection names,/.test(line),
+        );
       assert.match(
         completeRunStep,
         /on failure finish.*repair and its write-backs.*format.*review ladder and finish it before starting a fresh complete run/,

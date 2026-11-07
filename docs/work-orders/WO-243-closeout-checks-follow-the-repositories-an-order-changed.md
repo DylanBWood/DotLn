@@ -1,4 +1,4 @@
-# WO-243 — Closeout checks follow the repositories an order changed: one scope selection, read by the executor's closeout, the integrate helper's affected-check list and completion's advisory, so a target-only order runs its registered target gate and the document gate, a change that touches launchpad machinery still pays the complete run, and an adopted kit merge alone demands no second one (version assigned at activation)
+# WO-243 — Closeout checks follow the repositories an order changed: one scope selection, read by the executor's closeout, the integrate helper's affected-check list and completion's advisory, so a target-only order runs its registered target gate and the document gate, a change that touches launchpad machinery still pays the complete run, and an adopted kit merge alone demands no second one (v0.120.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
