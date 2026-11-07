@@ -707,3 +707,44 @@ operator's words into committed records, and every instance keeps carrying
 two hosts it never elected.
 
 ## Validation
+
+`npm run work-orders -- index --check` passes with one criteria advisory,
+WO-244's criterion 3 (`git log`), which stands as the 2026-11-01 pass left
+it; neither new order draws one. `node scripts/docs-check.mjs`: 0 failures
+(340 standing, 5,529 record and 16 generated documents; 0 standing without
+a reader binding; the 110 operator-word advisories are the historical
+baseline's, one of them this pass's own map paragraph that names the
+operator's items by their digest). `npm run test:docs` ran three times:
+before the receipt the `generated` preflight was stale (the lineage index
+and the software-engineer table of contents after the ledger's registration
+heading), repaired by `npm run sync` and committed; then 25 tasks passed
+and the two plan tasks failed on the one fact they should, the pass heading
+with no receipt; after the receipt, 27 passed, 0 failed, 0 h 2 min.
+
+Refutation: `npm run plan -- refute` printed the canonical prompt over the
+committed subject at `3f9345e7` (132,427 bytes: the standard, the goal
+review, WO-258 and WO-259 for judgment, the sequence and the cost table;
+nine carried identities). One `dotln-worker` launch (claude-opus-5-5 at
+xhigh, the Claude default; 0 h 11 min, 160,711 tokens by the host's
+notification) returned `aligned-with-findings` for both orders, no hold
+and nineteen known issues (ten on WO-258, nine on WO-259), and one re-task
+of the same worker (0 h 1 min) replaced the private scratch path in its
+statement with the `<tmp>/` placeholder without rerolling the judgment.
+The receipt helper refused twice before it filed, both as designed: the
+result and statement must be contained regular files of the repository
+(they were copied into the ignored local lane), and a statement may carry
+no private absolute path. Filed as
+[receipt 065](../refutations/2026-11-07-planning-ef4a1d095e4cd775-065.md)
+at commit `1253f5fc`: dispatch to file 0 h 17 min; judged, committed and
+workspace subjects equal (`0b9c7162…`); the Rules recorded block's two
+entries checked against the journal row; the known issues carried on the
+two catalog rows with the planner's readings (commit `8b372a8b`). Workers
+by `harness usage`: launched 1 (claude), re-tasked 1, cap 20, remaining
+18, exact observed count; the plan stated in §Process cost held except for
+the one re-task, a formatting repair.
+
+Usage at exit (19:36:50Z, before the publish): 20,800,219 total tokens
+(20,127,272 cached input, 472,483 cache write, 198,590 output, 1,874
+input; source `claude-transcript-message-usage`, scope dispatch, cost
+unknown). Published with `node scripts/refute-plan.mjs publish`; the pull
+request is named below once opened.
