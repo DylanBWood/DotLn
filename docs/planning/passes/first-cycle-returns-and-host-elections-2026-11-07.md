@@ -746,5 +746,6 @@ the one re-task, a formatting repair.
 Usage at exit (19:36:50Z, before the publish): 20,800,219 total tokens
 (20,127,272 cached input, 472,483 cache write, 198,590 output, 1,874
 input; source `claude-transcript-message-usage`, scope dispatch, cost
-unknown). Published with `node scripts/refute-plan.mjs publish`; the pull
-request is named below once opened.
+unknown). Published with `node scripts/refute-plan.mjs publish` at commit `2f9e3404`:
+pull request [#282](https://github.com/DylanBWood/DotLn/pull/282), which the
+operator merges; the pass never merges.
