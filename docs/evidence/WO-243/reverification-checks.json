@@ -1,0 +1,603 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "verification": "VER-002",
+  "recordedAt": "2026-11-07T17:05:15.850262+00:00",
+  "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+  "source": "This independent verifier dispatch; complete product row and unchanged paired-control records carried at the same code identity.",
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-243/census-check.mjs",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T16:59:05.626Z",
+      "finishedAt": "2026-11-07T16:59:06.218Z",
+      "durationMs": 592,
+      "droppedOutputBytes": 0,
+      "observations": []
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-243/census-check.mjs --census D006",
+      "expectedExitCode": 1,
+      "exitCode": 1,
+      "executed": true,
+      "startedAt": "2026-11-07T16:59:13.104Z",
+      "finishedAt": "2026-11-07T16:59:13.648Z",
+      "durationMs": 544,
+      "droppedOutputBytes": 0,
+      "observations": []
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-243/reverification-census.mjs",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:03:41.905Z",
+      "finishedAt": "2026-11-07T17:03:42.465Z",
+      "durationMs": 560,
+      "droppedOutputBytes": 0,
+      "observations": []
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-243/verification-probes.mjs",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:00:05.967Z",
+      "finishedAt": "2026-11-07T17:00:10.083Z",
+      "durationMs": 4116,
+      "droppedOutputBytes": 0,
+      "observations": []
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'closeout checks follow the repositories' scripts/test-target-worktree-start.mjs",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:00:31.135Z",
+      "finishedAt": "2026-11-07T17:00:48.655Z",
+      "durationMs": 17519,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "✔ closeout checks follow the repositories a target order changed, and its briefing, the integrate helper and completion name the same checks (17387.955375ms)",
+        "ℹ tests 1",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'target briefings name a missing repository throughout dispatch' scripts/test-target-worktree-start.mjs",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:01:07.522Z",
+      "finishedAt": "2026-11-07T17:01:20.512Z",
+      "durationMs": 12990,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "✔ target briefings name a missing repository throughout dispatch and print launchpad commands that resolve from the target worktree (12856.246167ms)",
+        "ℹ tests 1",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'the affected line names the machinery suites' scripts/test-worktree-integration.mjs",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:02:00.279Z",
+      "finishedAt": "2026-11-07T17:02:00.596Z",
+      "durationMs": 317,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "✔ the affected line names the machinery suites main's merge touched, including package code, and not the order's own edits (164.177167ms)",
+        "ℹ tests 1",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T16:59:37.100Z",
+      "finishedAt": "2026-11-07T16:59:47.273Z",
+      "durationMs": 10172,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "All matched files use Prettier code style!"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:02:40.126Z",
+      "finishedAt": "2026-11-07T17:02:40.441Z",
+      "durationMs": 315,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "harness check: 43 generated surfaces; local-terms list: present"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/authority-evidence.mjs --check",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:02:40.642Z",
+      "finishedAt": "2026-11-07T17:02:41.446Z",
+      "durationMs": 804,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer, WO-165 serial-route and WO-238 fifth-lens migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 46 bundle comparisons (including additions and removals)."
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/check-role-oracle.mjs",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:02:41.646Z",
+      "finishedAt": "2026-11-07T17:02:42.126Z",
+      "durationMs": 480,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "Role oracle passed: WO-145 optional economy support preserves historical snapshots through the current release-close role and changes only executor instructions on"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T17:02:42.330Z",
+      "finishedAt": "2026-11-07T17:02:42.862Z",
+      "durationMs": 532,
+      "droppedOutputBytes": 0,
+      "observations": [
+        "PASS index coverage: 256/256 product headings indexed",
+        "PASS dual-voice links: 3 identical claim links per voice",
+        "CURRENT everyday-ai-user-toc.md: 29 linked source sections match",
+        "CURRENT software-engineer-toc.md: 45 linked source sections match",
+        "PASS publication bootstrap checks"
+      ]
+    }
+  ],
+  "censusArms": [
+    {
+      "census": "D006",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "counts": {
+        "files": 404,
+        "readerKeys": 57,
+        "readerSites": 100,
+        "ancestrySites": 30,
+        "failures": 20
+      },
+      "result": "fail",
+      "exitCode": 1
+    },
+    {
+      "census": "D006+D017",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "counts": {
+        "files": 404,
+        "readerKeys": 57,
+        "readerSites": 100,
+        "ancestrySites": 30,
+        "failures": 0
+      },
+      "result": "pass",
+      "exitCode": 0
+    }
+  ],
+  "behaviorChecks": [
+    {
+      "name": "plain target gate and launchpad document gate",
+      "result": "pass"
+    },
+    {
+      "name": "nondefault product document root",
+      "result": "pass"
+    },
+    {
+      "name": "own evidence program remains a record",
+      "result": "pass"
+    },
+    {
+      "name": "gate budget record is machinery",
+      "result": "pass"
+    },
+    {
+      "name": "edition selection is machinery",
+      "result": "pass"
+    },
+    {
+      "name": "minted evidence is machinery",
+      "result": "pass"
+    },
+    {
+      "name": "another order's program is unclassifiable",
+      "result": "pass"
+    },
+    {
+      "name": "non-document under product root is unclassifiable",
+      "result": "pass"
+    },
+    {
+      "name": "root Markdown is a document",
+      "result": "pass"
+    },
+    {
+      "name": "unknown root text file is conservative",
+      "result": "pass"
+    },
+    {
+      "name": "untracked machinery is not hidden",
+      "result": "pass"
+    },
+    {
+      "name": "staged deletion of tracked machinery",
+      "result": "pass"
+    },
+    {
+      "name": "rename cannot disguise a deleted machinery source",
+      "result": "pass"
+    },
+    {
+      "name": "named complete criterion overrides document-only paths",
+      "result": "pass"
+    },
+    {
+      "name": "missing order retains qualified target and launchpad commands",
+      "result": "pass"
+    },
+    {
+      "name": "malformed local registration is conservative",
+      "result": "pass"
+    },
+    {
+      "name": "foreign and pending integration receipts retain the complete run",
+      "result": "pass"
+    },
+    {
+      "name": "missing, erroneous and empty suite declarations are conservative",
+      "result": "pass"
+    },
+    {
+      "name": "selection supplies no passing gate row",
+      "result": "pass"
+    }
+  ],
+  "consumedProductEvidence": {
+    "advisories": [],
+    "productGate": {
+      "evidenceRefs": [
+        "host-gate:67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "bd786c1d79ca50e369f8b40d21ca7a0b2b91bc5f",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "durationMs": 2410617,
+      "evidenceRef": "host-gate:67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc:npm test",
+      "recordedAt": "2026-11-07T09:04:58.237Z",
+      "executed": true,
+      "exitCode": 0
+    }
+  },
+  "completeRow": {
+    "checkId": "npm test",
+    "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+    "recordedAt": "2026-11-07T09:04:58.237Z",
+    "exitCode": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ]
+  },
+  "coldStart": {
+    "measurements": {
+      ".claude": {
+        "floorBytes": 7380,
+        "executorSkillBytes": 37183,
+        "totalBytes": 44563
+      },
+      ".agents": {
+        "floorBytes": 7380,
+        "executorSkillBytes": 37183,
+        "totalBytes": 44563
+      }
+    },
+    "operatingCeiling": 29246,
+    "latestAcceptance": {
+      "date": "2026-11-06",
+      "metric": "coldStartBytes.executor",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 51226,
+      "reason": "WO-242 measures installed floor plus elected executor at 47130 UTF-8 bytes (off 44358), above the previous effective acceptance 40194. Preserve the plan-first approval, conversation and screening duties and accept measured bytes plus 4096 under product 07’s standing route. Reassess when another reviewed duty needs more. Decision: docs/evidence/WO-242/decisions.md#wo-242-d009."
+    }
+  },
+  "whitespace": {
+    "command": "git diff --check",
+    "exitCode": 0
+  },
+  "suppressionReview": {
+    "command": "git diff --unified=0 -- scripts packages",
+    "newSuppressions": []
+  },
+  "dependencyReview": {
+    "source": "git diff -- package-lock.json packages/console/package.json packages/skeleton/package.json",
+    "newDependencies": false,
+    "changes": "Only the skeleton workspace version and the console dependency pin move from 0.87.0 to 0.87.1."
+  },
+  "carriedEvidence": {
+    "source": "VER-001; repair checkpoint comparison /7 to /9",
+    "unchangedProductAndDependencyPaths": true,
+    "unchangedControlsAndStandingWritebacks": true,
+    "pairedControl": "docs/evidence/WO-243/verification-controls.json",
+    "controlExitCodes": {
+      "base": 1,
+      "candidate": 0
+    }
+  },
+  "processCorrections": [
+    {
+      "cause": "Oversized source/status read output was truncated.",
+      "disposition": "Re-read required sections separately or selected fields from full captured data; no truncated output establishes a criterion."
+    },
+    {
+      "cause": "The first census-log JSON decoder rejected the bounded wrapper prefix.",
+      "disposition": "Decoded the schemaVersion JSON object separately from wrapper metadata; both original process exit codes and dropped-output counts were preserved."
+    },
+    {
+      "cause": "The unredirected npm run meta report also exceeded the output budget.",
+      "disposition": "Read meta.mjs to establish its behavior, captured the full subsequent meta --check output in scratch, and selected only exit and bounded-result fields; the read-only check exited 0."
+    },
+    {
+      "cause": "The evidence --wait completion prints the complete gate row, whose direct tool emission exceeded the output budget.",
+      "disposition": "Read the full canonical row through readGateChecks and selected the verdict fields without nested case logs; exit 0 with all required suites executed. The complete row is retained in session scratch. No gate was repeated."
+    },
+    {
+      "cause": "The first result transition refused the unfiled actor header because a projected accountLabel default was included as a stored actor field.",
+      "disposition": "Checked parseActor, requireReportActor and projectActor; removed the extra field, validated the exact five-field header, regenerated the index and reran the document gate for the changed report."
+    }
+  ],
+  "usage": {
+    "entry": {
+      "totalTokens": 49971,
+      "observedAt": "2026-11-07T16:58:02.812Z"
+    },
+    "handoffPreparation": {
+      "totalTokens": 3563109,
+      "cachedInputTokens": 3434112,
+      "observedAt": "2026-11-07T17:03:42.630Z"
+    },
+    "source": "codex-transcript-counter",
+    "scope": "dispatch",
+    "costUsd": null,
+    "workerUses": 0,
+    "workerCap": 20
+  },
+  "limits": [
+    "The census check groups sites by function and pattern; future additions inside an existing key still require review.",
+    "No new complete product gate; its passing current-identity row is consumed.",
+    "The unchanged paired baseline control is carried from VER-001 rather than rebuilt again.",
+    "The final document gate runs after the final authored edit; the lifecycle result consumes its passing row."
+  ],
+  "metadataCheck": {
+    "command": "node scripts/harness.mjs bounded -- node scripts/meta.mjs --check",
+    "exitCode": 0,
+    "executed": true,
+    "startedAt": "2026-11-07T17:07:22.412Z",
+    "finishedAt": "2026-11-07T17:07:29.616Z",
+    "durationMs": 7204,
+    "droppedOutputBytes": 0,
+    "output": "Full metadata report retained in session scratch; current generated records passed their check."
+  },
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "treeHash": "abc4fc9f9bd894b06e58a08c6214738a90966ac2",
+    "documentTreeHash": "edd3f10c1ed435bfb3624dea9d3a8cd50f14feef",
+    "documentTreeExcludes": "docs/evidence/WO-243",
+    "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+    "durationMs": 123626,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc:npm run test:docs",
+    "recordedAt": "2026-11-07T17:15:04.978Z",
+    "gateSelection": "document",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 27,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "license-surfaces",
+      "resume-docs",
+      "launchpad-docs",
+      "docs-check",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ],
+    "unrunSuites": [],
+    "stale": []
+  },
+  "documentGates": [
+    {
+      "checkId": "npm run test:docs",
+      "treeHash": "6d48412350a39a8b0961c7a3affe97bfc4b7420c",
+      "documentTreeHash": "f68c3b66ba0e7dd8e785ef07df4a21b5d0d48c71",
+      "documentTreeExcludes": "docs/evidence/WO-243",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "durationMs": 125780,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc:npm run test:docs",
+      "recordedAt": "2026-11-07T17:10:11.282Z",
+      "gateSelection": "document",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 27,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "license-surfaces",
+        "resume-docs",
+        "launchpad-docs",
+        "docs-check",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "harness-context",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "plan",
+        "reader-profiles",
+        "reader-fixtures",
+        "entropy"
+      ],
+      "unrunSuites": [],
+      "stale": []
+    },
+    {
+      "checkId": "npm run test:docs",
+      "treeHash": "abc4fc9f9bd894b06e58a08c6214738a90966ac2",
+      "documentTreeHash": "edd3f10c1ed435bfb3624dea9d3a8cd50f14feef",
+      "documentTreeExcludes": "docs/evidence/WO-243",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "durationMs": 123626,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc:npm run test:docs",
+      "recordedAt": "2026-11-07T17:15:04.978Z",
+      "gateSelection": "document",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 27,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "license-surfaces",
+        "resume-docs",
+        "launchpad-docs",
+        "docs-check",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "harness-context",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "plan",
+        "reader-profiles",
+        "reader-fixtures",
+        "entropy"
+      ],
+      "unrunSuites": [],
+      "stale": []
+    }
+  ],
+  "completionAttempts": [
+    {
+      "action": "verification-result pass",
+      "exitCode": 1,
+      "recorded": false,
+      "cause": "Extra accountLabel field in the unfiled report actor; actual completion flags supplied no label.",
+      "canonicalStateAfter": "verifying; VER-002; no verdict",
+      "correction": "Removed the display-only field from the unfiled report; corrected actor exactly equals the five supplied completion flags.",
+      "decision": "WO-243-D021"
+    }
+  ],
+  "correctedActor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.167.0",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "source": "codex-session-readback"
+  }
+}

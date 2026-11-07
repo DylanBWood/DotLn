@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "recordedAt": "2026-11-07T14:35:07.198116+00:00",
+  "source": "verifier tool exits and displayed diagnostics",
+  "observations": [
+    {
+      "action": "npm run meta",
+      "observation": "Its large historical summary exceeded the display limit. No verdict claim consumes the truncated historical remainder.",
+      "disposition": "Validate generated output through node scripts/meta.mjs --check with full output redirected to ignored session scratch; exit 0."
+    },
+    {
+      "action": "actor helper discovery",
+      "observation": "An unquoted scripts/lib/actor* token was rejected by zsh before that rg invocation ran.",
+      "disposition": "Use rg --files scripts/lib followed by a quoted actor filter; read scripts/lib/control-actor.mjs and the exact resume actor parser."
+    },
+    {
+      "action": "metadata output readback",
+      "observation": "The generated decisions index is validated from its source by the passing metadata check. Historical summary output is not a test or acceptance result.",
+      "disposition": "Keep subsequent unbounded producer output in scratch and emit selected fields only."
+    }
+  ]
+}

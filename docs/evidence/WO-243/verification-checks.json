@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "recordedAt": "2026-11-07T14:30:51.608742+00:00",
+  "source": "verifier bounded process results; full logs retained in ignored session scratch",
+  "checks": [
+    {
+      "name": "format-check",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:19:31.855Z",
+      "finishedAt": "2026-11-07T14:19:42.535Z",
+      "durationMs": 10680,
+      "summary": [
+        "All matched files use Prettier code style!"
+      ]
+    },
+    {
+      "name": "closeout-matrix",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:20:01.491Z",
+      "finishedAt": "2026-11-07T14:20:16.655Z",
+      "durationMs": 15164,
+      "summary": [
+        "\u2714 closeout checks follow the repositories a target order changed, and its briefing, the integrate helper and completion name the same checks (15040.622667ms)",
+        "\u2139 pass 1",
+        "\u2139 fail 0"
+      ]
+    },
+    {
+      "name": "briefing-readers",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:27:02.406Z",
+      "finishedAt": "2026-11-07T14:27:14.961Z",
+      "durationMs": 12555,
+      "summary": [
+        "\u2714 target briefings name a missing repository throughout dispatch and print launchpad commands that resolve from the target worktree (12428.949ms)",
+        "\u2139 pass 1",
+        "\u2139 fail 0"
+      ]
+    },
+    {
+      "name": "merge-readers",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:27:44.819Z",
+      "finishedAt": "2026-11-07T14:27:50.357Z",
+      "durationMs": 5538,
+      "summary": [
+        "\u2714 WO-169 a first invocation with no authored conflict generates at once (5045.701208ms)",
+        "\u2714 the affected line names the machinery suites main's merge touched, including package code, and not the order's own edits (147.192792ms)",
+        "\u2139 pass 2",
+        "\u2139 fail 0"
+      ]
+    },
+    {
+      "name": "publication-check",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:29:02.487Z",
+      "finishedAt": "2026-11-07T14:29:02.944Z",
+      "durationMs": 457,
+      "summary": [
+        "PASS publication bootstrap checks"
+      ]
+    },
+    {
+      "name": "harness-check",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:29:17.173Z",
+      "finishedAt": "2026-11-07T14:29:17.497Z",
+      "durationMs": 323,
+      "summary": [
+        "harness check: 43 generated surfaces; local-terms list: present"
+      ]
+    },
+    {
+      "name": "authority-check",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:29:17.686Z",
+      "finishedAt": "2026-11-07T14:29:18.443Z",
+      "durationMs": 757,
+      "summary": [
+        "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer, WO-165 serial-route and WO-238 fifth-lens migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 46 bundle comparisons (including additions and removals)."
+      ]
+    },
+    {
+      "name": "role-oracle-check",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-11-07T14:29:18.634Z",
+      "finishedAt": "2026-11-07T14:29:19.099Z",
+      "durationMs": 465,
+      "summary": [
+        "Role oracle passed: WO-145 optional economy support preserves historical snapshots through the current release-close role and changes only executor instructions on"
+      ]
+    }
+  ],
+  "whitespace": {
+    "command": "git diff --check",
+    "exitCode": 0
+  },
+  "suppressionReview": "No added eslint-disable, @ts-ignore, @ts-nocheck or istanbul ignore directive in the source/installed-guidance diff.",
+  "dependencyReview": "Manifest and lockfile diff changes only skeleton workspace version 0.87.0 to 0.87.1 and the console workspace pin; no dependency added."
+}

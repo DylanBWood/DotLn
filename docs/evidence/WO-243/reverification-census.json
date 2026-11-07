@@ -1,0 +1,701 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "criterion": "3",
+  "recordedAt": "2026-11-07T17:03:42.298Z",
+  "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+  "result": "pass",
+  "checks": {
+    "missingReaderAndCallersNamed": true,
+    "repairRows": 8,
+    "originalCensusUnchanged": true,
+    "originalReportUnchanged": true,
+    "productRepairDiff": [],
+    "activationBase": "e4fe2dae25a76b5be3d60a95f987e4726845d3cd",
+    "selectionBase": "e4fe2dae25a76b5be3d60a95f987e4726845d3cd",
+    "followupBase": "e4fe2dae25a76b5be3d60a95f987e4726845d3cd"
+  },
+  "independentSweep": {
+    "scope": "runtime scripts/ and packages/; tests, fixtures, dist and installed dependencies excluded",
+    "files": 404,
+    "matchedLines": 135,
+    "disposition": "Manually reviewed with D006 and D017; event timing/position, main's tip, target bases, ancestry predicates and command allowlists add no omitted comparison-base reader.",
+    "sites": [
+      {
+        "file": "packages/console/src/actors.ts",
+        "line": 616,
+        "text": "  \"WorkOrderActivated\","
+      },
+      {
+        "file": "packages/console/src/actors.ts",
+        "line": 636,
+        "text": "    if (event[\"type\"] === \"WorkOrderActivated\")"
+      },
+      {
+        "file": "packages/skeleton/src/change-review-protocol.ts",
+        "line": 33,
+        "text": "  \"git merge-base\","
+      },
+      {
+        "file": "packages/skeleton/src/harness-host.ts",
+        "line": 548,
+        "text": "          ? \"WorkOrderActivated\""
+      },
+      {
+        "file": "packages/skeleton/src/source-change-command.ts",
+        "line": 260,
+        "text": "    [...HOST_GIT, \"merge-base\", \"--is-ancestor\", value.baseCommit, \"HEAD\"],"
+      },
+      {
+        "file": "packages/skeleton/src/source-change-host.ts",
+        "line": 179,
+        "text": "        \"merge-base\","
+      },
+      {
+        "file": "packages/skeleton/src/source-change-worktree.ts",
+        "line": 422,
+        "text": "    this.git(\"merge-base\", \"--is-ancestor\", requested.baseCommit, head);"
+      },
+      {
+        "file": "packages/skeleton/src/verification-worktree.ts",
+        "line": 269,
+        "text": "    \"merge-base\","
+      },
+      {
+        "file": "scripts/docs-check.mjs",
+        "line": 1453,
+        "text": "    base = runGit(root, [\"merge-base\", \"HEAD\", FRONT_PAGE_BASE]);"
+      },
+      {
+        "file": "scripts/harness-live-smoke.mjs",
+        "line": 140,
+        "text": "    event(\"WorkOrderActivated\", {"
+      },
+      {
+        "file": "scripts/launchpad.mjs",
+        "line": 2192,
+        "text": "      const left = runGit(root, [\"merge-base\", \"main\", \"HEAD\"], {"
+      },
+      {
+        "file": "scripts/lib/checkpoint.mjs",
+        "line": 42,
+        "text": "  const checkpointRef = `${prefix}${Math.max(0, ...used) + 1}`;"
+      },
+      {
+        "file": "scripts/lib/checkpoint.mjs",
+        "line": 44,
+        "text": "  const checkpointSha = runGit(root, ["
+      },
+      {
+        "file": "scripts/lib/checkpoint.mjs",
+        "line": 53,
+        "text": "  runGit(root, [\"update-ref\", checkpointRef, checkpointSha, \"\"]);"
+      },
+      {
+        "file": "scripts/lib/checkpoint.mjs",
+        "line": 54,
+        "text": "  return { checkpointSha, checkpointRef };"
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 147,
+        "text": "  runGit(root, [\"merge-base\", \"--is-ancestor\", older, newer], {"
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 150,
+        "text": "      throw new Error(`git merge-base --is-ancestor ${older} ${newer} failed`);"
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 157,
+        "text": "  docRelative(root, \"control\", \"local/integration.json\");"
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 160,
+        "text": "  const file = join(root, integrationReceiptPath(root));"
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 183,
+        "text": "      (event) => event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 185,
+        "text": "    if (!activation?.checkpointSha)"
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 193,
+        "text": "        `${activation.checkpointSha}^1^{commit}`,"
+      },
+      {
+        "file": "scripts/lib/closeout-scope.mjs",
+        "line": 198,
+        "text": "            `its activation checkpoint ${activation.checkpointSha} is unreadable`,"
+      },
+      {
+        "file": "scripts/lib/contributions.mjs",
+        "line": 14,
+        "text": "  const commits = runGit(root, [\"rev-list\", \"--reverse\", `${base}..HEAD`])"
+      },
+      {
+        "file": "scripts/lib/control-actor.mjs",
+        "line": 53,
+        "text": "    if (event.type === \"WorkOrderActivated\")"
+      },
+      {
+        "file": "scripts/lib/control-store.mjs",
+        "line": 170,
+        "text": "    (event) => event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 20,
+        "text": "  [\"WorkOrderActivated\", \"implementation\"],"
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 45,
+        "text": "    if (event.type === \"WorkOrderActivated\")"
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 113,
+        "text": "    (event) => event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 141,
+        "text": "    if (source === \"unknown\" && event.checkpointRef !== undefined) {"
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 142,
+        "text": "      const ref = event.checkpointRef;"
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 176,
+        "text": "        event.checkpointSha !== undefined &&"
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 177,
+        "text": "        event.checkpointSha !== recovered.sha"
+      },
+      {
+        "file": "scripts/lib/control-time.mjs",
+        "line": 197,
+        "text": "      checkpointRefs: \"These local checkpoint refs remain unpushed.\","
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 62,
+        "text": "    (event) => event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 88,
+        "text": "  \"checkpointRef\","
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 89,
+        "text": "  \"checkpointSha\","
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 319,
+        "text": "  latestCheckpointSha: undefined,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 320,
+        "text": "  latestCheckpointRef: undefined,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 375,
+        "text": "      case \"WorkOrderActivated\":"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 425,
+        "text": "          latestCheckpointSha: undefined,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 426,
+        "text": "          latestCheckpointRef: undefined,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 897,
+        "text": "      typeof event.checkpointSha === \"string\" &&"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 898,
+        "text": "      typeof event.checkpointRef === \"string\""
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 901,
+        "text": "        latestCheckpointSha: event.checkpointSha,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 902,
+        "text": "        latestCheckpointRef: event.checkpointRef,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 907,
+        "text": "        latestCheckpointSha: undefined,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 908,
+        "text": "        latestCheckpointRef: undefined,"
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 929,
+        "text": "      event.type === \"WorkOrderActivated\""
+      },
+      {
+        "file": "scripts/lib/control.mjs",
+        "line": 1010,
+        "text": "        ![\"WorkOrderActivated\", \"WorkOrderIdentityAllocated\"].includes("
+      },
+      {
+        "file": "scripts/lib/copilot-qualification.mjs",
+        "line": 280,
+        "text": "      type: \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/dispatch-bound.mjs",
+        "line": 56,
+        "text": "    (event) => event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/dispatch-bound.mjs",
+        "line": 325,
+        "text": "      event.type === \"WorkOrderActivated\" ||"
+      },
+      {
+        "file": "scripts/lib/document-failures.mjs",
+        "line": 42,
+        "text": "      : runGit(repo, [\"merge-base\", \"HEAD\", \"main\"], baseGitOptions);"
+      },
+      {
+        "file": "scripts/lib/document-kinds.mjs",
+        "line": 737,
+        "text": "  runGit(root, [\"merge-base\", \"--is-ancestor\", older, newer], {"
+      },
+      {
+        "file": "scripts/lib/drive-route.mjs",
+        "line": 70,
+        "text": "    (row) => row.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/drive-route.mjs",
+        "line": 210,
+        "text": "  spawnGit([\"merge-base\", \"--is-ancestor\", branch, base], {"
+      },
+      {
+        "file": "scripts/lib/drive-route.mjs",
+        "line": 253,
+        "text": "        row.type === \"WorkOrderActivated\" &&"
+      },
+      {
+        "file": "scripts/lib/drive-route.mjs",
+        "line": 347,
+        "text": "      (row) => row.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/git.mjs",
+        "line": 276,
+        "text": "    [\"-C\", root, \"rev-parse\", \"--verify\", `${branch}@{upstream}`],"
+      },
+      {
+        "file": "scripts/lib/harness-prune.mjs",
+        "line": 872,
+        "text": "        docRelative(tree.worktree, \"control\", \"local/integration.json\"),"
+      },
+      {
+        "file": "scripts/lib/plan-first-fixture.mjs",
+        "line": 100,
+        "text": "    type: \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/plan-subject.mjs",
+        "line": 590,
+        "text": "        \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/planning-followups.mjs",
+        "line": 796,
+        "text": "  const base = runGit(root, [\"merge-base\", \"HEAD\", ...refs]);"
+      },
+      {
+        "file": "scripts/lib/release-preparation.mjs",
+        "line": 59,
+        "text": "  if (typeof receipt?.checkpointRef !== \"string\" || !receipt.checkpointRef)"
+      },
+      {
+        "file": "scripts/lib/release-preparation.mjs",
+        "line": 66,
+        "text": "    ).includes(`<!-- integration ${receipt.checkpointRef} -->`);"
+      },
+      {
+        "file": "scripts/lib/release-records.mjs",
+        "line": 103,
+        "text": "  const baseCommit = runGit(root, [\"merge-base\", revision, \"origin/main\"]);"
+      },
+      {
+        "file": "scripts/lib/review-worker.mjs",
+        "line": 236,
+        "text": "    (event) => event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/lib/review-worker.mjs",
+        "line": 610,
+        "text": "        since: runGit(root, [\"merge-base\", \"HEAD\", \"main\"]).trim(),"
+      },
+      {
+        "file": "scripts/lib/starter-refresh.mjs",
+        "line": 61,
+        "text": "  git(root, [\"merge-base\", \"--is-ancestor\", before, after], {"
+      },
+      {
+        "file": "scripts/lib/starter-seeds.mjs",
+        "line": 162,
+        "text": "      git(main, [\"merge-base\", \"--is-ancestor\", manifest.commit, head], {"
+      },
+      {
+        "file": "scripts/lib/target-base.mjs",
+        "line": 4,
+        "text": "    ? read([\"merge-base\", subjectCommit, baseTip], {"
+      },
+      {
+        "file": "scripts/lib/target-base.mjs",
+        "line": 10,
+        "text": "    read([\"merge-base\", \"--is-ancestor\", activationBase, mergeBase], {"
+      },
+      {
+        "file": "scripts/lib/target-planning.mjs",
+        "line": 256,
+        "text": "      \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/target-publish.mjs",
+        "line": 440,
+        "text": "      \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/target-publish.mjs",
+        "line": 782,
+        "text": "      \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/target-publish.mjs",
+        "line": 841,
+        "text": "    read([\"merge-base\", \"--is-ancestor\", activationBase, subjectCommit], {"
+      },
+      {
+        "file": "scripts/lib/target-worktree-close.mjs",
+        "line": 1140,
+        "text": "        \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/target-worktree-close.mjs",
+        "line": 1240,
+        "text": "            \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/target-worktrees.mjs",
+        "line": 518,
+        "text": "        \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 369,
+        "text": "  const marker = `<!-- integration ${receipt.checkpointRef} -->`;"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 393,
+        "text": "      receipt.checkpointRef,"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 415,
+        "text": "Fetched main: \\`${receipt.upstream}\\`. Checkpoint: \\`${receipt.checkpointRef}\\`."
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 465,
+        "text": "        `<!-- integration ${receipt.checkpointRef} -->`,"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 639,
+        "text": "  const receiptPath = receiptFile(root);"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 710,
+        "text": "    gitResult(root, [\"merge-base\", \"--is-ancestor\", upstream, \"HEAD\"])"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 795,
+        "text": "            `stash push failed; nothing was stashed and ${continuation ? \"the pending receipt still resumes with --continue\" : \"no pending receipt remains\"}; checkpoint ${receipt.checkpointRef} retained: ${failureOf(stashed, \"git stash push failed\")}`,"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 803,
+        "text": "          `stash push stored ${created} and then failed; nothing was merged; checkpoint ${receipt.checkpointRef} retained: ${failureOf(stashed, \"git stash push failed\")}; run ${recovery()}`,"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 817,
+        "text": "        \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 880,
+        "text": "          \"merge-base\","
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 926,
+        "text": "    runGit(root, [\"merge-base\", before, upstream]);"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 943,
+        "text": "      checkpoint.checkpointSha,"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 949,
+        "text": "      preservationCommit: checkpoint.checkpointSha,"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 980,
+        "text": "    console.log(`Checkpoint: ${receipt.checkpointRef}`);"
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "line": 988,
+        "text": "      gitResult(root, [\"merge-base\", \"--is-ancestor\", receipt.upstream, \"HEAD\"])"
+      },
+      {
+        "file": "scripts/refute-plan.mjs",
+        "line": 118,
+        "text": "  \"integration.json\","
+      },
+      {
+        "file": "scripts/release.mjs",
+        "line": 1502,
+        "text": "        event.type === \"WorkOrderActivated\" &&"
+      },
+      {
+        "file": "scripts/release.mjs",
+        "line": 1601,
+        "text": "            event.type === \"WorkOrderActivated\" &&"
+      },
+      {
+        "file": "scripts/release.mjs",
+        "line": 2305,
+        "text": "      \"merge-base\","
+      },
+      {
+        "file": "scripts/release.mjs",
+        "line": 3394,
+        "text": "      \"merge-base\","
+      },
+      {
+        "file": "scripts/release.mjs",
+        "line": 3620,
+        "text": "      \"merge-base\","
+      },
+      {
+        "file": "scripts/release.mjs",
+        "line": 3734,
+        "text": "        \"merge-base\","
+      },
+      {
+        "file": "scripts/release.mjs",
+        "line": 4641,
+        "text": "            docPath(toolRoot, \"control\", \"local\", \"integration.json\"),"
+      },
+      {
+        "file": "scripts/resident-bind.mjs",
+        "line": 349,
+        "text": "      baseCommit: runGit(worktree, [\"merge-base\", branch, ref]),"
+      },
+      {
+        "file": "scripts/resident-bind.mjs",
+        "line": 351,
+        "text": "      baseSource: \"merge-base\","
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 905,
+        "text": "${planFirstView(repoRoot, state) ? `- Plan first: ${JSON.stringify(planFirstView(repoRoot, state))}\\n` : \"\"}${renderElapsed(timing.elapsed)}- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \\`git checkout ${state.latestCheckpointRef} -- .\\`)` : state.checkpointUnavailable ? \"unavailable for the latest transition; do not use an older checkpoint\" : \"none\"}"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 1003,
+        "text": "    latestCheckpoint: state.latestCheckpointRef"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 1005,
+        "text": "          sha: state.latestCheckpointSha,"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 1006,
+        "text": "          ref: state.latestCheckpointRef,"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 1007,
+        "text": "          restoreCommand: `git checkout ${state.latestCheckpointRef} -- .`,"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 1822,
+        "text": "        type: \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2519,
+        "text": "          event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2764,
+        "text": "        (event) => own(event) && event.type === \"WorkOrderActivated\","
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2824,
+        "text": "        if (!/^[0-9a-f]{40,64}$/u.test(subject.checkpointSha ?? \"\"))"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2850,
+        "text": "        const judged = gateCodeIdentity(repoRoot, subject.checkpointSha);"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2853,
+        "text": "            `correct refused: ${fields.productGate} records code identity ${row.codeIdentity}, but ordinal ${ordinal} judged ${judged} (checkpoint ${subject.checkpointRef ?? subject.checkpointSha}); a bound gate must have run on the bytes the pass recorded`,"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2944,
+        "text": "        fields.checkpointRef !== undefined &&"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2948,
+        "text": "        ).test(fields.checkpointRef)"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2951,
+        "text": "          `correct refused: ${fields.checkpointRef} is not a ${state.workOrderId} checkpoint reference`,"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2954,
+        "text": "        fields.checkpointSha !== undefined &&"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2955,
+        "text": "        !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(fields.checkpointSha)"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2958,
+        "text": "          `correct refused: ${fields.checkpointSha} is not a commit id`,"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2961,
+        "text": "        fields.checkpointRef !== undefined ||"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2962,
+        "text": "        fields.checkpointSha !== undefined"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2964,
+        "text": "        const ref = fields.checkpointRef ?? effective(\"checkpointRef\");"
+      },
+      {
+        "file": "scripts/resume.mjs",
+        "line": 2965,
+        "text": "        const sha = fields.checkpointSha ?? effective(\"checkpointSha\");"
+      },
+      {
+        "file": "scripts/test-runner.mjs",
+        "line": 1020,
+        "text": "  let mergeBase = spawnGit([\"merge-base\", head ?? \"HEAD\", base], {"
+      },
+      {
+        "file": "scripts/test-runner.mjs",
+        "line": 1025,
+        "text": "    mergeBase = spawnGit([\"merge-base\", head ?? \"HEAD\", \"main\"], {"
+      },
+      {
+        "file": "scripts/work-orders.mjs",
+        "line": 579,
+        "text": "              \"merge-base\","
+      },
+      {
+        "file": "scripts/worktree.mjs",
+        "line": 988,
+        "text": "    launchpadBase,"
+      },
+      {
+        "file": "scripts/worktree.mjs",
+        "line": 1005,
+        "text": "      runGit(directory, [\"merge-base\", \"--is-ancestor\", base, \"HEAD\"]);"
+      },
+      {
+        "file": "scripts/worktree.mjs",
+        "line": 1035,
+        "text": "    ensureWorktree(mainPath, launchpad, launchpadBase);"
+      },
+      {
+        "file": "scripts/worktree.mjs",
+        "line": 1491,
+        "text": "        launchpadBase: runGit(mainPath, [\"rev-parse\", \"origin/main\"]),"
+      },
+      {
+        "file": "scripts/worktree.mjs",
+        "line": 1706,
+        "text": "          \"origin/main...HEAD\","
+      },
+      {
+        "file": "scripts/worktree.mjs",
+        "line": 1875,
+        "text": "      \"merge-base\","
+      }
+    ]
+  }
+}
