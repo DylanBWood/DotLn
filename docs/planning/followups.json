@@ -4238,6 +4238,27 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "696fb5a836dd014c02b951e15e958cde763bedcdf389ed25e1e51b8cc3682a10",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "721b6197d2cc0b4967d2ed2218a29dcaa232a0d58e788d6196223ff7454e24f3",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "864fc189d906701bcb235e43d88711f2aa0908e9d10cad332b745eecb7567f89",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -54569,6 +54590,14 @@
           "reopenWhen": "A planning pass allocates the row, or a third order's complete run fails on a hand-written inventory of files, modules or cases that its consistency review did not trace.",
           "targets": [],
           "at": "2026-11-06T20:24:01.000Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-242-D031 (FINAL-001): its condition occurred a third time. WO-242's fifth complete run passed and its first document gate then failed on the hand-written inventory of the kit guide's headings in scripts/test-launchpad-export.mjs, which the order's two consistency reviews and its export repair did not trace (WO-242-D025); the row still waits for a planning pass to allocate the third Traced consumers row.",
+          "reopenWhen": "A planning pass allocates the row, or a fourth order's complete or document gate fails on a hand-written inventory of files, modules, cases or headings that its consistency review did not trace.",
+          "targets": [],
+          "at": "2026-11-07T05:15:41.961Z"
         }
       ]
     },
@@ -55237,6 +55266,96 @@
           "ref": "docs/evidence/WO-257/decisions.md#wo-257-d046--verification-boards-a-phase-check-for-the-launchpad-publish-form-the-new-allow-rule-admits",
           "title": "WO-257-D046: Make node scripts/worktree.mjs publish WO-NNN --title --body-file refuse unless the order's committed control record shows a passing final review, as the final target form does, so the…",
           "summary": "{ \"id\": \"WO-257-D046\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Record as a follow-up, not a blocking finding, that Bash(node scripts/worktree.mjs publish *) also admits the launchpad's own form, node scripts/worktree.mjs publish WO-NNN --title <title> --body-file <path>, which pushes the order branch and opens a pull request, and which the host prompted for on main. That form reads no phase: it requires a clean order worktree, the committed release surfaces, the body's shape, no attribution and the committed record's criterion lines, but not a committed passing final review, which the final target form requires. The emitted rule is criterion 17's exact text, its brea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a0dee25c3caec351",
+      "key": "decision:docs/evidence/WO-242/decisions.md#wo-242-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "386e8293395e029caa74cb054a22f79a15cb7b6ebecddc78f2eb4eae91153a49",
+          "ref": "docs/evidence/WO-242/decisions.md#wo-242-d015",
+          "title": "WO-242-D015: Give failed plan-first candidate setup a finite recovery lifetime when clone, checkout or record creation fails before the local candidate record is saved; retain partial files and test…",
+          "summary": "{ \"id\": \"WO-242-D015\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: next; second design review disposition\", \"decision\": \"Preserve unsuccessful draft setup for recovery and board the unrecorded pinned-root cleanup path as a focused follow-up.\", \"evidence\": [ \"docs/control/local/reviews/WO-242/round-2-design.md\", \"scripts/lib/plan-first.mjs draftPlanCandidate and releasePlanCandidates\" ], \"rejected\": [ \"Expanding the final review round with a maintenance-only change.\", \"Deleting partially prepared candidates on failure without recovery evidence.\" ], \"followup\": \"Give failed plan-first candidate setup a finite recovery lifetime when clone, checkout or record creation fails before the local candi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-82ea384c08d3135a",
+      "key": "decision:docs/evidence/WO-242/decisions.md#wo-242-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9d8d1c25e077c170c0fb931784094c6f2df90c5e4fb7584f8087327debfc177b",
+          "ref": "docs/evidence/WO-242/decisions.md#wo-242-d026--verification-boards-the-approval-an-integrate-first-fast-forward-clears",
+          "title": "WO-242-D026: Keep a plan-first approval across a clean integration after application: when the order worktree moves only by an integration that leaves the approved diff applied and touches none of…",
+          "summary": "{ \"id\": \"WO-242-D026\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Record as a follow-up, not a blocking finding, that the executor's own integrate-first duty clears an approval the operator gave. After PlanApproved and application, a fast-forward of main into the order worktree that touches no candidate path moves HEAD, so planFirstView reports changed [\\\"base commit\\\"], the approval reads null, the hook refuses implementation writes again, implementation-ready is refused with DOTLN_PLAN_FIRST_REFUSED and the drive stops at awaiting-plan-approval. The route the refusal names, draft --new, clones the new HEAD without the applied working-tree change, so the renewed candid",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1c2f009b880027e6",
+      "key": "decision:docs/evidence/WO-242/decisions.md#wo-242-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "98f10767fb1ba316418ed7816b9fcf54a5d627871db6d72dbcee8bee9606eb17",
+          "ref": "docs/evidence/WO-242/decisions.md#wo-242-d027--verification-boards-the-router-roles-stop-list-that-omits-the-plan-approval-stop",
+          "title": "WO-242-D027: Name awaiting-plan-approval in the router role's stop list beside awaiting-close, stating that the operator answers and resumes the executor before driving again; test F2 of…",
+          "summary": "{ \"id\": \"WO-242-D027\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Record as a follow-up that the router role text, with the election on or off, enumerates its stops (awaiting-merge, operator-finding, off-ramp, typed-correction, analysis, operator-override, dispatch-refused, the failure counts and budget-exhausted) and later names awaiting-close, but never names awaiting-plan-approval, the reason routeOrder now returns after PlanProposed. The drive itself stops correctly and its next text tells the operator what to do, so criterion 7's fixture holds; the role text is the only surface that lags. Planning receipt 064's criterion 7 known issue reopens when the stop after Pl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5041854090e212ca",
+      "key": "decision:docs/evidence/WO-242/decisions.md#wo-242-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "709906485d077a9f64fec93c07ab7279669cfae3f1f521843cd6fa970cd6dbb8",
+          "ref": "docs/evidence/WO-242/decisions.md#wo-242-d028--verification-boards-canonical-status-failing-for-every-order-when-one-elected-target-order-lacks-its-registration",
+          "title": "WO-242-D028: Make planFirstView report an unavailable plan-first state for an order whose plan-first context cannot be resolved, so canonical status answers for every order while that order's hook…",
+          "summary": "{ \"id\": \"WO-242-D028\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Record as a low-severity follow-up that, with plan-first elected, an active target order whose target-worktree registration is absent makes npm run resume -- status --json exit 1 for all orders with plan-first requires the order's registered target worktree, because legalActions and the projections call planFirstView, which calls planFirstContext and throws. The same fixture with the election off answers with exit 0. The input is constructed (the verifier removed the ignored local registry), so it is a follow-up by rule; status is every role's entry point, so it should degrade to a named unavailable plan-",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-93417dc6ef8f8a5a",
+      "key": "decision:docs/evidence/WO-242/decisions.md#wo-242-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "09f395295b501b1f566c661db6edb797db658ed9a99bf920e49867c9bd29e7a4",
+          "ref": "docs/evidence/WO-242/decisions.md#wo-242-d029--verification-boards-the-untested-plan-first-refusal-at-the-source-change-apply-boundary",
+          "title": "WO-242-D029: Add a SourceChangeHost fixture with plan-first elected that refuses the apply before a proposal and while one awaits, admits it after approval of the current proposal, and leaves the…",
+          "summary": "{ \"id\": \"WO-242-D029\", \"date\": \"2026-11-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Record as a test-coverage follow-up that SourceChangeHost's new plan-first refusal before importCandidate has no fixture. The Design names it as one of the in-process helper boundaries that hold on every host, but no test under packages/skeleton/test or scripts names plan-first beside SourceChangeHost, and the first consistency review recorded that no test or live-hook probe was run for it. Criterion 3's helper clause is met by the plan-first candidate's own apply helper and implementation-ready, which are tested; the source-change route is a second apply path whose refusal is read from source only.\", \"ev",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2975f260666e8b04",
+      "key": "decision:docs/evidence/WO-242/decisions.md#wo-242-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d49b4eb52dcc6ae05c4e018626f5e21d7e5e8cffa0ee73f4f2f3b350bae28dab",
+          "ref": "docs/evidence/WO-242/decisions.md#wo-242-d032--final-review-boards-the-hooks-election-reader-that-disagrees-with-the-lifecycles-on-a-malformed-election",
+          "title": "WO-242-D032: Make the hook's plan-first election reader refuse exactly what the lifecycle's readFeatures refuses, by reading the election through the same election rule or by throwing on any value…",
+          "summary": "{ \"id\": \"WO-242-D032\", \"date\": \"2026-11-07\", \"dispatch\": \"resume: final review\", \"decision\": \"Record as a follow-up that the hook's election reader, planFirstElected in packages/skeleton/src/plan-first-boundary.ts, reads dotln.config.json itself and accepts true or an object with a truthy on, while the lifecycle's readFeatures in scripts/lib/features.mjs reads the same key through the registry's election rule and refuses anything else as an invalid configuration. A malformed election the lifecycle refuses (\\\"on\\\", \\\"true\\\" or 1) reads as not elected in the hook, so the hook makes no plan-first judgment and admits an executor's source writes while every lifecycle command refuses the configura",
           "missing": false
         }
       ],
