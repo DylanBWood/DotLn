@@ -111,6 +111,15 @@ export function routeOrder(state, events = [], facts = {}) {
       state.workOrderId ?? "WO-NNN",
       facts.awaitingClose,
     );
+  if (
+    state.phase === "active" &&
+    state.planFirst?.proposedAt &&
+    !state.planFirst.approvedAt
+  )
+    return stopped(
+      "awaiting-plan-approval",
+      "Read the plan, proposal and conversation; answer in the terminal or conversation.md. Resume the executor to record approval of the current proposal, then drive again.",
+    );
   // A repair bound limits the repairs still to come, so an order carried past
   // one, by hand or otherwise, finishes normally.
   const repairPending = ["needs-fix", "repairing"].includes(state.phase);
@@ -185,9 +194,11 @@ const finishedPhases = {
   "final-review": ["closed", "needs-fix"],
 };
 export const attemptFinished = (action, after) =>
-  action === "release-close"
-    ? after.route.stop?.reason === "released"
-    : Boolean(finishedPhases[action]?.includes(after.phase));
+  action === "next" && after.route?.stop?.reason === "awaiting-plan-approval"
+    ? true
+    : action === "release-close"
+      ? after.route.stop?.reason === "released"
+      : Boolean(finishedPhases[action]?.includes(after.phase));
 
 export const driveRecordPath = (root, id) =>
   docPath(root, "control", "local/drives", `${id}.json`);

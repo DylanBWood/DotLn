@@ -56,3 +56,5 @@ export function executorEntryBriefing(
   }
   return lines.length ? `\nExecutor entry duties:\n${lines.join("\n")}` : "";
 }
+
+export { requirePlanApproval } from "./plan-first.mjs";

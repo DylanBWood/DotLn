@@ -12,12 +12,14 @@ later orders add a row there with its consumer and behavioral test. The
 edit, render and check the choices.
 
 The named `features` elections are Tinkerer economy (on by default),
-private-destination and desktop-control (off), and plan-first (off, reserved
-for WO-242). Private-destination admits only an exported instance owner's
+private-destination, desktop-control and plan-first (off). Private-destination admits only an exported instance owner's
 ordinary project links and identifiers inside that instance. Credentials
 remain excluded and publication screens still judge outward artifacts.
 Desktop control still requires an explicit operator request in the session.
-Plan-first has no effect until its consumer lands. Future-consumer declarations
+Plan-first asks the executor to present its plan and complete proposed diff,
+then wait for approval before applying the change. Its lifecycle and host
+boundaries read the election; the [kit guide](../KIT.md#plan-first-mode) explains
+the conversation and approval steps. Future-consumer declarations
 travel with the registry; copied and installed runtimes do not need core's
 work-order archive. A local record showing that a consumer closed without a
 registry update produces a planning advisory.

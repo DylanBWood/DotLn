@@ -8,6 +8,14 @@ import path from "node:path";
 import { runGit } from "./lib/git.mjs";
 
 const root = findLaunchpad();
+const { checkPublicPlanConversations } =
+  await import("./lib/plan-first-screen.mjs");
+try {
+  checkPublicPlanConversations(root);
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
+}
 const productDirectory = docPath(root, "product");
 const indexPath = docPath(root, "publication", "audience-status-index.md");
 const baseOutlinePath = docPath(root, "publication", "base-outline.md");

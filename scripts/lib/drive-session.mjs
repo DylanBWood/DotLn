@@ -290,6 +290,7 @@ export async function driveLoop({
     }
     const after = await status();
     record.factsAt = after.route.eventCount ?? record.factsAt;
+    // A proposed plan is an intentional completed turn, not a failed attempt.
     if (!attemptFinished(route.action, after))
       record.incomplete[route.action] =
         (record.incomplete[route.action] ?? 0) + 1;

@@ -1,0 +1,37 @@
+{
+  "method": "harnessInstallation role UTF-8 bytes plus installed CLAUDE.md",
+  "rows": [
+    {
+      "on": false,
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "bytes": 44358,
+      "configuredCeiling": 29246,
+      "effectiveAcceptance": 51226,
+      "verdict": "accepted"
+    },
+    {
+      "on": false,
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "bytes": 44358,
+      "configuredCeiling": 29246,
+      "effectiveAcceptance": 51226,
+      "verdict": "accepted"
+    },
+    {
+      "on": true,
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "bytes": 47593,
+      "configuredCeiling": 29246,
+      "effectiveAcceptance": 51226,
+      "verdict": "accepted"
+    },
+    {
+      "on": true,
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "bytes": 47593,
+      "configuredCeiling": 29246,
+      "effectiveAcceptance": 51226,
+      "verdict": "accepted"
+    }
+  ]
+}

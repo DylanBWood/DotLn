@@ -811,3 +811,20 @@ test("Codex root continuation ignores subagent events, unobserved turns, and cor
     assert.equal(result.decision, undefined);
     assert.match(result.systemMessage, /unavailable/);
   }));
+
+test("plan-first awaiting approval is an intentional Codex turn boundary after compaction", async () =>
+  fixture(async ({ state, writeState, hook, compact }) => {
+    state.task.planFirst = {
+      proposedAt: "2026-11-06T00:00:00.000Z",
+      approvedAt: null,
+    };
+    writeState();
+    assert.deepEqual(await compact(), {});
+    assert.deepEqual(await hook("Stop", { stop_hook_active: false }), {});
+    state.task.planFirst.approvedAt = "2026-11-06T01:00:00.000Z";
+    writeState();
+    assert.match(
+      (await compact()).hookSpecificOutput.additionalContext,
+      /ImplementationReady/,
+    );
+  }));

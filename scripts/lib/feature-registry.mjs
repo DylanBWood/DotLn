@@ -20,9 +20,9 @@ export const featureRegistry = Object.freeze([
     "plan-first",
     "instance",
     false,
-    "Reserves a plan and operator conversation before implementation; pending its consumer.",
+    "Requires a reviewed plan, persistent conversation and complete candidate diff before implementation.",
     "features.plan-first",
-    "WO-242",
+    "packages/skeleton/src/harness-host.ts",
   ),
   row(
     "private-destination",

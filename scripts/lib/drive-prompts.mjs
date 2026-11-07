@@ -45,6 +45,21 @@ export const targetLaneForms = Object.freeze([
   })),
   { script: "harness", args: ["evidence", "--wait"], roles: PHASE_ROLES },
   { script: "harness", args: ["writer", "--show"], roles: PHASE_ROLES },
+  ...["draft", "diff", "apply", "screen"].map((action) => ({
+    script: "plan-first",
+    args: [action, "WO-NNN"],
+    roles: ["executor"],
+  })),
+  {
+    script: "plan-first",
+    args: ["draft", "WO-NNN", "--new"],
+    roles: ["executor"],
+  },
+  ...["terms", "outward-lint"].map((script) => ({
+    script,
+    args: ["--plan-first", "WO-NNN"],
+    roles: PHASE_ROLES,
+  })),
 ]);
 const listed = (items) =>
   items.length > 1

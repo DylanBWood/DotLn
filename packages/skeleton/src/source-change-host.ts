@@ -1,3 +1,4 @@
+import { planFirstBoundary } from "./plan-first-boundary.js";
 import {
   commandId,
   decodeLog,
@@ -810,6 +811,11 @@ export class SourceChangeHost {
       testBefore,
       testAfter,
     };
+    const plan = planFirstBoundary(
+      this.options.launchpadCheckout,
+      this.options.workOrder.workOrderId,
+    );
+    if (plan.refusal) return this.refuse(plan.refusal);
     check("import");
     const imported = await interruptibleHostCall(this.options.signal, () =>
       this.tree.importCandidate(effect.commit),

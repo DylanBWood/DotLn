@@ -7,7 +7,7 @@ Scope describes ownership: core rows describe core's release surfaces; instance 
 | Feature | Scope | Default | Effective value | Source | What it does | Election key | Read by | Note |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | tinkerer-economy | instance | true | true | default | Equips the executor to compare two credible approaches when a useful fork appears. | features.tinkerer-economy | scripts/lib/harness.mjs |  |
-| plan-first | instance | false | false | default | Reserves a plan and operator conversation before implementation; pending its consumer. | features.plan-first | WO-242 |  |
+| plan-first | instance | false | false | default | Requires a reviewed plan, persistent conversation and complete candidate diff before implementation. | features.plan-first | packages/skeleton/src/harness-host.ts |  |
 | private-destination | instance | false | false | default | Admits the owner's ordinary project links and identifiers inside an exported instance; credentials and outward publication screens stay protected. | features.private-destination | scripts/lib/harness.mjs |  |
 | desktop-control | instance | false | false | default | Permits desktop and operator-browser tools only with the operator's explicit request in the session. | features.desktop-control | packages/skeleton/src/harness-host.ts |  |
 | kit-instance-actions | instance | false | false | default | Allows a kit update to apply its declared instance actions. | kit.applyInstanceActions | scripts/launchpad.mjs |  |

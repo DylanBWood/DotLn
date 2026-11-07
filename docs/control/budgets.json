@@ -252,6 +252,14 @@
       "dispatch": "executor",
       "ceiling": 39600,
       "reason": "WO-192's router, target-order and per-spawner duties raise reviewer from 33944 to 35504 bytes on the integrated tree, above the effective 34596. Under product 07's standing route preserve these reviewed duties and accept measured bytes plus 4096; reassess on the next addition. Decision: docs/evidence/WO-192/decisions.md#wo-192-d088."
+    },
+    {
+      "date": "2026-11-06",
+      "metric": "coldStartBytes.executor",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 51226,
+      "reason": "WO-242 measures installed floor plus elected executor at 47130 UTF-8 bytes (off 44358), above the previous effective acceptance 40194. Preserve the plan-first approval, conversation and screening duties and accept measured bytes plus 4096 under product 07’s standing route. Reassess when another reviewed duty needs more. Decision: docs/evidence/WO-242/decisions.md#wo-242-d009."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",

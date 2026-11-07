@@ -1,3 +1,4 @@
+import { planFirstBoundary, planFirstElected } from "./plan-first-boundary.js";
 import { createRequire } from "node:module";
 import {
   DispatchJournalError,
@@ -709,6 +710,10 @@ interface ControlView {
   readonly workOrderPath: string | null;
   readonly phase: string;
   readonly latestVerdict: string | null;
+  readonly planFirst?: {
+    readonly proposedAt: string | null;
+    readonly approvedAt: string | null;
+  };
   readonly legalNextActions?: readonly string[];
   readonly latestVerification?: string | null;
   readonly finalReview?: string | null;
@@ -5036,6 +5041,24 @@ export function harnessFeedbackFacts(
   // WO-158: a withdrawal ends the order's completion and evidence duties; the
   // session still reads what it wrote.
   if (control.phase === "withdrawn" && handler !== "output-review") return [];
+  if (
+    session.role === "executor" &&
+    control.phase === "active" &&
+    control.planFirst?.proposedAt &&
+    !control.planFirst.approvedAt
+  ) {
+    if (handler === "complete-scope")
+      return [
+        {
+          kind: "complete-scope",
+          required: ["PlanProposed"],
+          completed: ["PlanProposed"],
+          remaining: [],
+          status: "completed",
+        },
+      ];
+    if (handler === "application-evidence") return [];
+  }
   if (handler === "complete-scope") {
     const events = localEvents(root, control.workOrder).slice(
       session.startingEventCount,
@@ -5844,6 +5867,49 @@ function recordedOrderRoots(root: string, order: string | undefined): string[] {
   return roots;
 }
 
+function planFirstWriteResponse(
+  config: HookConfig,
+  input: HarnessInput,
+  root: string,
+  actor?: { role?: string; workOrder?: string },
+): Record<string, unknown> | null {
+  if (input.hook_event_name !== "PreToolUse") return null;
+  const session =
+    actor ?? readJson(statePath(root, input), initialSession(), true);
+  if (session.role !== "executor") return null;
+  try {
+    if (!planFirstElected(root)) return null;
+    const known = knownWriteDestinations(input, root, config.tools, {
+      directory: input.cwd,
+    });
+    if (!known) return null;
+    let boundary: ReturnType<typeof planFirstBoundary> | undefined;
+    let roots: string[] | undefined;
+    for (const destination of known.destinations) {
+      // Reads, opaque effects and null discards never need approval state.
+      boundary ??= planFirstBoundary(root, session.workOrder);
+      if (!boundary.refusal) return null;
+      roots ??= [
+        boundary.directory && dirname(boundary.directory),
+        boundary.evidenceDirectory,
+        boundary.intakeDirectory,
+        boundary.candidate,
+        harnessSessionScratch(input.session_id),
+      ]
+        .filter((path): path is string => Boolean(path))
+        .map((path) => prospectiveRealpath(path));
+      if (!roots.some((allowed) => withinRoot(allowed, destination.physical)))
+        return protocolRefusal(config.event, boundary.refusal);
+    }
+  } catch {
+    return protocolRefusal(
+      config.event,
+      "DOTLN_PLAN_FIRST_REFUSED: approval state unavailable; read conversation.md and restore the current proposal before npm run resume -- plan-approved.",
+    );
+  }
+  return null;
+}
+
 function outsideWriteResponse(
   config: HookConfig,
   input: HarnessInput,
@@ -6294,6 +6360,11 @@ export async function evaluateHarnessHook(
     }
     return protocolRefusal(config.event, ghRepository.refusal);
   }
+  const planFirst =
+    config.kind === "permission"
+      ? planFirstWriteResponse(config, input, root)
+      : null;
+  if (planFirst) return planFirst;
   let outside: Record<string, unknown> | null = null;
   let outsideEffect: string | undefined;
   try {
@@ -8156,16 +8227,39 @@ export async function runTargetHarnessHook(
                 outsideWriteGrants: [orderGrant],
               });
             }
+            const planActor =
+              driven ??
+              readJson(statePath(root, input), initialSession(), true);
+            const planLaunchpad = driven?.root ?? launchpad;
+            const planRefusal = planFirstWriteResponse(
+              config,
+              input,
+              planLaunchpad,
+              planActor,
+            );
+            if (planRefusal) return planRefusal;
+            const planCandidate =
+              planActor.role === "executor"
+                ? planFirstBoundary(planLaunchpad, planActor.workOrder)
+                    .candidate
+                : undefined;
             const filePath = input.tool_input?.file_path;
             // A target phase's one outside write beyond its pair is its own
             // session scratch; a helper may use that and nothing else.
             const scratchWrite =
               Boolean(driven) &&
               typeof filePath === "string" &&
-              withinRoot(
+              (withinRoot(
                 prospectiveRealpath(harnessSessionScratch(input.session_id)),
                 prospectiveRealpath(resolve(root, filePath)),
-              );
+              ) ||
+                Boolean(
+                  planCandidate &&
+                  withinRoot(
+                    prospectiveRealpath(planCandidate),
+                    prospectiveRealpath(resolve(root, filePath)),
+                  ),
+                ));
             const outsideEffect = scratchWrite
               ? "outside.write:session-scratch"
               : typeof filePath === "string" &&
@@ -8224,7 +8318,12 @@ export async function runTargetHarnessHook(
             };
             if (tool === "write" && !scratchWrite) reservePairedWriter();
             const protect = (candidate: string) =>
-              protectTargetWrite(input, root, orderRoots, candidate);
+              protectTargetWrite(
+                input,
+                root,
+                [...orderRoots, ...(planCandidate ? [planCandidate] : [])],
+                candidate,
+              );
             if (tool === "write") {
               const path = args.file_path ?? args.notebook_path;
               if (typeof path !== "string")

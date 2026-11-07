@@ -11,7 +11,7 @@
   "drive": { "sandbox": "host" },
   "features": {
     "tinkerer-economy": { "on": true, "note": "Compare approaches when a useful fork appears." },
-    "plan-first": false,
+    "plan-first": { "on": false, "note": "Prepare a plan and complete candidate diff, then await operator approval before implementation." },
     "private-destination": false,
     "desktop-control": false
   }

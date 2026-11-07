@@ -1203,3 +1203,17 @@ export const rootPattern = (root, key) =>
 /** The absolute path of a configured root, or of a file under it. */
 export const docPath = (root, key, ...segments) =>
   join(root, docRelative(root, key, ...segments));
+
+/** The evidence convention follows an order into its registered target. */
+export const planFirstDirectory = (root, workOrderId, target) => {
+  if (!/^WO-\d{3}$/.test(workOrderId))
+    throw new Error("invalid plan-first order");
+  if (!target) return docPath(root, "evidence", workOrderId, "plan-first");
+  const repository = loadConfig(root).repositories[target.repositoryId];
+  if (!repository)
+    throw new Error("plan-first target repository is not declared");
+  return join(
+    target.target,
+    targetDocRelative(repository, "evidence", workOrderId, "plan-first"),
+  );
+};

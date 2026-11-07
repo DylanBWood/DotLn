@@ -108,7 +108,28 @@ export function checkOutwardArtifact(
 if (isMainModule(import.meta.url)) {
   const [kind, ...extra] = process.argv.slice(2);
   const target = extra[0] === "--target";
-  if (!outwardArtifactKinds.includes(kind) || extra.length > (target ? 1 : 0)) {
+  if (kind === "--plan-first") {
+    try {
+      const { selectedPlanState } = await import("./lib/plan-first.mjs");
+      const { screenPlanFirst } = await import("./lib/plan-first-screen.mjs");
+      if (extra.length !== 1)
+        throw new Error("usage: outward-lint --plan-first WO-NNN");
+      const root = findLaunchpad();
+      const result = screenPlanFirst(
+        root,
+        selectedPlanState(root, extra[0]),
+        process.stdin.isTTY ? undefined : readFileSync(0, "utf8"),
+      );
+      console.log(JSON.stringify(result));
+      if (result.status === "refused") process.exitCode = 1;
+    } catch {
+      console.error("plan-first screen input unavailable");
+      process.exitCode = 3;
+    }
+  } else if (
+    !outwardArtifactKinds.includes(kind) ||
+    extra.length > (target ? 1 : 0)
+  ) {
     console.error(
       `usage: node scripts/outward-lint.mjs <${outwardArtifactKinds.join("|")}> [--target] < artifact`,
     );
