@@ -766,6 +766,24 @@ and binds the result to its current bytes. `npm run test:docs` separately
 checks the instance's coordination records. Each order still needs its
 declared evidence, including the first order's observed harness smoke.
 
+Which of these an order owes at its closeout is one selection, and every
+reader names the same checks: the executor's and reviewer's briefings end
+with it, as a target order's verifier's does, `npm run resume -- briefing`
+prints it again as the order stands, `worktree
+integrate` lists it as owed by the order apart from what main's merge
+affected, and completion records it as an advisory. A target order owes its
+target gate (`--review` when a criterion names a review form) and `npm run
+test:docs`. It owes the instance's `npm test -- --review` as well only where
+its instance changes reach what that run judges (a kit file, instance source
+or configuration, or a record the gates read as input), where it resolved
+such a conflict at integration, where a criterion names `npm test`, or where
+the selection cannot read or classify an input, whose reason it prints. An
+integration that only took in a kit update adds no run of its own. An order
+already active when the instance takes this kit release re-runs nothing: its
+next briefing or integration prints the selection from its current changes,
+and until then a target-only order runs its target gate and the document
+gate, since the integrate helper's affected list is no duty of its own.
+
 The observed selections in a fresh fixture instance are:
 
 - `npm test`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.

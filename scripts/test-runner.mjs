@@ -769,6 +769,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo255-role-baseline.json",
     "packages/skeleton/fixtures/wo255-repair-role-baseline.json",
     "packages/skeleton/fixtures/wo257-role-baseline.json",
+    "packages/skeleton/fixtures/wo243-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -1006,22 +1007,37 @@ function classifySuite(row) {
     sources: [...(row.sources ?? []), ...(machinerySources[row.name] ?? [])],
   };
 }
-export function changedMachinery(repo, table = suites, base = "origin/main") {
+export function changedMachinery(
+  repo,
+  table = suites,
+  base = "origin/main",
+  { head } = {},
+) {
   // A sibling advancing main changes neither this branch's code nor its
   // selection. Compare against the shared ancestor, retaining local dirt.
-  let mergeBase = spawnGit(["merge-base", "HEAD", base], {
+  // With `head`, compare that commit instead of the working tree: what one
+  // revision brought in, as an integration's merge of main.
+  let mergeBase = spawnGit(["merge-base", head ?? "HEAD", base], {
     cwd: repo,
     encoding: "utf8",
   });
   if (mergeBase.status !== 0 && base === "origin/main")
-    mergeBase = spawnGit(["merge-base", "HEAD", "main"], {
+    mergeBase = spawnGit(["merge-base", head ?? "HEAD", "main"], {
       cwd: repo,
       encoding: "utf8",
     });
   if (mergeBase.status !== 0) return table.filter((row) => row.machinery);
   base = mergeBase.stdout.trim();
   const run = spawnGit(
-    ["diff", "--no-renames", "--name-only", "-z", base, "--"],
+    [
+      "diff",
+      "--no-renames",
+      "--name-only",
+      "-z",
+      base,
+      ...(head ? [head] : []),
+      "--",
+    ],
     {
       cwd: repo,
       encoding: "utf8",
@@ -1030,10 +1046,12 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
   if (run.status !== 0) return table.filter((row) => row.machinery);
   // An order's work stays uncommitted until final review (WO-169 D007), so
   // the change includes its untracked files, which the diff omits (WO-173).
-  const untracked = spawnGit(
-    ["ls-files", "--others", "--exclude-standard", "-z"],
-    { cwd: repo, encoding: "utf8" },
-  );
+  const untracked = head
+    ? { status: 0, stdout: "" }
+    : spawnGit(["ls-files", "--others", "--exclude-standard", "-z"], {
+        cwd: repo,
+        encoding: "utf8",
+      });
   if (untracked.status !== 0) return table.filter((row) => row.machinery);
   const files = [
     ...new Set([...run.stdout.split("\0"), ...untracked.stdout.split("\0")]),
@@ -1054,9 +1072,16 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
       });
       if (before.status !== 0) return true;
       try {
+        const after = head
+          ? spawnGit(["show", `${head}:${file}`], {
+              cwd: repo,
+              encoding: "utf8",
+            })
+          : { status: 0, stdout: readFileSync(join(repo, file), "utf8") };
+        if (after.status !== 0) return true;
         return (
           evidenceSourceContent(file, before.stdout) !==
-          evidenceSourceContent(file, readFileSync(join(repo, file), "utf8"))
+          evidenceSourceContent(file, after.stdout)
         );
       } catch {
         return true;

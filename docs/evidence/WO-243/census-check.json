@@ -1,0 +1,784 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "criterion": "3",
+  "purpose": "The comparison-base census checked against the candidate tree: the control shows the readers and classes D006's table omits, the candidate that D006 with D017 names every reader and states every excluded class.",
+  "expected": {
+    "control": 1,
+    "candidate": 0
+  },
+  "arms": [
+    {
+      "arm": "control: the census as D006 left it",
+      "command": "node docs/evidence/WO-243/census-check.mjs --census D006",
+      "exitCode": 1,
+      "schemaVersion": 1,
+      "workOrder": "WO-243",
+      "criterion": "3",
+      "census": "D006",
+      "recordedAt": "2026-11-07T16:39:26.520Z",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "scope": "tracked and untracked .mjs, .cjs, .js, .ts and .sh files under scripts/ and packages/, without tests, fixtures, dist/ or node_modules/",
+      "counts": {
+        "files": 404,
+        "readerKeys": 57,
+        "readerSites": 100,
+        "ancestrySites": 30,
+        "failures": 20
+      },
+      "failures": [
+        {
+          "kind": "class-not-stated",
+          "key": "packages/skeleton/src/change-review-protocol.ts#CHANGE_REVIEW_SHELL#merge-base",
+          "lines": [
+            33
+          ],
+          "class": "allowlist"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/launchpad.mjs#publishUpdate#merge-base",
+          "lines": [
+            2192
+          ],
+          "row": "D017: scripts/launchpad.mjs `publishUpdate`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/closeout-scope.mjs#closeoutScope#call:closeoutScope",
+          "lines": [
+            275
+          ],
+          "row": "D017: scripts/lib/closeout-scope.mjs `closeoutScope`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/contributions.mjs#contributionSignoffRules#exclusive-range",
+          "lines": [
+            14
+          ],
+          "row": "D017: scripts/lib/contributions.mjs `contributionSignoffRules`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/executor-readiness.mjs#closeoutBriefing#call:closeoutScope",
+          "lines": [
+            19
+          ],
+          "row": "D017: scripts/lib/closeout-scope.mjs `closeoutScope` `closeoutBriefing`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/executor-readiness.mjs#closeoutCompletionAdvisory#call:closeoutScope",
+          "lines": [
+            26
+          ],
+          "row": "D017: scripts/lib/closeout-scope.mjs `closeoutScope` `closeoutCompletionAdvisory`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/lifecycle-evidence.mjs#requireLifecycleEvidence#call:changedAgainstMain",
+          "lines": [
+            161
+          ],
+          "row": "D017: scripts/lib/planning-followups.mjs `scripts/lib/lifecycle-evidence.mjs`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/planning-followups.mjs#changedAgainstMain#call:changedAgainstMain",
+          "lines": [
+            787
+          ],
+          "row": "D017: scripts/lib/planning-followups.mjs `changedAgainstMain`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/planning-followups.mjs#changedAgainstMain#merge-base",
+          "lines": [
+            796
+          ],
+          "row": "D017: scripts/lib/planning-followups.mjs `changedAgainstMain`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/worktree-integration.mjs#regenerate#checkpoint",
+          "lines": [
+            465
+          ],
+          "row": "D017: scripts/lib/worktree-integration.mjs `regenerate`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/lib/worktree-integration.mjs#owedChecks#call:closeoutScope",
+          "lines": [
+            576
+          ],
+          "row": "D017: scripts/lib/closeout-scope.mjs `closeoutScope` `owedChecks`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/refute-plan.mjs#main#call:changedAgainstMain",
+          "lines": [
+            288
+          ],
+          "row": "D017: scripts/lib/planning-followups.mjs `scripts/refute-plan.mjs`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/resident-bind.mjs#resolveBase#call:resolveBase",
+          "lines": [
+            338
+          ],
+          "row": "D017: scripts/resident-bind.mjs `resolveBase`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/resident-bind.mjs#resolveBase#merge-base",
+          "lines": [
+            349,
+            351
+          ],
+          "row": "D017: scripts/resident-bind.mjs `resolveBase`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/resident-bind.mjs#readBindingInputs#call:resolveBase",
+          "lines": [
+            378
+          ],
+          "row": "D017: scripts/resident-bind.mjs `readBindingInputs`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/resident-bind.mjs#observeBinding#call:resolveBase",
+          "lines": [
+            825
+          ],
+          "row": "D017: scripts/resident-bind.mjs `observeBinding`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/test-runner.mjs#runGateChecks#call:classifyDocumentFailures",
+          "lines": [
+            3898
+          ],
+          "row": "D017: scripts/lib/document-failures.mjs `scripts/test-runner.mjs`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/worktree.mjs#main#symmetric-range",
+          "lines": [
+            1706
+          ],
+          "row": "D017: scripts/worktree.mjs `origin/main...HEAD`"
+        },
+        {
+          "kind": "reader-not-named",
+          "key": "scripts/worktree.mjs#main#call:contributionSignoffRules",
+          "lines": [
+            1740
+          ],
+          "row": "D017: scripts/lib/contributions.mjs `scripts/worktree.mjs`"
+        },
+        {
+          "kind": "class-not-stated",
+          "class": "ancestry",
+          "sites": 30
+        }
+      ],
+      "result": "fail"
+    },
+    {
+      "arm": "candidate: D006 and D017",
+      "command": "node docs/evidence/WO-243/census-check.mjs",
+      "exitCode": 0,
+      "schemaVersion": 1,
+      "workOrder": "WO-243",
+      "criterion": "3",
+      "census": "D006+D017",
+      "recordedAt": "2026-11-07T16:39:27.068Z",
+      "codeIdentity": "67d6258cb8e3d0a9b99a1c18882f88edc576d8a449c7d2289949ea33c465ddbc",
+      "scope": "tracked and untracked .mjs, .cjs, .js, .ts and .sh files under scripts/ and packages/, without tests, fixtures, dist/ or node_modules/",
+      "counts": {
+        "files": 404,
+        "readerKeys": 57,
+        "readerSites": 100,
+        "ancestrySites": 30,
+        "failures": 0
+      },
+      "failures": [],
+      "keys": [
+        {
+          "key": "packages/skeleton/src/change-review-protocol.ts#CHANGE_REVIEW_SHELL#merge-base",
+          "lines": [
+            33
+          ],
+          "disposition": "excluded: allowlist",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/docs-check.mjs#frontPageFindings#call:frontPageFindings",
+          "lines": [
+            1448
+          ],
+          "disposition": "D006: scripts/docs-check.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/docs-check.mjs#frontPageFindings#merge-base",
+          "lines": [
+            1453
+          ],
+          "disposition": "D006: scripts/docs-check.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/docs-check.mjs#checkDocs#call:frontPageFindings",
+          "lines": [
+            1811
+          ],
+          "disposition": "D006: scripts/docs-check.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/launchpad.mjs#publishUpdate#merge-base",
+          "lines": [
+            2192
+          ],
+          "disposition": "D017: scripts/launchpad.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/checkpoint.mjs#createCheckpoint#checkpoint",
+          "lines": [
+            42,
+            44,
+            53,
+            54
+          ],
+          "disposition": "D006: scripts/lib/checkpoint.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/closeout-scope.mjs#integrationReceiptPath#receipt",
+          "lines": [
+            157
+          ],
+          "disposition": "D006: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/closeout-scope.mjs#readReceipt#receipt",
+          "lines": [
+            160
+          ],
+          "disposition": "D006: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/closeout-scope.mjs#closeoutChanges#call:closeoutChanges",
+          "lines": [
+            173
+          ],
+          "disposition": "D006: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/closeout-scope.mjs#closeoutChanges#checkpoint",
+          "lines": [
+            185,
+            193,
+            198
+          ],
+          "disposition": "D006: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/closeout-scope.mjs#closeoutScope#call:closeoutScope",
+          "lines": [
+            275
+          ],
+          "disposition": "D017: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/closeout-scope.mjs#select#call:closeoutChanges",
+          "lines": [
+            387
+          ],
+          "disposition": "D006: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/contributions.mjs#contributionSignoffRules#exclusive-range",
+          "lines": [
+            14
+          ],
+          "disposition": "D017: scripts/lib/contributions.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/control-time.mjs#recoverControlTimes#checkpoint",
+          "lines": [
+            141,
+            142,
+            176,
+            177,
+            197
+          ],
+          "disposition": "D006: scripts/lib/control-time.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/control.mjs#CORRECTABLE_FIELDS#checkpoint",
+          "lines": [
+            88,
+            89
+          ],
+          "disposition": "D006: scripts/lib/control.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/control.mjs#emptyState#checkpoint",
+          "lines": [
+            319,
+            320
+          ],
+          "disposition": "D006: scripts/lib/control.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/control.mjs#scanControl#checkpoint",
+          "lines": [
+            425,
+            426,
+            897,
+            898,
+            901,
+            902,
+            907,
+            908
+          ],
+          "disposition": "D006: scripts/lib/control.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/document-failures.mjs#classifyDocumentFailures#call:classifyDocumentFailures",
+          "lines": [
+            13
+          ],
+          "disposition": "D006: scripts/lib/document-failures.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/document-failures.mjs#classifyDocumentFailures#merge-base",
+          "lines": [
+            42
+          ],
+          "disposition": "D006: scripts/lib/document-failures.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/executor-readiness.mjs#closeoutBriefing#call:closeoutScope",
+          "lines": [
+            19
+          ],
+          "disposition": "D017: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/executor-readiness.mjs#closeoutCompletionAdvisory#call:closeoutScope",
+          "lines": [
+            26
+          ],
+          "disposition": "D017: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/harness-prune.mjs#judgeStash#receipt",
+          "lines": [
+            872
+          ],
+          "disposition": "D006: scripts/lib/harness-prune.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/lifecycle-evidence.mjs#requireLifecycleEvidence#call:changedAgainstMain",
+          "lines": [
+            161
+          ],
+          "disposition": "D017: scripts/lib/planning-followups.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/planning-followups.mjs#changedAgainstMain#call:changedAgainstMain",
+          "lines": [
+            787
+          ],
+          "disposition": "D017: scripts/lib/planning-followups.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/planning-followups.mjs#changedAgainstMain#merge-base",
+          "lines": [
+            796
+          ],
+          "disposition": "D017: scripts/lib/planning-followups.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/release-preparation.mjs#integrationPreparationRefusal#checkpoint",
+          "lines": [
+            59,
+            66
+          ],
+          "disposition": "D006: scripts/lib/release-preparation.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/release-records.mjs#reviewedLaunchpadIdentity#merge-base",
+          "lines": [
+            103
+          ],
+          "disposition": "D006: scripts/lib/release-records.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/review-worker.mjs#roundPlan#merge-base",
+          "lines": [
+            610
+          ],
+          "disposition": "D006: scripts/lib/review-worker.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/target-base.mjs#targetBase#merge-base",
+          "lines": [
+            4
+          ],
+          "disposition": "excluded: target",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#decisionStub#checkpoint",
+          "lines": [
+            369,
+            393,
+            415
+          ],
+          "disposition": "D006: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#regenerate#checkpoint",
+          "lines": [
+            465
+          ],
+          "disposition": "D017: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#mergedMachinery#call:mergedMachinery",
+          "lines": [
+            559
+          ],
+          "disposition": "D006: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#mergedMachinery#call:changedMachinery",
+          "lines": [
+            562
+          ],
+          "disposition": "D006: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#owedChecks#call:closeoutScope",
+          "lines": [
+            576
+          ],
+          "disposition": "D017: scripts/lib/closeout-scope.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#integrateOwnedWorktree#receipt",
+          "lines": [
+            639
+          ],
+          "disposition": "D006: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#integrateOwnedWorktree#checkpoint",
+          "lines": [
+            795,
+            803,
+            943,
+            949,
+            980
+          ],
+          "disposition": "D006: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#integrateOwnedWorktree#merge-base",
+          "lines": [
+            926
+          ],
+          "disposition": "D006: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/lib/worktree-integration.mjs#integrateOwnedWorktree#call:mergedMachinery",
+          "lines": [
+            1136
+          ],
+          "disposition": "D006: scripts/lib/worktree-integration.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/refute-plan.mjs#RESERVED_LANE_NAMES#receipt",
+          "lines": [
+            118
+          ],
+          "disposition": "D006: scripts/refute-plan.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/refute-plan.mjs#main#call:changedAgainstMain",
+          "lines": [
+            288
+          ],
+          "disposition": "D017: scripts/lib/planning-followups.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/release.mjs#main#receipt",
+          "lines": [
+            4641
+          ],
+          "disposition": "D006: scripts/release.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/resident-bind.mjs#resolveBase#call:resolveBase",
+          "lines": [
+            338
+          ],
+          "disposition": "D017: scripts/resident-bind.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/resident-bind.mjs#resolveBase#merge-base",
+          "lines": [
+            349,
+            351
+          ],
+          "disposition": "D017: scripts/resident-bind.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/resident-bind.mjs#readBindingInputs#call:resolveBase",
+          "lines": [
+            378
+          ],
+          "disposition": "D017: scripts/resident-bind.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/resident-bind.mjs#observeBinding#call:resolveBase",
+          "lines": [
+            825
+          ],
+          "disposition": "D017: scripts/resident-bind.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/resume.mjs#renderOrder#checkpoint",
+          "lines": [
+            905
+          ],
+          "disposition": "D006: scripts/resume.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/resume.mjs#projectOrder#checkpoint",
+          "lines": [
+            1003,
+            1005,
+            1006,
+            1007
+          ],
+          "disposition": "D006: scripts/resume.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/resume.mjs#run#checkpoint",
+          "lines": [
+            2824,
+            2850,
+            2853,
+            2944,
+            2948,
+            2951,
+            2954,
+            2955,
+            2958,
+            2961,
+            2962,
+            2964,
+            2965
+          ],
+          "disposition": "D006: scripts/resume.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/test-runner.mjs#changedMachinery#call:changedMachinery",
+          "lines": [
+            1010
+          ],
+          "disposition": "D006: scripts/test-runner.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/test-runner.mjs#changedMachinery#merge-base",
+          "lines": [
+            1020,
+            1025
+          ],
+          "disposition": "D006: scripts/test-runner.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/test-runner.mjs#changedSinceLastGate#call:changedSinceLastGate",
+          "lines": [
+            1160
+          ],
+          "disposition": "D006: scripts/test-runner.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/test-runner.mjs#runGateChecks#call:changedMachinery",
+          "lines": [
+            3300,
+            3560
+          ],
+          "disposition": "D006: scripts/test-runner.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/test-runner.mjs#runGateChecks#call:changedSinceLastGate",
+          "lines": [
+            3561
+          ],
+          "disposition": "D006: scripts/test-runner.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/test-runner.mjs#runGateChecks#call:classifyDocumentFailures",
+          "lines": [
+            3898
+          ],
+          "disposition": "D017: scripts/lib/document-failures.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/worktree.mjs#main#symmetric-range",
+          "lines": [
+            1706
+          ],
+          "disposition": "D017: scripts/worktree.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/worktree.mjs#main#call:reviewedLaunchpadIdentity",
+          "lines": [
+            1728
+          ],
+          "disposition": "D006: scripts/lib/release-records.mjs",
+          "result": "pass"
+        },
+        {
+          "key": "scripts/worktree.mjs#main#call:contributionSignoffRules",
+          "lines": [
+            1740
+          ],
+          "disposition": "D017: scripts/lib/contributions.mjs",
+          "result": "pass"
+        }
+      ],
+      "ancestry": {
+        "packages/skeleton/src/source-change-command.ts": [
+          260
+        ],
+        "packages/skeleton/src/source-change-host.ts": [
+          179
+        ],
+        "packages/skeleton/src/source-change-worktree.ts": [
+          422
+        ],
+        "packages/skeleton/src/verification-worktree.ts": [
+          269
+        ],
+        "scripts/lib/closeout-scope.mjs": [
+          147,
+          150
+        ],
+        "scripts/lib/document-kinds.mjs": [
+          737
+        ],
+        "scripts/lib/drive-route.mjs": [
+          210
+        ],
+        "scripts/lib/plan-subject.mjs": [
+          590
+        ],
+        "scripts/lib/starter-refresh.mjs": [
+          61
+        ],
+        "scripts/lib/starter-seeds.mjs": [
+          162
+        ],
+        "scripts/lib/target-base.mjs": [
+          10
+        ],
+        "scripts/lib/target-planning.mjs": [
+          256
+        ],
+        "scripts/lib/target-publish.mjs": [
+          440,
+          782,
+          841
+        ],
+        "scripts/lib/target-worktree-close.mjs": [
+          1140,
+          1240
+        ],
+        "scripts/lib/target-worktrees.mjs": [
+          518
+        ],
+        "scripts/lib/worktree-integration.mjs": [
+          710,
+          817,
+          880,
+          988
+        ],
+        "scripts/release.mjs": [
+          2305,
+          3394,
+          3620,
+          3734
+        ],
+        "scripts/work-orders.mjs": [
+          579
+        ],
+        "scripts/worktree.mjs": [
+          1005,
+          1875
+        ]
+      },
+      "result": "pass"
+    }
+  ]
+}

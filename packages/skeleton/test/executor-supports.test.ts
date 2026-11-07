@@ -861,7 +861,13 @@ test("execution roles open with an ordered handoff and keep shared rules below i
       );
       assert.match(steps[run]!, /composes nothing from `--only` rows/);
       assert.doesNotMatch(steps.join("\n"), /--only format/);
-      assert.match(steps[run + 1]!, /After the complete run passes/);
+      // The run reads the closeout selection; a launchpad order's is the
+      // complete run, and a target order's clause names its own.
+      assert.match(
+        steps[run]!,
+        /^\d+\. Run the checks the closeout selection names, which `npm run resume -- briefing` and `worktree integrate` print: a launchpad order's one complete run, `npm test -- --review`/,
+      );
+      assert.match(steps[run + 1]!, /After the selected runs pass/);
       assert.match(
         steps[run + 1]!,
         /Post-pass handoff write-backs are executor-owned/,
@@ -894,7 +900,11 @@ test("execution roles open with an ordered handoff and keep shared rules below i
         /reuse the passing complete review row at the integrated code identity when one exists; only when none exists start `npm test -- --review` in the background, never under the bounded probe wrapper/,
       );
       assert.match(steps[run]!, /harness\.mjs evidence --wait/);
-      assert.match(steps[run + 1]!, /After the complete run passes/);
+      assert.match(
+        steps[run]!,
+        /run the checks the closeout selection names; where it names the complete run, reuse/,
+      );
+      assert.match(steps[run + 1]!, /After the selected runs pass/);
     }
     assert.ok(
       role.procedure

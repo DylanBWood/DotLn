@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-243",
+  "recordedAt": "2026-11-07T08:23:28.309Z",
+  "subject": "Closeout checks named for one target-only and one mixed fixture order, each integrated over a main change to launchpad machinery, through each arm's own readers.",
+  "arms": {
+    "base": "main at e4fe2dae25a76b5be3d60a95f987e4726845d3cd (no closeout selection), extracted with git archive into session scratch and built there with node scripts/build.mjs",
+    "candidate": "this order's candidate tree"
+  },
+  "commands": [
+    "node docs/evidence/WO-243/closeout-control.mjs <base-arm-root> base",
+    "node docs/evidence/WO-243/closeout-control.mjs <candidate-root> candidate"
+  ],
+  "expectation": "Exit 0 when the target-only order is not told to run the complete launchpad run and the mixed order is; exit 1 otherwise.",
+  "results": [
+    {
+      "processExitCode": 1,
+      "arm": "base",
+      "roleStep": "8. Start one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper.",
+      "exitCode": 1,
+      "cases": [
+        {
+          "case": "target-only",
+          "integrationExitCode": 0,
+          "helperList": "affected checks",
+          "helper": [
+            "complete run",
+            "npm run publication:check",
+            "node scripts/harness.mjs check",
+            "npm run release -- check-surfaces --local"
+          ],
+          "briefing": null,
+          "briefingExitCode": 0,
+          "briefingMs": 80,
+          "completeRunRequested": true
+        },
+        {
+          "case": "mixed",
+          "integrationExitCode": 0,
+          "helperList": "affected checks",
+          "helper": [
+            "complete run",
+            "npm run publication:check",
+            "node scripts/harness.mjs check",
+            "npm run release -- check-surfaces --local"
+          ],
+          "briefing": null,
+          "briefingExitCode": 0,
+          "briefingMs": 76,
+          "completeRunRequested": true
+        }
+      ]
+    },
+    {
+      "processExitCode": 0,
+      "arm": "candidate",
+      "roleStep": "8. Run the checks the closeout selection names, which `npm run resume -- briefing` and `worktree integrate` print: a launchpad order's one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper.",
+      "exitCode": 0,
+      "cases": [
+        {
+          "case": "target-only",
+          "integrationExitCode": 0,
+          "helperList": "owed by this order",
+          "helper": [
+            "target gate --review",
+            "document gate"
+          ],
+          "briefing": [
+            "target gate --review",
+            "document gate"
+          ],
+          "briefingExitCode": 0,
+          "briefingMs": 127,
+          "completeRunRequested": false
+        },
+        {
+          "case": "mixed",
+          "integrationExitCode": 0,
+          "helperList": "owed by this order",
+          "helper": [
+            "target gate --review",
+            "complete run",
+            "document gate"
+          ],
+          "briefing": [
+            "target gate --review",
+            "complete run",
+            "document gate"
+          ],
+          "briefingExitCode": 0,
+          "briefingMs": 127,
+          "completeRunRequested": true
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "briefingReadMs": {
+      "base": {
+        "target-only": 80,
+        "mixed": 76
+      },
+      "candidate": {
+        "target-only": 127,
+        "mixed": 127
+      }
+    },
+    "completeRunMedianMs": {
+      "core": 2708506,
+      "instance": 22290
+    },
+    "documentGateMedianMs": {
+      "core": 125355,
+      "instance": 46224
+    },
+    "source": "readGateChecks over docs/control/local/harness/checks.json in the core main checkout (last fifteen passing complete review rows, 2026-11-03T21:16Z to 2026-11-07T02:57Z; document rows 2026-11-05T19:34Z to 2026-11-07T05:27Z) and in the personal instance (its one review row of 2026-11-05T18:05Z; fifteen document rows)"
+  }
+}
