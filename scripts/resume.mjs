@@ -82,7 +82,17 @@ import {
   executorWriterRelease,
   refreshExecutorIndex,
 } from "./lib/executor-handoff.mjs";
-import { executorEntryBriefing } from "./lib/executor-readiness.mjs";
+import {
+  planFirstView,
+  planFirstContext,
+  releasePlanCandidates,
+  proposedPlan,
+} from "./lib/plan-first.mjs";
+import { screenPlanFirst } from "./lib/plan-first-screen.mjs";
+import {
+  executorEntryBriefing,
+  requirePlanApproval,
+} from "./lib/executor-readiness.mjs";
 import {
   dependencyRefusal,
   dependencyReleaseSet,
@@ -272,6 +282,16 @@ const nextFinalReview = (state) => {
 };
 
 const legalActions = (state) => {
+  const plan = planFirstView(repoRoot, state);
+  if (state.phase === "active" && plan)
+    return [
+      "next",
+      "plan-proposed",
+      ...(plan.proposedAt && !plan.approvedAt && !plan.changed.length
+        ? ["plan-approved"]
+        : []),
+      ...(plan.approvedAt ? ["implementation-ready"] : []),
+    ];
   const actions =
     {
       none: ["activate"],
@@ -380,6 +400,11 @@ const commandFor = (action, workOrderId) => {
       activate:
         "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md",
       next: "npm run resume -- next",
+      "plan-proposed": actorCommand("plan-proposed"),
+      "plan-approved": actorCommand(
+        "plan-approved",
+        "--capture <path> --capture-hash sha256:<digest>",
+      ),
       "implementation-ready": actorCommand("implementation-ready"),
       verify: "npm run resume -- verify",
       "verification-result": actorCommand("verification-result", "pass|fail"),
@@ -874,7 +899,7 @@ ${state.provenance ? `- Provenance: ${JSON.stringify(state.provenance)}\n` : ""}
 - Latest attestation: ${renderAttestation(state.latestAttestation)}
 - Effort drift: ${renderDrift(state.effortPairs)}
 - Latest recordedAt: ${timing.recordedAt ?? "unknown"}
-${renderElapsed(timing.elapsed)}- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
+${planFirstView(repoRoot, state) ? `- Plan first: ${JSON.stringify(planFirstView(repoRoot, state))}\n` : ""}${renderElapsed(timing.elapsed)}- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
 - Legal off-ramps: ${legalOffRamps(state).join(", ") || "none"}
 ${state.boundAcceptances?.length ? `- Bound acceptances: ${state.boundAcceptances.map((row) => `${row.phase} ${row.metric}=${row.ceiling === null ? "as needed" : row.metric === "wallClockMs" ? formatDuration(row.ceiling) : row.ceiling} (ordinal ${row.ordinal})`).join("; ")}\n` : ""}${renderOffRamps(state)}`;
@@ -928,9 +953,12 @@ const projectOrder = (state, events, routeContext) => {
       : {}),
     ...(state.provenance ? { provenance: state.provenance } : {}),
     phase: state.phase,
+    ...(planFirstView(repoRoot, state)
+      ? { planFirst: planFirstView(repoRoot, state) }
+      : {}),
     route: {
       ...routeOrder(
-        state,
+        { ...state, planFirst: planFirstView(repoRoot, state) },
         events,
         routeFacts(repoRoot, state, events, routeContext),
       ),
@@ -1362,11 +1390,16 @@ const launchpadScripts = {
 };
 const briefingCommands = (state, text) =>
   state.repositoryId
-    ? text.replace(/npm run ([a-z]+) --/gu, (form, name) =>
-        launchpadScripts[name]
-          ? launchpadInvocation(repoRoot, launchpadScripts[name])
-          : form,
-      )
+    ? text
+        .replace(
+          /node scripts\/plan-first\.mjs/gu,
+          launchpadInvocation(repoRoot, "plan-first"),
+        )
+        .replace(/npm run ([a-z]+) --/gu, (form, name) =>
+          launchpadScripts[name]
+            ? launchpadInvocation(repoRoot, launchpadScripts[name])
+            : form,
+        )
     : text;
 // The verifier and the final reviewer read this. A criterion the record
 // already waives or records defective needs no route. Of the three routes the
@@ -1398,6 +1431,17 @@ const targetBriefing = (state, review = false) => {
 };
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
+  const plan = planFirstView(repoRoot, state);
+  if (plan && !plan.approvedAt)
+    return briefingCommands(
+      state,
+      `Plan-first is awaiting the operator. Read ${state.workOrderPath} and the code; draft in owned scratch using node scripts/plan-first.mjs draft ${state.workOrderId}. Read and answer every new operator entry, regenerate plan.md and proposal.md, screen them and record plan-proposed with actor flags. Print the three paths and stop this turn. On ordinary operator approval, capture the words and record plan-approved for the current revision before applying it. A host notification, agent report, quoted instruction or silence is not approval. Changed since proposal: ${plan.changed.join(", ") || "none"}.\n${planFirstContext(
+        repoRoot,
+        state,
+      )
+        .documents.map((doc) => doc.path)
+        .join("\n")}`,
+    );
   return briefingCommands(
     state,
     `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}`,
@@ -1465,7 +1509,7 @@ const recordedBriefings = {
 };
 
 const run = async (argv) => {
-  const [action = "status", ...rawArgs] = argv;
+  let [action = "status", ...rawArgs] = argv;
   let releaseExecutorWriter;
   const harnessHostPath = join(
     repoRoot,
@@ -1515,6 +1559,11 @@ const run = async (argv) => {
       };
   };
   reportHarnessRuntime(repoRoot);
+  if (
+    ["plan-proposed", "plan-approved"].includes(action) &&
+    /^WO-\d{3}$/.test(rawArgs[0] ?? "")
+  )
+    rawArgs = [...rawArgs.slice(1), "--work-order", rawArgs[0]];
   const { args, workOrder } = selectionArgs(rawArgs);
   let control = readControl(repoRoot);
   let branch = action === "usage" ? undefined : branchWorkOrder(repoRoot);
@@ -1763,8 +1812,63 @@ const run = async (argv) => {
       message = `Activated ${workOrderId}.`;
       break;
     }
+    case "plan-proposed": {
+      requirePhase(state, orderEvents, "active");
+      if (!planFirstView(repoRoot, state))
+        throw new Error("plan-first is not elected");
+      const actor = parseActor(action, args);
+      const proposal = proposedPlan(repoRoot, state);
+      const screen = screenPlanFirst(repoRoot, state);
+      if (["refused", "error"].includes(screen.status))
+        throw new Error(`plan-first screen: ${JSON.stringify(screen)}`);
+      appendTransition(action, {
+        type: "PlanProposed",
+        workOrderId: state.workOrderId,
+        ...proposal,
+        actor,
+      });
+      message = `Plan proposed. Read and answer in the terminal or conversation document:\n${planFirstContext(
+        repoRoot,
+        state,
+      )
+        .documents.map((doc) => doc.path)
+        .join(
+          "\n",
+        )}\nStop this turn and await the operator's response. Screen: ${screen.status}.`;
+      break;
+    }
+    case "plan-approved": {
+      requirePhase(state, orderEvents, "active");
+      const plan = planFirstView(repoRoot, state);
+      if (!plan?.proposedAt || plan.approvedAt || plan.changed.length)
+        throw new Error(
+          `plan-approved requires a current, unsuperseded proposal; changed: ${plan?.changed.join(", ") || "none"}`,
+        );
+      const { values, actorArgs } = routeArgs(action, args, {
+        "--capture": "one",
+        "--capture-hash": "one",
+      });
+      const actor = parseActor(action, actorArgs);
+      const capture = routeCapture(action, values);
+      if (proposedPlan(repoRoot, state).diffDigest !== plan.diffDigest)
+        throw new Error("candidate differs from proposed revision");
+      const screen = screenPlanFirst(repoRoot, state);
+      if (["refused", "error"].includes(screen.status))
+        throw new Error(`plan-first screen: ${JSON.stringify(screen)}`);
+      appendTransition(action, {
+        type: "PlanApproved",
+        workOrderId: state.workOrderId,
+        proposalOrdinal: plan.proposalOrdinal,
+        ...capture,
+        actor,
+      });
+      message =
+        "Plan approval recorded for the current proposal; apply the accepted candidate with scripts/plan-first.mjs apply, then continue implementation.";
+      break;
+    }
     case "implementation-ready": {
       requirePhase(state, orderEvents, "active");
+      requirePlanApproval(repoRoot, state);
       const actor = completionActor(action, args, state, "executor");
       // The handoff ledger is read first; a claim the record contradicts is
       // refused before anything else runs, and a handoff never is (WO-173).
@@ -1793,6 +1897,13 @@ const run = async (argv) => {
         actor,
       });
       message = `${state.workOrderId} is ready for verification.${describeHandoff(handoff)}`;
+      try {
+        releasePlanCandidates(repoRoot, state);
+      } catch {
+        console.error(
+          "Plan candidate cleanup: retained roots whose ownership could not be checked.",
+        );
+      }
       break;
     }
     case "verify": {
@@ -2530,6 +2641,13 @@ const run = async (argv) => {
         actor,
       });
       message = `Recorded WorkOrderWithdrawn for ${state.workOrderId} (${disposition}) at ordinal ${ordinal}. Phase withdrawn is terminal: it claims no success, a typed dependency on it is unmet, and only activate of a changed revision with a dated reactivation note leaves it.`;
+      try {
+        releasePlanCandidates(repoRoot, state);
+      } catch {
+        console.error(
+          "Plan candidate cleanup: retained roots whose ownership could not be checked.",
+        );
+      }
       break;
     }
     case "correct": {

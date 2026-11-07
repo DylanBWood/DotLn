@@ -342,6 +342,65 @@ verification. Release preparation and final review run in `wo-001`. Because
 `wo-001` starts from the fork's merged `main`, its pull request carries only
 WO-001's own commits.
 
+## Plan-first mode
+
+To read the proposed change before implementation, elect this mode in
+`dotln.config.json`:
+
+```json
+{ "version": 1, "features": { "plan-first": true } }
+```
+
+Start the work order and say `resume: next`. The executor drafts code in owned
+scratch and gives you three documents under `evidence/WO-NNN/plan-first/` in
+the order's documentation root. For a target order, they live in the target
+repository's configured documentation directory; for a self order, they live
+under this instance's evidence root.
+
+- `plan.md` explains where the change goes, why, the contracts it needs,
+  decisions and alternatives, and any question that needs your judgment.
+- `proposal.md` explains each changed file and includes the complete proposed
+  diff, including additions, deletions and binary changes.
+- `conversation.md` keeps the discussion across sessions. Both you and the
+  executor append dated entries; the executor never rewrites your entries.
+
+Read the plan and proposal, then reply in the terminal or append an entry to
+`conversation.md`. Say `resume: next` when returning after a file edit. The
+executor answers each new question or correction and regenerates the two
+proposal documents. Terminal replies are paraphrased into the conversation.
+Before carrying your words to a screened document, the executor announces any
+needed transformation in the conversation. Private target conversations stay
+private; a self order's public conversation must itself pass the publication
+screen, which may require you to rephrase an entry.
+
+Approve the current proposal in ordinary words, such as “Looks good, build it.”
+The executor captures that approval and records `PlanApproved` for the exact
+proposal before applying its candidate. It adds the approval paraphrase before
+recording approval; a metadata refresh for that entry preserves the reviewed
+plan, proposal and complete diff. Any substantive change needs your approval
+again. A later proposal, a changed conversation or a moved base requires
+renewed approval. The executor integrates `main` before its complete run when
+`main` has moved, and that integration moves the base, so after it the executor
+asks you to approve the unchanged proposal again; keeping an approval across a
+clean integration is the recorded follow-up of
+[WO-242-D026](evidence/WO-242/decisions.md#wo-242-d026--verification-boards-the-approval-an-integrate-first-fast-forward-clears).
+Until approval stands, the hook refuses observed
+source writes and the apply and readiness helpers refuse implementation. On
+Codex, direct tool writes are governed by the role instructions and host
+permissions; the helpers enforce their own boundaries in process on every host.
+A driven order stops while it awaits approval. Resume the executor to record
+your answer, then drive again. Repairs after failed verification keep their
+existing bounded repair procedure.
+
+The executor uses `node scripts/plan-first.mjs draft WO-NNN` to create its
+candidate, `diff WO-NNN` to inspect it and `apply WO-NNN` after approval. A moved
+base uses `draft WO-NNN --new`, retaining the previous candidate. The lifecycle
+commands are `npm run resume -- plan-proposed WO-NNN <actor-flags>` and
+`npm run resume -- plan-approved WO-NNN --capture <ignored-intake-path>
+--capture-hash sha256:<digest> <actor-flags>`. You need not type these commands;
+the executor records them from your direction. Turning the mode off preserves
+the ordinary direct-execution workflow.
+
 ## Features
 
 `dotln.config.json` is this instance's configuration file. Its `features`
@@ -358,9 +417,9 @@ section accepts named booleans or an election with your own reason:
 ```
 
 An absent section keeps the existing defaults: Tinkerer economy on,
-plan-first, private-destination and desktop-control off. `plan-first` is
-reserved for WO-242 and has no consumer yet. A misspelled name refuses with
-the valid names and `npm run features -- list`. Existing keys such as
+plan-first, private-destination and desktop-control off. Plan-first adds an
+operator review of the proposed change before implementation. A misspelled
+name refuses with the valid names and `npm run features -- list`. Existing keys such as
 `kit.applyInstanceActions`, `release.*`, `build.*`, `drive.sandbox` and the
 budget keys stay where they are; putting their inventory ids in `features`
 refuses and names the key to edit.

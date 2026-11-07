@@ -1,0 +1,445 @@
+{
+  "schemaVersion": 1,
+  "classification": "live model executor conversation in the parent executor session",
+  "operatorKind": "four synthetic scripted operator turns; no human novice",
+  "executor": {
+    "workerType": "dotln-worker-astra",
+    "modelSelection": "gpt-6-astra",
+    "effortSelection": "max",
+    "source": "operator-attested",
+    "effectiveReadback": null,
+    "turns": 4
+  },
+  "startedAt": "2026-11-06T21:23:39.252Z",
+  "finishedAt": "2026-11-06T21:27:59.612Z",
+  "turns": [
+    {
+      "turn": 1,
+      "operator": "Please make the greeting friendlier for a new teammate, keeping the trailing newline. Show me the plan and complete proposed diff first.",
+      "agentReply": "PlanProposed recorded. Proposed greeting: `Welcome to the team! We're glad you're here.` with exactly one trailing newline. Screening and byte checks passed; the target remains unchanged.\n\n- [Plan](../target/guide/evidence/WO-099/plan-first/plan.md)\n- [Complete proposed diff](../target/guide/evidence/WO-099/plan-first/proposal.md)\n- [Conversation](../target/guide/evidence/WO-099/plan-first/conversation.md)\n\nStopped for review. Worker type: `dotln-worker-astra`. Usage counters and effective-session readback are unavailable; actor selections were recorded as operator-attested.\n",
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:25:06.948Z\",\n  \"conversationDigest\": \"db1be75f35c80e79acbdfe1d44c75aaaf2aa28fa89208865b814bcaf2f774c59\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting plan\n\nChange only `hello.txt` in the registered target. The proposed content is one line, followed by exactly one LF:\n\n> Welcome to the team! We're glad you're here.\n\nThis welcomes a new teammate directly and adds warmth without assuming a name or role. The current greeting, `Hello.`, is the NoOp alternative: it preserves the file but does not deliver the requested warmer welcome. A personalized greeting needs information that was not supplied. Additional onboarding text would widen this request. The wording can be revised if the operator prefers a different tone.\n\nThe owned candidate contains the proposed bytes. The registered target still contains `Hello.` and one LF. The complete candidate diff appears in [proposal.md](proposal.md), and the request, reasoning and screening transformation are recorded in [conversation.md](conversation.md). No material question prevents review of this proposal.\n\nAfter ordinary approval of this exact revision, capture the approval, record PlanApproved, apply the accepted candidate using the plan-first helper, and verify the applied greeting and single trailing LF. A question or correction must be answered before regenerating these documents; any changed plan, proposal, conversation or base requires a new proposal.\n\nThe candidate and unchanged target passed exact byte comparisons. The helper's complete diff contains one changed text file and no binary changes. No package manifest or existing test suite is present in this fixture. This proposal does not claim application or release completion.\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:25:06.948Z\",\n  \"conversationDigest\": \"db1be75f35c80e79acbdfe1d44c75aaaf2aa28fa89208865b814bcaf2f774c59\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting proposal\n\n`hello.txt` changes from a generic greeting to a warmer welcome for a new teammate. The file remains one line with exactly one trailing LF. No other implementation file changes, and there are no binary changes.\n\nThe following is the complete candidate diff, emitted by the plan-first helper:\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..a7b89f900107a6186d9964a20b7d7c714c75d6d6 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome to the team! We're glad you're here.\n~~~\n<!-- dotln-plan-first-diff:end -->\n\nThe candidate byte comparison passed. The registered target has not been changed. Approval of this revision authorizes this exact proposed change; later corrections require a regenerated proposal. See [plan.md](plan.md) for the rationale and [conversation.md](conversation.md) for the request and answers.\n",
+        "conversation.md": "# WO-099 greeting conversation\n\n### 2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal\n\nThe operator requests a warmer greeting for a new teammate while retaining the trailing newline, and wants the plan and complete proposed diff before application. This is synthetic operator turn 1; no later operator input has been received.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-1.txt` (relative to the target root). Capture digest: `sha256:b25c390f34df07edfada709452aa0fb7030103be70da7239f0c224670d95654c`.\n\n### 2026-11-06T21:24:27.953Z — Agent\n\nI read the order, the elected executor procedure, the empty conversation, and the candidate and target greeting. Both greetings are currently `Hello.` followed by one LF. The only implementation file found in the candidate is `hello.txt`; there is no package manifest or existing test suite in this fixture.\n\nI propose the single line `Welcome to the team! We're glad you're here.` with exactly one trailing LF. It directly welcomes a new teammate and adds warmth without assuming a name or role. Keeping the current greeting would preserve behavior but leave the request unmet. A named or role-specific welcome would require information not supplied. Adding onboarding instructions would widen this one-file request. The wording is a proposal, and I will revise it if the operator requests a different tone. There are no material questions that prevent presenting this first proposal.\n\nThe target implementation remains unchanged while I prepare the owned candidate. I will compare the complete binary-capable diff and check the candidate bytes and trailing LF before recording PlanProposed. Approval of the current revision is still required before application.\n\nExperiment receipt: worker type `dotln-worker-astra`; this is a synthetic procedure exercise, not evidence of human usability. Model and effort supplied for the event are operator-attested selections; effective-session readback is unavailable from the status command.\n\n### 2026-11-06T21:24:35.174Z — Agent\n\nAnnounced transformation (2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1), for candidate/hello.txt, plan.md and proposal.md):\n\nReplace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\n\nProposed greeting: Welcome to the team! We're glad you're here.\n\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\n\n### 2026-11-06T21:24:48.866Z — Agent\n\nThe candidate byte comparison passed: it contains exactly the proposed greeting and one trailing LF. The registered target remains exactly `Hello.\\n`. The complete diff emitted by the plan-first helper changes only `hello.txt`; there are no binary changes. Both required screening commands passed for the carried passage before it was used in the candidate and proposal.\n\nThe canonical status identifies WO-099 as active. Its stale-projection and runtime-unavailable advisories do not change that recorded state; this experiment uses the supplied current helpers. No lifecycle phase dispatch or application has been requested. The fixture has no package manifest, so no package test command is available; this one-line proposal was checked directly against the required bytes.\n\nThe harness usage command reported `source: unavailable`, `cause: no-session`, with no token or cost counters and no observation cutoff. Current-session metadata readback was unavailable too. These missing counters do not justify invented measurements or an effective model claim.\n\n### 2026-11-06T21:25:06.604Z — Agent\n\nThe full-document screening refused both outward document headings because I included the launchpad order identifier there (rule `identifier.launchpad`, line 16). The carried greeting passage itself passed. I will use the generic headings `Greeting plan` and `Greeting proposal`, retain the order identifier only in the private workflow context, regenerate the shared marker, and screen again. The proposed greeting and complete diff do not change.\n\n### 2026-11-06T21:25:06.944Z — Agent\n\nAnnounced transformation (full-document screening correction in the conversation, for plan.md and proposal.md):\n\nUse the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\n"
+      },
+      "bytes": {
+        "plan.md": 2917,
+        "proposal.md": 2289,
+        "conversation.md": 4684,
+        "reply": 582,
+        "total": 10472
+      },
+      "startedAt": "2026-11-06T21:23:39.252Z",
+      "finishedAt": "2026-11-06T21:25:22.053Z",
+      "workMs": 102801,
+      "waitingBeforeMs": 0,
+      "turnBoundary": {
+        "modelReturned": true,
+        "prune": "Session prune: 0 owned roots removed; 1 retained; 0 blockers.",
+        "candidatePresent": true
+      },
+      "planFirst": {
+        "proposedAt": "2026-11-06T21:25:06.948Z",
+        "proposalOrdinal": 2,
+        "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+        "documents": [
+          {
+            "path": "guide/evidence/WO-099/plan-first/plan.md",
+            "sha256": "4a429a87101e5194e8327617ecb173ef156f7868f1e70308ad7bad772ebfcf1e"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/conversation.md",
+            "sha256": "db1be75f35c80e79acbdfe1d44c75aaaf2aa28fa89208865b814bcaf2f774c59"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/proposal.md",
+            "sha256": "f87cda3f97de49510e6033ee15b2aba418caa1fa1613724c299b6b744320e1fc"
+          }
+        ],
+        "diffDigest": "1e30423c1d4e71ac55006f70a5f992ebe9420424de3e046b9f25dbbda66d2e8f",
+        "approvedAt": null
+      },
+      "targetContents": "Hello.\n"
+    },
+    {
+      "turn": 2,
+      "operator": "Does this preserve the trailing newline? Please explain before I approve.",
+      "agentReply": "Yes. The candidate ends with a period followed by LF (`2e 0a`) and contains exactly one newline. The greeting and full diff are unchanged.\n\nThe refreshed PlanProposed passed screening. Stopped without applying it.\n\n- [Plan](../target/guide/evidence/WO-099/plan-first/plan.md)\n- [Complete proposed diff](../target/guide/evidence/WO-099/plan-first/proposal.md)\n- [Conversation](../target/guide/evidence/WO-099/plan-first/conversation.md)\n\nWorker: `dotln-worker-astra`. Usage counters and effective-session readback remain unavailable.\n",
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:25:50.848Z\",\n  \"conversationDigest\": \"1b6c964e669dbe62aa828646073e3eaf513902ce86d18a076fcf8af6de98a339\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:50.823Z\",\n      \"from\": \"2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2)\",\n      \"to\": \"Yes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\",\n      \"surface\": \"plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting plan\n\nChange only `hello.txt` in the registered target. The proposed content is one line, followed by exactly one LF:\n\n> Welcome to the team! We're glad you're here.\n\nThis welcomes a new teammate directly and adds warmth without assuming a name or role. The current greeting, `Hello.`, is the NoOp alternative: it preserves the file but does not deliver the requested warmer welcome. A personalized greeting needs information that was not supplied. Additional onboarding text would widen this request. The wording can be revised if the operator prefers a different tone.\n\nThe owned candidate contains the proposed bytes. The registered target still contains `Hello.` and one LF. The complete candidate diff appears in [proposal.md](proposal.md), and the request, reasoning and screening transformation are recorded in [conversation.md](conversation.md). No material question prevents review of this proposal.\n\nAfter ordinary approval of this exact revision, capture the approval, record PlanApproved, apply the accepted candidate using the plan-first helper, and verify the applied greeting and single trailing LF. A question or correction must be answered before regenerating these documents; any changed plan, proposal, conversation or base requires a new proposal.\n\nA fresh byte read confirms that the 45-byte candidate ends in 0x2e 0x0a: a period followed by LF. It contains exactly one LF and no CR, preserving one trailing newline. The target remains unchanged. This revision adds the requested newline explanation; the greeting and implementation diff are unchanged. The helper's complete diff contains one changed text file and no binary changes. No package manifest or existing test suite is present in this fixture. This proposal does not claim application or release completion.\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:25:50.848Z\",\n  \"conversationDigest\": \"1b6c964e669dbe62aa828646073e3eaf513902ce86d18a076fcf8af6de98a339\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:50.823Z\",\n      \"from\": \"2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2)\",\n      \"to\": \"Yes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\",\n      \"surface\": \"plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting proposal\n\n`hello.txt` changes from a generic greeting to a warmer welcome for a new teammate. The file remains one line with exactly one trailing LF. No other implementation file changes, and there are no binary changes.\n\nYes, the proposal preserves the trailing newline. The current candidate is 45 bytes and ends with 0x2e 0x0a: a period followed by LF. There is exactly one LF in the file and no CR. This revision adds that explanation; the greeting and complete implementation diff are unchanged. The question requesting an explanation is not approval.\n\nThe following is the complete candidate diff, emitted by the plan-first helper:\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..a7b89f900107a6186d9964a20b7d7c714c75d6d6 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome to the team! We're glad you're here.\n~~~\n<!-- dotln-plan-first-diff:end -->\n\nThe candidate byte comparison passed. The registered target has not been changed. Approval of this revision authorizes this exact proposed change; later corrections require a regenerated proposal. See [plan.md](plan.md) for the rationale and [conversation.md](conversation.md) for the request and answers.\n",
+        "conversation.md": "# WO-099 greeting conversation\n\n### 2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal\n\nThe operator requests a warmer greeting for a new teammate while retaining the trailing newline, and wants the plan and complete proposed diff before application. This is synthetic operator turn 1; no later operator input has been received.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-1.txt` (relative to the target root). Capture digest: `sha256:b25c390f34df07edfada709452aa0fb7030103be70da7239f0c224670d95654c`.\n\n### 2026-11-06T21:24:27.953Z — Agent\n\nI read the order, the elected executor procedure, the empty conversation, and the candidate and target greeting. Both greetings are currently `Hello.` followed by one LF. The only implementation file found in the candidate is `hello.txt`; there is no package manifest or existing test suite in this fixture.\n\nI propose the single line `Welcome to the team! We're glad you're here.` with exactly one trailing LF. It directly welcomes a new teammate and adds warmth without assuming a name or role. Keeping the current greeting would preserve behavior but leave the request unmet. A named or role-specific welcome would require information not supplied. Adding onboarding instructions would widen this one-file request. The wording is a proposal, and I will revise it if the operator requests a different tone. There are no material questions that prevent presenting this first proposal.\n\nThe target implementation remains unchanged while I prepare the owned candidate. I will compare the complete binary-capable diff and check the candidate bytes and trailing LF before recording PlanProposed. Approval of the current revision is still required before application.\n\nExperiment receipt: worker type `dotln-worker-astra`; this is a synthetic procedure exercise, not evidence of human usability. Model and effort supplied for the event are operator-attested selections; effective-session readback is unavailable from the status command.\n\n### 2026-11-06T21:24:35.174Z — Agent\n\nAnnounced transformation (2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1), for candidate/hello.txt, plan.md and proposal.md):\n\nReplace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\n\nProposed greeting: Welcome to the team! We're glad you're here.\n\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\n\n### 2026-11-06T21:24:48.866Z — Agent\n\nThe candidate byte comparison passed: it contains exactly the proposed greeting and one trailing LF. The registered target remains exactly `Hello.\\n`. The complete diff emitted by the plan-first helper changes only `hello.txt`; there are no binary changes. Both required screening commands passed for the carried passage before it was used in the candidate and proposal.\n\nThe canonical status identifies WO-099 as active. Its stale-projection and runtime-unavailable advisories do not change that recorded state; this experiment uses the supplied current helpers. No lifecycle phase dispatch or application has been requested. The fixture has no package manifest, so no package test command is available; this one-line proposal was checked directly against the required bytes.\n\nThe harness usage command reported `source: unavailable`, `cause: no-session`, with no token or cost counters and no observation cutoff. Current-session metadata readback was unavailable too. These missing counters do not justify invented measurements or an effective model claim.\n\n### 2026-11-06T21:25:06.604Z — Agent\n\nThe full-document screening refused both outward document headings because I included the launchpad order identifier there (rule `identifier.launchpad`, line 16). The carried greeting passage itself passed. I will use the generic headings `Greeting plan` and `Greeting proposal`, retain the order identifier only in the private workflow context, regenerate the shared marker, and screen again. The proposed greeting and complete diff do not change.\n\n### 2026-11-06T21:25:06.944Z — Agent\n\nAnnounced transformation (full-document screening correction in the conversation, for plan.md and proposal.md):\n\nUse the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\n\n### 2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal\n\nThe operator asks whether the proposal preserves the trailing newline and requests an explanation before deciding whether to approve. This is synthetic operator turn 2 and is not approval.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-2.txt` (relative to the target root). Capture digest: `sha256:ddbca37440e2d5d450256b6d9a79d334db940038da1a7508d6507dce5f7abe64`.\n\n### 2026-11-06T21:25:43.153Z — Agent\n\nYes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\n\nI reread the current plan, proposal and conversation. The conversation digest matched the last proposed revision, and there were no intervening operator entries in that document. Usage remains unavailable: the harness returned `cause: no-session` and no token, cost or observation-cutoff counters. Worker type remains `dotln-worker-astra`; no effective model or effort readback is available.\n\n### 2026-11-06T21:25:50.823Z — Agent\n\nAnnounced transformation (2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2), for plan.md and proposal.md):\n\nYes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\n"
+      },
+      "bytes": {
+        "plan.md": 3836,
+        "proposal.md": 3305,
+        "conversation.md": 6710,
+        "reply": 533,
+        "total": 14384
+      },
+      "startedAt": "2026-11-06T21:25:22.099Z",
+      "finishedAt": "2026-11-06T21:26:03.114Z",
+      "workMs": 41015,
+      "waitingBeforeMs": 46,
+      "turnBoundary": {
+        "modelReturned": true,
+        "prune": "Session prune: 0 owned roots removed; 1 retained; 0 blockers.",
+        "candidatePresent": true
+      },
+      "planFirst": {
+        "proposedAt": "2026-11-06T21:25:50.848Z",
+        "proposalOrdinal": 3,
+        "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+        "documents": [
+          {
+            "path": "guide/evidence/WO-099/plan-first/plan.md",
+            "sha256": "a7fbc080a1ccbf2d84b222bb40ebf7465456797db7ea078aef0f8c599927fc28"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/conversation.md",
+            "sha256": "1b6c964e669dbe62aa828646073e3eaf513902ce86d18a076fcf8af6de98a339"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/proposal.md",
+            "sha256": "b59d518176e6feb18feb258ae1b4575087b41b4fe2e57f34fdf1ed91ffa254c7"
+          }
+        ],
+        "diffDigest": "1e30423c1d4e71ac55006f70a5f992ebe9420424de3e046b9f25dbbda66d2e8f",
+        "approvedAt": null
+      },
+      "targetContents": "Hello.\n"
+    },
+    {
+      "turn": 3,
+      "operator": "Use Welcome, friend. instead. Keep the newline and show me the revised full diff.",
+      "agentReply": "Revised PlanProposed recorded. The candidate is exactly `Welcome, friend.\\n`; newline checks and screening passed. Complete diff:\n\n```diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..c34c1ca20e431480d6910c6d92a28899c5aa11f9 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome, friend.\n```\n\n- [Plan](../target/guide/evidence/WO-099/plan-first/plan.md)\n- [Proposal](../target/guide/evidence/WO-099/plan-first/proposal.md)\n- [Conversation](../target/guide/evidence/WO-099/plan-first/conversation.md)\n\nStopped; the target remains unchanged. Worker: `dotln-worker-astra`. Usage counters and effective-session readback remain unavailable.\n",
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:26:27.422Z\",\n  \"conversationDigest\": \"b008bfcdc83979080ebaaa79101e6771d504c8d5f4af149c1bfe6f240979f283\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:50.823Z\",\n      \"from\": \"2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2)\",\n      \"to\": \"Yes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:26:27.173Z\",\n      \"from\": \"2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal (turn 3)\",\n      \"to\": \"Revise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting plan\n\nChange only `hello.txt` in the registered target to the operator's corrected wording, followed by exactly one LF:\n\n> Welcome, friend.\n\nThe correction selects this shorter greeting and supersedes the earlier, longer team welcome. Keeping the earlier proposal would ignore that correction. Leaving the target at `Hello.` is the NoOp alternative and would not provide the requested greeting. No additional wording choice or unresolved material question is needed before reviewing this revision.\n\nThe owned candidate contains exactly `Welcome, friend.\\n`. A fresh byte read confirms 17 bytes, one LF, no CR, and final bytes 0x2e 0x0a (period and LF). The registered target remains `Hello.` with one LF. The complete helper diff changes only this text file, with no binary changes. There is no package manifest or existing test suite in the fixture; the content and newline contract were checked directly.\n\nThis revision changes the proposed greeting and complete diff. The [proposal](proposal.md) contains the revised full patch, and the [conversation](conversation.md) preserves the correction and its answer. Approval of the current revision is still required before application; a request to revise the wording is not that approval.\n\nAfter ordinary approval of this exact revision, capture the approval, record PlanApproved, apply the accepted candidate through the plan-first helper, and verify the resulting greeting and single trailing LF. Any later change to the plan, proposal, conversation or base requires a new proposal.\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:26:27.422Z\",\n  \"conversationDigest\": \"b008bfcdc83979080ebaaa79101e6771d504c8d5f4af149c1bfe6f240979f283\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:50.823Z\",\n      \"from\": \"2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2)\",\n      \"to\": \"Yes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:26:27.173Z\",\n      \"from\": \"2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal (turn 3)\",\n      \"to\": \"Revise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting proposal\n\n`hello.txt` will contain `Welcome, friend.` followed by exactly one LF. This replaces the earlier proposed greeting in response to the operator's correction. The target still contains `Hello.` and has not been changed.\n\nThe candidate passed an exact byte comparison: 17 bytes total, one LF, no CR, ending in 0x2e 0x0a (period and LF). No other implementation file changes, and there are no binary changes.\n\nThe following is the complete revised candidate diff against the unchanged target baseline:\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..c34c1ca20e431480d6910c6d92a28899c5aa11f9 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome, friend.\n~~~\n<!-- dotln-plan-first-diff:end -->\n\nThe wording correction is not approval to apply. After approval of this revision, only the accepted candidate will be applied. See [plan.md](plan.md) for the plan and [conversation.md](conversation.md) for the correction and answer.\n",
+        "conversation.md": "# WO-099 greeting conversation\n\n### 2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal\n\nThe operator requests a warmer greeting for a new teammate while retaining the trailing newline, and wants the plan and complete proposed diff before application. This is synthetic operator turn 1; no later operator input has been received.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-1.txt` (relative to the target root). Capture digest: `sha256:b25c390f34df07edfada709452aa0fb7030103be70da7239f0c224670d95654c`.\n\n### 2026-11-06T21:24:27.953Z — Agent\n\nI read the order, the elected executor procedure, the empty conversation, and the candidate and target greeting. Both greetings are currently `Hello.` followed by one LF. The only implementation file found in the candidate is `hello.txt`; there is no package manifest or existing test suite in this fixture.\n\nI propose the single line `Welcome to the team! We're glad you're here.` with exactly one trailing LF. It directly welcomes a new teammate and adds warmth without assuming a name or role. Keeping the current greeting would preserve behavior but leave the request unmet. A named or role-specific welcome would require information not supplied. Adding onboarding instructions would widen this one-file request. The wording is a proposal, and I will revise it if the operator requests a different tone. There are no material questions that prevent presenting this first proposal.\n\nThe target implementation remains unchanged while I prepare the owned candidate. I will compare the complete binary-capable diff and check the candidate bytes and trailing LF before recording PlanProposed. Approval of the current revision is still required before application.\n\nExperiment receipt: worker type `dotln-worker-astra`; this is a synthetic procedure exercise, not evidence of human usability. Model and effort supplied for the event are operator-attested selections; effective-session readback is unavailable from the status command.\n\n### 2026-11-06T21:24:35.174Z — Agent\n\nAnnounced transformation (2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1), for candidate/hello.txt, plan.md and proposal.md):\n\nReplace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\n\nProposed greeting: Welcome to the team! We're glad you're here.\n\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\n\n### 2026-11-06T21:24:48.866Z — Agent\n\nThe candidate byte comparison passed: it contains exactly the proposed greeting and one trailing LF. The registered target remains exactly `Hello.\\n`. The complete diff emitted by the plan-first helper changes only `hello.txt`; there are no binary changes. Both required screening commands passed for the carried passage before it was used in the candidate and proposal.\n\nThe canonical status identifies WO-099 as active. Its stale-projection and runtime-unavailable advisories do not change that recorded state; this experiment uses the supplied current helpers. No lifecycle phase dispatch or application has been requested. The fixture has no package manifest, so no package test command is available; this one-line proposal was checked directly against the required bytes.\n\nThe harness usage command reported `source: unavailable`, `cause: no-session`, with no token or cost counters and no observation cutoff. Current-session metadata readback was unavailable too. These missing counters do not justify invented measurements or an effective model claim.\n\n### 2026-11-06T21:25:06.604Z — Agent\n\nThe full-document screening refused both outward document headings because I included the launchpad order identifier there (rule `identifier.launchpad`, line 16). The carried greeting passage itself passed. I will use the generic headings `Greeting plan` and `Greeting proposal`, retain the order identifier only in the private workflow context, regenerate the shared marker, and screen again. The proposed greeting and complete diff do not change.\n\n### 2026-11-06T21:25:06.944Z — Agent\n\nAnnounced transformation (full-document screening correction in the conversation, for plan.md and proposal.md):\n\nUse the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\n\n### 2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal\n\nThe operator asks whether the proposal preserves the trailing newline and requests an explanation before deciding whether to approve. This is synthetic operator turn 2 and is not approval.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-2.txt` (relative to the target root). Capture digest: `sha256:ddbca37440e2d5d450256b6d9a79d334db940038da1a7508d6507dce5f7abe64`.\n\n### 2026-11-06T21:25:43.153Z — Agent\n\nYes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\n\nI reread the current plan, proposal and conversation. The conversation digest matched the last proposed revision, and there were no intervening operator entries in that document. Usage remains unavailable: the harness returned `cause: no-session` and no token, cost or observation-cutoff counters. Worker type remains `dotln-worker-astra`; no effective model or effort readback is available.\n\n### 2026-11-06T21:25:50.823Z — Agent\n\nAnnounced transformation (2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2), for plan.md and proposal.md):\n\nYes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\n\n### 2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal\n\nThe operator replaces the proposed wording with `Welcome, friend.`, retains the newline requirement, and asks to see the revised full diff. This is synthetic operator turn 3: a correction, not approval.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-3.txt` (relative to the target root). Capture digest: `sha256:ed706702194869d52dd6db39100d1df88e177c9ce98024b3bc8c01d8e61f0ec8`.\n\n### 2026-11-06T21:26:19.638Z — Agent\n\nI will use exactly the newly requested wording and one trailing LF. The previous, longer welcome is superseded. I have reread the current conversation and proposal; the conversation matches its recorded digest and contains no intervening operator entries. The target still contains `Hello.\\n`, and the candidate still contains the previously proposed text before this revision.\n\nRevise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\n\nThe correction stays within the existing one-file scope. I will change the owned candidate, regenerate the complete diff and shared document marker, then stop at a new PlanProposed. Usage and effective-session readback remain unavailable; the harness again reported `cause: no-session`. Worker type: `dotln-worker-astra`.\n\n### 2026-11-06T21:26:27.173Z — Agent\n\nAnnounced transformation (2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal (turn 3), for candidate/hello.txt, plan.md and proposal.md):\n\nRevise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\n\n### 2026-11-06T21:26:27.422Z — Agent\n\nThe revised candidate is exactly `Welcome, friend.\\n`: 17 bytes, one LF, no CR, with the final bytes `2e 0a` (period and LF). The registered target remains exactly `Hello.\\n`. The complete helper diff changes only `hello.txt` from the target baseline to the corrected wording; there are no binary changes. The revised proposal supersedes the earlier greeting. The corrected passage passed both screening commands before being carried into the candidate and outward documents.\n"
+      },
+      "bytes": {
+        "plan.md": 4269,
+        "proposal.md": 3764,
+        "conversation.md": 9573,
+        "reply": 688,
+        "total": 18294
+      },
+      "startedAt": "2026-11-06T21:26:03.163Z",
+      "finishedAt": "2026-11-06T21:26:41.061Z",
+      "workMs": 37898,
+      "waitingBeforeMs": 49,
+      "turnBoundary": {
+        "modelReturned": true,
+        "prune": "Session prune: 0 owned roots removed; 1 retained; 0 blockers.",
+        "candidatePresent": true
+      },
+      "planFirst": {
+        "proposedAt": "2026-11-06T21:26:27.422Z",
+        "proposalOrdinal": 4,
+        "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+        "documents": [
+          {
+            "path": "guide/evidence/WO-099/plan-first/plan.md",
+            "sha256": "4e30e523c3696e52dace08afdcc82e9452039699014ae5c6d18a758e7ac728a0"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/conversation.md",
+            "sha256": "b008bfcdc83979080ebaaa79101e6771d504c8d5f4af149c1bfe6f240979f283"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/proposal.md",
+            "sha256": "39e119e6651a563dad0e0dd319e29cbe8d37af3ff77f91c2ef460eed89c46f72"
+          }
+        ],
+        "diffDigest": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2",
+        "approvedAt": null
+      },
+      "targetContents": "Hello.\n"
+    },
+    {
+      "turn": 4,
+      "operator": "Looks good, build it.",
+      "agentReply": "Applied the approved change. `target/hello.txt` is exactly `Welcome, friend.\\n`: 17 bytes, one LF, no CR.\n\nThe marker-only refresh preserved the substantive plan, proposal, and complete diff byte-for-byte. Approval remains current, with no changed bound documents.\n\nReceipt: `launchpad/docs/intake/WO-099-plan-first-live/turn-4-metadata.json`.\n\nStopped after application and verification. Worker: `dotln-worker-astra`; usage counters and effective-session readback remain unavailable.\n",
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:27:25.915Z\",\n  \"conversationDigest\": \"6fe0b1573075b935cef9cfabb2f208192636e7620d6c220076d09b9e4a8755eb\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:50.823Z\",\n      \"from\": \"2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2)\",\n      \"to\": \"Yes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:26:27.173Z\",\n      \"from\": \"2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal (turn 3)\",\n      \"to\": \"Revise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting plan\n\nChange only `hello.txt` in the registered target to the operator's corrected wording, followed by exactly one LF:\n\n> Welcome, friend.\n\nThe correction selects this shorter greeting and supersedes the earlier, longer team welcome. Keeping the earlier proposal would ignore that correction. Leaving the target at `Hello.` is the NoOp alternative and would not provide the requested greeting. No additional wording choice or unresolved material question is needed before reviewing this revision.\n\nThe owned candidate contains exactly `Welcome, friend.\\n`. A fresh byte read confirms 17 bytes, one LF, no CR, and final bytes 0x2e 0x0a (period and LF). The registered target remains `Hello.` with one LF. The complete helper diff changes only this text file, with no binary changes. There is no package manifest or existing test suite in the fixture; the content and newline contract were checked directly.\n\nThis revision changes the proposed greeting and complete diff. The [proposal](proposal.md) contains the revised full patch, and the [conversation](conversation.md) preserves the correction and its answer. Approval of the current revision is still required before application; a request to revise the wording is not that approval.\n\nAfter ordinary approval of this exact revision, capture the approval, record PlanApproved, apply the accepted candidate through the plan-first helper, and verify the resulting greeting and single trailing LF. Any later change to the plan, proposal, conversation or base requires a new proposal.\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:27:25.915Z\",\n  \"conversationDigest\": \"6fe0b1573075b935cef9cfabb2f208192636e7620d6c220076d09b9e4a8755eb\",\n  \"transformations\": [\n    {\n      \"at\": \"2026-11-06T21:24:35.174Z\",\n      \"from\": \"2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1)\",\n      \"to\": \"Replace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\\n\\nProposed greeting: Welcome to the team! We're glad you're here.\\n\\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:06.944Z\",\n      \"from\": \"full-document screening correction in the conversation\",\n      \"to\": \"Use the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:25:50.823Z\",\n      \"from\": \"2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2)\",\n      \"to\": \"Yes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\",\n      \"surface\": \"plan.md and proposal.md\"\n    },\n    {\n      \"at\": \"2026-11-06T21:26:27.173Z\",\n      \"from\": \"2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal (turn 3)\",\n      \"to\": \"Revise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\",\n      \"surface\": \"candidate/hello.txt, plan.md and proposal.md\"\n    }\n  ]\n}\n-->\n# Greeting proposal\n\n`hello.txt` will contain `Welcome, friend.` followed by exactly one LF. This replaces the earlier proposed greeting in response to the operator's correction. The target still contains `Hello.` and has not been changed.\n\nThe candidate passed an exact byte comparison: 17 bytes total, one LF, no CR, ending in 0x2e 0x0a (period and LF). No other implementation file changes, and there are no binary changes.\n\nThe following is the complete revised candidate diff against the unchanged target baseline:\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..c34c1ca20e431480d6910c6d92a28899c5aa11f9 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome, friend.\n~~~\n<!-- dotln-plan-first-diff:end -->\n\nThe wording correction is not approval to apply. After approval of this revision, only the accepted candidate will be applied. See [plan.md](plan.md) for the plan and [conversation.md](conversation.md) for the correction and answer.\n",
+        "conversation.md": "# WO-099 greeting conversation\n\n### 2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal\n\nThe operator requests a warmer greeting for a new teammate while retaining the trailing newline, and wants the plan and complete proposed diff before application. This is synthetic operator turn 1; no later operator input has been received.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-1.txt` (relative to the target root). Capture digest: `sha256:b25c390f34df07edfada709452aa0fb7030103be70da7239f0c224670d95654c`.\n\n### 2026-11-06T21:24:27.953Z — Agent\n\nI read the order, the elected executor procedure, the empty conversation, and the candidate and target greeting. Both greetings are currently `Hello.` followed by one LF. The only implementation file found in the candidate is `hello.txt`; there is no package manifest or existing test suite in this fixture.\n\nI propose the single line `Welcome to the team! We're glad you're here.` with exactly one trailing LF. It directly welcomes a new teammate and adds warmth without assuming a name or role. Keeping the current greeting would preserve behavior but leave the request unmet. A named or role-specific welcome would require information not supplied. Adding onboarding instructions would widen this one-file request. The wording is a proposal, and I will revise it if the operator requests a different tone. There are no material questions that prevent presenting this first proposal.\n\nThe target implementation remains unchanged while I prepare the owned candidate. I will compare the complete binary-capable diff and check the candidate bytes and trailing LF before recording PlanProposed. Approval of the current revision is still required before application.\n\nExperiment receipt: worker type `dotln-worker-astra`; this is a synthetic procedure exercise, not evidence of human usability. Model and effort supplied for the event are operator-attested selections; effective-session readback is unavailable from the status command.\n\n### 2026-11-06T21:24:35.174Z — Agent\n\nAnnounced transformation (2026-11-06T21:24:27.953Z — Agent, paraphrasing the terminal (turn 1), for candidate/hello.txt, plan.md and proposal.md):\n\nReplace hello.txt with a friendly welcome for a new teammate, retain exactly one trailing LF, and present the plan and complete proposed diff before application.\n\nProposed greeting: Welcome to the team! We're glad you're here.\n\nOnly hello.txt changes. Keep the current greeting as the NoOp alternative; reject it because it does not provide the requested warmer welcome. Do not assume the teammate's name or role or add onboarding content. Revise the wording if the operator requests a different tone. No unresolved material question prevents this proposal.\n\n### 2026-11-06T21:24:48.866Z — Agent\n\nThe candidate byte comparison passed: it contains exactly the proposed greeting and one trailing LF. The registered target remains exactly `Hello.\\n`. The complete diff emitted by the plan-first helper changes only `hello.txt`; there are no binary changes. Both required screening commands passed for the carried passage before it was used in the candidate and proposal.\n\nThe canonical status identifies WO-099 as active. Its stale-projection and runtime-unavailable advisories do not change that recorded state; this experiment uses the supplied current helpers. No lifecycle phase dispatch or application has been requested. The fixture has no package manifest, so no package test command is available; this one-line proposal was checked directly against the required bytes.\n\nThe harness usage command reported `source: unavailable`, `cause: no-session`, with no token or cost counters and no observation cutoff. Current-session metadata readback was unavailable too. These missing counters do not justify invented measurements or an effective model claim.\n\n### 2026-11-06T21:25:06.604Z — Agent\n\nThe full-document screening refused both outward document headings because I included the launchpad order identifier there (rule `identifier.launchpad`, line 16). The carried greeting passage itself passed. I will use the generic headings `Greeting plan` and `Greeting proposal`, retain the order identifier only in the private workflow context, regenerate the shared marker, and screen again. The proposed greeting and complete diff do not change.\n\n### 2026-11-06T21:25:06.944Z — Agent\n\nAnnounced transformation (full-document screening correction in the conversation, for plan.md and proposal.md):\n\nUse the generic headings Greeting plan and Greeting proposal on the outward documents. Keep workflow order metadata private. The greeting and complete diff remain unchanged.\n\n### 2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal\n\nThe operator asks whether the proposal preserves the trailing newline and requests an explanation before deciding whether to approve. This is synthetic operator turn 2 and is not approval.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-2.txt` (relative to the target root). Capture digest: `sha256:ddbca37440e2d5d450256b6d9a79d334db940038da1a7508d6507dce5f7abe64`.\n\n### 2026-11-06T21:25:43.153Z — Agent\n\nYes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\n\nI reread the current plan, proposal and conversation. The conversation digest matched the last proposed revision, and there were no intervening operator entries in that document. Usage remains unavailable: the harness returned `cause: no-session` and no token, cost or observation-cutoff counters. Worker type remains `dotln-worker-astra`; no effective model or effort readback is available.\n\n### 2026-11-06T21:25:50.823Z — Agent\n\nAnnounced transformation (2026-11-06T21:25:43.153Z — Agent, paraphrasing the terminal (turn 2), for plan.md and proposal.md):\n\nYes. The candidate still ends with exactly one trailing newline. A fresh byte read found the final two bytes to be 0x2e 0x0a: the greeting's period followed by LF. The complete file contains one LF and no CR. The registered target still contains the original greeting and one LF. The wording and complete implementation diff are unchanged; this revision adds the requested explanation. The question is not approval, so application still waits for approval of the current revision.\n\n### 2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal\n\nThe operator replaces the proposed wording with `Welcome, friend.`, retains the newline requirement, and asks to see the revised full diff. This is synthetic operator turn 3: a correction, not approval.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-3.txt` (relative to the target root). Capture digest: `sha256:ed706702194869d52dd6db39100d1df88e177c9ce98024b3bc8c01d8e61f0ec8`.\n\n### 2026-11-06T21:26:19.638Z — Agent\n\nI will use exactly the newly requested wording and one trailing LF. The previous, longer welcome is superseded. I have reread the current conversation and proposal; the conversation matches its recorded digest and contains no intervening operator entries. The target still contains `Hello.\\n`, and the candidate still contains the previously proposed text before this revision.\n\nRevise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\n\nThe correction stays within the existing one-file scope. I will change the owned candidate, regenerate the complete diff and shared document marker, then stop at a new PlanProposed. Usage and effective-session readback remain unavailable; the harness again reported `cause: no-session`. Worker type: `dotln-worker-astra`.\n\n### 2026-11-06T21:26:27.173Z — Agent\n\nAnnounced transformation (2026-11-06T21:26:19.638Z — Agent, paraphrasing the terminal (turn 3), for candidate/hello.txt, plan.md and proposal.md):\n\nRevise the proposed greeting to exactly Welcome, friend. followed by one LF. This replaces the longer team welcome at the operator's request. Show the complete revised diff from the unchanged target baseline. The correction selects the new wording but does not approve application. Keeping either the earlier wording or the original greeting would fail to follow the correction. No additional wording choice or material question remains before presenting the revision.\n\n### 2026-11-06T21:26:27.422Z — Agent\n\nThe revised candidate is exactly `Welcome, friend.\\n`: 17 bytes, one LF, no CR, with the final bytes `2e 0a` (period and LF). The registered target remains exactly `Hello.\\n`. The complete helper diff changes only `hello.txt` from the target baseline to the corrected wording; there are no binary changes. The revised proposal supersedes the earlier greeting. The corrected passage passed both screening commands before being carried into the candidate and outward documents.\n\n### 2026-11-06T21:27:06.634Z — Agent, paraphrasing the terminal\n\nThe operator approves the current revised proposal and asks for it to be applied. This is synthetic operator turn 4, approving `Welcome, friend.` with one trailing LF as shown in the latest full diff.\n\nTerminal original: `../launchpad/docs/intake/WO-099-plan-first-live/turn-4.txt` (relative to the target root). Capture digest: `sha256:bc5dba2f1faf7e908224f0d4684f17d62c1d15d3645d25f5a4b7fe033eee181c`. Approval refers to the proposal dated 2026-11-06T21:26:27.422Z, proposal ordinal 4.\n\n### 2026-11-06T21:27:25.915Z — Agent\n\nThe operator approved the exact revised greeting and full diff presented in the preceding turn. I checked the candidate diff and all three bound documents against proposal ordinal 4 before adding this approval entry; they matched. The candidate diff and the substantive text of both plan and proposal will remain byte-identical. Only their revision markers will be refreshed to include this conversation entry.\n\nThe synthetic experiment's orchestrator clarified this context-only approval ordering after the current procedure left it ambiguous: record the refreshed proposal, bind this same ordinary approval to the unchanged substantive plan and diff, and apply. That clarification is procedure guidance, not an additional operator turn or authorization for any implementation change. I will not append to the bound conversation after approval.\n\nWorker type: `dotln-worker-astra`. The actual approval text is retained in ignored intake with its digest above. Available usage remains unknown: the harness reported `source: unavailable` and `cause: no-session`, with no token, cost or cutoff counters. Effective-session model and effort readback remain unavailable; event actor values are operator-attested selections.\n"
+      },
+      "bytes": {
+        "plan.md": 4269,
+        "proposal.md": 3764,
+        "conversation.md": 11388,
+        "reply": 485,
+        "total": 19906
+      },
+      "startedAt": "2026-11-06T21:26:41.111Z",
+      "finishedAt": "2026-11-06T21:27:59.612Z",
+      "workMs": 78501,
+      "waitingBeforeMs": 50,
+      "turnBoundary": {
+        "modelReturned": true,
+        "prune": "Session prune: 0 owned roots removed; 1 retained; 0 blockers.",
+        "candidatePresent": true
+      },
+      "planFirst": {
+        "proposedAt": "2026-11-06T21:27:25.915Z",
+        "proposalOrdinal": 5,
+        "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+        "documents": [
+          {
+            "path": "guide/evidence/WO-099/plan-first/plan.md",
+            "sha256": "038c4ccb1440eca5cea84e1739c3e66ded1aa1c664a25ae6065e79637c9436f7"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/conversation.md",
+            "sha256": "6fe0b1573075b935cef9cfabb2f208192636e7620d6c220076d09b9e4a8755eb"
+          },
+          {
+            "path": "guide/evidence/WO-099/plan-first/proposal.md",
+            "sha256": "7566f835f747e10f32cf1c54b5101542e0b91683276e8d5cb0a3d8126c3cb40a"
+          }
+        ],
+        "diffDigest": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2",
+        "approvedAt": "2026-11-06T21:27:31.629Z",
+        "approvalCaptureHash": "sha256:bc5dba2f1faf7e908224f0d4684f17d62c1d15d3645d25f5a4b7fe033eee181c"
+      },
+      "targetContents": "Welcome, friend.\n"
+    }
+  ],
+  "acceptedDiff": "diff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..c34c1ca20e431480d6910c6d92a28899c5aa11f9 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome, friend.\n",
+  "events": [
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-11-06T21:25:15.322Z",
+      "type": "PlanProposed",
+      "workOrderId": "WO-099",
+      "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+      "diffDigest": "1e30423c1d4e71ac55006f70a5f992ebe9420424de3e046b9f25dbbda66d2e8f",
+      "proposedAt": "2026-11-06T21:25:06.948Z",
+      "documents": [
+        {
+          "path": "guide/evidence/WO-099/plan-first/plan.md",
+          "sha256": "4a429a87101e5194e8327617ecb173ef156f7868f1e70308ad7bad772ebfcf1e"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/conversation.md",
+          "sha256": "db1be75f35c80e79acbdfe1d44c75aaaf2aa28fa89208865b814bcaf2f774c59"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/proposal.md",
+          "sha256": "f87cda3f97de49510e6033ee15b2aba418caa1fa1613724c299b6b744320e1fc"
+        }
+      ],
+      "actor": {
+        "harness": "codex-cli",
+        "harnessVersion": "0.167.0",
+        "model": "gpt-6-astra",
+        "effort": "max",
+        "source": "operator-attested"
+      },
+      "checkpointSha": "c9bcf5cfa8caf64a50f352c6a0ef09114ea79e72",
+      "checkpointRef": "refs/dotln/checkpoint/WO-099/1"
+    },
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-11-06T21:25:54.488Z",
+      "type": "PlanProposed",
+      "workOrderId": "WO-099",
+      "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+      "diffDigest": "1e30423c1d4e71ac55006f70a5f992ebe9420424de3e046b9f25dbbda66d2e8f",
+      "proposedAt": "2026-11-06T21:25:50.848Z",
+      "documents": [
+        {
+          "path": "guide/evidence/WO-099/plan-first/plan.md",
+          "sha256": "a7fbc080a1ccbf2d84b222bb40ebf7465456797db7ea078aef0f8c599927fc28"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/conversation.md",
+          "sha256": "1b6c964e669dbe62aa828646073e3eaf513902ce86d18a076fcf8af6de98a339"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/proposal.md",
+          "sha256": "b59d518176e6feb18feb258ae1b4575087b41b4fe2e57f34fdf1ed91ffa254c7"
+        }
+      ],
+      "actor": {
+        "harness": "codex-cli",
+        "harnessVersion": "0.167.0",
+        "model": "gpt-6-astra",
+        "effort": "max",
+        "source": "operator-attested"
+      },
+      "checkpointSha": "44098d2869f81d42c78e88051432b934c9f2d761",
+      "checkpointRef": "refs/dotln/checkpoint/WO-099/2"
+    },
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-11-06T21:26:34.485Z",
+      "type": "PlanProposed",
+      "workOrderId": "WO-099",
+      "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+      "diffDigest": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2",
+      "proposedAt": "2026-11-06T21:26:27.422Z",
+      "documents": [
+        {
+          "path": "guide/evidence/WO-099/plan-first/plan.md",
+          "sha256": "4e30e523c3696e52dace08afdcc82e9452039699014ae5c6d18a758e7ac728a0"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/conversation.md",
+          "sha256": "b008bfcdc83979080ebaaa79101e6771d504c8d5f4af149c1bfe6f240979f283"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/proposal.md",
+          "sha256": "39e119e6651a563dad0e0dd319e29cbe8d37af3ff77f91c2ef460eed89c46f72"
+        }
+      ],
+      "actor": {
+        "harness": "codex-cli",
+        "harnessVersion": "0.167.0",
+        "model": "gpt-6-astra",
+        "effort": "max",
+        "source": "operator-attested"
+      },
+      "checkpointSha": "97ec6aee38260798d0c953633e1f7db3b7e45c2e",
+      "checkpointRef": "refs/dotln/checkpoint/WO-099/3"
+    },
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-11-06T21:27:28.901Z",
+      "type": "PlanProposed",
+      "workOrderId": "WO-099",
+      "baseCommit": "c3622e9c3dc8bdcd3ce35754109544e4fdc1cfe3",
+      "diffDigest": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2",
+      "proposedAt": "2026-11-06T21:27:25.915Z",
+      "documents": [
+        {
+          "path": "guide/evidence/WO-099/plan-first/plan.md",
+          "sha256": "038c4ccb1440eca5cea84e1739c3e66ded1aa1c664a25ae6065e79637c9436f7"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/conversation.md",
+          "sha256": "6fe0b1573075b935cef9cfabb2f208192636e7620d6c220076d09b9e4a8755eb"
+        },
+        {
+          "path": "guide/evidence/WO-099/plan-first/proposal.md",
+          "sha256": "7566f835f747e10f32cf1c54b5101542e0b91683276e8d5cb0a3d8126c3cb40a"
+        }
+      ],
+      "actor": {
+        "harness": "codex-cli",
+        "harnessVersion": "0.167.0",
+        "model": "gpt-6-astra",
+        "effort": "max",
+        "source": "operator-attested"
+      },
+      "checkpointSha": "fd2e49a6c78a67f04adb9bfa9455f672510e6fd1",
+      "checkpointRef": "refs/dotln/checkpoint/WO-099/4"
+    },
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-11-06T21:27:31.629Z",
+      "type": "PlanApproved",
+      "workOrderId": "WO-099",
+      "proposalOrdinal": 5,
+      "capture": "docs/intake/WO-099-plan-first-live/turn-4.txt",
+      "captureHash": "sha256:bc5dba2f1faf7e908224f0d4684f17d62c1d15d3645d25f5a4b7fe033eee181c",
+      "actor": {
+        "harness": "codex-cli",
+        "harnessVersion": "0.167.0",
+        "model": "gpt-6-astra",
+        "effort": "max",
+        "source": "operator-attested"
+      },
+      "checkpointSha": "873c5050956685d4c48410e79c960ccb01d858a1",
+      "checkpointRef": "refs/dotln/checkpoint/WO-099/5"
+    }
+  ],
+  "application": {
+    "checkedAt": "2026-11-06T21:27:40.268Z",
+    "applied": true,
+    "exactBytes": "Welcome, friend.\n",
+    "byteCount": 17,
+    "newlineCount": 1,
+    "carriageReturnCount": 0,
+    "suffixHex": "2e0a",
+    "approvedAt": "2026-11-06T21:27:31.629Z",
+    "proposalOrdinal": 5,
+    "boundDocumentsChanged": [],
+    "appliedDiffMatchesApproved": true,
+    "diffDigest": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2"
+  },
+  "approvalRefresh": {
+    "at": "2026-11-06T21:27:25.915Z",
+    "priorProposalOrdinal": 4,
+    "priorProposedAt": "2026-11-06T21:26:27.422Z",
+    "candidateDiffByteIdentical": true,
+    "planBodyByteIdentical": true,
+    "proposalBodyByteIdentical": true,
+    "diffDigestBefore": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2",
+    "diffDigestAfter": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2",
+    "planBodyDigestBefore": "c0d7359890ea7f0445f96864b23d996ef0cd15e7eda2c689a2311387b0fedf7e",
+    "planBodyDigestAfter": "c0d7359890ea7f0445f96864b23d996ef0cd15e7eda2c689a2311387b0fedf7e",
+    "proposalBodyDigestBefore": "521f937024bb6eb2781951d21d479d5d9ec137f793911430e1f2310811f1f8b1",
+    "proposalBodyDigestAfter": "521f937024bb6eb2781951d21d479d5d9ec137f793911430e1f2310811f1f8b1",
+    "documents": [
+      {
+        "path": "guide/evidence/WO-099/plan-first/plan.md",
+        "sha256": "038c4ccb1440eca5cea84e1739c3e66ded1aa1c664a25ae6065e79637c9436f7"
+      },
+      {
+        "path": "guide/evidence/WO-099/plan-first/conversation.md",
+        "sha256": "6fe0b1573075b935cef9cfabb2f208192636e7620d6c220076d09b9e4a8755eb"
+      },
+      {
+        "path": "guide/evidence/WO-099/plan-first/proposal.md",
+        "sha256": "7566f835f747e10f32cf1c54b5101542e0b91683276e8d5cb0a3d8126c3cb40a"
+      }
+    ]
+  },
+  "workMs": 260215,
+  "waitingMs": 145,
+  "readingMethod": "Full UTF-8 bytes of plan, proposal, conversation and the executor final response on each turn; repeated material is counted again. Tool transcripts and driver instructions are not claimed as required operator reading.",
+  "usage": {
+    "source": "unavailable",
+    "cause": "no-session",
+    "totalTokens": null,
+    "costUsd": null,
+    "observedAt": null
+  },
+  "parentUsageAtEnd": {
+    "source": "codex-transcript-counter",
+    "scope": "dispatch",
+    "observedAt": "2026-11-06T21:27:59.669Z",
+    "usage": {
+      "inputTokens": 31011325,
+      "cachedInputTokens": 30522496,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 111514,
+      "reasoningOutputTokens": 50714,
+      "totalTokens": 31122839,
+      "costUsd": null
+    },
+    "limit": "Whole parent dispatch; not isolated live-conversation usage."
+  },
+  "intervention": {
+    "turn": 4,
+    "actor": "experiment driver",
+    "issue": "The executor identified that paraphrasing the approval changed the bound conversation digest.",
+    "resolution": "Verify the candidate diff and substantive proposal are unchanged, refresh revision markers, record the proposal then approval from the same supplied approval. No extra implementation or substantive plan change was authorized.",
+    "procedureChanged": true
+  },
+  "hostBoundary": {
+    "codex": "Real model turns used the elected procedure, actual lifecycle and apply helpers; direct tool writes are a role duty because this host has no native pre-effect hook.",
+    "turnEnd": "The model returned between turns; parent called ordinary session pruning after each return, observing candidate retention.",
+    "claude": "Generated launchpad and installed target hook boundaries are separately covered by passing bounded regressions; no live Claude session is claimed."
+  },
+  "limitations": [
+    "No human novice participated; comprehension and reduced burden remain unmeasured.",
+    "One driver clarification was required in the approval turn and was incorporated into the emitted procedure.",
+    "Waiting came from the automated driver, not human response time.",
+    "Model-specific usage counters were unavailable (no-session); parent counters are not isolated conversation cost.",
+    "The deterministic earlier probe is retained separately in scripted-mechanism.json."
+  ]
+}

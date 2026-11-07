@@ -2159,7 +2159,14 @@ export const drivenHelperScripts = [
 ] as const;
 
 const drivenPhaseActions: Readonly<Record<string, readonly string[]>> = {
-  executor: ["next", "fix", "implementation-ready", "repair-complete"],
+  executor: [
+    "next",
+    "fix",
+    "implementation-ready",
+    "repair-complete",
+    "plan-proposed",
+    "plan-approved",
+  ],
   verifier: ["verify", "verification-result"],
   reviewer: ["final-review", "final-review-result", "target-records"],
 };
@@ -2178,6 +2185,21 @@ export function drivenCommandEffect(
       if (["status", "briefing", "times", "usage"].includes(action))
         return "read";
       return drivenPhaseActions[role]?.includes(action) ? "write" : null;
+    case "plan-first":
+      return role === "executor" &&
+        next === workOrder &&
+        ["draft", "diff", "apply", "screen"].includes(action) &&
+        (args.length === 2 ||
+          (action === "draft" && args.length === 3 && args[2] === "--new"))
+        ? "write"
+        : null;
+    case "terms":
+    case "outward-lint":
+      return args.length === 2 &&
+        action === "--plan-first" &&
+        next === workOrder
+        ? "read"
+        : null;
     case "release":
       // The local preparation alone; a preparation that reads origin tags is
       // the launchpad's own command.

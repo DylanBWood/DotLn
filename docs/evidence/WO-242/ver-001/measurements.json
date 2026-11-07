@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "recordedBy": "WO-242 VER-001 verifier",
+  "recordedAt": "2026-11-07T03:19:43.071Z",
+  "realCorpusReadCost": {
+    "method": "Median of ten in-process samples on this launchpad (read-only): readControl, readFeatures and git rev-parse HEAD, the reads planFirstView makes per judged executor write while a proposal awaits, before the three document digests.",
+    "orders": 217,
+    "medianMs": {
+      "readControl": 21.6,
+      "features": 0.12,
+      "headRead": 7.01
+    },
+    "comparison": "scripted-mechanism.json guardCost records the whole in-process judgment on a one-order fixture: off mean 0.021 ms, awaiting mean 0.768 ms."
+  },
+  "offModeHookControls": {
+    "method": "Verifier rerun of scripts/probes/wo242-controls.mjs with its evidence write replaced by output: base permission hook from 62b0332a with its retained runtime .runtime/harness/a354324b78b87c14 against the candidate hook, election absent and false, separate executor sessions per arm.",
+    "rows": [
+      {
+        "surface": "hook: source write",
+        "election": "absent",
+        "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "equal": true
+      },
+      {
+        "surface": "hook: read",
+        "election": "absent",
+        "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "equal": true
+      },
+      {
+        "surface": "hook: push advisory",
+        "election": "absent",
+        "base": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+        "candidate": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+        "equal": true
+      },
+      {
+        "surface": "hook: malformed later destination",
+        "election": "absent",
+        "base": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+        "candidate": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+        "equal": true
+      },
+      {
+        "surface": "hook: source write",
+        "election": "false",
+        "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "equal": true
+      },
+      {
+        "surface": "hook: read",
+        "election": "false",
+        "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "equal": true
+      },
+      {
+        "surface": "hook: push advisory",
+        "election": "false",
+        "base": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+        "candidate": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+        "equal": true
+      },
+      {
+        "surface": "hook: malformed later destination",
+        "election": "false",
+        "base": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+        "candidate": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+        "equal": true
+      }
+    ]
+  }
+}

@@ -149,6 +149,21 @@ The operator's entire instruction to you may be a single phrase of the form
 do not ask which work order: the durable control state answers both, and the
 operator is deliberately not repeating themselves.
 
+With `features.plan-first` elected, an active order's `resume: next` first
+produces a plan, persistent conversation and complete candidate diff in its
+plan-first directory. The executor drafts in owned scratch, records
+`PlanProposed`, prints the paths and stops. It reads and answers every new
+operator entry on return, paraphrases terminal replies with capture provenance,
+and announces transformations before carrying text onto screened surfaces.
+Only the operator's ordinary approval of the current proposal permits
+`PlanApproved` and application. A changed proposal, conversation or base makes
+that approval stale. Host notifications and agent reports are never operator
+turns. The default off election retains direct execution; repairs retain their
+finding-bounded workflow. A drive stops at the proposed plan until the executor
+records approval, then may resume in a fresh phase session. See the
+[operator workflow](../KIT.md#plan-first-mode) and
+[decision](../evidence/WO-242/decisions.md#wo-242-d011).
+
 `drive: WO-NNN` selects the router in main and carries the authority of the
 lifecycle phrases it dispatches, including final-review publication and release
 close after the operator merges. It grants no merge authority. The router reads
@@ -806,6 +821,14 @@ keeps the activation-base range with the absence named in any refusal. Reports a
 in the launchpad; `resume target-records` copies the order and moves its
 decisions and filed reports into the target's `documentationRoot`, retaining
 control state, raw evidence and links in the launchpad.
+The plan-first directory is `<evidence root>/WO-NNN/plan-first/` for a self
+order, and `evidence/WO-NNN/plan-first/` under the target's `documentationRoot`
+for a target order. `plan.md` and `proposal.md` are regenerated with revision
+markers; `conversation.md` is appended under dated writer headings. These
+files are born in the target and `target-records` does not move them. A private
+target conversation is screened only when a passage leaves it; a public self
+conversation is itself a screened publication input.
+
 The moved-record readers check the ignored clone mapping in the running
 launchpad checkout, then the primary checkout whose Git directory is the
 common Git directory, then a worktree on `main`. The primary checkout may
@@ -831,8 +854,8 @@ under the configured control root, and `check` refuses stale output.
 refreshes the installed harness before rendering metadata, so the inventory
 uses the current refusal count after a kit update. Existing keys
 remain in place, with budget values attributed to the budgets file;
-unread release switches, saved build loadout/profile keys and the pending
-`plan-first` consumer are identified explicitly. The subagent-cap row follows
+unread release switches and saved build loadout/profile keys are identified
+explicitly; the `plan-first` row names its host consumer. The subagent-cap row follows
 its runtime reader at the default budget path even when the control root is
 relocated; other budget rows follow their configured-root readers. The refusal classes, writer reservation and clean-room floor
 remain fixed. The render cost measurement and compatibility decisions are
@@ -1150,6 +1173,27 @@ by the routes below [[off-ramps pass](../planning/passes/off-ramps-5s-entropy-20
 §3–§4, 2026-09-25]. The unconditional entry commands are WO-131 scope; this
 general helper is a preserved requirement, not a claim of implemented recovery
 for every corrupt repository. Source and review duties: [WO-131 ideation receipt](../evidence/WO-131/ideation.md).
+
+Plan-first adds two events within `active`, without a new phase.
+`plan-proposed WO-NNN <actor-flags>` records the base commit, complete candidate
+diff digest and all three document digests, validating their revision markers.
+`plan-approved WO-NNN --capture <path> --capture-hash sha256:<digest>
+<actor-flags>` uses the same ignored capture contract as the recovery routes and
+binds the exact proposal ordinal. The recording actor infers approval from the
+operator's words; the command validates provenance and freshness, not natural
+language intent. A new proposal supersedes approval. The observed write hook,
+candidate apply helper and implementation readiness share one freshness check;
+Codex direct tool writes remain a role duty under host permissions. These events
+are not waivers or permission to weaken the clean-room floor.
+
+The executor captures and paraphrases approval before recording it. When that
+entry changes only the conversation and revision markers, the executor verifies
+that the complete candidate diff and substantive plan and proposal are
+byte-identical to the reviewed version, refreshes `PlanProposed`, then records
+the same approval. A substantive change requires another approval. Application
+completion is reported outside the bound conversation; a later operator entry
+invalidates approval normally
+([WO-242-D013](../evidence/WO-242/decisions.md#wo-242-d013)).
 
 Each of the eight routes below is a `resume` command that appends its typed
 event with the actor attestation and a recovery checkpoint (except the closed-order

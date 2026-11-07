@@ -371,6 +371,13 @@ const output = await (async function codexContinuation(input, operatorControl, c
         if (status.status !== 0)
             throw new Error("canonical task state unavailable");
         const task = JSON.parse(status.stdout);
+        // An elected plan is an intentional turn boundary for the operator.
+        // Keep the outstanding dispatch for the next prompt's writer reservation.
+        if (session.role === "executor" &&
+            task.phase === "active" &&
+            task.planFirst?.proposedAt &&
+            !task.planFirst.approvedAt)
+            return {};
         const phase = /** @type {Record<string, string>} */ ({
             ImplementationReady: "active",
             RepairCompleted: "repairing",

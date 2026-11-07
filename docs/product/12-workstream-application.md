@@ -49,10 +49,11 @@ ordinary project links inside the instance while credentials stay excluded
 and publications keep refusing private terms (WO-241; the
 [configuration inventory](feature-configuration.md)).
 
-**Plan-first mode (planned, WO-242).** An operator new to agents, or one
+**Plan-first mode.** An operator new to agents, or one
 who wants to read before anything is built, elects plan-first for the
 instance. The executor then writes three documents under the order's
-evidence path in the target repository before it changes any code: a plan
+evidence path in the target repository before it changes the implementation
+worktree: a plan
 the agent regenerates (where the change goes, why, the contracts it expects,
 the decisions so far), a conversation that persists and that both the
 operator and the agent write, and a proposal that carries the complete
@@ -62,6 +63,9 @@ paraphrases its own entries, announces any transformation before it carries
 a passage onto a screened surface, never rewrites the operator's lines, and
 implements only after the operator's approval of that exact proposal is
 recorded. Direct execution stays the default where the mode is not elected.
+The [kit guide](../KIT.md#plan-first-mode) gives the entry steps and the
+[execution record](../evidence/WO-242/decisions.md#wo-242-d011) distinguishes
+the observed scripted workflow from unmeasured human usability.
 
 The operator selects repositories and the boundary of a proposed task. The
 reference profile previews where its inputs and outputs would go and which

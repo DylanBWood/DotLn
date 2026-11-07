@@ -399,6 +399,12 @@ const BUILD_ONLY =
   "scripts/build.mjs loads it only after compiling, to preserve an installed harness runtime snapshot (harness.mjs) or to test for a main module (paths.mjs); compiled output does not depend on it. The authority and harness editions register it.";
 export const evidenceImportExclusions = {
   "*": {
+    "packages/skeleton/src/plan-first-boundary.ts":
+      "Optional plan-first approval guard. All evidence editions use the default off election; plan-first and harness fixtures judge its activation, freshness and write boundaries.",
+    "scripts/lib/plan-first.mjs":
+      "Optional plan-first state and candidate helpers. The editions use the default off election; lifecycle and harness fixtures judge this workflow.",
+    "scripts/lib/plan-first-screen.mjs":
+      "Plan-first document and passage screening, exercised by its lifecycle fixtures rather than the evidence editions.",
     "scripts/lib/temporary-prune.mjs":
       "Lifecycle cleanup runs after a session or gate ends; no edition invokes those cleanup boundaries. Ownership records are registered separately; harness and runner fixtures judge pruning, retention and parallel-worktree safety.",
     "scripts/lib/temporary-prune-summary.mjs":

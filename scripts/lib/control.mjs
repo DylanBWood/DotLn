@@ -373,6 +373,7 @@ const scanControl = (events, visit) => {
         });
         break;
       case "WorkOrderActivated":
+        delete state.planFirst;
         delete state.targetSubject;
         delete state.targetGate;
         delete state.targetRecords;
@@ -430,6 +431,59 @@ const scanControl = (events, visit) => {
           ...offRampProjections(),
         });
         attested.set(event.workOrderId, []);
+        break;
+      case "PlanProposed": {
+        const docs = event.documents;
+        if (
+          state.phase !== "active" ||
+          !completeActor(event.actor) ||
+          !TREE_HASH.test(event.baseCommit ?? "") ||
+          !HEX_64.test(event.diffDigest ?? "") ||
+          !Number.isFinite(Date.parse(event.proposedAt)) ||
+          !Array.isArray(docs) ||
+          docs.length !== 3 ||
+          docs.some(
+            (row) =>
+              !row ||
+              typeof row.path !== "string" ||
+              row.path.startsWith("/") ||
+              row.path.includes("\\") ||
+              row.path
+                .split("/")
+                .some((part) => !part || part === "." || part === "..") ||
+              !HEX_64.test(row.sha256 ?? ""),
+          ) ||
+          [...docs.map((row) => row.path.split("/").at(-1))]
+            .sort()
+            .join(",") !== "conversation.md,plan.md,proposal.md"
+        )
+          throw new Error(`invalid PlanProposed at line ${index + 1}`);
+        state.planFirst = {
+          proposedAt: event.proposedAt,
+          proposalOrdinal: index + 1,
+          baseCommit: event.baseCommit,
+          documents: docs,
+          diffDigest: event.diffDigest,
+          approvedAt: null,
+        };
+        break;
+      }
+      case "PlanApproved":
+        if (
+          state.phase !== "active" ||
+          !state.planFirst ||
+          state.planFirst.approvedAt ||
+          event.proposalOrdinal !== state.planFirst.proposalOrdinal ||
+          !completeActor(event.actor) ||
+          !SHA256_DIGEST.test(event.captureHash ?? "") ||
+          !offRampText(event.capture)
+        )
+          throw new Error(`invalid PlanApproved at line ${index + 1}`);
+        state.planFirst = {
+          ...state.planFirst,
+          approvedAt: event.recordedAt,
+          approvalCaptureHash: event.captureHash,
+        };
         break;
       case "ImplementationReady":
         state.phase = "ready-to-verify";

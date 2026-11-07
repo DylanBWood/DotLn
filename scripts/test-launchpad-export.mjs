@@ -96,6 +96,7 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
     [...guide.matchAll(/^## (.+)$/gm)].map((match) => match[1]),
     [
       "First steps",
+      "Plan-first mode",
       "Features",
       "Planning in this instance",
       "Releases in this instance",
@@ -558,12 +559,17 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     /This source prepares DotLn-Enterprise-Starter/u,
   );
   assert.deepEqual(config.roots, defaultRoots());
-  assert.deepEqual(config.features, {
+  const { "plan-first": planFirst, ...otherFeatures } = config.features;
+  const { note: planFirstNote, ...planFirstElection } = planFirst;
+  assert.deepEqual(planFirstElection, { on: false });
+  assert.equal(typeof planFirstNote, "string");
+  for (const purpose of [/plan/iu, /diff/iu, /approval/iu])
+    assert.match(planFirstNote, purpose);
+  assert.deepEqual(otherFeatures, {
     "tinkerer-economy": {
       on: true,
       note: "Compare approaches when a useful fork appears.",
     },
-    "plan-first": false,
     "private-destination": false,
     "desktop-control": false,
   });

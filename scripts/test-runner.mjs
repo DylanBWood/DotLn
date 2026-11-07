@@ -348,6 +348,13 @@ export const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
     "scripts/test-harness.mjs",
+    "scripts/test-plan-first.mjs",
+    "scripts/test-plan-first-boundaries.mjs",
+    "scripts/lib/plan-first.mjs",
+    "scripts/lib/plan-first-screen.mjs",
+    "scripts/lib/plan-first-fixture.mjs",
+    "scripts/plan-first.mjs",
+    "packages/skeleton/src/plan-first-boundary.ts",
     // The snapshot names releases before records gave, read by the harness
     // suite's snapshot proof regression (WO-252).
     "scripts/fixtures/wo252-pre-record-snapshots.json",
@@ -1668,6 +1675,9 @@ export const suites = [
   nodeTests("sync-fixtures", "scripts/test-sync.mjs", {
     needsBuild: false,
     kit: "core-only: the core generated-artifact and evidence-edition inventory",
+    // Real artifact commands retain standalone deadlines while this fixture
+    // repeatedly checks and regenerates the complete inventory.
+    exclusive: true,
   }),
   nodeTests("process-debt", "scripts/test-process-debt.mjs", {
     kit: "core-only: historical Git trees, package sources, core budgets and work orders",

@@ -1,4 +1,4 @@
-# WO-242 — Plan-first mode: when an instance elects it, the executor writes a plan, a conversation and a proposal into the order's documentation root, records the proposal and stops; the operator answers in the terminal or in the conversation document; the executor paraphrases, screens and surfaces every transformation before it carries a word elsewhere, and implements only after the operator's approval is recorded as a typed event the hook enforces (version assigned at activation)
+# WO-242 — Plan-first mode: when an instance elects it, the executor writes a plan, a conversation and a proposal into the order's documentation root, records the proposal and stops; the operator answers in the terminal or in the conversation document; the executor paraphrases, screens and surfaces every transformation before it carries a word elsewhere, and implements only after the operator's approval is recorded as a typed event the hook enforces (v0.120.0)
 
 **Model:** the executor runs on the operator's pinned Claude Code
 `claude-fable-5-1` or Codex `gpt-6.1-sol` at `max` (the design of a role's

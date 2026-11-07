@@ -1,3 +1,5 @@
+import "./test-plan-first.mjs";
+import "./test-plan-first-boundaries.mjs";
 import "./test-dispatch-bound.mjs";
 import {
   excludeFixtureOwnership,
@@ -20143,5 +20145,183 @@ test("the release-close handoff states each close's actual effect, by kind", () 
     );
   } finally {
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("plan-first hook holds source writes from activation through stale approval and admits records and owned candidate", async () => {
+  const {
+    selectedPlanState,
+    draftPlanCandidate,
+    planFirstContext,
+    planDigest,
+    planMarker,
+    proposalPatch,
+    proposedPlan,
+    candidateDiff,
+  } = await import("./lib/plan-first.mjs");
+  for (const targetOrder of [false, true]) {
+    const root = fixture();
+    const outside = realpathSync(
+      createFixtureRoot(join(tmpdir(), "dotln-plan-hook-")),
+    );
+    try {
+      const target = targetOrder ? join(outside, "target") : root;
+      if (targetOrder) {
+        mkdirSync(target);
+        runGit(target, ["init", "-q", "-b", "wo-999"]);
+        write(target, "source.txt", "original\n");
+        runGit(target, ["add", "."]);
+        runGit(target, [
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "commit",
+          "-qm",
+          "fixture",
+        ]);
+      }
+      write(
+        root,
+        "dotln.config.json",
+        json({
+          version: 1,
+          features: { "plan-first": true },
+          ...(targetOrder
+            ? {
+                classes: { fixture: { checks: [], supports: [] } },
+                repositories: {
+                  fixture: {
+                    baseBranch: "main",
+                    worktreeParent: "../targets",
+                    repositoryClass: "fixture",
+                    authorityProfile: {
+                      authorityEnvelopeId: "fixture",
+                      allowedEffects: ["repo.read", "repo.write"],
+                      deniedEffects: [],
+                      resourceLimits: {},
+                      requiredEvidence: [],
+                      expiresAt: Number.MAX_SAFE_INTEGER,
+                      revocationEventTypes: [],
+                    },
+                    documentationRoot: "guide",
+                  },
+                },
+              }
+            : {}),
+        }),
+      );
+      const eventPath = join(root, "docs/control/orders/WO-999.jsonl");
+      writeFileSync(
+        eventPath,
+        JSON.stringify({
+          type: "WorkOrderActivated",
+          workOrderId: "WO-999",
+          ...(targetOrder
+            ? {
+                repositoryId: "fixture",
+                baseCommit: runGit(target, ["rev-parse", "HEAD"]),
+                documentationRoot: "guide",
+              }
+            : {}),
+        }) + "\n",
+      );
+      if (targetOrder)
+        write(
+          root,
+          "docs/control/local/target-worktrees.json",
+          json({
+            [target]: {
+              workOrderId: "WO-999",
+              repositoryId: "fixture",
+              branch: "wo-999",
+              launchpad: root,
+              target,
+            },
+          }),
+        );
+      beginHarnessSession(root, "plan-executor", "executor");
+      const state = () => selectedPlanState(root, "WO-999");
+      const candidate = draftPlanCandidate(root, state(), outside);
+      const context = planFirstContext(root, state());
+      mkdirSync(context.directory, { recursive: true });
+      const call = (file, session = "plan-executor") =>
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            session_id: session,
+            tool_name: "Edit",
+            tool_input: { file_path: file },
+          }),
+        );
+      for (const file of [
+        join(root, "fixture.ts"),
+        join(target, "source.txt"),
+      ]) {
+        const reply = call(file);
+        assert.equal(allowed(reply), false, JSON.stringify(reply));
+        assert.match(
+          reply.hookSpecificOutput.permissionDecisionReason,
+          /conversation.md.*plan-approved/,
+        );
+      }
+      for (const file of [
+        join(context.directory, "plan.md"),
+        join(dirname(context.directory), "decisions.md"),
+        join(candidate.path, "source.txt"),
+      ])
+        assert.equal(allowed(call(file)), true, file);
+      const at = "2026-11-06T00:00:00.000Z";
+      const conversation = `### ${at} — Operator\n\nGo ahead.\n`;
+      writeFileSync(join(context.directory, "conversation.md"), conversation);
+      const marker = planMarker({
+        status: "proposed",
+        proposedAt: at,
+        conversationDigest: planDigest(conversation),
+        transformations: [],
+      });
+      writeFileSync(join(context.directory, "plan.md"), marker + "A plan.\n");
+      writeFileSync(
+        join(context.directory, "proposal.md"),
+        marker + proposalPatch(candidateDiff(root, state()).diff),
+      );
+      const actor = {
+        harness: "fixture",
+        harnessVersion: "fixture",
+        model: "fixture",
+        effort: "max",
+        source: "operator-attested",
+      };
+      const append = (event) =>
+        appendFileSync(
+          eventPath,
+          JSON.stringify({
+            recordedAt: at,
+            workOrderId: "WO-999",
+            actor,
+            ...event,
+          }) + "\n",
+        );
+      append({ type: "PlanProposed", ...proposedPlan(root, state()) });
+      assert.equal(allowed(call(join(target, "source.txt"))), false);
+      append({
+        type: "PlanApproved",
+        proposalOrdinal: 2,
+        capture: "docs/intake/approval.txt",
+        captureHash: "sha256:" + "1".repeat(64),
+      });
+      assert.equal(allowed(call(join(target, "source.txt"))), true);
+      appendFileSync(join(context.directory, "conversation.md"), "Changed.\n");
+      assert.equal(allowed(call(join(target, "source.txt"))), false);
+      beginHarnessSession(root, "plan-verifier", "verifier");
+      assert.equal(
+        allowed(call(join(root, "fixture.ts"), "plan-verifier")),
+        true,
+      );
+    } finally {
+      removeFixture(root, { recursive: true });
+      rmSync(outside, { recursive: true });
+    }
   }
 });

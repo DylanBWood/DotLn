@@ -186,7 +186,7 @@ test("feature inventory reports elections, budgets, unread switches and escaped 
   assert.equal(row("tinkerer-economy").value, false);
 });
 
-test("features render/check obey configured roots and print closed-consumer advisories without refusing", (t) => {
+test("features render/check obey configured roots and distinguish built from queued consumers", (t) => {
   const root = fixture(t);
   config(root, { roots: { docs: "records" } });
   write(root, "CLAUDE.md", "DotLn has 8 refusals.\n");
@@ -210,19 +210,23 @@ test("features render/check obey configured roots and print closed-consumer advi
     [
       {
         type: "WorkOrderActivated",
-        workOrderPath: "records/work-orders/WO-242-fixture.md",
+        workOrderPath: "records/work-orders/WO-999-fixture.md",
       },
       { type: "FinalReviewCompleted", verdict: "pass" },
     ]
       .map((event) =>
-        JSON.stringify({ schemaVersion: 1, workOrderId: "WO-242", ...event }),
+        JSON.stringify({ schemaVersion: 1, workOrderId: "WO-999", ...event }),
       )
       .join("\n") + "\n";
-  write(root, "records/control/orders/WO-242.jsonl", closed);
-  assert.match(
-    featureAdvisories(root).join("\n"),
-    /plan-first.*WO-242 has closed.*next planning pass/u,
+  write(root, "records/control/orders/WO-999.jsonl", closed);
+  const queued = readFeatureInventory(root).map((entry) =>
+    entry.id === "plan-first" ? { ...entry, readBy: "WO-999" } : entry,
   );
+  assert.match(
+    featureAdvisories(root, queued).join("\n"),
+    /plan-first.*WO-999 has closed.*next planning pass/u,
+  );
+  assert.deepEqual(featureAdvisories(root), []);
   const warnings = [];
   const log = console.log,
     warn = console.warn;
@@ -234,7 +238,7 @@ test("features render/check obey configured roots and print closed-consumer advi
     console.log = log;
     console.warn = warn;
   }
-  assert.equal(warnings.length, 1);
+  assert.equal(warnings.length, 0);
   writeFileSync(file, "stale\n");
   assert.throws(() => writeFeatures(root, { check: true }), /stale/u);
 });

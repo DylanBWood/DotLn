@@ -485,7 +485,7 @@ test("WO-146 operator qualification uses real fixture transitions, fresh identit
   );
   assert.match(
     readFileSync(join(directory, "docs/control/FEATURES.md"), "utf8"),
-    /\| plan-first \|[^\n]+\| WO-242 \|/u,
+    /\| plan-first \|[^\n]+\| packages\/skeleton\/src\/harness-host\.ts \|/u,
   );
   assert.throws(
     () => prepareCopilotQualification({ out, base: out }),

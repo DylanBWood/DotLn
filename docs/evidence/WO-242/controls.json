@@ -1,0 +1,96 @@
+{
+  "baseCommit": "62b0332abd0e87cbe940c8f392b00586aee6fa33",
+  "method": "Same selected off-mode order before implementation and after generated refresh; volatile currentSession readback omitted. Synthetic absent/false comparison is in test-plan-first.mjs; hook controls are in test-harness.mjs.",
+  "rows": [
+    {
+      "surface": "status --json",
+      "base": "38fc277d151b815909bff81b8adeca6ee5ea6db62ca236660c0d9aba4c55ba81",
+      "candidate": "38fc277d151b815909bff81b8adeca6ee5ea6db62ca236660c0d9aba4c55ba81",
+      "equal": true
+    },
+    {
+      "surface": "current.md",
+      "base": "a5328f6845e1abb1656cc3217773e9b5f23d781a926a748c4eeb32895f0bc74b",
+      "candidate": "a5328f6845e1abb1656cc3217773e9b5f23d781a926a748c4eeb32895f0bc74b",
+      "equal": true
+    },
+    {
+      "surface": "emitted executor",
+      "base": "7010c9cabf04d91b9bf981d970e326d786e7dba80c13a345eeea4c3b2603e2fb",
+      "candidate": "7010c9cabf04d91b9bf981d970e326d786e7dba80c13a345eeea4c3b2603e2fb",
+      "equal": true
+    },
+    {
+      "surface": "hook: source write",
+      "election": "absent",
+      "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "equal": true,
+      "response": {}
+    },
+    {
+      "surface": "hook: read",
+      "election": "absent",
+      "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "equal": true,
+      "response": {}
+    },
+    {
+      "surface": "hook: push advisory",
+      "election": "absent",
+      "base": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+      "candidate": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+      "equal": true,
+      "response": {
+        "systemMessage": "DotLn advisory: compiled authority does not permit remote.unapproved; host permissions decide."
+      }
+    },
+    {
+      "surface": "hook: malformed later destination",
+      "election": "absent",
+      "base": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+      "candidate": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+      "equal": true,
+      "response": {
+        "systemMessage": "DotLn advisory: outside-write guard unavailable: ENOTDIR: not a directory, lstat '/dev/null/child'; host permissions decide."
+      }
+    },
+    {
+      "surface": "hook: source write",
+      "election": "false",
+      "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "equal": true,
+      "response": {}
+    },
+    {
+      "surface": "hook: read",
+      "election": "false",
+      "base": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "candidate": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "equal": true,
+      "response": {}
+    },
+    {
+      "surface": "hook: push advisory",
+      "election": "false",
+      "base": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+      "candidate": "750cea41ea969b36d4def47f81939aa762d02ad229306cdeda3b336c38c7021c",
+      "equal": true,
+      "response": {
+        "systemMessage": "DotLn advisory: compiled authority does not permit remote.unapproved; host permissions decide."
+      }
+    },
+    {
+      "surface": "hook: malformed later destination",
+      "election": "false",
+      "base": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+      "candidate": "75f0abfba05f69bc0e0e5c60eb822bfc60e3873db4a40923ab2cc14274398098",
+      "equal": true,
+      "response": {
+        "systemMessage": "DotLn advisory: outside-write guard unavailable: ENOTDIR: not a directory, lstat '/dev/null/child'; host permissions decide."
+      }
+    }
+  ]
+}

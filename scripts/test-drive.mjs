@@ -756,6 +756,21 @@ test("a router and a phase worker differ in one computed profile", () => {
   }
   // The forms clause is rendered from the table, so a row cannot go missing.
   assert.ok(note.includes(targetLaneClause()));
+  for (const [script, args] of [
+    ["plan-first", ["draft", "WO-NNN"]],
+    ["plan-first", ["draft", "WO-NNN", "--new"]],
+    ["plan-first", ["diff", "WO-NNN"]],
+    ["plan-first", ["apply", "WO-NNN"]],
+    ["plan-first", ["screen", "WO-NNN"]],
+    ["terms", ["--plan-first", "WO-NNN"]],
+    ["outward-lint", ["--plan-first", "WO-NNN"]],
+  ])
+    assert.ok(
+      targetLaneForms.some(
+        (row) => row.script === script && row.args.join(" ") === args.join(" "),
+      ),
+      `${script} ${args.join(" ")}`,
+    );
   assert.match(
     targetLaneClause(),
     /^sync, work-orders, meta, check-publication, adjacent-work and reader with their ordinary arguments; resume status, briefing, times and usage beside this role's own lifecycle actions; release prepare --local; worktree integrate WO-NNN, for the executor and the reviewer; /,

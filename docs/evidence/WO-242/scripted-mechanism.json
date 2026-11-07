@@ -1,0 +1,148 @@
+{
+  "classification": "deterministic mechanism probe",
+  "operatorKind": "synthetic scripted turns supplied by the work order",
+  "turns": [
+    {
+      "operator": "Please improve the greeting.",
+      "agent": "I propose a friendly greeting, preserving the text file and its newline.",
+      "diffChanged": true,
+      "bytes": {
+        "plan.md": 419,
+        "conversation.md": 259,
+        "proposal.md": 558
+      },
+      "totalBytes": 1236,
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:03.355Z\",\n  \"conversationDigest\": \"2787d24b044761f30c2708019d7575cc436c58e239ee1497e97515ca5a083823\",\n  \"transformations\": []\n}\n-->\n# Greeting plan\n\nChange hello.txt to use a friendly greeting. The text file interface stays the same. Keep the existing greeting or make it friendly; choose friendly as requested. No unresolved questions.\n",
+        "conversation.md": "### 2026-11-06T00:00:00.000Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Agent\n\nI propose a friendly greeting, preserving the text file and its newline.\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:03.355Z\",\n  \"conversationDigest\": \"2787d24b044761f30c2708019d7575cc436c58e239ee1497e97515ca5a083823\",\n  \"transformations\": []\n}\n-->\n# Greeting proposal\n\nhello.txt: make the greeting friendly.\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..44f459a251ebc3ce7c5aeae3b00311247f155fec 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Hello, friend.\n~~~\n<!-- dotln-plan-first-diff:end -->\n"
+      },
+      "output": "Plan proposed. Read and answer in the terminal or conversation document:\n<fixture>/target/guide/evidence/WO-099/plan-first/plan.md\n<fixture>/target/guide/evidence/WO-099/plan-first/conversation.md\n<fixture>/target/guide/evidence/WO-099/plan-first/proposal.md\nStop this turn and await the operator's response. Screen: unavailable.\n\n"
+    },
+    {
+      "operator": "Does this keep the trailing newline?",
+      "agent": "Yes. The proposal preserves one trailing newline.",
+      "diffChanged": false,
+      "bytes": {
+        "plan.md": 419,
+        "conversation.md": 431,
+        "proposal.md": 558
+      },
+      "totalBytes": 1408,
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:03.623Z\",\n  \"conversationDigest\": \"e04a167c8e3803f22cf29ff14ff0d6e648df29f4629929c1a3f379b6c8552d50\",\n  \"transformations\": []\n}\n-->\n# Greeting plan\n\nChange hello.txt to use a friendly greeting. The text file interface stays the same. Keep the existing greeting or make it friendly; choose friendly as requested. No unresolved questions.\n",
+        "conversation.md": "### 2026-11-06T00:00:00.000Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Agent\n\nI propose a friendly greeting, preserving the text file and its newline.\n\n### 2026-11-06T21:10:03.623Z \u2014 Operator\n\nDoes this keep the trailing newline?\n\n### 2026-11-06T21:10:03.623Z \u2014 Agent\n\nYes. The proposal preserves one trailing newline.\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:03.623Z\",\n  \"conversationDigest\": \"e04a167c8e3803f22cf29ff14ff0d6e648df29f4629929c1a3f379b6c8552d50\",\n  \"transformations\": []\n}\n-->\n# Greeting proposal\n\nhello.txt: make the greeting friendly.\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..44f459a251ebc3ce7c5aeae3b00311247f155fec 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Hello, friend.\n~~~\n<!-- dotln-plan-first-diff:end -->\n"
+      },
+      "output": "Plan proposed. Read and answer in the terminal or conversation document:\n<fixture>/target/guide/evidence/WO-099/plan-first/plan.md\n<fixture>/target/guide/evidence/WO-099/plan-first/conversation.md\n<fixture>/target/guide/evidence/WO-099/plan-first/proposal.md\nStop this turn and await the operator's response. Screen: unavailable.\n\n"
+    },
+    {
+      "operator": "Use Welcome, friend. instead.",
+      "agent": "The greeting now uses Welcome, friend. The complete revised diff follows.",
+      "diffChanged": true,
+      "bytes": {
+        "plan.md": 419,
+        "conversation.md": 620,
+        "proposal.md": 560
+      },
+      "totalBytes": 1599,
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:03.890Z\",\n  \"conversationDigest\": \"cd38ad5b29d9fffd9549ac223d48fb55b2c903c7fcc1739df1dab85358c55318\",\n  \"transformations\": []\n}\n-->\n# Greeting plan\n\nChange hello.txt to use a friendly greeting. The text file interface stays the same. Keep the existing greeting or make it friendly; choose friendly as requested. No unresolved questions.\n",
+        "conversation.md": "### 2026-11-06T00:00:00.000Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Agent\n\nI propose a friendly greeting, preserving the text file and its newline.\n\n### 2026-11-06T21:10:03.623Z \u2014 Operator\n\nDoes this keep the trailing newline?\n\n### 2026-11-06T21:10:03.623Z \u2014 Agent\n\nYes. The proposal preserves one trailing newline.\n\n### 2026-11-06T21:10:03.890Z \u2014 Operator\n\nUse Welcome, friend. instead.\n\n### 2026-11-06T21:10:03.890Z \u2014 Agent\n\nThe greeting now uses Welcome, friend. The complete revised diff follows.\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:03.890Z\",\n  \"conversationDigest\": \"cd38ad5b29d9fffd9549ac223d48fb55b2c903c7fcc1739df1dab85358c55318\",\n  \"transformations\": []\n}\n-->\n# Greeting proposal\n\nhello.txt: make the greeting friendly.\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..c34c1ca20e431480d6910c6d92a28899c5aa11f9 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome, friend.\n~~~\n<!-- dotln-plan-first-diff:end -->\n"
+      },
+      "output": "Plan proposed. Read and answer in the terminal or conversation document:\n<fixture>/target/guide/evidence/WO-099/plan-first/plan.md\n<fixture>/target/guide/evidence/WO-099/plan-first/conversation.md\n<fixture>/target/guide/evidence/WO-099/plan-first/proposal.md\nStop this turn and await the operator's response. Screen: unavailable.\n\n"
+    },
+    {
+      "operator": "Looks good, build it.",
+      "agent": "The operator approved this revision in the scripted terminal turn (capture sha256:fcd7cd365b70ab76fc3e2393920c86a0229352b357ab64c8f7e381638ecfce73).",
+      "diffChanged": false,
+      "bytes": {
+        "plan.md": 419,
+        "conversation.md": 876,
+        "proposal.md": 560
+      },
+      "totalBytes": 1855,
+      "documents": {
+        "plan.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:04.156Z\",\n  \"conversationDigest\": \"d7e4ee0c1fb03aedd65e3218c44c9f8dcd159b27f7c99e7ace8568a4c7ce0234\",\n  \"transformations\": []\n}\n-->\n# Greeting plan\n\nChange hello.txt to use a friendly greeting. The text file interface stays the same. Keep the existing greeting or make it friendly; choose friendly as requested. No unresolved questions.\n",
+        "conversation.md": "### 2026-11-06T00:00:00.000Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Operator\n\nPlease improve the greeting.\n\n### 2026-11-06T21:10:03.355Z \u2014 Agent\n\nI propose a friendly greeting, preserving the text file and its newline.\n\n### 2026-11-06T21:10:03.623Z \u2014 Operator\n\nDoes this keep the trailing newline?\n\n### 2026-11-06T21:10:03.623Z \u2014 Agent\n\nYes. The proposal preserves one trailing newline.\n\n### 2026-11-06T21:10:03.890Z \u2014 Operator\n\nUse Welcome, friend. instead.\n\n### 2026-11-06T21:10:03.890Z \u2014 Agent\n\nThe greeting now uses Welcome, friend. The complete revised diff follows.\n\n### 2026-11-06T21:10:04.156Z \u2014 Operator\n\nLooks good, build it.\n\n### 2026-11-06T21:10:04.156Z \u2014 Agent\n\nThe operator approved this revision in the scripted terminal turn (capture sha256:fcd7cd365b70ab76fc3e2393920c86a0229352b357ab64c8f7e381638ecfce73).\n",
+        "proposal.md": "<!-- dotln-plan-first\n{\n  \"status\": \"proposed\",\n  \"proposedAt\": \"2026-11-06T21:10:04.156Z\",\n  \"conversationDigest\": \"d7e4ee0c1fb03aedd65e3218c44c9f8dcd159b27f7c99e7ace8568a4c7ce0234\",\n  \"transformations\": []\n}\n-->\n# Greeting proposal\n\nhello.txt: make the greeting friendly.\n\n<!-- dotln-plan-first-diff:start -->\n~~~diff\ndiff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..c34c1ca20e431480d6910c6d92a28899c5aa11f9 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome, friend.\n~~~\n<!-- dotln-plan-first-diff:end -->\n"
+      },
+      "output": "Plan proposed. Read and answer in the terminal or conversation document:\n<fixture>/target/guide/evidence/WO-099/plan-first/plan.md\n<fixture>/target/guide/evidence/WO-099/plan-first/conversation.md\n<fixture>/target/guide/evidence/WO-099/plan-first/proposal.md\nStop this turn and await the operator's response. Screen: unavailable.\n\n"
+    }
+  ],
+  "acceptedDiff": "diff --git a/hello.txt b/hello.txt\nindex 18832d35117ef2f013c4009f5b2128dfaeff354f..c34c1ca20e431480d6910c6d92a28899c5aa11f9 100644\n--- a/hello.txt\n+++ b/hello.txt\n@@ -1 +1 @@\n-Hello.\n+Welcome, friend.\n",
+  "application": {
+    "applied": true,
+    "diffDigest": "1c105fb8433825633530f471203fe78ce83d435f3ea4e8c244c5928d38b596f2"
+  },
+  "guardCost": {
+    "off": {
+      "samplesMs": [
+        0.06766700000000014,
+        0.019499999999993634,
+        0.018749999999982947,
+        0.017917000000011285,
+        0.017540999999994256,
+        0.024125000000026375,
+        0.017083000000013726,
+        0.016999999999995907,
+        0.020291999999983545,
+        0.017042000000003554,
+        0.016375000000010687,
+        0.016250000000013642,
+        0.016208000000005995,
+        0.016041000000001304,
+        0.018791999999990594,
+        0.01824999999999477,
+        0.0257090000000062,
+        0.017249999999989996,
+        0.019458000000014408,
+        0.02112500000001205
+      ],
+      "meanMs": 0.02111875000000225
+    },
+    "awaiting": {
+      "samplesMs": [
+        1.4991249999999923,
+        1.2190420000000017,
+        0.8403749999999945,
+        0.706292000000019,
+        0.6370420000000081,
+        0.6515830000000165,
+        0.7776670000000081,
+        0.6484580000000051,
+        0.6143339999999853,
+        0.5935419999999851,
+        0.5723330000000146,
+        0.569625000000002,
+        0.5668340000000001,
+        0.5710829999999874,
+        0.9978330000000142,
+        0.8532080000000235,
+        0.8205000000000098,
+        0.6744579999999871,
+        0.6456660000000056,
+        0.8991670000000056
+      ],
+      "meanMs": 0.7679083500000032
+    },
+    "scope": "in-process approval judgment called by the hook, 20 sequential calls each; not a whole hook subprocess"
+  },
+  "workMs": 1394.3422919999998,
+  "waitingMs": 0,
+  "usage": {
+    "tokens": null,
+    "costUsd": null,
+    "source": "scripted run; model usage belongs to the parent session"
+  },
+  "hostBoundary": {
+    "claude": "generated hook fixture observes refusals; no live Claude session in this run",
+    "codex": "direct writes are a role duty; this session observed the in-process apply refusal and approved application",
+    "helpers": "same freshness judgment as the hook; apply refused before proposal and admitted the approved candidate"
+  },
+  "limitations": [
+    "No human novice participated; comprehension and reduced operator burden are unmeasured.",
+    "Waiting is zero because every operator turn was scripted."
+  ]
+}

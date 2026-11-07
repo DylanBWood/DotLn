@@ -177,6 +177,7 @@ export function harnessInstallation(options = {}) {
       contributorConfiguredProgram(switches, {
         ...value,
         desktopControl: options.features?.["desktop-control"] === true,
+        planFirst: options.features?.["plan-first"] === true,
       });
   } catch (error) {
     if (overlay) throw overlayError(overlay.path, error.message);

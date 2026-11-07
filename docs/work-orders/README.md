@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-257] — Instance returns of 2026-11-03 to 2026-11-05 · **final-reviewed**
-- [ ] [WO-242] — Plan-first mode · **queued**
+- [x] [WO-242] — Plan-first mode · **final-reviewed**
 - [ ] [WO-243] — Closeout checks follow the repositories an order changed · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
@@ -38,22 +38,6 @@ None.
 None.
 
 ## Open
-
-### WO-242
-
-[WO-242 — Plan-first mode: when an instance elects it, the executor writes a plan, a conversation and a proposal into the order's documentation root, records the proposal and stops; the operator answers in the terminal or in the conversation document; the executor paraphrases, screens and surfaces every transformation before it carries a word elsewhere, and implements only after the operator's approval is recorded as a typed event the hook enforces (version assigned at activation)](WO-242-plan-first-mode.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-241: hard (met) — the features section and the plan-first registry row the mode reads; WO-236: satisfied-by-close (met) — the executor's target-worktree grant under which the three documents are written into a target; WO-158: satisfied-by-close (met) — the typed event, capture and actor-flag shape plan-approved follows; WO-192: satisfied-by-close (met) — the router that must stop at PlanProposed and resume at PlanApproved: its route table and loop, merged at v0.104.0.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: the executor runs on the operator's pinned Claude Code &#96;claude-fable-5-1&#96; or Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; (the design of a role's procedure is the subject); verifier and reviewer any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Authority: [docs/work-orders/WO-242-plan-first-mode.md](WO-242-plan-first-mode.md)
 
 ### WO-243
 

@@ -2743,6 +2743,7 @@ test("exclusive suites without an overlap declaration run alone and shared suite
   const isolatedNames = new Set([
     "harness-fixtures",
     "process-debt",
+    "sync-fixtures",
     "launchpad",
     "worktree-integration",
   ]);
@@ -2753,6 +2754,7 @@ test("exclusive suites without an overlap declaration run alone and shared suite
       "console",
       "harness-fixtures",
       "process-debt",
+      "sync-fixtures",
       "launchpad",
       "worktree-integration",
     ].includes(row.name),
