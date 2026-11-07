@@ -40,6 +40,21 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-07 — Planning pass: first cycle returns and host elections (WO-258 and WO-259 filed); registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass +` with five items, sent at
+2026-11-07T18:33:35.378Z (hook time) in Claude Code 2.1.319 (Fable 5.1 at
+max, operator-selected), captured verbatim in
+`docs/intake/planning-dispatch-2026-11-07-first-cycle-returns-and-host-elections.md`
+(SHA-256 `123eb18018301f41fb4b107f0fb0ad53eb40eb38b13c75a906f588dc913c6cd6`,
+the journal's own digest of the message). The pass files WO-258 (an
+instance's first cycle meets the kit) and WO-259 (committed words and filed
+records), retires WO-257, WO-242 and WO-243 as closed (v0.119.0 to
+v0.120.1), records the operator's no-verbatim rule in product 07 and the
+kit guide, and answers the fork and the operator's private instance in two
+paste-ready blocks. Record:
+[the planning document](../planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md).
+
 ## 2026-11-06 — Planning pass: fork returns and review batches (WO-257 amended; no order filed); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with four items, sent at

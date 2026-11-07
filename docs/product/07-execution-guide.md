@@ -3167,7 +3167,18 @@ decisions, the pass's document, a verification or a receipt (§Operator-opened
 planning pass, item 7, which also names the kinds, the reader entry points,
 the read census and the red tags). The final reviewer judges a changed
 standing document's diff: a replacement passes, and a dated account added
-under a standing heading returns to repair. A document that moves keeps its
+under a standing heading returns to repair. No operator message is saved
+verbatim in a committed artifact (operator direction, 2026-11-07, ignored
+capture SHA-256
+`123eb18018301f41fb4b107f0fb0ad53eb40eb38b13c75a906f588dc913c6cd6`): a
+committed document, record or source file paraphrases the operator and
+cites the ignored intake capture by its digest; a quotation is written only
+where the operator asks in the session for that message to be saved,
+recorded as an `operatorQuote` naming the capture's digest and the
+request's, or where a clone or fork has turned the rule off in its
+configuration; [WO-259](../work-orders/WO-259-committed-words-and-filed-records.md)
+carries the check, the election and the typed exception, and until it
+lands the role text and the reviewer carry the rule. A document that moves keeps its
 bytes, and [`docs/control/document-moves.json`](../control/document-moves.json)
 names where it went. Every reader of a reference gives it one meaning: the
 link check, the entry points, the reader bindings, the red tags, the read

@@ -4,9 +4,8 @@
 
 ## Proposed order
 
-- [x] [WO-257] — Instance returns of 2026-11-03 to 2026-11-05 · **final-reviewed**
-- [x] [WO-242] — Plan-first mode · **final-reviewed**
-- [x] [WO-243] — Closeout checks follow the repositories an order changed · **final-reviewed**
+- [ ] [WO-258] — An instance's first cycle meets the kit · **queued**
+- [ ] [WO-259] — Committed words and filed records · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -38,6 +37,38 @@ None.
 None.
 
 ## Open
+
+### WO-258
+
+[WO-258 — An instance's first cycle meets the kit: host support as elections (Codex and Copilot are opt-in for a new instance and inferred on for an instance whose own record shows the host), the starter's seeds and recipe agreeing with the generated surfaces, the release-close phrase recorded once the merge reaches the checkout, a Git floor beside the Node range, an empty sequence admitted, the continuation gate comparing under the judged receipt's rule, and the siblings index safe in an instance (version assigned at activation)](WO-258-an-instances-first-cycle-meets-the-kit.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-242: control-closed; WO-246: control-closed; WO-252: control-closed; WO-257: control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-258-an-instances-first-cycle-meets-the-kit.md](WO-258-an-instances-first-cycle-meets-the-kit.md)
+
+### WO-259
+
+[WO-259 — Committed words and filed records: no operator message is saved verbatim in a committed artifact (the rule in every role's text, a check that fails verbatim and attributed operator words in changed documents and code against the ignored captures, an instance election that turns the rule off and a typed per-message exception on the operator's request), review workers told what never to read or print, a background worker's hand-back journaled as the host's, the local-terms list screening the files a branch changes in the document gate and the publish helpers, discovery's errors named, the launchpad publish form reading the phase, and a filed record whose links resolve at the launchpad commit its footer names (version assigned at activation)](WO-259-committed-words-and-filed-records.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-246: control-closed; WO-254: control-closed; WO-255: control-closed; WO-257: control-closed; WO-258: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-259-committed-words-and-filed-records.md](WO-259-committed-words-and-filed-records.md)
 
 ### WO-244
 
@@ -193,7 +224,6 @@ None.
 [WO-183]: WO-183-intent-declaration-and-the-stranger-test.md
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
-[WO-242]: WO-242-plan-first-mode.md
-[WO-243]: WO-243-closeout-checks-follow-the-repositories-an-order-changed.md
 [WO-244]: WO-244-paired-planning-passes-and-the-synthesis-pass.md
-[WO-257]: WO-257-instance-returns-of-2026-11-03.md
+[WO-258]: WO-258-an-instances-first-cycle-meets-the-kit.md
+[WO-259]: WO-259-committed-words-and-filed-records.md

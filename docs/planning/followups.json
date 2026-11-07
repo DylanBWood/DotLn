@@ -27429,6 +27429,16 @@
           "reopenWhen": "One reading of the plan-check median exceeds 9 s, or an instrumented same-input comparison shows parsing on the critical path.",
           "targets": [],
           "at": "2026-11-01T23:31:53.081Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Condition fired: npm run plan -- conditions read the plan-check median at 10.53 s on 2026-11-07 (load averages 5.05 on sixteen CPUs), above the 9 s the 2026-11-01 pass set; the register has 1,660 entries and the map 969 KB. Allocated to WO-258 as a carry-in beside its plan-subject and plan-continuation steps: plan check prints its step timings (subject build, receipt rebuild, continuation comparison, documents) so the next pass reads where the seconds go; no optimization is claimed by the allocation. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-258 closes without the timings, or a reading with the timings names a step above half the total.",
+          "targets": [
+            "WO-258"
+          ],
+          "at": "2026-11-07T19:12:45.799Z"
         }
       ]
     },
@@ -44352,6 +44362,16 @@
           "reopenWhen": "A session told to run the plain spelling of a release close runs another spelling, or a repair restores the hint with its case; or the next order editing registeredTargetNearMiss or releaseCloseAdmission in packages/skeleton",
           "targets": [],
           "at": "2026-10-24T04:18:36.940Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its home occurred: WO-258 step 7 edits the release-close dispatch path of packages/skeleton/src/harness-host.ts and the admission that reads it; allocated as its Boy Scout carry-in: the near-miss advisory for a hidden release-close helper keeps the shell-operator class and both expected spellings for the dispatched order. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-258 closes with the near-miss advisory still naming neither spelling.",
+          "targets": [
+            "WO-258"
+          ],
+          "at": "2026-11-07T19:12:46.068Z"
         }
       ]
     },
@@ -44688,6 +44708,16 @@
           "reopenWhen": "An operator meets local-terms.configuration on a publish and cannot locate the line; or the next order editing the outward lint (scripts/lib/outward-lint.mjs, scripts/lib/target-publish.mjs or scripts/lib/launchpad-publish.mjs).",
           "targets": [],
           "at": "2026-11-05T14:28:44.624Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its condition occurred: WO-259 step 6 edits scripts/lib/launchpad-publish.mjs (the branch's changed files screened by the local-terms list); allocated as its Boy Scout carry-in: the publish refusal for a malformed private list names the list line, never a term, or points at npm run terms -- check. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-259 closes with the malformed-list refusal still naming no line.",
+          "targets": [
+            "WO-259"
+          ],
+          "at": "2026-11-07T19:12:46.468Z"
         }
       ]
     },
@@ -46441,6 +46471,16 @@
           "reopenWhen": "verification-004-guards.mjs exits 0 on a later subject, or any of the three guards (the filed order declares no field, exactly one field was added, the field lies in the leading header) is changed or removed.",
           "targets": [],
           "at": "2026-10-25T16:34:31.956Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its home occurred: WO-258 step 15 edits checkPlanContinuation in scripts/lib/plan-continuation.mjs; allocated as its Boy Scout carry-in: the plan-refutation cases that refuse each of the three guards' mutants in withoutAddedWorkstream, so verification-004-guards.mjs exits 0 on the subject. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-258 closes without the cases, or a guard is changed or removed without one.",
+          "targets": [
+            "WO-258"
+          ],
+          "at": "2026-11-07T19:12:45.934Z"
         }
       ]
     },
@@ -55180,7 +55220,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Read against WO-257-D017: the change review's budget, brief ceiling and per-document cap as instance configuration; no operator has asked for a different budget and WO-259 keeps the helper's constants out of its scope by its non-goals. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "An operator needs a different review budget for one instance, or a batch brief fails the protocol's check.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.141Z"
+        }
+      ]
     },
     {
       "id": "FUP-f191f04206f7ec8a",
@@ -55195,7 +55244,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-258 step 5: features.auto-update-upstream, off by default, under which a journaled planning or entropy dispatch takes an update without the capture flags, the admission row naming the election; the operator's direction of 2026-11-03 stays the default. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-258 closes without the election, or the operator withdraws it.",
+          "targets": [
+            "WO-258"
+          ],
+          "at": "2026-11-07T19:12:45.524Z"
+        }
+      ]
     },
     {
       "id": "FUP-c61f76f60798e1b2",
@@ -55272,7 +55332,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-257-D036: an exhaustive classification of each page writer's import closure against the renderer table; the fourth fixture list was found by the complete run and repaired; a later release's derived line is the observation that would reopen it. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A final reviewer finds a generated page whose text comes from a module the renderer table does not name, or a fixture list copies the kit's modules by hand again.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.275Z"
+        }
+      ]
     },
     {
       "id": "FUP-33fab5211e3368f5",
@@ -55287,7 +55356,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-257-D039: two admitted captures can fill the brief's fixed preamble before a document is added; no pass has reached it (this pass's capture is 16,667 bytes). [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "An actual pass reaches the fixed-input limit, or the review budget becomes instance configuration.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.410Z"
+        }
+      ]
     },
     {
       "id": "FUP-45b8ce20b8b764d0",
@@ -55302,7 +55380,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-257-D044: the record route's split-round merge refuses a part whose Items table follows a JSON result as prose; no split round has been recorded in an actual pass since. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A split round's admitted parts are refused at the merge in an actual pass, or an order touching mergeBatchReports activates.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.544Z"
+        }
+      ]
     },
     {
       "id": "FUP-9cfd1cd290f68d1b",
@@ -55317,7 +55404,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-259 step 7: the launchpad publish form (node scripts/worktree.mjs publish WO-NNN --title --body-file) refuses unless the order's committed control record shows a passing final review, naming the phase it read. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-259 closes with the form still reading no phase.",
+          "targets": [
+            "WO-259"
+          ],
+          "at": "2026-11-07T19:12:46.201Z"
+        }
+      ]
     },
     {
       "id": "FUP-a0dee25c3caec351",
@@ -55332,7 +55430,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-242-D015: a failed plan-first draft's unrecorded pinned root; WO-242 closed (v0.120.0) and no open order owns plan-first's candidate setup; the operator asked this pass for one or two large fix orders on the instance's returns, which this is not. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A failed draft leaves an unrecorded pinned root in a session, or an order touching scripts/plan-first.mjs activates.",
+          "targets": [],
+          "at": "2026-11-07T19:12:46.604Z"
+        }
+      ]
     },
     {
       "id": "FUP-82ea384c08d3135a",
@@ -55347,7 +55454,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-242-D026: a plan-first approval cleared by a clean integration; WO-242 closed and no open order owns plan-first; the route the refusal names (draft --new) stands. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "An elected order is refused implementation-ready after an integration with an unchanged proposal, or an order touching the plan-first boundary activates.",
+          "targets": [],
+          "at": "2026-11-07T19:12:46.738Z"
+        }
+      ]
     },
     {
       "id": "FUP-1c2f009b880027e6",
@@ -55362,7 +55478,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-259 step 1: the router role's stop list names awaiting-plan-approval beside awaiting-close, stating that the operator answers and resumes the executor before driving again. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-259 closes with the router root still not naming the stop.",
+          "targets": [
+            "WO-259"
+          ],
+          "at": "2026-11-07T19:12:46.332Z"
+        }
+      ]
     },
     {
       "id": "FUP-5041854090e212ca",
@@ -55377,7 +55504,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-242-D028: status exits 1 for every order when an elected target order's registration is absent, a constructed input; no open order owns planFirstView. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A supported workflow leaves an active elected target order without its registration, or an order touching scripts/lib/plan-first-view.mjs or its reader activates.",
+          "targets": [],
+          "at": "2026-11-07T19:12:46.872Z"
+        }
+      ]
     },
     {
       "id": "FUP-93417dc6ef8f8a5a",
@@ -55392,7 +55528,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-242-D029: the SourceChangeHost plan-first refusal has no fixture; the refusal is read from source and the candidate's own apply helper is tested; no open order owns the skeleton's source-change host. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A source-change apply proceeds without a standing approval while plan-first is elected, or an order touching packages/skeleton/src/source-change-host.ts activates.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.005Z"
+        }
+      ]
     },
     {
       "id": "FUP-2975f260666e8b04",
@@ -55407,7 +55552,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-258 step 6: the hook's plan-first election reader reads the election through the lifecycle's rule, refusing what readFeatures refuses with the same message. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-258 closes with the hook still reading a malformed election as off.",
+          "targets": [
+            "WO-258"
+          ],
+          "at": "2026-11-07T19:12:45.662Z"
+        }
+      ]
     },
     {
       "id": "FUP-d91a2e2780a65b70",
@@ -55508,6 +55664,366 @@
           "reopenWhen": "An affected line names suites main's merge did not touch, or a reader acts on that line.",
           "targets": [],
           "at": "2026-11-07T09:06:19.103Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d406f395c0bedd5a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::1bbe6c69630a000b8ec8a873f61db2cc14d781f81b7fe95ce75f77b2c9f175fc",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "808c68486bcbcce774863e73d3675675a65c770ceaac74556daf6a12032a7b8a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "A separate order for the hand-back row and the rules-recorded refusal",
+          "summary": "12. **A separate order for the hand-back row and the rules-recorded refusal** (the instance's item 9). Declined: it is one journal source and one refusal, carried by WO-259 beside the other journal and role-text changes. Useful if the host's hand-back shape changes before WO-259 activates.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 12 of 2026-11-07: a separate order for the hand-back row and the rules-recorded refusal; one journal source and one refusal, carried by WO-259 beside its other journal and role-text changes. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "The host's hand-back shape changes before WO-259 activates.",
+          "targets": [],
+          "at": "2026-11-07T19:12:49.145Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d6b8b51f54fbeff8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::2d09a40b9dc019bce24be1524f0a3df8b8be74e253c77b1541e489796dd3311c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fe0bf015f6f5c52815034b275acb58858539f29d48c232911820d17beaf46610",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "The register's first page and the --touching matches",
+          "summary": "14. **The register's first page and the `--touching` matches** (§Register of the planning document). Read and left: no condition fired beyond the four allocated rows. Useful when a condition fires.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-07 pass: the register's first page and the fifty rows --touching matched were read against their decisions; three whose homes or conditions occurred were allocated (FUP-fb8cbeabbddef397, FUP-c4c7ba9f126d2e4a, FUP-589642d0e0c714c8 to WO-258; FUP-1b94e79e02e54e70 to WO-259) and the rest left (the map's candidate 14 of 2026-11-07). [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A condition of one of the rows named fires.",
+          "targets": [],
+          "at": "2026-11-07T19:12:49.419Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ad6452bf57d7fce6",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::3792ad59785075fe759d69e8ae967f62fa56cc19b1b10b5b645c8ea4f80f9570",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e7dbfcc5a4863d9a041c2c8428fb75fb32860aea80a0e60706c796a32f1e646c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "The plan conditions",
+          "summary": "15. **The plan conditions** (five holding on 2026-11-07: the plan check above 8 s, seven unlisted release tags, the plain gate above 360 s, the target-worktree and harness-fixtures tasks above their medians). Read and left with the earlier passes' deferrals; no order filed on a timing reading. Useful when a reading crosses its figure on three consecutive passes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-07 pass: the five holding plan conditions were read; the plan-check reading re-disposed FUP-fb8cbeabbddef397 and no order was filed on a timing reading (the map's candidate 15 of 2026-11-07). [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A reading crosses its figure on three consecutive passes.",
+          "targets": [],
+          "at": "2026-11-07T19:12:49.556Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9e1e1d0a48d62ac8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::65d00430747442ede51d9751fb2973f17bf6e76cc5081af99f2f44f0d652de81",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "dfe56bfa928a85ee7d7791d3f62518a217c87e9fc19d1426bd7bc13a7715ba9b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "A kit action kind that deletes a retired seed",
+          "summary": "10. **A kit action kind that deletes a retired seed** (for the instance's item 7c). Declined: actions are opt-in and run by the instance; a retired kit seed is the refresh's to remove when unmodified, as it rewrites one. Useful if a retired instance file is not a seed.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 10 of 2026-11-07: a kit action kind that deletes a retired seed; actions are opt-in and run by the instance, and a retired seed is the refresh's to remove when unmodified. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A retired instance file is not a seed.",
+          "targets": [],
+          "at": "2026-11-07T19:12:48.882Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b38f1b029f362fca",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::8c780bfed97239b7dfd28b0d2371c8170d0b4da89d8fbc2c1f8de5f134a2225b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6aa5078f76e5d6c762f31ef5efe80de6c24c42298fc56b9ef273939504e99e20",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "Treating a separate-track member as an order input the judged set may lack",
+          "summary": "4. **Treating a separate-track member as an order input the judged set may lack** (the fork's second alternative in its item 2.2). Declined: a member filed after the receipt is judged by the next receipt; WO-258 compares under the judged receipt's rule, the rule the receipt rebuild already follows. Useful if a member must be admitted into an old receipt.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 4 of 2026-11-07: treating a separate-track member as an order input the judged set may lack; a member filed after the receipt is judged by the next receipt, and WO-258 compares under the judged receipt's rule. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A member must be admitted into an old receipt.",
+          "targets": [],
+          "at": "2026-11-07T19:12:48.077Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-545a9e52498c9e59",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::9710d7e72ecae11e04ae62a499430858f1ce112a830e7474579af56e413eb6f4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0ddccabd4d9ec4dd4810b6492336db2e74b4cdfeb344121c12321fdecc201f6b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "Pushing each order's FinalReviewCompleted checkpoint as a ref on the launchpad's remote at release close",
+          "summary": "2. **Pushing each order's `FinalReviewCompleted` checkpoint as a ref on the launchpad's remote at release close** (the fork's first alternative in its items 1.3 and 2.4). Declined: a checkpoint is a recovery object outside the branch's history, and the order branch's history is pushed with the launchpad records publish and stays reachable through the merge commit; WO-259 commits the records before they move and names that commit in the footer. Useful if a records commit cannot be reached from the launchpad's pushed history.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 2 of 2026-11-07: pushing each FinalReviewCompleted checkpoint as a ref; a checkpoint is a recovery object outside the branch's history, and WO-259 commits the records before they move so the pushed order branch's history holds them. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A records commit cannot be reached from the launchpad's pushed history.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.811Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a07551dac2e7e5a3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::adaf47dbd75268cc5531a002f934c0da964ffb210f0865ff88226547f5e5db6a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2c3299a85731a7817fe7a991cb3b2dc7655d9a1a98b3d75055bd2f6984d926ae",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "The last closed order staying in the sequence until another is filed",
+          "summary": "5. **The last closed order staying in the sequence until another is filed** (the instance's second alternative in its item 8, and its working route). Declined as the rule: a closed order is not proposed work and the generated index already keeps it; WO-258 admits the empty sequence. Kept as the instance's route until that release.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 5 of 2026-11-07: the last closed order staying in the sequence until another is filed; a closed order is not proposed work and the generated index keeps it; WO-258 admits the empty sequence; the instance's route until that release. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-258 closes without admitting an empty sequence.",
+          "targets": [],
+          "at": "2026-11-07T19:12:48.212Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2e8220656328e81a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::b49b724aae6c94e7b4d39030fa5b47fd3edb36805673ba8167483180150bc6b2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ecf0680e24a3bc75ec3f4da89b0fed5f99a4af4bca4121ae0b10f48a80af7461",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "Inferring a host from the ignored session journals.",
+          "summary": "8. **Inferring a host from the ignored session journals.** Declined: a fresh clone has no journals; the committed control log and the discovery record are the record, and an instance that used a host only in unjournaled sessions elects it by hand. Useful if an instance's log never names a host it uses.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 8 of 2026-11-07: inferring a host from the ignored session journals; a fresh clone has none, and the committed control log and discovery record are the record. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "An instance's log never names a host it uses.",
+          "targets": [],
+          "at": "2026-11-07T19:12:48.615Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-807f04ce56d6c6f9",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::bd324c7dbb7549a3c8c557a24ef8eb2ab7d9fe2e6155c0792abf998d5279841b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "42934b7a330efd7a54eb621e14c77034e8895812e724cf8f1cbbbf2a5c359746",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "Emulating check-attr --source on an old Git",
+          "summary": "11. **Emulating `check-attr --source` on an old Git** (for the instance's item 2b). Declined: one refusal naming the floor is cheaper than three emulations. Useful if a supported host cannot reach the floor.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 11 of 2026-11-07: emulating check-attr --source on an old Git; one refusal naming the floor is cheaper than three emulations. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A supported host cannot reach the floor.",
+          "targets": [],
+          "at": "2026-11-07T19:12:49.014Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fe1fe1a00b2ef8d8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::c2f35d2973a9b0b2854e1b029ae08a00f360cbbabef51b46ad6ff9962d8505b1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "aa419e9b2df2f85e7a8e76b92dd15ca2e4905fd5dd359f251ef03d29fac60c33",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "The kit guide saying the footer gives the layout only",
+          "summary": "3. **The kit guide saying the footer gives the layout only** (the fork's second alternative in its item 2.4). Declined: the fork's check is every relative link resolving through GitHub alone, which a layout-only footer fails by design. Useful never on its own.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 3 of 2026-11-07: the kit guide saying the footer gives the layout only; the fork's check is every relative link resolving through GitHub alone, which a layout-only footer fails by design. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "Never on its own.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.944Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-03a36e586b62eea1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::c547bb139050ddb43376d2c8fffea57b23515727771e007d8d013f78084e0049",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cc3bb98d13b890d69ce59b543f13a3f0b6aa6a9ff2085eff526bffd7d59a9dc4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "A third order for the planning-side items",
+          "summary": "1. **A third order for the planning-side items** (the empty sequence, the continuation gate, the siblings line) apart from the instance-setup order. Declined: the operator asked for one or two large fix orders now; the three items are met at an instance's first pass and first update, which is WO-258's subject, and each is one bounded change. Useful if WO-258's first verification fails on a planning item alone and holds the rest.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 1 of 2026-11-07: a third order for the planning-side items; the operator asked for one or two large fix orders and the items are met at an instance's first pass and first update, WO-258's subject. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "WO-258's first verification fails on a planning item alone and holds the rest.",
+          "targets": [],
+          "at": "2026-11-07T19:12:47.677Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7645a6f0544f36f5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::c67a348d13bc59cdaffdf1b2b5d9b5d57f7bc334f43cec7f9f11d9cd9509e24e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5b6c406080f5411c14fb4fd185d3892591b5076cc4917536192b95aa2d4c2cb1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "A host build overlay instead of feature rows",
+          "summary": "7. **A host build overlay instead of feature rows** (for the operator's item 3). Declined: an overlay is the instance's equipment choice, and the features inventory is where an election prints with its source; inference from the committed record needs a row. Useful never.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 7 of 2026-11-07: a host build overlay instead of feature rows; an overlay is the instance's equipment choice, and the features inventory is where an election prints with its source. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "Never.",
+          "targets": [],
+          "at": "2026-11-07T19:12:48.483Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1e74f9173840dd62",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::ce744aea62df60b715a0722b9ec1bc25d3b18d17ed5784819acf587370a92f68",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ec996851d86ce259a4bad57449c401b8e529d4dda5e76f9b7941b3897e747613",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "A quotation-mark classifier as the verbatim check",
+          "summary": "9. **A quotation-mark classifier as the verbatim check** (for the operator's item 2 and the instance's item 5). Declined: the instance's observed case carried no attribution; the ignored captures are the one source of the operator's bytes a check can hold against committed text without printing them. Useful never on its own; WO-259 keeps the existing attribution classes beside the screen.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 9 of 2026-11-07: a quotation-mark classifier as the verbatim check; the instance's observed case carried no attribution, and the ignored captures are the one source of the operator's bytes a check can hold against committed text without printing them. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "Never on its own.",
+          "targets": [],
+          "at": "2026-11-07T19:12:48.749Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ea4933c5b8af1f9e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::d0626c65f17fe37866e0fabd7d29c107bda7e1d15cb2a0e5a1dd48213d9e7383",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4cabfb5d1bf713e554f2b58891a8b1bb966cca4837520325dfab6e59d29d3e7b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "The eight untriaged follow-ups left deferred",
+          "summary": "13. **The eight untriaged follow-ups left deferred** (WO-242-D015, D026, D028 and D029; WO-257-D017, D036, D039 and D044). Read and left with their conditions: no open order owns plan-first's candidate setup, approval across integration, status degradation or the source-change fixture, and the review helper's budget, the page writers' import closure, the large-capture limit and the split-round merge each wait for the observation their conditions name. Useful when a condition fires.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-07 pass: the eight untriaged follow-ups of WO-242 and WO-257 were read against their decisions and deferred with their conditions (the map's candidate 13 of 2026-11-07). [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A condition of one of the rows named fires.",
+          "targets": [],
+          "at": "2026-11-07T19:12:49.281Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f7348f12ad1be70b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07::f21c80fc90c871debcc2324dfb4cb87661e7f76ef5e844cf15f81b4dae62dd9f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b96fbff7be50525e5eaff63a25d13a893abeadc4e020b7af0e623d72edea5e9d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-first-cycle-returns-and-host-elections-pass-recorded-2026-11-07",
+          "title": "Judging the release-close phrase against origin/main",
+          "summary": "6. **Judging the release-close phrase against `origin/main`** (the instance's first alternative in its item 1). Declined: a prompt hook reads and never reaches the network; WO-258 journals the phrase as a pending dispatch the close records after its own fast-forward. Useful if a close must be dispatched from a checkout that never fast-forwards.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The map's candidate 6 of 2026-11-07: judging the release-close phrase against origin/main; a prompt hook reads and never reaches the network; WO-258 journals the phrase as a pending dispatch the close records after its own fast-forward. [2026-11-07 planning pass (docs/planning/passes/first-cycle-returns-and-host-elections-2026-11-07.md)]",
+          "reopenWhen": "A close must be dispatched from a checkout that never fast-forwards.",
+          "targets": [],
+          "at": "2026-11-07T19:12:48.348Z"
         }
       ]
     }
