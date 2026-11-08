@@ -89,7 +89,8 @@
     "\"WO-227 criterion 7: only the bytes the renderer writes for a moved record are the Release's kit frame; a target URL or a link fragment the notes' author wrote is judged like the rest of the notes, whatever its commit or bytes\"",
     "\"WO-221 a registration without a release policy closes with no-release and the literal fallback writes and removes one order's rules\"",
     "\"WO-257 criterion 10: every classification declaration is counted before the sole value is read, so a valid header beside a malformed duplicate is refused naming both lines\"",
-    "`WO-257 criterion 10: a classification value followed by ${shape} is read as the reader before this order read it, so the count admits that header`"
+    "`WO-257 criterion 10: a classification value followed by ${shape} is read as the reader before this order read it, so the count admits that header`",
+    "\"a filing reads each link at its literal path: a moved document's old path and an edited linked file refuse until the records commit holds them (WO-259)\""
   ],
   "names": [
     "target start gives sign-off guidance only without a declared operator author",
@@ -216,6 +217,7 @@
     "WO-257 criterion 10: every classification declaration is counted before the sole value is read, so a valid header beside a malformed duplicate is refused naming both lines",
     "WO-257 criterion 10: a classification value followed by a note after a period is read as the reader before this order read it, so the count admits that header",
     "WO-257 criterion 10: a classification value followed by text at a word boundary is read as the reader before this order read it, so the count admits that header",
-    "WO-257 criterion 10: a classification value followed by a line break before the value is read as the reader before this order read it, so the count admits that header"
+    "WO-257 criterion 10: a classification value followed by a line break before the value is read as the reader before this order read it, so the count admits that header",
+    "a filing reads each link at its literal path: a moved document's old path and an edited linked file refuse until the records commit holds them (WO-259)"
   ]
 }

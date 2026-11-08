@@ -123,6 +123,443 @@ test("WO-178 attributed operator words advise by record, with capture and finger
   assert.equal(operatorWordAdvisories(f.root).current, 0);
 });
 
+// A fixture committed on main with an order branch checked out, so the
+// forward-only checks have a merge base to compare the branch with.
+const branchFixture = (t) => {
+  const f = fixture(t);
+  f.write(".gitignore", "docs/intake/\ndocs/control/local/\n");
+  f.controls();
+  const git = (...args) =>
+    assert.equal(
+      spawnGit(
+        [
+          "-C",
+          f.root,
+          "-c",
+          "user.email=fixture@example.invalid",
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "commit.gpgsign=false",
+          ...args,
+        ],
+        { encoding: "utf8" },
+      ).status,
+      0,
+      args.join(" "),
+    );
+  git("checkout", "-q", "-b", "main");
+  git("add", "-A");
+  git("commit", "-qm", "base");
+  git("checkout", "-q", "-b", "wo-999");
+  const cli = () =>
+    spawnSync(process.execPath, [script], {
+      cwd: f.root,
+      env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+      encoding: "utf8",
+    });
+  return { ...f, git, cli };
+};
+// Fourteen words the fixture's operator wrote; no committed text may carry
+// twelve of them in a row unless the operator asked to save the message.
+const CAPTURED =
+  "Keep every release note short enough that a reviewer reads it twice before merging today";
+const digest = (text) =>
+  `sha256:${createHash("sha256").update(text).digest("hex")}`;
+
+test("the verbatim screen fails a changed file carrying a capture's words by file, line and digest, admits a requested quotation, advises under the election and passes without captures (WO-259)", (t) => {
+  const f = branchFixture(t);
+  // No capture under the intake root: the screen says so and passes.
+  f.record("resume: next", { decision: `Recorded: ${CAPTURED}.` });
+  let run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(run.stdout, /^verbatim screen: no captures$/mu);
+  // One ignored capture: the changed decisions file carrying its words fails
+  // naming the file, the line and the capture's digest, never the words.
+  const capture = `The operator wrote:\n\n${CAPTURED}.\n`;
+  f.write("docs/intake/chats/release-notes.md", capture);
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  const line = readFileSync(
+    join(f.root, f.evidence, "WO-999/decisions.md"),
+    "utf8",
+  )
+    .split("\n")
+    .findIndex((text) => text.includes("Recorded:"));
+  assert.ok(
+    run.stderr.includes(
+      `FAIL ${f.evidence}/WO-999/decisions.md:${line + 1}: 12 or more consecutive words shared with the ignored capture ${digest(capture)}`,
+    ),
+    run.stderr,
+  );
+  assert.doesNotMatch(run.stdout + run.stderr, /reviewer reads it twice/u);
+  assert.match(
+    run.stdout,
+    /^verbatim screen: \d+ changed files against 1 captures, a 12-word window; 1 shared runs$/mu,
+  );
+  // The operator asked to save that message: a typed quotation naming the
+  // capture and the request passes; without the request it fails.
+  const request = "Save that release note message in the decisions verbatim.\n";
+  f.write("docs/intake/chats/request.md", request);
+  f.record("resume: next", {
+    operatorQuote: {
+      text: CAPTURED,
+      captureSha256: digest(capture),
+      requestedIn: digest(request),
+    },
+  });
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  f.record("resume: next", {
+    operatorQuote: { text: CAPTURED, captureSha256: digest(capture) },
+  });
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  assert.match(
+    run.stderr,
+    /WO-999-D001: operatorQuote 1 needs requestedIn \(sha256:<digest> of the ignored capture holding the operator's request to save that message\)/u,
+  );
+  // Elected, the same line advises and the check passes.
+  f.record("resume: next", { decision: `Recorded: ${CAPTURED}.` });
+  f.write(
+    "dotln.config.json",
+    JSON.stringify({
+      version: 1,
+      roots: {},
+      features: { "verbatim-operator-words": true },
+    }),
+  );
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(
+    run.stdout,
+    /^ADVISORY docs\/evidence\/WO-999\/decisions\.md:\d+: 12 or more consecutive words shared with the ignored capture sha256:[0-9a-f]{64}; .*features\.verbatim-operator-words is elected/mu,
+  );
+  f.write("dotln.config.json", JSON.stringify({ version: 1, roots: {} }));
+  // A changed source file under scripts/ is screened the same way.
+  f.record("resume: next");
+  f.write("scripts/fixture-tool.mjs", `// ${CAPTURED}.\nexport {};\n`);
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  assert.ok(
+    run.stderr.includes(
+      `FAIL scripts/fixture-tool.mjs:1: 12 or more consecutive words shared with the ignored capture ${digest(capture)}`,
+    ),
+    run.stderr,
+  );
+  assert.doesNotMatch(run.stderr, /decisions\.md:\d+: 12 or more/u);
+  // A staged path holding a space ends its diff header with a tab; the
+  // screen still reads the file by its own name.
+  f.write("docs/space dir/notes file.md", `# Notes\n\n${CAPTURED}.\n`);
+  f.git("add", "docs/space dir/notes file.md");
+  run = f.cli();
+  assert.ok(
+    run.stderr.includes(
+      `FAIL docs/space dir/notes file.md:3: 12 or more consecutive words shared with the ignored capture ${digest(capture)}`,
+    ),
+    run.stderr,
+  );
+  f.git("rm", "-q", "--cached", "docs/space dir/notes file.md");
+  unlinkSync(join(f.root, "docs/space dir/notes file.md"));
+  unlinkSync(join(f.root, "scripts/fixture-tool.mjs"));
+  // The requested quotation holds inside its own record only: the same words
+  // in another record of the same file are not the operator's request.
+  const quoted = {
+    id: "WO-999-D001",
+    date: "2026-09-26",
+    dispatch: "resume: next",
+    decision: "Save the release note message as the operator asked.",
+    evidence: ["fixture"],
+    rejected: [],
+    reopenWhen: "The fixture contract changes.",
+    operatorQuote: {
+      text: CAPTURED,
+      captureSha256: digest(capture),
+      requestedIn: digest(request),
+    },
+  };
+  const copied = {
+    ...quoted,
+    id: "WO-999-D002",
+    decision: `Carried again: ${CAPTURED}.`,
+  };
+  delete copied.operatorQuote;
+  // Inside the quoting decision itself, the quotation's own text value is
+  // the exception and the same words in its decision field are not.
+  f.write(
+    `${f.evidence}/WO-999/decisions.md`,
+    `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify({ ...quoted, decision: `Saved: ${CAPTURED}.` }, null, 2)}\n\`\`\`\n`,
+  );
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  const quotedLines = readFileSync(
+    join(f.root, f.evidence, "WO-999/decisions.md"),
+    "utf8",
+  ).split("\n");
+  const decisionLine =
+    quotedLines.findIndex((line) => line.includes("Saved:")) + 1;
+  const textLine =
+    quotedLines.findIndex((line) => line.includes('"text":')) + 1;
+  assert.ok(
+    run.stderr.includes(
+      `FAIL ${f.evidence}/WO-999/decisions.md:${decisionLine}: 12 or more consecutive words shared with the ignored capture ${digest(capture)}`,
+    ),
+    run.stderr,
+  );
+  assert.doesNotMatch(
+    run.stderr,
+    new RegExp(`decisions\\.md:${textLine}: 12 or more`, "u"),
+  );
+  // Two equal requested quotations each claim their own text value, and a
+  // value written with other valid JSON escapes is still that value.
+  const twice = {
+    ...quoted,
+    operatorQuote: [quoted.operatorQuote, quoted.operatorQuote],
+  };
+  f.write(
+    `${f.evidence}/WO-999/decisions.md`,
+    `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(twice, null, 2)}\n\`\`\`\n`,
+  );
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  // A sentence of its own: the exception belongs to the capture it names.
+  const slashed =
+    "Hold the planning branch until every revised paragraph has been read twice over at https://example.invalid/notes";
+  f.write("docs/intake/chats/slashed.md", `${slashed}\n`);
+  f.write(
+    `${f.evidence}/WO-999/decisions.md`,
+    `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(
+      {
+        ...quoted,
+        operatorQuote: {
+          text: slashed,
+          captureSha256: digest(`${slashed}\n`),
+          requestedIn: digest(request),
+        },
+      },
+      null,
+      2,
+    ).replaceAll("/", "\\/")}\n\`\`\`\n`,
+  );
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  unlinkSync(join(f.root, "docs/intake/chats/slashed.md"));
+  f.write(
+    `${f.evidence}/WO-999/decisions.md`,
+    `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(quoted)}\n\`\`\`\n\n## WO-999-D002\n\n\`\`\`json\n${JSON.stringify(copied)}\n\`\`\`\n`,
+  );
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  assert.ok(
+    run.stderr.includes(
+      `FAIL ${f.evidence}/WO-999/decisions.md:12: 12 or more consecutive words shared with the ignored capture ${digest(capture)}`,
+    ),
+    run.stderr,
+  );
+  assert.doesNotMatch(run.stderr, /decisions\.md:6: 12 or more/u);
+});
+
+test("a symlink the branch turns into a file is a changed file, staged or committed (WO-259)", async (t) => {
+  const { branchChanges } = await import("./lib/branch-changes.mjs");
+  const f = branchFixture(t);
+  f.git("checkout", "-q", "main");
+  f.write("docs/target.md", "# Target\n");
+  symlinkSync("target.md", join(f.root, "docs/linked.md"));
+  f.git("add", "-A");
+  f.git("commit", "-qm", "a link");
+  f.git("checkout", "-q", "wo-999");
+  f.git("merge", "-q", "main");
+  unlinkSync(join(f.root, "docs/linked.md"));
+  f.write("docs/linked.md", "# Linked\n\nNow a file.\n");
+  f.git("add", "docs/linked.md");
+  assert.deepEqual(
+    [...branchChanges(f.root).files.get("docs/linked.md")],
+    [1, 2, 3],
+  );
+  f.git("commit", "-qm", "the link becomes a file");
+  assert.deepEqual(
+    [...branchChanges(f.root, { committed: true }).files.get("docs/linked.md")],
+    [1, 2, 3],
+  );
+});
+
+test("a deletion that joins a capture's words is the branch's, and an unreadable changed file or capture is an error naming it (WO-259)", (t) => {
+  const f = branchFixture(t);
+  const words = CAPTURED.split(" ");
+  // On main the words stand apart, a guard line between them; beside the
+  // guard is a word-bearing line, a blank line or a punctuation-only line.
+  const halves = [words.slice(0, 7).join(" "), `${words.slice(7).join(" ")}.`];
+  const sides = {
+    joined: ["", ""],
+    blank: ["\n", "\n"],
+    punctuation: ["\n-", "\n-"],
+  };
+  f.git("checkout", "-q", "main");
+  for (const [name, [before, after]] of Object.entries(sides))
+    f.write(
+      `docs/planning/${name}.md`,
+      `# Joined\n\n${halves[0]}${before}\nA guard line.${after}\n${halves[1]}\n`,
+    );
+  f.git("add", "-A");
+  f.git("commit", "-qm", "split text");
+  f.git("checkout", "-q", "wo-999");
+  f.git("merge", "-q", "main");
+  f.write("docs/intake/notes/words.txt", `${CAPTURED}\n`);
+  let run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  // Deleting the guard adds no line, yet it joins the twelve-word run.
+  for (const [name, [before, after]] of Object.entries(sides))
+    f.write(
+      `docs/planning/${name}.md`,
+      `# Joined\n\n${halves[0]}${before}${after}\n${halves[1]}\n`,
+    );
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  for (const name of Object.keys(sides))
+    assert.ok(
+      run.stderr.includes(
+        `FAIL docs/planning/${name}.md:3: 12 or more consecutive words shared with the ignored capture ${digest(`${CAPTURED}\n`)}`,
+      ),
+      `${name}: ${run.stderr}`,
+    );
+  // A changed file the screen cannot open is an error, never a pass.
+  f.write("scripts/locked.mjs", "export {};\n");
+  chmodSync(join(f.root, "scripts/locked.mjs"), 0o000);
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  assert.match(
+    run.stderr,
+    /^FAIL docs check: scripts\/locked\.mjs cannot be read \(EACCES\); the screens read every file a branch changes$/mu,
+  );
+  chmodSync(join(f.root, "scripts/locked.mjs"), 0o644);
+  // A capture its owner closed is private material: the check names it in an
+  // advisory and reads no other words from it, and never fails on it.
+  chmodSync(join(f.root, "docs/intake/notes/words.txt"), 0o000);
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(run.stdout, /^verbatim screen: no readable captures$/mu);
+  assert.match(
+    run.stdout,
+    /^ADVISORY docs\/intake\/notes\/words\.txt cannot be read \(EACCES\); the verbatim screen did not read it$/mu,
+  );
+  chmodSync(join(f.root, "docs/intake/notes/words.txt"), 0o644);
+});
+
+test("the verbatim screen reads only what the branch adds: an unchanged file and a run the base already held are not findings (WO-259)", (t) => {
+  const f = branchFixture(t);
+  // Committed on main before the branch: an unchanged file is not screened.
+  f.write("docs/planning/carried.md", `# Carried\n\n${CAPTURED}.\n`);
+  f.write("docs/planning/edited.md", "# Edited\n\nA first line.\n");
+  f.git("add", "-A");
+  f.git("commit", "-qm", "carried text");
+  f.git("checkout", "-q", "main");
+  f.git("merge", "-q", "--ff-only", "wo-999");
+  f.git("checkout", "-q", "wo-999");
+  f.write("docs/intake/notes/words.txt", `${CAPTURED}\n`);
+  let run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(run.stdout, /0 shared runs$/mu);
+  // A changed file is read only at its added lines; and a run the base
+  // already held, which a capture merely quotes, is the repository's text.
+  f.write(
+    "docs/planning/edited.md",
+    `# Edited\n\nA first line.\n\nQuoted from the carried page: ${CAPTURED}.\n`,
+  );
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(
+    run.stdout,
+    /1 changed files against 1 captures, .* 0 shared runs$/mu,
+  );
+  // Off main entirely, nothing is judged and the screen says why.
+  const detached = checkDocs(f.root, {
+    baseline: f.baseline,
+    changes: {
+      base: null,
+      reason: "no merge base with main",
+      files: new Map(),
+    },
+  });
+  assert.deepEqual(detached.failures, []);
+  assert.equal(detached.verbatim.status, "no merge base");
+});
+
+test("a current record's attributed speech without a capture citation fails where the branch adds it; a historical record keeps its note and a carried one its advisory (WO-259)", (t) => {
+  const f = branchFixture(t);
+  const speech = "The operator said “keep the fixture short”.";
+  const decisions = (order, text) => {
+    const row = {
+      id: `${order}-D001`,
+      date: "2026-09-26",
+      dispatch: "resume: next",
+      decision: text,
+      evidence: ["fixture"],
+      rejected: [],
+      reopenWhen: "Never.",
+    };
+    f.write(
+      `${f.evidence}/${order}/decisions.md`,
+      `# Decisions\n\n## ${order}-D001\n\n\`\`\`json\n${JSON.stringify(row)}\n\`\`\`\n`,
+    );
+  };
+  // Written before the branch: WO-998's record is in the baseline, WO-997's
+  // is not; neither is the branch's to judge.
+  decisions("WO-998", speech);
+  decisions("WO-997", speech);
+  const historical = operatorWordFindings(f.root).find(
+    (row) => row.record === "WO-998-D001",
+  );
+  f.baseline.operatorWords = {
+    [`${historical.file}#${historical.record}`]: historical.fingerprint,
+  };
+  f.controls();
+  f.git("add", "-A");
+  f.git("commit", "-qm", "records before the branch");
+  f.git("checkout", "-q", "main");
+  f.git("merge", "-q", "--ff-only", "wo-999");
+  f.git("checkout", "-q", "wo-999");
+  decisions("WO-999", speech);
+  const result = f.check();
+  assert.deepEqual(result.failures, [
+    `${f.evidence}/WO-999/decisions.md#WO-999-D001: operator-attributed words without a capture citation in a record this branch adds or changes; paraphrase the operator and cite the ignored capture by its SHA-256`,
+  ]);
+  assert.equal(result.operatorWords.historical, 1);
+  const run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  assert.match(
+    run.stderr,
+    /^FAIL docs\/evidence\/WO-999\/decisions\.md#WO-999-D001: /mu,
+  );
+  assert.match(
+    run.stdout,
+    /^ADVISORY docs\/evidence\/WO-997\/decisions\.md#WO-997-D001: operator-attributed words need a capture digest/mu,
+  );
+  assert.doesNotMatch(run.stdout, /ADVISORY docs\/evidence\/WO-99[89]/u);
+  assert.match(run.stdout, /historical baseline: 1\.$/mu);
+  assert.doesNotMatch(run.stdout + run.stderr, /keep the fixture short/u);
+  // A capture citation, or a paraphrase, passes.
+  decisions("WO-999", `${speech} Capture SHA-256 ${"c".repeat(64)}.`);
+  assert.deepEqual(f.check().failures, []);
+  // An order's header is amended field by field: editing another field of
+  // the paragraph leaves the provenance record as it was written, and only
+  // an edit to the provenance itself makes it the branch's.
+  const order = "docs/work-orders/WO-996-fixture.md";
+  const header = (depends, provenance) =>
+    `# WO-996 — Fixture\n\n**Depends on:** ${depends}\n**Nomination provenance:** ${provenance}\n**Track:** machinery\n`;
+  f.write(order, header("none.", speech));
+  f.git("add", "-A");
+  f.git("commit", "-qm", "an order with attributed provenance");
+  f.git("checkout", "-q", "main");
+  f.git("merge", "-q", "--ff-only", "wo-999");
+  f.git("checkout", "-q", "wo-999");
+  f.write(order, header("WO-995 (closed).", speech));
+  assert.deepEqual(f.check().failures, []);
+  f.write(order, header("WO-995 (closed).", `${speech} Amended.`));
+  assert.deepEqual(f.check().failures, [
+    `${order}#provenance: operator-attributed words without a capture citation in a record this branch adds or changes; paraphrase the operator and cite the ignored capture by its SHA-256`,
+  ]);
+});
+
 test("operator-word advisories classify incidental JSON, code and document terms apart from quoted replies", (t) => {
   const f = fixture(t);
   const cases = [
@@ -228,7 +665,18 @@ test("WO-178 provenance findings and fingerprints survive grouped header layouts
       ["**Track:** machinery\n", "\n**Depends on:** no order."],
     ]) {
       f.write(file, `# WO-999 — Fixture\n\n${before}${field}${after}\n`);
-      assert.deepEqual(operatorWordFindings(f.root), standalone);
+      // The record and its fingerprint survive; its lines are the field's
+      // own, wherever the header places it.
+      const placed = operatorWordFindings(f.root);
+      const offset = before.split("\n").length - 1;
+      assert.deepEqual(
+        placed,
+        standalone.map((row) => ({
+          ...row,
+          line: row.line + offset,
+          endLine: row.endLine + offset,
+        })),
+      );
       const key = `${file}#provenance`;
       assert.equal(
         operatorWordAdvisories(f.root, { [key]: standalone[0].fingerprint })
@@ -2443,7 +2891,16 @@ test("document listing excludes private and package roots before inspecting unre
   for (const directory of directories) chmodSync(join(f.root, directory), 0);
   try {
     assert.deepEqual(recordFiles(f.root), []);
-    assert.deepEqual(f.check().failures, []);
+    const result = f.check();
+    assert.deepEqual(result.failures, []);
+    // The verbatim screen reads the intake root and names the closed
+    // directory there instead of failing on it (WO-259).
+    assert.ok(
+      result.advisories.includes(
+        "docs/intake/private cannot be listed (EACCES); the verbatim screen did not read the captures under it",
+      ),
+      result.advisories.join("\n"),
+    );
   } finally {
     for (const directory of directories)
       chmodSync(join(f.root, directory), 0o755);

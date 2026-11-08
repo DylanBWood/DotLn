@@ -408,6 +408,17 @@ const closeOrder = (f, override = {}, verificationSuffix = "") => {
   return reports;
 };
 
+// The reviewer's records commit: the order's records and evidence, committed
+// on the order branch after the passing review and before target-records
+// files them, so the commit its footer names holds every record (WO-259).
+const commitInstanceRecords = (f, message = "docs: the instance records") => {
+  if (git(f.orderRoot, "status", "--porcelain")) {
+    git(f.orderRoot, "add", "-A");
+    git(f.orderRoot, "-c", "maintenance.auto=false", "commit", "-qm", message);
+  }
+  return git(f.orderRoot, "rev-parse", "HEAD");
+};
+
 const publicationSetup = (f) => {
   f.config.repositories.target.authorityProfile = {
     ...profile,
@@ -510,6 +521,7 @@ export {
   withFixture,
   prepareFinalReview,
   closeOrder,
+  commitInstanceRecords,
   publicationSetup,
   launchpadCommands,
 };

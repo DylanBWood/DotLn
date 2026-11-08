@@ -190,7 +190,9 @@ if hidden_control_output="$(PATH="$test_root/bin:$PATH" "$node_bin" "$subject/sc
   printf 'error: hidden working control state bypassed the committed phase gate\n' >&2
   exit 1
 fi
-grep -Fq 'committed surface check requires closed WO-099 control state; observed WO-099 in phase active' <<<"$hidden_control_output"
+# The launchpad form reads the committed control record before anything else
+# it publishes: no passing final review there refuses, naming the phase.
+grep -Fq 'WO-099 has no committed passing final review: its committed control record reads phase active' <<<"$hidden_control_output"
 if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: hidden working control state reached the remote\n' >&2; exit 1; fi
 cp "$test_root/committed-active-resume.jsonl" "$subject/docs/control/orders/WO-099.jsonl"
 cp "$test_root/committed-active-current.md" "$subject/docs/control/current.md"

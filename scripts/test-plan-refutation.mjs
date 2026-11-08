@@ -790,7 +790,7 @@ export async function fixtures() {
       },
     );
     await check(
-      "plan failures leaves a host task notification out of the interventions and counts prompts without transcript evidence as unattributed",
+      "plan failures leaves a host task notification and a worker's hand-back out of the interventions and counts prompts without transcript evidence as unattributed",
       async () => {
         const repo = failureRepo(parent, "notification-record");
         const time = "2030-01-03T10:00:00.000Z";
@@ -816,6 +816,15 @@ export async function fixtures() {
               route: "mid-turn",
               attribution: "host-task-notification",
             },
+            // A background worker's hand-back, journaled as the host's.
+            {
+              class: "unclassified",
+              source: "host-agent-handback",
+              route: "mid-turn",
+              routeSource: "host-agent-handback-envelope",
+              attribution: "host",
+              leadingElement: "agent-message",
+            },
           ]
             .map((row) =>
               JSON.stringify({
@@ -836,6 +845,10 @@ export async function fixtures() {
         assert.equal(operational.interventions.count, 2);
         assert.equal(operational.interventions.unattributed, 1);
         assert.equal(operational.interventions.hostNotifications, 1);
+        assert.equal(operational.interventions.hostHandbacks, 1);
+        assert.ok(
+          !("host-agent-handback" in operational.interventions.bySource),
+        );
         assert.equal(
           operational.interventions.bySource["claude-prompt-hook"],
           2,
@@ -7338,7 +7351,7 @@ else {
       },
     );
     await check(
-      "WO-254 plan check refuses a standing rule recorded from a question or from no journal row whatever its label, and admits one from a direction row whose capture digest matches; plan start writes the empty block",
+      "WO-254 plan check refuses a standing rule recorded from a question, from a worker's hand-back or from no journal row whatever its label, and admits one from a direction row whose capture digest matches; plan start writes the empty block",
       async () => {
         const repo = makeRepo(parent, "rules-recorded");
         runGit(repo, ["branch", "-M", "main"]);
@@ -7357,6 +7370,8 @@ else {
         const asked = "take a newer starter before every pass?";
         const directed =
           "planning: from now on take a newer starter before every pass";
+        const handedBack =
+          '<agent-message from="a0b1c2d3e4f5">\n[Subagent hand-back] Synthetic frame.\n  take a newer starter before every pass\n</agent-message>';
         write(
           repo,
           `docs/control/local/harness/${sessionKey}.jsonl`,
@@ -7367,15 +7382,23 @@ else {
               words: directed,
               kind: "direction",
             },
+            // The row the prompt hook writes for a worker's hand-back.
+            {
+              at: "2030-01-02T10:06:00.000Z",
+              words: handedBack,
+              kind: "unclassified",
+              source: "host-agent-handback",
+              attribution: "host",
+            },
           ]
-            .map(({ at, words, kind }) =>
+            .map(({ at, words, kind, source, attribution }) =>
               JSON.stringify({
                 recordedAt: at,
                 event: "UserPromptSubmit",
                 typedEvent: "OperatorMessageObserved",
-                source: "claude-prompt-hook",
+                source: source ?? "claude-prompt-hook",
                 route: "mid-turn",
-                attribution: "operator",
+                attribution: attribution ?? "operator",
                 prefix: kind === "direction" ? "planning:" : null,
                 prefixLine: kind === "direction" ? 0 : null,
                 class: kind,
@@ -7413,6 +7436,11 @@ else {
         await assert.rejects(
           plan(["check"], repo),
           /the rule "Take a newer starter before every pass\." names no operator message in the session journal/u,
+        );
+        recorded([rule("2030-01-02T10:06:00.000Z", handedBack)]);
+        await assert.rejects(
+          plan(["check"], repo),
+          /the rule "Take a newer starter before every pass\." names a background worker's hand-back \(session c{12} at 2030-01-02T10:06:00\.000Z; source host-agent-handback\), not the operator's words/u,
         );
         recorded([rule("2030-01-02T10:05:00.000Z", "other words")]);
         await assert.rejects(
@@ -9939,6 +9967,31 @@ test("WO-246 plan publish lints, pushes to origin's repository only and opens th
     renameSync(terms, `${terms}.aside`);
     refusedBeforeAnyPush(/the local-terms list is absent; register it/u);
     renameSync(`${terms}.aside`, terms);
+    // A private term in a line the branch adds refuses by file, line and mode
+    // before any push, and a malformed list by its line, never a term
+    // (WO-259).
+    git("switch", "-q", "-c", "planning/2030-01-04-term", branch);
+    write(
+      repo,
+      "docs/planning/passes/term-2030-01-04.md",
+      "# Term\n\nNotes.\n\nThe zephyrcanary system.\n",
+    );
+    // A committed path holding a space ends its diff header with a tab.
+    write(repo, "docs/planning/carried notes.md", "# Notes\n\nzephyrcanary\n");
+    git("add", ".");
+    git("commit", "-qm", "carry a term");
+    const carried = refusedBeforeAnyPush(
+      /plan publish refused: the local-terms list refuses lines this branch adds: docs\/planning\/carried notes\.md:3: a local term in refuse mode; docs\/planning\/passes\/term-2030-01-04\.md:5: a local term in refuse mode/u,
+    );
+    assert.doesNotMatch(carried.stderr, /zephyrcanary/u);
+    git("switch", "-q", branch);
+    const listed = readFileSync(terms, "utf8");
+    writeFileSync(terms, `${listed}refuse:\n`);
+    const malformed = refusedBeforeAnyPush(
+      /plan publish refused: local-terms list line 3: a mode marker with no term; npm run terms -- check <path> reads the same list/u,
+    );
+    assert.doesNotMatch(malformed.stderr, /zephyrcanary|quietcanary/u);
+    writeFileSync(terms, listed);
     // The repository preflight: origin's push URL and gh, before any push.
     git("remote", "set-url", "origin", join(parent, "origin.git"));
     refusedBeforeAnyPush(/not a GitHub repository/u);

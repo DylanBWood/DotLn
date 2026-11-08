@@ -17,7 +17,8 @@ import {
   symlinkSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, posix } from "node:path";
+import { markdownLinks } from "./lib/markdown-links.mjs";
 import { docPath } from "./lib/config.mjs";
 import { releaseCloseCommand, runGit, spawnGit } from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
@@ -34,6 +35,7 @@ import {
   fixture,
   withFixture,
   closeOrder,
+  commitInstanceRecords,
   publicationSetup,
   launchpadCommands,
   fixtureForgeUrl,
@@ -160,11 +162,14 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     const reviewed = git(f.target, "rev-parse", "HEAD");
     const reports = closeOrder(f);
     const decisions = "records/evidence/WO-999/decisions.md";
+    // The record links its evidence and its order, as a real one does, so
+    // the filed copy has relative links for a reader to follow.
     write(
       f.orderRoot,
       decisions,
-      "# Decisions\n\nThe fixture keeps the reviewed behavior at <home>/x.\n",
+      "# Decisions\n\nThe fixture keeps the reviewed behavior at <home>/x, as [the probe](probe.json) and [the order](../../work-orders/WO-999-fixture.md) show.\n",
     );
+    write(f.orderRoot, "records/evidence/WO-999/probe.json", "{}\n");
     const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
     const before = readFileSync(segment);
     const targetBefore = recordTreeSnapshot(f.target),
@@ -218,6 +223,30 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       join(f.orderRoot, `${decisions}.saved`),
       join(f.orderRoot, decisions),
     );
+    // The filing reads its sources and the files they link at the launchpad's
+    // HEAD, which its footer names: an uncommitted report, or an uncommitted
+    // file a record links, refuses naming the commit step (WO-259).
+    const uncommitted = refuse(
+      /at the launchpad's HEAD; commit the instance records first \(the order's records and evidence, as one commit on the order branch\), then rerun .*target-records <actor flags>, and the footer names that commit/u,
+    );
+    for (const named of [
+      /VER-001\.md is not committed/u,
+      /FINAL-001\.md is not committed/u,
+      /records\/evidence\/WO-999\/decisions\.md is not committed/u,
+      /records\/evidence\/WO-999\/probe\.json, which a record links, is not committed/u,
+    ])
+      assert.match(uncommitted.stderr, named);
+    assert.doesNotMatch(uncommitted.stderr, /WO-999-fixture\.md, which/u);
+    git(f.orderRoot, "add", "-A");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: the instance records",
+    );
+    const recordsCommit = git(f.orderRoot, "rev-parse", "HEAD");
     f.ok(f.resume(["target-records", ...actorArgs]));
     const event = readFileSync(segment, "utf8")
       .trim()
@@ -245,25 +274,25 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       );
     // Each filed record keeps its bytes and ends with one provenance footer
     // naming the launchpad repository, the commit that holds the record and
-    // its path there; the launchpad's HEAD at filing is that commit (WO-257
-    // criterion 6).
+    // its path there: the records commit, the launchpad's HEAD at filing
+    // (WO-257 criterion 6, WO-259).
     const filedDecisions = readFileSync(
       join(f.target, "docs/evidence/WO-999/decisions.md"),
       "utf8",
     );
     assert.ok(filedDecisions.startsWith(decisionBytes.toString("utf8")));
+    assert.equal(git(f.orderRoot, "rev-parse", "HEAD"), recordsCommit);
     assert.match(
       filedDecisions,
       new RegExp(
-        `\\n\\nFiled from the launchpad .+ \\(its tree at commit ${git(f.orderRoot, "rev-parse", "HEAD")}\\); this record's launchpad path was records/evidence/WO-999/decisions\\.md, and its relative links resolve against that path there, not in this repository\\.\\n$`,
+        `\\n\\nFiled from the launchpad .+ at commit ${recordsCommit}, where this record's path was records/evidence/WO-999/decisions\\.md: its relative links resolve at that commit on the launchpad, whose order branch history the launchpad records publish pushes, and not in this repository\\.\\n$`,
         "u",
       ),
     );
+    const footer =
+      /\n\nFiled from the launchpad .+ at commit ([0-9a-f]{40,64}), where this record's path was (\S+): its relative links resolve at that commit on the launchpad, whose order branch history the launchpad records publish pushes, and not in this repository\.\n$/u;
     for (const row of event.records)
-      assert.match(
-        readFileSync(join(f.target, row.path), "utf8"),
-        /\n\nFiled from the launchpad .+ \(its tree at commit [0-9a-f]{40,64}\); this record's launchpad path was \S+, and its relative links resolve against that path there, not in this repository\.\n$/u,
-      );
+      assert.match(readFileSync(join(f.target, row.path), "utf8"), footer);
     assert.ok(existsSync(join(f.orderRoot, f.order)));
     assert.ok(!existsSync(join(f.orderRoot, decisions)));
     assert.ok(!existsSync(reports.verification));
@@ -673,6 +702,43 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     assert.doesNotMatch(body, /target-gate:|source-event:|argv/u);
     git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
     git(f.main, "push", "-q", "origin", "main");
+    // With the order branch's history on the launchpad's origin, every
+    // relative link of each filed record resolves at the commit its footer
+    // names (WO-259 criterion 9).
+    const launchpadOrigin = join(f.base, "launchpad.git");
+    let resolved = 0;
+    const decisionsLinks = [];
+    for (const row of event.records) {
+      const filed = readFileSync(join(f.target, row.path), "utf8");
+      const [, commit, source] = footer.exec(filed);
+      assert.equal(commit, recordsCommit, row.path);
+      for (const { href } of markdownLinks(
+        filed.slice(0, filed.lastIndexOf("\n\nFiled from the launchpad ")),
+      )) {
+        const target = decodeURIComponent(href.split("#")[0]);
+        if (!target || /^[a-z][a-z0-9+.-]*:/iu.test(target)) continue;
+        const path = posix.normalize(posix.join(posix.dirname(source), target));
+        if (source === decisions) decisionsLinks.push(path);
+        assert.equal(
+          spawnGit([
+            "--git-dir",
+            launchpadOrigin,
+            "cat-file",
+            "-e",
+            `${commit}:${path}`,
+          ]).status,
+          0,
+          `${row.path} links ${path}, absent at ${commit} on the origin`,
+        );
+        resolved++;
+      }
+    }
+    assert.equal(resolved, 2, "the decisions record's two links resolve");
+    // Named here, not by the extractor the filing uses.
+    assert.deepEqual(decisionsLinks.sort(), [
+      "records/evidence/WO-999/probe.json",
+      "records/work-orders/WO-999-fixture.md",
+    ]);
     write(
       f.orderRoot,
       "docs/control/local/harness/unrelated.json",
@@ -870,6 +936,7 @@ test("target records screen a hash-bound verification before writing and admit i
         refs = git(f.target, "show-ref"),
         origin = git(join(f.base, "target.git"), "show-ref"),
         verification = readFileSync(reports.verification);
+      commitInstanceRecords(f);
       const result = f.resume(["target-records", ...actorArgs]);
       if (refused) {
         assert.notEqual(result.status, 0);
@@ -893,13 +960,96 @@ test("target records screen a hash-bound verification before writing and admit i
         assert.ok(filed.subarray(0, verification.length).equals(verification));
         assert.match(
           filed.subarray(verification.length).toString("utf8"),
-          /^\n\nFiled from the launchpad .+ \(its tree at commit [0-9a-f]{40}\); this record's launchpad path was \S+, and its relative links resolve against that path there, not in this repository\.\n$/u,
+          /^\n\nFiled from the launchpad .+ at commit [0-9a-f]{40}, where this record's path was \S+: its relative links resolve at that commit on the launchpad, whose order branch history the launchpad records publish pushes, and not in this repository\.\n$/u,
         );
       }
       assert.equal(git(join(f.base, "target.git"), "show-ref"), origin);
       assert.equal(existsSync(forge.log), false);
     });
 });
+
+test("a filing reads each link at its literal path: a moved document's old path and an edited linked file refuse until the records commit holds them (WO-259)", () =>
+  withFixture((f) => {
+    publicationSetup(f);
+    f.mapClone();
+    f.start();
+    write(f.target, "reviewed.txt", "Reviewed change.\n");
+    git(f.target, "add", "reviewed.txt");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "fix: reviewed change",
+    );
+    closeOrder(f);
+    // A document the launchpad moved: its own document check follows the
+    // move map, but a reader at the footer's commit follows the literal path.
+    write(f.orderRoot, "records/planning/passes/old-notes.md", "# Notes\n");
+    write(
+      f.orderRoot,
+      `${f.config.roots.control}/document-moves.json`,
+      JSON.stringify({
+        schemaVersion: 1,
+        purpose: "Fixture moves.",
+        moves: [
+          {
+            from: "records/planning/old-notes.md",
+            to: "records/planning/passes/old-notes.md",
+            workOrder: "WO-999",
+          },
+        ],
+      }),
+    );
+    const decisions = "records/evidence/WO-999/decisions.md";
+    // A link written as raw HTML is followed the same way, its character
+    // references decoded as a browser decodes them.
+    write(
+      f.orderRoot,
+      decisions,
+      '# Decisions\n\nAs [the notes](../../planning/old-notes.md), [the probe](probe.json) and <a href="&#109;issing.json">the log</a> show.\n',
+    );
+    write(f.orderRoot, "records/evidence/WO-999/probe.json", "{}\n");
+    commitInstanceRecords(f);
+    const moved = f.resume(["target-records", ...actorArgs]);
+    assert.notEqual(moved.status, 0);
+    assert.match(
+      moved.stderr,
+      /records\/evidence\/WO-999\/missing\.json, which a record links, is not committed; records\/planning\/old-notes\.md, which a record links, is not committed at the launchpad's HEAD/u,
+    );
+    // Linked where it lives, the record's links resolve; an edited linked
+    // file still refuses until the records commit holds its bytes.
+    // An attribute that only names a file (data-src) and an HTML comment are
+    // no links; an encoded link to a committed file resolves, its numeric
+    // and named references (&period;) decoded as a browser decodes them.
+    write(
+      f.orderRoot,
+      decisions,
+      '# Decisions\n\nAs [the notes](../../planning/passes/old-notes.md) and <a href="pro&#98;e&period;json">the probe</a> show.\n\n<div data-src="not-a-link.json"></div>\n\n<!-- href="not-a-link.json" -->\n',
+    );
+    commitInstanceRecords(f);
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/probe.json",
+      '{"edited":true}\n',
+    );
+    const edited = f.resume(["target-records", ...actorArgs]);
+    assert.notEqual(edited.status, 0);
+    assert.match(
+      edited.stderr,
+      /records\/evidence\/WO-999\/probe\.json, which a record links, is not committed at the launchpad's HEAD/u,
+    );
+    const head = commitInstanceRecords(f);
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    assert.match(
+      readFileSync(join(f.target, "docs/evidence/WO-999/decisions.md"), "utf8"),
+      new RegExp(
+        `at commit ${head}, where this record's path was ${decisions}:`,
+        "u",
+      ),
+    );
+  }));
 
 test("WO-257 the provenance footer's display name is screened like the record bytes it joins, and an unset name is an advisory", () =>
   withFixture((f) => {
@@ -919,6 +1069,7 @@ test("WO-257 the provenance footer's display name is screened like the record by
       termsFile,
       `${originalTerms}\nrefuse: fixture private name\n`,
     );
+    commitInstanceRecords(f);
     const refused = f.resume(["target-records", ...actorArgs]);
     assert.notEqual(refused.status, 0);
     assert.match(
@@ -931,14 +1082,19 @@ test("WO-257 the provenance footer's display name is screened like the record by
     assert.doesNotMatch(filed, /release\.displayName is unset/u);
     assert.match(
       readFileSync(join(f.target, "docs/evidence/WO-999/decisions.md"), "utf8"),
-      /Filed from the launchpad Fixture private name \(its tree at commit /u,
+      /Filed from the launchpad Fixture private name at commit /u,
     );
   }));
 
 test("target records resume interrupted commits and removals with literal document roots", async () => {
-  const { commitTargetRecords, targetRecordSources } =
-    await import("./lib/target-records.mjs");
-  const { readControl } = await import("./lib/control-store.mjs");
+  const {
+    commitTargetRecords,
+    provenanceFooterText,
+    targetRecordDestination,
+    targetRecordSources,
+  } = await import("./lib/target-records.mjs");
+  const { eventsForOrder, readControl } =
+    await import("./lib/control-store.mjs");
   withFixture((f) => {
     f.config.repositories.target.documentationRoot = ":(literal)manual";
     publicationSetup(f);
@@ -973,6 +1129,7 @@ test("target records resume interrupted commits and removals with literal docume
     git(f.target, "config", "gpg.format", "openpgp");
     git(f.target, "config", "gpg.program", signer);
     git(f.target, "config", "commit.gpgsign", "true");
+    commitInstanceRecords(f);
     assert.throws(
       () => commitTargetRecords(f.orderRoot, state, control),
       /sign|gpg/u,
@@ -987,12 +1144,48 @@ test("target records resume interrupted commits and removals with literal docume
     );
     assert.ok(existsSync(reports.verification));
     git(f.target, "config", "commit.gpgsign", "false");
-    // Stop at the real commit/event boundary, then use the public command.
-    const result = commitTargetRecords(f.orderRoot, state, control);
+    // An operation interrupted before the footer named its commit kept the
+    // earlier footer: model it from this one (the saved hashes and the
+    // target's uncommitted copies), and it resumes with that footer (WO-259).
     const receipt = docPath(
       f.orderRoot,
       "control",
       "local/target-operations/records/WO-999.json",
+    );
+    const operation = JSON.parse(readFileSync(receipt, "utf8"));
+    assert.equal(operation.binding.footer, 2);
+    delete operation.binding.footer;
+    const sources = targetRecordSources(
+      f.orderRoot,
+      state,
+      eventsForOrder(control, "WO-999"),
+    );
+    for (const record of operation.binding.records) {
+      const { source } = sources.find((row) => row.path === record.path);
+      const filed = Buffer.concat([
+        readFileSync(join(f.orderRoot, source)),
+        Buffer.from(
+          provenanceFooterText(
+            "DotLn",
+            operation.binding.launchpadCommit,
+            source,
+            1,
+          ),
+          "utf8",
+        ),
+      ]);
+      writeFileSync(targetRecordDestination(f.target, record.path), filed);
+      record.sha256 = createHash("sha256").update(filed).digest("hex");
+    }
+    writeFileSync(receipt, `${JSON.stringify(operation, null, 2)}\n`);
+    // Stop at the real commit/event boundary, then use the public command.
+    const result = commitTargetRecords(f.orderRoot, state, control);
+    assert.match(
+      readFileSync(
+        targetRecordDestination(f.target, result.payload.records[0].path),
+        "utf8",
+      ),
+      /\n\nFiled from the launchpad DotLn \(its tree at commit [0-9a-f]{40}\); this record's launchpad path was \S+, and its relative links resolve against that path there, not in this repository\.\n$/u,
     );
     const receiptBytes = readFileSync(receipt);
     const offered = () =>
@@ -1790,6 +1983,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       "records/evidence/WO-999/decisions.md",
       "# Decisions\n\nPreserve reviewed behavior.\n",
     );
+    commitInstanceRecords(f);
     f.ok(f.resume(["target-records", ...actorArgs]));
     write(
       f.orderRoot,
@@ -2034,6 +2228,7 @@ test("WO-227 criteria 2 to 4: a target publication checks private terms on kit p
     const termsFile = docPath(f.main, "control", "local/terms.txt");
     const originalTerms = readFileSync(termsFile, "utf8");
     writeFileSync(termsFile, `${originalTerms}\nrefuse: fixture md\n`);
+    commitInstanceRecords(f);
     f.ok(f.resume(["target-records", ...actorArgs]));
     write(
       f.orderRoot,
@@ -2262,6 +2457,7 @@ test("target publication retains installation ownership when its live manifest d
       "records/evidence/WO-999/decisions.md",
       "# Decisions\n\nPreserve reviewed behavior.\n",
     );
+    commitInstanceRecords(f);
     f.ok(f.resume(["target-records", ...actorArgs]));
     write(
       f.orderRoot,
@@ -2320,6 +2516,7 @@ test("moved decisions and reports resolve from the bound immutable target commit
       "records/evidence/WO-999/decisions.md",
       `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
     );
+    commitInstanceRecords(f);
     f.ok(f.resume(["target-records", ...actorArgs]));
     const state = readControl(f.orderRoot).orders.get("WO-999").state;
     assert.equal(
@@ -2429,6 +2626,7 @@ test("moved record lookup uses the running, primary and main checkouts in order"
       "records/evidence/WO-999/decisions.md",
       `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
     );
+    commitInstanceRecords(f);
     f.ok(f.resume(["target-records", ...actorArgs]));
     const state = readControl(f.orderRoot).orders.get("WO-999").state;
     const record = readDecisions(f.orderRoot)[0].targetRecord;
@@ -2668,6 +2866,7 @@ test("target final publish excludes earlier records, exempts fetched-base paths 
       "records/evidence/WO-999/decisions.md",
       "# Decisions\n\nPreserve reviewed behavior.\n",
     );
+    commitInstanceRecords(f);
     f.ok(f.resume(["target-records", ...actorArgs]));
     const records = git(f.target, "rev-parse", "HEAD");
     write(

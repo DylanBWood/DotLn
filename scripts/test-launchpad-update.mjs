@@ -630,6 +630,25 @@ test("WO-246 update --publish opens the update branch's pull request on origin's
     refused(/AI attribution/u, attributed);
   }
 
+  // A private term in a line the branch adds refuses by file, line and mode
+  // before any push (WO-259).
+  writeFileSync(
+    join(destination, "docs/carried-term.md"),
+    "# Carried\n\nThe zephyrcanary kit.\n",
+  );
+  commitAll("carry a term");
+  const carried = publish();
+  assert.equal(carried.status, 1, carried.stdout);
+  assert.match(
+    carried.stderr,
+    /update --publish refused: the local-terms list refuses lines this branch adds: docs\/carried-term\.md:3: a local term in refuse mode/u,
+  );
+  assert.doesNotMatch(carried.stderr, /zephyrcanary/u);
+  assert.equal(forge.pushes().length, pushesAtStart);
+  assert.deepEqual(forge.calls(), []);
+  rmSync(join(destination, "docs/carried-term.md"));
+  commitAll("drop the carried term");
+
   const head = git(destination, ["rev-parse", "HEAD"]).stdout.trim();
   const opened = ok(publish(), "publish the update branch");
   const pullRequest = `https://${selector}/pull/7`;

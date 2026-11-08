@@ -71,6 +71,16 @@ export const featureRegistry = Object.freeze([
     "features.auto-update-upstream",
     "scripts/launchpad.mjs",
   ),
+  // The operator's words stay out of committed text unless an instance turns
+  // that rule off here; the document gate then advises instead of failing.
+  row(
+    "verbatim-operator-words",
+    "instance",
+    false,
+    "Turns off the rule that committed text paraphrases the operator: the document gate's verbatim screen and its attributed-speech check advise instead of failing.",
+    "features.verbatim-operator-words",
+    "scripts/docs-check.mjs",
+  ),
   ...[
     ["readme-block", "readmeBlock", "the README release block"],
     ["component-versions", "componentVersions", "component version surfaces"],

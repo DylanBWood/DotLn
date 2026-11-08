@@ -13,6 +13,8 @@ import {
   checkOutwardArtifact,
   readOutwardVocabulary,
 } from "../outward-lint.mjs";
+import { branchChanges } from "./branch-changes.mjs";
+import { branchTermFindings, branchTermLines } from "./branch-terms.mjs";
 import { docPath } from "./config.mjs";
 import { runGit } from "./git.mjs";
 import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
@@ -104,6 +106,28 @@ export function publishLaunchpadBranch(
   if (!lstatSync(bodyPath, { throwIfNoEntry: false })?.isFile())
     throw fail(`the body ${bodyFile} is not a regular file`);
   const body = readFileSync(bodyPath, "utf8");
+  // The files the branch carries are screened as the document gate's terms
+  // task screens them: a private term in a line the branch adds refuses by
+  // file, line and mode. A malformed list refuses naming its line, never a
+  // term.
+  let changed;
+  try {
+    changed = branchTermFindings(root, {
+      changes: branchChanges(root, { main: base, committed: true }),
+    });
+  } catch (error) {
+    throw fail(
+      `${error.message}; npm run terms -- check <path> reads the same list`,
+    );
+  }
+  if (changed.status === "no merge base")
+    throw fail(
+      `${changed.reason}, so the files this branch changes cannot be screened`,
+    );
+  if (changed.findings.length)
+    throw fail(
+      `the local-terms list refuses lines this branch adds: ${branchTermLines(changed.findings).join("; ")}`,
+    );
   const failures = lintFailures(root, [
     { kind: "pr-title", text: title },
     { kind: "pr-body", text: body },

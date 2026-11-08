@@ -1629,6 +1629,39 @@ const main = async () => {
     if (!item?.worktree) throw new Error(`no worktree found for ${branch}`);
     const subject = resolve(item.worktree);
     ensureClean(subject);
+    // The order branch is published only after its final review passed, as
+    // the order's committed control record shows, like the target forms.
+    {
+      const committed = readControl(subject, "HEAD");
+      const phase =
+        committed.orders.get(workOrderId)?.state?.phase ?? "not activated";
+      const { eventsForOrder } = await import("./lib/control-store.mjs");
+      const review = eventsForOrder(committed, workOrderId)
+        .filter((event) => event.type === "FinalReviewCompleted")
+        .at(-1);
+      if (phase !== "closed" || review?.verdict !== "pass")
+        throw new Error(
+          `${workOrderId} has no committed passing final review: its committed control record reads phase ${phase}; record final-review-result pass and commit the reviewed state before publishing`,
+        );
+    }
+    // The files the branch carries are screened as the document gate's terms
+    // task screens them, before anything reaches the remote.
+    {
+      const { branchChanges } = await import("./lib/branch-changes.mjs");
+      const { branchTermFindings, branchTermLines } =
+        await import("./lib/branch-terms.mjs");
+      const changed = branchTermFindings(subject, {
+        changes: branchChanges(subject, { committed: true }),
+      });
+      if (changed.status === "unavailable")
+        process.stdout.write(
+          `local-terms list: unavailable; the ${changed.files} files ${branch} changes were not screened\n`,
+        );
+      if (changed.findings.length)
+        throw new Error(
+          `the local-terms list refuses lines ${branch} adds: ${branchTermLines(changed.findings).join("; ")}`,
+        );
+    }
     resolveGitHubPushTarget(subject);
     const surfaces = spawnSync(
       process.execPath,

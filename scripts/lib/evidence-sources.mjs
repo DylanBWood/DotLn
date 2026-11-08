@@ -441,7 +441,10 @@ export const evidenceImportExclusions = {
     "scripts/lib/harness.mjs": BUILD_ONLY,
     "scripts/lib/paths.mjs": BUILD_ONLY,
   },
-  harness: {},
+  harness: {
+    "scripts/lib/branch-terms.mjs":
+      "The local-terms screen over a branch's change, reached only through terms.mjs's branch form, which the document gate's terms task and the launchpad publish helpers run; the harness reaches terms.mjs through its check and --plan-first forms, and the runner, worktree and planning fixtures judge the branch screen.",
+  },
 };
 
 // Imports are read from code tokens, not text (WO-157 VER-001 F4 and its

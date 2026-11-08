@@ -434,9 +434,12 @@ record the pass, commit the reviewed state, push only the WO branch, and open a
 mergeable PR. A self order writes the notes even when it records no release,
 so its prose can ride the next tag. A registered-target order instead commits
 the reviewed target change first, runs `node scripts/target-gate.mjs WO-NNN
---review` at those bytes, records the passing result, and runs `npm run resume
--- target-records` with its actor flags. That records-only child commit carries
-the order, decisions and reports under the target's `documentationRoot`.
+--review` at those bytes, records the passing result, commits the instance
+records on the order branch, and runs `npm run resume -- target-records` with
+its actor flags. That records-only child commit carries the order, decisions
+and reports under the target's `documentationRoot`, each ending with a footer
+naming the launchpad commit at which its links resolve
+([WO-259-D012](evidence/WO-259/decisions.md#wo-259-d012)).
 The reviewer publishes it through the session target form and publishes the
 launchpad records branch separately, with links and no release notes. An
 unchanged launchpad code identity proves its records-only publication without

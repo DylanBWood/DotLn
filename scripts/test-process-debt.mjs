@@ -16,7 +16,11 @@ import "./test-codex-session.mjs";
 import "./test-helper-reuse.mjs";
 import "./test-gate-followups.mjs";
 import test from "node:test";
-import { fnv1a64 } from "../packages/compiler/dist/src/index.js";
+import {
+  fnv1a64,
+  operatorWordsRule,
+  workerNoPrintRules,
+} from "../packages/compiler/dist/src/index.js";
 import {
   currentHarnessSessionReport,
   harnessRuntimeCause,
@@ -2369,6 +2373,69 @@ test("WO-210 discovery recognizes each effort control and records only advertise
       {},
     ).probe.effortSelectorPresent,
     false,
+  );
+});
+
+test("discovery gives a record its versions list, records a version and a line once, says already recorded on a rerun and names an unparsable record (WO-259)", (t) => {
+  const root = repo(t);
+  const path = join(root, "docs/discovery/environment.json");
+  const row = probeHarness(
+    "claude-code",
+    (_command, args) => ({
+      status: 0,
+      stdout:
+        args[0] === "--version" ? "2.1.263" : "--effort <level> (low, max)",
+    }),
+    { CLAUDE_EFFORT: "max" },
+  );
+  write(
+    root,
+    "docs/discovery/environment.json",
+    json({ effortReadbackProbe: { harnesses: { "claude-code": {} } } }),
+  );
+  const first = discoverHarness(root, "claude-code", () => row);
+  assert.equal(first.status, "recorded");
+  const stored = () =>
+    JSON.parse(readFileSync(path, "utf8")).effortReadbackProbe.harnesses[
+      "claude-code"
+    ];
+  assert.equal(stored().versions.length, 1);
+  assert.equal(stored().versions[0].value, "2.1.263");
+  assert.deepEqual(
+    stored().versionLines.map((line) => line.line),
+    ["2.1"],
+  );
+  const bytes = readFileSync(path);
+  const second = discoverHarness(root, "claude-code", () => ({
+    ...row,
+    observedAt: "2030-01-01T00:00:00.000Z",
+  }));
+  assert.equal(second.status, "already recorded");
+  assert.deepEqual(second.recorded, {
+    version: false,
+    line: false,
+    selector: false,
+    readback: false,
+  });
+  assert.deepEqual(readFileSync(path), bytes, "nothing new is written");
+  // A newer patch on the same line records its version, not a second line.
+  const patch = discoverHarness(root, "claude-code", () => ({
+    ...row,
+    value: "2.1.264",
+  }));
+  assert.equal(patch.status, "recorded");
+  assert.equal(stored().versions.length, 2);
+  assert.equal(stored().versionLines.length, 1);
+  // A record that cannot be parsed, or holds no harness record, is named.
+  writeFileSync(path, '{"effortReadbackProbe":');
+  assert.throws(
+    () => discoverHarness(root, "claude-code", () => row),
+    /^Error: docs\/discovery\/environment\.json cannot be parsed \(.+\); repair it, then rerun the probe$/u,
+  );
+  write(root, "docs/discovery/environment.json", json({}));
+  assert.throws(
+    () => discoverHarness(root, "claude-code", () => row),
+    /docs\/discovery\/environment\.json holds no effortReadbackProbe\.harnesses record/u,
   );
 });
 
@@ -6904,12 +6971,21 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // operator asks in that session) pins the role trees over WO-255's repair.
   // The closeout sentences that name the closeout selection, in the executor,
   // the reviewer and the target clause the execution roles share (WO-243),
-  // pin them over WO-257's.
-  const current = "wo243-role-baseline.json";
+  // pin them over WO-257's. The paraphrase rule and the worker no-print rules
+  // in every root, the router's plan-approval stop and the reviewer's records
+  // commit before filing (WO-259) pin them over WO-243's.
+  const current = "wo259-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo257-role-baseline.json");
-  const noUpdate = JSON.parse(
+  assert.equal(baseline.historicalBaseline, "wo243-role-baseline.json");
+  const closeoutSelection = JSON.parse(
     readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(
+    closeoutSelection.historicalBaseline,
+    "wo257-role-baseline.json",
+  );
+  const noUpdate = JSON.parse(
+    readFileSync(join(fixtures, closeoutSelection.historicalBaseline), "utf8"),
   );
   assert.equal(noUpdate.historicalBaseline, "wo255-repair-role-baseline.json");
   const repair = JSON.parse(
@@ -7025,6 +7101,18 @@ test("WO-145 optional economy support preserves historical snapshots through the
   const explicitOn = harnessInstallation({
     supports: { "tinkerer-economy": true },
   });
+  // Both hosts' worker definitions carry the same rules (WO-259).
+  const workers = on.files.filter((file) =>
+    /^\.(?:claude|codex)\/agents\/dotln-worker/u.test(file.path),
+  );
+  assert.deepEqual(workers.map((file) => file.path).sort(), [
+    ".claude/agents/dotln-worker-fable.md",
+    ".claude/agents/dotln-worker.md",
+    ".codex/agents/dotln-worker-astra.toml",
+  ]);
+  for (const file of workers)
+    for (const rule of [operatorWordsRule, workerNoPrintRules])
+      assert.ok(file.contents.includes(rule), `${file.path} carries ${rule}`);
   const off = harnessInstallation({
     supports: { "tinkerer-economy": false },
   });
@@ -7078,6 +7166,15 @@ test("WO-145 optional economy support preserves historical snapshots through the
       /need no Git escalation/,
       `${file.path} must not imply an approval path in full-access mode`,
     );
+    // Every root carries the rule that committed text paraphrases the
+    // operator and the rules on what a worker never reads or prints (WO-259).
+    for (const rule of [operatorWordsRule, workerNoPrintRules])
+      assert.ok(file.contents.includes(rule), `${file.path} carries ${rule}`);
+    if (file.path.includes("dotln-router/"))
+      assert.match(
+        file.contents,
+        /Stop for awaiting-merge, awaiting-plan-approval \(the operator answers the proposed plan and resumes the executor before driving again\),/u,
+      );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
       // The reviews are a ladder with an end (WO-250): three reviewers over
       // the whole diff, a recheck that confirms the fixes and reads the whole

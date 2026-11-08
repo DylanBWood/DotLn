@@ -468,9 +468,12 @@ export const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
-    // plan publish runs against this fixture's forge, through the helper.
+    // plan publish runs against this fixture's forge, through the helper,
+    // which screens the branch's change with the local-terms list (WO-259).
     "scripts/test-target-publication-fixture.mjs",
     "scripts/lib/launchpad-publish.mjs",
+    "scripts/lib/branch-terms.mjs",
+    "scripts/lib/branch-changes.mjs",
     // Plan failures, which the refutation fixtures import, reads the close's
     // blocker classes and step names from here.
     "scripts/lib/release-steps.mjs",
@@ -547,6 +550,11 @@ export const machinerySources = {
     "packages/skeleton/src/usage-observation.mjs",
   ],
   "runner-fixtures": [
+    // The document gate's terms task runs the real branch screen (WO-259).
+    "scripts/terms.mjs",
+    "scripts/lib/terms.mjs",
+    "scripts/lib/branch-terms.mjs",
+    "scripts/lib/branch-changes.mjs",
     "scripts/lib/temporary-prune.mjs",
     "scripts/lib/temporary-root-declarations.mjs",
     "scripts/lib/temporary-roots.mjs",
@@ -770,6 +778,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo255-repair-role-baseline.json",
     "packages/skeleton/fixtures/wo257-role-baseline.json",
     "packages/skeleton/fixtures/wo243-role-baseline.json",
+    "packages/skeleton/fixtures/wo259-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -1380,6 +1389,8 @@ export const suites = [
       "scripts/test-launchpad-",
       "scripts/lib/launchpad-fixture.mjs",
       "scripts/lib/launchpad-publish.mjs",
+      "scripts/lib/branch-terms.mjs",
+      "scripts/lib/branch-changes.mjs",
       "scripts/test-target-publication-fixture.mjs",
       "scripts/launchpad.mjs",
       "scripts/kit/",
@@ -1465,6 +1476,16 @@ export const suites = [
     preflight: true,
     protects:
       "product byte ceilings, receipt and dispatch boundaries, and repository documentation links hold",
+  }),
+  // The private local-terms list screens every line a branch adds, so a
+  // refused term never reaches a commit the gate passed (WO-259).
+  node("terms", "scripts/terms.mjs", {
+    instance: "document",
+    args: ["branch"],
+    document: true,
+    preflight: true,
+    protects:
+      "no line a branch adds carries a term of the private local-terms list, and no refusal prints the term",
   }),
   nodeTests("docs-check-fixtures", "scripts/test-docs-check.mjs", {
     kit: "core-only: core product roadmap",

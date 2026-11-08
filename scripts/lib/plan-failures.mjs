@@ -989,6 +989,7 @@ export function operationalFailures(root, control, includes) {
       }
     }
   let hostNotifications = 0;
+  let hostHandbacks = 0;
   // This checkout's journals, then each closed order's journals that release
   // close moved into its retained lane; a lane's rows count for its order.
   const journalDirectories = [{ directory: dirname(checksPath(root)) }];
@@ -1043,10 +1044,15 @@ export function operationalFailures(root, control, includes) {
           if (row.typedEvent === "HostPermissionDenied")
             rows.push({ kind: "host-denial", ...context });
           else if (row.typedEvent === "OperatorMessageObserved") {
-            // The host's task notification is its own message, never an
-            // intervention; it is counted apart from the operator's rows.
+            // The host's task notification and a worker's hand-back are the
+            // host's messages, never interventions; each is counted apart
+            // from the operator's rows.
             if (row.source === "host-task-notification") {
               hostNotifications++;
+              continue;
+            }
+            if (row.source === "host-agent-handback") {
+              hostHandbacks++;
               continue;
             }
             rows.push({
@@ -1254,8 +1260,9 @@ export function operationalFailures(root, control, includes) {
         (row) => row.attribution === "unattributed",
       ).length,
       hostNotifications,
+      hostHandbacks,
       coverage:
-        "Claude/Copilot prompt-hook rows; Codex dispatch phrases only; host task notifications excluded; prompts without transcript evidence counted as unattributed; unobserved messages unknown",
+        "Claude/Copilot prompt-hook rows; Codex dispatch phrases only; host task notifications and worker hand-backs excluded; prompts without transcript evidence counted as unattributed; unobserved messages unknown",
     },
     boundStops: {
       ...summary("bound-stop"),

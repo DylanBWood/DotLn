@@ -32,6 +32,9 @@ export const outwardFindingText = (finding, text) => {
     return `${finding.rule}: ${finding.term}`;
   if (finding.rule === "vocabulary.local")
     return `${finding.rule}: ${finding.mode}`;
+  // A malformed or unreadable list: the terms check names the list's line.
+  if (finding.rule === "local-terms.configuration")
+    return `${finding.rule}: the local-terms list could not be read; npm run terms -- check <path> names the line`;
   return finding.rule;
 };
 export const runtimeIdentifierForms = Object.freeze([
