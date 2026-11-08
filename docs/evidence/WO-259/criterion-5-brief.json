@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "command": "npm run worker -- review --kind criteria --host claude --order WO-259 --dry-run",
+  "exitCode": 0,
+  "host": "claude",
+  "option": {
+    "name": "opus",
+    "selection": "host-default"
+  },
+  "report": "docs/control/local/reviews/WO-259/repair-2/round-1-criteria.md",
+  "measured": {
+    "brief": 41597,
+    "ceiling": 400000,
+    "batches": [
+      {
+        "number": 1,
+        "documents": [
+          "docs/work-orders/WO-259-committed-words-and-filed-records.md"
+        ],
+        "brief": 41597
+      }
+    ]
+  },
+  "briefSha256": "9806b1404c6c3029535bb39882bdb5b81e543d314f8d9eb2855c3840787fbcd5",
+  "preamble": {
+    "characters": 2053,
+    "paraphraseRule": true,
+    "localLaneRule": true,
+    "authorLineRule": true,
+    "noPrintRulesVerbatim": true
+  }
+}

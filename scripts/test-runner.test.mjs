@@ -886,6 +886,9 @@ test("kit defaults separate runtime integrity from documents and explicit platfo
               "kit-verify",
               "license-surfaces",
               "docs-check",
+              // An instance's document gate screens its branch with its own
+              // local-terms list (WO-259).
+              "terms",
               "harness-context",
               "plan-refutation-current",
               "plan",
@@ -3075,6 +3078,142 @@ test("only and document CLI selection execute their declared checks with the pro
       activeGateRuns(repo),
       [],
       "normal and throwing runs release their markers",
+    );
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
+});
+
+// The document gate's terms task is the real script over the lines a branch
+// adds; every other document task is the stub the CLI-selection case uses.
+test("the document gate's terms task fails a line the branch adds with a refused term by file, line and mode, never the term, and advises without a list (WO-259)", async () => {
+  const repo = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-runner-terms-")),
+  );
+  try {
+    const gitOptions = {
+      exec: true,
+      trim: false,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    };
+    runGit(repo, ["init", "-q", "-b", "main"], gitOptions);
+    excludeFixtureOwnership(repo);
+    runGit(repo, ["config", "user.name", "Fixture"], gitOptions);
+    runGit(
+      repo,
+      ["config", "user.email", "fixture@example.invalid"],
+      gitOptions,
+    );
+    writeFileSync(
+      join(repo, ".gitignore"),
+      "docs/control/local/\n.runtime/\nobserved.jsonl\n",
+    );
+    const observer =
+      'import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", JSON.stringify(process.argv.slice(1))+"\\n");';
+    const real = join(root, "scripts/terms.mjs");
+    const { DOCUMENT_GATE_STUBS } =
+      await import("./lib/document-gate-stubs.mjs");
+    for (const file of DOCUMENT_GATE_STUBS) {
+      const target = join(repo, "scripts", file);
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(
+        target,
+        file === "terms.mjs"
+          ? `process.argv[1] = ${JSON.stringify(real)};\nawait import(${JSON.stringify(pathToFileURL(real).href)});\n`
+          : file.endsWith(".sh")
+            ? `#!/usr/bin/env bash\nexec ${JSON.stringify(process.execPath)} --input-type=module -e '${observer}' "$0" "$@"\n`
+            : file.endsWith(".mjs")
+              ? observer
+              : observer.replace(
+                  'import fs from "node:fs";',
+                  'const fs = require("node:fs");',
+                ),
+      );
+    }
+    mkdirSync(join(repo, "corpus/harness"), { recursive: true });
+    writeFileSync(
+      join(repo, "corpus/harness/wo101-id-corpus.test.mjs"),
+      observer,
+    );
+    for (const name of ["kernel", "skeleton", "console"]) {
+      const directory = join(repo, `packages/${name}/dist/test`);
+      mkdirSync(directory, { recursive: true });
+      writeFileSync(
+        join(directory, "fixture.test.js"),
+        observer.replace(
+          'import fs from "node:fs";',
+          'const fs = require("node:fs");',
+        ),
+      );
+    }
+    writeFileSync(
+      join(repo, "package.json"),
+      JSON.stringify({
+        scripts: { "format:check": "node scripts/format.cjs" },
+      }),
+    );
+    mkdirSync(join(repo, "docs"), { recursive: true });
+    writeFileSync(join(repo, "docs/carried.md"), "# Carried\n\nOn main.\n");
+    // The term's two halves, kept apart on main by a guard line.
+    writeFileSync(
+      join(repo, "docs/joined.md"),
+      "# Joined\n\nzephyr\nA guard line.\ncanary\n",
+    );
+    runGit(repo, ["add", "."], gitOptions);
+    runGit(
+      repo,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "Runner fixture"],
+      gitOptions,
+    );
+    runGit(repo, ["switch", "-q", "-c", "wo-901"], gitOptions);
+    // The branch adds a refused term on line 3 of a changed Markdown file.
+    writeFileSync(
+      join(repo, "docs/carried.md"),
+      "# Carried\n\nOn main; the zephyrcanary system.\n",
+    );
+    // Deleting the guard joins the halves, though no line is added.
+    writeFileSync(join(repo, "docs/joined.md"), "# Joined\n\nzephyr\ncanary\n");
+    // A staged path holding a space ends its diff header with a tab.
+    mkdirSync(join(repo, "docs/space dir"), { recursive: true });
+    writeFileSync(
+      join(repo, "docs/space dir/notes file.md"),
+      "# Notes\n\nThe zephyrcanary notes.\n",
+    );
+    runGit(repo, ["add", "docs/space dir/notes file.md"], gitOptions);
+    mkdirSync(join(repo, "docs/control/local"), { recursive: true });
+    writeFileSync(
+      join(repo, "docs/control/local/terms.txt"),
+      "refuse: zephyrcanary\n",
+    );
+    const failed = await runGate(["--document", "--serial"], repo);
+    assert.notEqual(failed.exitCode, 0);
+    assert.equal(failed.failedFirst, "terms");
+    assert.match(
+      failed.output,
+      /^terms: failed\n[\s\S]*FAIL docs\/carried\.md:3: a local term in refuse mode/mu,
+    );
+    assert.match(
+      failed.output,
+      /^FAIL docs\/joined\.md:3-4: a local term in refuse mode$/mu,
+    );
+    assert.match(
+      failed.output,
+      /^FAIL docs\/space dir\/notes file\.md:3: a local term in refuse mode$/mu,
+    );
+    assert.doesNotMatch(failed.output, /zephyrcanary/u);
+    // Without a registered list the task says so, as an advisory, and passes.
+    rmSync(join(repo, "docs/control/local/terms.txt"));
+    assert.equal((await runGate(["--document", "--serial"], repo)).exitCode, 0);
+    const advised = spawnSync(
+      process.execPath,
+      [join(repo, "scripts/terms.mjs"), "branch"],
+      { cwd: repo, encoding: "utf8" },
+    );
+    assert.equal(advised.status, 0, advised.stderr);
+    assert.match(
+      advised.stdout,
+      /^local-terms list: unavailable\nAdvisory: no local-terms list is registered at docs\/control\/local\/terms\.txt, so the \d+ files this branch changes were not screened/mu,
     );
   } finally {
     rmSync(repo, { recursive: true, force: true });

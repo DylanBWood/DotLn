@@ -462,6 +462,17 @@ export interface HarnessWorker {
   readonly skills?: readonly string[];
   readonly body?: string;
 }
+/** No operator message is saved verbatim in committed text (the operator's
+ * rule of 2026-11-07). Every role and every worker carries this sentence, and
+ * the document gate compares the files a branch changes with the ignored
+ * captures. */
+export const operatorWordsRule =
+  "Committed text (a document, record or source file) paraphrases the operator and cites the ignored intake capture by its SHA-256; the operator's words stay in ignored intake. A quotation is written only when the operator asks in the session to save that message, as an `operatorQuote` with `captureSha256` and `requestedIn` (the request's capture), or where the instance elects `features.verbatim-operator-words`.";
+/** What a worker never reads or prints: the ignored local lane holds session
+ * journals, ledgers and the private terms list, and a commit header carries an
+ * author's name and address. Every role and every worker carries both. */
+export const workerNoPrintRules =
+  "A worker never reads or prints the contents of `docs/control/local/` (journals, ledgers, the terms list, the reviews lane beyond the report it was given) and never prints a commit header or an author line: `git log` takes a format naming only the hash and subject (`--format='%h %s'`), and `git show` takes `--format=` so it prints no header.";
 /** The generated Markdown and print-session transport consume one worker contract. */
 export function workerSpecification(worker: HarnessWorker) {
   return {
@@ -474,7 +485,7 @@ export function workerSpecification(worker: HarnessWorker) {
     skills: worker.skills ?? [],
     prompt:
       worker.body ??
-      "Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence. Probe with single tests under the bounded wrapper, node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>; never start a test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs): a gate run holds the worktree's live-gate refusal against the parent's writes for its whole duration, and the parent owns the gate.",
+      `Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. ${workerNoPrintRules} ${operatorWordsRule} What a worker returns may be filed in a committed record, so it paraphrases the operator too. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence. Probe with single tests under the bounded wrapper, node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>; never start a test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs): a gate run holds the worktree's live-gate refusal against the parent's writes for its whole duration, and the parent owns the gate.`,
   };
 }
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */

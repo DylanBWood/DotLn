@@ -323,6 +323,22 @@ assert_refusal 'exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source clau
 unset CLAUDE_EFFORT
 CLAUDE_EFFORT=xhigh node "$fixture_repo/scripts/resume.mjs" status | grep -Fq 'Current Claude Code session: effort xhigh; source claude-session-readback; host-selected (CLAUDE_EFFORT), not effective effort.'
 if node "$fixture_repo/scripts/resume.mjs" status | grep -Fq 'Current Claude Code session'; then printf 'error: a Claude session line without CLAUDE_EFFORT\n' >&2; exit 1; fi
+# A hand-broken discovery record is named with its parse error in status and
+# on the attestation, apart from a missing observation (WO-259).
+cp -- "$fixture_repo/docs/discovery/environment.json" "$test_root/environment.saved"
+printf '{"effortReadbackProbe":{"harnesses":' >"$fixture_repo/docs/discovery/environment.json"
+broken_status="$(node "$fixture_repo/scripts/resume.mjs" status)"
+grep -Fq 'Discovery record: docs/discovery/environment.json cannot be parsed (' <<<"$broken_status"
+if grep -Fq "$fixture_repo" <<<"$broken_status"; then printf 'error: the parse error named an absolute path\n' >&2; exit 1; fi
+if broken_attestation="$(CLAUDE_EFFORT=xhigh node "$fixture_repo/scripts/resume.mjs" implementation-ready \
+  --harness claude-code --harness-version fixture-0 --model fixture.model/alpha --effort high --source operator-attested 2>&1)"; then
+  printf 'error: a refused attestation was recorded\n' >&2; exit 1
+fi
+grep -Fq 'Advisory: attestation recorded as supplied; docs/discovery/environment.json cannot be parsed (' <<<"$broken_attestation"
+if grep -Fq 'has no matching discovery observation' <<<"$broken_attestation"; then printf 'error: a parse error read as a missing observation\n' >&2; exit 1; fi
+cp -- "$test_root/environment.saved" "$fixture_repo/docs/discovery/environment.json"
+if node "$fixture_repo/scripts/resume.mjs" status | grep -Fq 'Discovery record:'; then printf 'error: a parsed discovery record was reported\n' >&2; exit 1; fi
+printf 'a broken discovery record is named with its parse error\n'
 CLAUDE_EFFORT=xhigh node "$fixture_repo/scripts/resume.mjs" implementation-ready \
   --harness claude-code \
   --harness-version fixture-0 \

@@ -36,6 +36,9 @@ import {
   readDocumentJson,
 } from "./lib/paths.mjs";
 import { readDecisions } from "./lib/meta.mjs";
+import { addsLine, branchChanges } from "./lib/branch-changes.mjs";
+import { readFeatures } from "./lib/features.mjs";
+import { verbatimScreen } from "./lib/verbatim-screen.mjs";
 import {
   RELEASE_HISTORY,
   checkReleaseHistory,
@@ -45,6 +48,7 @@ import {
   markerLine,
 } from "./lib/release-history.mjs";
 import {
+  decodeCharacterReferences as decodeReferences,
   markdownLinks,
   markdownNodes as nodes,
   parseMarkdown,
@@ -458,25 +462,88 @@ function* provenanceRecords(paragraph, source) {
       .slice(from, to)
       .map((child) => source.slice(start(child), end(child)))
       .join("");
+  // A field's own lines, so an edit to another field of the same header
+  // leaves this one's record unchanged; a line break that ends the field
+  // belongs to the next field's line.
+  const linesBetween = (from, to) => {
+    const children = paragraph.children.slice(from, to);
+    const first = children[0]?.position;
+    const last = children.at(-1)?.position;
+    if (!first || !last) return undefined;
+    const trailing = /\n[\t ]*$/u.test(
+      source.slice(start(children.at(-1)), end(children.at(-1))),
+    );
+    return {
+      line: first.start.line,
+      endLine: Math.max(first.start.line, last.end.line - (trailing ? 1 : 0)),
+    };
+  };
   // Preserve the original plain-label standalone paragraph form too.
   const leading = textBetween(0, fields[0]?.index);
   if (/^(?:Nomination )?Provenance:/iu.test(leading))
-    yield { text: leading, syntax: syntaxBetween(0, fields[0]?.index) };
+    yield {
+      text: leading,
+      syntax: syntaxBetween(0, fields[0]?.index),
+      lines: linesBetween(0, fields[0]?.index),
+    };
   for (let index = 0; index < fields.length; index++)
     if (/^(?:Nomination )?Provenance:$/iu.test(fields[index].label))
       yield {
         text: textBetween(fields[index].index, fields[index + 1]?.index),
         syntax: syntaxBetween(fields[index].index, fields[index + 1]?.index),
+        lines: linesBetween(fields[index].index, fields[index + 1]?.index),
       };
 }
+/** Each decisions file split at its second-level headings, each part with
+ * the line it starts on. Moved rows carry the text readDecisions verified
+ * against their immutable binding; their former local path need not exist. */
+function decisionSections(root, rows) {
+  const sections = new Map();
+  for (const row of rows) {
+    if (sections.has(row.path)) continue;
+    let line = 1;
+    sections.set(
+      row.path,
+      (row.targetRecord ? row.recordSource : readListed(root, row.path))
+        .split(/(?=^##\s)/mu)
+        .map((text) => {
+          const part = { text, line };
+          line += text.split("\n").length - 1;
+          return part;
+        }),
+    );
+  }
+  return sections;
+}
+
+/** One decision's section and the local lines it spans; a moved record is
+ * not in this checkout, so it spans none. */
+function decisionSection(sections, row) {
+  const part = sections
+    .get(row.path)
+    ?.find(({ text }) => new RegExp(`^##\\s+${row.id}\\b`, "u").test(text));
+  return {
+    section: part?.text ?? "",
+    lines:
+      part && !row.targetRecord
+        ? {
+            line: part.line,
+            endLine: part.line + Math.max(0, part.text.split("\n").length - 2),
+          }
+        : undefined,
+  };
+}
+
 export function operatorWordFindings(root, files) {
   const findings = [];
+  // Each record names the lines it spans, so the gate can tell a record a
+  // branch adds or changes from one it only carries.
   const push = (
     file,
     record,
     text,
     dispatch = "",
-    line,
+    lines,
     syntax = text,
     wordClass,
   ) =>
@@ -485,7 +552,7 @@ export function operatorWordFindings(root, files) {
       record,
       fingerprint: hash(normalized(JSON.stringify([text, dispatch]))),
       wordClass: wordClass ?? operatorWordClass(text, dispatch, syntax),
-      ...(line ? { line } : {}),
+      ...(lines ? { line: lines.line, endLine: lines.endLine } : {}),
     });
   const check = (
     file,
@@ -494,14 +561,19 @@ export function operatorWordFindings(root, files) {
     dispatch = "",
     captureText = text,
     syntax = text,
+    lines,
   ) => {
     if (
       (!attributedWords(text) && !quotedDispatch(dispatch)) ||
       captureCitation(captureText)
     )
       return;
-    push(file, record, text, dispatch, undefined, syntax);
+    push(file, record, text, dispatch, lines, syntax);
   };
+  const spanOf = (node) =>
+    node.position
+      ? { line: node.position.start.line, endLine: node.position.end.line }
+      : undefined;
   if (documentEntry(root, docRelative(root, "workOrders")))
     for (const name of readDocumentDirectory(
       root,
@@ -516,7 +588,7 @@ export function operatorWordFindings(root, files) {
       let ordinal = 0;
       for (const node of nodes(parseMarkdown(source))) {
         if (node.type !== "paragraph") continue;
-        for (const { text, syntax } of provenanceRecords(node, source))
+        for (const { text, syntax, lines } of provenanceRecords(node, source))
           check(
             file,
             ++ordinal === 1 ? "provenance" : `provenance-${ordinal}`,
@@ -524,27 +596,15 @@ export function operatorWordFindings(root, files) {
             "",
             text,
             syntax,
+            lines ?? spanOf(node),
           );
       }
     }
   // A decisions file is read and split once for all of its records.
-  const sections = new Map();
-  for (const row of readDecisions(root)) {
-    if (!sections.has(row.path))
-      sections.set(
-        row.path,
-        // Moved rows already carry the text verified against their immutable
-        // binding by readDecisions; their former local path need not exist.
-        (row.targetRecord
-          ? row.recordSource
-          : readListed(root, row.path)
-        ).split(/(?=^##\s)/mu),
-      );
-    const section =
-      sections
-        .get(row.path)
-        .find((part) => new RegExp(`^##\\s+${row.id}\\b`, "u").test(part)) ??
-      "";
+  const decisionRows = readDecisions(root);
+  const sections = decisionSections(root, decisionRows);
+  for (const row of decisionRows) {
+    const { section, lines } = decisionSection(sections, row);
     // A JSON block is removed whole from its fence line, so a backquote run
     // inside one of its strings cannot open a fence that swallows the rest.
     const prose = section
@@ -557,6 +617,8 @@ export function operatorWordFindings(root, files) {
       `${row.decision}\n${prose}`,
       row.dispatch,
       captureText,
+      undefined,
+      lines,
     );
     // The fields that quote words are read too, each under its own record.
     const fields = [
@@ -570,7 +632,15 @@ export function operatorWordFindings(root, files) {
     ];
     for (const [key, text] of fields)
       if (typeof text === "string")
-        check(row.path, `${row.id}/${key}`, text, "", captureText);
+        check(
+          row.path,
+          `${row.id}/${key}`,
+          text,
+          "",
+          captureText,
+          undefined,
+          lines,
+        );
     // An operator-named field attributes its value by its key alone.
     for (const key of Object.keys(row)) {
       if (!OPERATOR_FIELD.test(key) || key === "operatorQuote") continue;
@@ -587,7 +657,7 @@ export function operatorWordFindings(root, files) {
           `${row.id}/${key}${values.length > 1 ? `-${index + 1}` : ""}`,
           value,
           "",
-          undefined,
+          lines,
           value,
           "attributed-speech",
         );
@@ -617,7 +687,7 @@ export function operatorWordFindings(root, files) {
         count === 1 ? base : `${base}-${count}`,
         text,
         "",
-        node.position?.start?.line,
+        spanOf(node),
         source.slice(start(node), end(node)),
       );
     }
@@ -626,11 +696,16 @@ export function operatorWordFindings(root, files) {
 }
 
 /** A typed operator quotation must carry the capture digest of the words it
- * quotes; one that lacks it is a failure, never an advisory. */
-export function operatorQuoteFailures(rows) {
+ * quotes; one that lacks it is a failure, never an advisory. A quotation a
+ * branch adds is written only because the operator asked to save that
+ * message, so it also names the capture of that request in `requestedIn`
+ * (`changed` says which records the branch adds or changes; a record written
+ * before keeps the shape it was written in). */
+export function operatorQuoteFailures(rows, changed = () => false) {
   const failures = [];
   for (const row of rows) {
     if (row.operatorQuote === undefined) continue;
+    const requested = changed(row);
     [row.operatorQuote].flat().forEach((quote, index) => {
       if (!(
         quote &&
@@ -642,9 +717,73 @@ export function operatorQuoteFailures(rows) {
         failures.push(
           `${row.path}#${row.id}: operatorQuote ${index + 1} needs text and captureSha256 (sha256:<digest> of the captured words in ignored intake); paraphrase instead of quoting`,
         );
+      else if (requested && !CAPTURE_DIGEST.test(quote.requestedIn ?? ""))
+        failures.push(
+          `${row.path}#${row.id}: operatorQuote ${index + 1} needs requestedIn (sha256:<digest> of the ignored capture holding the operator's request to save that message); paraphrase instead of quoting`,
+        );
     });
   }
   return failures;
+}
+
+/** The typed quotations each record file carries that the operator asked to
+ * save, each located at the source span of its own text value (a line and the
+ * columns of its JSON string there): the verbatim screen's one exception,
+ * which holds over those characters alone, so the same words copied anywhere
+ * else, its own decision's prose included, are screened. A quotation whose
+ * text value is not found as written is no exception. */
+export function requestedQuotes(rows, sections) {
+  const quotes = new Map();
+  for (const row of rows) {
+    if (row.targetRecord || row.operatorQuote === undefined) continue;
+    const { section, lines } = decisionSection(sections, row);
+    if (!lines) continue;
+    // The record's text values after its operatorQuote key, in source order,
+    // each read through its own JSON escapes; the quotations claim them in
+    // array order, so two equal quotations claim two values.
+    const from = section.indexOf('"operatorQuote"');
+    if (from < 0) continue;
+    const values = [];
+    for (const match of section
+      .slice(from)
+      .matchAll(/"text"\s*:\s*("(?:[^"\\\n]|\\.)*")/gu)) {
+      let value;
+      try {
+        value = JSON.parse(match[1]);
+      } catch {
+        continue;
+      }
+      values.push({
+        value,
+        offset: from + match.index + match[0].length - match[1].length,
+        length: match[1].length,
+      });
+    }
+    let next = 0;
+    for (const quote of [row.operatorQuote].flat()) {
+      if (typeof quote?.text !== "string") continue;
+      const at = values.findIndex(
+        (value, index) => index >= next && value.value === quote.text,
+      );
+      if (at < 0) continue;
+      next = at + 1;
+      if (
+        !CAPTURE_DIGEST.test(quote.captureSha256 ?? "") ||
+        !CAPTURE_DIGEST.test(quote.requestedIn ?? "")
+      )
+        continue;
+      const { offset, length } = values[at];
+      const before = section.slice(0, offset).split("\n");
+      if (!quotes.has(row.path)) quotes.set(row.path, []);
+      quotes.get(row.path).push({
+        captureSha256: quote.captureSha256,
+        line: lines.line + before.length - 1,
+        start: before.at(-1).length,
+        end: before.at(-1).length + length,
+      });
+    }
+  }
+  return quotes;
 }
 
 const homePathBaseline = (baseline) => {
@@ -919,26 +1058,8 @@ const namesSection = (text) =>
   [text.replace(new RegExp(SHORTCODE, "g"), " "), text]
     .map(nameKey)
     .includes(SECTION_NAME);
-// Character references as HTML decodes them: numeric ones of any length, with
-// or without the semicolon, and named ones through the pinned parser's table.
-const decodeReference = (reference) => {
-  const text = renderedText(parseMarkdown(`a${reference}a`));
-  return /^a[\s\S]*a$/.test(text) ? text.slice(1, -1) : reference;
-};
-const decodeReferences = (text) =>
-  text.replace(
-    /&#(\d+);?|&#x([\da-f]+);?|&[a-z][a-z\d]*;/gi,
-    (reference, decimal, hex) => {
-      if (decimal === undefined && hex === undefined)
-        return decodeReference(reference);
-      const point = decimal ? Number(decimal) : parseInt(hex, 16);
-      return point > 0 &&
-        point <= 0x10ffff &&
-        (point < 0xd800 || point > 0xdfff)
-        ? String.fromCodePoint(point)
-        : "\ufffd";
-    },
-  );
+// Character references decode as HTML decodes them (decodeReferences, from
+// the shared Markdown reader).
 // An autolink such as <https://…> or <name@host> shows its address, which
 // the raw reading masks; any other "<" is text, since the page holds no raw
 // HTML.
@@ -1638,7 +1759,15 @@ export function frontPageFindings(root, amendment = null) {
 
 export function checkDocs(
   root,
-  { baseline, files, records, frontPageAmendment = null } = {},
+  {
+    baseline,
+    files,
+    records,
+    frontPageAmendment = null,
+    changes,
+    features,
+    captures,
+  } = {},
 ) {
   // Carried operating documents retain upstream history and links. This
   // instance owns the editorial baseline for its own documents.
@@ -1761,7 +1890,20 @@ export function checkDocs(
         `${dispatchKey(row)}: dispatch needs a control prefix and at most 240 characters of paraphrase on one line`,
       );
   }
-  failures.push(...operatorQuoteFailures(decisions));
+  // What the branch adds or changes against its merge base with main: the
+  // forward-only checks below judge only those records and lines, so a record
+  // written before the branch keeps its bytes (WO-259).
+  changes ??= branchChanges(root);
+  features ??= readFeatures(root);
+  const verbatimElected = features["verbatim-operator-words"] === true;
+  const spans = decisionSections(root, decisions);
+  const changedRecord = (row) => {
+    const { lines } = decisionSection(spans, row);
+    return Boolean(
+      lines && addsLine(changes, row.path, lines.line, lines.endLine),
+    );
+  };
+  failures.push(...operatorQuoteFailures(decisions, changedRecord));
   const exceptions = new Map();
   for (const entry of baseline.links)
     exceptions.set(
@@ -1816,9 +1958,43 @@ export function checkDocs(
     baseline.operatorWords,
     files,
   );
+  // A current record's attributed speech without a capture citation fails
+  // where the branch adds or changes it; elsewhere it stays the advisory it
+  // was, and the historical baseline keeps its note.
+  const advisories = [];
+  const judgedRecords = new Set();
+  for (const row of operatorWords.rows) {
+    if (
+      row.wordClass !== "attributed-speech" ||
+      !row.line ||
+      !addsLine(changes, row.file, row.line, row.endLine ?? row.line)
+    )
+      continue;
+    judgedRecords.add(`${row.file}#${row.record}`);
+    (verbatimElected ? advisories : failures).push(
+      `${row.file}#${row.record}: operator-attributed words without a capture citation in a record this branch adds or changes; paraphrase the operator and cite the ignored capture by its SHA-256${verbatimElected ? " (features.verbatim-operator-words is elected, so this advises)" : ""}`,
+    );
+  }
+  const verbatim = verbatimScreen(root, {
+    changes,
+    captures,
+    quotes: requestedQuotes(decisions, spans),
+  });
+  for (const finding of verbatim.findings ?? [])
+    (verbatimElected ? advisories : failures).push(
+      `${finding.file}:${finding.line}: ${verbatim.window} or more consecutive words shared with the ignored capture ${finding.capture}; paraphrase the operator and cite the capture by its digest, or record a message the operator asked to save as an operatorQuote with captureSha256 and requestedIn${verbatimElected ? " (features.verbatim-operator-words is elected, so this advises)" : ""}`,
+    );
+  // Private material its owner closed never fails the check, and is named.
+  for (const entry of verbatim.unread ?? []) advisories.push(entry);
   return {
     rows,
     failures,
+    advisories,
+    judgedRecords,
+    verbatim,
+    changes: changes.base
+      ? { base: changes.base, files: changes.files.size }
+      : { base: null, reason: changes.reason },
     historicalLinks,
     historicalHomePaths,
     notices,
@@ -1859,7 +2035,9 @@ if (isMainModule(import.meta.url)) {
       );
       for (const notice of [...result.notices, ...result.documents.notices])
         console.log(notice);
-      for (const row of result.operatorWords.rows)
+      for (const row of result.operatorWords.rows.filter(
+        (row) => !result.judgedRecords.has(`${row.file}#${row.record}`),
+      ))
         console.log(
           row.wordClass === "attributed-speech"
             ? `ADVISORY ${row.file}#${row.record}: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase`
@@ -1868,6 +2046,16 @@ if (isMainModule(import.meta.url)) {
       console.log(
         `Operator-word advisories: ${result.operatorWords.currentByClass["attributed-speech"]}; incidental JSON: ${result.operatorWords.currentByClass["incidental-json"]}; incidental code: ${result.operatorWords.currentByClass["incidental-code"]}; document terms: ${result.operatorWords.currentByClass["document-term"]}; current candidate records: ${result.operatorWords.current}; historical baseline: ${result.operatorWords.historical}.`,
       );
+      const verbatim = result.verbatim;
+      console.log(
+        verbatim.status === "no captures"
+          ? `verbatim screen: no ${verbatim.unread?.length ? "readable " : ""}captures`
+          : verbatim.status === "no merge base"
+            ? `verbatim screen: ${verbatim.reason}; nothing screened`
+            : `verbatim screen: ${verbatim.files} changed files against ${verbatim.captures} captures, a ${verbatim.window}-word window; ${verbatim.findings.length} shared runs`,
+      );
+      for (const advisory of result.advisories)
+        console.log(`ADVISORY ${advisory}`);
       for (const failure of result.failures) console.error(`FAIL ${failure}`);
       console.log(
         `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.historicalHomePaths} declared historical home-path lines; ${result.failures.length} failures`,

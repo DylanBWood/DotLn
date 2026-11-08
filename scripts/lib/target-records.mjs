@@ -31,12 +31,131 @@ import {
 import { checkLocalTerms } from "./terms.mjs";
 import { privatePathLines } from "./private-paths.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
+import {
+  decodeCharacterReferences,
+  markdownLinks,
+  markdownNodes,
+  parseMarkdown,
+} from "./markdown-links.mjs";
 
 // Publication reads the record sources through this module.
 export { targetRecordSources };
 
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const refuse = (reason) => new Error(`target records refused: ${reason}`);
+
+/** The `href` and `src` attributes of the tags in raw HTML, comments left
+ * out and attribute names read whole, so `data-src` is no link; each value's
+ * character references decode as a browser decodes them before it follows
+ * the link, through the document check's own decoder. */
+const htmlLinkTargets = (html) =>
+  [
+    ...html
+      .replace(/<!--[\s\S]*?(?:-->|$)/gu, " ")
+      .matchAll(
+        /<[A-Za-z][\w:-]*((?:\s+[^\s"'>/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'>]+))?)*)\s*\/?>/gu,
+      ),
+  ].flatMap(([, attributes]) =>
+    [
+      ...attributes.matchAll(
+        /\s+([^\s"'>/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/gu,
+      ),
+    ]
+      .filter(
+        ([, name, ...values]) =>
+          /^(?:href|src)$/iu.test(name) &&
+          values.some((value) => value !== undefined),
+      )
+      .map(([, , double, single, bare]) =>
+        decodeCharacterReferences(double ?? single ?? bare),
+      ),
+  );
+/** Every link destination a record's reader can follow: its Markdown links
+ * and the `href` and `src` attributes of the raw HTML it carries. */
+export const recordLinkTargets = (text) => [
+  ...markdownLinks(text).map(({ href }) => href),
+  ...[...markdownNodes(parseMarkdown(text))]
+    .filter((node) => node.type === "html")
+    .flatMap((node) => htmlLinkTargets(node.value)),
+];
+
+/**
+ * What a filing needs committed at the launchpad's HEAD, which its footer
+ * names: each source, and every file a source's relative links reach, read
+ * at its literal path. Returns the sources that differ from HEAD (untracked,
+ * staged or edited) and the link destinations HEAD lacks or whose working
+ * copy differs from it, each named by its launchpad path.
+ */
+export function uncommittedRecordInputs(root, sources) {
+  const read = (args, options) =>
+    runGit(root, [...HOST_GIT_READ, ...args], { raw: true, ...options });
+  const changed = sources.filter(
+    (source) =>
+      read(["ls-files", "--error-unmatch", "--", source]).status !== 0 ||
+      read(["diff", "--quiet", "HEAD", "--", source]).status !== 0,
+  );
+  // A reader follows the literal path from the footer's commit; the move
+  // map only the local document check reads does not apply there.
+  const destinations = new Set();
+  for (const source of sources) {
+    if (!source.endsWith(".md")) continue;
+    let text;
+    try {
+      text = readFileSync(join(root, source), "utf8");
+    } catch {
+      continue;
+    }
+    for (const href of recordLinkTargets(text)) {
+      if (/^[a-z][a-z0-9+.-]*:|^\/\/|^#/iu.test(href)) continue;
+      let pathname;
+      try {
+        pathname = decodeURIComponent(href.split("#")[0].split("?")[0]);
+      } catch {
+        continue;
+      }
+      if (!pathname) continue;
+      const path = posix.normalize(
+        pathname.startsWith("/")
+          ? pathname.replace(/^\/+/u, "")
+          : posix.join(posix.dirname(source), pathname),
+      );
+      if (!path.startsWith("../") && path !== "..") destinations.add(path);
+    }
+  }
+  const listed = [...destinations].sort();
+  const checked = listed.length
+    ? read(["cat-file", "--batch-check"], {
+        input: listed.map((path) => `HEAD:${path}`).join("\n") + "\n",
+        encoding: "utf8",
+      })
+        .stdout.split("\n")
+        .slice(0, listed.length)
+    : [];
+  const missing = listed.filter((_, index) =>
+    / missing$/u.test(checked[index] ?? ""),
+  );
+  // A destination HEAD holds whose working copy differs (edited or staged)
+  // would resolve at the footer's commit to older bytes than the record read.
+  const present = listed.filter((path) => !missing.includes(path));
+  const edited = present.length
+    ? runGit(
+        root,
+        [
+          ...HOST_GIT_READ,
+          "diff",
+          "--name-only",
+          "-z",
+          "HEAD",
+          "--",
+          ...present.map((path) => `:(literal)${path}`),
+        ],
+        { trim: false },
+      )
+        .split("\0")
+        .filter(Boolean)
+    : [];
+  return { sources: changed, links: [...missing, ...edited].sort() };
+}
 
 /** Check even existing ancestors: lexical containment alone admits symlinks. */
 export function targetRecordDestination(target, path) {
@@ -194,13 +313,14 @@ export function commitTargetRecords(root, state, control) {
       }));
   // A record moved into the target keeps its bytes and gains one provenance
   // footer naming the launchpad by its release display name, the launchpad
-  // tree at filing and the record's path there, so a relative link that
-  // resolves to nothing in the target has a line saying what it resolves
-  // against. The display name is the launchpad's public name: a target may
-  // be public while the launchpad's address is private. The commit is the
-  // launchpad's HEAD when the operation began, kept in the pending
-  // operation, so a retried filing writes the same bytes; the footer claims
-  // the tree's layout, not that the record's bytes are committed there.
+  // commit at filing and the record's path there, so a relative link that
+  // resolves to nothing in the target has a line saying where it resolves.
+  // The display name is the launchpad's public name: a target may be public
+  // while the launchpad's address is private. The commit is the launchpad's
+  // HEAD when the operation began, kept in the pending operation, so a
+  // retried filing writes the same bytes; the filing refuses until every
+  // source and every file its links reach is committed there, so the commit
+  // the footer names holds them all.
   const config = loadConfig(root);
   const declaredName = config.present
     ? JSON.parse(readFileSync(config.path, "utf8")).release?.displayName
@@ -213,9 +333,18 @@ export function commitTargetRecords(root, state, control) {
   const launchpadCommit =
     pending?.binding?.launchpadCommit ??
     runGit(root, [...HOST_GIT_READ, "rev-parse", "HEAD"]);
+  // A filing begun under the earlier footer resumes with the footer it began
+  // with, whose bytes its saved operation hashes; a new filing writes the
+  // current one and saves its version.
+  const footerVersion = pending ? (pending.binding?.footer ?? 1) : 2;
   const provenanceFooter = (source) =>
     Buffer.from(
-      provenanceFooterText(launchpadName, launchpadCommit, source),
+      provenanceFooterText(
+        launchpadName,
+        launchpadCommit,
+        source,
+        footerVersion,
+      ),
       "utf8",
     );
   if (state.targetRecords) {
@@ -287,6 +416,7 @@ export function commitTargetRecords(root, state, control) {
     branch: state.targetSubject.branch,
     parent: state.targetSubject.commit,
     launchpadCommit,
+    ...(footerVersion === 1 ? {} : { footer: footerVersion }),
     root: repository.documentationRoot,
     records: rows.map(({ kind, path, sha256 }) => ({ kind, path, sha256 })),
   };
@@ -336,6 +466,26 @@ export function commitTargetRecords(root, state, control) {
     throw refuse(
       `record commit outward lint ${lint.status}: ${lint.findings.map((row) => row.rule).join(", ")}`,
     );
+  // The first filing reads the sources and their links at HEAD, after every
+  // byte, path and term screen: what the footer's commit does not hold, a
+  // reader of the launchpad could not open.
+  if (!pending) {
+    const missing = uncommittedRecordInputs(
+      root,
+      sources.map((row) => row.source),
+    );
+    if (missing.sources.length || missing.links.length)
+      throw refuse(
+        `${[
+          ...missing.sources.map((path) => `${path} is not committed`),
+          ...missing.links.map(
+            (path) => `${path}, which a record links, is not committed`,
+          ),
+        ].join(
+          "; ",
+        )} at the launchpad's HEAD; commit the instance records first (the order's records and evidence, as one commit on the order branch), then rerun ${launchpadInvocation(root, "resume")} target-records <actor flags>, and the footer names that commit`,
+      );
+  }
   runGit(entry.target, [...HOST_GIT_READ, "var", "GIT_AUTHOR_IDENT"]);
   if (pending) verifyPendingRecordChanges(entry.target, binding.records);
   // Permit only byte-checked partial writes from the saved operation when
@@ -389,8 +539,14 @@ export function commitTargetRecords(root, state, control) {
 }
 
 /** The provenance footer a filed record ends with. */
-export const provenanceFooterText = (name, commit, source) =>
-  `\n\nFiled from the launchpad ${name} (its tree at commit ${commit}); this record's launchpad path was ${source}, and its relative links resolve against that path there, not in this repository.\n`;
+// Each footer a filing has written, by the version its saved operation
+// records: version 1 named the launchpad tree at filing, version 2 the commit
+// at which the record's links resolve. The opening words are shared, so the
+// read-back check below recognizes a record filed under either.
+export const provenanceFooterText = (name, commit, source, version = 2) =>
+  version === 1
+    ? `\n\nFiled from the launchpad ${name} (its tree at commit ${commit}); this record's launchpad path was ${source}, and its relative links resolve against that path there, not in this repository.\n`
+    : `\n\nFiled from the launchpad ${name} at commit ${commit}, where this record's path was ${source}: its relative links resolve at that commit on the launchpad, whose order branch history the launchpad records publish pushes, and not in this repository.\n`;
 
 /** Whether this source's bytes with the provenance footer after them are the
  * filed record the recorded hash names: rebuilt from the pending operation's
@@ -411,7 +567,12 @@ const filedWithFooter = (
     const rebuilt = Buffer.concat([
       bytes,
       Buffer.from(
-        provenanceFooterText(name, pending.binding.launchpadCommit, source),
+        provenanceFooterText(
+          name,
+          pending.binding.launchpadCommit,
+          source,
+          pending.binding.footer ?? 1,
+        ),
         "utf8",
       ),
     ]);

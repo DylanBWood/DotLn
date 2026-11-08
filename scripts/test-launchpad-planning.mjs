@@ -1869,6 +1869,9 @@ test("planning and release-close reads run in a fresh exported instance", async 
         reopenWhen: "The fixture contract changes.",
       })}\n\`\`\`\n`,
     );
+    // The records commit precedes the filing, so the commit the footer
+    // names holds every record (WO-259).
+    commit(kit, "docs: commit the instance records before filing them");
     publicationResume("target-records", ...actorArgs);
     // The document gate must read the moved decisions and continue to its
     // later checks in a real export, not just in the isolated reader fixture.

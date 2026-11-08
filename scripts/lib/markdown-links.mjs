@@ -18,6 +18,34 @@ export function* markdownNodes(node) {
   for (const child of node.children ?? []) yield* markdownNodes(child);
 }
 
+// One named reference as HTML decodes it, through the pinned parser's table.
+const decodeNamedReference = (reference) => {
+  const text = [...markdownNodes(parseMarkdown(`a${reference}a`))]
+    .filter((node) => node.type === "text")
+    .map((node) => node.value)
+    .join("");
+  return /^a[\s\S]*a$/u.test(text) ? text.slice(1, -1) : reference;
+};
+
+/** Character references as HTML decodes them: numeric ones of any length,
+ * with or without the semicolon, an invalid code point read as U+FFFD, and
+ * named ones through the pinned parser's table. The document check and the
+ * target records' link reader share it (WO-259-D021). */
+export const decodeCharacterReferences = (text) =>
+  text.replace(
+    /&#(\d+);?|&#x([\da-f]+);?|&[a-z][a-z\d]*;/giu,
+    (reference, decimal, hex) => {
+      if (decimal === undefined && hex === undefined)
+        return decodeNamedReference(reference);
+      const point = decimal ? Number(decimal) : parseInt(hex, 16);
+      return point > 0 &&
+        point <= 0x10ffff &&
+        (point < 0xd800 || point > 0xdfff)
+        ? String.fromCodePoint(point)
+        : "�";
+    },
+  );
+
 /** Every link and image destination in a Markdown source, with its line;
  * a reference resolves through the first definition of its label. */
 export function markdownLinks(source) {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { json as prettyJson } from "./lib/helpers.mjs";
 import { spawnGit } from "./lib/git.mjs";
-import { docPath, findLaunchpad } from "./lib/config.mjs";
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { readFileSync, writeFileSync, realpathSync } from "node:fs";
@@ -118,6 +118,13 @@ export function probeHarness(name, execute = spawnSync, env = process.env) {
   };
 }
 
+/**
+ * Record one harness observation in the discovery record. A version already
+ * recorded by its value, and a line already recorded by its line, are not
+ * appended again; the selector and the session readback are rewritten only
+ * when they differ; and the file is written only when something changed.
+ * The returned row says `recorded` or `already recorded`.
+ */
 export function discoverHarness(root, name, probe = probeHarness) {
   if (
     realpathSync(root) !==
@@ -130,35 +137,60 @@ export function discoverHarness(root, name, probe = probeHarness) {
   )
     throw new Error("Discovery requires the Git root");
   const path = docPath(root, "discovery", "environment.json");
-  const document = JSON.parse(readFileSync(path, "utf8"));
-  const row = probe(name);
-  const record = document.effortReadbackProbe.harnesses[name];
+  const display = docRelative(root, "discovery", "environment.json");
+  let document;
+  try {
+    document = JSON.parse(readFileSync(path, "utf8"));
+  } catch (error) {
+    throw new Error(
+      `${display} cannot be parsed (${error.message}); repair it, then rerun the probe`,
+    );
+  }
+  const harnesses = document?.effortReadbackProbe?.harnesses;
+  if (!harnesses || typeof harnesses !== "object" || Array.isArray(harnesses))
+    throw new Error(`${display} holds no effortReadbackProbe.harnesses record`);
+  const record = harnesses[name];
   if (!record) throw new Error("No declared harness discovery record");
-  record.versions.push(row);
+  for (const key of ["versions", "versionLines"])
+    if (record[key] !== undefined && !Array.isArray(record[key]))
+      throw new Error(`${display}: ${name}.${key} is not a list`);
+  const row = probe(name);
+  const recorded = {};
+  const versions = (record.versions ??= []);
+  recorded.version = !versions.some((version) => version?.value === row.value);
+  if (recorded.version) versions.push(row);
   const lines = (record.versionLines ??= []);
-  lines.push({
-    classification: "observed",
-    line: row.line,
-    newestPatch: row.value,
-    observedAt: row.observedAt,
-    source: `bounded-cli-probe:${row.probe.versionChannel}`,
-  });
+  recorded.line = !lines.some((line) => line?.line === row.line);
+  if (recorded.line)
+    lines.push({
+      classification: "observed",
+      line: row.line,
+      newestPatch: row.value,
+      observedAt: row.observedAt,
+      source: `bounded-cli-probe:${row.probe.versionChannel}`,
+    });
   // A probe fills an empty record. Over a recorded selector it needs
   // advertised values and either the same control or a record no evidence
   // file backs, so help that shows another flag never replaces a selector a
   // measured probe established.
   const selector = row.probe.effortSelectorPresent && row.probe.effortSelector;
-  const recorded = record.sessionEffortSelector;
-  if (
+  const current = record.sessionEffortSelector;
+  recorded.selector = Boolean(
     selector &&
-    (!recorded ||
+    (!current ||
       (Array.isArray(selector.values) &&
-        (selector.control === recorded.control || !recorded.evidence)))
-  )
-    record.sessionEffortSelector = selector;
+        (selector.control === current.control || !current.evidence))) &&
+    JSON.stringify(selector) !== JSON.stringify(current),
+  );
+  if (recorded.selector) record.sessionEffortSelector = selector;
   // CLAUDE_EFFORT is the effort the Claude Code host selected for its own
   // session, not an effective-effort readback (WO-157 item 11, WO-152 D012).
-  if (row.probe.readbackChannelPresent)
+  const readback = record.selectedSessionReadback;
+  recorded.readback =
+    row.probe.readbackChannelPresent &&
+    (readback?.value !== row.observedEffort ||
+      readback?.harnessVersion !== row.value);
+  if (recorded.readback)
     record.selectedSessionReadback = {
       classification: "observed",
       channel: "CLAUDE_EFFORT",
@@ -169,8 +201,14 @@ export function discoverHarness(root, name, probe = probeHarness) {
       harnessVersion: row.value,
       observedAt: row.observedAt,
     };
-  writeFileSync(path, prettyJson(document));
-  return { harness: name, ...row };
+  const changed = Object.values(recorded).some(Boolean);
+  if (changed) writeFileSync(path, prettyJson(document));
+  return {
+    harness: name,
+    status: changed ? "recorded" : "already recorded",
+    recorded,
+    ...row,
+  };
 }
 if (isMainModule(import.meta.url)) {
   try {

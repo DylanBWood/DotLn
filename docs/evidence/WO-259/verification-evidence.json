@@ -1,0 +1,547 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-259",
+  "verification": "VER-001",
+  "recordedAt": "2026-11-08T20:50:43.131Z",
+  "subject": {
+    "codeIdentity": "1a504cda03bed23dc4b6e27c88aa9595d03f6fa667ec8b85e0c37ca7758cb5e1",
+    "treeBeforeVerificationReport": "2c5c2d399678a474608b6223939eca0cf38187c0",
+    "base": "898f95ffde316ad27c6c696883f21a50791c9383"
+  },
+  "actor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.167.0",
+    "model": "gpt-6-astra",
+    "effort": "max",
+    "source": "codex-session-readback",
+    "accountLabel": "not-applicable"
+  },
+  "productGate": {
+    "checkId": "npm test",
+    "exitCode": 0,
+    "recordedAt": "2026-11-08T20:27:02.231Z",
+    "treeHash": "c3a441f0446a1e3220794ccd4cdaa24c42870996",
+    "codeIdentity": "1a504cda03bed23dc4b6e27c88aa9595d03f6fa667ec8b85e0c37ca7758cb5e1",
+    "gateSelection": "review",
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "evidence-sources",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "durationMs": 560379,
+    "evidenceRef": "host-gate:1a504cda03bed23dc4b6e27c88aa9595d03f6fa667ec8b85e0c37ca7758cb5e1:npm test",
+    "missing": [],
+    "displaced": [],
+    "consumed": true
+  },
+  "independent": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-259/verification-probes.mjs",
+    "durationMs": 2805,
+    "startedAt": "2026-11-08T20:41:25.809Z",
+    "finishedAt": "2026-11-08T20:41:28.614Z",
+    "exitCode": 0,
+    "executed": true,
+    "droppedOutputBytes": 0,
+    "schemaVersion": 1,
+    "probes": [
+      {
+        "name": "installed roles and workers carry the rules within accepted startup costs",
+        "passed": true,
+        "profiles": [
+          {
+            "role": "executor",
+            "skillsRoot": ".claude/skills",
+            "bytes": 45319,
+            "ceiling": 29246,
+            "verdict": "accepted"
+          },
+          {
+            "role": "verifier",
+            "skillsRoot": ".claude/skills",
+            "bytes": 39471,
+            "ceiling": 29831,
+            "verdict": "accepted"
+          },
+          {
+            "role": "reviewer",
+            "skillsRoot": ".claude/skills",
+            "bytes": 42117,
+            "ceiling": 28884,
+            "verdict": "accepted"
+          },
+          {
+            "role": "release-close",
+            "skillsRoot": ".claude/skills",
+            "bytes": 29394,
+            "ceiling": 21266,
+            "verdict": "accepted"
+          },
+          {
+            "role": "planner",
+            "skillsRoot": ".claude/skills",
+            "bytes": 31536,
+            "ceiling": 24576,
+            "verdict": "accepted"
+          },
+          {
+            "role": "refuter",
+            "skillsRoot": ".claude/skills",
+            "bytes": 28316,
+            "ceiling": null,
+            "verdict": "unset"
+          },
+          {
+            "role": "router",
+            "skillsRoot": ".claude/skills",
+            "bytes": 17991,
+            "ceiling": 21220,
+            "verdict": "within"
+          },
+          {
+            "role": "executor",
+            "skillsRoot": ".agents/skills",
+            "bytes": 45319,
+            "ceiling": 29246,
+            "verdict": "accepted"
+          },
+          {
+            "role": "verifier",
+            "skillsRoot": ".agents/skills",
+            "bytes": 39471,
+            "ceiling": 29831,
+            "verdict": "accepted"
+          },
+          {
+            "role": "reviewer",
+            "skillsRoot": ".agents/skills",
+            "bytes": 42117,
+            "ceiling": 28884,
+            "verdict": "accepted"
+          },
+          {
+            "role": "release-close",
+            "skillsRoot": ".agents/skills",
+            "bytes": 29394,
+            "ceiling": 21266,
+            "verdict": "accepted"
+          },
+          {
+            "role": "planner",
+            "skillsRoot": ".agents/skills",
+            "bytes": 31536,
+            "ceiling": 24576,
+            "verdict": "accepted"
+          },
+          {
+            "role": "refuter",
+            "skillsRoot": ".agents/skills",
+            "bytes": 28316,
+            "ceiling": null,
+            "verdict": "unset"
+          },
+          {
+            "role": "router",
+            "skillsRoot": ".agents/skills",
+            "bytes": 17991,
+            "ceiling": 21220,
+            "verdict": "within"
+          }
+        ],
+        "workers": 3
+      },
+      {
+        "name": "configured document roots, normalized twelve-word boundary and ordinary typed quotation",
+        "passed": true,
+        "shorterRunFindings": 0,
+        "exactWindowFindings": 1,
+        "requestedQuotationFailures": 0,
+        "packageSourceFindings": 1,
+        "configuredRoot": "records"
+      },
+      {
+        "name": "hand-back attribution survives CRLF and cannot become rule provenance",
+        "passed": true,
+        "source": "host-agent-handback",
+        "attribution": "host",
+        "interventions": 0,
+        "hostHandbacks": 1,
+        "provenanceRefused": true
+      },
+      {
+        "name": "terms screen covers committed branch text, both publishing helpers and main after merge",
+        "passed": true,
+        "findings": 1,
+        "publishingDoorsRefused": 2,
+        "noRemoteConfigured": true,
+        "lastMergeFindings": 1
+      },
+      {
+        "name": "discovery records a changed effort without duplicating versions and leaves an identical rerun untouched",
+        "passed": true,
+        "versions": 1,
+        "versionLines": 1,
+        "changedEffort": "xhigh",
+        "identicalRerunChangedBytes": false
+      },
+      {
+        "name": "ordinary reference links and images require committed destinations and preserve literal paths",
+        "passed": true,
+        "missingImageRefused": true,
+        "committedInputsAccepted": true,
+        "stagedLinkedEvidenceRefused": true
+      },
+      {
+        "name": "criteria worker dry-run prints the three shared rules and its measured size",
+        "passed": true,
+        "measured": {
+          "brief": 41886,
+          "ceiling": 400000,
+          "batches": [
+            {
+              "number": 1,
+              "documents": [
+                "docs/work-orders/WO-259-committed-words-and-filed-records.md"
+              ],
+              "brief": 41886
+            }
+          ]
+        },
+        "preambleCharacters": 2053,
+        "allRulesPresent": true,
+        "workersLaunched": 0
+      },
+      {
+        "name": "release upgrade guidance follows the changed source files",
+        "passed": true,
+        "reemitAndNewSession": true
+      }
+    ]
+  },
+  "focused": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-reporter=spec --test-name-pattern='WO-259|target records preserve reviewed reports|target records resume interrupted|bounded role wording|WO-145 optional economy' scripts/test-harness.mjs scripts/test-process-debt.mjs scripts/test-runner.test.mjs scripts/test-target-worktree-publish.mjs",
+    "durationMs": 68302,
+    "startedAt": "2026-11-08T20:38:44.074Z",
+    "finishedAt": "2026-11-08T20:39:52.376Z",
+    "exitCode": 0,
+    "executed": true,
+    "droppedOutputBytes": 0,
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "nestedGateFailures": "The synthetic refused-term arm intentionally fails its fixture document gate; its no-list arm passes. These are assertions inside the passing test, not failures of this checkout."
+  },
+  "shell": {
+    "durationMs": 373103,
+    "startedAt": "2026-11-08T20:43:41.105Z",
+    "finishedAt": "2026-11-08T20:49:54.208Z",
+    "exitCode": 0,
+    "executed": true,
+    "droppedOutputBytes": 0,
+    "wrapper": "harness bounded, one child process at a time",
+    "fixtures": [
+      {
+        "name": "worktree",
+        "exitCode": 0,
+        "passed": true,
+        "environment": "suiteEnvironment, the production runner fixture environment"
+      },
+      {
+        "name": "resume",
+        "exitCode": 0,
+        "passed": true,
+        "environment": "suiteEnvironment, the production runner fixture environment"
+      }
+    ],
+    "commands": [
+      "bash scripts/test-worktree.sh",
+      "bash scripts/test-resume.sh"
+    ],
+    "environment": "suiteEnvironment(process.env) from scripts/lib/suite-evidence.mjs, exactly as the production runner invokes fixtures"
+  },
+  "formatting": {
+    "command": "node scripts/harness.mjs bounded -- npm run format:check",
+    "exitCode": 0,
+    "scope": "implementation before verification records"
+  },
+  "whitespace": {
+    "command": "git diff --check",
+    "exitCode": 0,
+    "output": "empty"
+  },
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "exitCode": 0,
+    "recordedAt": "2026-11-08T20:55:06.224Z",
+    "treeHash": "c7797961da4b70a3148b4f27755d83cffb7c0acd",
+    "documentTreeHash": "604f520629702d271e9dcc0e8b04e6b8b8f356c7",
+    "documentTreeExcludes": "docs/evidence/WO-259",
+    "codeIdentity": "1a504cda03bed23dc4b6e27c88aa9595d03f6fa667ec8b85e0c37ca7758cb5e1",
+    "gateSelection": "document",
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "license-surfaces",
+      "resume-docs",
+      "launchpad-docs",
+      "docs-check",
+      "terms",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ],
+    "durationMs": 139484,
+    "evidenceRef": "host-gate:1a504cda03bed23dc4b6e27c88aa9595d03f6fa667ec8b85e0c37ca7758cb5e1:npm run test:docs",
+    "status": "passed",
+    "taskCount": 28,
+    "tasks": [
+      {
+        "name": "format",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 11416
+      },
+      {
+        "name": "configuration-root",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 8353
+      },
+      {
+        "name": "registrations",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 779
+      },
+      {
+        "name": "declarations",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 1539
+      },
+      {
+        "name": "generated",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 31384
+      },
+      {
+        "name": "host",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 132
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 861
+      },
+      {
+        "name": "harness-context",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 231
+      },
+      {
+        "name": "terms",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 1657
+      },
+      {
+        "name": "comment-labels",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 2292
+      },
+      {
+        "name": "license-surfaces",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 4150
+      },
+      {
+        "name": "docs-check",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 37327
+      },
+      {
+        "name": "lineage-fixtures",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 819
+      },
+      {
+        "name": "comment-labels-fixtures",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 917
+      },
+      {
+        "name": "kernel-docs",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 1065
+      },
+      {
+        "name": "resume-docs",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 4836
+      },
+      {
+        "name": "local-runner-double",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 3970
+      },
+      {
+        "name": "artifact-corpus",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 261
+      },
+      {
+        "name": "reader-profiles",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 768
+      },
+      {
+        "name": "launchpad-docs",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 7152
+      },
+      {
+        "name": "entropy",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 413
+      },
+      {
+        "name": "resident-bind",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 11667
+      },
+      {
+        "name": "reader-fixtures",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 10286
+      },
+      {
+        "name": "plan",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 13414
+      },
+      {
+        "name": "plan-refutation-current",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 23531
+      },
+      {
+        "name": "skeleton-docs",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 26032
+      },
+      {
+        "name": "console-docs",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 36808
+      },
+      {
+        "name": "docs-check-fixtures",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 44920
+      }
+    ]
+  },
+  "processCorrections": {
+    "decision": "WO-259-D024",
+    "items": [
+      "Oversized output reads were truncated and support no additional claims; the relevant fields were selected and reread.",
+      "The first hand-back probe assumed a configured journal root and failed before observing behavior; it now uses dispatchJournalDirectory.",
+      "The first direct shell fixture inherited host session metadata and failed in its minimal fixture runtime; the rerun uses the production suiteEnvironment and passes."
+    ]
+  },
+  "limits": [
+    "No new worker was launched; the worker brief was exercised with --dry-run.",
+    "The private instance is unavailable. Publication fixtures use local bare origins, not a GitHub account.",
+    "The screen compares this checkout’s readable ignored captures, applies its twelve-word window and preserves historical bytes.",
+    "The escaped operatorQuote property spelling remains the existing closed-failure limitation under D021 and D022; no identified writer produces it.",
+    "The instrument under verification includes the discovery, status and gate machinery that records part of this evidence; independent temporary-repository assertions and bare-origin checks also establish behavior."
+  ],
+  "goalAlignment": {
+    "decision": "WO-259-D024",
+    "outcome": "matched: no implementation edit, no additional complete product run and no new worker; independently executed supported-input probes all passed"
+  },
+  "handoffEvidenceReady": true
+}

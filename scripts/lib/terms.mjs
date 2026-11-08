@@ -7,11 +7,16 @@ import { containedRegularFile } from "./paths.mjs";
  * lint keeps its own copy of these two words, because it imports nothing. */
 export const localTermModes = Object.freeze(["refuse", "review"]);
 
-const tokens = (text) =>
+/** The words a term or a text is compared by: NFKC, lower case, and runs of
+ * letters and digits, so punctuation, markup and line breaks never hide a
+ * match. The verbatim screen compares the operator's captures by the same
+ * words. */
+export const localTermTokens = (text) =>
   text
     .normalize("NFKC")
     .toLocaleLowerCase("en-US")
     .match(/[\p{L}\p{N}]+/gu) ?? [];
+const tokens = localTermTokens;
 
 /** The private list's lines as terms with their modes. A line is `[mode:]
  * term`: `refuse:` refuses the term wherever outward text carries it;
@@ -46,12 +51,24 @@ export function parseLocalTerms(text) {
 // (scripts/outward-lint.mjs) reads the modes from the redacted findings and
 // makes review-mode matches review items of the publication.
 export function checkLocalTerms(root, surfaces) {
+  const result = localTermFindings(root, surfaces);
+  if (result.findings?.length)
+    throw new Error(
+      `local-terms list present; refused ${JSON.stringify(result.findings)}`,
+    );
+  const { findings, ...status } = result;
+  return status;
+}
+
+/** The same check returning its findings, each a file, a line range, a count
+ * and a mode and never the term, for a caller that reports every match. */
+export function localTermFindings(root, surfaces) {
   const path = docPath(root, "control", "local/terms.txt");
   if (!existsSync(path)) return { status: "unavailable" };
   if (!containedRegularFile(path, root))
     throw new Error("local-terms list is not a contained regular file");
   const terms = parseLocalTerms(readFileSync(path, "utf8"));
-  if (!terms.size) return { status: "present", terms: 0 };
+  if (!terms.size) return { status: "present", terms: 0, findings: [] };
   const maxLength = Math.max(...[...terms.keys()].map((term) => term.length));
   const findings = [];
   for (const { name, text } of surfaces) {
@@ -88,9 +105,5 @@ export function checkLocalTerms(root, surfaces) {
       });
     }
   }
-  if (findings.length)
-    throw new Error(
-      `local-terms list present; refused ${JSON.stringify(findings)}`,
-    );
-  return { status: "present", terms: terms.size };
+  return { status: "present", terms: terms.size, findings };
 }

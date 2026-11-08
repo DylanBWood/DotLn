@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "comparison": "A shared clone of this checkout with the working tree laid over it; the discovery record starts as a claude-code entry without versions, then is hand-broken for status.",
+  "discover": [
+    {
+      "run": "first",
+      "command": "node scripts/discover.mjs harness claude-code",
+      "exitCode": 0,
+      "status": "recorded",
+      "recorded": {
+        "version": true,
+        "line": true,
+        "selector": true,
+        "readback": true
+      },
+      "version": "2.1.319",
+      "versionsStored": 1,
+      "versionLinesStored": 1
+    },
+    {
+      "run": "second",
+      "command": "node scripts/discover.mjs harness claude-code",
+      "exitCode": 0,
+      "status": "already recorded",
+      "recorded": {
+        "version": false,
+        "line": false,
+        "selector": false,
+        "readback": false
+      },
+      "version": "2.1.319",
+      "versionsStored": 1,
+      "versionLinesStored": 1
+    }
+  ],
+  "brokenRecordStatus": {
+    "command": "npm run resume -- status",
+    "exitCode": 0,
+    "line": "Discovery record: docs/discovery/environment.json cannot be parsed (Unexpected end of JSON input); an attestation compares nothing with it until it parses (npm run discover -- harness rewrites only a parsed record).",
+    "namesMissingObservation": false
+  }
+}

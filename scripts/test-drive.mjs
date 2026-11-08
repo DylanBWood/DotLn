@@ -1239,9 +1239,13 @@ test("an order reads as merged once its pass reaches the base, however its recor
       "Private Fixture Term\n",
     );
     write(f.orderRoot, "records/evidence/WO-999/decisions.md", "# Decisions\n");
-    f.ok(f.resume(["target-records", ...actorArgs]));
+    // The records commit precedes the filing, so the commit the footer names
+    // holds every record; the moved records' removal is committed after it.
     git(f.orderRoot, "add", "-A");
     git(f.orderRoot, "commit", "-qm", "Synthetic records");
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    git(f.orderRoot, "add", "-A");
+    git(f.orderRoot, "commit", "-qm", "Synthetic moved records");
     assert.equal(facts().facts.merged, false);
     // Tracking refs stand in for the hosted merge, so nothing leaves this machine.
     for (const checkout of [f.main, f.clone]) {

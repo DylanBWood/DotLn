@@ -750,7 +750,12 @@ test("WO-210 target final review binds clean commits through both launchpad rout
         launchpadCommands(f, output).map(({ command }) => command),
         postReviewCommands,
       );
-      assert.match(output, /target-records <actor flags>, then commit/u);
+      // The instance records are committed before they are filed, so the
+      // footer's commit holds them (WO-259).
+      assert.match(
+        output,
+        /Commit the instance records \(the order's records and evidence\) first, then run .*target-records <actor flags>, whose footer names that commit, then commit the moved records' removal\./u,
+      );
       assert.match(output, /publish WO-999 --target-worktree --branch/u);
       // The closed order's hint qualifies what the session runs from its
       // worktree and keeps the main-checkout commands in npm form, saying so.

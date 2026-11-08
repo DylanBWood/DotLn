@@ -1696,6 +1696,42 @@ export async function reviewWorkerFixtures() {
       );
     });
 
+    await test("every kind's brief on both hosts opens with the paraphrase rule and the two no-print rules, and its measured size is printed (WO-259)", async () => {
+      const repo = orderRepository(parent);
+      const { operatorWordsRule, workerNoPrintRules } =
+        await import("../packages/compiler/dist/src/index.js");
+      // The combined round names the tree an earlier round reviewed.
+      const since = runGit(repo, ["rev-parse", "HEAD^{tree}"]);
+      for (const host of ["claude", "codex"])
+        for (const kind of ["criteria", "design", "consistency", "combined"]) {
+          const printed = JSON.parse(
+            (
+              await review(
+                repo,
+                [
+                  "--kind",
+                  kind,
+                  "--host",
+                  host,
+                  ...(kind === "combined" ? ["--since", since] : []),
+                  "--dry-run",
+                ],
+                {},
+              )
+            ).printed,
+          );
+          const preamble = printed.brief.split("\n## Brief")[0];
+          for (const rule of [operatorWordsRule, workerNoPrintRules])
+            assert.ok(preamble.includes(rule), `${host} ${kind}`);
+          assert.match(
+            preamble,
+            /never prints a commit header or an author line/u,
+          );
+          assert.equal(printed.measured.brief, printed.brief.length);
+          assert.equal(typeof printed.measured.ceiling, "number");
+        }
+    });
+
     await test("a dry run prints the Codex argv with its tool features on and the Claude argv with its read tools", async () => {
       const repo = orderRepository(parent);
       const codex = await review(

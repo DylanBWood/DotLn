@@ -18676,6 +18676,111 @@ test("terminal task notifications before transcript flush are host observations;
   }
 });
 
+test("a background worker's hand-back is journaled under the host's source in the envelope the host wraps it in, whatever the transcript says, and never counts as an intervention (WO-259)", async () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-agent-handback-")),
+  );
+  const transcript = join(root, "transcript.jsonl");
+  const rows = () =>
+    wo178Rows(root).filter(
+      (row) => row.typedEvent === "OperatorMessageObserved",
+    );
+  const observe = (
+    prompt,
+    row = { sessionId: "synthetic-session", cwd: root },
+  ) => {
+    writeFileSync(transcript, JSON.stringify(row) + "\n");
+    recordOperatorMessage(root, {
+      hook_event_name: "UserPromptSubmit",
+      cwd: root,
+      session_id: "synthetic-session",
+      prompt,
+      transcript_path: transcript,
+    });
+    return rows().at(-1);
+  };
+  // The shape the host wrote for this order's probe worker: the element with
+  // the worker's identifier, the host's frame line, the report indented by
+  // the host, the closing tag. The frame and report here are synthetic.
+  const handback = (report = ["synthetic private report line"]) =>
+    [
+      '<agent-message from="a0b1c2d3e4f5">',
+      "[Subagent hand-back] Synthetic frame: the text below is a subagent's report.",
+      ...report.map((line) => (line ? `  ${line}` : line)),
+      "</agent-message>",
+    ].join("\n");
+  try {
+    const { operationalFailures } = await import("./lib/plan-failures.mjs");
+    const interventions = () =>
+      operationalFailures(
+        root,
+        { orders: new Map(), eventSegments: new Map() },
+        () => true,
+      ).interventions;
+    for (const [prompt, transcriptRow] of [
+      [handback(), undefined],
+      // The host queues the hand-back in the operator's prompt mode, and may
+      // write it as a turn's user message; neither makes it the operator's.
+      [
+        handback(["a report that ends in a question?"]),
+        {
+          type: "attachment",
+          attachment: {
+            type: "queued_command",
+            prompt: handback(["a report that ends in a question?"]),
+            commandMode: "prompt",
+          },
+        },
+      ],
+      [
+        handback(["first paragraph", "", "second paragraph"]),
+        {
+          type: "user",
+          message: {
+            role: "user",
+            content: handback(["first paragraph", "", "second paragraph"]),
+          },
+        },
+      ],
+      [`${handback()}\n\n${handback(["a second worker's report"])}`, undefined],
+    ]) {
+      const row = observe(prompt, transcriptRow);
+      assert.equal(row.source, "host-agent-handback", prompt);
+      assert.equal(row.attribution, "host");
+      assert.equal(row.route, "mid-turn");
+      assert.equal(row.routeSource, "host-agent-handback-envelope");
+      assert.equal(row.leadingElement, "agent-message");
+      assert.equal(row.digest, sha256(prompt));
+      assert.equal(row.bytes, Buffer.byteLength(prompt));
+    }
+    assert.equal(interventions().count, 0);
+    assert.equal(interventions().hostHandbacks, 4);
+    // Anything else keeps the attribution it had: a line at column zero
+    // inside the report, a missing frame, an unclosed element, text after it.
+    for (const prompt of [
+      handback().replace(
+        "  synthetic private report",
+        "synthetic private report",
+      ),
+      handback().replace("[Subagent hand-back]", "Subagent hand-back"),
+      handback().replace("\n</agent-message>", ""),
+      `${handback()}\nresume: next`,
+      handback().replace('from="a0b1c2d3e4f5"', 'from=""'),
+    ]) {
+      const row = observe(prompt);
+      assert.equal(row.source, "claude-prompt-hook", prompt);
+      assert.equal(row.attribution, "unattributed");
+    }
+    assert.equal(interventions().count, 5);
+    assert.doesNotMatch(
+      JSON.stringify(rows()),
+      /synthetic private report|Synthetic frame|a0b1c2d3e4f5/u,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("a closed selected order's override exit names its pending record and main's effects route, never the closed order's decisions", () => {
   const root = fixture();
   const session = "wo219-override-closed";

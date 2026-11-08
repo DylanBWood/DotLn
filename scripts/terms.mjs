@@ -37,8 +37,12 @@ if (isMainModule(import.meta.url)) {
       console.log(JSON.stringify(result));
       if (result.status === "refused") process.exitCode = 1;
     } else {
-      if (process.argv[2] !== "check")
-        throw new Error("usage: terms check <paths>");
+      const action = process.argv[2];
+      if (
+        !["check", "branch"].includes(action) ||
+        (action === "branch" && process.argv.length !== 3)
+      )
+        throw new Error("usage: terms check <paths> | terms branch");
       const root = realpathSync(process.cwd());
       if (
         realpathSync(
@@ -47,10 +51,33 @@ if (isMainModule(import.meta.url)) {
           }).trim(),
         ) !== root
       )
-        throw new Error("terms check requires repository root");
-      console.log(
-        `local-terms list: ${termsCheck(root, process.argv.slice(3)).status}`,
-      );
+        throw new Error(`terms ${action} requires repository root`);
+      if (action === "check")
+        console.log(
+          `local-terms list: ${termsCheck(root, process.argv.slice(3)).status}`,
+        );
+      else {
+        // The document gate's terms task: the lines this branch adds, against
+        // its merge base with main (on main, what the last merge brought in).
+        const { branchTermFindings, branchTermLines } =
+          await import("./lib/branch-terms.mjs");
+        const { docRelative } = await import("./lib/config.mjs");
+        const result = branchTermFindings(root);
+        if (result.status === "no merge base")
+          console.log(`local-terms list: not read; ${result.reason}`);
+        else if (result.status === "unavailable")
+          console.log(
+            `local-terms list: unavailable\nAdvisory: no local-terms list is registered at ${docRelative(root, "control", "local/terms.txt")}, so the ${result.files} files this branch changes were not screened; register it to screen them.`,
+          );
+        else {
+          console.log(
+            `local-terms list: present; ${result.files} changed files screened, ${result.findings.length} findings`,
+          );
+          for (const line of branchTermLines(result.findings))
+            console.error(`FAIL ${line}`);
+          if (result.findings.length) process.exitCode = 1;
+        }
+      }
     }
   } catch (error) {
     console.error(error.message);

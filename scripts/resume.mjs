@@ -636,16 +636,26 @@ const workOrderDeclaration = (
 const actorUsage = (action, positional = "") =>
   `usage: resume ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
 
-const harnessEvidence = (harness) => {
-  if (!existsSync(environmentPath)) return undefined;
+// The discovery record is read once per command. A record that cannot be
+// parsed is named with its error, never mistaken for a missing observation.
+let discoveryRecord;
+const readDiscoveryRecord = () => {
+  if (discoveryRecord) return discoveryRecord;
+  if (!existsSync(environmentPath)) return (discoveryRecord = {});
   try {
-    return readJsonFile(environmentPath).effortReadbackProbe?.harnesses?.[
-      harness
-    ];
-  } catch {
-    return undefined;
+    // The raw error names the parser's complaint without the absolute path.
+    discoveryRecord = {
+      document: readJsonFile(environmentPath, { rawErrors: true }),
+    };
+  } catch (error) {
+    discoveryRecord = {
+      parseError: `${docRelative(repoRoot, "discovery", "environment.json")} cannot be parsed (${error.message.replace(/\s+/gu, " ").trim()})`,
+    };
   }
+  return discoveryRecord;
 };
+const harnessEvidence = (harness) =>
+  readDiscoveryRecord().document?.effortReadbackProbe?.harnesses?.[harness];
 
 const recordedHarnessVersions = (harness) => {
   const evidence = harnessEvidence(harness);
@@ -748,7 +758,12 @@ export const parseActor = (
   const subagents = ["ultra", "ultra code", "ultracode"].includes(
     suppliedEffort.toLowerCase(),
   );
-  if (
+  const { parseError } = readDiscoveryRecord();
+  if (parseError)
+    console.warn(
+      `Advisory: attestation recorded as supplied; ${parseError}, so ${harness} ${harnessVersion} effort ${suppliedEffort} was not compared with any discovery observation.`,
+    );
+  else if (
     !hasRecordedEffortValue(
       harness,
       harnessVersion,
@@ -1430,7 +1445,7 @@ const targetBriefing = (state, review = false) => {
   const location = entry
     ? join(entry.target, repository.documentationRoot)
     : `${state.repositoryId}/${repository.documentationRoot} (target worktree not registered)`;
-  return `\nRepo-native authority includes ${location} and the registered profile. Target gate claims stand on ${review ? targetGateCommand(repoRoot, state.workOrderId, "review") : `${targetGateCommand(repoRoot, state.workOrderId, "plain")} [--review]`}; the instance document gate, which a criterion names as npm run test:docs, runs as ${launchpadInvocation(repoRoot, "test-runner")} --document. This target order records no release; release prepare returns that outcome without assigning a version.${review ? ` Integrate the paired launchpad records with npm run worktree -- integrate ${state.workOrderId}, directly from this target root; this does not merge the target branch. Commit the reviewed target change on wo-${state.workOrderId.slice(3)} before final-review-result pass; run npm run resume -- target-records <actor flags> after the pass, then commit the instance records. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title <title> --body-file <path>, and publish the instance records with npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <path>.` : ""}`;
+  return `\nRepo-native authority includes ${location} and the registered profile. Target gate claims stand on ${review ? targetGateCommand(repoRoot, state.workOrderId, "review") : `${targetGateCommand(repoRoot, state.workOrderId, "plain")} [--review]`}; the instance document gate, which a criterion names as npm run test:docs, runs as ${launchpadInvocation(repoRoot, "test-runner")} --document. This target order records no release; release prepare returns that outcome without assigning a version.${review ? ` Integrate the paired launchpad records with npm run worktree -- integrate ${state.workOrderId}, directly from this target root; this does not merge the target branch. Commit the reviewed target change on wo-${state.workOrderId.slice(3)} before final-review-result pass; after the pass, commit the instance records (the order's records and evidence), run npm run resume -- target-records <actor flags>, whose footer names that commit, then commit the moved records' removal. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title <title> --body-file <path>, and publish the instance records with npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <path>.` : ""}`;
 };
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
@@ -1708,6 +1723,10 @@ const run = async (argv) => {
           : rendered;
       if (args[0] !== "--json" && recoveryActions(state, orderEvents).length)
         message += `\nLocal recovery (${state.workOrderId}): target-records can rerun; a records receipt or moved source remains.\n`;
+      // An attestation reads its harness observations here; a record that
+      // cannot be parsed is named before the next attestation meets it.
+      if (args[0] !== "--json" && readDiscoveryRecord().parseError)
+        message += `\nDiscovery record: ${readDiscoveryRecord().parseError}; an attestation compares nothing with it until it parses (npm run discover -- harness rewrites only a parsed record).\n`;
       if (
         args[0] !== "--json" &&
         existsSync(docPath(repoRoot, "control", "budgets.json"))
@@ -2250,7 +2269,7 @@ const run = async (argv) => {
         state,
         verdict === "pass"
           ? targetSubject
-            ? `Recorded final review pass for target change committed before this result at ${targetSubject.commit}. Run npm run resume -- target-records <actor flags>, then commit the instance records. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>, and publish the records with npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
+            ? `Recorded final review pass for target change committed before this result at ${targetSubject.commit}. Commit the instance records (the order's records and evidence) first, then run npm run resume -- target-records <actor flags>, whose footer names that commit, then commit the moved records' removal. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>, and publish the records with npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
             : `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
           : "Recorded final review failure; return to bounded repair.",
       );

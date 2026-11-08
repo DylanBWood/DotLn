@@ -174,9 +174,9 @@ const journalPlaces = (root, sessionKey, order) => {
  * A standing rule is written once and in the open: each one the current
  * pass's block names must reference the operator message it came from, and
  * this check reads that message's class from the session journal itself. A
- * missing row, a host's notification, a question, a label that differs from
- * the journal's class and a capture digest that is not the message's all
- * refuse, so the planner's label decides nothing.
+ * missing row, a host's notification, a worker's hand-back, a question, a
+ * label that differs from the journal's class and a capture digest that is
+ * not the message's all refuse, so the planner's label decides nothing.
  */
 export function checkRulesRecorded(
   root,
@@ -211,6 +211,12 @@ export function checkRulesRecorded(
     )
       throw new Error(
         `${named} names the host's task notification (${at}), not the operator's words`,
+      );
+    // A background worker's report, which the host hands back as a prompt,
+    // is journaled under its own source and is never the operator's.
+    if (row.source === "host-agent-handback" || row.attribution === "host")
+      throw new Error(
+        `${named} names a background worker's hand-back (${at}; source host-agent-handback), not the operator's words`,
       );
     if (row.class === "question")
       throw new Error(

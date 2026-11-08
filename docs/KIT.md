@@ -186,7 +186,14 @@ operator sandbox settings.
    pre-drafted order). `npm run terms -- check <paths>`
    prints `local-terms list: present` or `unavailable`, and in committed text
    refuses a match of either mode by file, line and mode without printing the
-   term. Target publication also needs the instance's own
+   term. `npm run test:docs` runs the same screen as its `terms` task over the
+   lines a branch adds against its merge base with `main` (on `main`, what the
+   last merge brought in), advising `local-terms list: unavailable` where no
+   list is registered, and the publish helpers for a planning branch, a kit
+   update and an order branch screen the lines their branch adds the same way
+   before the first push; a malformed list refuses naming its line, never a
+   term (see [Document quality](#document-quality)). Target publication also
+   needs the instance's own
    `docs/control/outward-vocabulary.json`, whose `reviewTerms` (an array of
    words, possibly empty; the older `terms` key is read as the same list for
    one kit release, with an advisory) are review items too, and an
@@ -227,7 +234,13 @@ operator sandbox settings.
    The session form is `node scripts/worktree.mjs publish
    WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
    <committed-reviewed-body-path> [--confirm-terms sha256:<digest>]` from the
-   launchpad root. The hook withholds
+   launchpad root. Before `npm run resume -- target-records` files the order's
+   records into the target, the reviewer commits the instance records (the
+   order's records and evidence) on the order branch: each filed record's
+   footer names that launchpad commit, at which its relative links resolve once
+   the records branch is published, and the filing refuses while a source or a
+   file it links is uncommitted (see
+   [Releases in this instance](#releases-in-this-instance)). The hook withholds
    the `npm run worktree -- publish` form, naming the admitted node spelling.
    Its opt-in `--draft` form at `verified`
    pushes the target's working tree under a draft pull request that the final
@@ -430,8 +443,9 @@ section accepts named booleans or an election with your own reason:
 ```
 
 An absent section keeps the existing defaults: Tinkerer economy on,
-plan-first, private-destination, desktop-control and auto-update-upstream off,
-and each host other than Claude off unless this instance's record shows it.
+plan-first, private-destination, desktop-control, auto-update-upstream and
+verbatim-operator-words off, and each host other than Claude off unless this
+instance's record shows it.
 Plan-first adds an operator review of the proposed change before
 implementation.
 
@@ -451,7 +465,10 @@ other host, so a clone starts Claude-only
 ([decision](evidence/WO-258/decisions.md#wo-258-d003)). `auto-update-upstream` is this instance's
 standing opt-out of the rule that no planning or entropy pass takes a newer
 starter release unasked (§Taking upstream updates,
-[decision](evidence/WO-258/decisions.md#wo-258-d005)). A misspelled
+[decision](evidence/WO-258/decisions.md#wo-258-d005)), and
+`verbatim-operator-words` its opt-out of the rule that committed text
+paraphrases the operator (§Document quality,
+[decision](evidence/WO-259/decisions.md#wo-259-d005)). A misspelled
 name refuses with the valid names and `npm run features -- list`. Existing keys such as
 `kit.applyInstanceActions`, `release.*`, `build.*`, `drive.sandbox` and the
 budget keys stay where they are; putting their inventory ids in `features`
@@ -509,9 +526,12 @@ standing rule from the operator's words into a standing document, this
 instance's operator record included, names the rule there with the
 document, the section, the message's journal reference and its capture
 digest. `npm run plan -- check` refuses a rule whose message the session
-journal lacks, one from the host's task notification, one from a message
-journaled as a question, a class the journal contradicts and a digest that is
-not the message's; the operator strikes a rule by removing its entry.
+journal lacks, one from the host's task notification, one from a background
+worker's hand-back (journaled under the host's source `host-agent-handback`,
+never as the operator's), one from a message journaled as a question, a class
+the journal contradicts and a digest that is not the message's; the operator
+strikes a rule by removing its entry
+([decision](evidence/WO-259/decisions.md#wo-259-d008)).
 
 No planning or entropy pass takes a newer starter release or merges upstream;
 only the operator's words in that session do. `node scripts/launchpad.mjs
@@ -681,7 +701,10 @@ the name affects future releases, not older tags or Releases.
 The seeded WO-001 carries `v0.1.0`; `npm run release -- prepare --local`
 assigns later versions above this instance's own tags. A target order's
 launchpad records branch records no release and carries links to the records
-committed in the target. If it carries a release block, its claim stays at
+committed in the target. Each record filed into the target ends with a footer
+naming the launchpad commit, made before the filing, at which its relative
+links resolve once that branch is published
+([decision](evidence/WO-259/decisions.md#wo-259-d012)). If it carries a release block, its claim stays at
 least as new as the latest release. It needs no release-notes file; `release prepare
 --local` reports no release and changes no files for that target order.
 
@@ -832,7 +855,7 @@ gate, since the integrate helper's affected list is no duty of its own.
 The observed selections in a fresh fixture instance are:
 
 - `npm test`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
-- `npm run test:docs`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`, `license-surfaces`, `docs-check`, `harness-context`, `plan-refutation-current`, `plan`, `reader-profiles`, `entropy`.
+- `npm run test:docs`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`, `license-surfaces`, `docs-check`, `terms`, `harness-context`, `plan-refutation-current`, `plan`, `reader-profiles`, `entropy`.
 - `npm test -- --review`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
 
 These checks run fresh: the active snapshot and coordination records can
@@ -1595,8 +1618,28 @@ the ignored intake capture by its SHA-256, and a quotation is written only
 where the operator asks for that message to be saved, as a typed
 `operatorQuote` naming the capture's digest and the request's, or where
 this instance turns the rule off in its configuration (operator direction,
-2026-11-07; WO-259 carries the check, the election and the typed exception,
-and until it lands the role text and the reviewer carry the rule).
+2026-11-07). Every role and worker carries the rule, and `npm run test:docs`
+holds a branch to it against its merge base with `main`, so a record written
+before keeps its bytes. Its verbatim screen compares each line the branch adds,
+or joins by a deletion, to Markdown or to source under `scripts/` and
+`packages/*/src/` with every
+text capture under this checkout's ignored intake root, and a run of twelve
+consecutive words both hold fails by file, line and the capture's digest,
+never the words; a run the repository already held is its own text, and a
+checkout with no capture prints `verbatim screen: no captures`. A record the
+branch adds that attributes words to the operator without a capture
+citation fails too, while one written before stays an advisory. An
+`operatorQuote` the branch adds carries `captureSha256` and `requestedIn`
+(the digest of the capture of the operator's request to save it), and the
+screen admits that capture's words inside it. Electing
+`features.verbatim-operator-words` turns the rule off: both checks then
+advise instead of failing
+([decision](evidence/WO-259/decisions.md#wo-259-d006)).
+
+The same gate's `terms` task screens the lines a branch adds with the private
+local-terms list, failing by file, line and mode without printing the term,
+and the publish helpers screen a branch's committed change the same way before
+their first push ([decision](evidence/WO-259/decisions.md#wo-259-d009)).
 
 Artifacts follow their declared contract and check, never the preceding
 instance's shape. Writing guidance identifies the contract, meaning the document sections
