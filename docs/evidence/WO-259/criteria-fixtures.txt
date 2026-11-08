@@ -1,0 +1,187 @@
+WO-259 criteria fixtures, 2026-11-08, on branch wo-259 over main 898f95ff.
+Each line names the case, where it lives, the command that ran it and what it
+showed. Focused node --test runs ran under node scripts/harness.mjs bounded;
+the suite rows are this checkout's passing npm test -- --only gate rows.
+
+Criterion 2 (verbatim screen) and criterion 3 (attributed speech):
+  scripts/test-docs-check.mjs, three cases named "(WO-259)":
+  node --test --test-name-pattern "WO-259" scripts/test-docs-check.mjs
+    ✔ the verbatim screen fails a changed file carrying a capture's words by file, line and digest, admits a requested quotation, advises under the election and passes without captures (WO-259) (1500.689541ms)
+    ✔ the verbatim screen reads only what the branch adds: an unchanged file and a run the base already held are not findings (WO-259) (677.980917ms)
+    ✔ a current record's attributed speech without a capture citation fails where the branch adds it; a historical record keeps its note and a carried one its advisory (WO-259) (887.990667ms)
+    ℹ tests 3
+    ℹ pass 3
+    ℹ fail 0
+  The first case runs node scripts/docs-check.mjs: no capture prints
+  "verbatim screen: no captures" and exits 0; with one ignored capture the
+  changed decisions file fails with FAIL <file>:<line>: 12 or more
+  consecutive words shared with the ignored capture sha256:<digest> and the
+  output holds none of the capture's words; the record with operatorQuote
+  carrying captureSha256 and requestedIn exits 0; without requestedIn it
+  fails naming requestedIn; with features.verbatim-operator-words elected the
+  line prints ADVISORY and exits 0; a changed scripts/fixture-tool.mjs fails
+  the same way at line 1. The second case: an unchanged file is not screened
+  and a run the base already held is no finding. The third: the record the
+  branch adds fails naming WO-999-D001, the baselined record is counted under
+  "historical baseline: 1" with no failure, a record written before the
+  branch keeps its ADVISORY, and an amended header field leaves an old
+  provenance field unjudged.
+  Gate row: suite:docs-check-fixtures 8 passed; 0 failed (2026-11-08T14:54:34Z).
+
+Criterion 4 (the hand-back):
+  scripts/test-harness.mjs, journal rows:
+  node --test --test-name-pattern "hand-back is journaled" scripts/test-harness.mjs
+    ✔ a background worker's hand-back is journaled under the host's source in the envelope the host wraps it in, whatever the transcript says, and never counts as an intervention (WO-259) (9.402375ms)
+    ℹ tests 1
+    ℹ pass 1
+    ℹ fail 0
+  Four envelopes journal source host-agent-handback, attribution host,
+  routeSource host-agent-handback-envelope; five malformed shapes keep
+  claude-prompt-hook / unattributed; interventions 0, hostHandbacks 4.
+  scripts/test-plan-refutation.mjs, "WO-254 plan check refuses a standing rule
+  recorded from a question, from a worker's hand-back or from no journal row":
+  npm run plan -- check rejects the entry naming 2030-01-02T10:06:00.000Z and
+  the session with "names a background worker's hand-back (session cccccccccccc
+  at 2030-01-02T10:06:00.000Z; source host-agent-handback), not the operator's
+  words"; and "plan failures leaves a host task notification and a worker's
+  hand-back out of the interventions": count 2, hostHandbacks 1, no
+  host-agent-handback in bySource.
+  Gate rows: suite:harness-fixtures 8 passed (2026-11-08T15:05:50Z);
+  suite:plan-refutation 8 passed; 0 failed (2026-11-08T15:40:32Z).
+
+Criterion 6 (the terms task and the publish screens):
+  scripts/test-runner.test.mjs:
+  node --test --test-name-pattern "terms task fails a line" scripts/test-runner.test.mjs
+    ✔ the document gate's terms task fails a line the branch adds with a refused term by file, line and mode, never the term, and advises without a list (WO-259) (5483.6965ms)
+    ℹ tests 1
+    ℹ pass 1
+    ℹ fail 0
+  npm run test:docs in the fixture launchpad fails first in terms with
+  FAIL docs/carried.md:3: a local term in refuse mode, the output holding no
+  term; without a list the gate exits 0 and the task prints
+  "local-terms list: unavailable" and its advisory.
+  scripts/test-plan-refutation.mjs (the planning door, node
+  scripts/refute-plan.mjs publish) and scripts/test-launchpad-update.mjs (the
+  update door, node scripts/launchpad.mjs update --publish): a committed file
+  carrying the refused term refuses with "the local-terms list refuses lines
+  this branch adds: <file>:<line>: a local term in refuse mode" before any
+  push (the fixture's bare origin and gh calls unchanged); the planning door
+  refuses a malformed list naming "local-terms list line 3".
+  Gate rows: suite:runner-fixtures 8 passed; 0 failed (2026-11-08T15:37:14Z);
+  suite:plan-refutation 8 passed (2026-11-08T15:40:32Z); suite:launchpad
+  8 passed; 0 failed (2026-11-08T16:05:00Z).
+
+Criterion 7 (the launchpad publish form's phase):
+  scripts/test-worktree.sh: with the committed control record at phase active
+  (a hidden working record reading closed), node scripts/worktree.mjs publish
+  WO-099 --title --body-file refuses with "WO-099 has no committed passing
+  final review: its committed control record reads phase active" and nothing
+  reaches the origin; after the passing final review is committed the same
+  form pushes and opens the pull request.
+  Gate row: suite:worktree 8 passed; 0 failed (2026-11-08T15:16:31Z).
+
+Criterion 8 (discovery): criterion-8-discovery.json (criterion-8-discovery.mjs)
+  runs the real node scripts/discover.mjs harness claude-code twice, recorded
+  then already recorded, and npm run resume -- status on a hand-broken record.
+  scripts/test-process-debt.mjs:
+    ✔ discovery gives a record its versions list, records a version and a line once, says already recorded on a rerun and names an unparsable record (WO-259) (106.6235ms)
+    ℹ tests 1
+    ℹ pass 1
+    ℹ fail 0
+  scripts/test-resume.sh: status and a refused attestation name the parse
+  error, never the absolute path or the missing-observation advisory.
+  Gate rows: suite:process-debt 8 passed (2026-11-08T14:53:00Z); suite:resume
+  8 passed; 0 failed (2026-11-08T15:19:46Z).
+
+Criterion 9 (filed records): criterion-9-records.json (criterion-9-records.mjs)
+  holds both arms with their exit codes: control 1 (the footer names a commit
+  without the decisions, the reports or the linked evidence), fixed 0 (every
+  record and both links resolve at the footer's commit on the bare origin).
+  scripts/test-target-worktree-publish.mjs: the uncommitted sources and the
+  linked evidence file each refuse naming the commit step; after the records
+  commit the footer names it and both links resolve with git cat-file -e on
+  the launchpad's bare origin.
+  Gate row: suite:target-worktree 8 passed; 0 failed (2026-11-08T15:32:26Z).
+
+Rows and evidence at code identity f32b6b06671c, appended 2026-11-08 after
+the passing complete review there. The suite rows above ran before the
+review ladder's repairs (D016 to D018); these supersede them. The document
+gate then failed there, and D020's repair moved the code identity.
+
+Complete review (criterion 11):
+  npm test -- --review: row npm test, exit 0, 562,065 ms, recorded
+  2026-11-08T18:28:07.273Z, selection review, tree
+  7c2cd8b5f5dd90b52d7d2121257f05582e28d540, code identity
+  f32b6b06671c35d5b613022f4575c7a6013a67380a24a3d044b1541108bc76c8:
+  45 passed; 0 failed; 0 h 9 min; 10 fresh tasks. It executed the
+  structural preflight, instance-history (104,508 ms), browser-evidence
+  (27,649 ms), vertical:file:test-vertical.recovery.mjs (324,715 ms) and
+  vertical:file:test-vertical-judgment.mjs (505,313 ms), and carries every
+  other suite's pass from the complete run recorded 2026-11-08T18:04:43.964Z
+  at the same code identity, which executed and passed harness-fixtures,
+  plan-refutation, runner-fixtures, the three launchpad files,
+  launchpad-planning, worktree, worktree-integration, process-debt, resume,
+  compiler and the four target-worktree files, and failed only in
+  instance-history's nested configuration-root deadline (D019). The attempt
+  recorded 2026-11-08T18:16:19.530Z stopped in the generated preflight: the
+  decisions index was stale after D019 until npm run sync.
+  docs-check-fixtures (criteria 2 and 3) and the terms task (criterion 6)
+  are document tasks: the final npm run test:docs row in handoff.md carries
+  them.
+
+Replayed after the complete review, each under node scripts/harness.mjs
+bounded, 2026-11-08 between 18:28 and 18:30 UTC:
+  criterion-5-brief.mjs: exit 0; measured brief 41,597 against 400,000 in
+  one batch; the preamble (2,053 characters) carries the paraphrase rule,
+  the local-lane rule and the author-line rule, and the no-print rules
+  verbatim.
+  criterion-8-discovery.mjs: exit 0; the first discover run records a
+  version and a line (2.1.319), the second prints already recorded with one
+  of each stored; npm run resume -- status on the hand-broken record prints
+  "Discovery record: docs/discovery/environment.json cannot be parsed
+  (Unexpected end of JSON input); ..." and no missing-observation line.
+  criterion-9-records.mjs: exit 0 with arms control 1 and fixed 0. Fixed:
+  the first filing exits 1 naming the commit step for the three records and
+  the linked probe.json; after the records commit it exits 0, every footer
+  commit holds its record, and probe.json and
+  ../../work-orders/WO-999-fixture.md resolve with git cat-file -e exit 0
+  on the bare origin. Control (the module at 898f95ff, filing before the
+  commit): the footer commit holds none of the three filed records and
+  probe.json exits 128.
+
+Criterion 10, Read before upgrading: criticalNotes from scripts/release.mjs
+  over the branch's 119 changed files (git diff --name-only 898f95ffd plus
+  untracked files), the notices the release renders under Read before
+  upgrading as "Derived from the diff", includes "The emitted host settings
+  changed (packages/compiler/src/harness.ts): after the update, re-emit with
+  node scripts/harness.mjs emit and start a new session, ..." and "A feature
+  election changed (scripts/lib/feature-registry.mjs): after the update,
+  render the features page with npm run features -- render, re-emit with
+  node scripts/harness.mjs emit and start a new session, ...".
+
+Final rows at the handoff code identity
+1a504cda03bed23dc4b6e27c88aa9595d03f6fa667ec8b85e0c37ca7758cb5e1, appended
+2026-11-08 after D020's repair and round 4's fixes (D021):
+  npm run test:docs, recorded 2026-11-08T18:43:56.208Z: exit 1, docs-check-
+  fixtures not ok 61 (the closed docs/intake/private), repaired by D020.
+  npm test -- --review, recorded 2026-11-08T20:10:51.535Z: exit 1, 3,178,934
+  ms; 42 passed; 3 failed; 118 fresh tasks: instance-history's nested
+  configuration-root met its 30-second deadline again, and browser-evidence
+  and both vertical files did not start (D023).
+  npm test -- --review, recorded 2026-11-08T20:27:02.231Z: exit 0, 560,379
+  ms, selection review, tree c3a441f0446a1e3220794ccd4cdaa24c42870996: 45
+  passed; 0 failed; 0 h 9 min; 10 fresh tasks. It executed the structural
+  preflight, instance-history (104,180 ms), browser-evidence (24,656 ms),
+  vertical:file:test-vertical.recovery.mjs (326,517 ms) and
+  vertical:file:test-vertical-judgment.mjs (503,936 ms), and carries every
+  other suite's pass from the run recorded 2026-11-08T20:10:51.535Z at the
+  same code identity, which executed and passed them.
+  npm run test:docs, recorded 2026-11-08T20:29:43.809Z: exit 0, 139,667 ms,
+  tree c3a441f0446a1e3220794ccd4cdaa24c42870996: 28 passed; 0 failed. Its
+  docs-check-fixtures task (criteria 2 and 3) passed in 45,073 ms, docs-check
+  in 37,306 ms and this branch's terms task (criterion 6) in 1,638 ms.
+  Bounded probes before those runs: node --test scripts/test-docs-check.mjs,
+  82 tests, 81 pass, 0 fail, 1 skipped; and the target-worktree publish case
+  "a filing reads each link at its literal path ..." 1 of 1, its record
+  linking <a href="pro&#98;e&period;json"> filed once probe.json was
+  committed.

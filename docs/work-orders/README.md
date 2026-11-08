@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-258] — An instance's first cycle meets the kit · **final-reviewed**
-- [ ] [WO-259] — Committed words and filed records · **queued**
+- [x] [WO-259] — Committed words and filed records · **final-reviewed**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -37,22 +37,6 @@ None.
 None.
 
 ## Open
-
-### WO-259
-
-[WO-259 — Committed words and filed records: no operator message is saved verbatim in a committed artifact (the rule in every role's text, a check that fails verbatim and attributed operator words in changed documents and code against the ignored captures, an instance election that turns the rule off and a typed per-message exception on the operator's request), review workers told what never to read or print, a background worker's hand-back journaled as the host's, the local-terms list screening the files a branch changes in the document gate and the publish helpers, discovery's errors named, the launchpad publish form reading the phase, and a filed record whose links resolve at the launchpad commit its footer names (version assigned at activation)](WO-259-committed-words-and-filed-records.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-246: control-closed; WO-254: control-closed; WO-255: control-closed; WO-257: control-closed; WO-258: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-259-committed-words-and-filed-records.md](WO-259-committed-words-and-filed-records.md)
 
 ### WO-244
 

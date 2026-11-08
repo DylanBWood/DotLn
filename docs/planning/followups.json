@@ -44338,6 +44338,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-07T17:43:52.833Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-259-D026 (FINAL-001): its condition occurred, because WO-259-D003 adds the paraphrase rule and the worker no-print rules to every role root (756 to 867 bytes each) and so changes the measured overrun and the reviewed rules again, while every root stays within its recorded acceptance or ceiling and no ceiling moves; the reduction stays deferred to a planning allocation that can verify equivalent usefulness.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-08T21:45:46.322Z"
         }
       ]
     },
@@ -44524,6 +44532,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-08T12:57:25.097Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-259-D026 (FINAL-001): its condition occurred, because WO-259 edits scripts/test-gate-followups.mjs (the oracle chain gains wo259-role-baseline.json) and re-mints the role oracle for the rules WO-259-D003 adds; the oracle pins the fourteen roots at their new bytes and meta reports no breach, so the row's own work, a role growing past its pin without the oracle changing, stays unallocated.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-08T21:45:46.771Z"
         }
       ]
     },
@@ -44726,6 +44742,14 @@
             "WO-259"
           ],
           "at": "2026-11-07T19:12:46.468Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-259-D026 (FINAL-001): delivered by WO-259 step 6 within the Boy Scout bound (WO-259-D009): a malformed private list refuses the planning and update publish doors with the list's own line message and the pointer npm run terms -- check <path>, never a term, and the outward lint's local-terms.configuration finding says the list could not be read and that the terms check names the line; scripts/test-plan-refutation.mjs pins the refusal naming line 3.",
+          "reopenWhen": "A publish helper's refusal of a malformed private list prints a term or names no line.",
+          "targets": [],
+          "at": "2026-11-08T21:45:45.715Z"
         }
       ]
     },
@@ -52797,6 +52821,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-07T17:43:52.556Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-259-D026 (FINAL-001): its condition occurred, because WO-259-D003 adds the paraphrase rule and the worker no-print rules to every role root (756 to 867 bytes each) and so changes the measured overrun and the reviewed rules again, while every root stays within its recorded acceptance or ceiling and no ceiling moves; the reduction stays deferred to a planning allocation that can verify equivalent usefulness.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-08T21:45:46.026Z"
         }
       ]
     },
@@ -53616,6 +53648,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-07T17:43:52.696Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-259-D026 (FINAL-001): its condition occurred, because WO-259-D003 adds the paraphrase rule and the worker no-print rules to every role root (756 to 867 bytes each) and so changes the measured overrun and the reviewed rules again, while every root stays within its recorded acceptance or ceiling and no ceiling moves; the reduction stays deferred to a planning allocation that can verify equivalent usefulness.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-08T21:45:46.175Z"
         }
       ]
     },
@@ -54147,6 +54187,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-07T17:43:52.412Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-259-D026 (FINAL-001): its condition occurred, because WO-259-D003 adds the paraphrase rule and the worker no-print rules to every role root (756 to 867 bytes each) and so changes the measured overrun and the reviewed rules again, while every root stays within its recorded acceptance or ceiling and no ceiling moves; the reduction stays deferred to a planning allocation that can verify equivalent usefulness.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-08T21:45:45.870Z"
         }
       ]
     },
@@ -55340,6 +55388,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their accepted ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-08T12:57:25.236Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-259-D026 (FINAL-001): its condition occurred, because WO-259-D003 adds the paraphrase rule and the worker no-print rules to every role root (756 to 867 bytes each) and so changes the measured overrun and the reviewed rules again, while every root stays within its recorded acceptance or ceiling and no ceiling moves; the reduction stays deferred to a planning allocation that can verify equivalent usefulness.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their accepted ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-08T21:45:46.470Z"
         }
       ]
     },
@@ -55438,6 +55494,14 @@
             "WO-259"
           ],
           "at": "2026-11-07T19:12:46.201Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-259-D026 (FINAL-001): delivered by WO-259 step 7 (WO-259-D010): node scripts/worktree.mjs publish WO-NNN --title --body-file refuses unless the order's committed control record shows a passing final review, naming the phase it read, before the surface check and any remote step; scripts/test-worktree.sh pins the refusal and the later admission, and FINAL-001 reran that fixture.",
+          "reopenWhen": "A session publishes an order branch whose committed control record shows no passing final review, or the refusal names no phase.",
+          "targets": [],
+          "at": "2026-11-08T21:45:45.392Z"
         }
       ]
     },
@@ -55512,6 +55576,14 @@
             "WO-259"
           ],
           "at": "2026-11-07T19:12:46.332Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-259-D026 (FINAL-001): delivered by WO-259 step 1 (WO-259-D003): both router roots name awaiting-plan-approval in the stop list with the operator's next step (answer the proposed plan and resume the executor before driving again), pinned by the role oracle wo259-role-baseline.json in the process-debt suite.",
+          "reopenWhen": "A drive stops after PlanProposed and the router root does not name awaiting-plan-approval with the operator's next step.",
+          "targets": [],
+          "at": "2026-11-08T21:45:45.556Z"
         }
       ]
     },
@@ -55625,6 +55697,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-07T07:39:26.357Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-259-D026 (FINAL-001): its condition occurred, because WO-259-D003 adds the paraphrase rule and the worker no-print rules to every role root (756 to 867 bytes each) and so changes the measured overrun and the reviewed rules again, while every root stays within its recorded acceptance or ceiling and no ceiling moves; the reduction stays deferred to a planning allocation that can verify equivalent usefulness.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-08T21:45:46.621Z"
         }
       ]
     },
@@ -56089,6 +56169,74 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-7b7e2e59a8ef2e06",
+      "key": "decision:docs/evidence/WO-225/decisions.md#wo-225-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "01e173205d9b49b400f68a5694b64e827206792cad484735b7323a5e2a8200ed",
+          "ref": "docs/evidence/WO-225/decisions.md#wo-225-d019",
+          "title": "WO-225-D019: Repeat the complete review after a timing-sensitive nested configuration failure, without changing product code, deadlines or scheduler settings. The planning scenario has passed both a…",
+          "summary": "{ \"id\": \"WO-225-D019\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next\", \"decision\": \"Repeat the complete review after a timing-sensitive nested configuration failure, without changing product code, deadlines or scheduler settings. The planning scenario has passed both a bounded full reproduction and an earlier complete review attempt; the latest run instead reached the nested configuration-root task's existing 30-second timeout. No source-level cause is established, so a deadline increase or a scheduler change is not justified by this observation. Preserve the failed attempt and require a fresh complete pass.\", \"evidence\": [ \"The bounded planning suite passed both scenarios in 159743 ms at ",
+          "missing": false
+        },
+        {
+          "hash": "19a22d310b02f74c6cda9877e0305146ad5e4cad8b40a39056eab2ccf754db4c",
+          "ref": "docs/evidence/WO-225/decisions.md#wo-225-d019",
+          "title": "WO-225-D019: Repeat the complete review after a timing-sensitive nested configuration failure, without changing product code, deadlines or scheduler settings. The planning scenario has passed both a…",
+          "summary": "{ \"id\": \"WO-225-D019\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next\", \"decision\": \"Repeat the complete review after a timing-sensitive nested configuration failure, without changing product code, deadlines or scheduler settings. The planning scenario has passed both a bounded full reproduction and an earlier complete review attempt; the latest run instead reached the nested configuration-root task's existing 30-second timeout. No source-level cause is established, so a deadline increase or a scheduler change is not justified by this observation. Preserve the failed attempt and require a fresh complete pass.\", \"evidence\": [ \"The bounded planning suite passed both scenarios in 159743 ms at ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-67944ed9c85b7199",
+      "key": "decision:docs/evidence/WO-259/decisions.md#wo-259-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2a9fe330134c05b67a80dba6fb21fe54baae45111ec9d36eec3adc0f9c0eab15",
+          "ref": "docs/evidence/WO-259/decisions.md#wo-259-d021",
+          "title": "WO-259-D021: Admit a review finding that a hand-written reader of record or document source mishandles an input only when the finding names an input the kit's writers or an author's ordinary text…",
+          "summary": "{ \"id\": \"WO-259-D021\", \"date\": \"2026-11-08\", \"dispatch\": \"resume: next; review round 4, the repair's ladder\", \"decision\": \"Round 4 is the repair's ladder. D020's repair added 38 source lines (35 in scripts/lib/verbatim-screen.mjs and 3 in scripts/docs-check.mjs, replacing 19; 57 lines counting both) and 16 test lines, under product 07's fifty-line figure, so it started at the combined round, which also read everything after round 3's reviewed tree: round 3's fixes, D018 to D020 and the write-back links. No reviewer runs after it; the executor judges its three blocking findings. F2 (criterion 9), fixed: the filing decoded five named character references in HTML links, so probe&period;json was",
+          "missing": false
+        },
+        {
+          "hash": "b069398488905ca9648ce0471d3d725158dd11ad7b1d572052140ce55caa999d",
+          "ref": "docs/evidence/WO-259/decisions.md#wo-259-d021",
+          "title": "WO-259-D021: Admit a review finding that a hand-written reader of record or document source mishandles an input only when the finding names an input the kit's writers or an author's ordinary text…",
+          "summary": "{ \"id\": \"WO-259-D021\", \"date\": \"2026-11-08\", \"dispatch\": \"resume: next; review round 4, the repair's ladder\", \"decision\": \"Round 4 is the repair's ladder. D020's repair added 38 source lines (35 in scripts/lib/verbatim-screen.mjs and 3 in scripts/docs-check.mjs, replacing 19; 57 lines counting both) and 16 test lines, under product 07's fifty-line figure, so it started at the combined round, which also read everything after round 3's reviewed tree: round 3's fixes, D018 to D020 and the write-back links. No reviewer runs after it; the executor judges its three blocking findings. F2 (criterion 9), fixed: the filing decoded five named character references in HTML links, so probe&period;json was",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6fe1262fb31292b3",
+      "key": "decision:docs/evidence/WO-259/decisions.md#wo-259-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b3894832d4f7787a9b3750ac3dbe238bdcc3c21f91a29fd8ca1b1894f019d324",
+          "ref": "docs/evidence/WO-259/decisions.md#wo-259-d022",
+          "title": "WO-259-D022: Critical, as the operator classified it: review the executor's adoption of review findings without judgment. Before writing a fix, an executor would state for each finding whether a…",
+          "summary": "{ \"id\": \"WO-259-D022\", \"date\": \"2026-11-08\", \"dispatch\": \"resume: next; operator direction after round 4\", \"decision\": \"Record a critical error, as the operator directed, for review in the next planning session: the executor carried out review findings' requested fixes without judging them, although after the ladder's last round that judgment is the executor's (product 07 §Verification review and attack). Asked why it had written a JSON reader the order did not need, the executor explained that it had acted on round 4's F1 because the reviewer marked it blocking, never asking whether anything the kit uses would produce such a record; the operator judged that conduct irresponsible and unprofe",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Critical, as the operator directed during WO-259: review at the next planning session the executor's adoption of review findings without judgment (WO-259-D022; capture SHA-256 7f326f7487ede475fe6c7d7cb4d65985568f45b3bd135a57c483154909b45b73).",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-11-08T20:16:27.465Z"
+        }
+      ]
     }
   ]
 }

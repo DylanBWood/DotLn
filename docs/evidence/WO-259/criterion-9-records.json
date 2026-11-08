@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "comparison": "The same target-worktree fixture in both arms: a reviewed target change, a passing final review, a decisions record linking its evidence file and its order, the filing, the instance commits, and the order branch merged and pushed to the launchpad's bare origin. The control arm replaces only scripts/lib/target-records.mjs with its bytes at the base commit and files before committing the instance records, as the base's next-step text said; the fixed arm commits them first.",
+  "base": "898f95ffde316ad27c6c696883f21a50791c9383",
+  "module": "scripts/lib/target-records.mjs",
+  "arms": {
+    "control": {
+      "moduleSha256": "cb40ad6067924da8813ef971592dd0a5cd8a9d62704d3ab1b19c8e14ed5bf9e9",
+      "steps": [
+        {
+          "step": "npm run resume -- target-records <actor flags>",
+          "exitCode": 0
+        },
+        {
+          "step": "commit the instance records"
+        },
+        {
+          "step": "commit the moved records' removal"
+        },
+        {
+          "step": "merge wo-999 and push main to the launchpad's bare origin"
+        }
+      ],
+      "filed": [
+        {
+          "record": "docs/evidence/WO-999/decisions.md",
+          "footerCommit": "df69eacbc37d7d1c52060af3cf44bd1e1d131a30",
+          "footerCommitHoldsTheRecord": false,
+          "source": "records/evidence/WO-999/decisions.md",
+          "links": [
+            {
+              "link": "probe.json",
+              "path": "records/evidence/WO-999/probe.json",
+              "catFileExitCode": 128
+            },
+            {
+              "link": "../../work-orders/WO-999-fixture.md",
+              "path": "records/work-orders/WO-999-fixture.md",
+              "catFileExitCode": 0
+            }
+          ]
+        },
+        {
+          "record": "docs/verifications/WO-999/VER-001.md",
+          "footerCommit": "df69eacbc37d7d1c52060af3cf44bd1e1d131a30",
+          "footerCommitHoldsTheRecord": false,
+          "source": "records/verifications/WO-999/VER-001.md",
+          "links": []
+        },
+        {
+          "record": "docs/final-reviews/WO-999/FINAL-001.md",
+          "footerCommit": "df69eacbc37d7d1c52060af3cf44bd1e1d131a30",
+          "footerCommitHoldsTheRecord": false,
+          "source": "records/final-reviews/WO-999/FINAL-001.md",
+          "links": []
+        },
+        {
+          "record": "docs/work-orders/WO-999-fixture.md",
+          "footerCommit": "df69eacbc37d7d1c52060af3cf44bd1e1d131a30",
+          "footerCommitHoldsTheRecord": true,
+          "source": "records/work-orders/WO-999-fixture.md",
+          "links": []
+        }
+      ],
+      "linksChecked": 2,
+      "unresolved": 1,
+      "exitCode": 1
+    },
+    "fixed": {
+      "moduleSha256": "ecb944bee2c762a7bde5e4ce3b635056a32e766be2de81a6c85c4a311c7bda90",
+      "steps": [
+        {
+          "step": "npm run resume -- target-records <actor flags>",
+          "exitCode": 1,
+          "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nDotLn advisory: release.displayName is unset, so the provenance footer names the launchpad DotLn, the kit's own name; declare the instance's release.displayName in dotln.config.json to name it.\nerror: target records refused: records/evidence/WO-999/decisions.md is not committed; records/verifications/WO-999/VER-001.md is not committed; records/final-reviews/WO-999/FINAL-001.md is not committed; records/evidence/WO-999/probe.json, which a record links, is not committed at the launchpad's HEAD; commit the instance records first (the order's records and evidence, as one commit on the order branch), then rerun DOTLN_LAUNCHPAD='<fixture>/launchpad-wo999' node '<fixture>/launchpad-wo999/scripts/resume.mjs' target-records <actor flags>, and the footer names that commit"
+        },
+        {
+          "step": "commit the instance records"
+        },
+        {
+          "step": "npm run resume -- target-records <actor flags>",
+          "exitCode": 0
+        },
+        {
+          "step": "commit the moved records' removal"
+        },
+        {
+          "step": "merge wo-999 and push main to the launchpad's bare origin"
+        }
+      ],
+      "filed": [
+        {
+          "record": "docs/evidence/WO-999/decisions.md",
+          "footerCommit": "e81beef858b496e852499395e23173b89a3aa13e",
+          "footerCommitHoldsTheRecord": true,
+          "source": "records/evidence/WO-999/decisions.md",
+          "links": [
+            {
+              "link": "probe.json",
+              "path": "records/evidence/WO-999/probe.json",
+              "catFileExitCode": 0
+            },
+            {
+              "link": "../../work-orders/WO-999-fixture.md",
+              "path": "records/work-orders/WO-999-fixture.md",
+              "catFileExitCode": 0
+            }
+          ]
+        },
+        {
+          "record": "docs/verifications/WO-999/VER-001.md",
+          "footerCommit": "e81beef858b496e852499395e23173b89a3aa13e",
+          "footerCommitHoldsTheRecord": true,
+          "source": "records/verifications/WO-999/VER-001.md",
+          "links": []
+        },
+        {
+          "record": "docs/final-reviews/WO-999/FINAL-001.md",
+          "footerCommit": "e81beef858b496e852499395e23173b89a3aa13e",
+          "footerCommitHoldsTheRecord": true,
+          "source": "records/final-reviews/WO-999/FINAL-001.md",
+          "links": []
+        },
+        {
+          "record": "docs/work-orders/WO-999-fixture.md",
+          "footerCommit": "e81beef858b496e852499395e23173b89a3aa13e",
+          "footerCommitHoldsTheRecord": true,
+          "source": "records/work-orders/WO-999-fixture.md",
+          "links": []
+        }
+      ],
+      "linksChecked": 2,
+      "unresolved": 0,
+      "exitCode": 0
+    }
+  }
+}
