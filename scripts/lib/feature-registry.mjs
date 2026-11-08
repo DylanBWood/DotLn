@@ -48,6 +48,29 @@ export const featureRegistry = Object.freeze([
     "kit.applyInstanceActions",
     "scripts/launchpad.mjs",
   ),
+  // A host's surfaces are an election: off by default, inferred on from the
+  // instance's own committed record (WO-258).
+  ...[
+    ["codex", "Codex"],
+    ["copilot", "Copilot"],
+  ].map(([id, name]) =>
+    row(
+      `host-${id}`,
+      "instance",
+      false,
+      `Emits the ${name} host's surfaces and puts its profile in the bundle. Undeclared, it is on when the committed control log attests a session on the host or the discovery record observed its version.`,
+      `features.host-${id}`,
+      "scripts/lib/harness.mjs",
+    ),
+  ),
+  row(
+    "auto-update-upstream",
+    "instance",
+    false,
+    "Lets a planning or entropy pass's session take a newer starter release without recording the operator's in-session request.",
+    "features.auto-update-upstream",
+    "scripts/launchpad.mjs",
+  ),
   ...[
     ["readme-block", "readmeBlock", "the README release block"],
     ["component-versions", "componentVersions", "component version surfaces"],

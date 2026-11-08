@@ -1,0 +1,71 @@
+# WO-258 criteria fixtures, replayed 2026-11-08T03:28:12Z at d9798e38a plus the working tree
+
+$ node --test scripts/test-features.mjs
+✔ features preserve absent configuration and validate every named election (20.630958ms)
+✔ a feature rename is advisory for its named kit release and refuses afterward (0.148125ms)
+✔ feature inventory reports elections, budgets, unread switches and escaped notes, and refuses the retired overlay choice (3.697167ms)
+✔ host rows are elections inferred on from the instance's own committed record (WO-258) (6.859042ms)
+✔ features render/check obey configured roots and distinguish built from queued consumers (6.386292ms)
+✔ legacy feature overlays share schema and regular-file validation (2.573125ms)
+✔ private-destination preserves customized Secrets sections and refuses to rewrite them (0.357334ms)
+ℹ pass 7
+ℹ fail 0
+
+$ node --test --test-name-pattern WO-258|WO-178 exact close helper|WO-226 helper shell syntax scripts/test-harness.mjs
+✔ WO-226 helper shell syntax is journaled as a near miss without a decision (2000.04525ms)
+✔ WO-178 exact close helper admission requires the recorded dispatch, main and legal order (3617.871584ms)
+✔ WO-258 the hook reads the plan-first election through the lifecycle's reader: a malformed value refuses with the lifecycle's message, and true or { on: true } elect (887.485625ms)
+✔ WO-258 a resume: release close phrase typed in main before the merge reached it is journaled as a pending dispatch with the role resolved; the exact helper is admitted and records it after its fast-forward (1454.885709ms)
+✔ WO-258 a resume: release close phrase in main whose status still selects an earlier closed order records that order's dispatch and waits pending for the merged one, whose helper is admitted and recorded (1199.981125ms)
+✔ WO-258 the publishing close of the recorded order consumes the phrase kept pending beside it, and another order's helper then needs a new phrase (1085.246875ms)
+ℹ pass 6
+ℹ fail 0
+
+$ node --test --test-name-pattern Git floor scripts/test-runner.test.mjs
+✔ the Git floor admits a Git at or above engines.git and names the floor and the version read when it refuses (WO-258) (2.471542ms)
+ℹ pass 1
+ℹ fail 0
+
+$ bash scripts/test-release.sh --case pending_dispatch
+release tests passed
+
+$ bash scripts/test-release.sh --case git_floor
+release tests passed
+
+$ node --test-name-pattern WO-258|a field-only Workstream amendment admits only scripts/test-plan-refutation.mjs --fixtures-only
+✔ WO-258 criterion 8: a pass that lets the only closed order leave the sequence files the empty horizon, and the plan check, the plan cost subject and the refuter's prompt admit it (623.073ms)
+✔ WO-258 step 15: the continuation compares under the judged receipt's rule, so a separate-track member filed after a sequence-only receipt waits for the next one (660.370208ms)
+✔ a field-only Workstream amendment admits only a field the filed order lacked, one field, in the leading header (3.713125ms)
+ℹ pass 3
+ℹ fail 0
+
+$ node --test scripts/test-siblings.mjs
+PASS docs/siblings/README.md is current
+  ✔ WO-078 criterion 2: before any receipt, every field a receipt supplies reads not evidenced (110.70425ms)
+  ✔ WO-078 criterion 1: the entry carries the latest receipt's fields, the kit version from Git and the orders closed between receipts (189.102083ms)
+  ✔ a declared origin anchors the first receipt, and a commit this repository lacks reads not evidenced where Git would speak (457.791666ms)
+  ✔ the receipt resolves its sibling from the destination's repository name or directory name without case (186.048417ms)
+  ✔ refuses a hand-edited entry, naming the first differing line (510.270083ms)
+  ✔ refuses a forged visible version and embedded record without trusting either copy on the page (389.946334ms)
+  ✔ refuses a coordinated invented version in the page and captured observations without a write (305.627333ms)
+  ✔ an exact tag must point at its receipt commit and a nearest tag must be an ancestor (867.429125ms)
+  ✔ missing or malformed captured observations refuse without a write and generation repairs them (1707.930625ms)
+  ✔ the captured observations follow the configured siblings root (463.915208ms)
+  ✔ refuses an entry whose manifest hash is not the latest receipt's, naming the receipt (684.543166ms)
+  ✔ refuses a receipt it cannot decode or read, one misnamed or misplaced, or one no declaration names, and writes nothing (755.600334ms)
+  ✔ a malformed declaration refuses by field and writes nothing (748.983916ms)
+  ✔ a tag added after generation is newer evidence, not a stale page, until the next generation (901.826875ms)
+✔ sibling registry (8281.81325ms)
+✔ pending receipts keep the registry unchanged and validate the complete lane (202.620333ms)
+✔ captured pending receipts survive registry failure and resume only their bound cohort (333.40925ms)
+ℹ pass 17
+ℹ fail 0
+
+$ node scripts/siblings.mjs index --check
+PASS docs/siblings/README.md is current
+
+$ node --test --test-name-pattern WO-257 the derived Read before upgrading scripts/test-release-preparation.mjs
+✔ WO-257 the derived Read before upgrading notices name a generated page's regeneration and the new session an emitted-settings change needs (20.223167ms)
+ℹ pass 1
+ℹ fail 0
+

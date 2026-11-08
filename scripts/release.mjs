@@ -11,6 +11,12 @@ import {
 } from "./lib/temporary-prune-summary.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { formatDuration } from "./lib/duration.mjs";
+import { judgeRunningGit } from "./lib/node-engines.mjs";
+import {
+  consumePendingReleaseClose,
+  pendingReleaseClose,
+  recordPendingReleaseClose,
+} from "./lib/dispatch-bound.mjs";
 import { buildFreshness } from "./lib/build-freshness.mjs";
 import {
   addRemovalChild,
@@ -513,7 +519,7 @@ export function releaseCloseSummary(record) {
         lines.push(line(textLine));
   for (const row of record.starterRefresh ?? [])
     lines.push(
-      `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}${row.keptSeeds?.length ? `; seeds kept: ${row.keptSeeds.map((seed) => `${seed.path} (${line(seed.reason)})`).join(", ")}` : ""}${row.siblingTag ? `; tag ${row.siblingTag.tag}: ${row.siblingTag.outcome}; GitHub Release ${row.siblingRelease ?? "not verified"}${row.siblingReleaseTitle ? ` (${row.siblingReleaseTitle})` : ""}` : ""}.`,
+      `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}${row.addedSeeds?.length ? `; seeds added: ${row.addedSeeds.join(", ")}` : ""}${row.removedSeeds?.length ? `; seeds removed: ${row.removedSeeds.join(", ")}` : ""}${row.keptSeeds?.length ? `; seeds kept: ${row.keptSeeds.map((seed) => `${seed.path} (${line(seed.reason)})`).join(", ")}` : ""}${row.siblingTag ? `; tag ${row.siblingTag.tag}: ${row.siblingTag.outcome}; GitHub Release ${row.siblingRelease ?? "not verified"}${row.siblingReleaseTitle ? ` (${row.siblingReleaseTitle})` : ""}` : ""}.`,
     );
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
   if (record.writerStop?.released)
@@ -1697,6 +1703,17 @@ export const criticalNotes = (files, evidence) => {
   if (settingsTriggers.length)
     notes.push(
       `The emitted host settings changed (${settingsTriggers.join(", ")}): after the update, re-emit with node scripts/harness.mjs emit and start a new session, since the host reads the emitted settings when a session starts.`,
+    );
+  // An election's row or reader can change what an instance's emit writes
+  // (the host rows of WO-258 add or remove a host's surfaces): the features
+  // page renders anew, and the emit and a new session reach the host.
+  const electionTriggers = [
+    "scripts/lib/feature-registry.mjs",
+    "scripts/lib/features.mjs",
+  ].filter((path) => files.includes(path));
+  if (electionTriggers.length)
+    notes.push(
+      `A feature election changed (${electionTriggers.join(", ")}): after the update, render the features page with npm run features -- render, re-emit with node scripts/harness.mjs emit and start a new session, since an election can change the surfaces the emit writes and the host reads when a session starts.`,
     );
   if (files.some((path) => /^packages\/[^/]+\/package\.json$/.test(path)))
     notes.push(
@@ -3607,7 +3624,19 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
     writeOutput(
       `Origin reachable: ${reachable.host} (git ls-remote)${targetOrder ? "." : "; publication also needs gh authentication there."}\n`,
     );
-  if (dryRun) {
+  // The operator's resume: release close phrase, typed before the merge
+  // reached this checkout, waits as a pending dispatch: this helper updates
+  // main first, as the operator texts say, even in a dry run, and records the
+  // dispatch once main holds the order's records (WO-258).
+  // Owed only when the session's recorded dispatch names another order (or
+  // none): an up-to-date main's dispatch needs no recording, and its dry run
+  // stays a fetch.
+  const typed = pendingReleaseClose(root);
+  const pending =
+    typed && typed.state.releaseCloseDispatch?.workOrder !== workOrderId
+      ? typed
+      : null;
+  if (dryRun && !pending) {
     withBlockerClass("not-clean", () => ensureTrackedClean(root));
     reportLocalMaterial(root, flags.includes("--list-material"));
     withBlockerClass("base-fetch", () =>
@@ -3630,6 +3659,21 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
     throw new Error(
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
     );
+  if (pending) {
+    const recorded = recordPendingReleaseClose(root, pending, workOrderId);
+    record.dispatch.pending = recorded.recorded
+      ? { recorded: true, at: recorded.recordedAt }
+      : { recorded: false, reason: recorded.reason };
+    // The lifecycle's refusal stops the close, as it stops the phrase's own
+    // dispatch; the pending row stays for the next attempt.
+    if (!recorded.recorded)
+      throw new Error(
+        `release close refused: the pending release-close dispatch for ${workOrderId} was not recorded: ${recorded.reason}; the pending row is kept for the next attempt`,
+      );
+    writeOutput(
+      `Recorded the pending release-close dispatch for ${workOrderId} now that main holds its records; it keys this session's helper admission.\n`,
+    );
+  }
   // The operator's merge-time retraction has a consequence the lifecycle
   // carries: its repair, verification and final review precede the close. A
   // retraction before the merge is recorded in the order's worktree, which a
@@ -4525,19 +4569,38 @@ const main = async () => {
             if (!process.exitCode && record.cleanup.outcome !== "blocked") {
               await withReleaseStep(record, "prune", () => releaseWriter?.());
               completed = true;
+              // The phrase this session kept pending, in case main had not
+              // yet received the merged order, was this close's own: a later
+              // helper records no other order's dispatch from it (WO-258).
+              if (completing)
+                try {
+                  if (consumePendingReleaseClose(root, workOrderId))
+                    record.dispatch.pending = {
+                      ...record.dispatch.pending,
+                      consumed: true,
+                    };
+                } catch (error) {
+                  recordAdvisory(error);
+                }
             }
             return result;
           } catch (error) {
             const published = settlePublication(record, error.message);
+            // A host tool below the checkout's declaration names that floor
+            // and the version it read beside the refusal.
+            const reason =
+              error?.blockerClass === "host-runtime"
+                ? `${error.message}; ${judgeRunningGit(root).message}`
+                : error.message;
             // The refusal that stopped this attempt, classed where it was raised.
             record.blocker = {
               class: blockerClassOf(error?.blockerClass),
               step: error?.releaseStep ?? null,
-              message: error.message,
+              message: reason,
             };
             record.blockers.push({
               action: published ? "completion" : "publication",
-              reason: error.message,
+              reason,
               command: releaseCloseCommand(root, workOrderId),
               class: record.blocker.class,
               step: record.blocker.step,

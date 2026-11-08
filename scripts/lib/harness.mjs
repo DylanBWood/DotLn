@@ -28,7 +28,11 @@ import {
   findLaunchpad,
   loadConfig,
 } from "./config.mjs";
-import { RETIRED_OVERLAY_TINKERER, readFeatures } from "./features.mjs";
+import {
+  HOST_FEATURES,
+  RETIRED_OVERLAY_TINKERER,
+  readFeatures,
+} from "./features.mjs";
 import {
   cpSync,
   existsSync,
@@ -116,13 +120,32 @@ const contained = (root, path) => {
     throw new Error("harness output must be a regular file");
   return absolute;
 };
+/** Whether a profile's host is in the bundle: Claude's always; another host's
+ * when its feature row is on. A caller that passes no features (a test or a
+ * tool reading the complete bundle) gets every profile, as before WO-258. */
+const hostSelected = (profile, features) => {
+  const id = Object.entries(HOST_FEATURES).find(
+    ([, harness]) => harness === profile.harness,
+  )?.[0];
+  return !id || features === undefined || features[id] === true;
+};
 export function harnessInstallation(options = {}) {
   if (options.loadout && options.loadout !== "contributor")
     throw new Error("unknown harness loadout");
   const profiles = contributorProfiles.filter(
-    (profile) => !options.profile || profile.profileId === options.profile,
+    (profile) =>
+      (!options.profile || profile.profileId === options.profile) &&
+      hostSelected(profile, options.features),
   );
-  if (!profiles.length) throw new Error("unknown harness profile");
+  if (!profiles.length)
+    throw new Error(
+      options.profile &&
+        contributorProfiles.some(
+          (profile) => profile.profileId === options.profile,
+        )
+        ? `harness profile ${options.profile} is for a host this instance has not elected; elect its features.host-* row in dotln.config.json (npm run features -- list)`
+        : "unknown harness profile",
+    );
   const overlay = options.overlay;
   if (overlay && !Buffer.isBuffer(overlay.bytes))
     throw overlayError(overlay.path, "overlay bytes must be a Buffer");
@@ -449,6 +472,20 @@ export function emitHarness(
     writeFileSync(file.path, file.contents);
   }
   for (const path of obsolete) unlinkSync(contained(root, path));
+  // A host turned off leaves its directories empty; remove each one emptied
+  // here, up to the host's top directory, and never one holding other files
+  // (an operator's own Codex rules or personal skills stay).
+  for (const path of obsolete)
+    for (
+      let directory = dirname(path);
+      /^\.(?:codex|agents)(?:\/|$)/u.test(directory);
+      directory = dirname(directory)
+    ) {
+      const absolute = join(root, directory);
+      const stat = lstatSync(absolute, { throwIfNoEntry: false });
+      if (!stat?.isDirectory() || readdirSync(absolute).length) break;
+      rmdirSync(absolute);
+    }
   mkdirSync(dirname(manifestTarget), { recursive: true });
   if (
     !existsSync(manifestTarget) ||

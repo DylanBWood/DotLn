@@ -65,7 +65,7 @@
       "release-close": null,
       "planner": null,
       "refuter": null,
-      "router": 16384
+      "router": 21220
     },
     "fastGateMs": null,
     "readCapBytes": 65536,

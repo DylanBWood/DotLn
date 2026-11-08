@@ -41,7 +41,11 @@ import {
 import { licenseHashes } from "./license-surfaces.mjs";
 import { gateCodeIdentity, readGateChecks } from "./lib/gate-evidence.mjs";
 import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
-import { namedStarterSeed } from "./lib/starter-seeds.mjs";
+import {
+  exportConfiguration,
+  exportSeedPaths,
+  namedStarterSeed,
+} from "./lib/starter-seeds.mjs";
 import { markdownLinks } from "./docs-check.mjs";
 import { suites } from "./test-runner.mjs";
 import { installLaunchpadForge } from "./test-target-publication-fixture.mjs";
@@ -265,6 +269,49 @@ test("WO-226 update finish fast-forwards clean main and preserves every refused 
     capture: "docs/intake/update-request.md",
     captureHash: requestHash,
   });
+  // With features.auto-update-upstream elected, the same hold admits the
+  // finish without --operator-request, and its admission row names the
+  // election instead of a capture (WO-258 criterion 2); the refusal above,
+  // without the election, is unchanged.
+  const configPath = join(destination, "dotln.config.json");
+  const configBefore = readFileSync(configPath, "utf8");
+  commitFile(
+    destination,
+    "dotln.config.json",
+    `${JSON.stringify(
+      {
+        ...JSON.parse(configBefore),
+        features: { "auto-update-upstream": true },
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  git(destination, ["push", "-q", "origin", "main"]);
+  const elected = ok(heldFinish(), "finish under the update election");
+  assert.match(
+    elected.stdout,
+    /^update --finish admitted under this session's journal holds a planning: dispatch \(2030-01-02T10:00:00\.000Z\): features\.auto-update-upstream is on$/mu,
+  );
+  const electedRow = readFileSync(holdJournal, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line))
+    .at(-1);
+  assert.deepEqual(electedRow, {
+    recordedAt: electedRow.recordedAt,
+    event: "LaunchpadUpdateAdmitted",
+    session: holdKey,
+    command: "update --finish",
+    hold: "this session's journal holds a planning: dispatch (2030-01-02T10:00:00.000Z)",
+    election: "features.auto-update-upstream",
+  });
+  commitFile(destination, "dotln.config.json", configBefore);
+  git(destination, ["push", "-q", "origin", "main"]);
+  git(writer, ["pull", "-q", "--ff-only", "origin", "main"]);
+  const unelected = heldFinish();
+  assert.equal(unelected.status, 1, unelected.stdout);
+  assert.equal(unelected.stderr, refusedFinish.stderr);
   rmSync(holdJournal);
   ok(heldFinish(), "a session with no journaled dispatch finishes as before");
   // The entropy half of the hold: a pending review dispatch pointer in the
@@ -1613,7 +1660,6 @@ test("export update preserves ownership, validates actions and keeps the exporte
       for (const path of [
         "docs/control/budgets.json",
         "docs/control/doc-baseline.json",
-        "docs/control/doc-ceilings.json",
         "docs/planning/followups.json",
         "docs/lineage/idea-ledger.md",
       ])
@@ -3656,7 +3702,148 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   const seedOnlyPublished = refs();
   assert.equal(refresh(tag, head)[0].outcome, "current");
   assert.equal(refs(), seedOnlyPublished);
-  // Refresh keeps an absent legacy configuration absent, and a configured
+  // A starter an older export made lacks the lineage index and still carries
+  // the retired ceilings file at the kit's rendering: a refresh of the same
+  // release adds the one, removes the other and names both (WO-258 criterion
+  // 6); a customized ceilings file is kept with its reason.
+  const ceilings = "docs/control/doc-ceilings.json";
+  const lineageIndex = "docs/lineage/README.md";
+  rmSync(join(checkout, lineageIndex));
+  writeFileSync(
+    join(checkout, ceilings),
+    `${JSON.stringify({ schemaVersion: 1, documents: {} }, null, 2)}\n`,
+  );
+  git(checkout, ["add", "-A"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: an older export's seeds",
+  ]);
+  git(checkout, ["push", remote, "main"]);
+  const seedEditPreview = refresh(tag, head, true)[0];
+  assert.equal(
+    seedEditPreview.outcome,
+    "preview",
+    JSON.stringify(seedEditPreview),
+  );
+  assert.deepEqual(seedEditPreview.addedSeeds, [lineageIndex]);
+  assert.deepEqual(seedEditPreview.removedSeeds, [ceilings]);
+  const seedEdits = refresh(tag, head)[0];
+  assert.equal(seedEdits.outcome, "refreshed", JSON.stringify(seedEdits));
+  assert.deepEqual(seedEdits.addedSeeds, [lineageIndex]);
+  assert.deepEqual(seedEdits.removedSeeds, [ceilings]);
+  assert.match(
+    printed(seedEdits),
+    /; seeds added: docs\/lineage\/README\.md; seeds removed: docs\/control\/doc-ceilings\.json; tag /u,
+  );
+  assert.equal(existsSync(join(checkout, ceilings)), false);
+  ok(
+    run(process.execPath, ["scripts/lineage.mjs", "index", "--check"], {
+      cwd: checkout,
+      env: fixtureEnv,
+    }),
+    "the added lineage index is the starter's own rendering",
+  );
+  // The refreshed UPSTREAM.md lists exactly the seeds the export writes, and
+  // the starter carries each of them.
+  const instanceSeeds = readFileSync(join(checkout, "UPSTREAM.md"), "utf8")
+    .split("## Instance seeds\n")[1]
+    .split("\n## ")[0]
+    .split("\n")
+    .flatMap((line) => /^- `([^`]+)`$/u.exec(line)?.[1] ?? []);
+  assert.deepEqual(instanceSeeds, exportSeedPaths());
+  for (const path of instanceSeeds)
+    assert.ok(
+      lstatSync(join(checkout, path), { throwIfNoEntry: false }),
+      `${path} in the refreshed starter`,
+    );
+  assert.equal(refresh(tag, head)[0].outcome, "current");
+  writeFileSync(
+    join(checkout, ceilings),
+    '{\n  "schemaVersion": 1,\n  "documents": { "docs/KIT.md": 65536 }\n}\n',
+  );
+  git(checkout, ["add", "-A"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: a customized retired seed",
+  ]);
+  git(checkout, ["push", remote, "main"]);
+  const keptRetired = refresh(tag, head)[0];
+  assert.equal(keptRetired.outcome, "current", JSON.stringify(keptRetired));
+  assert.deepEqual(
+    keptRetired.keptSeeds.find((row) => row.path === ceilings),
+    {
+      path: ceilings,
+      reason:
+        "a retired seed, customized; differs from every rendering the kit wrote",
+    },
+  );
+  assert.match(
+    printed(keptRetired),
+    /; seeds kept: .*docs\/control\/doc-ceilings\.json \(a retired seed, customized/u,
+  );
+  // The customized file leaves with the starter's own commit, so the cases
+  // below start from a starter carrying every seed and no retired one.
+  rmSync(join(checkout, ceilings));
+  git(checkout, ["add", "-A"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: the retired seed removed by hand",
+  ]);
+  git(checkout, ["push", remote, "main"]);
+  assert.equal(refresh(tag, head)[0].outcome, "current");
+  // An added seed never follows a link out of the refresh worktree: with the
+  // starter's docs/intake a link to a directory outside it, the refresh that
+  // would add docs/intake/.gitkeep refuses before any write, and the file the
+  // link reaches keeps its bytes.
+  const outsideIntake = join(root, "outside-intake");
+  mkdirSync(outsideIntake, { recursive: true });
+  writeFileSync(join(outsideIntake, ".gitkeep"), "sentinel\n");
+  const intake = join(checkout, "docs/intake");
+  rmSync(intake, { recursive: true, force: true });
+  symlinkSync(outsideIntake, intake);
+  git(checkout, ["add", "-A"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: an intake link",
+  ]);
+  git(checkout, ["push", remote, "main"]);
+  const linked = refresh(tag, head)[0];
+  assert.equal(linked.outcome, "refused", JSON.stringify(linked));
+  assert.match(
+    linked.reason,
+    /seed destination docs\/intake\/\.gitkeep has an ancestor that is not a directory: docs\/intake/u,
+  );
+  assert.equal(
+    readFileSync(join(outsideIntake, ".gitkeep"), "utf8"),
+    "sentinel\n",
+  );
+  rmSync(intake);
+  mkdirSync(intake);
+  writeFileSync(join(intake, ".gitkeep"), "");
+  git(checkout, ["add", "-A"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: the intake directory restored",
+  ]);
+  git(checkout, ["push", remote, "main"]);
+  assert.equal(refresh(tag, head)[0].outcome, "current");
+  // Refresh adds an absent configuration with the export's bytes and names
+  // the README it rewrites as that configuration does (WO-258); a configured
   // name belongs to the destination rather than the incoming starter seed.
   const identityHead = git(checkout, ["rev-parse", "HEAD"]).stdout.trim();
   for (const displayName of [null, "Example Starter"]) {
@@ -3670,7 +3857,7 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
       );
     const heldConfiguration = existsSync(configurationPath)
       ? readFileSync(configurationPath, "utf8")
-      : null;
+      : exportConfiguration();
     writeFileSync(join(checkout, "README.md"), seedReadme);
     git(checkout, ["add", "-A"]);
     git(checkout, [
@@ -3691,8 +3878,12 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     );
     assert.ok(
       readFileSync(join(checkout, "README.md"), "utf8").includes(
-        `This source prepares ${displayName ?? "DotLn"} `,
+        `This source prepares ${displayName ?? "DotLn-Enterprise-Starter"} `,
       ),
+    );
+    assert.deepEqual(
+      renamed.addedSeeds,
+      displayName === null ? ["dotln.config.json"] : [],
     );
     assert.equal(refresh(tag, head)[0].outcome, "current");
   }

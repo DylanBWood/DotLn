@@ -76,7 +76,7 @@
       "release-close": 21266,
       "planner": 24576,
       "refuter": null,
-      "router": 16384
+      "router": 21220
     },
     "fastGateMs": null,
     "readCapBytes": 65536,
@@ -260,6 +260,46 @@
       "dispatch": "executor",
       "ceiling": 51226,
       "reason": "WO-242 measures installed floor plus elected executor at 47130 UTF-8 bytes (off 44358), above the previous effective acceptance 40194. Preserve the plan-first approval, conversation and screening duties and accept measured bytes plus 4096 under product 07’s standing route. Reassess when another reviewed duty needs more. Decision: docs/evidence/WO-242/decisions.md#wo-242-d009."
+    },
+    {
+      "date": "2026-11-07",
+      "metric": "coldStartBytes.router",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 21220,
+      "reason": "WO-258 step 13: the generated router root measures 17,124 bytes in each installed skill root (CLAUDE.md 7,380 plus the router skill 9,744) against the 16,384 ceiling of the kit template, with no acceptance, so every instance started with this breach (FUP-c61f76f60798e1b2). Under product 07's standing 2026-09-17 route, preserve the reviewed router and floor text and raise the ceiling, here and in scripts/kit/budgets.template.json, to the measured 17,124 plus one 4,096-byte step, 21,220. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-258/decisions.md#wo-258-d013."
+    },
+    {
+      "date": "2026-11-07",
+      "metric": "coldStartBytes.verifier",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 42811,
+      "reason": "WO-258 records the standing breach FUP-c61f76f60798e1b2 names: the verifier root measures 38,715 bytes in each installed skill root against its effective acceptance, left advisory since the reviewed rules of WO-241 to WO-257 added to it. Under product 07's standing 2026-09-17 route, preserve those reviewed rules and accept the measured 38,715 plus one 4,096-byte step, 42,811; the byte-reduction row stays deferred with that follow-up. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-258/decisions.md#wo-258-d013."
+    },
+    {
+      "date": "2026-11-07",
+      "metric": "coldStartBytes.reviewer",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 45385,
+      "reason": "WO-258 records the standing breach FUP-c61f76f60798e1b2 names: the reviewer root measures 41,289 bytes in each installed skill root against its effective acceptance, left advisory since the reviewed rules of WO-241 to WO-257 added to it. Under product 07's standing 2026-09-17 route, preserve those reviewed rules and accept the measured 41,289 plus one 4,096-byte step, 45,385; the byte-reduction row stays deferred with that follow-up. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-258/decisions.md#wo-258-d013."
+    },
+    {
+      "date": "2026-11-07",
+      "metric": "coldStartBytes.release-close",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 32734,
+      "reason": "WO-258 records the standing breach FUP-c61f76f60798e1b2 names: the release-close root measures 28,638 bytes in each installed skill root against its effective acceptance, left advisory since the reviewed rules of WO-241 to WO-257 added to it. Under product 07's standing 2026-09-17 route, preserve those reviewed rules and accept the measured 28,638 plus one 4,096-byte step, 32,734; the byte-reduction row stays deferred with that follow-up. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-258/decisions.md#wo-258-d013."
+    },
+    {
+      "date": "2026-11-07",
+      "metric": "coldStartBytes.planner",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 34876,
+      "reason": "WO-258 records the standing breach FUP-c61f76f60798e1b2 names: the planner root measures 30,780 bytes in each installed skill root against its effective acceptance, left advisory since the reviewed rules of WO-241 to WO-257 added to it. Under product 07's standing 2026-09-17 route, preserve those reviewed rules and accept the measured 30,780 plus one 4,096-byte step, 34,876; the byte-reduction row stays deferred with that follow-up. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-258/decisions.md#wo-258-d013."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",

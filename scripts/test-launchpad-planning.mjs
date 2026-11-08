@@ -284,6 +284,20 @@ test("planning and release-close reads run in a fresh exported instance", async 
       "export",
     );
     configure(kit);
+    // A fresh export is Claude-only; a Codex session's granted scratch roots
+    // come from the Codex profile, so this instance elects Codex, as one a
+    // Codex session runs in does (WO-258-D031).
+    const kitConfig = JSON.parse(
+      readFileSync(join(kit, "dotln.config.json"), "utf8"),
+    );
+    writeFileSync(
+      join(kit, "dotln.config.json"),
+      `${JSON.stringify({ ...kitConfig, features: { ...kitConfig.features, "host-codex": true } }, null, 2)}\n`,
+    );
+    ok(
+      run(kit, process.execPath, ["scripts/harness.mjs", "emit"]),
+      "emit with Codex elected",
+    );
     const historical = ok(
       run(kit, process.execPath, [
         "--input-type=module",
@@ -2219,6 +2233,16 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
       starterOrigin,
       forkOrigin,
     ]);
+    // The export's commit leaves thousands of loose objects in both bare
+    // origins, so a push into one could start a detached gc --auto that a
+    // later clone of it races; the fixture runs none (WO-258-D031).
+    for (const origin of [starterOrigin, forkOrigin])
+      for (const [key, value] of [
+        ["gc.auto", "0"],
+        ["receive.autogc", "false"],
+        ["maintenance.auto", "false"],
+      ])
+        lgit(origin, ["config", key, value]);
     const starter = join(scratch, "starter");
     lgit(scratch, [
       "-c",
@@ -2324,9 +2348,10 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
       readFileSync(join(core, "scripts/kit/workstream.template.md"), "utf8"),
       "the refreshed starter carries the current workstream convention",
     );
-    // A new fork of the refreshed starter still lacks the lineage index a
-    // fresh export seeds; its kit guide's first step generates that index
-    // before the first document gate, whose check names the remedy.
+    // The refresh adds every export seed the starter lacked, the lineage index
+    // among them (WO-258-D012), so a new fork of the refreshed starter carries
+    // it; the kit guide's first step still tells an older, unrefreshed fork how
+    // to generate it.
     const newFork = join(scratch, "new-fork");
     lgit(scratch, [
       "-c",
@@ -2336,27 +2361,30 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
       starterUrl,
       newFork,
     ]);
+    // Step 1's sentence as WO-258's write-back states it: the refresh adds
+    // the lineage index from v0.121.0, so only an older, unrefreshed fork
+    // generates it.
+    const firstStep = readFileSync(
+      join(newFork, "docs/KIT.md"),
+      "utf8",
+    ).replace(/\s+/gu, " ");
     assert.ok(
-      readFileSync(join(newFork, "docs/KIT.md"), "utf8")
-        .replace(/\s+/gu, " ")
-        .includes(
-          "If `docs/lineage/README.md` is absent, as in a fork of a starter exported by an older release even after a starter refresh, run `node scripts/lineage.mjs index` and commit the generated index with the fork's setup commit",
+      firstStep.includes(
+        "If `docs/lineage/README.md` is absent, as in a fork of a starter exported by an older release and not refreshed since v0.121.0",
+      ) &&
+        firstStep.includes(
+          "run `node scripts/lineage.mjs index` and commit the generated index with the fork's setup commit",
         ),
       "the first step tells an older fork to generate and commit the index",
     );
-    const unindexed = exec(newFork, process.execPath, [
+    const indexed = exec(newFork, process.execPath, [
       "scripts/lineage.mjs",
       "index",
       "--check",
     ]);
-    assert.equal(unindexed.status, 1);
-    assert.equal(
-      unindexed.stderr,
-      "Missing docs/lineage/README.md; run node scripts/lineage.mjs index\n",
-    );
-    node(newFork, ["scripts/lineage.mjs", "index"], "index the new fork");
+    assert.equal(indexed.status, 0, indexed.stderr);
+    // The fork's setup changes no tracked file: the index was the only one.
     setup(newFork);
-    record(newFork, "set up the fork");
     assert.equal(lgit(newFork, ["status", "--porcelain"]), "");
     node(
       newFork,

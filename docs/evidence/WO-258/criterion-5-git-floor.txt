@@ -1,0 +1,22 @@
+# WO-258 criterion 5: a shim git first on PATH printing git version 2.31.0 (and refusing check-attr --source, as Git 2.31 does); real Git 2.55.0 behind it; 2026-11-07
+
+$ PATH=<shim>:$PATH git --version
+git version 2.31.0
+
+$ PATH=<shim>:$PATH node scripts/harness.mjs check
+Git 2.31.0 (git --version) is below package.json engines.git >=2.40.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected.
+exit 1
+
+$ PATH=<shim>:$PATH npm test -- --only host
+FAIL host 0 h 0 min
+  [host] Git 2.31.0 (git --version) is below package.json engines.git >=2.40.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected.
+SKIP format 0 h 0 min
+SKIP configuration-root 0 h 0 min
+exit 1
+
+$ PATH=<shim>:$PATH node scripts/bootstrap.mjs
+harness emit: 43 generated surfaces; local-terms list: present
+Worktree ready for Claude or Codex (3 preparation steps).
+exit 0
+
+The classification failure and the close blocker under the same shim: scripts/test-release.sh release_case_git_floor (record.blocker.class host-runtime; message: Generated source classification unavailable: git check-attr exited 129: error: unknown option `--source=...'; plus the floor judgment).

@@ -1741,15 +1741,53 @@ export const openOrderCriteriaAdvisories = (root, rows) =>
       ),
     );
 
-export async function checkPlanGate(root) {
-  const index = readIndex(root, []);
-  checkSequenceTopology(index);
-  // The pass's standing rules each name an operator message the journal holds.
-  const rulesRecorded = checkRulesRecorded(root);
-  const advisories = targetOrderPathAdvisories(root, index.rows);
-  const criteria = openOrderCriteriaAdvisories(root, index.rows);
-  const localTerms = checkLocalTerms(root, []).status;
-  const receipts = await readReceipts(root);
+export async function checkPlanGate(root, { timing = false } = {}) {
+  // Where a check spends its time, by step, when asked (`plan check
+  // --timing`): the documents and index, the receipt reads and rebuilds, the
+  // current subject builds and the continuation comparison. It measures; it
+  // changes nothing the check judges.
+  const timings = {};
+  const timed = (name, operation) => {
+    const started = performance.now();
+    try {
+      return operation();
+    } finally {
+      timings[name] = (timings[name] ?? 0) + performance.now() - started;
+    }
+  };
+  const timedAsync = async (name, operation) => {
+    const started = performance.now();
+    try {
+      return await operation();
+    } finally {
+      timings[name] = (timings[name] ?? 0) + performance.now() - started;
+    }
+  };
+  const withTimings = (result) =>
+    timing
+      ? {
+          ...result,
+          timings: Object.fromEntries(
+            Object.entries(timings).map(([name, ms]) => [name, Math.round(ms)]),
+          ),
+        }
+      : result;
+  const { index, rulesRecorded, advisories, criteria, localTerms } = timed(
+    "documents",
+    () => {
+      const index = readIndex(root, []);
+      checkSequenceTopology(index);
+      return {
+        index,
+        // The pass's standing rules each name an operator message the journal holds.
+        rulesRecorded: checkRulesRecorded(root),
+        advisories: targetOrderPathAdvisories(root, index.rows),
+        criteria: openOrderCriteriaAdvisories(root, index.rows),
+        localTerms: checkLocalTerms(root, []).status,
+      };
+    },
+  );
+  const receipts = await timedAsync("receipts", () => readReceipts(root));
   const overrides = readOverrides(root);
   for (const [index, event] of overrides.entries()) {
     if (event.type === "PlanExecutionAmendmentWithdrawn") continue;
@@ -1833,7 +1871,7 @@ export async function checkPlanGate(root) {
   ].sort((left, right) => right.orderLength - left.orderLength);
   const { passes, enforcement } = planningPassScope(root);
   if (!enforcement)
-    return {
+    return withTimings({
       receipts: receipts.length,
       passes: 0,
       enforcement: "pending introduction commit",
@@ -1841,19 +1879,28 @@ export async function checkPlanGate(root) {
       rulesRecorded,
       advisories,
       criteriaAdvisories: criteria,
-    };
+    });
   let continuation = null;
   if (passes.length) {
     const currentReceipt = [...receipts]
       .reverse()
       .find((receipt) => receipt.pass.kind === "planning");
-    const subject = buildPlanSubject(root, "HEAD", {
+    // The current subject is built under the judged receipt's rule, as the
+    // receipt rebuild reads it: a receipt filed before the separate-track
+    // projection judged the sequence alone, so a separate-track member filed
+    // since waits for the next receipt instead of failing the comparison
+    // between an update's merge and that receipt (WO-258).
+    const rule = {
       goalReview: Boolean(currentReceipt?.subject.goalReview),
-    });
-    const observed = buildPlanSubject(root, "HEAD", {
-      workspace: true,
-      goalReview: Boolean(currentReceipt?.subject.goalReview),
-    });
+      separateTrack:
+        !currentReceipt || currentReceipt.subject.separateTrack !== undefined,
+    };
+    const subject = timed("subject", () =>
+      buildPlanSubject(root, "HEAD", rule),
+    );
+    const observed = timed("subject", () =>
+      buildPlanSubject(root, "HEAD", { ...rule, workspace: true }),
+    );
     for (const pass of passes)
       check(
         receipts.some(
@@ -1872,35 +1919,42 @@ export async function checkPlanGate(root) {
       passes.some((pass) => pass.id === latest?.pass.id),
       "current horizon receipt does not name an enforced planning pass",
     );
-    checkPassReceipt(latest.pass, latest.subject, receipts, overrides, {
-      currentSubject: observed,
+    continuation = timed("continuation", () => {
+      checkPassReceipt(latest.pass, latest.subject, receipts, overrides, {
+        currentSubject: observed,
+      });
+      return {
+        receiptId: latest.receiptId,
+        judgedSubject: latest.subject.hash,
+        committedSubject: subject.hash,
+        workspaceSubject: observed.hash,
+        committedUpdates: checkPlanContinuation(root, latest.subject, subject, {
+          allowCapabilityHistoryRepair: true,
+          dispositions: criterionDispositions(receipts, overrides),
+          amendments: committedAmendments.filter(
+            (row) =>
+              row.type === "PlanExecutionAmended" &&
+              row.receiptHash === latest.receiptHash,
+          ),
+        }),
+        workspaceUpdates: checkPlanContinuation(
+          root,
+          latest.subject,
+          observed,
+          {
+            workspace: true,
+            dispositions: criterionDispositions(receipts, overrides),
+            amendments: amendments.filter(
+              (row) =>
+                row.type === "PlanExecutionAmended" &&
+                row.receiptHash === latest.receiptHash,
+            ),
+          },
+        ),
+      };
     });
-    continuation = {
-      receiptId: latest.receiptId,
-      judgedSubject: latest.subject.hash,
-      committedSubject: subject.hash,
-      workspaceSubject: observed.hash,
-      committedUpdates: checkPlanContinuation(root, latest.subject, subject, {
-        allowCapabilityHistoryRepair: true,
-        dispositions: criterionDispositions(receipts, overrides),
-        amendments: committedAmendments.filter(
-          (row) =>
-            row.type === "PlanExecutionAmended" &&
-            row.receiptHash === latest.receiptHash,
-        ),
-      }),
-      workspaceUpdates: checkPlanContinuation(root, latest.subject, observed, {
-        workspace: true,
-        dispositions: criterionDispositions(receipts, overrides),
-        amendments: amendments.filter(
-          (row) =>
-            row.type === "PlanExecutionAmended" &&
-            row.receiptHash === latest.receiptHash,
-        ),
-      }),
-    };
   }
-  return {
+  return withTimings({
     receipts: receipts.length,
     passes: passes.length,
     enforcement,
@@ -1909,5 +1963,5 @@ export async function checkPlanGate(root) {
     continuation,
     advisories,
     criteriaAdvisories: criteria,
-  };
+  });
 }

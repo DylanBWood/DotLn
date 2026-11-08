@@ -80,7 +80,7 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check | documents [--cursor <revision>:<row>] | publish --title <title> --body-file <path> | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] [--model opus|fable|sol|astra] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model opus|fable|sol|astra] [--effort <the option's effort>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check [--timing] | documents [--cursor <revision>:<row>] | publish --title <title> --body-file <path> | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] [--model opus|fable|sol|astra] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model opus|fable|sol|astra] [--effort <the option's effort>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const followupsUsage =
   "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json or batch.json> | --touching [<path or WO-NNN>…] [--cursor <cursor>] | --touching --work-order <WO-NNN> [--cursor <cursor>] | --export <file> [--all]";
 const failuresUsage =
@@ -561,9 +561,21 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   }
   if (command === "subject" && !rest.length)
     return buildPlanSubject(root, "HEAD", { goalReview: true });
-  if (command === "check" && !rest.length) {
+  if (
+    command === "check" &&
+    (!rest.length || (rest.length === 1 && rest[0] === "--timing"))
+  ) {
+    // --timing adds where the check's seconds go, by step, to its output.
+    const started = performance.now();
     syncFollowups(root, { check: true });
-    return checkPlanGate(root);
+    const followups = performance.now() - started;
+    const result = await checkPlanGate(root, { timing: rest.length === 1 });
+    return rest.length
+      ? {
+          ...result,
+          timings: { followups: Math.round(followups), ...result.timings },
+        }
+      : result;
   }
   if (command === "dispose") {
     if (rest.length !== 3)

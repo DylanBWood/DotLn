@@ -8,12 +8,14 @@ import { createHash, randomUUID } from "node:crypto";
 import {
   copyFileSync,
   chmodSync,
+  existsSync,
   lstatSync,
   mkdirSync,
   readFileSync,
   readlinkSync,
   realpathSync,
   renameSync,
+  unlinkSync,
   writeFileSync,
   symlinkSync,
 } from "node:fs";
@@ -49,7 +51,13 @@ import {
   assertFinderMetadataTypes,
   isFinderMetadata,
 } from "./finder-metadata.mjs";
-import { namedStarterSeed, planStarterSeeds } from "./starter-seeds.mjs";
+import {
+  exportConfiguration,
+  exportSeedPaths,
+  namedStarterSeed,
+  planSeedChanges,
+  planStarterSeeds,
+} from "./starter-seeds.mjs";
 
 const git = (root, args, options) =>
   runGit(root, [...HOST_GIT_READ, ...args], options);
@@ -508,6 +516,8 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     reason: null,
     actions: [],
     rewrittenSeeds: [],
+    addedSeeds: [],
+    removedSeeds: [],
     keptSeeds: [],
     timings: {},
     finderMetadata: [],
@@ -606,6 +616,11 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           );
       }
     }
+    // The export seeds the starter lacks and the retired seeds still at a
+    // kit rendering; a first export copies every seed itself (WO-258).
+    const seedChanges = prior
+      ? planSeedChanges({ checkout, remote, exportSeeds: exportSeedPaths() })
+      : { added: [], removed: [], kept: [] };
     const { rewrites: seedPlan, kept } = prior
       ? planStarterSeeds({
           main,
@@ -613,16 +628,27 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           checkout,
           remote,
           updatesKit: prior.commit !== head,
+          ...(seedChanges.added.includes(CONFIG_FILENAME)
+            ? {
+                addedDisplayName: JSON.parse(exportConfiguration()).release
+                  .displayName,
+              }
+            : {}),
         })
       : { rewrites: [], kept: [] };
-    row.keptSeeds = kept;
+    row.keptSeeds = [...kept, ...seedChanges.kept];
+    const seedEdits = seedChanges.added.length + seedChanges.removed.length;
     if (dryRun) {
       row.seedChanges = seedPlan.map(({ path }) => path);
+      row.addedSeeds = seedChanges.added;
+      row.removedSeeds = seedChanges.removed;
       row.siblingTag = { tag, outcome: "preview" };
       row.siblingRelease = "preview";
       row.siblingReleaseTitle = `${loadConfig(checkout).release.displayName} ${tag}`;
       row.outcome =
-        prior?.commit === head && !seedPlan.length ? "current" : "preview";
+        prior?.commit === head && !seedPlan.length && !seedEdits
+          ? "current"
+          : "preview";
       row.reason =
         row.outcome === "current"
           ? "already current; preview writes nothing"
@@ -646,7 +672,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           { pending: true },
         ).path;
     };
-    if (prior?.commit === head && !seedPlan.length) {
+    if (prior?.commit === head && !seedPlan.length && !seedEdits) {
       row.buildHash = manifestBuildHash(
         git(checkout, ["show", `${remote}:${harnessFile}`], { trim: false }),
         harnessFile,
@@ -776,6 +802,71 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           receipt: { sibling: null, reason: "receipt held until publication" },
         }),
       );
+      // Each absent export seed at the bytes the export writes, the lineage
+      // index rendered from the starter's own ledger by the kit's generator;
+      // each retired seed at a kit rendering removed. Nothing present is
+      // overwritten: the plan named only absent paths.
+      const { inspectLedger, renderIndex } = await import("../lineage.mjs");
+      const lineage = (...parts) => docRelative(worktree, "lineage", ...parts);
+      // Every destination is judged before the first write: each existing
+      // ancestor a real directory (a link is not) and the leaf absent, so no
+      // added seed can follow a link out of the refresh worktree.
+      for (const path of seedChanges.added) {
+        const parts = path.split("/");
+        for (let index = 1; index < parts.length; index++) {
+          const ancestor = parts.slice(0, index).join("/");
+          const stat = lstatSync(join(worktree, ancestor), {
+            throwIfNoEntry: false,
+          });
+          if (stat && !stat.isDirectory())
+            throw new Error(
+              `seed destination ${path} has an ancestor that is not a directory: ${ancestor}`,
+            );
+        }
+        if (lstatSync(join(worktree, path), { throwIfNoEntry: false }))
+          throw new Error(`seed destination already exists: ${path}`);
+      }
+      for (const path of seedChanges.added) {
+        const file = join(worktree, path);
+        mkdirSync(dirname(file), { recursive: true });
+        if (path === "AGENTS.md") symlinkSync("CLAUDE.md", file);
+        else if (path === lineage("README.md")) {
+          const ledger = inspectLedger(
+            readFileSync(join(worktree, lineage("idea-ledger.md")), "utf8"),
+          );
+          if (ledger.errors.length)
+            throw new Error(
+              `starter lineage ledger is invalid, so its index cannot be added: ${ledger.errors.join("; ")}`,
+            );
+          writeFileSync(
+            file,
+            renderIndex(ledger, {
+              resolutions: existsSync(
+                join(worktree, lineage("resolutions.md")),
+              ),
+              inspirations: existsSync(
+                join(worktree, lineage("inspirations.md")),
+              ),
+            }),
+            { flag: "wx" },
+          );
+          chmodSync(file, 0o644);
+        } else {
+          const prepared = planned.prepared.writes.find(
+            (write) => write.path === path,
+          );
+          if (!prepared)
+            throw new Error(`prepared export has no seed bytes for ${path}`);
+          writeFileSync(file, prepared.bytes, { flag: "wx" });
+          chmodSync(file, 0o644);
+        }
+        required.add(path);
+      }
+      for (const path of seedChanges.removed) {
+        unlinkSync(join(worktree, path));
+        required.add(path);
+      }
+      allowed = new Set([...required, "CLAUDE.md"]);
     }
     await timed("verification", async () => {
       await verifyExportTree(worktree, bundle, { instructionBlock: true });
@@ -899,6 +990,8 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       pushObservedCommit(checkout, url, branch, commit, "main"),
     );
     row.rewrittenSeeds = seedPlan.map(({ path }) => path);
+    row.addedSeeds = seedChanges.added;
+    row.removedSeeds = seedChanges.removed;
     row.after = commit;
     git(checkout, ["merge", "--ff-only", commit]);
     git(checkout, ["update-ref", "refs/remotes/origin/main", commit, remote]);

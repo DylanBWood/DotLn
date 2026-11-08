@@ -108,7 +108,7 @@ import {
 export { STRUCTURAL_TASKS };
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import { branchWorkOrder } from "./lib/control-store.mjs";
-import { judgeRunningNode } from "./lib/node-engines.mjs";
+import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   productReadEnvironment,
   productReadObservations,
@@ -3367,8 +3367,11 @@ async function runGateChecks(
   // task. The host task's refusal names the cause, so it leads, and no other
   // task nor the stale-runtime build runs on that runtime. Inside the range it
   // stays last: the dispatch bound counts a selection only after host
-  // admission, so an earlier structural failure is not charged as a run.
-  const outsideRange = !judgeRunningNode(process.version, repo).admitted;
+  // admission, so an earlier structural failure is not charged as a run. A
+  // Git below package.json engines.git leads the same way (WO-258).
+  const outsideRange =
+    !judgeRunningNode(process.version, repo).admitted ||
+    !judgeRunningGit(repo).admitted;
   // Compile once when needed: a stale runtime is rebuilt before the reuse
   // lookup and the subject capture, so an ordinary package edit reaches the
   // suites instead of a refusal to run npm run sync first. The compiled

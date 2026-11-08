@@ -2,8 +2,9 @@
 
 This repository is a launchpad instance exported from DotLn core, ready for
 its owner's projects, work orders and evidence. The [kit guide](docs/KIT.md)
-explains first steps, planning, releases and upstream updates; `UPSTREAM.md`
-records the kit's provenance.
+explains first steps, planning, releases and upstream updates; the
+[map](docs/README.md) names each document root and its convention;
+`UPSTREAM.md` records the kit's provenance.
 
 <!-- DOTLN-RELEASE-BEGIN -->
 This source prepares DotLn-Enterprise-Starter `v0.1.0`.

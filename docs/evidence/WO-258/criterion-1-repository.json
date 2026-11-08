@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-07",
+  "command": "npm run features -- list --json; .claude/harness-manifest.json at the worktree and at the base d9798e38",
+  "hostRows": [
+    {
+      "id": "host-codex",
+      "value": true,
+      "source": "inferred: docs/control/resume.jsonl attestations; docs/control/orders/ attestations; docs/discovery/environment.json observed versions",
+      "record": {
+        "harness": "codex-cli",
+        "attestations": {
+          "docs/control/resume.jsonl": 12,
+          "docs/control/orders/": 414
+        },
+        "observedVersions": true
+      }
+    },
+    {
+      "id": "host-copilot",
+      "value": true,
+      "source": "inferred: docs/discovery/environment.json observed versions",
+      "record": {
+        "harness": "copilot-cli",
+        "attestations": {},
+        "observedVersions": true
+      }
+    }
+  ],
+  "profiles": {
+    "base": [
+      "claude-code-2.1.263",
+      "codex-cli-0.153.4",
+      "copilot-cli-1.0.86"
+    ],
+    "candidate": [
+      "claude-code-2.1.263",
+      "codex-cli-0.153.4",
+      "copilot-cli-1.0.86"
+    ]
+  }
+}

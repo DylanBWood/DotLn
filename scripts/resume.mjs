@@ -3118,7 +3118,7 @@ const run = async (argv) => {
       );
       message = inMain
         ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. ${effect} ${egress}`
-        : `After the operator merges the PR, start a session in the main checkout (${shellQuote(mainPath)}) and run npm run resume -- release-close --work-order ${state.workOrderId} to reserve its writer and obtain the reviewed helper. Run that helper in the same main session. ${effect} ${egress}`;
+        : `After the operator merges the PR, update the main checkout first (git pull --ff-only in ${shellQuote(mainPath)}), start a session there and run npm run resume -- release-close --work-order ${state.workOrderId} to reserve its writer and obtain the reviewed helper. Run that helper in the same main session. ${effect} ${egress}`;
       break;
     }
     default:

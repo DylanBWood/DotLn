@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "comparison": "The same instance-history run in both arms; the control arm replaces only scripts/lib/plan-receipts.mjs with its bytes at the base commit before the kit update.",
+  "base": "d9798e38ab4aed1c73d6f8837a21d5fe0c1732d3",
+  "reader": "scripts/lib/plan-receipts.mjs",
+  "arms": {
+    "control": {
+      "readerSha256": "8feaf15ae0d3574b12a143148e2dd9609812d155ee178008e57c2cfb50c2b269",
+      "command": "npm run plan -- check",
+      "exitCode": 1,
+      "elapsedMs": 906,
+      "output": "\n> plan\n> node scripts/refute-plan.mjs check\n\nAdvisory: docs/workstreams/WS-001-history.md: closed WO-002 has no **Workstream:** WS-001 field; document membership admitted.\nplanning pass needs a receipt matching the current subject: sequence, vision, roles or order inventory changed\n",
+      "instanceChecks": [
+        {
+          "command": "npm run sync",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run work-orders -- index --check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run plan -- check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run test:docs",
+          "exitCode": 1
+        },
+        {
+          "command": "npm run work-orders -- index",
+          "exitCode": 0
+        }
+      ]
+    },
+    "fixed": {
+      "readerSha256": "d074ace104825d13d9184e658ec75dc0c847930c3bd7232dcd4ade6555d51a30",
+      "command": "npm run plan -- check",
+      "exitCode": 0,
+      "elapsedMs": 1019,
+      "output": "\n> plan\n> node scripts/refute-plan.mjs check\n\n{\n  \"receipts\": 2,\n  \"passes\": 1,\n  \"enforcement\": \"2026-10-27\",\n  \"localTerms\": \"present\",\n  \"rulesRecorded\": {\n    \"document\": null,\n    \"rules\": 0\n  },\n  \"continuation\": {\n    \"receiptId\": \"2026-11-01-separate-track-002\",\n    \"judgedSubject\": \"sha256:f30c5e526aafba3d1a4dccf879f4d1d09cc91ff5649661d437f73b49eff75e3d\",\n    \"committedSubject\": \"sha256:f30c5e526aafba3d1a4dccf879f4d1d09cc91ff5649661d437f73b49eff75e3d\",\n    \"workspaceSubject\": \"sha256:f30c5e526aafba3d1a4dccf879f4d1d09cc91ff5649661d437f73b49eff75e3d\",\n    \"committedUpdates\": [],\n    \"workspaceUpdates\": []\n  },\n  \"advisories\": [],\n  \"criteriaAdvisories\": []\n}\nAdvisory: docs/workstreams/WS-001-history.md: closed WO-002 has no **Workstream:** WS-001 field; document membership admitted.\n",
+      "instanceChecks": [
+        {
+          "command": "npm run sync",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run work-orders -- index --check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run plan -- check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run test:docs",
+          "exitCode": 1
+        },
+        {
+          "command": "npm run work-orders -- index",
+          "exitCode": 0
+        }
+      ]
+    }
+  }
+}

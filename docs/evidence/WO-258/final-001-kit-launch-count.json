@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "finding": "FINAL-001 F1 (follow-up, new-scope)",
+  "recognized": [
+    {
+      "command": "npm run worker -- review --kind combined --host codex --model astra --since 9725193c",
+      "launch": {
+        "uses": 1,
+        "host": "codex"
+      }
+    },
+    {
+      "command": "npm run worker --silent -- review --kind combined --host codex --model astra --since 9725193c",
+      "launch": null
+    },
+    {
+      "command": "npm run --silent worker -- review --kind combined --host codex --model astra",
+      "launch": {
+        "uses": 1,
+        "host": "codex"
+      }
+    },
+    {
+      "command": "node scripts/worker.mjs review --kind combined --host codex --model astra",
+      "launch": {
+        "uses": 1,
+        "host": "codex"
+      }
+    }
+  ],
+  "observed": {
+    "executorSession": "fb74ee9b-0caf-49f2-8ba5-0464930525ca",
+    "helperJournalWorkerLaunchedRows": 10,
+    "usageReadbackLaunched": {
+      "total": 7,
+      "claude": 0,
+      "codex": 7
+    },
+    "reviewReportsOnDisk": 10,
+    "observedAt": "2026-11-08T12:48:00Z"
+  },
+  "reading": "kitWorkerLaunch reads the npm script's arguments with npmScriptArgs; an npm flag between the script name and -- leaves the invocation unrecognized, so the launch is neither counted nor refused at the cap. The helper's journal counts every launch, so the two records disagree by the uncounted spellings."
+}

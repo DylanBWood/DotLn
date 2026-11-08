@@ -33,6 +33,9 @@ export const CLOSE_BLOCKER_CLASSES = Object.freeze([
   "foreign-tag",
   "starter-refresh",
   "publication",
+  // The host's own tools below what the checkout declares, such as a Git
+  // older than package.json engines.git (WO-258).
+  "host-runtime",
   "other",
 ]);
 const stacks = new WeakMap();

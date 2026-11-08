@@ -5,8 +5,17 @@ import {
   readDispatchJournals,
 } from "../../packages/skeleton/src/dispatch-journal.mjs";
 import { formatDuration } from "./duration.mjs";
-import { createHash } from "node:crypto";
-import { appendFileSync, existsSync, mkdirSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { createHash, randomUUID } from "node:crypto";
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { readBudgets } from "./process-budget.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
@@ -404,4 +413,142 @@ export function dispatchBoundActivity(events, stops, role) {
     boundAcceptances,
     afterStop,
   };
+}
+
+/** The current session's pending release-close dispatch, or null: the
+ * operator's resume: release close phrase, which the prompt hook journals as
+ * pending while main lacks the merged order's records (WO-258). Read from the
+ * session's own state in the dispatch journal, so the close needs no built
+ * runtime to find it. */
+export function pendingReleaseClose(root, env = process.env) {
+  const session = dispatchSession(env);
+  if (!session) return null;
+  const key = keyOf(session);
+  const file = join(directory(root), `${key}.json`);
+  let state;
+  try {
+    state = JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    return null;
+  }
+  return state?.pendingReleaseClose &&
+    typeof state.pendingReleaseClose === "object"
+    ? { key, file, journal: join(directory(root), `${key}.jsonl`), state }
+    : null;
+}
+
+// Replaces the session's state file whole, through an exclusive temporary
+// file and a rename, as the hook writes it.
+function rewriteSessionState(file, state) {
+  const temporary = `${file}.${process.pid}.${randomUUID()}.tmp`;
+  try {
+    writeFileSync(temporary, JSON.stringify(state) + "\n", {
+      mode: 0o600,
+      flag: "wx",
+    });
+    renameSync(temporary, file);
+  } finally {
+    // The rename consumed it unless the write or the rename failed.
+    if (existsSync(temporary)) unlinkSync(temporary);
+  }
+}
+
+/** Consumes the session's pending release-close phrase once a publishing close
+ * of the order its recorded dispatch names completes: the phrase stayed
+ * pending only in case main had not yet received the merged order, and that
+ * close was its own, so no later helper in the session records another
+ * order's dispatch from it without a new phrase (WO-258-D028). Returns whether
+ * a pending phrase was consumed. */
+export function consumePendingReleaseClose(
+  root,
+  workOrderId,
+  env = process.env,
+) {
+  const pending = pendingReleaseClose(root, env);
+  if (!pending || pending.state.releaseCloseDispatch?.workOrder !== workOrderId)
+    return false;
+  const { pendingReleaseClose: consumed, ...state } = pending.state;
+  rewriteSessionState(pending.file, state);
+  appendFileSync(
+    pending.journal,
+    JSON.stringify({
+      recordedAt: new Date().toISOString(),
+      event: "PendingReleaseCloseConsumed",
+      workOrder: workOrderId,
+      dispatch: {
+        action: "release-close",
+        consumed: consumed.reason ?? "records-may-not-be-in-checkout",
+      },
+      source: "release-close-helper",
+    }) + "\n",
+    { mode: 0o600 },
+  );
+  return true;
+}
+
+/** Records a pending release-close dispatch once main holds the order's
+ * records: the lifecycle's own `resume release-close` for the order, then the
+ * session's recorded dispatch, which keys the helper's admission, and one
+ * journal row saying it came from the pending phrase. A refusal records
+ * nothing and leaves the pending row for the next attempt. */
+export function recordPendingReleaseClose(root, pending, workOrderId) {
+  const run = spawnSync(
+    process.execPath,
+    [
+      join(root, "scripts/resume.mjs"),
+      "release-close",
+      "--work-order",
+      workOrderId,
+    ],
+    {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 60_000,
+      maxBuffer: 4 * 1024 * 1024,
+    },
+  );
+  if (run.status !== 0)
+    return {
+      recorded: false,
+      reason: `npm run resume -- release-close --work-order ${workOrderId} refused: ${String(
+        run.stderr || run.stdout || run.error?.message || "no output",
+      )
+        .trim()
+        .replace(/\s+/gu, " ")
+        .slice(0, 400)}`,
+    };
+  const recordedAt = new Date().toISOString();
+  const { pendingReleaseClose: _pending, ...state } = pending.state;
+  rewriteSessionState(pending.file, {
+    ...state,
+    workOrder: workOrderId,
+    releaseCloseDispatch: { workOrder: workOrderId, recordedAt },
+    // The phrase bound its dispatch before main held the merged order; the
+    // recorded dispatch belongs to that order, from the same start.
+    ...(state.boundDispatch
+      ? {
+          boundDispatch: {
+            ...state.boundDispatch,
+            workOrder: workOrderId,
+            phaseBoundary: `${workOrderId}:none:-1`,
+          },
+        }
+      : {}),
+  });
+  appendFileSync(
+    pending.journal,
+    JSON.stringify({
+      recordedAt,
+      event: "ReleaseCloseDispatchRecorded",
+      workOrder: workOrderId,
+      dispatch: {
+        action: "release-close",
+        recorded: true,
+        from: _pending.reason ?? "records-not-in-checkout",
+      },
+      source: "release-close-helper",
+    }) + "\n",
+    { mode: 0o600 },
+  );
+  return { recorded: true, recordedAt };
 }

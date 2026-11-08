@@ -1,4 +1,4 @@
-# WO-258 — An instance's first cycle meets the kit: host support as elections (Codex and Copilot are opt-in for a new instance and inferred on for an instance whose own record shows the host), the starter's seeds and recipe agreeing with the generated surfaces, the release-close phrase recorded once the merge reaches the checkout, a Git floor beside the Node range, an empty sequence admitted, the continuation gate comparing under the judged receipt's rule, and the siblings index safe in an instance (version assigned at activation)
+# WO-258 — An instance's first cycle meets the kit: host support as elections (Codex and Copilot are opt-in for a new instance and inferred on for an instance whose own record shows the host), the starter's seeds and recipe agreeing with the generated surfaces, the release-close phrase recorded once the merge reaches the checkout, a Git floor beside the Node range, an empty sequence admitted, the continuation gate comparing under the judged receipt's rule, and the siblings index safe in an instance (v0.121.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

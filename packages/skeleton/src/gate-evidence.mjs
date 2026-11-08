@@ -973,8 +973,21 @@ export function gateCodeIdentity(root, revision) {
       maxBuffer: 32 * 1024 * 1024,
     },
   );
+  // A Git below the declared floor (check-attr learned --source in 2.40) is
+  // the usual cause; Git's own exit code and words say which. A release
+  // close classes the stop as the host's runtime, not as its own fault.
   if (attributes.status !== 0)
-    throw new Error("Generated source classification unavailable");
+    throw Object.assign(
+      new Error(
+        `Generated source classification unavailable: git check-attr exited ${attributes.status ?? attributes.signal ?? "without a status"}: ${String(
+          attributes.stderr || attributes.error?.message || "no error output",
+        )
+          .trim()
+          .replace(/\s+/g, " ")
+          .slice(0, 600)}`,
+      ),
+      { blockerClass: "host-runtime" },
+    );
   const fields = attributes.stdout.split("\0"),
     excluded = new Set();
   for (let index = 0; index + 2 < fields.length; index += 3)
