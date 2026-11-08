@@ -396,8 +396,11 @@ export function buildPlanSubject(
   const budgetPath = docRelative(root, "control", "budgets.json");
   const includeCost = has(budgetPath);
   const sequence = parseSequence(map);
-  if (!sequence.length || sequence.length > 100)
-    throw new Error("plan sequence must contain 1–100 orders");
+  // An empty sequence is a horizon with no proposed order: once an
+  // instance's last order closes, a pass may let it leave and file none
+  // (WO-258); the generated index keeps the closed order.
+  if (sequence.length > 100)
+    throw new Error("plan sequence must contain 0–100 orders");
   const block = map.match(
     /^<!-- dotln-work-order-sequence:start -->\r?\n[\s\S]*?^<!-- dotln-work-order-sequence:end -->[^\S\r\n]*(?:\r?\n|$)/m,
   )?.[0];

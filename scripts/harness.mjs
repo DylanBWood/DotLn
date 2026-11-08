@@ -27,7 +27,7 @@ import {
 } from "./lib/harness.mjs";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { readFeatures } from "./lib/features.mjs";
-import { judgeRunningNode } from "./lib/node-engines.mjs";
+import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   activeGateRuns,
   beginGateRun,
@@ -50,11 +50,14 @@ import {
   measureHarnessUsage,
 } from "../packages/skeleton/dist/src/harness-host.js";
 
-// Emit stays open on any Node, because bootstrap runs it. Check and evidence
-// can report a pass, so they refuse a Node these scripts do not declare.
+// Emit stays open on any Node and Git, because bootstrap runs it. Check and
+// evidence can report a pass, so they refuse a Node or a Git below what these
+// scripts declare (package.json engines.node and engines.git).
 function requireDeclaredNode() {
   const runtime = judgeRunningNode();
   if (!runtime.admitted) throw new Error(runtime.message);
+  const git = judgeRunningGit();
+  if (!git.admitted) throw new Error(git.message);
 }
 
 async function optionalCurrentSession(root, sessionId) {

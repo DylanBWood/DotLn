@@ -943,18 +943,30 @@ test("sibling registry", async (t) => {
           assert.equal(registry(), current);
         }
         rmSync(join(launchpad, declarationPath));
-        const absent = run(["index"]);
-        assert.equal(absent.status, 1);
-        assert.match(absent.stderr, /siblings\.json: no sibling declaration/);
+        // A checkout without a declaration (an instance) has nothing to
+        // index: the generation exits 0 naming the absent declaration and
+        // writes nothing (WO-258 step 16).
+        assert.equal(
+          ok(run(["index"]), "nothing to index").stdout,
+          "no sibling declaration at docs/siblings/siblings.json; nothing to index\n",
+        );
+        assert.equal(registry(), current);
         // Without a declaration, a page that still exists is stale and the
         // check refuses; without either there is nothing to check.
         const orphan = run(["index", "--check"]);
         assert.equal(orphan.status, 1);
-        assert.match(orphan.stderr, /siblings\.json: no sibling declaration/);
+        assert.match(
+          orphan.stderr,
+          /siblings\.json: no sibling declaration, but docs\/siblings\/README\.md exists/,
+        );
         rmSync(join(launchpad, registryPath));
         assert.equal(
           ok(run(["index", "--check"]), "nothing to check").stdout,
-          "PASS docs/siblings/siblings.json declares no siblings; nothing to check\n",
+          "PASS no sibling declaration at docs/siblings/siblings.json; nothing to index\n",
+        );
+        assert.equal(
+          ok(run(["index"]), "nothing to index without a page").stdout,
+          "no sibling declaration at docs/siblings/siblings.json; nothing to index\n",
         );
       } finally {
         write(declarationPath, json(declaration));

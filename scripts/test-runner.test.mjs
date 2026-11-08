@@ -29,7 +29,9 @@ import { delimiter, dirname, isAbsolute, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { measurementGateForRun } from "./measure-gates.mjs";
 import {
+  declaredGitFloor,
   declaredNodeRange,
+  judgeGitRuntime,
   judgeNodeRuntime,
   judgeRunningNode,
 } from "./lib/node-engines.mjs";
@@ -9032,6 +9034,67 @@ test("host structural check refuses warning and critical samples and reports the
     assert.deepEqual(result.fileEvents, fileEvents);
     assert.match(result.output, /swapBytes=1234; physicalBytes=8192/);
   }
+});
+
+test("the Git floor admits a Git at or above engines.git and names the floor and the version read when it refuses (WO-258)", async (t) => {
+  const { checkHost } = await import("./structural-checks.mjs");
+  const floor = ">=2.40.0";
+  for (const version of [
+    "git version 2.40.0",
+    "git version 2.55.0",
+    "git version 2.41.0.windows.1",
+    "git version 3.0.0",
+  ]) {
+    const { admitted, message } = judgeGitRuntime(version, floor);
+    assert.equal(admitted, true, version);
+    assert.ok(message.includes(floor), message);
+  }
+  for (const [version, read] of [
+    ["git version 2.31.0", "2.31.0"],
+    ["git version 2.39.3 (Apple Git-146)", "2.39.3"],
+    ["git version 1.99.9", "1.99.9"],
+  ]) {
+    const { admitted, message } = judgeGitRuntime(version, floor);
+    assert.equal(admitted, false, version);
+    for (const part of [read, floor, "node scripts/bootstrap.mjs"])
+      assert.ok(message.includes(part), message);
+  }
+  // Git that did not run, an unreadable version, an undeclared, malformed or
+  // unreadable floor.
+  assert.match(judgeGitRuntime(null, floor).message, /Git did not run/u);
+  assert.equal(judgeGitRuntime("git version banana", floor).admitted, false);
+  assert.equal(judgeGitRuntime("git version 2.40.0", undefined).admitted, true);
+  assert.match(
+    judgeGitRuntime("git version 2.40.0", "^2.40.0").message,
+    />=major\.minor\.patch/u,
+  );
+  assert.equal(judgeGitRuntime("git version 2.40.0", null).admitted, false);
+  // This checkout declares the floor; the host task judges it beside Node,
+  // with a shim's version read through its one git --version spawn.
+  assert.equal(declaredGitFloor(root), floor);
+  const refused = checkHost(
+    {
+      level: "normal",
+      pressure: 1,
+      swapBytes: 0,
+      physicalBytes: 8192,
+      residentBytes: 1024,
+      source: "fixture",
+      observedAt: "2026-11-07T00:00:00.000Z",
+    },
+    {
+      limits: { taskBytes: 8192, hostLanes: 1, hostShare: 0.5 },
+      requiredPeakBytes: 1,
+      fileEvents: null,
+      gitVersion: "git version 2.31.0",
+    },
+  );
+  assert.equal(refused.exitCode, 1);
+  assert.match(
+    refused.output,
+    /Git 2\.31\.0 \(git --version\) is below package\.json engines\.git >=2\.40\.0/u,
+  );
+  t.diagnostic(refused.output.split("\n")[1]);
 });
 
 test("the engines reader admits the declared lines and names what it refuses", (t) => {

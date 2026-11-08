@@ -1879,6 +1879,25 @@ const writableOwnedTree = (path) => {
     if (error?.code !== "ENOENT") throw error;
   }
 };
+// A record that shows every other host, as this repository's does, so the
+// fixture's emit installs the complete bundle (WO-258). It names no Claude
+// Code line, so only a case that reads no hook receipt writes it: the hook
+// advises on a session line its record does not show.
+const recordEveryHost = (root) =>
+  write(
+    root,
+    "docs/discovery/environment.json",
+    json({
+      effortReadbackProbe: {
+        harnesses: Object.fromEntries(
+          ["codex-cli", "copilot-cli"].map((harness) => [
+            harness,
+            { versions: [{ classification: "observed", value: "fixture" }] },
+          ]),
+        ),
+      },
+    }),
+  );
 function repo(t, { runtime = false } = {}) {
   const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-debt-")));
   t.after(() => {
@@ -3469,6 +3488,7 @@ test("WO-132 verification and review observe oversized, generated and unread rep
 
 test("evidence preparation repairs owned projections before fingerprinting, preserves explicit inputs and is idempotent", (t) => {
   const root = repo(t, { runtime: true });
+  recordEveryHost(root);
   write(
     root,
     "docs/work-orders/WO-999-fixture.md",

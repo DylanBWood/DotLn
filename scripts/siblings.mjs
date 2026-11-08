@@ -385,17 +385,18 @@ export function carryPendingReceipts(
 export const writeRegistry = (root, { check = false } = {}) => {
   const declaration = readDeclaration(root);
   if (!declaration) {
-    // A launchpad that declares no siblings has nothing to check, as long as
-    // no page claims otherwise; a generation needs the declaration.
-    if (check && !existsSync(join(root, registryPath(root)))) {
-      process.stdout.write(
-        `PASS ${declarationPath(root)} declares no siblings; nothing to check\n`,
+    // A launchpad that declares no siblings, as an instance does, has nothing
+    // to index, and a release's upgrade line naming this command must not
+    // fail there. A page left behind still claims siblings: the check
+    // refuses it, and a generation leaves it for the operator to remove.
+    if (check && existsSync(join(root, registryPath(root))))
+      throw new Error(
+        `${declarationPath(root)}: no sibling declaration, but ${registryPath(root)} exists; restore the declaration or remove the page`,
       );
-      return { path: registryPath(root), written: false };
-    }
-    throw new Error(
-      `${declarationPath(root)}: no sibling declaration; write it before generating the registry`,
+    process.stdout.write(
+      `${check ? "PASS " : ""}no sibling declaration at ${declarationPath(root)}; nothing to index\n`,
     );
+    return { path: registryPath(root), written: false };
   }
   // Every receipt is read and decoded before a line is rendered or written.
   const receipts = readReceipts(root, declaration);

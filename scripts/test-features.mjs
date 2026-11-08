@@ -18,6 +18,7 @@ import {
   featureRegistry,
   readFeatures,
   readFeatureInventory,
+  readHostFeatures,
   resolveFeatureId,
   renderInstanceSecrets,
 } from "./lib/features.mjs";
@@ -184,6 +185,120 @@ test("feature inventory reports elections, budgets, unread switches and escaped 
   );
   assert.equal(readFeatures(root)["tinkerer-economy"], true);
   assert.equal(row("tinkerer-economy").value, false);
+});
+
+test("host rows are elections inferred on from the instance's own committed record (WO-258)", (t) => {
+  const root = fixture(t);
+  config(root, { roots: { control: "records/control" } });
+  const row = (id) =>
+    readFeatureInventory(root).find((entry) => entry.id === id);
+  const attestation = (harness) =>
+    JSON.stringify({
+      schemaVersion: 1,
+      type: "ImplementationReady",
+      workOrderId: "WO-001",
+      actor: {
+        harness,
+        harnessVersion: "fixture",
+        model: "fixture",
+        effort: "max",
+        source: "operator-attested",
+      },
+    }) + "\n";
+  // No election and no record: Claude only.
+  assert.equal(readFeatures(root)["host-codex"], false);
+  assert.equal(readFeatures(root)["host-copilot"], false);
+  assert.deepEqual(readHostFeatures(root), {
+    "host-codex": false,
+    "host-copilot": false,
+  });
+  assert.equal(row("host-codex").source, "default");
+  // An undeclared host row is read only when asked for, so the hot-path
+  // elections never scan the control log.
+  assert.equal(
+    typeof Object.getOwnPropertyDescriptor(readFeatures(root), "host-codex")
+      .get,
+    "function",
+  );
+  // A row naming the harness outside an attestation is not one.
+  write(
+    root,
+    "records/control/orders/WO-001.jsonl",
+    JSON.stringify({ type: "Note", evidence: { harness: "codex-cli" } }) + "\n",
+  );
+  assert.equal(readFeatures(root)["host-codex"], false);
+  // An attestation in an order segment, under the configured roots, turns
+  // the host on, and the inventory names the record's rows.
+  write(
+    root,
+    "records/control/orders/WO-002.jsonl",
+    attestation("claude-code") + attestation("codex-cli"),
+  );
+  write(root, "records/control/resume.jsonl", attestation("codex-cli"));
+  assert.equal(readFeatures(root)["host-codex"], true);
+  assert.equal(readFeatures(root)["host-copilot"], false);
+  assert.equal(row("host-codex").value, true);
+  assert.equal(
+    row("host-codex").source,
+    "inferred: records/control/resume.jsonl attestations; records/control/orders/ attestations",
+  );
+  assert.deepEqual(row("host-codex").record.attestations, {
+    "records/control/resume.jsonl": 1,
+    "records/control/orders/": 1,
+  });
+  // The discovery record's observed version counts; an untested one does not.
+  const discovery = (classification) =>
+    write(
+      root,
+      "docs/discovery/environment.json",
+      json({
+        effortReadbackProbe: {
+          harnesses: {
+            "copilot-cli": {
+              versions: [{ classification, value: "1.0.86" }],
+            },
+          },
+        },
+      }),
+    );
+  discovery("untested");
+  assert.equal(readFeatures(root)["host-copilot"], false);
+  discovery("observed");
+  assert.equal(readFeatures(root)["host-copilot"], true);
+  assert.equal(
+    row("host-copilot").source,
+    "inferred: docs/discovery/environment.json observed versions",
+  );
+  // A malformed record shows nothing rather than failing the reader.
+  write(root, "docs/discovery/environment.json", "not JSON");
+  assert.equal(readFeatures(root)["host-copilot"], false);
+  // An election of false beside a record that shows the host is respected,
+  // and the inventory says what the record shows; an election of true needs
+  // no record.
+  config(root, {
+    roots: { control: "records/control" },
+    features: {
+      "host-codex": false,
+      "host-copilot": { on: true, note: "Elected by hand." },
+    },
+  });
+  assert.equal(readFeatures(root)["host-codex"], false);
+  assert.equal(readFeatures(root)["host-copilot"], true);
+  assert.deepEqual(readHostFeatures(root), {
+    "host-codex": false,
+    "host-copilot": true,
+  });
+  assert.equal(
+    row("host-codex").source,
+    "elected (the record shows the host: records/control/resume.jsonl attestations; records/control/orders/ attestations)",
+  );
+  assert.equal(row("host-copilot").source, "elected");
+  assert.match(
+    renderFeatures(root),
+    /^\| host-codex \| instance \| false \| false \| elected \(the record shows the host: records\/control\/resume\.jsonl attestations; records\/control\/orders\/ attestations\) \|/mu,
+  );
+  // The auto-update-upstream election is an ordinary election, off by default.
+  assert.equal(readFeatures(root)["auto-update-upstream"], false);
 });
 
 test("features render/check obey configured roots and distinguish built from queued consumers", (t) => {

@@ -1,0 +1,430 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-258",
+  "report": "docs/verifications/WO-258/VER-001.md",
+  "recordedAt": "2026-11-08T04:38:23.636Z",
+  "completeGate": {
+    "codeIdentity": "262eca5df193f405e156adcabb08f539bfe74e089ab285c8a0a2acd1c50af575",
+    "location": "worktree",
+    "row": {
+      "evidenceRefs": [
+        "host-gate:262eca5df193f405e156adcabb08f539bfe74e089ab285c8a0a2acd1c50af575:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "1781e7c3656800487a2a508c6e88c25a1a72085d",
+      "codeIdentity": "262eca5df193f405e156adcabb08f539bfe74e089ab285c8a0a2acd1c50af575",
+      "durationMs": 3001483,
+      "evidenceRef": "host-gate:262eca5df193f405e156adcabb08f539bfe74e089ab285c8a0a2acd1c50af575:npm test",
+      "recordedAt": "2026-11-08T03:27:06.521Z",
+      "executed": true,
+      "exitCode": 0,
+      "gateSelection": "review",
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "launchpad",
+        "workstream-pilot",
+        "instance-history",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "launchpad-planning",
+        "harness-probe",
+        "harness-fixtures",
+        "harness-context",
+        "plan-refutation",
+        "runner-fixtures",
+        "sync-fixtures",
+        "process-debt"
+      ]
+    }
+  },
+  "probes": [
+    {
+      "id": "harness",
+      "criteria": [
+        1,
+        3,
+        4
+      ],
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern='WO-258|host rows are elections' scripts/test-features.mjs scripts/test-harness.mjs",
+      "counts": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0
+      },
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 5123,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 5123,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 151143392,
+        "peakRssBytes": 289144832,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:22:25.472Z",
+        "finishedAt": "2026-11-08T04:22:30.595Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "d29659be1645b29d4b97c147d48dd622de038e74ad3da9758ac9f6b47605d09d"
+    },
+    {
+      "id": "export",
+      "criteria": [
+        1,
+        6,
+        7
+      ],
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern='WO-258|WO-075 criterion 4|the kit owns its complete guide' scripts/test-launchpad-export.mjs scripts/test-launchpad-seeds.mjs",
+      "counts": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0
+      },
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 13618,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 13618,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 486945744,
+        "peakRssBytes": 658571264,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:23:38.793Z",
+        "finishedAt": "2026-11-08T04:23:52.411Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "76bf6b98045783a7a745a42f0edb676277bc941562db0ad892d0a9d7b3ed1fbf"
+    },
+    {
+      "id": "variations",
+      "criteria": [
+        1,
+        3,
+        5,
+        6,
+        10
+      ],
+      "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-258/verification-001-probes.mjs",
+      "counts": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0
+      },
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 9832,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 9832,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 492057816,
+        "peakRssBytes": 665239552,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:25:30.977Z",
+        "finishedAt": "2026-11-08T04:25:40.809Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "2f46648167b2d172a58262260b9747420be82d6d1a6930d59fbe603c2a943233"
+    },
+    {
+      "id": "planning",
+      "criteria": [
+        8,
+        9
+      ],
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-258|field-only Workstream amendment admits only' scripts/test-plan-refutation.mjs",
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0
+      },
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 10141,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 10141,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 738305576,
+        "peakRssBytes": 801652736,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:26:17.064Z",
+        "finishedAt": "2026-11-08T04:26:27.206Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "4219d6b78ffa81af28409d662350688e35705d154468a233fa3050c16254f70f"
+    },
+    {
+      "id": "update",
+      "criteria": [
+        2,
+        6
+      ],
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-226 update finish|starter refresh publishes' scripts/test-launchpad-update.mjs",
+      "counts": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0
+      },
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 165708,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 165708,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 623245712,
+        "peakRssBytes": 817053696,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:26:50.878Z",
+        "finishedAt": "2026-11-08T04:29:36.586Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "c73f0593d0762915c18d79636de0eee125c98652fa194d271956f237e23b244d"
+    },
+    {
+      "id": "continuation",
+      "criteria": [
+        9
+      ],
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-258/verification-001-continuation.mjs",
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 113412,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 113412,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 801295904,
+        "peakRssBytes": 996376576,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:29:56.629Z",
+        "finishedAt": "2026-11-08T04:31:50.041Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "b3c08538518586ccb266d0ef133fac6d08067a34c74326c186fc4effdb186abb"
+    },
+    {
+      "id": "release-pending",
+      "criteria": [
+        4
+      ],
+      "command": "node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case pending_dispatch",
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 6351,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 6351,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 59463968,
+        "peakRssBytes": 140394496,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:32:19.094Z",
+        "finishedAt": "2026-11-08T04:32:25.445Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "c608190aac54c306125dc9f051d416009c48d6631f3db9e9d87df45d370f77bb"
+    },
+    {
+      "id": "release-git",
+      "criteria": [
+        5
+      ],
+      "command": "node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case git_floor",
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 2249,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 2249,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 42456848,
+        "peakRssBytes": 93159424,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-08T04:32:51.893Z",
+        "finishedAt": "2026-11-08T04:32:54.142Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "84b0ebb69a3daf6807731d614062dbb8f6d645b75d7534bd3cf6088c75a8c26a"
+    }
+  ],
+  "pending": [],
+  "continuationEvidence": "docs/evidence/WO-258/verification-001-continuation.json",
+  "checks": [
+    {
+      "id": "format",
+      "command": "npm run format:check",
+      "exitCode": 0,
+      "observedAt": "2026-11-08T04:36:01.141Z",
+      "observed": "All matched files use Prettier code style!",
+      "logSha256": "d3494d8a0c509ae23b35f44cfc0e875ccc960cb5cf3da4dffccd6413ed3680cf"
+    },
+    {
+      "id": "meta",
+      "command": "npm run meta",
+      "exitCode": 0,
+      "observedAt": "2026-11-08T04:36:01.142Z",
+      "observed": "Process health: no observed budget breach",
+      "logSha256": "05a29b28d45a036b3fb93f8729b2eb54e3b4cd0e7b59061b80d710a743c016a1"
+    },
+    {
+      "id": "diff",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "observedAt": "2026-11-08T04:36:01.142Z",
+      "observed": "no output"
+    },
+    {
+      "id": "documents",
+      "command": "npm run test:docs",
+      "exitCode": 0,
+      "observedAt": "2026-11-08T04:37:46.868Z",
+      "passedTasks": [
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "build",
+        "harness-context",
+        "license-surfaces",
+        "comment-labels",
+        "docs-check",
+        "lineage-fixtures",
+        "comment-labels-fixtures",
+        "kernel-docs",
+        "resume-docs",
+        "artifact-corpus",
+        "local-runner-double",
+        "reader-profiles",
+        "launchpad-docs",
+        "entropy",
+        "resident-bind",
+        "reader-fixtures",
+        "plan",
+        "plan-refutation-current",
+        "skeleton-docs",
+        "docs-check-fixtures",
+        "console-docs"
+      ],
+      "logSha256": "b3117b793bdbd3fd3feddb261b4b20ee883d4c3aa968df73d6ea60adc1c5d40d"
+    }
+  ],
+  "documentGate": {
+    "evidenceRefs": [
+      "host-gate:262eca5df193f405e156adcabb08f539bfe74e089ab285c8a0a2acd1c50af575:npm run test:docs"
+    ],
+    "checkId": "npm run test:docs",
+    "treeHash": "057e7c0ec8c8c9cbacbbed72372a1a16ec1819c5",
+    "codeIdentity": "262eca5df193f405e156adcabb08f539bfe74e089ab285c8a0a2acd1c50af575",
+    "durationMs": 104823,
+    "evidenceRef": "host-gate:262eca5df193f405e156adcabb08f539bfe74e089ab285c8a0a2acd1c50af575:npm run test:docs",
+    "recordedAt": "2026-11-08T04:37:46.868Z",
+    "executed": true,
+    "exitCode": 0,
+    "documentTreeHash": "d057651d699adbeb709229da1fd0376637550a8c",
+    "documentTreeExcludes": "docs/evidence/WO-258"
+  },
+  "processCorrections": [
+    {
+      "observedAt": "2026-11-08T04:39:05.372Z",
+      "command": "npm run resume -- verification-result pass --harness codex-cli --harness-version 0.167.0 --model gpt-6-astra --effort max --source codex-session-readback",
+      "exitCode": 1,
+      "error": "verification report actor header does not match the completion actor",
+      "cause": "The report includes accountLabel not-applicable, but parseActor omits that property without an explicit flag or environment value; projection defaults do not normalize completion actors.",
+      "evidence": "scripts/resume.mjs parseActor; completion stderr; canonical status remains verifying with latestVerdict null",
+      "correction": "Supply --account-label not-applicable so the completion actor agrees exactly with the report; retain the tested report and repeat only the unrecorded completion.",
+      "disposition": "No VerificationCompleted event was recorded by the refused attempt."
+    }
+  ]
+}

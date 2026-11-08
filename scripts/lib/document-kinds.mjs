@@ -308,13 +308,16 @@ const globPattern = (pattern) =>
   );
 
 /** The files an entry point reads: its own paths, with a `*` matching
- * within one path segment. */
+ * within one path segment. A tracked match the working tree no longer holds
+ * (a kit update that removed a host's skills, before its commit) is not read,
+ * as a literal path that is absent is not. */
 function entryPointFiles(root, entry, tracked) {
   const files = new Set();
   for (const pattern of entry.files)
     if (pattern.includes("*")) {
       const matcher = globPattern(pattern);
-      for (const file of tracked) if (matcher.test(file)) files.add(file);
+      for (const file of tracked)
+        if (matcher.test(file) && documentEntry(root, file)) files.add(file);
     } else if (documentEntry(root, pattern)) files.add(pattern);
   return [...files].sort();
 }

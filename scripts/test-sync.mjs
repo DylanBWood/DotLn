@@ -354,7 +354,7 @@ test("sync classifies real stale reports for every regenerable artifact and refu
     ],
     [
       "siblings",
-      "error: docs/siblings/siblings.json: no sibling declaration; write it before generating the registry",
+      "error: docs/siblings/siblings.json: no sibling declaration, but docs/siblings/README.md exists; restore the declaration or remove the page",
     ],
     ["siblings", "error: docs/evidence/siblings/receipt.json: invalid receipt"],
   ])
@@ -483,7 +483,12 @@ test("sync refuses manual role oracles, changed feedback judgments and baseline 
 
 test(
   "the real inventory checks stale artifacts, regenerates safe outputs, refuses manual changes and is byte-stable",
-  { timeout: 240_000 },
+  // Three full syncs, the structural check twice and nine single-artifact
+  // syncs measured about 290 s alone at the current inventory size. The timer
+  // fires only at the case's few asynchronous gaps, so the bound keeps
+  // headroom over that measurement instead of depending on where they fall;
+  // each artifact command keeps its own deadline (WO-258-D029).
+  { timeout: 600_000 },
   async (t) => {
     const { editionCopy } = await import("./lib/evidence-fixture.mjs");
     const { checkArtifact, runArtifactCommand } =

@@ -84,14 +84,20 @@ runtime produces the same bytes; `check` detects drift against both.
 ## First steps
 
 This kit runs on Node 24.15 or later in the 24 line, or on Node 26:
-`engines.node` in `package.json` reads `^24.15.0 || ^26.0.0`. `node
+`engines.node` in `package.json` reads `^24.15.0 || ^26.0.0`. It needs Git
+2.40 or later: `engines.git` reads `>=2.40.0`, because the gate classifies
+generated sources with `git check-attr --source`, which Git 2.40 introduced,
+and the publication fixtures use `GIT_CONFIG_GLOBAL` (Git 2.32). `node
 scripts/harness.mjs check`, `harness evidence` and every `npm test` selection
-refuse another runtime, naming the range and the version they read; in a
-selection the `host` task then runs first and nothing else runs. `node
-scripts/bootstrap.mjs` is unaffected, and a target gate runs the target's own
-declared checks without judging Node. These checks read only
-`^major.minor.patch` alternatives, so an edited `package.json` that an update
-left with another form of range is refused by name until it reads in this form.
+refuse another Node or an older Git, naming the declaration and the version
+they read; in a selection the `host` task then runs first and nothing else
+runs. `node scripts/bootstrap.mjs` is unaffected, and a target gate runs the
+target's own declared checks without judging Node. These checks read only
+`^major.minor.patch` alternatives for Node and the one `>=major.minor.patch`
+form for Git, so an edited `package.json` that an update left with another
+form is refused by name until it reads in this form (see
+[What runs here, and what does not](#what-runs-here-and-what-does-not), which
+cites the floor's decision).
 The kit exports no `.node-version`, so an instance that wants a version manager
 to select a runtime pins its own.
 
@@ -145,7 +151,10 @@ operator sandbox settings.
    records checkpoints as Git refs and needs at least one commit. An export
    made inside another repository's work tree is an embedded repository there.
    If `docs/lineage/README.md` is absent, as in a fork of a starter exported
-   by an older release even after a starter refresh, run
+   by an older release and not refreshed since v0.121.0 (whose refresh adds
+   every export seed a starter lacks, the lineage index and
+   `dotln.config.json` among them; see
+   [Kit files and instance files](#kit-files-and-instance-files)), run
    `node scripts/lineage.mjs index` and commit the generated index with the
    fork's setup commit, before its first `npm run test:docs`.
 2. `npm ci` (or `npm ci --offline` with a warm cache): installs the pinned
@@ -170,7 +179,11 @@ operator sandbox settings.
    are markers, so a term holding a colon stays a term, and a marker with no
    term after it refuses naming the line. A present list with no terms is
    `present` with a count of zero and refuses nothing; an absent list is
-   `unavailable` and refuses publication. `npm run terms -- check <paths>`
+   `unavailable` and refuses publication. WO-001's checklist item 4 registers
+   this list and checks the files that order writes; its criterion 3 records
+   the printed status and a match, where one occurred, fixed before filing
+   (see [Kit files and instance files](#kit-files-and-instance-files) for the
+   pre-drafted order). `npm run terms -- check <paths>`
    prints `local-terms list: present` or `unavailable`, and in committed text
    refuses a match of either mode by file, line and mode without printing the
    term. Target publication also needs the instance's own
@@ -417,8 +430,28 @@ section accepts named booleans or an election with your own reason:
 ```
 
 An absent section keeps the existing defaults: Tinkerer economy on,
-plan-first, private-destination and desktop-control off. Plan-first adds an
-operator review of the proposed change before implementation. A misspelled
+plan-first, private-destination, desktop-control and auto-update-upstream off,
+and each host other than Claude off unless this instance's record shows it.
+Plan-first adds an operator review of the proposed change before
+implementation.
+
+Host support is an election with inference. `host-codex` and `host-copilot`
+are off unless elected, or unless this instance's own committed record shows
+the host: an attestation in its committed control log (`docs/control/resume.jsonl`
+or an order segment under `docs/control/orders/`) whose harness is `codex-cli`
+or `copilot-cli`, or an observed version of that harness in
+`docs/discovery/environment.json`. Claude's surfaces are always emitted; an
+elected or inferred host adds its own (`.codex/` and `.agents/skills/`) and its
+profile in the harness manifest. The table names the source, `elected` or
+`inferred:` with the record's rows, and `--json` adds the attestation counts.
+An election of `false` beside a record that shows the host is respected, and
+the table says what the record shows; a host this instance used only in
+sessions it never attested is elected by hand. The starter's record shows no
+other host, so a clone starts Claude-only
+([decision](evidence/WO-258/decisions.md#wo-258-d003)). `auto-update-upstream` is this instance's
+standing opt-out of the rule that no planning or entropy pass takes a newer
+starter release unasked (§Taking upstream updates,
+[decision](evidence/WO-258/decisions.md#wo-258-d005)). A misspelled
 name refuses with the valid names and `npm run features -- list`. Existing keys such as
 `kit.applyInstanceActions`, `release.*`, `build.*`, `drive.sandbox` and the
 budget keys stay where they are; putting their inventory ids in `features`
@@ -443,7 +476,9 @@ advisory, not a refusal of another order's gate.
 
 After changing an emitted election, run `node scripts/harness.mjs emit`
 and `node scripts/harness.mjs check`. Turning Tinkerer economy off removes
-its executor support. The old overlay `equip`/`unequip` choice for it was
+its executor support; turning a host off removes the surfaces the previous
+manifest installed for it and the directories that leaves empty, and keeps
+any other file there ([decision](evidence/WO-258/decisions.md#wo-258-d004)). The old overlay `equip`/`unequip` choice for it was
 accepted with a migration advisory through kit release v0.118.0 and is
 refused since v0.119.0: an overlay that names `tinkerer-economy` refuses the
 emit, the feature table and the elections read until the entry is removed
@@ -486,6 +521,10 @@ refutation dispatch, naming the operator's in-session request as the route; `--o
 <ignored intake file> --capture-hash sha256:<digest>` records that request,
 with its hash in the session journal and, for a from-core update, in the
 sibling receipt. A session with no journaled dispatch is admitted as before.
+An instance that elects `features.auto-update-upstream` lets its passes take
+an update unasked: the hold admits the command, and the session journal's
+admission row names the election instead of a capture
+([decision](evidence/WO-258/decisions.md#wo-258-d005)).
 
 - `npm run plan -- followups` pages the register; `--export <file>` exports it;
   `--apply <batch.json>` applies dispositions against the revision read.
@@ -501,7 +540,11 @@ sibling receipt. A session with no journaled dispatch is admitted as before.
   `npm run plan -- refute` prints its canonical prompt from this instance's
   sequence and orders. `npm run plan -- receipt <result.json> --statement
   <statement.txt>` validates and commits the returned judgment;
-  `npm run plan -- check` checks the receipt and continuing subject.
+  `npm run plan -- check` checks the receipt and continuing subject, and
+  `--timing` adds where its seconds go by step. A sequence may hold no order:
+  once the last order has closed, a pass may let it leave and file none, and
+  the refuter's prompt then names the empty sequence as its subject
+  ([decision](evidence/WO-258/decisions.md#wo-258-d015)).
 - `npm run entropy -- subject` names the next review action. Live review and
   refutation belong to the operator's instance; the export fixture exercises
   only `review --transport fake` and its receipt, never a live model. A filed
@@ -743,8 +786,10 @@ spawned `dotln-worker` that starts a test-runner gate is refused with
 After the first steps above, `npm test`, `npm run test:docs` and
 `npm test -- --review` run inside this instance without package source. Each
 selection first runs the six structural checks: formatting, configuration,
-registrations, declarations, generated artifacts and the host's Node runtime
-and memory pressure.
+registrations, declarations, generated artifacts and the host's Node and Git
+runtime and memory pressure; a Node outside `engines.node` or a Git below
+`engines.git` makes the host check run first and nothing else
+([decision](evidence/WO-258/decisions.md#wo-258-d009)).
 The generated check includes the runtime manifest, active pinned snapshot
 and harness bundle;
 `npm run sync` repairs stale derived artifacts. Then `kit-verify` runs instead
@@ -1012,8 +1057,9 @@ under `corpus/`, and the three mutation self-test modules under
 `corpus/mutation/`,
 `.prettierignore`, `.prettierrc.json`, the build-free modules under
 `packages/*/src/*.mjs`, the harness
-bundle under `.claude/`, `.agents/` and `.codex/` (`.claude/harness-manifest.json`
-among them), `package.json`, `package-lock.json`, `dotln.config.example.json`,
+bundle under `.claude/` (`.claude/harness-manifest.json` among them), and
+under `.agents/` and `.codex/` for a host the destination elects or its
+record shows (§Features), `package.json`, `package-lock.json`, `dotln.config.example.json`,
 `UPSTREAM.md`, the license files, `docs/product/07-execution-guide.md`,
 `docs/product/operator-reference.md`, `docs/product/08-publication-compiler.md`, `docs/PLAYBOOK.md`, this guide
 (`docs/KIT.md`) and
@@ -1046,7 +1092,14 @@ README is generated rather than seeded: `docs/work-orders/` gets the index at
 the first lifecycle transition (`activate`). The export seeds the lineage
 index at `docs/lineage/README.md`; `node scripts/lineage.mjs index`
 regenerates it after ledger edits and generates it for an older export, in
-step 1 or on the update branch, and bootstrap never writes it.
+step 1 or on the update branch, and bootstrap never writes it. The starter
+refresh writes every seed the export writes that the starter lacks, at the
+export's bytes and the lineage index rendered from the starter's own ledger,
+and never overwrites a present one; it removes a seed the kit retired
+(`docs/control/doc-ceilings.json`) while its bytes are the kit's rendering
+and keeps a customized one, naming why in `keptSeeds`; its summary names
+`seeds added:` and `seeds removed:`. The template seeds keep their own rules
+below ([decision](evidence/WO-258/decisions.md#wo-258-d012)).
 
 The optional committed `contributions.operatorAuthor` is one public
 `Name <email>` author identity exempt from contributor sign-off. Omission gives
@@ -1061,7 +1114,11 @@ instance cuts, `docs/evidence/`, `docs/verifications/` and
 cut them. The first planning pass is this instance's own: `npm run plan --
 start <slug>` cuts its orders from its own sequence; the pre-drafted WO-001
 is the only order the kit seeds, and no order of core's ever arrives in an
-update. §Planning in this instance names the commands a planning pass runs
+update. WO-001 establishes what this machine and its coding harnesses
+support: it registers the local-terms list and checks the three files it
+writes, its criterion 3 records the printed status and any match fixed
+before filing, and it runs the review ladder every order runs
+([decision](evidence/WO-258/decisions.md#wo-258-d011)). §Planning in this instance names the commands a planning pass runs
 here and the seeds it reads.
 
 ## Taking upstream updates
@@ -1135,7 +1192,12 @@ instance): under a journaled `planning:` or `ideation:` dispatch or a pending
 entropy dispatch, `update --finish`
 and `update --publish` refuse unless the operator's in-session request is
 recorded with `--operator-request --capture <ignored intake file>
---capture-hash sha256:<digest>`. It previews the revision with that revision's own launchpad, run from a
+--capture-hash sha256:<digest>`, or unless the instance elects
+`features.auto-update-upstream`, its standing opt-out of that rule
+([decision](evidence/WO-258/decisions.md#wo-258-d005)). The starter is Claude-only: an instance whose
+record shows Codex or Copilot sees that host's surfaces as `remove` rows in
+the preview and in the merge, and the re-emit on the update branch writes
+them back ([decision](evidence/WO-258/decisions.md#wo-258-d004)). It previews the revision with that revision's own launchpad, run from a
 temporary detached worktree under the ignored `.runtime/` directory. The
 instance's launchpad knows only the kit paths of its export and refuses a
 manifest naming a later one; the incoming launchpad knows every path it

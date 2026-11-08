@@ -1183,13 +1183,17 @@ test("WO-257 the derived Read before upgrading notices name a generated page's r
     sourceOnly,
     "A generated page's renderer changed (scripts/lib/dependencies.mjs): after merging this release, regenerate its page with npm run work-orders -- index before the next document gate reads it.",
   ]);
+  // A feature election's row or reader also names the features render, the
+  // re-emit and a new session (WO-258 criterion 11).
   assert.deepEqual(criticalNotes(["scripts/lib/features.mjs"], []), [
     sourceOnly,
     "A generated page's renderer changed (scripts/lib/features.mjs): after merging this release, regenerate its page with npm run meta before the next document gate reads it.",
+    "A feature election changed (scripts/lib/features.mjs): after the update, render the features page with npm run features -- render, re-emit with node scripts/harness.mjs emit and start a new session, since an election can change the surfaces the emit writes and the host reads when a session starts.",
   ]);
   assert.deepEqual(criticalNotes(["scripts/lib/feature-registry.mjs"], []), [
     sourceOnly,
     "A generated page's renderer changed (scripts/lib/feature-registry.mjs): after merging this release, regenerate its page with npm run meta before the next document gate reads it.",
+    "A feature election changed (scripts/lib/feature-registry.mjs): after the update, render the features page with npm run features -- render, re-emit with node scripts/harness.mjs emit and start a new session, since an election can change the surfaces the emit writes and the host reads when a session starts.",
   ]);
   assert.deepEqual(criticalNotes(["scripts/lib/siblings.mjs"], []), [
     sourceOnly,

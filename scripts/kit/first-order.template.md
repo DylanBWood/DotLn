@@ -8,7 +8,7 @@
 **Objective:** Establish, with epistemic labels, what this launchpad's machine
 and AI coding harnesses actually support, so later mechanism choices are
 evidence, not assumption. This is the bounded inspection, not a comprehensive
-audit. Timebox: about 45 minutes.
+audit; it runs the review ladder every order runs.
 
 **Authority:** Read-only inspection plus writes under `docs/discovery/`,
 `docs/control/local/` and this order's own `docs/evidence/WO-001/` only. One smoke invocation per harness surface is
@@ -34,12 +34,13 @@ limits observed incidentally.
    `DOTLN_LIVE_HARNESS=1 node scripts/harness-live-smoke.mjs executor 001`,
    launches the actual harness in a scratch copy of this launchpad and is
    this instance's choice; record it the same way if run.
-4. Local-terms registration: create `docs/control/local/terms.txt` with at
-   least one term (one per line, ignored by Git; an empty list refuses), run
-   `npm run terms -- check CLAUDE.md README.md docs/product/07-execution-guide.md`
-   from the repository root with explicit paths, and record only the printed
-   status. A match refuses the check by file and line; fix the text before
-   filing.
+4. Local-terms registration: create `docs/control/local/terms.txt` with the
+   terms this instance keeps out of committed text (one per line, ignored by
+   Git; an empty list is `present` with no terms and refuses nothing), run
+   `npm run terms -- check docs/discovery/environment.md docs/discovery/environment.json docs/evidence/WO-001/README.md`
+   from the repository root over the files this order writes, and record only
+   the printed status. A match refuses the check by file and line; fix the
+   text before filing.
 5. Audit questions. Answer each generically: describe behavior, name no
    specific host, gateway, vendor policy or internal service.
    - Gateway and provider behavior: what sits between each harness and its
@@ -74,8 +75,8 @@ effort then prints no advisory.
 2. `docs/discovery/environment.json` records each harness's observed versions
    and effort selectors in the shape named above, and a lifecycle attestation
    of an observed version and effort prints no discovery advisory.
-3. The local-terms registration step records the printed status; a match was
-   refused by the check and fixed before filing.
+3. The local-terms registration step records the printed status, and a
+   match, where one occurred, was fixed before filing.
 4. The harness smoke is recorded as observed with its output, or blocked with
    the named missing input.
 5. Each of the four audit questions carries an answer or a labeled unknown, and

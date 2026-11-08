@@ -179,7 +179,14 @@ export function unresolvedInstalledReads(launchpad) {
       : null;
   const floor = text("CLAUDE.md");
   const failures = new Set();
-  for (const skillsRoot of [".claude/skills", ".agents/skills"])
+  // Claude's skills root is always installed; the Codex and Copilot root only
+  // when one of those hosts is elected or inferred (WO-258), and a missing
+  // generated file there is the harness check's drift, not an unresolved read.
+  for (const skillsRoot of [".claude/skills", ".agents/skills"].filter(
+    (skillsRoot) =>
+      skillsRoot === ".claude/skills" ||
+      existsSync(join(launchpad, skillsRoot)),
+  ))
     for (const role of dispatchKinds) {
       const skillPath = `${skillsRoot}/dotln-${role}/SKILL.md`;
       for (const [source, body] of [

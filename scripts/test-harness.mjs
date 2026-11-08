@@ -321,6 +321,22 @@ function fixture() {
     cpSync(join(sourceRoot, path), join(root, path));
   }
   write(root, "docs/control/fixture-status.json", json(control));
+  // The fixture's own record shows every host, as this repository's does, so
+  // its emit installs the complete bundle whatever a test elects (WO-258).
+  write(
+    root,
+    "docs/discovery/environment.json",
+    json({
+      effortReadbackProbe: {
+        harnesses: Object.fromEntries(
+          ["codex-cli", "copilot-cli"].map((harness) => [
+            harness,
+            { versions: [{ classification: "observed", value: "fixture" }] },
+          ]),
+        ),
+      },
+    }),
+  );
   write(
     root,
     "docs/control/orders/WO-999.jsonl",
@@ -3384,8 +3400,11 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         "--dry-run --material 'fixture=preserve'",
         "material arguments require --publish",
       ],
-      ["--publish > close.log", "shell syntax (redirect)"],
-      ["--publish | cat", "shell syntax (pipe)"],
+      // A hidden spelling of the dispatched order's helper is told the
+      // shell-operator class and both spellings (WO-226-D021, carried in by
+      // WO-258).
+      ["--publish > close.log", "shell operator or redirect"],
+      ["--publish | cat", "shell operator or redirect"],
       ["--publish --force", "words or whitespace after the helper"],
       [
         '--publish --material "fixture=preserve"',
@@ -3426,12 +3445,8 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         phase: "closed",
       }).at(-1).advisory;
       assert.ok(advisory.includes(mismatch), advisory);
-      if (mismatch.startsWith("shell syntax"))
-        assert.ok(advisory.includes("run the plain spelling"));
-      else {
-        assert.ok(advisory.includes(`${helper} --publish`));
-        assert.ok(advisory.includes(`${helper} --dry-run`));
-      }
+      assert.ok(advisory.includes(`${helper} --publish`));
+      assert.ok(advisory.includes(`${helper} --dry-run`));
     }
     assert.notEqual(
       permission(`${helper} --publish`, { session_id: "no-recorded-dispatch" })
@@ -20323,5 +20338,420 @@ test("plan-first hook holds source writes from activation through stale approval
       removeFixture(root, { recursive: true });
       rmSync(outside, { recursive: true });
     }
+  }
+});
+
+test("WO-258 the hook reads the plan-first election through the lifecycle's reader: a malformed value refuses with the lifecycle's message, and true or { on: true } elect", async () => {
+  const root = fixture();
+  try {
+    const { planFirstElected } = await import(
+      pathToFileURL(
+        join(root, "packages/skeleton/dist/src/plan-first-boundary.js"),
+      ).href
+    );
+    const { loadConfig } = await import(
+      pathToFileURL(join(root, "scripts/lib/config.mjs")).href
+    );
+    beginHarnessSession(root, "plan-reader", "executor");
+    const edit = () =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          session_id: "plan-reader",
+          tool_name: "Edit",
+          tool_input: { file_path: join(root, "fixture.ts") },
+        }),
+      );
+    for (const value of ["on", "true", 1]) {
+      write(
+        root,
+        "dotln.config.json",
+        json({ version: 1, features: { "plan-first": value } }),
+      );
+      // The lifecycle's reader refuses the value; status prints this message.
+      let lifecycle;
+      try {
+        loadConfig(root);
+      } catch (error) {
+        lifecycle = error.message;
+      }
+      assert.match(lifecycle ?? "", /features\.plan-first/u, String(value));
+      assert.throws(
+        () => planFirstElected(root),
+        (error) => error.message === lifecycle,
+        String(value),
+      );
+      const reply = edit();
+      assert.equal(allowed(reply), false, JSON.stringify(reply));
+      assert.ok(
+        reply.hookSpecificOutput.permissionDecisionReason.includes(lifecycle),
+        reply.hookSpecificOutput.permissionDecisionReason,
+      );
+    }
+    for (const [value, elected] of [
+      [true, true],
+      [{ on: true }, true],
+      [false, false],
+      [{ on: false, note: "Off." }, false],
+    ]) {
+      write(
+        root,
+        "dotln.config.json",
+        json({ version: 1, features: { "plan-first": value } }),
+      );
+      assert.equal(planFirstElected(root), elected, JSON.stringify(value));
+    }
+    rmSync(join(root, "dotln.config.json"));
+    assert.equal(planFirstElected(root), false);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-258 a resume: release close phrase typed in main before the merge reached it is journaled as a pending dispatch with the role resolved; the exact helper is admitted and records it after its fast-forward", async () => {
+  const root = fixture();
+  try {
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
+    // Main's status holds none of the merged order's records.
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({
+        workOrder: null,
+        workOrderPath: null,
+        phase: "none",
+        latestVerdict: null,
+        legalNextActions: ["activate"],
+      }),
+    );
+    const response = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+    );
+    const context = response.hookSpecificOutput?.additionalContext ?? "";
+    assert.doesNotMatch(JSON.stringify(response), /DOTLN_HARNESS_REFUSED/u);
+    assert.match(context, /DotLn resolved role release-close/u);
+    assert.match(context, /Dispatch release-close is pending/u);
+    assert.match(context, /Update main first \(git pull --ff-only\)/u);
+    const key = createHash("sha256").update("synthetic-session").digest("hex");
+    const directory = join(root, "docs/control/local/harness");
+    const state = () =>
+      JSON.parse(readFileSync(join(directory, `${key}.json`), "utf8"));
+    const rows = () =>
+      readFileSync(join(directory, `${key}.jsonl`), "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse);
+    assert.equal(state().role, "release-close");
+    assert.equal(state().pendingReleaseClose.reason, "records-not-in-checkout");
+    assert.equal(state().releaseCloseDispatch, undefined);
+    assert.deepEqual(
+      rows().filter((row) => row.dispatch?.action === "release-close"),
+      [
+        {
+          ...rows().find((row) => row.dispatch?.action === "release-close"),
+          dispatch: {
+            action: "release-close",
+            recorded: false,
+            pending: "records-not-in-checkout",
+          },
+        },
+      ],
+    );
+    // The merged order's exact helper is admitted under the pending dispatch.
+    const permission = (command) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+    for (const flag of ["--dry-run", "--publish"]) {
+      const admitted = permission(releaseCloseCommand(root, "WO-999", flag));
+      assert.equal(
+        admitted.hookSpecificOutput?.permissionDecision,
+        "allow",
+        JSON.stringify(admitted),
+      );
+      assert.match(
+        admitted.hookSpecificOutput.permissionDecisionReason,
+        /pending release-close dispatch/u,
+      );
+    }
+    // The helper's fast-forward brings the records; it records the dispatch
+    // from the pending row through the lifecycle, and the admission reads it.
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({
+        ...control,
+        phase: "closed",
+        legalNextActions: ["release-close", "next", "activate"],
+      }),
+    );
+    const { pendingReleaseClose, recordPendingReleaseClose } = await import(
+      pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs")).href
+    );
+    const env = { CLAUDE_CODE_SESSION_ID: "synthetic-session" };
+    const pending = pendingReleaseClose(root, env);
+    assert.ok(pending);
+    // A lifecycle refusal records nothing and keeps the pending row, which the
+    // close then stops on (the close throws on recorded: false).
+    const lifecycle = readFileSync(join(root, "scripts/resume.mjs"), "utf8");
+    write(
+      root,
+      "scripts/resume.mjs",
+      'console.error("fixture refusal"); process.exitCode = 3;\n',
+    );
+    const unrecorded = recordPendingReleaseClose(root, pending, "WO-999");
+    assert.equal(unrecorded.recorded, false);
+    assert.match(unrecorded.reason, /fixture refusal/u);
+    assert.ok(pendingReleaseClose(root, env));
+    write(root, "scripts/resume.mjs", lifecycle);
+    assert.equal(
+      recordPendingReleaseClose(root, pending, "WO-999").recorded,
+      true,
+    );
+    assert.equal(pendingReleaseClose(root, env), null);
+    assert.equal(state().releaseCloseDispatch.workOrder, "WO-999");
+    assert.equal(state().pendingReleaseClose, undefined);
+    assert.ok(
+      rows().some(
+        (row) =>
+          row.dispatch?.recorded === true &&
+          row.dispatch.from === "records-not-in-checkout" &&
+          row.workOrder === "WO-999",
+      ),
+    );
+    const recorded = permission(releaseCloseCommand(root, "WO-999"));
+    assert.equal(recorded.hookSpecificOutput?.permissionDecision, "allow");
+    assert.match(
+      recorded.hookSpecificOutput.permissionDecisionReason,
+      /recorded release-close dispatch for WO-999/u,
+    );
+    // A hidden spelling of that helper is told the shell-operator class and
+    // both exact spellings for the dispatched order (WO-226-D021).
+    const helper = releaseCloseCommand(root, "WO-999").replace(
+      / --publish$/u,
+      "",
+    );
+    for (const hidden of [
+      `${releaseCloseCommand(root, "WO-999")} | tee close.log`,
+      `${releaseCloseCommand(root, "WO-999")} > close.log`,
+    ]) {
+      const advised = permission(hidden);
+      assert.notEqual(advised.hookSpecificOutput?.permissionDecision, "allow");
+      // The advisory is journaled with the near miss; the host may show it.
+      const row = rows().findLast((row) => row.registeredTargetAdmission);
+      assert.equal(row.registeredTargetAdmission.kind, "near-miss");
+      assert.match(row.advisory, /shell operator or redirect/u);
+      assert.ok(
+        row.advisory.includes(
+          `expected ${helper} --publish OR ${helper} --dry-run`,
+        ),
+        row.advisory,
+      );
+    }
+    // Outside main the phrase still refuses with the lifecycle's actions.
+    runGit(root, ["switch", "-c", "wo-998"], fixtureGitOptions);
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({ ...control, legalNextActions: ["next", "implementation-ready"] }),
+    );
+    const refused = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: "resume: release close",
+        session_id: "outside-main",
+      }),
+    );
+    assert.match(
+      JSON.stringify(refused),
+      /not a legal dispatch in phase active/u,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-258 a resume: release close phrase in main whose status still selects an earlier closed order records that order's dispatch and waits pending for the merged one, whose helper is admitted and recorded", async () => {
+  const root = fixture();
+  try {
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
+    // Main still selects WO-998, closed and released; WO-999 merged at origin.
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({
+        ...control,
+        workOrder: "WO-998",
+        workOrderPath: "docs/work-orders/WO-998-fixture.md",
+        phase: "closed",
+        legalNextActions: ["release-close", "next", "activate"],
+      }),
+    );
+    const response = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+    );
+    const context = response.hookSpecificOutput?.additionalContext ?? "";
+    assert.match(context, /Dispatch recorded by the harness/u);
+    assert.match(context, /If the order you merged is not WO-998/u);
+    const key = createHash("sha256").update("synthetic-session").digest("hex");
+    const state = () =>
+      JSON.parse(
+        readFileSync(
+          join(root, "docs/control/local/harness", `${key}.json`),
+          "utf8",
+        ),
+      );
+    assert.equal(state().releaseCloseDispatch.workOrder, "WO-998");
+    assert.equal(
+      state().pendingReleaseClose.reason,
+      "records-may-not-be-in-checkout",
+    );
+    const permission = (command) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+    // The earlier order's own helper keeps its recorded admission. The hook
+    // cannot tell the merged order from another without the network, so the
+    // recorded dispatch keeps admission to its own order (WO-178): the merged
+    // order's helper goes to host permissions, and the advisory says its close
+    // records that dispatch from the pending phrase.
+    assert.match(
+      permission(releaseCloseCommand(root, "WO-998")).hookSpecificOutput
+        .permissionDecisionReason,
+      /recorded release-close dispatch for WO-998/u,
+    );
+    const merged = permission(releaseCloseCommand(root, "WO-999", "--dry-run"));
+    assert.notEqual(merged.hookSpecificOutput?.permissionDecision, "allow");
+    assert.match(
+      merged.systemMessage ?? "",
+      /recorded release-close dispatch names WO-998, not WO-999; if WO-999 is the order you merged, its close records that dispatch from the pending phrase after its fast-forward/u,
+    );
+    // After the fast-forward the close records WO-999's dispatch, and the
+    // dispatch-bound anchor belongs to that order from its original start.
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({
+        ...control,
+        phase: "closed",
+        legalNextActions: ["release-close", "next", "activate"],
+      }),
+    );
+    const startedAt = state().boundDispatch?.startedAt;
+    const { pendingReleaseClose, recordPendingReleaseClose } = await import(
+      pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs")).href
+    );
+    const pending = pendingReleaseClose(root, {
+      CLAUDE_CODE_SESSION_ID: "synthetic-session",
+    });
+    assert.ok(pending);
+    assert.equal(
+      recordPendingReleaseClose(root, pending, "WO-999").recorded,
+      true,
+    );
+    assert.equal(state().releaseCloseDispatch.workOrder, "WO-999");
+    assert.equal(state().boundDispatch.workOrder, "WO-999");
+    assert.equal(state().boundDispatch.phaseBoundary, "WO-999:none:-1");
+    assert.equal(state().boundDispatch.startedAt, startedAt);
+    assert.match(
+      permission(releaseCloseCommand(root, "WO-999")).hookSpecificOutput
+        .permissionDecisionReason,
+      /recorded release-close dispatch for WO-999/u,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-258 the publishing close of the recorded order consumes the phrase kept pending beside it, and another order's helper then needs a new phrase", async () => {
+  const root = fixture();
+  try {
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({
+        ...control,
+        phase: "closed",
+        legalNextActions: ["release-close", "next", "activate"],
+      }),
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+    );
+    const key = createHash("sha256").update("synthetic-session").digest("hex");
+    const state = () =>
+      JSON.parse(
+        readFileSync(
+          join(root, "docs/control/local/harness", `${key}.json`),
+          "utf8",
+        ),
+      );
+    // An up-to-date main: the phrase records WO-999's own dispatch and also
+    // waits pending, in case the merged order had not reached the checkout.
+    assert.equal(state().releaseCloseDispatch.workOrder, "WO-999");
+    assert.ok(state().pendingReleaseClose);
+    const permission = (command) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+    assert.equal(
+      permission(releaseCloseCommand(root, "WO-999")).hookSpecificOutput
+        ?.permissionDecision,
+      "allow",
+    );
+    const { consumePendingReleaseClose } = await import(
+      pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs")).href
+    );
+    const env = { CLAUDE_CODE_SESSION_ID: "synthetic-session" };
+    // Only a close of the order the recorded dispatch names consumes it.
+    assert.equal(consumePendingReleaseClose(root, "WO-998", env), false);
+    assert.ok(state().pendingReleaseClose);
+    // The close's completion (scripts/test-release.sh pending_dispatch runs
+    // the publishing close itself) consumes the phrase it fulfilled.
+    assert.equal(consumePendingReleaseClose(root, "WO-999", env), true);
+    assert.equal(state().pendingReleaseClose, undefined);
+    assert.equal(state().releaseCloseDispatch.workOrder, "WO-999");
+    const journal = readFileSync(
+      join(root, "docs/control/local/harness", `${key}.jsonl`),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line));
+    assert.equal(journal.at(-1).event, "PendingReleaseCloseConsumed");
+    // Another order's helper in the same session is no longer admitted from
+    // the fulfilled phrase.
+    const other = permission(releaseCloseCommand(root, "WO-998", "--dry-run"));
+    assert.notEqual(other.hookSpecificOutput?.permissionDecision, "allow");
+    assert.match(
+      other.systemMessage ?? "",
+      /recorded release-close dispatch names a different order/u,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
   }
 });

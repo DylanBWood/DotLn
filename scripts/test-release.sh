@@ -3649,6 +3649,22 @@ for(const [dest,source] of [["README.md","README.client.md"],[".gitignore","giti
 const readme=p.join(process.argv[3],"README.md");
 fs.writeFileSync(readme,fs.readFileSync(readme,"utf8").replace("This source prepares DotLn-Enterprise-Starter ","This source prepares DotLn "));
 JS
+  # Every other export seed a refreshed starter carries (WO-258), with a
+  # configuration that keeps the fixture's default release name.
+  "$node_bin" --input-type=module - "$main" "$starter" <<'JS'
+import { existsSync, mkdirSync, symlinkSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { pathToFileURL } from "node:url";
+const [main, starter] = process.argv.slice(2);
+const { exportSeedPaths } = await import(pathToFileURL(join(main, "scripts/lib/starter-seeds.mjs")).href);
+for (const path of exportSeedPaths()) {
+  const target = join(starter, path);
+  if (existsSync(target)) continue;
+  mkdirSync(dirname(target), { recursive: true });
+  if (path === "AGENTS.md") symlinkSync("CLAUDE.md", target);
+  else writeFileSync(target, path === "dotln.config.json" ? JSON.stringify({ version: 1, release: { displayName: "DotLn" } }, null, 2) + "\n" : `fixture ${path}\n`);
+}
+JS
   git -C "$starter" add .
   git -C "$starter" -c maintenance.auto=false commit -qm 'current fixture kit'
   git -c maintenance.auto=false clone -c maintenance.auto=false -q --bare "$starter" "$starter_remote"
@@ -3718,6 +3734,109 @@ JS
   rm "$main/docs/control/local/repository-clones.json"
   output="$(release_close_summary WO-003 --publish)"
   "$node_bin" -e 'const r=JSON.parse(require("node:fs").readFileSync(process.argv[1]));require("node:assert/strict").deepEqual(r.starterRefresh,[])' "$main/docs/control/local/retained/WO-003/release-close.json"
+}
+
+release_case_pending_dispatch() {
+make_repo pending-dispatch
+local before session key state
+before="$(git -C "$main" rev-parse HEAD)"
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+# The bare origin holds the merged order; this main checkout is behind it and
+# still selects WO-003, closed earlier. The prompt hook (scripts/test-harness.mjs
+# WO-258 cases) then records the phrase's dispatch for WO-003 and keeps the
+# phrase pending, with its role resolved; this state is what it writes.
+git -C "$main" reset -q --hard "$before"
+git -C "$main" update-ref refs/remotes/origin/main "$before"
+session=fixture-pending-close
+key="$(printf %s "$session" | shasum -a 256 | cut -d' ' -f1)"
+state="$main/docs/control/local/harness/$key.json"
+mkdir -p "$main/docs/control/local/harness"
+printf '%s\n' '{"role":"release-close","intent":"resume: release close","workOrder":"WO-003","releaseCloseDispatch":{"workOrder":"WO-003","recordedAt":"2030-01-02T00:00:00.000Z"},"pendingReleaseClose":{"recordedAt":"2030-01-02T00:00:00.000Z","reason":"records-may-not-be-in-checkout"}}' >"$state"
+output="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_SESSION_ID='' CLAUDE_CODE_SESSION_ID="$session" release_close WO-099 --dry-run)"
+grep -Fq 'Recorded the pending release-close dispatch for WO-099 now that main holds its records' <<<"$output"
+# The dry run updated main first, as the operator texts say, and the
+# recorded dispatch keys the helper's admission in this session's state.
+test "$(git -C "$main" rev-parse HEAD)" = "$(git --git-dir="$origin" rev-parse main)"
+"$node_bin" - "$state" "${state%.json}.jsonl" "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require('node:assert/strict'), fs = require('node:fs');
+const [statePath, journalPath, recordPath] = process.argv.slice(2);
+const state = JSON.parse(fs.readFileSync(statePath, 'utf8'));
+assert.equal(state.releaseCloseDispatch.workOrder, 'WO-099');
+assert.equal(state.pendingReleaseClose, undefined);
+assert.equal(state.role, 'release-close');
+const rows = fs.readFileSync(journalPath, 'utf8').trim().split('\n').map(JSON.parse);
+assert.deepEqual(rows.map((row) => row.dispatch), [{ action: 'release-close', recorded: true, from: 'records-may-not-be-in-checkout' }]);
+const record = JSON.parse(fs.readFileSync(recordPath, 'utf8'));
+assert.equal(record.dispatch.pending.recorded, true);
+JS
+# On an up-to-date main the phrase records the order's own dispatch and also
+# waits pending, in case the merged order had not reached the checkout: a dry
+# run of that order leaves the pending phrase, and its publishing close
+# consumes it when it completes, so no later helper records another order's
+# dispatch from it.
+"$node_bin" - "$state" <<'JS'
+const fs = require('node:fs');
+const statePath = process.argv[2];
+const state = JSON.parse(fs.readFileSync(statePath, 'utf8'));
+fs.writeFileSync(statePath, `${JSON.stringify({ ...state, pendingReleaseClose: { recordedAt: '2030-01-02T00:00:00.000Z', reason: 'records-may-not-be-in-checkout' } })}\n`);
+JS
+CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_SESSION_ID='' CLAUDE_CODE_SESSION_ID="$session" release_close WO-099 --dry-run >/dev/null
+grep -Fq '"pendingReleaseClose"' "$state"
+output="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_SESSION_ID='' CLAUDE_CODE_SESSION_ID="$session" release_close WO-099 --publish)"
+grep -Fq 'Published annotated v0.2.1' <<<"$output"
+"$node_bin" - "$state" "${state%.json}.jsonl" "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require('node:assert/strict'), fs = require('node:fs');
+const [statePath, journalPath, recordPath] = process.argv.slice(2);
+const state = JSON.parse(fs.readFileSync(statePath, 'utf8'));
+assert.equal(state.pendingReleaseClose, undefined);
+assert.equal(state.releaseCloseDispatch.workOrder, 'WO-099');
+const rows = fs.readFileSync(journalPath, 'utf8').trim().split('\n').map(JSON.parse);
+assert.deepEqual(rows.at(-1).dispatch, { action: 'release-close', consumed: 'records-may-not-be-in-checkout' });
+assert.equal(rows.at(-1).event, 'PendingReleaseCloseConsumed');
+const record = JSON.parse(fs.readFileSync(recordPath, 'utf8'));
+assert.equal(record.dryRun, false);
+assert.equal(record.dispatch.pending.consumed, true);
+JS
+printf 'a pending release-close dispatch is recorded by the close after its fast-forward, and the publishing close of the recorded order consumes it\n'
+}
+
+release_case_git_floor() {
+make_repo git-floor
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+# A Git below the floor fails the classification's check-attr --source; the
+# stop names git's exit code and words and is classed as the host's runtime.
+local shim real_git output
+shim="$fixture/old-git"
+# The shim stands in front of the fixture's own git wrapper, which it calls.
+real_git="$bin/git"
+mkdir -p "$shim"
+cat >"$shim/git" <<'SH'
+#!/bin/sh
+for arg in "$@"; do
+  case "$arg" in
+    --source=*) printf "error: unknown option \`%s'\n" "$arg" >&2; exit 129 ;;
+  esac
+done
+if [ "$1" = "--version" ]; then echo "git version 2.31.0"; exit 0; fi
+exec "$DOTLN_REAL_GIT" "$@"
+SH
+chmod +x "$shim/git"
+if output="$(cd "$main" && DOTLN_REAL_GIT="$real_git" PATH="$shim:$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_GH_CORE_REPO="github.com/$github_repo" "$node_bin" "$main/scripts/release.mjs" close WO-099 --dry-run 2>&1)"; then
+  printf 'error: a Git without check-attr --source passed the dry run\n%s\n' "$output" >&2
+  exit 1
+fi
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require('node:assert/strict'), fs = require('node:fs');
+const record = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+assert.equal(record.blocker.class, 'host-runtime', JSON.stringify(record.blocker));
+assert.match(record.blocker.message, /Generated source classification unavailable: git check-attr exited 129: error: unknown option `--source=/);
+assert.match(record.blocker.message, /Git (?:runtime not judged|2\.31\.0 \(git --version\) is below)/);
+assert.equal(record.blockers.at(-1).class, 'host-runtime');
+JS
+assert_no_candidate_tag "$main" "$origin"
+printf 'a release close stopped by an old Git records a host-runtime blocker naming git exit code and words\n'
 }
 
 if [[ -n "$prepare_template" ]]; then

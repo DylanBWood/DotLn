@@ -287,6 +287,7 @@ function exerciseIntegrationClose(instance, scratch, c) {
   const order = "WO-005",
     workOrderPath = "docs/work-orders/WO-005-cleanup.md";
   c.commit(instance, "test: current updated kit");
+  const separateTrack = separateTrackCase(instance, c);
   c.git(instance, "switch", "main");
   c.git(instance, "merge", "--ff-only", "chore/kit-update");
   write(
@@ -405,16 +406,98 @@ function exerciseIntegrationClose(instance, scratch, c) {
   );
   return {
     phase: "closed",
+    separateTrack,
     stashBefore: before ? before.split("\n").length : 0,
     stashAfter: c.git(instance, "stash", "list") ? 1 : 0,
     candidates: prune.census,
   };
 }
 
+// The fork's case (WO-258 step 15): the fixture's receipt was filed over the
+// sequence alone, before the separate-track projection. A `track: separate`
+// workstream with one open member, filed after it on the updated kit, leaves
+// the plan check passing until the next receipt judges the member. Run on a
+// throwaway branch so the rest of the history is unchanged.
+export function separateTrackCase(instance, c) {
+  const branch = c.git(instance, "rev-parse", "--abbrev-ref", "HEAD");
+  c.git(instance, "switch", "-qc", "test/separate-track");
+  try {
+    // The fixture's own receipt judges a pass dated before the instance's
+    // planning mechanism arrived, which the check does not enforce. Add an
+    // enforced pass and file its receipt as a release before v0.119.0 did,
+    // over the sequence alone (its subject carries no separateTrack key).
+    const ledger = "docs/lineage/idea-ledger.md";
+    const heading = "2026-11-01 synthetic separate-track planning pass";
+    write(
+      instance,
+      ledger,
+      readFileSync(join(instance, ledger), "utf8").replace(
+        /\n## /u,
+        `\n## ${heading}\n\nA pass whose receipt judged the sequence alone.\n\n## `,
+      ),
+    );
+    c.commit(instance, "test: an enforced planning pass");
+    const filed = c.run(instance, process.execPath, [
+      "--input-type=module",
+      "-e",
+      `
+import { readFileSync } from "node:fs";
+import { buildPlanSubject, planningPasses } from "./scripts/lib/plan-subject.mjs";
+import { writePlanReceipt } from "./scripts/lib/plan-receipts.mjs";
+const root = process.cwd();
+const pass = planningPasses(readFileSync(${JSON.stringify(ledger)}, "utf8")).find((row) => row.heading === ${JSON.stringify(heading)});
+const subject = buildPlanSubject(root, "HEAD", { goalReview: true, separateTrack: false });
+if (subject.separateTrack !== undefined) throw new Error("the legacy subject carries a separateTrack key");
+const line = "Synthetic judgment of the history fixture.";
+const result = { schemaVersion: "plan-goal-review-v1", orders: subject.orders.map((order) => ({ workOrderId: order.workOrderId, verdict: "aligned", criticalPathAndNoOp: line, systemTraps: line, removalBalance: line, failureBehavior: line, findings: [] })), planVerdict: "aligned", holdReasons: [] };
+await writePlanReceipt(root, { pass: { id: pass.id, kind: "planning", heading: pass.heading }, slug: "separate-track", subject, episode: { kind: "direct-session", harness: "codex", harnessVersion: "unknown", model: "unknown", effort: "unknown", settingsVerification: "unverified", profileId: "plan-refutation-v1", completedAt: "2026-11-01T00:00:00.000Z", resultHash: "", judgmentBasis: "canonical-subject-and-protocol", independence: "session-attested", contextIsolation: "not-enforced", modelTools: "available", statement: "Synthetic receipt filed over the sequence alone, as a release before v0.119.0 filed it.", result } });
+`,
+    ]);
+    c.ok(filed, "file the sequence-only receipt");
+    c.commit(instance, "test: the pass's sequence-only receipt");
+    const enforced = c.ok(
+      c.run(instance, "npm", ["run", "plan", "--", "check"]),
+      "plan check before the separate-track member",
+    );
+    // The comparison ran against the receipt just filed, not a skipped pass.
+    assert.match(
+      enforced,
+      /"continuation": \{\s*"receiptId": "2026-11-01-separate-track-\d{3}"/u,
+    );
+    write(
+      instance,
+      "docs/workstreams/WS-002-separate.md",
+      `# WS-002 — separate: a synthetic outcome outside the serial queue\n\n**Outcome:** A synthetic separate track.\n\n<!-- dotln-workstream:start -->\n${JSON.stringify({ id: "WS-002", track: "separate", members: [{ workOrderId: "WO-006", repositoryId: "self" }], edges: [] })}\n<!-- dotln-workstream:end -->\n`,
+    );
+    write(
+      instance,
+      "docs/work-orders/WO-006-separate.md",
+      "# WO-006 — Synthetic separate member\n\n**Workstream:** WS-002\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Cost:** one synthetic record.\n**Depends on:** nothing\n\n**Objective:** Stand outside the serial queue.\n\n**Acceptance criteria (all required)**\n\n1. Stay open.\n\n**Non-goals:** Live effects or live model judgments.\n",
+    );
+    c.commit(instance, "test: separate-track workstream after the receipt");
+    const before = performance.now(),
+      checked = c.run(instance, "npm", ["run", "plan", "--", "check"]);
+    return {
+      command: "npm run plan -- check",
+      exitCode: checked.status,
+      elapsedMs: Math.round(performance.now() - before),
+      output: `${checked.stdout ?? ""}${checked.stderr ?? ""}`,
+    };
+  } finally {
+    c.git(instance, "switch", "-q", branch);
+    c.git(instance, "branch", "-qD", "test/separate-track");
+  }
+}
+
 export function assertHistory(result) {
   const failures = result.checks
     .filter((row) => row.exitCode !== 0)
     .map((row) => `${row.command} (exit ${row.exitCode}):\n${row.output}`);
+  const separate = result.integration?.separateTrack;
+  if (separate?.exitCode !== 0)
+    failures.push(
+      `separate-track ${separate?.command} (exit ${separate?.exitCode}):\n${separate?.output}`,
+    );
   for (const member of result.selfMembers)
     if (
       member.integration !== "current" ||

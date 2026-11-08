@@ -251,6 +251,14 @@ export async function beginDirectRefutation(
       }),
     ),
     resultSchema: planResultSchema({ ...subject, judgment: review }),
+    // A pass may let the last closed order leave and file none: the subject
+    // is then the empty sequence, and the worker is told so in words.
+    ...(subject.orders.length
+      ? {}
+      : {
+          emptySequence:
+            "The subject is the empty sequence: the proposed sequence holds no order, so there is no order to judge. Return plan-goal-review-v1 with an empty orders array and no holds.",
+        }),
     workerInstructions:
       "Also return a truthful public session statement as one plain line of at most 4000 characters, naming what you actually read. Return the result and statement to the parent; do not edit the repository or commit a receipt.",
     // The worker the parent launches when an option other than its default

@@ -43,6 +43,12 @@ import { json, pairedFlags, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { dispatchSession } from "./lib/dispatch-bound.mjs";
 import { requireOperatorCapture } from "./lib/off-ramps.mjs";
+import { exportConfiguration, exportSeedPaths } from "./lib/starter-seeds.mjs";
+import {
+  freshHostFeatures,
+  readFeatures,
+  readHostFeatures,
+} from "./lib/features.mjs";
 import { dispatchJournalDirectory } from "../packages/skeleton/src/dispatch-journal.mjs";
 import {
   hasPackageSources,
@@ -76,6 +82,7 @@ import {
   readFileSync,
   realpathSync,
   renameSync,
+  rmdirSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
@@ -311,6 +318,11 @@ const SEEDED_ROOTS = Object.freeze({
   observations:
     "JSONL observation logs the control plane appends to (host requests, pull-request observations); each is an event stream or a classified protocol.",
 });
+
+// The export's seed list is declared beside the starter refresh's seed rules
+// (scripts/lib/starter-seeds.mjs), which a release fixture carries without
+// this module; prepareKit refuses an export whose seeds differ from it.
+export { exportSeedPaths };
 
 /** Refuse a destination that exists and is not an empty, readable directory.
  * Nothing is created here: the directory is made only once every refusal,
@@ -926,14 +938,17 @@ const readRuntime = (root) => {
  * over the runtime just built, with the operating contract composed by the
  * rule emitHarness uses. Computed before any write, so the local-terms screen
  * covers it and the spawned emit is judged against it. */
-async function expectedHarnessBundle(root, floor, runtimePackageFiles) {
+async function expectedHarnessBundle(root, floor, runtimePackageFiles, hosts) {
   // Imported after the build: a checkout that has never built has no dist for
   // scripts/lib/harness.mjs to load.
   const { composeHarnessInstruction, harnessInstallation } =
     await import("./lib/harness.mjs");
+  // The destination's host rows select the profiles, as its own emit will:
+  // a host it has not elected or shown has no surface to predict (WO-258).
   const installation = harnessInstallation({
     runtimeRoot: root,
     runtimePackageFiles,
+    features: hosts,
   });
   const surfaces = new Map();
   for (const file of installation.files)
@@ -991,6 +1006,7 @@ export async function prepareKit({
   license = "default",
   launchpad = TOOL_ROOT,
   preflight = () => {},
+  hosts = freshHostFeatures(),
 } = {}) {
   const root = TOOL_ROOT;
   if (!["default", "none"].includes(license))
@@ -1074,7 +1090,7 @@ export async function prepareKit({
   addKit("dotln.config.example.json", template("dotln.config.example.json"));
   if (license === "none")
     addKit(LICENSE_PENDING, template("pending-license.template.md"));
-  const bundle = await expectedHarnessBundle(root, floor, writes);
+  const bundle = await expectedHarnessBundle(root, floor, writes, hosts);
   // The harness bundle is written by the export's own emit after the kit
   // lands; every surface but the operating contract is a kit file, listed at
   // the bytes that emit must reproduce.
@@ -1090,10 +1106,7 @@ export async function prepareKit({
   // whose upstream sources stay kit files under scripts/kit for a later
   // revision to refresh (WO-077).
   addSeed("README.md", template("README.client.md"));
-  addSeed(
-    "dotln.config.json",
-    json({ version: 1, release: { displayName: "DotLn-Enterprise-Starter" } }),
-  );
+  addSeed("dotln.config.json", exportConfiguration());
   addSeed(".gitignore", template("gitignore.template"));
   addSeed(INSTRUCTION_FILE, floor);
   addSeed(
@@ -1114,6 +1127,11 @@ export async function prepareKit({
     defaultDocRelative("workOrders", FIRST_ORDER),
     template("first-order.template.md"),
   );
+  // The map links each root's README the export seeds, so every one of them
+  // is a page a reader reaches from the front page; a root whose README does
+  // not exist yet (the generated work-order index, ignored intake) is named.
+  const mapLink = (...parts) =>
+    `[${defaultDocRelative(...parts)}/](${posix.relative(defaultDocRelative("docs"), defaultDocRelative(...parts, "README.md"))})`;
   addSeed(
     defaultDocRelative("docs", "README.md"),
     [
@@ -1122,16 +1140,14 @@ export async function prepareKit({
       "The document roots of this launchpad use the default layout; its instance-owned",
       "`dotln.config.json` can override them. Each root's README states its convention; `UPSTREAM.md` at the",
       "repository root names the kit's commit and the upstream documents the kit",
-      `points to. \`${defaultDocRelative("docs", "KIT.md")}\` is the kit's guide to first steps, planning, releases and updates.`,
+      `points to. [${defaultDocRelative("docs", "KIT.md")}](KIT.md) is the kit's guide to first steps, planning, releases and updates.`,
       "",
-      ...Object.keys(SEEDED_ROOTS).map(
-        (key) => `- \`${defaultDocRelative(key)}/\``,
-      ),
+      ...Object.keys(SEEDED_ROOTS).map((key) => `- ${mapLink(key)}`),
       `- \`${defaultDocRelative("workOrders")}/\` — one scope authority per order, WO-NNN-<slug>.md, with **Model:** and **Effort:** as its leading metadata; its README is the index \`npm run work-orders -- index\` generates at the first lifecycle transition (activate)`,
-      `- \`${defaultDocRelative("lineage")}/\` — idea-ledger.md, an append-only idea history; its README is the index the export seeds and \`node scripts/lineage.mjs index\` regenerates after ledger edits; an older export generates it on its update branch or in its first steps, and bootstrap never writes it`,
+      `- ${mapLink("lineage")} — idea-ledger.md, an append-only idea history; its README is the index the export seeds and \`node scripts/lineage.mjs index\` regenerates after ledger edits; an older export generates it on its update branch or in its first steps, and bootstrap never writes it`,
       `- \`${defaultDocRelative("intake")}/\` — ignored, single-copy raw material`,
-      `- \`${defaultDocRelative("workstreams")}/\` — one document per outcome; the README holds the convention and template`,
-      `- \`${defaultDocRelative("docs", "repositories")}/\` — one profile per registered repository; the README holds the convention and template`,
+      `- ${mapLink("workstreams")} — one document per outcome; the README holds the convention and template`,
+      `- ${mapLink("docs", "repositories")} — one profile per registered repository; the README holds the convention and template`,
       "",
     ].join("\n"),
   );
@@ -1181,6 +1197,13 @@ export async function prepareKit({
   // scripts/lib/authority-grants.mjs reads the committed registry with no
   // optional fallback; the empty registry is instance authority data.
   addSeed("packages/skeleton/loadouts/grants.json", "[]\n");
+  if (
+    JSON.stringify([...seeds, "AGENTS.md"]) !==
+    JSON.stringify(exportSeedPaths())
+  )
+    throw new Error(
+      "the export's seeds differ from exportSeedPaths; declare a new seed there so UPSTREAM.md and the starter refresh name it",
+    );
   // Verification and preview must load without an install. Only export
   // preparation (which already requires the pinned toolchain) parses Markdown.
   const { markdownLinks } = await import("./docs-check.mjs");
@@ -1917,6 +1940,7 @@ export async function planKitUpdate(
   const prepared = await prepareKit({
     launchpad,
     license,
+    hosts: readHostFeatures(target),
     preflight(sources) {
       const carried = new Set([
         ...[...sources.values()]
@@ -2019,6 +2043,22 @@ export function applyKitUpdate(planned) {
       writeReplacement(target, entry.path, file.bytes, file.mode);
     }
   }
+  // A host the destination does not elect loses its surfaces; remove each
+  // directory that leaves empty, up to the host's top directory, and never one
+  // holding other files, as the emit does (scripts/lib/harness.mjs
+  // emitHarness; WO-258-D031).
+  for (const entry of plan)
+    if (entry.kind === "remove" && !entry.absent)
+      for (
+        let directory = posix.dirname(entry.path);
+        /^\.(?:codex|agents)(?:\/|$)/u.test(directory);
+        directory = posix.dirname(directory)
+      ) {
+        const absolute = join(target, directory);
+        const stat = lstatSync(absolute, { throwIfNoEntry: false });
+        if (!stat?.isDirectory() || readdirSync(absolute).length) break;
+        rmdirSync(absolute);
+      }
   if (instance) {
     for (const { from, to } of instance.renames) {
       mkdirSync(dirname(join(target, to)), { recursive: true });
@@ -2271,23 +2311,18 @@ export function updateDispatchHold(root, env = process.env) {
   return null;
 }
 /** Admit an update: under a hold the operator's in-session request must be
- * named by its capture, and the admission is journaled with the capture's
- * hash in the session journal that holds the dispatch; without a hold the
- * update runs as before, and a request given anyway is still recorded. */
+ * named by its capture, unless this instance elects features.auto-update-upstream,
+ * its standing opt-out of that rule; either admission is journaled in the
+ * session journal that holds the dispatch, the request with its capture's
+ * hash and the election by name. Without a hold the update runs as before,
+ * and a request given anyway is still recorded. Only a recorded request is
+ * returned, for the sibling receipt; the election is no operator request. */
 function admitUpdate(root, command, operatorRequest, write) {
   const hold = updateDispatchHold(root);
   if (!hold && !operatorRequest) return null;
-  if (!operatorRequest)
-    throw new Error(
-      `${command} refused: ${hold}; no planning or entropy pass takes a newer starter release or merges upstream unless the operator asks for it in that session. Record the operator's in-session request with ${UPDATE_REQUEST_FLAGS} and rerun.`,
-    );
-  const request = requireOperatorCapture(
-    root,
-    operatorRequest.capture,
-    operatorRequest.captureHash,
-  );
-  const session = dispatchSession();
-  if (session) {
+  const journal = (fields) => {
+    const session = dispatchSession();
+    if (!session) return;
     const file = sessionJournalFile(root, session);
     mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
     appendFileSync(
@@ -2298,11 +2333,29 @@ function admitUpdate(root, command, operatorRequest, write) {
         session: sha256Hex(session),
         command,
         hold,
-        ...request,
+        ...fields,
       })}\n`,
       { mode: 0o600 },
     );
+  };
+  if (!operatorRequest) {
+    if (readFeatures(root)["auto-update-upstream"]) {
+      journal({ election: "features.auto-update-upstream" });
+      write?.(
+        `${command} admitted under ${hold}: features.auto-update-upstream is on\n`,
+      );
+      return null;
+    }
+    throw new Error(
+      `${command} refused: ${hold}; no planning or entropy pass takes a newer starter release or merges upstream unless the operator asks for it in that session. Record the operator's in-session request with ${UPDATE_REQUEST_FLAGS} and rerun.`,
+    );
   }
+  const request = requireOperatorCapture(
+    root,
+    operatorRequest.capture,
+    operatorRequest.captureHash,
+  );
+  journal(request);
   write?.(
     `operator request recorded: ${request.capture} ${request.captureHash}\n`,
   );

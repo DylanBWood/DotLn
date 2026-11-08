@@ -1678,6 +1678,192 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-258 criterion 8: a pass that lets the only closed order leave the sequence files the empty horizon, and the plan check, the plan cost subject and the refuter's prompt admit it",
+      async () => {
+        const repo = makeRepo(parent, "empty-sequence");
+        // The instance's one order, judged by the first pass's receipt.
+        const map = (entries) =>
+          `# Fixture map\n\n<!-- dotln-work-order-sequence:start -->\n${entries}<!-- dotln-work-order-sequence:end -->\n`;
+        write(repo, PLAN_MAP, map("- WO-901 — First\n"));
+        commit(repo, "one order");
+        const first = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "first",
+          subject: first,
+          episode: directEpisode(
+            validatePlanResult(cannedGoalReview(first), first),
+          ),
+        });
+        commit(repo, "first receipt");
+        assert.equal((await checkPlanGate(repo)).passes, 1);
+        // The order closes.
+        write(
+          repo,
+          "docs/control/orders/WO-901.jsonl",
+          [
+            { type: "WorkOrderActivated", workOrderPath: orderPath("WO-901") },
+            { type: "ImplementationReady" },
+            {
+              type: "VerificationRequested",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-901/VER-001.md",
+            },
+            {
+              type: "VerificationCompleted",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-901/VER-001.md",
+              verdict: "pass",
+            },
+            {
+              type: "FinalReviewRequested",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-901/FINAL-001.md",
+            },
+            {
+              type: "FinalReviewCompleted",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-901/FINAL-001.md",
+              verdict: "pass",
+            },
+          ]
+            .map((event) =>
+              JSON.stringify({
+                schemaVersion: 1,
+                workOrderId: "WO-901",
+                ...event,
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        commit(repo, "the only order closes");
+        // A later pass lets it leave the sequence and files no other order.
+        write(repo, PLAN_MAP, map(""));
+        write(
+          repo,
+          PLAN_LEDGER,
+          `${read(repo, PLAN_LEDGER)}\n## 2030-01-03 empty planning pass\n\nThe last order closed; nothing is proposed.\n`,
+        );
+        commit(repo, "empty pass", "2030-01-03T00:00:00Z");
+        const empty = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        assert.deepEqual(empty.orders, []);
+        // The plan cost reads the same subject: its table covers no order.
+        const { planCostTable } = await import("./lib/meta.mjs");
+        const costSubject = buildPlanSubject(repo, "HEAD", {
+          workspace: true,
+          costTable: false,
+        });
+        assert.deepEqual(costSubject.orders, []);
+        assert.deepEqual(
+          planCostTable(
+            { observedAt: "2030-01-03T00:00:00Z", orders: [], traps: [] },
+            costSubject,
+          ).rows,
+          [],
+        );
+        const prompt = JSON.parse(
+          await beginDirectRefutation(repo, {
+            now: () => "2030-01-03T12:00:00.000Z",
+          }),
+        );
+        assert.deepEqual(prompt.subject.orders, []);
+        assert.match(
+          prompt.emptySequence,
+          /^The subject is the empty sequence/u,
+        );
+        write(
+          repo,
+          "docs/control/local/result.json",
+          JSON.stringify({
+            schemaVersion: "plan-goal-review-v1",
+            orders: [],
+            planVerdict: "aligned",
+            holdReasons: [],
+          }),
+        );
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Judged the empty sequence: no order is proposed.",
+        );
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-03T12:05:00.000Z" },
+        );
+        assert.equal(filed.verdict, "aligned");
+        commit(repo, "empty receipt", "2030-01-03T12:06:00Z");
+        const gate = await checkPlanGate(repo);
+        assert.equal(gate.passes, 2);
+        assert.deepEqual(gate.continuation.committedUpdates, []);
+        // More than one hundred orders still refuses, naming the new bound.
+        write(
+          repo,
+          PLAN_MAP,
+          map(
+            Array.from(
+              { length: 101 },
+              (_, index) =>
+                `- WO-${String(index + 100).padStart(3, "0")} — Many\n`,
+            ).join(""),
+          ),
+        );
+        assert.throws(
+          () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+          /plan sequence must contain 0–100 orders/u,
+        );
+      },
+    );
+    await check(
+      "WO-258 step 15: the continuation compares under the judged receipt's rule, so a separate-track member filed after a sequence-only receipt waits for the next one",
+      async () => {
+        for (const keyed of [false, true]) {
+          const repo = makeRepo(parent, `separate-track-${keyed}`);
+          // A receipt filed under the rule before WO-257 carries no
+          // separateTrack key; one filed since carries the members it judged.
+          const judged = buildPlanSubject(repo, "HEAD", {
+            goalReview: true,
+            separateTrack: keyed,
+          });
+          assert.equal(judged.separateTrack !== undefined, keyed);
+          await writePlanReceipt(repo, {
+            pass: passFor(repo),
+            slug: "judged",
+            subject: judged,
+            episode: directEpisode(
+              validatePlanResult(cannedGoalReview(judged), judged),
+            ),
+          });
+          commit(repo, "receipt");
+          assert.equal((await checkPlanGate(repo)).passes, 1);
+          // A separate-track workstream with one open member, filed after it.
+          write(
+            repo,
+            "docs/workstreams/WS-001-separate.md",
+            `# WS-001 — separate: a fixture outcome\n\n<!-- dotln-workstream:start -->\n${JSON.stringify({ id: "WS-001", track: "separate", members: [{ workOrderId: "WO-903", repositoryId: "self" }], edges: [] })}\n<!-- dotln-workstream:end -->\n`,
+          );
+          write(
+            repo,
+            orderPath("WO-903"),
+            order("WO-903").replace(
+              "**Model:** fixture\n",
+              "**Workstream:** WS-001\n**Model:** fixture\n",
+            ),
+          );
+          commit(repo, "separate-track member");
+          if (keyed)
+            // A receipt that judged the members does not admit a new one: the
+            // next receipt judges it.
+            await assert.rejects(
+              checkPlanGate(repo),
+              /sequence, vision, roles or order inventory changed/u,
+            );
+          else assert.equal((await checkPlanGate(repo)).passes, 1);
+        }
+      },
+    );
+    await check(
       "WO-134 both refutation paths select the gate's missing same-day pass independent of ledger order",
       async () => {
         for (const transport of ["direct", "fake"]) {
@@ -4428,6 +4614,72 @@ else {
           );
         },
       );
+    // The Workstream admission's three guards, each refused here so a mutant
+    // without it fails a permanent case: the filed order declared no field,
+    // exactly one field was added, and it lies in the leading header
+    // (WO-232-D017, carried by WO-258 as FUP-c4c7ba9f126d2e4a).
+    await check(
+      "a field-only Workstream amendment admits only a field the filed order lacked, one field, in the leading header",
+      () => {
+        const text = read(
+          root,
+          "docs/work-orders/WO-231-final-review-lint-from-the-described-base.md",
+        ).replace(/ \(v0\.97\.1\)(?=\n)/u, "");
+        const label = (t) => t.replace(/^(# [^\n]+)/u, "$1 (v1.2.3)");
+        const field = (t, id) =>
+          t.replace("**Track:**", `**Workstream:** ${id}\n**Track:**`);
+        const criterion = (t) =>
+          t.replace(
+            "1. In the target-worktree start fixture",
+            "1. In the amended target-worktree start fixture",
+          );
+        const bind = (filed, amended) => {
+          const bound = executionAmendmentSource(amended, filed);
+          return {
+            sourceOrderHash: sha256(executionAmendmentSource(filed)),
+            orderHash: sha256(bound),
+            orderLength: bound.length,
+          };
+        };
+        const refused = (filed, amended, after, guard) =>
+          assert.equal(
+            matchesExecutionAmendment(filed, after, bind(filed, amended)),
+            false,
+            guard,
+          );
+        // A filed order that already declared a field cannot take another.
+        const declared = field(text, "WS-001");
+        const declaredAmended = label(criterion(declared));
+        refused(
+          declared,
+          declaredAmended,
+          declaredAmended.replace("WS-001", "WS-002"),
+          "the filed order lacked the field",
+        );
+        // Two added fields are not one.
+        const one = label(field(text, "WS-001"));
+        refused(
+          text,
+          one,
+          one.replace(
+            "**Workstream:** WS-001\n",
+            "**Workstream:** WS-002\n**Workstream:** WS-001\n",
+          ),
+          "exactly one added field",
+        );
+        // A field after the leading header is a body change.
+        const amended = label(criterion(text));
+        refused(
+          text,
+          amended,
+          amended.replace(
+            "\n2. The two existing cases",
+            "\n**Workstream:** WS-001\n2. The two existing cases",
+          ),
+          "the field is in the leading header",
+        );
+      },
+    );
     await check(
       "a later leading Workstream field preserves a closed amendment but no other changed byte",
       async () => {

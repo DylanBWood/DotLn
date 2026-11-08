@@ -83,7 +83,6 @@ function classifier(root, workOrder, runner) {
   const evidence = docRelative(root, "evidence");
   const gateInputs = new Set([
     `${control}/budgets.json`,
-    `${control}/doc-ceilings.json`,
     `${control}/outward-vocabulary.json`,
     `${evidence}/current.json`,
   ]);

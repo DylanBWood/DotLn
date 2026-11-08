@@ -1796,7 +1796,7 @@ const main = async () => {
       );
     const releaseHandoff = `  Start a session in main (${shellQuote(mainPath)}); run exactly:\n  ${releaseCloseCommand(mainPath, workOrderId)}`;
     process.stdout.write(
-      `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\nThe authorized close needs network egress to the GitHub host; run the printed --publish command once. --dry-run is optional when a prerequisite is in doubt; host permissions govern execution.\n`,
+      `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR, update main first (git pull --ff-only in the main checkout), then the operator types resume: release close there, which authorizes the close; run:\n${releaseHandoff}\nThe authorized close needs network egress to the GitHub host; run the printed --publish command once. --dry-run is optional when a prerequisite is in doubt; host permissions govern execution.\n`,
     );
   } else if (action === "finish") {
     const { flags, material: overrides } = parseMaterialFlags(actionArgs, [

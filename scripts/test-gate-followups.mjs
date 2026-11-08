@@ -232,7 +232,21 @@ test("bounded role wording preserves prior savings and records reviewed startup 
       const earlier = chain[1].startupCost.profiles.router;
       assert.equal(current.beforeBytes, earlier?.bytes ?? null);
       assert.equal(current.growthBytes, earlier ? bytes - earlier.bytes : null);
-      assert.equal(current.ceiling, budgets.limits.coldStartBytes.router);
+      // The oracle keeps the ceiling it measured against; a ceiling raised
+      // since is the standing route's dated acceptance of the measured bytes
+      // plus one 4,096-byte step (WO-258 step 13).
+      const ceiling = budgets.limits.coldStartBytes.router;
+      if (current.ceiling !== ceiling)
+        assert.ok(
+          budgets.acceptances.some(
+            (entry) =>
+              entry.metric === "coldStartBytes.router" &&
+              !entry.scope &&
+              entry.ceiling === ceiling &&
+              ceiling === bytes + 4096,
+          ),
+          "router: a raised ceiling is the measured bytes plus 4,096, accepted",
+        );
       boardedBreach(role, bytes, budgets.limits.coldStartBytes.router);
       continue;
     }

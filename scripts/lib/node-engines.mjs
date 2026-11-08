@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { TOOL_ROOT } from "./config.mjs";
+import { spawnGit } from "./git.mjs";
 
 // The grammar the kit declares: `^major.minor.patch` alternatives joined by
 // `||`. A caret at major 1 or above admits that major from the named floor.
@@ -84,3 +85,80 @@ export function judgeNodeRuntime(version, range) {
  * target's or another launchpad's package.json does not govern these scripts. */
 export const judgeRunningNode = (version = process.version, root = TOOL_ROOT) =>
   judgeNodeRuntime(version, declaredNodeRange(root));
+
+// The Git floor's one admitted form, `>=major.minor.patch`: the oldest Git
+// whose behavior the scripts use (`git check-attr --source` arrived in 2.40,
+// GIT_CONFIG_GLOBAL in 2.32). Git's own version string carries a platform
+// tail (`2.39.3 (Apple Git-146)`, `2.41.0.windows.1`), read past here.
+const GIT_FLOOR = /^>=(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/u;
+const GIT_VERSION = /^git version (\d+)\.(\d+)\.(\d+)/u;
+
+/** A package.json's `engines.git`, read as `declaredNodeRange` reads Node's:
+ * undefined when nothing is declared, null when the file cannot be read. */
+export function declaredGitFloor(root) {
+  try {
+    const text = readFileSync(join(root, "package.json"), "utf8");
+    return JSON.parse(text.replace(/^﻿/u, "")).engines?.git ?? undefined;
+  } catch (error) {
+    return error.code === "ENOENT" ? undefined : null;
+  }
+}
+
+/** The first line `git --version` prints, or null when Git cannot be run. */
+export function readGitVersion() {
+  const result = spawnGit(["--version"], {
+    encoding: "utf8",
+    timeout: 10_000,
+  });
+  return result.status === 0 ? result.stdout.split("\n")[0].trim() : null;
+}
+
+/** Judges `git --version`'s output against the declared floor. `message`
+ * names the floor and the version read, so the refusal says what to change. */
+export function judgeGitRuntime(version, floor) {
+  if (floor === undefined)
+    return {
+      admitted: true,
+      message: "Git runtime not judged: package.json declares no engines.git.",
+    };
+  const unaffected = "node scripts/bootstrap.mjs is unaffected.";
+  if (floor === null)
+    return {
+      admitted: false,
+      message: `package.json could not be read, so Git cannot be judged against its engines.git. Repair the file; ${unaffected}`,
+    };
+  const declared = typeof floor === "string" ? GIT_FLOOR.exec(floor) : null;
+  if (!declared)
+    return {
+      admitted: false,
+      message: `package.json engines.git reads ${JSON.stringify(floor)}, which is not >=major.minor.patch, so Git cannot be judged. Declare the floor in that form; ${unaffected}`,
+    };
+  const running =
+    typeof version === "string" ? GIT_VERSION.exec(version) : null;
+  if (!running)
+    return {
+      admitted: false,
+      message: `Git's version could not be read (git --version printed ${version === null ? "nothing: Git did not run" : JSON.stringify(version)}), so it cannot be judged against package.json engines.git ${floor}. Put a Git at or above that floor first on PATH; ${unaffected}`,
+    };
+  const [major, minor, patch] = running.slice(1, 4).map(Number);
+  const [floorMajor, floorMinor, floorPatch] = declared.slice(1, 4).map(Number);
+  const read = `${major}.${minor}.${patch}`;
+  const admitted =
+    major > floorMajor ||
+    (major === floorMajor &&
+      (minor > floorMinor || (minor === floorMinor && patch >= floorPatch)));
+  return admitted
+    ? {
+        admitted,
+        message: `Git ${read} is at or above package.json engines.git ${floor}.`,
+      }
+    : {
+        admitted,
+        message: `Git ${read} (git --version) is below package.json engines.git ${floor}. Put a Git at or above that floor first on PATH; ${unaffected}`,
+      };
+}
+
+/** The Git on PATH judged against the checkout whose scripts are running. One
+ * `git --version` spawn per call. */
+export const judgeRunningGit = (root = TOOL_ROOT, version = readGitVersion()) =>
+  judgeGitRuntime(version, declaredGitFloor(root));

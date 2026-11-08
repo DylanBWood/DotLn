@@ -17,14 +17,31 @@ type PlanModule = {
   readPlanCandidate(root: string, state: PlanState): { path: string };
 };
 
+/** The election read by the lifecycle's own reader, so a value it refuses
+ * (`"on"`, `"true"`, `1`) throws the message the lifecycle prints and is never
+ * read as off. An absent configuration elects nothing and loads no reader. A
+ * root that carries no lifecycle feature reader (a synthetic launchpad) has
+ * no lifecycle message to agree with and keeps the direct read the hook made
+ * before (WO-258-D031). */
 export function planFirstElected(root: string): boolean {
   const configPath = join(root, "dotln.config.json");
   if (!existsSync(configPath)) return false;
-  const config = JSON.parse(readFileSync(configPath, "utf8")) as {
-    features?: { "plan-first"?: boolean | { on: boolean } };
+  const reader = join(root, "scripts/lib/features.mjs");
+  if (!existsSync(reader)) {
+    const feature = (
+      JSON.parse(readFileSync(configPath, "utf8")) as {
+        features?: { "plan-first"?: boolean | { on?: unknown } };
+      }
+    ).features?.["plan-first"];
+    return (
+      feature === true ||
+      (typeof feature === "object" && feature !== null && Boolean(feature.on))
+    );
+  }
+  const { readFeatures } = createRequire(import.meta.url)(reader) as {
+    readFeatures: (root: string) => { "plan-first"?: unknown };
   };
-  const feature = config.features?.["plan-first"];
-  return feature === true || (typeof feature === "object" && feature.on);
+  return readFeatures(root)["plan-first"] === true;
 }
 
 /** The runtime and the lifecycle use the same freshness judgment. Off keeps

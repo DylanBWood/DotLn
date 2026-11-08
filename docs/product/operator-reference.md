@@ -17,7 +17,7 @@ control state itself, so the phrase needs nothing else.
 | `resume: fix`          | The executor repairs the named failure of a verification or final review.                                                                    |
 | `resume: verify`       | The verifier judges the candidate independently and files its report.                                                                      |
 | `resume: final review` | The reviewer integrates main, judges the whole order and, on a pass, publishes the reviewed branch and opens its pull request.              |
-| `resume: release close`| In the main checkout after you merge: the close publishes the tag and Release and refreshes the declared starter.                          |
+| `resume: release close`| In the main checkout after the merge reaches your main (`git pull --ff-only` first): the close publishes the tag and Release and refreshes the declared starter. Typed before the pull, it waits as a pending dispatch that the close's own fast-forward records ([decision](../evidence/WO-258/decisions.md#wo-258-d007)). |
 | `resume: status`, `resume: times` | A read-only report of canonical status or of the phase times.                                                                   |
 
 The contract each phrase dispatches is in the guide's
@@ -96,7 +96,7 @@ the [planning README](../planning/README.md) names what a pass reads.
 ## Releases
 
 Each order's final review publishes its reviewed branch and opens the pull
-request; after you merge it, `resume: release close` in the main checkout
-publishes the order's tag and Release. The release route and its classification
+request; after you merge it, update your main checkout (`git pull --ff-only`),
+then `resume: release close` there publishes the order's tag and Release. The release route and its classification
 are in the guide's
 [§Workflow closeout and releases](07-execution-guide.md#workflow-closeout-and-releases).

@@ -317,3 +317,128 @@ test("historical starter floors retain provenance through navigation migration",
   );
   assert.equal(plans[0].bytes, incoming);
 });
+
+test("WO-258 criterion 6: the export's WO-001 holds step 10's corrections and UPSTREAM.md names exactly the seeds the export writes", async () => {
+  const order = readFileSync(
+    join(kit, "docs/work-orders/WO-001-environment-truth.md"),
+    "utf8",
+  );
+  // Criterion 3 asks for the printed status and a fix where a match occurred.
+  assert.match(
+    order,
+    /3\. The local-terms registration step records the printed status, and a\s+match, where one occurred, was fixed before filing\./u,
+  );
+  assert.doesNotMatch(order, /was\s+refused by the check and fixed/u);
+  // Item 4: an empty list refuses nothing; the check names this order's files.
+  assert.match(
+    order,
+    /an empty list is `present` with no terms and refuses nothing/u,
+  );
+  assert.doesNotMatch(order, /an empty list refuses\)/u);
+  assert.match(
+    order,
+    /npm run terms -- check docs\/discovery\/environment\.md docs\/discovery\/environment\.json docs\/evidence\/WO-001\/README\.md/u,
+  );
+  // No timebox; the review ladder every order runs.
+  assert.doesNotMatch(order, /Timebox/u);
+  assert.match(order, /it runs the review ladder every order runs/u);
+  const { exportSeedPaths } = await import("./launchpad.mjs");
+  const upstream = readFileSync(join(kit, "UPSTREAM.md"), "utf8");
+  const listed = upstream
+    .split("## Instance seeds\n")[1]
+    .split("\n## ")[0]
+    .split("\n")
+    .flatMap((line) => /^- `([^`]+)`$/u.exec(line)?.[1] ?? []);
+  assert.deepEqual(listed, exportSeedPaths());
+  for (const path of listed)
+    assert.ok(
+      lstatSync(join(kit, path), { throwIfNoEntry: false }),
+      `${path} is written by the export`,
+    );
+});
+
+test("WO-258 criterion 6: a refresh plans every absent export seed, removes a retired seed at its kit rendering and keeps a customized one with its reason", async () => {
+  const { planSeedChanges, RETIRED_SEEDS, TEMPLATE_SEED_PATHS } =
+    await import("./lib/starter-seeds.mjs");
+  const { exportSeedPaths } = await import("./launchpad.mjs");
+  const checkout = join(scratch, "wo258-seed-changes");
+  mkdirSync(checkout);
+  initRepository(checkout);
+  // A starter exported before dotln.config.json and the lineage index were
+  // seeds, still carrying the retired ceilings file at the kit's bytes.
+  const present = exportSeedPaths().filter(
+    (path) =>
+      ![
+        "dotln.config.json",
+        "docs/lineage/README.md",
+        "docs/intake/.gitkeep",
+        "AGENTS.md",
+      ].includes(path),
+  );
+  for (const path of present) {
+    mkdirSync(dirname(join(checkout, path)), { recursive: true });
+    writeFileSync(join(checkout, path), `starter ${path}\n`);
+  }
+  const ceilings = RETIRED_SEEDS[0];
+  assert.equal(ceilings.path, "docs/control/doc-ceilings.json");
+  writeFileSync(join(checkout, ceilings.path), ceilings.renderings[0]);
+  // A missing template seed keeps its own rules: it is never "added".
+  rmSync(join(checkout, "docs/work-orders/WO-001-environment-truth.md"));
+  git(checkout, ["add", "."]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "old starter",
+  ]);
+  const planned = planSeedChanges({
+    checkout,
+    remote: "HEAD",
+    exportSeeds: exportSeedPaths(),
+  });
+  assert.deepEqual(planned.added, [
+    "dotln.config.json",
+    "docs/intake/.gitkeep",
+    "docs/lineage/README.md",
+    "AGENTS.md",
+  ]);
+  assert.ok(planned.added.every((path) => !TEMPLATE_SEED_PATHS.includes(path)));
+  assert.deepEqual(planned.removed, [ceilings.path]);
+  assert.deepEqual(planned.kept, []);
+  // A customized retired seed is kept, with why.
+  writeFileSync(
+    join(checkout, ceilings.path),
+    '{\n  "schemaVersion": 1,\n  "documents": { "docs/KIT.md": 65536 }\n}\n',
+  );
+  git(checkout, ["commit", "-qam", "customize the ceilings"]);
+  const customized = planSeedChanges({
+    checkout,
+    remote: "HEAD",
+    exportSeeds: exportSeedPaths(),
+  });
+  assert.deepEqual(customized.removed, []);
+  assert.deepEqual(customized.kept, [
+    {
+      path: ceilings.path,
+      reason:
+        "a retired seed, customized; differs from every rendering the kit wrote",
+    },
+  ]);
+  // A starter that already carries every seed and no retired one plans none.
+  git(checkout, ["rm", "-q", ceilings.path]);
+  for (const path of planned.added) {
+    mkdirSync(dirname(join(checkout, path)), { recursive: true });
+    writeFileSync(join(checkout, path), `starter ${path}\n`);
+  }
+  git(checkout, ["add", "."]);
+  git(checkout, ["commit", "-qm", "carry every seed"]);
+  assert.deepEqual(
+    planSeedChanges({
+      checkout,
+      remote: "HEAD",
+      exportSeeds: exportSeedPaths(),
+    }),
+    { added: [], removed: [], kept: [] },
+  );
+});

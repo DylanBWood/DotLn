@@ -44516,6 +44516,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-07T17:43:53.104Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-258-D036 (FINAL-001): its condition occurred, because WO-258 edits scripts/test-gate-followups.mjs (WO-258-D026: the role-oracle case accepts a router ceiling raised since its newest oracle when a dated acceptance records the measured bytes plus 4,096) and re-mints no oracle; no role grew past its pin without the oracle changing, and the historical chain stays as it was.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-08T12:57:25.097Z"
         }
       ]
     },
@@ -49041,6 +49049,14 @@
           "reopenWhen": "A repair of WO-234 happens, or the next order touching scripts/lib/dispatch-bound.mjs or the gate-row reader activates; or verification-003-probe.mjs usage U4's current standing names docs/control/local/harness/checks.json.",
           "targets": [],
           "at": "2026-10-29T01:47:39.611Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-258-D036 (FINAL-001): its condition occurred, because WO-258 edits scripts/lib/dispatch-bound.mjs (WO-258-D007 adds the pending release-close dispatch's reader, recorder and consumer) without touching the gate-row standing read, and the 2026-11-07 planning pass did not allocate this row to WO-258; the damaged gate-row store's standing still carries only the parser message. The next order touching the file or the gate-row reader, or a planning allocation, takes it.",
+          "reopenWhen": "A repair of WO-234 happens, or the next order touching scripts/lib/dispatch-bound.mjs or the gate-row reader activates; or verification-003-probe.mjs usage U4's current standing names docs/control/local/harness/checks.json.",
+          "targets": [],
+          "at": "2026-11-08T12:57:24.960Z"
         }
       ]
     },
@@ -55316,6 +55332,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-07T17:43:52.969Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-258-D036 (FINAL-001): its condition occurred in part, because WO-258-D013 settles the router's half under the standing 2026-09-17 route (the ceiling 16,384 to 21,220 here and in the kit's budgets template, the measured 17,124 plus one 4,096-byte step) and records dated acceptances for the verifier (42,811), reviewer (45,385), release-close (32,734) and planner (34,876) roots, so no root is in breach in this repository or in a fresh export; the bytes stay, and the optimization row stays deferred, as D013 says.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their accepted ceilings, or a role's reviewed rules change again.",
+          "targets": [],
+          "at": "2026-11-08T12:57:25.236Z"
         }
       ]
     },
@@ -56026,6 +56050,45 @@
           "at": "2026-11-07T19:12:48.348Z"
         }
       ]
+    },
+    {
+      "id": "FUP-7de23c426e329c34",
+      "key": "decision:docs/evidence/WO-258/decisions.md#wo-258-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a0b7aae41e8fe5b5cf3128a69a03dc6b24108961d76c257a53426e82f9164415",
+          "ref": "docs/evidence/WO-258/decisions.md#wo-258-d014",
+          "title": "WO-258-D014: The next order that edits the starter refresh's seed rules: rewrite a starter's docs/README.md that is still a rendering an older export wrote (prove it against the starter's…",
+          "summary": "{ \"id\": \"WO-258-D014\", \"date\": \"2026-11-07\", \"dispatch\": \"resume: next\", \"decision\": \"Bind the seeded documents a fresh instance's first pass red-tagged (step 12): the front page links docs/README.md as its map, and the map links the kit guide and the README of every root the export seeds; the work-order index (generated at activation) and ignored intake stay named in code spans because no README exists there yet. The starter's own docs/README.md, written by an older export, is a present seed the refresh never overwrites, so its root READMEs stay unbound until the instance rewrites it; that gap is boarded.\", \"evidence\": [ \"scripts/kit/README.client.md; scripts/launchpad.mjs docs/README.md wr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-258-D014 boards it: the starter refresh never overwrites a present seed, so a starter's docs/README.md written by an older export keeps its code spans and a clone's first pass red-tags the root READMEs it names; the next order that edits the starter refresh's seed rules rewrites a copy proven to be an older export's rendering.",
+          "reopenWhen": "The next order that edits the starter refresh's seed rules, or an instance cloned from a refreshed starter reports the root READMEs red-tagged by its first pass.",
+          "targets": [],
+          "at": "2026-11-07T21:25:24.506Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-973464a1fa408976",
+      "key": "decision:docs/evidence/WO-258/decisions.md#wo-258-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dbf05219a06a588d1f3b75b04e2b35691d9e56a08d0adf5d7ad42d44c634ddc8",
+          "ref": "docs/evidence/WO-258/decisions.md#wo-258-d035",
+          "title": "WO-258-D035: The next order that edits kitWorkerLaunch or npmScriptArgs in packages/skeleton/src/harness-host.ts, or the planning pass that allocates it: count a kit launch whose npm flag follows the…",
+          "summary": "{ \"id\": \"WO-258-D035\", \"date\": \"2026-11-08\", \"dispatch\": \"resume: final review\", \"decision\": \"Record as a follow-up, not a blocking finding, that kitWorkerLaunch in packages/skeleton/src/harness-host.ts does not recognize a kit launch whose npm flag follows the script name: npm run worker --silent -- review … returns null, so such a launch is neither counted against subagentCap nor refused at it, while npm run worker -- review, npm run --silent worker -- review and node scripts/worker.mjs review each count one use. WO-258's executor session shows the effect: the worker helper's journal holds ten WorkerLaunched rows and ten reports are on disk, while the hook's readback counts seven launches;",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

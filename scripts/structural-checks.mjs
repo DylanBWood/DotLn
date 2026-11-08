@@ -2,7 +2,7 @@
 import { dispatchBoundResult } from "./lib/dispatch-bound.mjs";
 import { formatDuration } from "./lib/duration.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
-import { judgeRunningNode } from "./lib/node-engines.mjs";
+import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { unownedTemporaryRootSites } from "./lib/temporary-root-declarations.mjs";
 import {
@@ -30,9 +30,12 @@ export function checkHost(
     standing,
     nodeVersion,
     packageRoot,
+    gitVersion,
   } = {},
 ) {
   const runtime = judgeRunningNode(nodeVersion, packageRoot);
+  // The Git floor is judged where Node is, with one git --version spawn.
+  const git = judgeRunningGit(packageRoot, gitVersion);
   const underBudget = limits.taskBytes < requiredPeakBytes;
   const minimumGateShare =
     Math.ceil(
@@ -47,6 +50,7 @@ export function checkHost(
   return {
     exitCode:
       !runtime.admitted ||
+      !git.admitted ||
       ["warning", "critical"].includes(sample.level) ||
       underBudget
         ? 1
@@ -55,7 +59,7 @@ export function checkHost(
     fileEvents,
     taskBudgetBytes: limits.taskBytes,
     requiredPeakBytes,
-    output: `${runtime.message}\nHost memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy}`,
+    output: `${runtime.message}\n${git.message}\nHost memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy}`,
   };
 }
 

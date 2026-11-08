@@ -1,23 +1,22 @@
 # Current control state
 
-## WO-243
+## WO-258
 
-- Work order: WO-243
-- Work-order path: docs/work-orders/WO-243-closeout-checks-follow-the-repositories-an-order-changed.md
+- Work order: WO-258
+- Work-order path: docs/work-orders/WO-258-an-instances-first-cycle-meets-the-kit.md
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: docs/verifications/WO-243/VER-002.md
+- Latest verification: VER-001
+- Verification path: docs/verifications/WO-258/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-243/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-258/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.319; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-11-07T17:55:28.229Z
-- Elapsed implementation: 2 h 57 min
-- Elapsed verification: 0 h 17 min
-- Elapsed repair: 0 h 45 min
-- Elapsed finalReview: 0 h 28 min
-- Latest checkpoint: 814556bf8cb4f6e16f4a71cf5a77dcf0ebac6191 (restore: `git checkout refs/dotln/checkpoint/WO-243/13 -- .`)
+- Latest recordedAt: 2026-11-08T13:01:46.444Z
+- Elapsed implementation: 7 h 20 min
+- Elapsed verification: 0 h 18 min
+- Elapsed finalReview: 0 h 34 min
+- Latest checkpoint: 323574aa1402e6359907c0d4a37db0bef892ec78 (restore: `git checkout refs/dotln/checkpoint/WO-258/6 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record, retract
 

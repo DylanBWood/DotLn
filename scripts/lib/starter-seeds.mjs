@@ -7,7 +7,7 @@ import {
 } from "./harness-instruction.mjs";
 import { runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
-import { sha256Hex } from "./helpers.mjs";
+import { json, sha256Hex } from "./helpers.mjs";
 import {
   defaultDocRelative,
   CONFIG_FILENAME,
@@ -33,6 +33,63 @@ const seeds = [
   ],
   [defaultDocRelative("control", "budgets.json"), "budgets.template.json"],
 ];
+/** Every seed path the export writes, in its order: UPSTREAM.md's
+ * `## Instance seeds` list and the starter refresh's absent-seed additions
+ * read this one list, and the export refuses when its seeds differ from it
+ * (WO-258). The roots named here are the export's seeded document roots. */
+export const exportSeedPaths = () => [
+  "README.md",
+  CONFIG_FILENAME,
+  ".gitignore",
+  "CLAUDE.md",
+  "AI-HARNESS-SECURITY.md",
+  defaultDocRelative("workstreams", "README.md"),
+  defaultDocRelative("docs", "repositories", "README.md"),
+  defaultDocRelative("workOrders", "WO-001-environment-truth.md"),
+  defaultDocRelative("docs", "README.md"),
+  ...[
+    "control",
+    "evidence",
+    "verifications",
+    "finalReviews",
+    "planning",
+    "publication",
+    "product",
+    "discovery",
+    "decisions",
+    "releases",
+    "observations",
+  ].map((key) => defaultDocRelative(key, "README.md")),
+  defaultDocRelative("planning", "sequence.md"),
+  defaultDocRelative("intake", ".gitkeep"),
+  defaultDocRelative("planning", "followups.json"),
+  defaultDocRelative("control", "doc-baseline.json"),
+  defaultDocRelative("control", "budgets.json"),
+  defaultDocRelative("lineage", "idea-ledger.md"),
+  defaultDocRelative("lineage", "README.md"),
+  "packages/skeleton/loadouts/grants.json",
+  "AGENTS.md",
+];
+
+/** The configuration the export seeds; a starter refresh adds the same
+ * bytes where a starter lacks it (WO-258). */
+export const exportConfiguration = () =>
+  json({ version: 1, release: { displayName: "DotLn-Enterprise-Starter" } });
+
+/** The template seeds' paths: each keeps its own rewrite and proof rules. */
+export const TEMPLATE_SEED_PATHS = Object.freeze(seeds.map(([path]) => path));
+
+/** Seeds the export once wrote and has since retired, each with every
+ * rendering the kit wrote for it. A starter copy still at one of them is the
+ * kit's own output and the refresh removes it; a customized copy is kept and
+ * named in keptSeeds (WO-258). */
+export const RETIRED_SEEDS = Object.freeze([
+  {
+    // Seeded from cbd0b4b6 until 4a09509b retired the document byte ceilings.
+    path: defaultDocRelative("control", "doc-ceilings.json"),
+    renderings: [json({ schemaVersion: 1, documents: {} })],
+  },
+]);
 const git = (root, args, options) =>
   runGit(root, [...HOST_GIT_READ, ...args], options);
 const blob = (root, ref, path) =>
@@ -78,6 +135,39 @@ export const floorFault = (text) => {
     : text;
   return migrateHarnessFloor(outside).trim() ? null : "floor";
 };
+/** The seeds a refresh adds and removes beside its template rewrites: every
+ * export seed the starter lacks, other than a template seed (whose own rules
+ * keep or refuse a missing copy), and every retired seed still at a kit
+ * rendering; a customized retired seed is kept with its reason. Planned from
+ * the starter's committed tree before any write. */
+export function planSeedChanges({ checkout, remote, exportSeeds }) {
+  const added = exportSeeds.filter(
+    (path) =>
+      !TEMPLATE_SEED_PATHS.includes(path) &&
+      entryMode(checkout, remote, path) === null,
+  );
+  const removed = [];
+  const kept = [];
+  for (const seed of RETIRED_SEEDS) {
+    const mode = entryMode(checkout, remote, seed.path);
+    if (mode === null) continue;
+    if (
+      mode === "100644" &&
+      seed.renderings.includes(blob(checkout, remote, seed.path))
+    )
+      removed.push(seed.path);
+    else
+      kept.push({
+        path: seed.path,
+        reason:
+          mode === "100644"
+            ? "a retired seed, customized; differs from every rendering the kit wrote"
+            : "a retired seed that is not a regular seed file (expected mode 100644)",
+      });
+  }
+  return { added, removed, kept };
+}
+
 // The refresh's own verification reads these two seeds: CLAUDE.md is the
 // emit's floor and .gitignore keeps verification's links out of the commit.
 const verificationSeeds = new Set(["CLAUDE.md", ".gitignore"]);
@@ -112,9 +202,12 @@ export function planStarterSeeds({
   checkout,
   remote,
   updatesKit = true,
+  // The name a configuration the same refresh adds gives the starter, so the
+  // README it rewrites names the starter as that configuration does.
+  addedDisplayName,
 }) {
   const pending = [];
-  const displayName = releaseName(checkout, remote);
+  const displayName = addedDisplayName ?? releaseName(checkout, remote);
   for (const [path, name] of seeds) {
     const template = `scripts/kit/${name}`;
     const incoming = blob(main, head, template);

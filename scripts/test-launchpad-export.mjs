@@ -115,7 +115,7 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
   // migration in the changing order's decisions and release's Read before upgrading.
   assert.equal(
     sha256(readFileSync(join(repository, "scripts/kit/README.client.md"))),
-    "0f96422ceaf8e572acb8ad3a1a52d431b248460e0c10d17116817be6d54766c3",
+    "4b60b964df6168c2d9ddef3b806d051d9f3b0e2be5ea40dfef10760909ab9699",
   );
   const seed = readFileSync(join(kit, "README.md"), "utf8");
   assert.equal(
@@ -132,10 +132,19 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
     "This source prepares DotLn-Enterprise-Starter `v0.1.0`.",
   );
   assert.ok(!manifestOf(kit).files.some(({ path }) => path === "README.md"));
-  assert.match(
-    readFileSync(join(kit, "docs/README.md"), "utf8"),
-    /`docs\/KIT\.md`/u,
-  );
+  // The front page links the map, and the map links the kit guide and each
+  // root README the export seeds, so a first pass red-tags none of them
+  // (WO-258 step 12).
+  assert.match(seed, /\[map\]\(docs\/README\.md\)/u);
+  const map = readFileSync(join(kit, "docs/README.md"), "utf8");
+  assert.match(map, /\[docs\/KIT\.md\]\(KIT\.md\)/u);
+  const linked = new Set(markdownLinks(map).map(({ href }) => `docs/${href}`));
+  for (const path of files(kit).filter((path) =>
+    /^docs\/[^/]+\/README\.md$/u.test(path),
+  ))
+    assert.ok(linked.has(path), `the map links ${path}`);
+  for (const { href } of markdownLinks(map))
+    assert.ok(existsSync(join(kit, "docs", href)), `${href} resolves`);
 });
 
 test("WO-254 criterion 5: the exported instance's operator record says a standing rule is recorded only from the operator's direction, with its capture digest", () => {
@@ -229,7 +238,17 @@ test("[document] WO-238 criteria 1 and 9: an exported instance gives its seeds a
       .map((line) => /^([a-z][a-z-]*-\d+\.\d+\.\d+): /u.exec(line)?.[1])
       .filter(Boolean),
   );
-  assert.ok(residueProfiles.size >= 2, "the block names residue profiles");
+  // A fresh export elects no other host and its record shows none, so its
+  // block names Claude's residue alone (WO-258).
+  assert.deepEqual(
+    [...residueProfiles],
+    harnessManifestOf(kit).profiles.map((row) => row.profile.profileId),
+    "the block names each emitted profile's residue",
+  );
+  assert.deepEqual(
+    harnessManifestOf(kit).profiles.map((row) => row.profile.harness),
+    ["claude-code"],
+  );
   for (const id of residueProfiles)
     assert.equal(
       block.split("\n").filter((line) => line.startsWith(`${id}: `)).length,
@@ -434,8 +453,6 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     ".claude/hooks/permissions.mjs",
     ".claude/settings.json",
     ".claude/skills/dotln-executor/SKILL.md",
-    ".agents/skills/dotln-executor/SKILL.md",
-    ".codex/config.toml",
     HARNESS_MANIFEST,
     "docs/product/07-execution-guide.md",
     "docs/product/operator-reference.md",
@@ -1047,6 +1064,22 @@ test("the exported instance checks runtime, coordination records and explicit di
     });
   }
   assert.deepEqual([...ran].sort(), inventory);
+  // The document check the gate ran reports no unbound standing document, so
+  // a first planning pass red-tags none of the seeds (WO-258 criterion 6).
+  const documents = ok(
+    run(process.execPath, ["scripts/docs-check.mjs"], { cwd: destination }),
+    "export document check",
+  );
+  assert.doesNotMatch(
+    documents.stdout + documents.stderr,
+    /^UNBOUND /mu,
+    documents.stdout,
+  );
+  assert.match(
+    documents.stdout,
+    /; 0 standing without a reader binding/u,
+    documents.stdout,
+  );
   ok(
     run(
       process.execPath,
@@ -1352,6 +1385,128 @@ test("WO-075 criterion 2: harness check passes inside the export and refuses a o
 // Reads core's installed CLAUDE.md, skills and budgets, which a product task
 // may not read: the document gate runs this case (test-runner's launchpad-docs
 // row), the product gate skips it.
+test("WO-258 criterion 1: an export with no election and no host in its record emits Claude's surfaces only; an election, an attestation or an observed version adds Codex's, and turning it off removes them", () => {
+  const hostPaths = (root) =>
+    [".codex", ".agents"].filter((path) => existsSync(join(root, path)));
+  // The fresh export itself: nothing under .codex or .agents, Claude's
+  // profile alone, and no host surface in the kit manifest.
+  assert.deepEqual(hostPaths(kit), []);
+  assert.ok(
+    !manifestOf(kit).files.some(({ path }) =>
+      /^\.(?:codex|agents)\//u.test(path),
+    ),
+  );
+  const clone = commitWarmExport(join(scratch, "wo258-hosts"));
+  const profiles = () =>
+    harnessManifestOf(clone).profiles.map((row) => row.profile.harness);
+  const emit = () => ok(harness(clone, "emit"), "emit");
+  const render = () =>
+    ok(
+      run("npm", ["run", "--silent", "features", "--", "render"], {
+        cwd: clone,
+      }),
+      "features render",
+    );
+  const codexRow = () =>
+    readFileSync(join(clone, "docs/control/FEATURES.md"), "utf8")
+      .split("\n")
+      .find((line) => line.startsWith("| host-codex |"));
+  const config = (features) =>
+    writeFileSync(
+      join(clone, "dotln.config.json"),
+      JSON.stringify(
+        {
+          version: 1,
+          release: { displayName: "DotLn-Enterprise-Starter" },
+          ...(features ? { features } : {}),
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+  emit();
+  assert.deepEqual(hostPaths(clone), [], "no election, no record");
+  assert.deepEqual(profiles(), ["claude-code"]);
+  render();
+  assert.match(
+    codexRow(),
+    /^\| host-codex \| instance \| false \| false \| default \|/u,
+  );
+  const codexSurfaces = [
+    ".codex/config.toml",
+    ".codex/hooks.json",
+    ".codex/hooks/continuation.mjs",
+    ".codex/agents/dotln-worker-astra.toml",
+    ".agents/skills/dotln-executor/SKILL.md",
+  ];
+  const assertCodex = (label) => {
+    emit();
+    for (const path of codexSurfaces)
+      assert.ok(existsSync(join(clone, path)), `${label}: ${path}`);
+    assert.deepEqual(profiles(), ["claude-code", "codex-cli"], label);
+    ok(harness(clone, "check"), `${label}: check`);
+  };
+  // The election.
+  config({ "host-codex": true });
+  assertCodex("elected");
+  render();
+  assert.match(
+    codexRow(),
+    /^\| host-codex \| instance \| false \| true \| elected \|/u,
+  );
+  // Turning it off removes the surfaces the previous manifest installed and
+  // the directories they emptied.
+  config({ "host-codex": false });
+  emit();
+  assert.deepEqual(hostPaths(clone), [], "turned off");
+  assert.deepEqual(profiles(), ["claude-code"]);
+  ok(harness(clone, "check"), "turned off: check");
+  // An attestation naming codex-cli in the export's own control log.
+  config();
+  writeFileSync(
+    join(clone, "docs/control/resume.jsonl"),
+    JSON.stringify({
+      schemaVersion: 1,
+      recordedAt: "2030-01-02T00:00:00.000Z",
+      type: "ImplementationReady",
+      workOrderId: "WO-001",
+      actor: {
+        harness: "codex-cli",
+        harnessVersion: "0.153.4",
+        model: "fixture",
+        effort: "max",
+        source: "operator-attested",
+      },
+    }) + "\n",
+  );
+  assertCodex("attested");
+  render();
+  assert.match(
+    codexRow(),
+    /^\| host-codex \| instance \| false \| true \| inferred: docs\/control\/resume\.jsonl attestations \|/u,
+  );
+  rmSync(join(clone, "docs/control/resume.jsonl"));
+  // An observed codex-cli version in the export's discovery record.
+  writeFileSync(
+    join(clone, "docs/discovery/environment.json"),
+    JSON.stringify({
+      effortReadbackProbe: {
+        harnesses: {
+          "codex-cli": {
+            versions: [{ classification: "observed", value: "0.153.4" }],
+          },
+        },
+      },
+    }) + "\n",
+  );
+  assertCodex("observed");
+  render();
+  assert.match(
+    codexRow(),
+    /^\| host-codex \| instance \| false \| true \| inferred: docs\/discovery\/environment\.json observed versions \|/u,
+  );
+});
+
 test("[document] WO-075 criterion 4: the cold-start bytes of each role inside the export are not larger than core's", () => {
   const inside = measureColdStarts(kit);
   const core = measureColdStarts(repository);
@@ -1385,6 +1540,19 @@ test("[document] WO-075 criterion 4: the cold-start bytes of each role inside th
     "every installed role in the export was compared",
   );
   assert.ok(compared > 0);
+  // A fresh export starts with no cold-start breach: the template's router
+  // ceiling is the raised one (WO-258 criterion 7), and the other roles are
+  // unset there.
+  const router = inside.profiles.find(
+    (row) => row.role === "router" && row.bytes !== null,
+  );
+  assert.equal(router.ceiling, 21220);
+  assert.deepEqual(
+    inside.profiles
+      .filter((row) => row.verdict === "breach")
+      .map((row) => `${row.skillsRoot}/${row.role}`),
+    [],
+  );
 });
 
 test("WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, an unmatched attestation records with the advisory, and a Codex dispatch reserves its writer on the carried runtime", async () => {
