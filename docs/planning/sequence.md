@@ -38,6 +38,12 @@ pointers and continuation command. Untouched items persist across passes.
   first verification more often than five of eight.
 - **Placement.** The operator places an order by one sequence edit; the
   order of everything the operator did not place is the planner's.
+- **Hosts.** The kit runs on Git 2.31.0, the Git on the operator's work
+  laptop (operator direction, 2026-11-08, ignored capture SHA-256
+  `a0fe7ccd9a08aa47c2a61fb80aecfc290248c7a1024a9b6cbfd53574914fd111`). An
+  order that declares or raises a host floor names every host the record
+  shows and refuses none of them
+  ([product 07's host-refusal screen](../product/07-execution-guide.md#operator-opened-planning-pass)).
 - **Early access.** The period below `v1.0.0` is early access (operator
   direction, 2026-09-30).
 
@@ -57,35 +63,49 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
 
 ## The order, serial
 
-- WO-258: an instance's first cycle meets the kit: host support as
-  elections (Codex and Copilot opt-in for a new clone or fork, inferred on
-  for an instance whose own record shows the host), the starter's seeds and
-  recipe agreeing with the generated surfaces, the release-close phrase
-  recorded once the merge reaches the checkout, a Git floor beside the Node
-  range, an empty sequence admitted, the continuation gate comparing under
-  the judged receipt's rule and the siblings index safe in an instance (the
-  operator's items 3 and 5 of 2026-11-07, ignored capture SHA-256
-  `123eb18018301f41fb4b107f0fb0ad53eb40eb38b13c75a906f588dc913c6cd6`; the
-  fork's blocks of 2026-11-06; the private instance's block of 2026-11-07);
-  first, because the operator's next cycle is a set of clean instances
-  cloned from the starter and every item is met at a clone, a first pass, a
-  first order or an update.
-- WO-259: committed words and filed records: no operator message saved
-  verbatim in a committed artifact (the operator's rule of 2026-11-07, the
-  check against the ignored captures, the election and the typed
-  exception), the worker's no-print rules, the hand-back journaled as the
-  host's, the local-terms list screening a branch's changed files in the
-  document gate and the publish helpers, discovery's errors named, the
-  launchpad publish form's phase check, and a filed record's links
-  resolving at the commit its footer names (the operator's item 2; the
-  fork's record-links ask; the instance's items 3 to 6 and 9); second,
-  after WO-258 whose registry rows and role text it extends.
+- WO-260: the kit runs on Git 2.31.0: the six Git forms above it replaced
+  at their call sites (the classification at a committed revision, the
+  tree-entry reads of an order's publish and a target order's records, the
+  main checkout's intake grant, the stash backend, the source-change
+  admission and the fixtures' isolated configuration), the declared floor
+  at the work laptop's Git, a core-only recorded Git surface and a
+  below-floor shim with its cases (the operator's item 2 of 2026-11-08, ignored
+  capture SHA-256
+  `a0fe7ccd9a08aa47c2a61fb80aecfc290248c7a1024a9b6cbfd53574914fd111`;
+  WO-258-D009's reopening condition); first, ahead of the active WO-244,
+  because every gate refuses the operator's work laptop today. Its call
+  sites are disjoint from WO-244's planning machinery apart from separate
+  hunks of four files, so the operator may dispatch it beside the active
+  order, and the second of the two to reach final review integrates the
+  first.
 - WO-244: paired planning passes and the synthesis pass as a routine (the
   operator's direction of 2026-10-30): the dispatch labels, the blindness
   refusals, the pair record and `plan synthesize`, and the reviewed route
   (the operator's fourth message of 2026-10-31): `plan review` running the
   executor's three reviewer types through WO-250's helper before the
-  refuter, with WO-255's capture flag for the criteria review; third.
+  refuter, with WO-255's capture flag for the criteria review; active
+  since 2026-11-08, second.
+- WO-261: an instance's update keeps its own files: the update publish
+  refusing a merge that rewrote a file the instance had changed, with a
+  per-path admission and a preview section; the words screen leaving out a
+  session sub-root; a tag fetch refused against a remote set to bring none;
+  a kit launch counted in every spelling (the fork's block after starter
+  v0.122.0, items 2, 5 and 8; WO-258-D035); third, after WO-244, whose role
+  and hook files it edits.
+- WO-262: review findings are judged before they are fixed: the admission
+  rule in every review brief, the executor's judgment as typed fields in
+  the round's decision and the document check's one refusal (the
+  operator's direction during WO-259, WO-259-D021 and D022); fourth, after
+  WO-261, which edits the same role file. The rule itself is in force from
+  product 07 as this pass wrote it.
+- WO-263: the complete run takes its exclusive suites in one convoy: the
+  four exclusive rows share the strongest lead among them, so heavy work
+  drains for them once; a suite that failed last still leads; the
+  target-worktree group starts its longest file first; WO-222's overlap
+  lever reassessed from a same-source pair of complete runs (the operator's
+  item 4 of 2026-11-08; WO-222-D015's reopening condition; the cold-gate
+  candidate); fifth, because it shortens every later final review and
+  stops nothing today.
 - WO-083: the real run from the operator's instance, after the router so
   the measured run is driven the way the operator will drive orders.
 - WO-207: an instance's kit updates: rollback, the extension point and the
@@ -100,9 +120,11 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   approval-burden baseline).
 
 <!-- dotln-work-order-sequence:start -->
-- WO-258 — An instance's first cycle meets the kit
-- WO-259 — Committed words and filed records
+- WO-260 — The kit runs on Git 2.31.0
 - WO-244 — Paired planning passes and the synthesis pass
+- WO-261 — An instance's update keeps its own files
+- WO-262 — Review findings are judged before they are fixed
+- WO-263 — The complete run takes its exclusive suites in one convoy
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel
 - WO-193 — An instance's capability requests to core

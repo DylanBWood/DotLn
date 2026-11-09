@@ -40,6 +40,24 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-08 — Planning pass: Git 2.31 support and fork returns (WO-260, WO-261, WO-262 and WO-263 filed); registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass +` with four items, journaled at
+2026-11-08T23:31:17.405Z (hook time) in Claude Code 2.1.319 (Fable 5.1 at
+max, operator-selected), captured in
+`docs/intake/planning-dispatch-2026-11-08-git-2-31-support-and-fork-returns.md`
+(SHA-256 `a0fe7ccd9a08aa47c2a61fb80aecfc290248c7a1024a9b6cbfd53574914fd111`,
+the journal's own digest of the message). The pass traces how v0.121.0's
+Git floor came to refuse the operator's work laptop, files WO-260 (the kit
+runs on Git 2.31.0), WO-261 (an instance's update keeps its own files),
+WO-262 (review findings are judged before they are fixed) and WO-263 (the
+complete run takes its exclusive suites in one convoy), retires WO-258 and
+WO-259 as closed (v0.121.0 and v0.122.0), records the host-refusal screen
+and the judgment rule in product 07 and the operator's Git rule in the
+sequence, and answers the fork and the work laptop's instance in two
+paste-ready blocks. Record:
+[the planning document](../planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md).
+
 ## 2026-11-07 — Planning pass: first cycle returns and host elections (WO-258 and WO-259 filed); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with five items, sent at
