@@ -20,6 +20,7 @@ import {
   checkGenerated,
   generatedArtifacts,
 } from "./lib/generated-artifacts.mjs";
+import { checkGitSurface, recordGitSurface } from "./lib/git-surface.mjs";
 
 export function checkHost(
   sample = pressureSample(),
@@ -94,15 +95,26 @@ if (isMainModule(import.meta.url)) {
       mode === "generated" &&
       rest.length === 1 &&
       rest[0] === "--build-phase-only";
+    const recording =
+      mode === "git-surface" && rest.length === 1 && rest[0] === "--record";
     if (
-      (rest.length && !buildPhaseOnly) ||
-      !["declarations", "generated", "host"].includes(mode)
+      (rest.length && !buildPhaseOnly && !recording) ||
+      !["declarations", "generated", "git-surface", "host"].includes(mode)
     )
       throw new Error(
-        "usage: structural-checks.mjs declarations|generated [--build-phase-only]|host",
+        "usage: structural-checks.mjs declarations|generated [--build-phase-only]|git-surface [--record]|host",
       );
     let result;
-    if (mode === "declarations") {
+    if (recording) {
+      // The record is rewritten from the tree; its diff is what a reviewer
+      // confirms against the floor's manual.
+      const { added, removed, scopedElsewhere } = recordGitSurface(root);
+      result = {
+        exitCode: 0,
+        output: `Recorded scripts/lib/git-surface.json: ${added.length} added${added.length ? ` (${added.join(", ")})` : ""}; ${removed.length} removed${removed.length ? ` (${removed.join(", ")})` : ""}. Confirm each added form against the declared Git floor's manual before committing.${scopedElsewhere.length ? ` A scoped form is named outside the files its entry admits, and the check keeps failing there until a reviewer adds the file to the entry: ${scopedElsewhere.join(", ")}.` : ""}`,
+      };
+    } else if (mode === "git-surface") result = checkGitSurface(root);
+    else if (mode === "declarations") {
       const { suites, expandSuiteTasks } = await import("./test-runner.mjs");
       result = checkDeclarations(
         root,

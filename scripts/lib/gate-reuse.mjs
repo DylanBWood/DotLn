@@ -1,7 +1,9 @@
 // One code identity serves the runner, claim checks and publication. A runner
 // may compose individual executed passes; a claim consumes its complete row.
-// Import the skeleton lazily so a copied control plane still loads without it.
+// Import the skeleton's gate evidence (./gate-evidence.mjs, below) lazily so
+// a copied control plane still loads without it.
 import { mainWorktree } from "./git.mjs";
+import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import { createHash } from "node:crypto";
 import { lstatSync, readdirSync, readFileSync, realpathSync } from "node:fs";
 import { join } from "node:path";
@@ -382,6 +384,13 @@ export const STRUCTURAL_SUITES = Object.freeze([
   "generated",
   "host",
 ]);
+/** The structural tasks the checkout at `root` runs first, in order: core
+ * also runs the recorded Git surface check before host, which an exported
+ * kit does not carry, so core's structural row must hold it. */
+export const structuralSuites = (root) =>
+  isKitRoot(root)
+    ? STRUCTURAL_SUITES
+    : Object.freeze([...STRUCTURAL_SUITES.slice(0, -1), "git-surface", "host"]);
 
 /** Handoffs consume focused runs only at the current identity. A later failed
  * execution still displaces a pass through the same lookup used by review;
@@ -394,7 +403,7 @@ export async function preflightRows(root, codeIdentity, suites) {
     const found = await coveringGateCheck(
       root,
       checkId,
-      name === "structural" ? [...STRUCTURAL_SUITES] : [name],
+      name === "structural" ? [...structuralSuites(root)] : [name],
       codeIdentity,
     );
     const latest = (await gateCandidates(root, checkId, codeIdentity)).rows

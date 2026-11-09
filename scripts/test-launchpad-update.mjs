@@ -30,6 +30,7 @@ import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { defaultRoots, loadConfig } from "./lib/config.mjs";
+import { isolatedGitEnvironment } from "./lib/git.mjs";
 import { measureColdStarts } from "./lib/process-budget.mjs";
 import {
   BUILD_INPUTS,
@@ -2474,7 +2475,10 @@ test("starter refresh publishes one verified commit and preserves every refusal 
     starterUrl = "https://github.com/refresh-fixture/starter-fixture.git";
   git(core, ["remote", "set-url", "origin", coreUrl]);
   git(checkout, ["remote", "set-url", "origin", starterUrl]);
-  const global = join(root, "gitconfig");
+  // The redirects live in the fixture's own home, which every Git from the
+  // declared floor up reads as its global configuration.
+  const gitIsolation = isolatedGitEnvironment(root);
+  const global = gitIsolation.GIT_CONFIG_GLOBAL;
   writeFileSync(
     global,
     `[url "${remote.slice(0, -4)}"]\n insteadOf = ${starterUrl.slice(0, -4)}\n[url "${source}"]\n insteadOf = ${coreUrl}\n[user]\n name = DotLn Fixture\n email = fixture@example.invalid\n[commit]\n gpgSign = false\n`,
@@ -2524,8 +2528,7 @@ process.exit(64);
     TMP: refreshTemp,
     TEMP: refreshTemp,
     PATH: `${bin}:${env.PATH}`,
-    GIT_CONFIG_GLOBAL: global,
-    GIT_CONFIG_NOSYSTEM: "1",
+    ...gitIsolation,
     GIT_TERMINAL_PROMPT: "0",
   };
   const sibling = "starter-fixture";

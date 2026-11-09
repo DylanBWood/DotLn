@@ -859,7 +859,7 @@ async function integrateOwnedWorktree(root, workOrder, args) {
         ];
         save();
         throw new Error(
-          `untracked stash collisions need explicit acknowledgement: ${unseen.map(shellQuote).join(", ")}; inspect git stash show --include-untracked --patch ${receipt.stash}; choose the retained, upstream or combined content, stage it with git add -- ${unseen.map(shellQuote).join(" ")}, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied to acknowledge these recorded paths; checkpoint and stash retained`,
+          `untracked stash collisions need explicit acknowledgement: ${unseen.map(shellQuote).join(", ")}; inspect git stash show --patch ${receipt.stash} and, for its untracked files, git show --patch ${receipt.stash}^3; choose the retained, upstream or combined content, stage it with git add -- ${unseen.map(shellQuote).join(" ")}, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied to acknowledge these recorded paths; checkpoint and stash retained`,
         );
       }
       const unresolved = receipt.stash
@@ -873,7 +873,7 @@ async function integrateOwnedWorktree(root, workOrder, args) {
         : [];
       if (conflicts(root).length || unresolved.length)
         throw new Error(
-          `resolve and stage the retained stash's conflicts and restore its untracked files before --stash-applied; inspect git stash show --include-untracked --patch ${receipt.stash}, run git status --short, stage the listed resolutions with git add -- ${[...new Set([...conflicts(root), ...unresolved])].map(shellQuote).join(" ")}, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; checkpoint and stash retained`,
+          `resolve and stage the retained stash's conflicts and restore its untracked files before --stash-applied; inspect git stash show --patch ${receipt.stash} and, for its untracked files, git show --patch ${receipt.stash}^3, run git status --short, stage the listed resolutions with git add -- ${[...new Set([...conflicts(root), ...unresolved])].map(shellQuote).join(" ")}, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; checkpoint and stash retained`,
         );
       if (
         gitResult(root, [
@@ -1036,7 +1036,7 @@ async function integrateOwnedWorktree(root, workOrder, args) {
         !receipt.untrackedConflicts.length
       )
         throw new Error(
-          `stash apply failed; retained ${receipt.stash}; inspect git stash show --include-untracked --patch ${receipt.stash}; run git stash apply ${receipt.stash} if its application is incomplete, resolve the paths named by git status --short and stage tracked resolutions with git add -u, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied: ${applied.stderr || applied.stdout}`,
+          `stash apply failed; retained ${receipt.stash}; inspect git stash show --patch ${receipt.stash} and, for its untracked files, git show --patch ${receipt.stash}^3; run git stash apply ${receipt.stash} if its application is incomplete, resolve the paths named by git status --short and stage tracked resolutions with git add -u, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied: ${applied.stderr || applied.stdout}`,
         );
     }
     receipt.stage = "applied";
@@ -1045,7 +1045,7 @@ async function integrateOwnedWorktree(root, workOrder, args) {
   }
   if (receipt.stage === "applying")
     throw new Error(
-      `interrupted stash application; inspect git stash show --include-untracked --patch ${receipt.stash}; run git stash apply ${receipt.stash} if its application is incomplete, resolve the paths named by git status --short and stage tracked resolutions with git add -u, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; the checkpoint and stash stay retained`,
+      `interrupted stash application; inspect git stash show --patch ${receipt.stash} and, for its untracked files, git show --patch ${receipt.stash}^3; run git stash apply ${receipt.stash} if its application is incomplete, resolve the paths named by git status --short and stage tracked resolutions with git add -u, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; the checkpoint and stash stay retained`,
     );
   receipt.authored = [
     ...new Set([

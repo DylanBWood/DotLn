@@ -211,21 +211,19 @@ assert.deepEqual(
   ),
   ["alpha", "beta"],
 );
+// The fixture is a core checkout, so its structural phase is core's, the
+// recorded Git surface check included, as the handoff reads it.
+const { structuralSuites } = await import(
+  pathToFileURL(join(root, "scripts/lib/gate-reuse.mjs"))
+);
+const structural = [...structuralSuites(root)];
 writeFileSync(
   join(root, "scripts/test-runner.mjs"),
   `
 if (!process.argv.includes("--list")) throw new Error("focused handoff consumes document evidence instead of running a gate");
-for (const name of ["format", "configuration-root", "registrations", "declarations", "generated", "host", "alpha", "beta", "gamma"]) console.log(name + " — protects: fixture");
+for (const name of ${JSON.stringify([...structural, "alpha", "beta", "gamma"])}) console.log(name + " — protects: fixture");
 `,
 );
-const structural = [
-  "format",
-  "configuration-root",
-  "registrations",
-  "declarations",
-  "generated",
-  "host",
-];
 let lastTime = Date.now();
 const gateRow = (checkId, names, extra = {}) => {
   const recordedAt = new Date(

@@ -7,7 +7,7 @@ import {
 } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { spawnGit } from "./lib/git.mjs";
+import { isolatedGitEnvironment, spawnGit } from "./lib/git.mjs";
 
 /** Local forge transport shared by session and exported-instance fixtures. */
 export function installTargetPublicationFixture(base, env, repositories) {
@@ -20,7 +20,10 @@ export function installTargetPublicationFixture(base, env, repositories) {
   const log = join(base, "forge-calls.jsonl"),
     body = join(base, "forge-body.md"),
     state = join(base, "forge-state.json");
-  const global = join(base, "forge-gitconfig");
+  // The forge rewrite lives in the isolated home's global file, which every
+  // Git from the declared floor up reads; the home is the fixture's own.
+  const isolation = isolatedGitEnvironment(base);
+  const global = isolation.GIT_CONFIG_GLOBAL;
   writeFileSync(
     global,
     repositories
@@ -110,11 +113,7 @@ process.exit(64);
 `,
   );
   for (const name of ["git", "gh"]) chmodSync(join(bin, name), 0o755);
-  Object.assign(env, {
-    PATH: `${bin}:${env.PATH}`,
-    GIT_CONFIG_GLOBAL: global,
-    GIT_CONFIG_NOSYSTEM: "1",
-  });
+  Object.assign(env, { PATH: `${bin}:${env.PATH}`, ...isolation });
   return { log, body, bin, state, gitAdapter };
 }
 

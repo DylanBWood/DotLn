@@ -1,4 +1,4 @@
-# WO-260 — The kit runs on Git 2.31.0: the six Git forms above it replaced, the declared floor lowered to the operator's work laptop's Git, and a recorded Git surface that stops the next newer form at the gate
+# WO-260 — The kit runs on Git 2.31.0: the six Git forms above it replaced, the declared floor lowered to the operator's work laptop's Git, and a recorded Git surface that stops the next newer form at the gate (v0.122.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

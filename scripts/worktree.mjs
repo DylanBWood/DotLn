@@ -63,6 +63,7 @@ import {
   runGit,
   runGitPathList,
   spawnGit,
+  gitTreeEntry,
 } from "./lib/git.mjs";
 import {
   containedRegularFile,
@@ -188,27 +189,23 @@ const refuseSubmoduleWorktree = (subject) => {
 };
 
 const toolRoot = findLaunchpad();
-const readTrackedTextAtHead = (root, path, displayPath) => {
-  const tree = spawnGit(
-    [
-      "-C",
-      root,
-      ...HOST_GIT_READ,
-      "ls-tree",
-      "-z",
-      "--format=%(objectmode) %(objecttype) %(objectname)",
-      "HEAD",
-      "--",
-      `:(literal)${path}`,
-    ],
-    { encoding: "utf8" },
-  );
-  const tracked = /^100(?:644|755) blob ([0-9a-f]{40}|[0-9a-f]{64})\0$/u.exec(
-    tree.stdout,
-  );
-  if (tree.status !== 0 || !tracked)
+/** A committed text file's bytes at HEAD, refused unless HEAD tracks the path
+ * as a regular or executable file. Exported for the below-floor Git cases. */
+export const readTrackedTextAtHead = (root, path, displayPath) => {
+  let entry = null;
+  try {
+    entry = gitTreeEntry(root, "HEAD", path, HOST_GIT_READ);
+  } catch {
+    // A Git that cannot read the entry reports the same refusal as an
+    // untracked path: neither is a committed file this command may read.
+  }
+  if (
+    !entry ||
+    entry.type !== "blob" ||
+    !["100644", "100755"].includes(entry.mode)
+  )
     throw new Error(`${displayPath}: file is not tracked as a regular file`);
-  const object = tracked[1];
+  const object = entry.object;
   const blob = spawnGit([
     "-C",
     root,

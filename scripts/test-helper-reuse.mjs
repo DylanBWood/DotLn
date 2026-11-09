@@ -331,6 +331,9 @@ test("no script defines a bare-hex sha256 or spawns Git outside the library", ()
     "scripts/test-process-debt.mjs": {
       git: "fixture command strings that quote a Git push inside shell text, never a spawn",
     },
+    "scripts/test-git-floor.mjs": {
+      git: "a stand-in harness's program text, launched with node -e, which asks the Git its own PATH finds outside the library",
+    },
   };
   const findings = [];
   const scripts = [

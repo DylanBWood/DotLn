@@ -819,6 +819,32 @@ const git = (root: string, args: readonly string[], acceptFailure = false) => {
     throw new Error("Git host observation unavailable");
   return result.stdout ?? "";
 };
+/** The main checkout's ignored intake directory, which the `main-intake`
+ * outside-write grant admits. The main checkout is the first record's first
+ * line of `git worktree list --porcelain`. Without -z (a Git 2.36 option) a
+ * path holding a newline spans lines, so that line is the whole path only
+ * when the record's HEAD or bare line follows it. A path that is not plain
+ * and absolute, or a checkout that does not ignore its intake, leaves the
+ * grant unresolved. */
+export function mainCheckoutIntake(root: string): string {
+  const [first, next] = git(root, ["worktree", "list", "--porcelain"]).split(
+    "\n",
+  );
+  const main = /^(?:HEAD [0-9a-f]+|bare)$/u.test(next ?? "")
+    ? first?.slice("worktree ".length)
+    : undefined;
+  if (
+    !main ||
+    !isAbsolute(main) ||
+    !git(
+      main,
+      ["check-ignore", "--", "docs/intake/.outside-write-probe"],
+      true,
+    ).trim()
+  )
+    throw new Error("main checkout ignored intake unavailable");
+  return join(main, "docs/intake");
+}
 export function harnessRoot(cwd: string): string {
   const physical = realpathSync(cwd);
   const root = realpathSync(
@@ -6171,23 +6197,9 @@ function outsideWriteResponse(
             }
             return [{ ...grant, physical: target.physical }];
           }
-          case "main-intake": {
-            const main = git(root, ["worktree", "list", "--porcelain", "-z"])
-              .split("\0")[0]
-              ?.slice("worktree ".length);
-            if (
-              !main ||
-              !isAbsolute(main) ||
-              !git(
-                main,
-                ["check-ignore", "--", "docs/intake/.outside-write-probe"],
-                true,
-              ).trim()
-            )
-              throw new Error("main checkout ignored intake unavailable");
-            path = join(main, "docs/intake");
+          case "main-intake":
+            path = mainCheckoutIntake(root);
             break;
-          }
         }
         if (
           grant.kind !== "session-scratch" &&

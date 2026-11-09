@@ -10,6 +10,7 @@ import { dirname, join, posix } from "node:path";
 import { loadConfig } from "./config.mjs";
 import { eventsForOrder } from "./control-store.mjs";
 import {
+  gitTreeEntry,
   mainWorktree,
   porcelainEntries,
   porcelainEntryName,
@@ -241,18 +242,17 @@ export function validateTargetRecordsCommit(
   for (const record of records.records) {
     if (!record.path.startsWith(`${records.root}/`))
       throw refuse(`record outside documentation root: ${record.path}`);
-    const tree = git(
-      "ls-tree",
-      "--format=%(objectmode) %(objecttype) %(objectname)",
+    const entry = gitTreeEntry(
+      target,
       records.commit,
-      "--",
-      `:(literal)${record.path}`,
+      record.path,
+      HOST_GIT_READ,
     );
-    const object = /^100644 blob ([a-f0-9]{40}|[a-f0-9]{64})$/u.exec(tree);
     if (
-      !object ||
+      entry?.mode !== "100644" ||
+      entry.type !== "blob" ||
       hash(
-        runGit(target, [...HOST_GIT_READ, "cat-file", "blob", object[1]], {
+        runGit(target, [...HOST_GIT_READ, "cat-file", "blob", entry.object], {
           encoding: null,
           trim: false,
         }),

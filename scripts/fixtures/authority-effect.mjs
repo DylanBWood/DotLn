@@ -18,6 +18,10 @@ const inside = (path) => {
 };
 assert.equal(realpathSync(process.cwd()), join(root, "target"));
 const put = (name) => writeFileSync(inside(join(root, name)), "effect\n");
+// The host writes the isolating variables of its Git environment export into
+// the configuration: a home inside the fixture root, so the payload's Git
+// reads no developer configuration on any Git from the declared floor up.
+// Its other children keep the environment they were given.
 const run = (binary, args) => {
   const result = spawnSync(binary, args, {
     cwd: process.cwd(),
@@ -29,7 +33,7 @@ const run = (binary, args) => {
           ([name]) => !name.startsWith("GIT_"),
         ),
       ),
-      GIT_CONFIG_GLOBAL: "/dev/null",
+      ...(binary === "git" ? config.git : {}),
       GIT_CONFIG_NOSYSTEM: "1",
       GIT_ALLOW_PROTOCOL: "file",
     },

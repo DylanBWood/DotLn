@@ -3,7 +3,7 @@ import {
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
 import { write as writeFixture } from "./lib/helpers.mjs";
-import { spawnGit, execGit } from "./lib/git.mjs";
+import { execGit, isolatedGitEnvironment, spawnGit } from "./lib/git.mjs";
 // Target publication over real source-change episodes, a local bare origin
 // behind a GitHub URL and the gh stub. No network or vendor CLI (WO-064).
 import nodeTest from "node:test";
@@ -518,8 +518,11 @@ async function buildScenario(
   fixtureGit(target, "config", `url.${origin}.insteadOf`, GITHUB);
   fixtureGit(target, "push", "--quiet", origin, "main");
   // Publication pushes from a host lane that reads only the operator's global
-  // and system configuration (WO-157), so the fixture's rewrite lives there.
-  const globalConfig = join(root, "global.gitconfig");
+  // and system configuration (WO-157), so the fixture's rewrite lives in the
+  // fixture's own isolated home, which every Git from the declared floor up
+  // reads as that global configuration.
+  const gitIsolation = isolatedGitEnvironment(root);
+  const globalConfig = gitIsolation.GIT_CONFIG_GLOBAL;
   writeFileSync(
     globalConfig,
     `[url "${origin}"]\n\tinsteadOf = ${GITHUB}\n[user]\n\tname = Fixture\n\temail = fixture@example.invalid\n`,
@@ -783,7 +786,7 @@ async function buildScenario(
           DOTLN_LAUNCHPAD: launchpad,
           DOTLN_GH_LOG: ghLog,
           DOTLN_GH_BODY: body,
-          GIT_CONFIG_GLOBAL: globalConfig,
+          ...gitIsolation,
           GH_REPO: "wrong/target",
           GH_HOST: "wrong.example",
         },
@@ -837,6 +840,9 @@ let activeScenarioOwner = null;
 let scenarioGeneration = 0;
 const scenarioEnvironmentKeys = [
   "PATH",
+  "HOME",
+  "XDG_CONFIG_HOME",
+  "GIT_CONFIG_NOSYSTEM",
   "GIT_CONFIG_GLOBAL",
   "DOTLN_GH_LOG",
   "DOTLN_NODE",
@@ -3118,7 +3124,7 @@ process.exitCode = result.status;
   );
   const changes = {
     PATH: `${bin}:${subject.fixturePath ?? ""}`,
-    GIT_CONFIG_GLOBAL: join(subject.root, "global.gitconfig"),
+    ...isolatedGitEnvironment(subject.root),
     DOTLN_GH_LOG: ghLog,
     DOTLN_NODE: process.execPath,
     DOTLN_GH_REPLAY: replay,

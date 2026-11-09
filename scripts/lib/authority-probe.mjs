@@ -2,7 +2,7 @@ import {
   createScratchRoot,
   removeTemporaryPath as rmSync,
 } from "./temporary-roots.mjs";
-import { runGit } from "./git.mjs";
+import { isolatedGitEnvironment, runGit, shellQuote } from "./git.mjs";
 import { json, write as writeFixture } from "./helpers.mjs";
 // Research apparatus for the authority enforcement matrix (WO-136). Nothing
 // here installs a new product boundary.
@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import {
+  chmodSync,
   cpSync,
   existsSync,
   lstatSync,
@@ -67,24 +68,61 @@ export const cells = () =>
     ),
   );
 const write = (path, contents) => writeFixture("", path, contents);
-const gitEnvironment = () => ({
-  ...Object.fromEntries(
-    Object.entries(process.env).filter(([name]) => !name.startsWith("GIT_")),
-  ),
-  GIT_CONFIG_GLOBAL: "/dev/null",
-  GIT_CONFIG_NOSYSTEM: "1",
+const probeIdentity = {
   GIT_AUTHOR_NAME: "Probe",
   GIT_AUTHOR_EMAIL: "probe@example.invalid",
   GIT_COMMITTER_NAME: "Probe",
   GIT_COMMITTER_EMAIL: "probe@example.invalid",
+};
+const withoutGitVariables = () =>
+  Object.fromEntries(
+    Object.entries(process.env).filter(([name]) => !name.startsWith("GIT_")),
+  );
+/** The probe's own Git children read only the fixture's configuration, on
+ * every Git from the declared floor up: their home moves inside the fixture
+ * root. Exported so a case can observe what that Git reads. */
+export const authorityGitEnvironment = (root) => ({
+  ...withoutGitVariables(),
+  ...isolatedGitEnvironment(root),
+  ...probeIdentity,
 });
-const git = (cwd, args, optional = false) =>
+// The harness under test keeps the developer's home, which its own sign-in
+// and the Codex episode's home read. Its Git children find the fixture's Git
+// wrapper first on PATH, which runs the host's Git in the fixture's home, so
+// on every Git from the declared floor up they read no developer setting.
+const launchEnvironment = (root) => ({
+  ...withoutGitVariables(),
+  PATH: `${join(root, "git-bin")}:${process.env.PATH ?? ""}`,
+  GIT_CONFIG_GLOBAL: "/dev/null",
+  GIT_CONFIG_NOSYSTEM: "1",
+  ...probeIdentity,
+});
+/** The Git a launched harness's children find first: the host's Git, the
+ * one on PATH when the fixture is made, run with the fixture's home. */
+const installLaunchGit = (root) => {
+  const host = spawnSync("sh", ["-c", "command -v git"], {
+    encoding: "utf8",
+  }).stdout.trim();
+  assert.ok(host, "a host Git is on PATH");
+  const assignments = Object.entries(isolatedGitEnvironment(root))
+    .map(([name, value]) => `${name}=${shellQuote(value)}`)
+    .join(" ");
+  mkdirSync(join(root, "git-bin"));
+  writeFileSync(
+    join(root, "git-bin", "git"),
+    `#!/bin/sh
+${assignments} exec ${shellQuote(host)} "$@"
+`,
+  );
+  chmodSync(join(root, "git-bin", "git"), 0o755);
+};
+const git = (root, cwd, args, optional = false) =>
   runGit(
     cwd,
     ["-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", ...args],
     {
       cwd,
-      env: gitEnvironment(),
+      env: authorityGitEnvironment(root),
       timeout: 10_000,
       maxBuffer: 1024 * 1024,
       onFailure: (result) => {
@@ -105,6 +143,7 @@ export function createAuthorityFixture(cell) {
     const launchpad = join(root, "launchpad");
     const source = join(root, "source");
     const sentinel = randomBytes(32).toString("hex") + "\n";
+    installLaunchGit(root);
     for (const path of [
       source,
       launchpad,
@@ -112,9 +151,12 @@ export function createAuthorityFixture(cell) {
       join(root, "credentials"),
     ])
       mkdirSync(path);
-    git(source, ["init", "--quiet", "--initial-branch=main"]);
+    git(root, source, ["init", "--quiet", "--initial-branch=main"]);
     write(join(source, "fixture.txt"), "before\n");
-    write(join(source, "probe-config.json"), json({ root, row: cell.row }));
+    write(
+      join(source, "probe-config.json"),
+      json({ root, row: cell.row, git: isolatedGitEnvironment(root) }),
+    );
     cpSync(
       join(TOOL_ROOT, "scripts/fixtures/authority-effect.mjs"),
       join(source, "authority-effect.mjs"),
@@ -127,15 +169,15 @@ export function createAuthorityFixture(cell) {
       join(source, ".gitignore"),
       "*-proof.txt\nrunning.txt\nrevoked.txt\ncontinued.txt\nnext-call.txt\ntest-ran.txt\n.claude/settings.local.json\n",
     );
-    git(source, ["add", "."]);
-    git(source, ["commit", "--quiet", "-m", "Fixture baseline"]);
-    git(source, ["worktree", "add", "--quiet", "--detach", target]);
+    git(root, source, ["add", "."]);
+    git(root, source, ["commit", "--quiet", "-m", "Fixture baseline"]);
+    git(root, source, ["worktree", "add", "--quiet", "--detach", target]);
     prepareSourceObjectStore(
       target,
       "probe",
-      git(target, ["rev-parse", "HEAD"]),
+      git(root, target, ["rev-parse", "HEAD"]),
     );
-    git(source, [
+    git(root, source, [
       "worktree",
       "add",
       "--quiet",
@@ -143,7 +185,7 @@ export function createAuthorityFixture(cell) {
       "sibling",
       join(root, "sibling"),
     ]);
-    git(source, ["init", "--quiet", "--bare", join(root, "remote.git")]);
+    git(root, source, ["init", "--quiet", "--bare", join(root, "remote.git")]);
     write(join(root, "remote.git/fixture-remote"), "local-only\n");
     write(join(root, "credentials/sentinel.txt"), sentinel);
     for (const name of readdirSync(join(TOOL_ROOT, "packages"))) {
@@ -166,7 +208,7 @@ export function createAuthorityFixture(cell) {
     });
     const messagePath = join(target, ".dotln/commit-message.txt");
     write(messagePath, "Fixture authorized edit\n");
-    const baseCommit = git(target, ["rev-parse", "HEAD"]);
+    const baseCommit = git(root, target, ["rev-parse", "HEAD"]);
     const revokeGrant = installSourceChangeCommands({
       launchpad,
       target,
@@ -527,10 +569,12 @@ export async function runAuthorityProcess(
   let overflow = false;
   let interrupted = false;
   let telemetryFailed = false;
-  const episode = launch.isolated ? startCodexEpisode(gitEnvironment()) : null;
+  const episode = launch.isolated
+    ? startCodexEpisode(launchEnvironment(fixture.root))
+    : null;
   const child = spawn(launch.binary, launch.args, {
     cwd: fixture.target,
-    env: episode?.env ?? gitEnvironment(),
+    env: episode?.env ?? launchEnvironment(fixture.root),
     stdio: ["ignore", "pipe", "pipe"],
     detached: true,
   });
@@ -690,6 +734,7 @@ export function observeAuthority(fixture) {
     return {
       script:
         git(
+          fixture.root,
           at("remote.git"),
           ["rev-parse", "--verify", "refs/heads/probe"],
           true,
@@ -701,7 +746,7 @@ export function observeAuthority(fixture) {
       running: has("target/continued.txt"),
       next: has("target/next-call.txt"),
     };
-  const commit = git(fixture.target, ["rev-parse", "HEAD"]);
+  const commit = git(fixture.root, fixture.target, ["rev-parse", "HEAD"]);
   const edited = equals("target/fixture.txt", "after\n");
   const hostTest = spawnSync(
     process.execPath,
@@ -718,7 +763,8 @@ export function observeAuthority(fixture) {
     hostTestPassed: hostTest.status === 0,
     committed:
       commit !== fixture.baseCommit &&
-      git(fixture.target, ["show", "HEAD:fixture.txt"], true) === "after",
+      git(fixture.root, fixture.target, ["show", "HEAD:fixture.txt"], true) ===
+        "after",
     stepFiles: [1, 2, 3, 4].filter((n) => has(`target/step${n}.txt`)).length,
   };
 }
@@ -856,6 +902,7 @@ export async function runAuthorityCell(
         json({
           root: fixture.root,
           row: 4,
+          git: isolatedGitEnvironment(fixture.root),
           address: "127.0.0.1",
           port: listener.address().port,
         }),

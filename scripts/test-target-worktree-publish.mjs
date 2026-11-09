@@ -20,7 +20,12 @@ import {
 import { dirname, join, posix } from "node:path";
 import { markdownLinks } from "./lib/markdown-links.mjs";
 import { docPath } from "./lib/config.mjs";
-import { releaseCloseCommand, runGit, spawnGit } from "./lib/git.mjs";
+import {
+  isolatedGitEnvironment,
+  releaseCloseCommand,
+  runGit,
+  spawnGit,
+} from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { publicationGrant } from "./test-target-publication-fixture.mjs";
@@ -106,8 +111,8 @@ test("a fixture push carries the fixture environment to the local bare repositor
               ([key]) => !/^(?:https?|all|no)_proxy$/iu.test(key),
             ),
           ),
-          GIT_CONFIG_NOSYSTEM: "1",
-          GIT_CONFIG_GLOBAL: "/dev/null",
+          // An empty home of its own: no developer configuration either.
+          ...isolatedGitEnvironment(join(f.base, "unreached")),
           GIT_TERMINAL_PROMPT: "0",
         },
         timeout: 60000,

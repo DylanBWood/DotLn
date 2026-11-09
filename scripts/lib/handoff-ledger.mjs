@@ -491,12 +491,12 @@ export async function requireGateClaims(
   if (!ledger?.checked) return result;
   // The row lookups load the skeleton's gate index only when a claim needs
   // them, so a control plane without the skeleton still loads this module.
-  const { coveringGateCheck, describeGateRow, STRUCTURAL_SUITES } =
+  const { coveringGateCheck, describeGateRow, structuralSuites } =
     await import("./gate-reuse.mjs");
   // A structural task displaced by a later failed structural run is repaired
   // by regenerating what it found stale, then a passing structural phase.
   const structuralRemedy = (displaced) =>
-    displaced.some((name) => STRUCTURAL_SUITES.includes(name))
+    displaced.some((name) => structuralSuites(root).includes(name))
       ? "; a later structural run failed: run npm run sync, then a passing structural phase (npm test -- --only format)"
       : "";
   // Every self-order read of the index goes through here: an unreadable
@@ -538,7 +538,7 @@ export async function requireGateClaims(
         );
         if (focused.missing.length)
           throw new Error(
-            `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row ${plain.displaced ? `stands at the current code identity ${plain.codeIdentity}: the latest complete row (${describeGateRow(plain.displaced.row)}) names ${plain.displaced.tasks.join(", ")}, whose latest execution there can no longer be carried` : `exists at the current code identity ${plain.codeIdentity}`}. Handoff rows missing or failed: ${focused.missing.map(({ suite, reason, displaced }) => `${suite} (${reason}${displaced.length ? `: ${displaced.join(", ")} displaced` : ""}); run ${displaced.some((name) => STRUCTURAL_SUITES.includes(name)) ? "npm run sync, then " : ""}npm test -- --only ${suite === "structural" ? "format" : suite}`).join("; ")}${complete.missing?.length ? `; current review selection lacks ${complete.missing.join(", ")}` : ""}${structuralRemedy(plain.displaced?.tasks ?? [])}. Run the named Preflight suites, or ${instead}.`,
+            `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row ${plain.displaced ? `stands at the current code identity ${plain.codeIdentity}: the latest complete row (${describeGateRow(plain.displaced.row)}) names ${plain.displaced.tasks.join(", ")}, whose latest execution there can no longer be carried` : `exists at the current code identity ${plain.codeIdentity}`}. Handoff rows missing or failed: ${focused.missing.map(({ suite, reason, displaced }) => `${suite} (${reason}${displaced.length ? `: ${displaced.join(", ")} displaced` : ""}); run ${displaced.some((name) => structuralSuites(root).includes(name)) ? "npm run sync, then " : ""}npm test -- --only ${suite === "structural" ? "format" : suite}`).join("; ")}${complete.missing?.length ? `; current review selection lacks ${complete.missing.join(", ")}` : ""}${structuralRemedy(plain.displaced?.tasks ?? [])}. Run the named Preflight suites, or ${instead}.`,
           );
         result.productGate = {
           codeIdentity: plain.codeIdentity,
@@ -619,7 +619,7 @@ export async function requireFinalReviewGate(
     !(ledger.claims.plain.length || ledger.claims.review.length)
   )
     return undefined;
-  const { coveringGateCheck, STRUCTURAL_SUITES } =
+  const { coveringGateCheck, structuralSuites } =
     await import("./gate-reuse.mjs");
   const selection = reviewSelection(root, runner);
   const refuse = (reason) => {
@@ -669,7 +669,7 @@ export async function requireFinalReviewGate(
   if (!row) {
     const displaced = found.displaced?.tasks ?? [];
     refuse(
-      `no passing complete review row at the current code identity ${found.codeIdentity}${displaced.length ? ` (the latest complete row names ${displaced.join(", ")}, whose latest execution there can no longer be carried${displaced.some((name) => STRUCTURAL_SUITES.includes(name)) ? "; a later structural run failed: run npm run sync, then a passing structural phase before the complete run" : ""})` : ""}`,
+      `no passing complete review row at the current code identity ${found.codeIdentity}${displaced.length ? ` (the latest complete row names ${displaced.join(", ")}, whose latest execution there can no longer be carried${displaced.some((name) => structuralSuites(root).includes(name)) ? "; a later structural run failed: run npm run sync, then a passing structural phase before the complete run" : ""})` : ""}`,
     );
   }
   return gateFields(row);

@@ -4969,10 +4969,25 @@ them across sessions; session cleanup cannot remove them.
 
 Every selection begins with six structural tasks, in order: `format`,
 `configuration-root`, `registrations`, `declarations`, `generated` and
-`host`. They finish before a build or selected suite starts. A Node outside
-the root `engines.node` range puts `host` first, and neither another task nor
-the stale-runtime build below then runs, because such a runtime fails on
-whatever it meets first and only `host` names the cause. Declarations
+`host`; core runs a seventh, `git-surface`, between `generated` and `host`,
+which an exported kit does not carry: it fails on a Git form its static
+reading finds in the kit's scripts and tests that
+`scripts/lib/git-surface.json` has not recorded as confirmed against the
+declared Git floor. The shell reading keeps separate commands around literal
+quoted assignments visible, including values with dollar signs, and records a
+long option's written name before
+`=` without interpreting its value; the header of `scripts/lib/git-surface.mjs`
+states what that reading leaves out
+([WO-260-D011](../evidence/WO-260/decisions.md#wo-260-d011--the-recorded-git-surface-and-its-core-only-check),
+[WO-260-D029](../evidence/WO-260/decisions.md#wo-260-d029--the-repairs-round-1-eleven-findings-judged-before-any-was-fixed),
+[WO-260-D033](../evidence/WO-260/decisions.md#wo-260-d033--a-quoted-literal-assignment-ends-at-a-shell-separator),
+[WO-260-D034](../evidence/WO-260/decisions.md#wo-260-d034--round-one-admits-one-literal-dollar-finding-and-keeps-the-option-name),
+[WO-260-D035](../evidence/WO-260/decisions.md#wo-260-d035--round-two-keeps-dollar-bearing-assignment-values-together)).
+They finish before a build or selected suite starts. A Node outside the root
+`engines.node` range or a Git below `engines.git` puts `host` first, and
+neither another task nor the stale-runtime build below then runs, because
+such a runtime fails on whatever it meets first and only `host` names the
+cause. Declarations
 check machinery inputs and declared copied-fixture closures.
 The temporary-root declaration check follows runtime imports and executable
 path literals into corpus and evidence fixtures, so their directory does not

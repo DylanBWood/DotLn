@@ -27,6 +27,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { docPath } from "./lib/config.mjs";
 import {
+  isolatedGitEnvironment,
   redactPaths,
   releaseCloseCommand,
   shellQuote,
@@ -573,18 +574,20 @@ test("target close isolates fetched ignore rules, retains unreadable output and 
       const before = cloneRefMap(f);
       const close = (mode, env = {}) =>
         f.call(f.main, f.main, "release", ["close", "WO-999", mode], env);
-      const globalConfig = join(f.base, "global.gitconfig");
+      // The ambient policy lives in a home of its own, which every Git from
+      // the declared floor up reads as its global configuration.
+      const ambient = isolatedGitEnvironment(join(f.base, "ambient"));
       const excludes = join(f.base, "global.excludes");
       const template = join(f.base, "git-template");
       writeFileSync(excludes, "ambient/\n");
       writeFileSync(
-        globalConfig,
+        ambient.GIT_CONFIG_GLOBAL,
         // Preserve the fixture's local forge transport while adding policy.
         `${readFileSync(f.env.GIT_CONFIG_GLOBAL, "utf8")}\n[core]\n\texcludesFile = ${JSON.stringify(excludes)}\n`,
       );
       write(template, "info/exclude", "template/\n");
       for (const [directory, env] of [
-        ["ambient", { GIT_CONFIG_GLOBAL: globalConfig }],
+        ["ambient", ambient],
         ["template", { GIT_TEMPLATE_DIR: template }],
       ]) {
         write(f.clone, `${directory}/keep.txt`, "operator material\n");

@@ -979,6 +979,8 @@ test("the exported instance checks runtime, coordination records and explicit di
       .map((line) => line.split(" — ")[0]);
     assert.deepEqual(names.slice(0, 6), STRUCTURAL_TASKS);
     assert.ok(!names.includes("build"));
+    // The recorded Git surface check is core's, as every core-only row is.
+    assert.ok(!names.includes("git-surface"));
     assert.deepEqual(
       [...names].sort(),
       args.includes("--document")

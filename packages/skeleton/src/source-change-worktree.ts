@@ -405,17 +405,28 @@ export class SourceChangeWorktree {
     assertSourceCommit(head);
     // The private store wins object lookup over its shared alternate. Validate
     // the candidate graph before a shadow object can alter a base-tree
-    // comparison. An explicit head excludes unrelated shared refs from fsck.
-    try {
+    // comparison. An explicit head excludes unrelated shared refs from fsck,
+    // and --no-references keeps it from checking the shared reference
+    // database. A Git before 2.50 lacks that option and exits 129 on it; such
+    // a Git checks no reference database, so the same check runs once
+    // without it.
+    const fsck = (withoutReferences: boolean): string =>
       this.git(
         "fsck",
         "--no-full",
         "--strict",
         "--no-reflogs",
         "--no-dangling",
-        "--no-references",
+        ...(withoutReferences ? ["--no-references"] : []),
         head,
       );
+    try {
+      try {
+        fsck(true);
+      } catch (error) {
+        if ((error as { status?: unknown }).status !== 129) throw error;
+        fsck(false);
+      }
     } catch (error) {
       throw new SourceObjectIntegrityRefusal(error);
     }

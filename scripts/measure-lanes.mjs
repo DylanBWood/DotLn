@@ -6,7 +6,12 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { totalmem, availableParallelism, loadavg } from "node:os";
 import { createHash } from "node:crypto";
-import { suites, STRUCTURAL_TASKS, expand } from "./test-runner.mjs";
+import {
+  suites,
+  CORE_STRUCTURAL_TASKS,
+  STRUCTURAL_TASKS,
+  expand,
+} from "./test-runner.mjs";
 import {
   recordedHostLaneCapacity,
   memoryBudgets,
@@ -89,11 +94,13 @@ function measure(kit, output) {
   mkdirSync(dirname(output), { recursive: true });
   const save = () =>
     writeFileSync(output, JSON.stringify(record, null, 2) + "\n");
-  for (const [context, cwd] of [
-    ["core", root],
-    ["export", kit],
+  // Core's structural phase also runs the recorded Git surface check, which
+  // the export does not carry; each context measures its own tasks.
+  for (const [context, cwd, structural] of [
+    ["core", root, CORE_STRUCTURAL_TASKS],
+    ["export", kit, STRUCTURAL_TASKS],
   ]) {
-    for (const task of [...STRUCTURAL_TASKS, "kit-verify"]) {
+    for (const task of [...structural, "kit-verify"]) {
       const command =
         task === "kit-verify"
           ? [process.execPath, "scripts/launchpad.mjs", "verify", kit]
@@ -137,7 +144,7 @@ function measure(kit, output) {
       }
     }
   }
-  for (const task of [...STRUCTURAL_TASKS, "kit-verify"])
+  for (const task of new Set(record.runs.map((row) => row.task)))
     record.requests[task] = measuredLaneRequest(
       record.runs.filter((row) => row.task === task),
       capacity,
