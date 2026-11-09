@@ -26,7 +26,13 @@ import {
   resolve,
   sep,
 } from "node:path";
-import { runGit, parseWorktrees, readGitObjects, spawnGit } from "./git.mjs";
+import {
+  runGit,
+  parseWorktrees,
+  readGitObjects,
+  refStorageBackend,
+  spawnGit,
+} from "./git.mjs";
 import { dropInventoriedStash } from "./stash-drop.mjs";
 import { localReleaseRecords } from "./release-records.mjs";
 import {
@@ -512,8 +518,7 @@ function pruneContext(root, options, publication) {
     writer: harnessWriterView(root),
     writerEvents: lines(join(directory, "writer-events.jsonl")),
     pins: () => (pins ??= installedPins(base.worktrees)),
-    stashBackend: () =>
-      (stashBackend ??= runGit(root, ["rev-parse", "--show-ref-format"])),
+    stashBackend: () => (stashBackend ??= refStorageBackend(root)),
     releaseOf: publication ?? publicationObservation(root, options),
   };
 }

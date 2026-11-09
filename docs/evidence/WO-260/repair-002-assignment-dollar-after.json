@@ -1,0 +1,91 @@
+{
+  "phase": "after round-two finding repair",
+  "reviewedTreeBefore": "64668e22ddd701652a04ce6927f948a2f0eaae93",
+  "observations": [
+    {
+      "name": "plain assignment control",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    },
+    {
+      "name": "plain assignment control",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    },
+    {
+      "name": "literal dollar in first assignment",
+      "body": "msg=\"it's $\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    },
+    {
+      "name": "literal dollar in first assignment",
+      "body": "msg=\"it's $\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    },
+    {
+      "name": "escaped dollar in first assignment",
+      "body": "msg=\"it's \\$\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    },
+    {
+      "name": "escaped dollar in first assignment",
+      "body": "msg=\"it's \\$\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    }
+  ],
+  "regression": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='keeps a quoted or escaped hash' scripts/test-git-floor.mjs",
+    "exitCode": 0,
+    "shellTexts": 45,
+    "carriersPerText": 2,
+    "optionPassed": 39,
+    "optionAbsent": 6,
+    "knownOptionRefusalsPerCarrier": 37,
+    "unknownOptionNamesPerCarrier": 2,
+    "oracle": "sh, or bash for ANSI-C quoting, with a stand-in Git printing arguments"
+  },
+  "corpus": {
+    "baselineTree": "64668e22ddd701652a04ce6927f948a2f0eaae93",
+    "comparison": "Both readers on the current corpus; exclude the two edited source files",
+    "oldCount": 10295,
+    "newCount": 10306,
+    "formsBefore": 488,
+    "formsAfter": 488,
+    "removed": [],
+    "added": [],
+    "check": {
+      "exitCode": 0,
+      "output": ""
+    }
+  }
+}

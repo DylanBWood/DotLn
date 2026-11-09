@@ -869,13 +869,26 @@ test("WO-112 F1 preserves independent commits, tags, deleted refs and symbolic r
           git(repo, "rev-parse", "main"),
           git(repo, "rev-parse", "independent"),
         );
+        // The alias's own target, one level deep, as its loose ref records
+        // it: a symbolic ref is never packed, Git before 2.39 has no
+        // symbolic-ref --no-recurse, and a recursive read cannot name a
+        // dangling or cyclic target.
+        const alias = git(
+          repo,
+          "rev-parse",
+          "--path-format=absolute",
+          "--git-path",
+          "refs/heads/alias",
+        );
         assert.equal(
-          git(repo, "symbolic-ref", "--no-recurse", "refs/heads/alias"),
-          change === "dangling-ref"
-            ? "refs/heads/missing"
-            : change === "cyclic-ref"
-              ? "refs/heads/cycle"
-              : "refs/heads/independent",
+          readFileSync(alias, "utf8").trim(),
+          `ref: ${
+            change === "dangling-ref"
+              ? "refs/heads/missing"
+              : change === "cyclic-ref"
+                ? "refs/heads/cycle"
+                : "refs/heads/independent"
+          }`,
         );
       }
       assert.equal(

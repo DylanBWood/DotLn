@@ -1,0 +1,29 @@
+# The below-floor cases
+
+node --test --test-reporter=spec scripts/test-git-floor.mjs under node scripts/harness.mjs bounded, 2026-11-09, on Git 2.55.0 with the below-floor Git scripts/fixtures/git-below-floor first on PATH inside each case, retaken after the repair of VER-001 F1 added the fourteenth case and its three review rounds extended it. Local paths are redacted.
+
+✔ the floor Git reads 2.31.0 and treats the six newer forms as Git 2.31.0 does (129.799583ms)
+ℹ floor Git: <repository>/scripts/fixtures/git-below-floor; git version 2.31.0
+✔ gateCodeIdentity at a committed revision under the floor Git equals the host Git's identity and the clean tree's (181.394042ms)
+✔ the temporary index classifies a revision as check-attr --source does, where the host Git has both (383.965959ms)
+ℹ <temporary>: 6 paths classified alike
+ℹ <repository>: 8856 paths classified alike
+✔ readTrackedTextAtHead under the floor Git reads a committed file and refuses an untracked or linked path (156.241166ms)
+✔ the target records readers and the planning base check under the floor Git accept a regular committed blob and refuse another mode (487.134292ms)
+✔ the main-intake grant under the floor Git resolves the main checkout from a linked worktree (115.28625ms)
+✔ dropInventoriedStash under the floor Git reads a files backend and drops the inventoried entry (196.135041ms)
+✔ the source-change admission under the floor Git admits a sound candidate (459.214209ms)
+✔ the authority probe's Git reads no setting planted in the real home's Git configuration (947.720041ms)
+✔ the Git surface check names a form its record lacks with its file and line, and a floor apart from engines.git (247.42925ms)
+✔ the authority probe's launched harness keeps the real home while its Git children read none of its settings (907.250166ms)
+✔ the Git surface check reads a forwarding helper and a script written as a string, and keeps a scoped form scoped (404.471459ms)
+✔ the Git surface check reads a command whose path is named git and a continued shell line (630.963125ms)
+✔ the Git surface check keeps a quoted or escaped hash, blank or operator character inside its word, as the shell does, and still drops a comment (3361.161709ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8727.879084

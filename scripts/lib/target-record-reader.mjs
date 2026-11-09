@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { posix } from "node:path";
 import { docRelative } from "./config.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
-import { runGit } from "./git.mjs";
+import { gitTreeEntry, runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import {
   physicalDirectory,
@@ -69,19 +69,15 @@ export function readTargetRecord(root, state, record) {
     throw new Error(
       `${state.workOrderId}: moved records commit differs from its recorded parent`,
     );
-  const tree = git([
-    "ls-tree",
-    "--format=%(objectmode) %(objecttype) %(objectname)",
-    binding.commit,
-    "--",
-    `:(literal)${record.path}`,
+  const entry = gitTreeEntry(clone, binding.commit, record.path, [
+    "--no-replace-objects",
+    ...HOST_GIT_READ,
   ]);
-  const object = /^100644 blob ([a-f0-9]{40}|[a-f0-9]{64})$/u.exec(tree);
-  if (!object)
+  if (entry?.mode !== "100644" || entry.type !== "blob")
     throw new Error(
       `${state.workOrderId}: moved record is not a regular committed blob`,
     );
-  const bytes = git(["cat-file", "blob", object[1]], {
+  const bytes = git(["cat-file", "blob", entry.object], {
     encoding: null,
     trim: false,
   });

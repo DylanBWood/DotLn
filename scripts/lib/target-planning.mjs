@@ -15,7 +15,13 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { docPath, loadConfig, targetDocRelative } from "./config.mjs";
-import { mainWorktree, parseWorktrees, runGit, spawnGit } from "./git.mjs";
+import {
+  gitTreeEntry,
+  mainWorktree,
+  parseWorktrees,
+  runGit,
+  spawnGit,
+} from "./git.mjs";
 import {
   HOST_GIT_READ,
   parseGitHubTarget,
@@ -54,6 +60,31 @@ import {
 } from "./private-paths.mjs";
 import { WorkerStore } from "../../packages/skeleton/dist/src/worker-store.js";
 
+const planningRefusal = (reason) =>
+  new Error(`target planning publish refused: ${reason}`);
+
+/** The base tree may hold `destination` only as a regular file and each of
+ * its ancestors only as a directory; an absent path is admitted, since the
+ * publish adds it. Checked before any fetch or worktree. */
+export function assertPlanningBasePath(clone, base, destination) {
+  const segments = destination.split("/");
+  for (let length = 1; length <= segments.length; length++) {
+    const entry = gitTreeEntry(
+      clone,
+      base,
+      segments.slice(0, length).join("/"),
+      HOST_GIT_READ,
+    );
+    if (
+      entry &&
+      entry.mode !== (length === segments.length ? "100644" : "040000")
+    )
+      throw planningRefusal(
+        `${destination}: base path is not a contained regular file`,
+      );
+  }
+}
+
 export function publishTargetPlanning({
   launchpad,
   repositoryId,
@@ -66,7 +97,7 @@ export function publishTargetPlanning({
   log = console.log,
 }) {
   const refuse = (reason) => {
-    throw new Error(`target planning publish refused: ${reason}`);
+    throw planningRefusal(reason);
   };
   const repository = loadConfig(launchpad).repositories[repositoryId];
   if (!repository) refuse(`unknown repository ${repositoryId}`);
@@ -121,24 +152,7 @@ export function publishTargetPlanning({
             `${path}: admitted planning files are Markdown, JSON, SVG, PNG, JPEG, WebP and PDF`,
           );
         const destination = targetDocRelative(repository, "docs", path);
-        // Validate the base tree's ancestors before fetching or creating a worktree.
-        const segments = destination.split("/");
-        for (let length = 1; length <= segments.length; length++) {
-          const at = segments.slice(0, length).join("/");
-          const mode = runGit(clone, [
-            ...HOST_GIT_READ,
-            "ls-tree",
-            "--format=%(objectmode)",
-            base,
-            "--",
-            `:(literal)${at}`,
-          ]);
-          if (
-            mode &&
-            mode !== (length === segments.length ? "100644" : "040000")
-          )
-            refuse(`${destination}: base path is not a contained regular file`);
-        }
+        assertPlanningBasePath(clone, base, destination);
         files.push({ path: destination, bytes: readFileSync(file) });
       }
     }

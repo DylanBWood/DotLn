@@ -102,10 +102,12 @@ import {
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
 import { evidenceSources } from "./lib/evidence-sources.mjs";
 import {
+  CORE_STRUCTURAL_TASKS,
   STRUCTURAL_TASKS,
   compileStaleRuntime,
+  structuralTasks,
 } from "./lib/generated-artifacts.mjs";
-export { STRUCTURAL_TASKS };
+export { CORE_STRUCTURAL_TASKS, STRUCTURAL_TASKS };
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import { branchWorkOrder } from "./lib/control-store.mjs";
 import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
@@ -550,6 +552,20 @@ export const machinerySources = {
     "packages/skeleton/src/usage-observation.mjs",
   ],
   "runner-fixtures": [
+    // The kit's Git call sites run under the below-floor Git, and the
+    // recorded Git surface's reader is judged on fixture trees (WO-260).
+    "scripts/test-git-floor.mjs",
+    "scripts/fixtures/git-below-floor/git",
+    "scripts/lib/git-surface.mjs",
+    "scripts/lib/git-surface.json",
+    "scripts/worktree.mjs",
+    "scripts/lib/target-records.mjs",
+    "scripts/lib/target-record-reader.mjs",
+    "scripts/lib/target-planning.mjs",
+    "scripts/lib/stash-drop.mjs",
+    "scripts/lib/authority-probe.mjs",
+    "scripts/fixtures/authority-effect.mjs",
+    "packages/skeleton/src/source-change-worktree.ts",
     // The document gate's terms task runs the real branch screen (WO-259).
     "scripts/terms.mjs",
     "scripts/lib/terms.mjs",
@@ -914,6 +930,8 @@ const protection = {
   declarations: "declared suite and copied fixture inputs cover direct imports",
   generated:
     "generated records and installed harness bytes are current before suites start",
+  "git-surface":
+    "the kit's scripts name only Git forms recorded as confirmed against the declared Git floor",
   host: "suites start only on a Node inside the package.json engines range and at a normal host memory pressure level",
   "sync-fixtures":
     "regeneration follows dependencies, preserves manual authority and changes no current artifact",
@@ -969,7 +987,7 @@ const protection = {
     "artifact identity remains stable and collisions are refused",
 };
 function classifySuite(row) {
-  const structural = STRUCTURAL_TASKS.includes(row.name);
+  const structural = CORE_STRUCTURAL_TASKS.includes(row.name);
   const machinery = Object.hasOwn(machinerySources, row.name);
   const document = Boolean(
     structural ||
@@ -1186,7 +1204,7 @@ export function changedSinceLastGate(
         row.unrunSuites.length > 0 &&
         executed.length > 0 &&
         executed.every((task) =>
-          [...STRUCTURAL_TASKS, "build", "kit-verify"].includes(task.name),
+          [...CORE_STRUCTURAL_TASKS, "build", "kit-verify"].includes(task.name),
         )
       );
     })
@@ -1244,6 +1262,8 @@ export const structuralHostSlots = Object.freeze({
   registrations: 2,
   declarations: 4,
   generated: 2,
+  // One Node process reading source text on one core; not yet measured.
+  "git-surface": 1,
   host: 2,
   "kit-verify": 2,
 });
@@ -1292,6 +1312,11 @@ export const suites = [
   node("generated", "scripts/structural-checks.mjs", {
     args: ["generated"],
     timeoutMs: 120_000,
+  }),
+  node("git-surface", "scripts/structural-checks.mjs", {
+    args: ["git-surface"],
+    kit: "core-only: the kit's Git surface is recorded and confirmed against the Git floor in core",
+    timeoutMs: 30_000,
   }),
   node("host", "scripts/structural-checks.mjs", {
     args: ["host"],
@@ -2505,7 +2530,7 @@ export async function scheduleSuites(
     reused = new Map(),
     keepGoing = false,
     lightTasks = lightSuiteNames(),
-    structuralOrder = STRUCTURAL_TASKS,
+    structuralOrder = CORE_STRUCTURAL_TASKS,
   } = {},
 ) {
   validateSuites(table);
@@ -3039,6 +3064,8 @@ export function expandSuiteTasks(
               "scripts/test-release-fixtures.mjs",
               "scripts/test-gate-deadlines.mjs",
               "scripts/test-host-guard.test.mjs",
+              // The kit's Git call sites under a Git at the declared floor.
+              "scripts/test-git-floor.mjs",
             ],
           },
         ];
@@ -3339,9 +3366,9 @@ async function runGateChecks(
     const verify = table.find((row) => row.build);
     selected = [verify, ...selected.filter((row) => row !== verify)];
   }
-  const structural = STRUCTURAL_TASKS.map((name) =>
-    table.find((row) => row.name === name && row.structural),
-  ).filter(Boolean);
+  const structural = structuralTasks(repo)
+    .map((name) => table.find((row) => row.name === name && row.structural))
+    .filter(Boolean);
   selected = [
     ...structural,
     ...selected.filter((row) => !structural.includes(row)),
@@ -3777,8 +3804,8 @@ async function runGateChecks(
       reused,
       keepGoing,
       structuralOrder: outsideRange
-        ? ["host", ...STRUCTURAL_TASKS.filter((name) => name !== "host")]
-        : STRUCTURAL_TASKS,
+        ? ["host", ...structuralTasks(repo).filter((name) => name !== "host")]
+        : structuralTasks(repo),
       onActiveChange(names) {
         writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
         renameSync(`${peerFile}.tmp`, peerFile);

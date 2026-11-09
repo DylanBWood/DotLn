@@ -54760,6 +54760,14 @@
           "reopenWhen": "A planning pass allocates the row, or a fourth order's complete or document gate fails on a hand-written inventory of files, modules, cases or headings that its consistency review did not trace.",
           "targets": [],
           "at": "2026-11-07T05:15:41.961Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-260-D041 (FINAL-001): its condition occurred a fourth time. WO-260's first complete run failed in scripts/test-verifier-gate-claims.mjs on that fixture's hand-written list of the six structural tasks, after round 1's consistency fix made a core handoff require a seventh, and neither the consistency review nor its recheck traced the fixture (WO-260-D021). The row still waits for a planning pass to allocate the third Traced consumers row.",
+          "reopenWhen": "A planning pass allocates the row, or a fifth order's complete or document gate fails on a hand-written inventory of files, modules, cases, tasks or headings that its consistency review did not trace.",
+          "targets": [],
+          "at": "2026-11-09T21:20:03.789Z"
         }
       ]
     },
@@ -56614,6 +56622,126 @@
           "at": "2026-11-09T00:39:18.729Z"
         }
       ]
+    },
+    {
+      "id": "FUP-d7ca8a89d9313a2b",
+      "key": "decision:docs/evidence/WO-260/decisions.md#wo-260-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dce81e34ce4c351342a5d2a4c4246af8a1370c23fdefef98982df0d9b46d6b94",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d027--a-hash-starts-a-shell-comment-only-where-it-begins-a-word-the-reading-stays-regular-expressions-with-its-other-limits-stated",
+          "title": "WO-260-D027: The next order that edits scripts/lib/git-surface.mjs, or the planning pass that allocates this: decide whether the Git surface reading should cover a git command inside a double-quoted…",
+          "summary": "{ \"id\": \"WO-260-D027\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: fix; repair of VER-001 F1 under criterion 4\", \"decision\": \"Repair shellLines in scripts/lib/git-surface.mjs so a comment starts only at a # that begins a word, read with one word pattern: a word runs through plain characters, backslash escapes and whole single- or double-quoted pieces, and an operator character stands alone. The rule the repaired code holds: a # that is quoted, escaped or inside a word keeps the arguments after it, and a # after a blank or an operator still removes the rest of the line. The repair serves shell files and scripts written as strings alike, since both read their lines through shellLines, and it ke",
+          "missing": false
+        },
+        {
+          "hash": "81eff016e71611218808664bfc2e3097989be12fc207708c055c21aa10d0d1e5",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d027--a-hash-starts-a-shell-comment-only-where-it-begins-a-word-the-reading-stays-regular-expressions-with-its-other-limits-stated",
+          "title": "WO-260-D027: The next order that edits scripts/lib/git-surface.mjs, or the planning pass that allocates this: decide whether the Git surface reading should cover a git command inside a double-quoted…",
+          "summary": "{ \"id\": \"WO-260-D027\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: fix; repair of VER-001 F1 under criterion 4\", \"decision\": \"Repair shellLines in scripts/lib/git-surface.mjs so a comment starts only at a # that begins a word, read with one word pattern: a word runs through plain characters, backslash escapes and whole single- or double-quoted pieces, and an operator character stands alone. The rule the repaired code holds: a # that is quoted, escaped or inside a word keeps the arguments after it, and a # after a blank or an operator still removes the rest of the line. The repair serves shell files and scripts written as strings alike, since both read their lines through shellLines, and it ke",
+          "missing": false
+        },
+        {
+          "hash": "8976b5e58ef6c1f7adf84cef112ef89dd438668f8c9029fb75b96a9b3c8754dc",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d027--a-hash-starts-a-shell-comment-only-where-it-begins-a-word-the-reading-stays-regular-expressions-with-its-other-limits-stated",
+          "title": "WO-260-D027: The next order that edits scripts/lib/git-surface.mjs, or the planning pass that allocates this: decide whether the Git surface reading should cover a git command inside a double-quoted…",
+          "summary": "{ \"id\": \"WO-260-D027\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: fix; repair of VER-001 F1 under criterion 4\", \"decision\": \"Repair shellLines in scripts/lib/git-surface.mjs so a comment starts only at a # that begins a word, read with one word pattern: a word runs through plain characters, backslash escapes and whole single- or double-quoted pieces, and an operator character stands alone. The rule the repaired code holds: a # that is quoted, escaped or inside a word keeps the arguments after it, and a # after a blank or an operator still removes the rest of the line. The repair serves shell files and scripts written as strings alike, since both read their lines through shellLines, and it ke",
+          "missing": false
+        },
+        {
+          "hash": "ee9b72a19527acedfb92fb857f8506a486c7f43edffdef5084cd6047351c4459",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d027--a-hash-starts-a-shell-comment-only-where-it-begins-a-word-the-reading-stays-regular-expressions-with-its-other-limits-stated",
+          "title": "WO-260-D027: The next order that edits scripts/lib/git-surface.mjs, or the planning pass that allocates this: decide whether the Git surface reading should cover a git command inside a double-quoted…",
+          "summary": "{ \"id\": \"WO-260-D027\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: fix; repair of VER-001 F1 under criterion 4\", \"decision\": \"Repair shellLines in scripts/lib/git-surface.mjs so a comment starts only at a # that begins a word, read with one word pattern: a word runs through plain characters, backslash escapes and whole single- or double-quoted pieces, and an operator character stands alone. The rule the repaired code holds: a # that is quoted, escaped or inside a word keeps the arguments after it, and a # after a blank or an operator still removes the rest of the line. The repair serves shell files and scripts written as strings alike, since both read their lines through shellLines, and it ke",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c052a580e9f69291",
+      "key": "decision:docs/evidence/WO-260/decisions.md#wo-260-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "230a73f07cf4e1e98f7c8032193a23504f08945bfcefd68eb3ffd17c07505bb9",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d028--a-fix-answers-a-verification-failure-in-proportion-the-rule-is-carried-to-wo-262",
+          "title": "WO-260-D028: WO-262 (review findings are judged before they are fixed), or the planning pass that allocates this: extend its judgment rule to a verification failure, so a fix dispatch repairs the…",
+          "summary": "{ \"id\": \"WO-260-D028\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: fix; operator direction during the repair of VER-001 F1\", \"decision\": \"Record the operator's direction as a follow-up for WO-262: a fix dispatch answers a verification failure in proportion to it. It repairs the failing case and the class the report names, and it re-engineers the solution only where evidence shows the larger change is the better solution, never because one case failed. This repair is the worked example. The executor's first design after VER-001 was a hand-written shell lexer that would also have covered five shapes the verifier never raised; after the operator's direction (D027) the class closed with one widen",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3cc8812a22cb1395",
+      "key": "decision:docs/evidence/WO-260/decisions.md#wo-260-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e6eb696b45dde871eafcea102e1bac62e8551f6a11cb3f34e8d3af60d5eee5ae",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d032--verification-finds-a-remaining-pairing-across-separate-quoted-assignments",
+          "title": "WO-260-D032: WO-260's next resume: fix repairs VER-002 F1: preserve the literal Git command between separate quoted assignments, cover both carriers and retain the existing cases and corpus reading;…",
+          "summary": "{ \"id\": \"WO-260-D032\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: verify; WO-260, VER-002\", \"decision\": \"Close VER-001 F1 on its reproduced passing repair, but fail criterion 4 on one remaining quote-pairing miss. Two ordinary double-quoted assignments containing apostrophes can cause SHELL_ARGUMENT to consume the separate literal Git command between them as part of one word. The CLI admits ls-tree --format=plain in both a shell file and an embedded script, while the previous reader rejects it. Preserve separate command boundaries for this supported class and cover both carriers; the verifier changes only evidence and its allocated report. The existing no-hand-written-parser direction and th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-260 D033-D036 repair VER-002 F1 and the two admitted review variations. Both carriers, the 45-text shell oracle, corpus comparison, final combined review and fresh 46-suite complete gate pass; repair-002-gates.json binds the current code identity. The parser follow-up remains separate.",
+          "reopenWhen": "Independent verification reproduces a supported command hidden by quoted assignments, or the repaired evidence no longer holds.",
+          "targets": [],
+          "at": "2026-11-09T19:42:59.571Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0122789e67993b48",
+      "key": "decision:docs/evidence/WO-260/decisions.md#wo-260-d037",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "90913497d1c7bc441dac6d0f0ea2af6aff70476b3c151d04e1d8b777b26fb1cb",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d037--ver-003-passes-a-shorthand-environment-name-property-is-boarded-as-a-follow-up",
+          "title": "WO-260-D037: The next order that edits scripts/lib/git-surface.mjs, or the planning pass that allocates this: name a GIT_ identifier written as a shorthand property in an object literal ({…",
+          "summary": "{ \"id\": \"WO-260-D037\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: verify; WO-260, VER-003 after the repair of VER-002\", \"decision\": \"Pass VER-003. VER-001 F1, VER-002 F1 and the repair's two admitted review findings stay repaired, and all seven criteria hold on independent probes at code identity 00cad38a with the executor's intact complete review row. One latent defect met in the attack is boarded as a follow-up, not a block: the JavaScript reading names a GIT_* identifier only after a member dot or before a colon in an object literal, so a shorthand property ({ ...process.env, GIT_CONFIG_GLOBAL }) hands a scoped GIT_* name to a child Git without the check naming it, although the module's o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0c05d0b507dcd53f",
+      "key": "decision:docs/evidence/WO-260/decisions.md#wo-260-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "09b126c002ed81a1eaffac664bf3f14c1bca0f25102ab261cc1403314ab87550",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d039--the-surface-check-does-not-read-the-kits-corpus-scripts-boarded",
+          "title": "WO-260-D039: The next order that edits scripts/lib/git-surface.mjs, or the planning pass that allocates this: have the Git surface reading list every script file the kit carries, including the test…",
+          "summary": "{ \"id\": \"WO-260-D039\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: final review; FINAL-001 finding F1\", \"decision\": \"Board, not fix. The Git surface check lists the files under scripts/ and packages/ (readGitSurface), and the kit also carries six script files under corpus/ as test support (TEST_SUPPORT_FILES in scripts/launchpad.mjs). Two of them call Git: corpus/mutation/mutate.mjs and corpus/mutation/wo108-selftest.test.mjs. Read with the check's own reader, the six name thirteen forms. Twelve are recorded; apply --unidiff-zero is not, and Git 2.31.0's git-apply.txt documents it. So the candidate names no form above the floor in those files, and criterion 4's clauses hold: the candidate's e",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7fe71f232887391b",
+      "key": "decision:docs/evidence/WO-260/decisions.md#wo-260-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c11f67a6ffcffed67989d4e64a097c7fd45758b84b5f03bc1683565130d9d874",
+          "ref": "docs/evidence/WO-260/decisions.md#wo-260-d040--the-fsck-fallbacks-premise-is-wider-than-gits-record-boarded",
+          "title": "WO-260-D040: The next order that edits packages/skeleton/src/source-change-worktree.ts or scripts/lib/git-surface.json: correct the comment over verify's fsck and the note of the scoped fsck…",
+          "summary": "{ \"id\": \"WO-260-D040\", \"date\": \"2026-11-09\", \"dispatch\": \"resume: final review; FINAL-001 finding F2\", \"decision\": \"Board, not fix. SourceChangeWorktree.verify is right to run fsck once without --no-references when Git exits 129 on it, and the case under the below-floor Git admits a sound candidate. Its stated premise is wider than Git's own record. The comment over the call, the note of the scoped fsck --no-references entry in scripts/lib/git-surface.json and D008 each say that a Git lacking the option checks no reference database. Git 2.48.0's release notes say git fsck learned to warn on curiously formatted ref contents, and Git 2.50.0's that it became more careful when checking the refs,",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

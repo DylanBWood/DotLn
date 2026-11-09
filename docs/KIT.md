@@ -85,13 +85,24 @@ runtime produces the same bytes; `check` detects drift against both.
 
 This kit runs on Node 24.15 or later in the 24 line, or on Node 26:
 `engines.node` in `package.json` reads `^24.15.0 || ^26.0.0`. It needs Git
-2.40 or later: `engines.git` reads `>=2.40.0`, because the gate classifies
-generated sources with `git check-attr --source`, which Git 2.40 introduced,
-and the publication fixtures use `GIT_CONFIG_GLOBAL` (Git 2.32). `node
-scripts/harness.mjs check`, `harness evidence` and every `npm test` selection
-refuse another Node or an older Git, naming the declaration and the version
-they read; in a selection the `host` task then runs first and nothing else
-runs. `node scripts/bootstrap.mjs` is unaffected, and a target gate runs the
+2.31.0 or later: `engines.git` reads `>=2.31.0`. The floor rests on two
+forms the scripts use that Git 2.31.0 introduced, `git rev-parse
+--path-format` and configuration set through the environment
+(`GIT_CONFIG_COUNT` with its key and value pairs); below it they fail with
+Git's own words, which name neither the floor nor the version. Each Git form
+the kit's scripts and tests name is recorded as confirmed against Git
+2.31.0's manual, or as a newer form admitted only in the files that name it
+with the reason it is safe there, and core's gate refuses a new form its
+static reading of the source finds until someone has confirmed it; arguments
+assembled at run time, and the shell constructs the header of
+`scripts/lib/git-surface.mjs` names, are outside that reading.
+`node scripts/harness.mjs check`,
+`harness evidence` and every `npm test` selection refuse another Node or an
+older Git, naming the declaration and the version they read; in a selection
+the `host` task then runs first and nothing else runs. An instance on an
+older Git lowers `engines.git` in its own `package.json`, the one place the
+floor is declared, and reports to core what failed there. `node
+scripts/bootstrap.mjs` is unaffected, and a target gate runs the
 target's own declared checks without judging Node. These checks read only
 `^major.minor.patch` alternatives for Node and the one `>=major.minor.patch`
 form for Git, so an edited `package.json` that an update left with another
@@ -812,7 +823,7 @@ selection first runs the six structural checks: formatting, configuration,
 registrations, declarations, generated artifacts and the host's Node and Git
 runtime and memory pressure; a Node outside `engines.node` or a Git below
 `engines.git` makes the host check run first and nothing else
-([decision](evidence/WO-258/decisions.md#wo-258-d009)).
+([decision](evidence/WO-260/decisions.md#wo-260-d010--the-git-floor-is-git-2310-and-wo-258-d009-is-superseded)).
 The generated check includes the runtime manifest, active pinned snapshot
 and harness bundle;
 `npm run sync` repairs stale derived artifacts. Then `kit-verify` runs instead
@@ -892,6 +903,7 @@ reason, including with `--list`, and records no gate result.
 | `docs-check-fixtures` | core product roadmap |
 | `evidence-sources` | package sources and recorded evidence editions |
 | `feedback-evidence` | core feedback evidence edition |
+| `git-surface` | the kit's Git surface is recorded and confirmed against the Git floor in core |
 | `github-body` | core outward-vocabulary control data |
 | `harness-evidence` | package sources, historical harness baseline and live evidence |
 | `harness-fixtures` | Entropy Reducer baseline history and package sources |

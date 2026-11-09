@@ -10,7 +10,12 @@ import {
   runtimePackageNames,
   runtimeRead,
 } from "./runtime-inputs.mjs";
+import {
+  createScratchRoot,
+  removeTemporaryPath,
+} from "./temporary-root-records.mjs";
 import { createHash, randomUUID } from "node:crypto";
+import { tmpdir } from "node:os";
 import {
   existsSync,
   lstatSync,
@@ -912,6 +917,64 @@ export function latestGateOutcome(root, treeHash, runIds = []) {
   );
 }
 
+/** `git check-attr -z` output for the identity's two attributes over `paths`:
+ * the working tree's attributes, or with `revision` that commit's own
+ * .gitattributes, read through a temporary index populated from it
+ * (`read-tree`, then `check-attr --cached`), which every Git from the
+ * declared floor up supports; `check-attr --source` arrived in Git 2.40. The
+ * index lives in an owned temporary root removed on every exit. A failing Git
+ * names its command, exit code and words, and a release close classes the
+ * stop as the host's runtime, not as its own fault.
+ * @param {string} root @param {string|undefined} revision @param {string[]} paths
+ * @returns {string} */
+export function codeAttributes(root, revision, paths) {
+  const options = {
+    cwd: root,
+    encoding: /** @type {const} */ ("utf8"),
+    maxBuffer: 32 * 1024 * 1024,
+  };
+  /** @param {string} command @param {{status: number|null, signal?: NodeJS.Signals|null, stderr?: string, error?: Error}} result */
+  const unavailable = (command, result) =>
+    Object.assign(
+      new Error(
+        `Generated source classification unavailable: git ${command} exited ${result.status ?? result.signal ?? "without a status"}: ${String(
+          result.stderr || result.error?.message || "no error output",
+        )
+          .trim()
+          .replace(/\s+/g, " ")
+          .slice(0, 600)}`,
+      ),
+      { blockerClass: "host-runtime" },
+    );
+  /** @param {NodeJS.ProcessEnv} [env] */
+  const check = (env) => {
+    const result = spawnSync(
+      "git",
+      [
+        "check-attr",
+        ...(env ? ["--cached"] : []),
+        "-z",
+        "--stdin",
+        "dotln-generated",
+        "dotln-documentation",
+      ],
+      { ...options, env, input: paths.join("\0") + "\0" },
+    );
+    if (result.status !== 0) throw unavailable("check-attr", result);
+    return result.stdout;
+  };
+  if (!revision) return check();
+  const scratch = createScratchRoot(join(tmpdir(), "dotln-identity-index-"));
+  try {
+    const env = { ...process.env, GIT_INDEX_FILE: join(scratch, "index") };
+    const tree = spawnSync("git", ["read-tree", revision], { ...options, env });
+    if (tree.status !== 0) throw unavailable("read-tree", tree);
+    return check(env);
+  } finally {
+    removeTemporaryPath(scratch, { recursive: true, force: true });
+  }
+}
+
 /** Product evidence follows tracked and non-ignored untracked source bytes,
  * independent of staging, reports and generated projections. A path Git marks
  * `dotln-documentation` (the package
@@ -956,39 +1019,11 @@ export function gateCodeIdentity(root, revision) {
       const entry = entries.find((candidate) => candidate.path === pointer[2]);
       if (entry) Object.assign(entry, { mode: "160000", object: pointer[1] });
     }
-  const attributes = spawnSync(
-    "git",
-    [
-      "check-attr",
-      ...(revision ? [`--source=${revision}`] : []),
-      "-z",
-      "--stdin",
-      "dotln-generated",
-      "dotln-documentation",
-    ],
-    {
-      cwd: root,
-      encoding: "utf8",
-      input: entries.map((row) => row.path).join("\0") + "\0",
-      maxBuffer: 32 * 1024 * 1024,
-    },
-  );
-  // A Git below the declared floor (check-attr learned --source in 2.40) is
-  // the usual cause; Git's own exit code and words say which. A release
-  // close classes the stop as the host's runtime, not as its own fault.
-  if (attributes.status !== 0)
-    throw Object.assign(
-      new Error(
-        `Generated source classification unavailable: git check-attr exited ${attributes.status ?? attributes.signal ?? "without a status"}: ${String(
-          attributes.stderr || attributes.error?.message || "no error output",
-        )
-          .trim()
-          .replace(/\s+/g, " ")
-          .slice(0, 600)}`,
-      ),
-      { blockerClass: "host-runtime" },
-    );
-  const fields = attributes.stdout.split("\0"),
+  const fields = codeAttributes(
+      root,
+      revision,
+      entries.map((row) => row.path),
+    ).split("\0"),
     excluded = new Set();
   for (let index = 0; index + 2 < fields.length; index += 3)
     if (fields[index + 2] === "set") excluded.add(fields[index]);

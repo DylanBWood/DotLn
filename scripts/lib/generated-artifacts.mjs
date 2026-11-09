@@ -12,6 +12,18 @@ export const STRUCTURAL_TASKS = [
   "generated",
   "host",
 ];
+/** Core's structural phase: the six every selection runs, with the recorded
+ * Git surface check, which an exported kit does not carry, before the host
+ * task, which stays last so the dispatch bound counts a selection only after
+ * every other structural check has passed. */
+export const CORE_STRUCTURAL_TASKS = Object.freeze([
+  ...STRUCTURAL_TASKS.slice(0, -1),
+  "git-surface",
+  "host",
+]);
+/** The structural phase the checkout at `root` runs. */
+export const structuralTasks = (root) =>
+  isKitRoot(root) ? STRUCTURAL_TASKS : CORE_STRUCTURAL_TASKS;
 
 /** The generated artifacts a selection's own build phase makes current: the
  * compiled runtime and the installed harness. A focused selection judges

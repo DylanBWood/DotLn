@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-260",
+  "verification": "VER-001",
+  "date": "2026-11-09",
+  "subject": {
+    "base": "9adc11723fdf9a5f2e3d52d3ee37d342b6fdddaa",
+    "codeIdentity": "829321f5612f56825c220cfe081dd25a0ffb4f0ef85eda73a18a6c1772d953a4",
+    "entryPhase": "ready-to-verify",
+    "entryAction": "verify",
+    "implementationEditsByVerifier": false
+  },
+  "completeGateConsumed": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "recordedAt": "2026-11-09T06:59:31.254Z",
+    "exitCode": 0,
+    "requiredSuites": 46,
+    "tasks": 122,
+    "validation": "coveringGateCheck accepted the complete row at the current code identity; every task exited 0 and every declared Preflight suite is included"
+  },
+  "observations": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-git-floor.mjs",
+      "finishedAt": "2026-11-09T14:44:07.439Z",
+      "exitCode": 0,
+      "passed": 13,
+      "failed": 0,
+      "result": "All six shim behaviors and their changed call sites pass; old/new attribute readings agree for 8856 paths at the repository HEAD."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-260/verification-001-probes.mjs",
+      "finishedAt": "2026-11-09T14:50:06.935Z",
+      "exitCode": 0,
+      "passed": 5,
+      "failed": 0,
+      "result": "Literal whitespace/Unicode/pathspec paths, macros/info/global attributes, sparse and linked worktrees, real-index preservation on success and failure, intake path handling, backend lookup and current complete-row consumption pass."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-260/verification-001-floor.mjs",
+      "finishedAt": "2026-11-09T14:50:18.460Z",
+      "exitCode": 0,
+      "harnessCheck": [
+        {
+          "version": "git version 2.31.0",
+          "exitCode": 0
+        },
+        {
+          "version": "git version 2.31.0.windows.1",
+          "exitCode": 0
+        },
+        {
+          "version": "git version 2.30.9",
+          "exitCode": 1,
+          "diagnosticNames": [
+            ">=2.31.0",
+            "2.30.9"
+          ]
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'the Git floor admits|Preflight keeps a complete structural' scripts/test-runner.test.mjs",
+      "finishedAt": "2026-11-09T14:49:15.330Z",
+      "exitCode": 0,
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case git_floor",
+      "finishedAt": "2026-11-09T14:48:25.880Z",
+      "exitCode": 0,
+      "result": "The dry run classifies the revision without check-attr --source; an independent attribute failure retains the host-runtime blocker."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs git-surface",
+      "finishedAt": "2026-11-09T14:50:19.756Z",
+      "exitCode": 0,
+      "result": "The candidate's recorded surface passes; F1 demonstrates missing coverage despite this pass."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "finishedAt": "2026-11-09T14:50:35.810Z",
+      "exitCode": 0,
+      "result": "All matched files use Prettier code style."
+    }
+  ],
+  "finding": {
+    "id": "F1",
+    "criterion": "4",
+    "source": "scripts/lib/git-surface.mjs:155",
+    "reproduction": "docs/evidence/WO-260/verification-001-surface.mjs",
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-260/verification-001-surface.mjs",
+    "finishedAt": "2026-11-09T14:48:20.924Z",
+    "exitCode": 1,
+    "fixtureScript": "git ls-tree HEAD 'space # name' --format='%(path)'",
+    "baselineCheckExit": 0,
+    "checkWithoutHashInQuotedPathExit": 1,
+    "hostGitExit": 0,
+    "hostGitOutput": "space # name\n",
+    "shimGitExit": 129,
+    "expectedCheckExit": 1,
+    "actualCheckExit": 0,
+    "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:2)",
+    "actualCheckOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+  },
+  "hostBoundary": {
+    "realGit231Run": false,
+    "source": "WO-260-D013 records the executor's denied source build; verifier enumerated PATH Git programs, Homebrew Cellar/git and /usr/bin/git",
+    "observedVersions": [
+      "git version 2.55.0",
+      "git version 2.50.1 (Apple Git-155)"
+    ],
+    "limit": "No exhaustive disk search and no access to the operator's other host; the criterion's explicit shim fallback applies."
+  },
+  "processCorrections": [
+    {
+      "failure": "The first status read, several oversized document/diff reads and the broad meta console output were truncated; two tool orchestration snippets were rejected by the JavaScript parser before any command ran.",
+      "correction": "Selected status fields and missing source/report portions were reread in smaller slices; meta was recaptured to session scratch and only its relevant summary was emitted; malformed orchestration was corrected. No verdict relies on omitted output."
+    },
+    {
+      "failure": "The first scratch-probe run used a repository-format-0 fixture with a version-1-only refStorage extension and omitted coveringGateCheck's required-suites array.",
+      "correction": "The fixture now sets repositoryformatversion 1 before that extension, and the gate lookup passes the recorded suite inventory. These were verifier apparatus errors, not product findings."
+    },
+    {
+      "failure": "The next scratch run incorrectly demanded separate focused Preflight rows despite an accepted complete review row.",
+      "correction": "The skill and handoff-ledger admit the complete row as the alternative; the probe now verifies that row's complete inventory includes every Preflight suite. The final saved probe passes all five cases."
+    },
+    {
+      "failure": "The first final document gate exited 1 because the newly authored D026 dispatch field lacked its required control prefix.",
+      "correction": "Corrected the unfiled decision to resume: verify; WO-260, VER-001, refreshed the generated decisions index and reran the document gate. This is a verifier-authored document correction, not an implementation finding."
+    },
+    {
+      "failure": "The first verification-result attempt refused the report actor header because it included accountLabel, which the supplied Codex completion flags do not normalize into the actor. Canonical status remained verifying with no verdict.",
+      "correction": "Removed the extra field from the unfiled report to match the exact expected actor printed by the command; repeated document validation after this last edit before recording the result."
+    }
+  ],
+  "documents": {
+    "gate": "npm run test:docs",
+    "binding": "The VerificationCompleted event consumes and records the passing document row after the last authored report/evidence/decision edit."
+  },
+  "limits": [
+    "The shim is not a real Git 2.31.0 binary.",
+    "No complete product gate was rerun by this verifier; its current-identity row is consumed.",
+    "No worker was launched; the verifier reproduced the claims directly.",
+    "The optional provider dollar cap is unenforced because this transport supplies no hard cap control.",
+    "The harness, runner and Git helpers being verified also instrument this verification; F1 additionally executes the fixture script with the host shell and Git independently of the extractor."
+  ]
+}

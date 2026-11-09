@@ -87,9 +87,12 @@ export const judgeRunningNode = (version = process.version, root = TOOL_ROOT) =>
   judgeNodeRuntime(version, declaredNodeRange(root));
 
 // The Git floor's one admitted form, `>=major.minor.patch`: the oldest Git
-// whose behavior the scripts use (`git check-attr --source` arrived in 2.40,
-// GIT_CONFIG_GLOBAL in 2.32). Git's own version string carries a platform
-// tail (`2.39.3 (Apple Git-146)`, `2.41.0.windows.1`), read past here.
+// the kit runs on. Git 2.31.0 rests on two forms the scripts use that it
+// introduced, `rev-parse --path-format` and the environment's configuration
+// pairs (GIT_CONFIG_COUNT with its KEY and VALUE variables); below it they
+// fail with words that name neither the floor nor the version. Git's own
+// version string carries a platform tail (`2.39.3 (Apple Git-146)`,
+// `2.31.0.windows.1`), read past here.
 const GIT_FLOOR = /^>=(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/u;
 const GIT_VERSION = /^git version (\d+)\.(\d+)\.(\d+)/u;
 

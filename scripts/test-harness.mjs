@@ -14,7 +14,7 @@ import {
   releaseCloseKind,
   selfCloseKind,
 } from "./lib/release-close-handoff.mjs";
-const { runGit, shellQuote } = gitCommands;
+const { isolatedGitEnvironment, runGit, shellQuote } = gitCommands;
 // The compatibility spelling lets the new behavioral fixtures execute against
 // the named prior revision, where the exported builder does not exist yet.
 const releaseCloseCommand =
@@ -10168,11 +10168,11 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
   try {
     const payload = (command) =>
       input(root, "PreToolUse", { tool_name: "Bash", tool_input: { command } });
-    // Only the fixture repository's own configuration is judged, and the
-    // system temporary root is a directory that does not hold /tmp.
+    // Only the fixture repository's own configuration is judged: the hook's
+    // Git reads an empty home of the fixture's own. The system temporary
+    // root is a directory that does not hold /tmp.
     const environment = {
-      GIT_CONFIG_GLOBAL: "/dev/null",
-      GIT_CONFIG_NOSYSTEM: "1",
+      ...isolatedGitEnvironment(hooksPath),
       TMPDIR: hooksPath,
       TMP: hooksPath,
       TEMP: hooksPath,

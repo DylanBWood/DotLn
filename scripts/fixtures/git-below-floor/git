@@ -1,0 +1,98 @@
+#!/bin/sh
+# A Git at the declared floor, Git 2.31.0, as far as the kit's call sites can
+# tell. It reports that version, refuses the six forms newer than it the way
+# Git 2.31.0 does (an unknown option exits 129 naming it; rev-parse prints an
+# unknown flag back and exits 0), and drops GIT_CONFIG_GLOBAL and
+# GIT_CONFIG_SYSTEM, which Git 2.31.0 does not read. Every other call runs the
+# host's Git: the next git on PATH after this file's directory. A fixture's
+# own wrapper may stand before this directory and call this file by its path,
+# so a git found before it is never the host's.
+set -f
+
+subcommand=
+takes_value=
+listing=
+for arg do
+  if [ -z "$subcommand" ]; then
+    if [ -n "$takes_value" ]; then
+      takes_value=
+      continue
+    fi
+    case $arg in
+      -C | -c | --git-dir | --work-tree | --namespace | --super-prefix | --config-env) takes_value=1 ;;
+      --version) printf 'git version 2.31.0\n'; exit 0 ;;
+      -*) ;;
+      *) subcommand=$arg ;;
+    esac
+    continue
+  fi
+  [ "$arg" = -- ] && break
+  case $subcommand:$arg in
+    check-attr:--source | check-attr:--source=* | ls-tree:--format | ls-tree:--format=* | fsck:--no-references | fsck:--references)
+      printf "error: unknown option \`%s'\n" "${arg#--}" >&2
+      exit 129
+      ;;
+    worktree:list) listing=1 ;;
+    worktree:-z)
+      if [ -n "$listing" ]; then
+        printf "error: unknown switch \`z'\n" >&2
+        exit 129
+      fi
+      ;;
+    rev-parse:--show-ref-format)
+      printf '%s\n' "$arg"
+      exit 0
+      ;;
+  esac
+done
+if [ "$subcommand" = version ]; then
+  printf 'git version 2.31.0\n'
+  exit 0
+fi
+
+host=
+own=
+first=
+# A fixture's wrapper is a script that may call this file by its path, so a
+# script found while this directory is off PATH is never the host's Git. Only
+# shell builtins judge it: a fixture may narrow PATH to its own wrappers.
+binary() {
+  { [ -x "$1" ] && [ ! -d "$1" ]; } || return 1
+  opening=
+  IFS= read -r opening <"$1" 2>/dev/null
+  case $opening in '#!'*) return 1 ;; esac
+}
+IFS=:
+for directory in $PATH; do
+  [ -n "$directory" ] || continue
+  candidate=$directory/git
+  { [ -x "$candidate" ] && [ ! -d "$candidate" ]; } || continue
+  if [ "$candidate" -ef "$0" ]; then
+    own=1
+  elif [ -n "$own" ]; then
+    host=$candidate
+    break
+  elif [ -z "$first" ] && binary "$candidate"; then
+    first=$candidate
+  fi
+done
+# Called by its path with its directory off PATH, it takes the first Git
+# binary on PATH, or else one on the system's standard utilities path.
+if [ -z "$own" ]; then
+  host=$first
+  if [ -z "$host" ]; then
+    for directory in $(command -p getconf PATH); do
+      if binary "$directory/git"; then
+        host=$directory/git
+        break
+      fi
+    done
+  fi
+fi
+unset IFS
+if [ -z "$host" ]; then
+  printf 'git-below-floor: no host Git on PATH after %s\n' "$0" >&2
+  exit 127
+fi
+unset GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM
+exec "$host" "$@"

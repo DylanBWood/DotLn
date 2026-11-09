@@ -41,6 +41,7 @@ import {
 } from "./lib/suite-evidence.mjs";
 import {
   suites,
+  CORE_STRUCTURAL_TASKS,
   STRUCTURAL_TASKS,
   validateSuites,
   expand,
@@ -3049,7 +3050,7 @@ test("only and document CLI selection execute their declared checks with the pro
       .trim()
       .split("\n")
       .map(JSON.parse);
-    assert.equal(observed.length, STRUCTURAL_TASKS.length);
+    assert.equal(observed.length, CORE_STRUCTURAL_TASKS.length);
     assert.ok(observed[0][0].endsWith("format.cjs"));
     assert.equal((await runGate(["--document", "--serial"], repo)).exitCode, 0);
     observed = readFileSync(join(repo, "observed.jsonl"), "utf8")
@@ -3063,7 +3064,7 @@ test("only and document CLI selection execute their declared checks with the pro
         .find((row) => row.name === "local-runner-double")
         .command.filter((part) => part.endsWith(".mjs")).length -
       1;
-    assert.equal(observed.length, STRUCTURAL_TASKS.length + documentCount);
+    assert.equal(observed.length, CORE_STRUCTURAL_TASKS.length + documentCount);
     assert.ok(observed.some((row) => row[0].includes("build")));
     assert.deepEqual(observed.at(-1).slice(1), ["check"]);
     const repeated = await runGate(["--document", "--serial"], repo);
@@ -3071,7 +3072,7 @@ test("only and document CLI selection execute their declared checks with the pro
     assert.equal(
       readFileSync(join(repo, "observed.jsonl"), "utf8").trim().split("\n")
         .length,
-      STRUCTURAL_TASKS.length + 2 * documentCount,
+      CORE_STRUCTURAL_TASKS.length + 2 * documentCount,
     );
     await assert.rejects(runGate(["--only", "unknown"], repo), /Unknown suite/);
     assert.deepEqual(
@@ -9040,7 +9041,9 @@ test("review composition retains source rows and reruns a task whose latest sing
 });
 
 test("structural tasks lead every selection exactly once before a suite or build starts", async () => {
-  const { STRUCTURAL_TASKS } = await import("./test-runner.mjs");
+  // Core's structural phase adds the recorded Git surface check before host.
+  const { CORE_STRUCTURAL_TASKS: STRUCTURAL_TASKS } =
+    await import("./test-runner.mjs");
   for (const flags of [
     [],
     ["--review"],
@@ -9050,7 +9053,7 @@ test("structural tasks lead every selection exactly once before a suite or build
   ]) {
     const { lines } = await captureGate([...flags, "--list"], root);
     const names = lines.map((line) => line.split(" — ")[0]);
-    assert.deepEqual(names.slice(0, 6), STRUCTURAL_TASKS);
+    assert.deepEqual(names.slice(0, STRUCTURAL_TASKS.length), STRUCTURAL_TASKS);
     for (const name of STRUCTURAL_TASKS)
       assert.equal(names.filter((entry) => entry === name).length, 1);
     if (flags.includes("--document"))
@@ -9175,13 +9178,14 @@ test("host structural check refuses warning and critical samples and reports the
   }
 });
 
-test("the Git floor admits a Git at or above engines.git and names the floor and the version read when it refuses (WO-258)", async (t) => {
+test("the Git floor admits a Git at or above engines.git and names the floor and the version read when it refuses", async (t) => {
   const { checkHost } = await import("./structural-checks.mjs");
-  const floor = ">=2.40.0";
+  const floor = ">=2.31.0";
   for (const version of [
-    "git version 2.40.0",
+    "git version 2.31.0",
+    "git version 2.31.0.windows.1",
+    "git version 2.39.3 (Apple Git-146)",
     "git version 2.55.0",
-    "git version 2.41.0.windows.1",
     "git version 3.0.0",
   ]) {
     const { admitted, message } = judgeGitRuntime(version, floor);
@@ -9189,8 +9193,7 @@ test("the Git floor admits a Git at or above engines.git and names the floor and
     assert.ok(message.includes(floor), message);
   }
   for (const [version, read] of [
-    ["git version 2.31.0", "2.31.0"],
-    ["git version 2.39.3 (Apple Git-146)", "2.39.3"],
+    ["git version 2.30.9", "2.30.9"],
     ["git version 1.99.9", "1.99.9"],
   ]) {
     const { admitted, message } = judgeGitRuntime(version, floor);
@@ -9225,13 +9228,13 @@ test("the Git floor admits a Git at or above engines.git and names the floor and
       limits: { taskBytes: 8192, hostLanes: 1, hostShare: 0.5 },
       requiredPeakBytes: 1,
       fileEvents: null,
-      gitVersion: "git version 2.31.0",
+      gitVersion: "git version 2.30.9",
     },
   );
   assert.equal(refused.exitCode, 1);
   assert.match(
     refused.output,
-    /Git 2\.31\.0 \(git --version\) is below package\.json engines\.git >=2\.40\.0/u,
+    /Git 2\.30\.9 \(git --version\) is below package\.json engines\.git >=2\.31\.0/u,
   );
   t.diagnostic(refused.output.split("\n")[1]);
 });
@@ -10924,8 +10927,12 @@ test("Preflight keeps a complete structural pass after a passing partial and ref
     ],
     { cwd: repo },
   );
-  const { preflightRows, STRUCTURAL_SUITES } =
+  const { preflightRows, structuralSuites } =
     await import("./lib/gate-reuse.mjs");
+  // Core's structural row holds the recorded Git surface check before host,
+  // as the runner's own structural phase runs it.
+  const STRUCTURAL_SUITES = structuralSuites(repo);
+  assert.deepEqual(STRUCTURAL_SUITES, CORE_STRUCTURAL_TASKS);
   const codeIdentity = gateCodeIdentity(repo),
     treeHash = gateTreeHash(repo);
   const time = Date.now();
@@ -10949,6 +10956,22 @@ test("Preflight keeps a complete structural pass after a passing partial and ref
       finishedAt: new Date(time + delta).toISOString(),
     })),
   });
+  // A row of the six a kit runs does not cover core's structural phase.
+  recordGateChecks(repo, [
+    {
+      ...row(-1),
+      requiredSuites: STRUCTURAL_SUITES.filter(
+        (name) => name !== "git-surface",
+      ),
+      taskTimeline: row(-1).taskTimeline.filter(
+        (task) => task.name !== "git-surface",
+      ),
+    },
+  ]);
+  assert.equal(
+    (await preflightRows(repo, codeIdentity, [])).missing[0]?.suite,
+    "structural",
+  );
   recordGateChecks(repo, [row(0)]);
   assert.deepEqual((await preflightRows(repo, codeIdentity, [])).missing, []);
   recordGateChecks(repo, [row(1, true)]);

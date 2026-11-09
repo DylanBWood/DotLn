@@ -1,0 +1,28 @@
+# Criterion 2: the Git floor read through two commands
+
+Recorded 2026-11-09 on this host. Each run put a directory first on PATH whose git prints the named version line for --version and runs the host's Git (/opt/homebrew/bin/git, git version 2.55.0) for everything else.
+
+host git: /opt/homebrew/bin/git (git version 2.55.0)
+=== git version 2.31.0: node scripts/harness.mjs check
+harness check: 43 generated surfaces; local-terms list: present
+exit=0
+=== git version 2.31.0.windows.1: node scripts/harness.mjs check
+harness check: 43 generated surfaces; local-terms list: present
+exit=0
+=== git version 2.30.9: node scripts/harness.mjs check
+Git 2.30.9 (git --version) is below package.json engines.git >=2.31.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected.
+exit=1
+=== git version 2.31.0: npm test -- --only host
+PASS host 0 h 0 min
+suite:host: 8 passed; 0 failed; 0 h 1 min; 8 fresh tasks
+exit=0
+=== git version 2.31.0.windows.1: npm test -- --only host
+PASS host 0 h 0 min
+suite:host: 8 passed; 0 failed; 0 h 1 min; 8 fresh tasks
+exit=0
+=== git version 2.30.9: npm test -- --only host
+FAIL host 0 h 0 min
+  [host] Git 2.30.9 (git --version) is below package.json engines.git >=2.31.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected.
+  [format] Required host structural preflight failed. Repair the named failure and rerun this command.
+  [format] Git 2.30.9 (git --version) is below package.json engines.git >=2.31.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected.
+exit=1

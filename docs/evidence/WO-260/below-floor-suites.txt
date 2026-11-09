@@ -1,0 +1,45 @@
+# Step 8's suites and cases under the below-floor Git
+
+Recorded 2026-11-09 on this host (Git 2.55.0), each run with
+scripts/fixtures/git-below-floor first on PATH. Times are UTC.
+
+## Focused gates (npm test -- --only <suite>), run one after another
+
+harness-fixtures exit=1 started=02:39:58 finished=02:53:39 suite:harness-fixtures: 8 passed; 1 failed; 0 h 14 min; 9 fresh tasks
+target-worktree exit=1 started=02:53:39 finished=03:09:47 suite:target-worktree: 8 passed; 1 failed; 0 h 16 min; 12 fresh tasks
+target-publish exit=0 started=03:09:47 finished=03:13:25 suite:target-publish: 9 passed; 0 failed; 0 h 4 min; 9 fresh tasks
+release exit=1 started=03:13:25 finished=03:29:10 suite:release: 8 passed; 1 failed; 0 h 16 min; 77 fresh tasks
+launchpad: stopped at about 03:38, with runner-fixtures, skeleton and worktree
+unrun, when the serial runs had already taken longer than a complete run
+(WO-260-D016).
+
+The three failures, and what each was:
+
+- harness-fixtures, 'WO-125 F3 runner refuses generated-hook writes throughout
+  the gate and releases on exit' ('runner matrix stays within twice its
+  measured duration'): a duration bound under the full suite's load; alone it
+  passes in 16.6 s on Git 2.55.0 and in 21.0 s under the shim.
+- target-worktree, scripts/test-target-worktree-release.mjs 'WO-221 a
+  registration without a release policy closes with no-release and the
+  literal fallback writes and removes one order's rules': 'working tree is not
+  clean (?? .claude/settings.local.json)' on Git 2.55.0 as well; the case
+  relied on the developer's own global ignore file and now commits the ignore
+  line it needs; it passes on Git 2.55.0.
+- release, release:case:missinggh: timed out after 15 minutes, the shim
+  looping behind a wrapper with PATH narrowed to the fixture's own bin; after
+  the shim's repair it passes under the shim in 7.1 s.
+
+## Single cases under the shim (node scripts/harness.mjs bounded)
+
+- bash scripts/test-release.sh --case git_floor: pass.
+- bash scripts/test-release.sh --case stale_compiler: pass (16.4 s).
+- bash scripts/test-release.sh --case starter_refresh: pass (46.4 s).
+- bash scripts/test-release.sh --case missinggh: pass (7.1 s), after the repair.
+- node --test --test-name-pattern 'WO-246 plan publish lints, pushes to
+  origin' scripts/test-plan-refutation.mjs: pass (11.9 s).
+- node --test --test-name-pattern 'starter refresh publishes one verified
+  commit and preserves every refusal boundary' scripts/test-launchpad-update.mjs:
+  pass (225.5 s).
+- node --test --test-name-pattern 'preserves independent commits, tags,
+  deleted refs and symbolic retargets'
+  packages/skeleton/dist/test/source-change-integrity.test.js: pass (11.8 s).

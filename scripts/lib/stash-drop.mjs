@@ -13,7 +13,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
-import { runGit } from "./git.mjs";
+import { refStorageBackend, runGit } from "./git.mjs";
 
 /** Git's files-backend ref lock also excludes stash pushes/drops in sibling
  * worktrees. Delete by object identity under that lock, never by a stale index.
@@ -21,8 +21,7 @@ import { runGit } from "./git.mjs";
  * prune the loose ref it packed. Remove it only with the last stash entry,
  * or that final entry would reappear after the loose ref is deleted. */
 export function dropInventoriedStash(root, stash, subject, recoveryPath) {
-  const backend = runGit(root, ["rev-parse", "--show-ref-format"]);
-  if (backend !== "files")
+  if (refStorageBackend(root) !== "files")
     throw new Error("stash prune retains unsupported Git ref backend");
   const ref = resolve(
     root,

@@ -3,7 +3,14 @@ import {
   removeTemporaryPath as rmSync,
 } from "./temporary-roots.mjs";
 import { execFileSync, spawnSync } from "node:child_process";
-import { realpathSync, statSync, openSync, closeSync, readSync } from "node:fs";
+import {
+  realpathSync,
+  statSync,
+  openSync,
+  closeSync,
+  readSync,
+  mkdirSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -90,6 +97,64 @@ export const runGit = (cwd, args, options = {}) => {
     throw new Error(failureOf(result, `git ${args.join(" ")} failed`));
   }
   return trim ? result.stdout.trim() : result.stdout;
+};
+
+/** One tree entry of `revision` at the literal `path`: its mode, its type and
+ * its object, read from `ls-tree -z`'s default output, the form every Git
+ * from the declared floor up prints (`ls-tree --format` arrived in 2.36).
+ * Null when the revision holds no entry there; a Git failure throws with
+ * Git's own words. `gitArgs` precede the subcommand, for a reader's safe
+ * `-c` options and `--no-replace-objects`. */
+export const gitTreeEntry = (root, revision, path, gitArgs = []) => {
+  const output = runGit(
+    root,
+    [...gitArgs, "ls-tree", "-z", revision, "--", `:(literal)${path}`],
+    { trim: false },
+  );
+  if (output === "") return null;
+  const entry =
+    /^(\d{6}) ([a-z]+) ([0-9a-f]{40}|[0-9a-f]{64})\t([^\0]*)\0$/u.exec(output);
+  if (entry?.[4] !== path)
+    throw new Error(
+      `git ls-tree printed an unexpected entry for ${path} at ${revision}`,
+    );
+  return { mode: entry[1], type: entry[2], object: entry[3] };
+};
+
+/** The repository's reference backend, read from its own configuration's
+ * `extensions.refStorage`: an absent key means the files backend, the only
+ * one a Git before 2.45 has. `rev-parse --show-ref-format` (Git 2.44) is not
+ * asked, because an older rev-parse prints the unknown flag back and exits 0.
+ * A configuration Git cannot read throws with Git's own words. */
+export const refStorageBackend = (root) =>
+  runGit(root, ["config", "--local", "--get", "extensions.refStorage"], {
+    onFailure: (result) => {
+      if (result.status === 1) return "files";
+      throw new Error(
+        failureOf(result, "git config extensions.refStorage failed"),
+      );
+    },
+  });
+
+/** The variables that keep a child Git from reading the developer's own
+ * global and system configuration on every Git from the declared floor up.
+ * A Git below 2.32 ignores GIT_CONFIG_GLOBAL and reads $HOME/.gitconfig and
+ * $XDG_CONFIG_HOME/git/config, so both homes move inside `root`, a fixture's
+ * temporary root outside any repository's work tree; GIT_CONFIG_GLOBAL names
+ * the same file for a Git that reads it, so a setting a fixture writes there
+ * reaches every Git. GIT_CONFIG_NOSYSTEM drops the system file on all of them.
+ * The home is created here; its .gitconfig is the caller's to write. Merge
+ * the result into the environment of the Git children only when another
+ * child (a harness CLI, a stubbed tool) needs the developer's real home. */
+export const isolatedGitEnvironment = (root) => {
+  const home = join(root, "git-home");
+  mkdirSync(join(home, ".config"), { recursive: true });
+  return {
+    HOME: home,
+    XDG_CONFIG_HOME: join(home, ".config"),
+    GIT_CONFIG_NOSYSTEM: "1",
+    GIT_CONFIG_GLOBAL: join(home, ".gitconfig"),
+  };
 };
 
 /** The tag at `commit`, highest version first, and the nearest tag below it,

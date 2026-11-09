@@ -69,7 +69,7 @@ remote so later starter releases merge in, as the
 ## What runs today
 
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.122.0`.
+This source prepares DotLn `v0.122.1`.
 <!-- DOTLN-RELEASE-END -->
 
 <!-- dotln-what-runs:start -->

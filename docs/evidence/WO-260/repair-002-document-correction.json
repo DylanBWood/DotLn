@@ -1,0 +1,31 @@
+{
+  "command": "npm run test:docs",
+  "recordedAt": "2026-11-09T19:49:06.790Z",
+  "exitCode": 1,
+  "codeIdentity": "00cad38aa337787a27655fd20543fb4fe7eb4692ff1b0db51987e8027cf647c9",
+  "treeHash": "c8620b5f74d00b9a246b44434498517db59fd9f9",
+  "failure": "docs-check: four dispatch labels need the control prefix",
+  "corrections": [
+    {
+      "id": "WO-260-D033",
+      "before": "Repair of VER-002 F1 under criterion 4",
+      "after": "resume: fix; repair of VER-002 F1 under criterion 4"
+    },
+    {
+      "id": "WO-260-D034",
+      "before": "Repair of VER-002; independent review round one",
+      "after": "resume: fix; repair of VER-002; independent review round one"
+    },
+    {
+      "id": "WO-260-D035",
+      "before": "Repair of VER-002; independent review round two",
+      "after": "resume: fix; repair of VER-002; independent review round two"
+    },
+    {
+      "id": "WO-260-D036",
+      "before": "Repair of VER-002; closeout after the final review and complete gate",
+      "after": "resume: fix; repair of VER-002; closeout after the final review and complete gate"
+    }
+  ],
+  "subsequentTasks": "dependent document tasks were not run after docs-check failed"
+}

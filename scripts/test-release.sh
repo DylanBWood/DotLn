@@ -488,6 +488,25 @@ release_close_summary() {
   (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_GH_CORE_REPO="github.com/$github_repo" "$node_bin" "$main/scripts/release.mjs" close "$@")
 }
 
+# A fixture's own Git home, made by scripts/lib/git.mjs's isolatedGitEnvironment
+# beneath directory $1: fixture_git_config prints its global configuration
+# file, and with_git_home runs the rest of its line with the home's variables
+# exported, so a redirect a case writes there reaches every Git from the
+# declared floor up and no developer configuration does.
+git_isolation() {
+  "$node_bin" --input-type=module -e 'const {isolatedGitEnvironment} = await import(process.argv[1]); for (const [name, value] of Object.entries(isolatedGitEnvironment(process.argv[2]))) console.log(`${name}=${value}`);' "$script_dir/lib/git.mjs" "$1"
+}
+fixture_git_config() {
+  git_isolation "$1" | sed -n 's/^GIT_CONFIG_GLOBAL=//p'
+}
+with_git_home() {
+  local directory="$1" line
+  shift
+  local -a isolation=()
+  while IFS= read -r line; do isolation+=("$line"); done < <(git_isolation "$directory")
+  (export "${isolation[@]}"; "$@")
+}
+
 retained_close_output() {
   "$node_bin" - "$main" "$1" <<'JS'
 const fs = require('node:fs'), p = require('node:path');
@@ -3512,7 +3531,8 @@ fs.writeFileSync(file,before.replace(/COMPILER_PACKAGE_VERSION = "[^"]+"/,'COMPI
 JS
   commit_candidate "$main" WO-099 v0.2.1
   git -C "$main" push origin main >/dev/null 2>&1
-  local starter="$fixture/fresh-starter" starter_remote="$fixture/fresh-starter.git" config="$fixture/refresh.gitconfig"
+  local starter="$fixture/fresh-starter" starter_remote="$fixture/fresh-starter.git" config
+  config="$(fixture_git_config "$fixture/refresh")"
   git init -q -b main "$starter"
   git -C "$starter" config user.name Fixture
   git -C "$starter" config user.email fixture@example.invalid
@@ -3541,7 +3561,7 @@ registerHooks({load(url,context,nextLoad){
 }});
 JS
   local output close_code=0
-  output="$(GIT_CONFIG_GLOBAL="$config" CODEX_THREAD_ID=fixture-close-session DOTLN_FIXTURE_LOAD_TRACE="$fixture/load-trace.jsonl" NODE_OPTIONS="${NODE_OPTIONS:-} --import=$fixture/load-trace.mjs" release_close_summary WO-099 --publish)" || close_code=$?
+  output="$(CODEX_THREAD_ID=fixture-close-session DOTLN_FIXTURE_LOAD_TRACE="$fixture/load-trace.jsonl" NODE_OPTIONS="${NODE_OPTIONS:-} --import=$fixture/load-trace.mjs" with_git_home "$fixture/refresh" release_close_summary WO-099 --publish)" || close_code=$?
   printf 'WO239 stale-compiler control exitCode=%s\n' "$close_code"
   printf '%s\n' "$output"
   if [[ "$close_code" != 0 ]]; then retained_close_output "$output"; return 1; fi
@@ -3581,7 +3601,8 @@ release_case_starter_refresh() {
     printf 'missing starter checkout did not block preview before fast-forward\n' >&2; return 1
   fi
   grep -Fq 'no recorded checkout' <<<"$output"
-  local preview_starter="$fixture/preview-starter" preview_remote="$fixture/preview-starter.git" preview_config="$fixture/preview.gitconfig"
+  local preview_starter="$fixture/preview-starter" preview_remote="$fixture/preview-starter.git" preview_config
+  preview_config="$(fixture_git_config "$fixture/preview")"
   git init -q -b main "$preview_starter"
   git -C "$preview_starter" config user.name Fixture
   git -C "$preview_starter" config user.email fixture@example.invalid
@@ -3601,7 +3622,7 @@ release_case_starter_refresh() {
   printf 'nested Finder metadata\n' >"$preview_starter/nested assets/.DS_Store"
   local preview_status
   preview_status="$(git -C "$preview_starter" status --porcelain --untracked-files=all)"
-  output="$(GIT_CONFIG_GLOBAL="$preview_config" release_close_summary WO-099 --publish --dry-run)" || { printf '%s\n' "$output" >&2; return 1; }
+  output="$(with_git_home "$fixture/preview" release_close_summary WO-099 --publish --dry-run)" || { printf '%s\n' "$output" >&2; return 1; }
   grep -Fq 'Starter refresh starter-fixture: preview' <<<"$output"
   grep -Fq "would fast-forward main to $merged_head" <<<"$output"
   grep -Fq "would refresh $preview_head to $merged_head" <<<"$output"
@@ -3679,24 +3700,25 @@ JS
   grep -Fq "origin's configured push URL" <<<"$output"
   test "$(git --git-dir="$starter_remote" rev-parse main)" = "$before"
   git -C "$starter" remote set-url origin https://github.com/dotln-fixture/starter-fixture.git
-  local config="$fixture/refresh.gitconfig"
+  local config
+  config="$(fixture_git_config "$fixture/refresh")"
   printf '[url "%s"]\n insteadOf = https://github.com/dotln-fixture/starter-fixture.git\n' "$starter_remote" >"$config"
   printf 'keep unrelated work\n' >"$starter/local-work.txt"
-  if output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"; then
+  if output="$(with_git_home "$fixture/refresh" release_close_summary WO-099 --publish --dry-run)"; then
     printf 'unrelated starter file did not block close preview\n' >&2; return 1
   fi
   grep -Fq 'tracked or untracked changes' <<<"$output"
   grep -Fxq 'keep unrelated work' "$starter/local-work.txt"
   rm "$starter/local-work.txt"
   printf 'tracked change\n' >>"$starter/.gitignore"
-  if output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"; then
+  if output="$(with_git_home "$fixture/refresh" release_close_summary WO-099 --publish --dry-run)"; then
     printf 'tracked starter edit did not block close preview\n' >&2; return 1
   fi
   grep -Fq 'tracked or untracked changes' <<<"$output"
   grep -Fxq 'tracked change' "$starter/.gitignore"
   cp "$main/scripts/kit/gitignore.template" "$starter/.gitignore"
   ln -s KIT-MANIFEST.json "$starter/.DS_Store"
-  if output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"; then
+  if output="$(with_git_home "$fixture/refresh" release_close_summary WO-099 --publish --dry-run)"; then
     printf 'metadata symlink did not block close preview\n' >&2; return 1
   fi
   grep -Fq 'non-regular Finder metadata' <<<"$output"
@@ -3705,7 +3727,7 @@ JS
   printf 'Finder metadata\n' >"$starter/.DS_Store"
   mkdir -p "$starter/nested assets"
   printf 'nested Finder metadata\n' >"$starter/nested assets/.DS_Store"
-  output="$(GIT_CONFIG_GLOBAL="$config" CODEX_THREAD_ID=fixture-close-session release_close_summary WO-099 --publish)"
+  output="$(CODEX_THREAD_ID=fixture-close-session with_git_home "$fixture/refresh" release_close_summary WO-099 --publish)"
   grep -Fq 'Starter refresh starter-fixture: current' <<<"$output"
   test ! -e "$main/docs/control/local/harness/writer.json"
   test "$(git --git-dir="$starter_remote" rev-parse main)" = "$before"
@@ -3719,7 +3741,7 @@ JS
   pending_before="$(git -C "$main" status --porcelain --untracked-files=all)"
   # The existing-release preview also judges the proposed head while main is behind.
   git -C "$main" reset --hard "$local_head" >/dev/null
-  output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"
+  output="$(with_git_home "$fixture/refresh" release_close_summary WO-099 --publish --dry-run)"
   grep -Fq 'Starter refresh starter-fixture: current' <<<"$output"
   grep -Fq 'preview writes nothing' <<<"$output"
   test "$(git -C "$main" status --porcelain --untracked-files=all)" = "$pending_before"
@@ -3805,8 +3827,9 @@ release_case_git_floor() {
 make_repo git-floor
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
-# A Git below the floor fails the classification's check-attr --source; the
-# stop names git's exit code and words and is classed as the host's runtime.
+# A Git that rejects check-attr --source, as every Git before 2.40 does, still
+# classifies the generated sources at a committed revision: the close reads
+# that revision's attributes through a temporary index.
 local shim real_git output
 shim="$fixture/old-git"
 # The shim stands in front of the fixture's own git wrapper, which it calls.
@@ -3816,27 +3839,50 @@ cat >"$shim/git" <<'SH'
 #!/bin/sh
 for arg in "$@"; do
   case "$arg" in
-    --source=*) printf "error: unknown option \`%s'\n" "$arg" >&2; exit 129 ;;
+    --source=*) printf "error: unknown option \`%s'\n" "${arg#--}" >&2; exit 129 ;;
   esac
 done
 if [ "$1" = "--version" ]; then echo "git version 2.31.0"; exit 0; fi
 exec "$DOTLN_REAL_GIT" "$@"
 SH
 chmod +x "$shim/git"
-if output="$(cd "$main" && DOTLN_REAL_GIT="$real_git" PATH="$shim:$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_GH_CORE_REPO="github.com/$github_repo" "$node_bin" "$main/scripts/release.mjs" close WO-099 --dry-run 2>&1)"; then
-  printf 'error: a Git without check-attr --source passed the dry run\n%s\n' "$output" >&2
+if ! output="$(cd "$main" && DOTLN_REAL_GIT="$real_git" PATH="$shim:$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_GH_CORE_REPO="github.com/$github_repo" "$node_bin" "$main/scripts/release.mjs" close WO-099 --dry-run 2>&1)"; then
+  printf 'error: a Git without check-attr --source stopped the dry run\n%s\n' "$output" >&2
+  exit 1
+fi
+if grep -Fq 'Generated source classification unavailable' <<<"$output"; then
+  printf 'error: the dry run reported the classification unavailable\n%s\n' "$output" >&2
+  exit 1
+fi
+# The manifest carries the reviewed code identity only after the identity
+# computed at the release revision, with its classification, matched it; the
+# summary names the full report that carries the manifest.
+grep -Fq 'Dry run: would fast-forward main to' <<<"$output"
+local report
+report="$(sed -n 's/^Full report: //p' <<<"$output")"
+grep -Eq '"codeIdentity": "[a-f0-9]{64}"' "$main/$report"
+# A Git that fails the classification for another reason still stops the
+# close naming git's exit code and words, classed as the host's runtime.
+local failing="$fixture/failing-git"
+mkdir -p "$failing"
+cat >"$failing/git" <<'SH'
+#!/bin/sh
+if [ "$1" = check-attr ]; then echo "fatal: attribute read failed" >&2; exit 128; fi
+exec "$DOTLN_REAL_GIT" "$@"
+SH
+chmod +x "$failing/git"
+if output="$(cd "$main" && DOTLN_REAL_GIT="$real_git" PATH="$failing:$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_GH_CORE_REPO="github.com/$github_repo" "$node_bin" "$main/scripts/release.mjs" close WO-099 --dry-run 2>&1)"; then
+  printf 'error: a failing check-attr passed the dry run\n%s\n' "$output" >&2
   exit 1
 fi
 "$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
 const assert = require('node:assert/strict'), fs = require('node:fs');
 const record = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 assert.equal(record.blocker.class, 'host-runtime', JSON.stringify(record.blocker));
-assert.match(record.blocker.message, /Generated source classification unavailable: git check-attr exited 129: error: unknown option `--source=/);
-assert.match(record.blocker.message, /Git (?:runtime not judged|2\.31\.0 \(git --version\) is below)/);
-assert.equal(record.blockers.at(-1).class, 'host-runtime');
+assert.match(record.blocker.message, /Generated source classification unavailable: git check-attr exited 128: fatal: attribute read failed/);
 JS
 assert_no_candidate_tag "$main" "$origin"
-printf 'a release close stopped by an old Git records a host-runtime blocker naming git exit code and words\n'
+printf 'a release close dry run under a Git without check-attr --source completes its classification, and a failing check-attr stops it as the host runtime\n'
 }
 
 if [[ -n "$prepare_template" ]]; then

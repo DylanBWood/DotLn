@@ -1,0 +1,123 @@
+[
+  {
+    "arm": "readTrackedTextAtHead",
+    "reverted": [
+      "scripts/worktree.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ readTrackedTextAtHead under the floor Git reads a committed file and refuses an untracked or linked path (93.866ms)"
+    ],
+    "firstError": "Error: notes.md: file is not tracked as a regular file"
+  },
+  {
+    "arm": "validateTargetRecordsCommit",
+    "reverted": [
+      "scripts/lib/target-records.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the target records readers and the planning base check under the floor Git accept a regular committed blob and refuse another mode (216.560958ms)"
+    ],
+    "firstError": "Error: error: unknown option `format=%(objectmode) %(objecttype) %(objectname)'"
+  },
+  {
+    "arm": "readTargetRecord",
+    "reverted": [
+      "scripts/lib/target-record-reader.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the target records readers and the planning base check under the floor Git accept a regular committed blob and refuse another mode (329.522417ms)"
+    ],
+    "firstError": "Error: error: unknown option `format=%(objectmode) %(objecttype) %(objectname)'"
+  },
+  {
+    "arm": "assertPlanningBasePath",
+    "reverted": [
+      "scripts/lib/target-planning.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the target records readers and the planning base check under the floor Git accept a regular committed blob and refuse another mode (438.268042ms)"
+    ],
+    "firstError": "Error: error: unknown option `format=%(objectmode)'"
+  },
+  {
+    "arm": "gateCodeIdentity",
+    "reverted": [
+      "packages/skeleton/src/gate-evidence.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ gateCodeIdentity at a committed revision under the floor Git equals the host Git's identity and the clean tree's (149.245792ms)"
+    ],
+    "firstError": "Error: Generated source classification unavailable: git check-attr exited 129: error: unknown option `source=8617bb42818d7c4610f9da94ed9c5a2f48d95dae'"
+  },
+  {
+    "arm": "dropInventoriedStash",
+    "reverted": [
+      "scripts/lib/stash-drop.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ dropInventoriedStash under the floor Git reads a files backend and drops the inventoried entry (147.085958ms)"
+    ],
+    "firstError": "Error: stash prune retains unsupported Git ref backend"
+  },
+  {
+    "arm": "authorityProbeGit",
+    "reverted": [
+      "scripts/lib/authority-probe.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the authority probe's Git reads no setting planted in the real home's Git configuration (897.026917ms)"
+    ],
+    "firstError": "AssertionError [ERR_ASSERTION]: source/.git"
+  },
+  {
+    "arm": "authorityPayloadGit",
+    "reverted": [
+      "scripts/fixtures/authority-effect.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the authority probe's Git reads no setting planted in the real home's Git configuration (1028.183083ms)"
+    ],
+    "firstError": "AssertionError [ERR_ASSERTION]: git rev-parse --verify refs/heads/probe: fatal: Needed a single revision"
+  },
+  {
+    "arm": "authorityLaunchedGit",
+    "reverted": [
+      "scripts/lib/authority-probe.mjs"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the authority probe's launched harness keeps the real home while its Git children read none of its settings (958.865291ms)"
+    ],
+    "firstError": "AssertionError [ERR_ASSERTION]: real-home"
+  },
+  {
+    "arm": "mainCheckoutIntake",
+    "reverted": [
+      "packages/skeleton/src/harness-host.ts"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the main-intake grant under the floor Git resolves the main checkout from a linked worktree (96.5215ms)"
+    ],
+    "firstError": "Error: Git host observation unavailable"
+  },
+  {
+    "arm": "sourceChangeVerify",
+    "reverted": [
+      "packages/skeleton/src/source-change-worktree.ts"
+    ],
+    "exitCode": 1,
+    "failing": [
+      "✖ the source-change admission under the floor Git admits a sound candidate (304.452125ms)"
+    ],
+    "firstError": "Error: source-change private object store failed strict integrity check"
+  }
+]

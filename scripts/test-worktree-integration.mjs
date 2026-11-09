@@ -2014,7 +2014,10 @@ test("an interrupted stash collision is recorded before its resolution can be ac
     refused.stderr,
     /untracked stash collisions need explicit acknowledgement: 'untracked-fixture.md'/u,
   );
-  assert.match(refused.stderr, /git stash show --include-untracked --patch/u);
+  assert.match(
+    refused.stderr,
+    /git stash show --patch [0-9a-f]+ and, for its untracked files, git show --patch [0-9a-f]+\^3/u,
+  );
   assert.match(refused.stderr, /git add -- 'untracked-fixture.md'/u);
   const pending = JSON.parse(text(f.subject, receiptFile));
   assert.deepEqual(pending.untrackedConflicts, [local]);

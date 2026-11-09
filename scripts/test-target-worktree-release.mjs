@@ -1111,6 +1111,15 @@ test("WO-221 a registration without a release policy closes with no-release and 
     ];
     f.config.repositories.target.hostRules = "literal";
     write(f.main, "dotln.config.json", JSON.stringify(f.config));
+    // The literal fallback writes the operator's local settings, which the
+    // launchpad ignores as the kit's own .gitignore does; the fixture's Git
+    // reads no developer ignore file that could stand in for this line.
+    write(
+      f.main,
+      ".gitignore",
+      readFileSync(join(f.main, ".gitignore"), "utf8") +
+        "/.claude/settings.local.json\n",
+    );
     git(f.main, "add", "-A");
     git(
       f.main,

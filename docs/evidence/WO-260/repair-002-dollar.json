@@ -1,0 +1,290 @@
+{
+  "date": "2026-11-09",
+  "reviewedTree": "80d63058f5f4a17d005f33e0cf5b30cdb1023e4b",
+  "finding": "criteria round 1 F1",
+  "before": [
+    {
+      "name": "plain",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    },
+    {
+      "name": "plain",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "plain\n",
+      "shimExit": 129,
+      "checkExit": 1,
+      "checkOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+    },
+    {
+      "name": "single-quoted literal dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format='literal $'; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "literal $\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    },
+    {
+      "name": "single-quoted literal dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format='literal $'; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "literal $\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    },
+    {
+      "name": "double-quoted escaped dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=\"literal \\$\"; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "literal $\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    },
+    {
+      "name": "double-quoted escaped dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=\"literal \\$\"; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "literal $\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    },
+    {
+      "name": "unquoted escaped dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=literal\\$; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "literal$\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    },
+    {
+      "name": "unquoted escaped dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD --format=literal\\$; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "literal$\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    },
+    {
+      "name": "quoted whole option dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD '--format=literal $'; note=\"dogs' toys\"",
+      "carrier": "shell-file",
+      "hostExit": 0,
+      "hostOutput": "literal $\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    },
+    {
+      "name": "quoted whole option dollar",
+      "body": "msg=\"it's\"; git ls-tree HEAD '--format=literal $'; note=\"dogs' toys\"",
+      "carrier": "embedded-script",
+      "hostExit": 0,
+      "hostOutput": "literal $\n",
+      "shimExit": 129,
+      "checkExit": 0,
+      "checkOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+    }
+  ],
+  "comparison": {
+    "results": [
+      {
+        "name": "single quote",
+        "body": "git ls-tree HEAD --format='literal $'",
+        "carrier": "shell",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "single quote",
+        "body": "git ls-tree HEAD --format='literal $'",
+        "carrier": "embedded",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "double escaped",
+        "body": "git ls-tree HEAD --format=\"literal \\$\"",
+        "carrier": "shell",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "double escaped",
+        "body": "git ls-tree HEAD --format=\"literal \\$\"",
+        "carrier": "embedded",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "unquoted escaped",
+        "body": "git ls-tree HEAD --format=literal\\$",
+        "carrier": "shell",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "unquoted escaped",
+        "body": "git ls-tree HEAD --format=literal\\$",
+        "carrier": "embedded",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "whole quoted",
+        "body": "git ls-tree HEAD '--format=literal $'",
+        "carrier": "shell",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "whole quoted",
+        "body": "git ls-tree HEAD '--format=literal $'",
+        "carrier": "embedded",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "unexpanded dollar in double quotes",
+        "body": "git ls-tree HEAD --format=\"literal $\"",
+        "carrier": "shell",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "unexpanded dollar in double quotes",
+        "body": "git ls-tree HEAD --format=\"literal $\"",
+        "carrier": "embedded",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 1,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "literal head, runtime value",
+        "body": "value=plain; git ls-tree HEAD --format=\"$value\"",
+        "carrier": "shell",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 0,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "literal head, runtime value",
+        "body": "value=plain; git ls-tree HEAD --format=\"$value\"",
+        "carrier": "embedded",
+        "expected": 1,
+        "actual": {
+          "literalProtection": 0,
+          "literalOptionHead": 1
+        }
+      },
+      {
+        "name": "runtime name",
+        "body": "name=format; git ls-tree HEAD \"--${name}=plain\"",
+        "carrier": "shell",
+        "expected": 0,
+        "actual": {
+          "literalProtection": 0,
+          "literalOptionHead": 0
+        }
+      },
+      {
+        "name": "runtime name",
+        "body": "name=format; git ls-tree HEAD \"--${name}=plain\"",
+        "carrier": "embedded",
+        "expected": 0,
+        "actual": {
+          "literalProtection": 0,
+          "literalOptionHead": 0
+        }
+      },
+      {
+        "name": "runtime whole option",
+        "body": "option=--format=plain; git ls-tree HEAD \"$option\"",
+        "carrier": "shell",
+        "expected": 0,
+        "actual": {
+          "literalProtection": 0,
+          "literalOptionHead": 0
+        }
+      },
+      {
+        "name": "runtime whole option",
+        "body": "option=--format=plain; git ls-tree HEAD \"$option\"",
+        "carrier": "embedded",
+        "expected": 0,
+        "actual": {
+          "literalProtection": 0,
+          "literalOptionHead": 0
+        }
+      }
+    ],
+    "corpus": {
+      "literalProtection": {
+        "readings": 10251,
+        "forms": 488,
+        "check": {
+          "exitCode": 0,
+          "output": ""
+        }
+      },
+      "literalOptionHead": {
+        "readings": 10276,
+        "forms": 488,
+        "check": {
+          "exitCode": 0,
+          "output": ""
+        }
+      }
+    }
+  },
+  "comparisonCorrection": "The first scratch comparison failed before testing when JavaScript interpolated a shell ${name} example. A plain JavaScript string preserved that example, and the corrected bounded comparison passed."
+}
