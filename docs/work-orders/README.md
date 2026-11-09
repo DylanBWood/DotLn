@@ -4,9 +4,11 @@
 
 ## Proposed order
 
-- [x] [WO-258] — An instance's first cycle meets the kit · **final-reviewed**
-- [x] [WO-259] — Committed words and filed records · **final-reviewed**
+- [ ] [WO-260] — The kit runs on Git 2.31.0 · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
+- [ ] [WO-261] — An instance's update keeps its own files · **queued**
+- [ ] [WO-262] — Review findings are judged before they are fixed · **queued**
+- [ ] [WO-263] — The complete run takes its exclusive suites in one convoy · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
 - [ ] [WO-193] — An instance's capability requests to core · **queued**
@@ -38,6 +40,22 @@ None.
 
 ## Open
 
+### WO-260
+
+[WO-260 — The kit runs on Git 2.31.0: the six Git forms above it replaced, the declared floor lowered to the operator's work laptop's Git, and a recorded Git surface that stops the next newer form at the gate](WO-260-the-kit-runs-on-git-2-31.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-258: control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-260-the-kit-runs-on-git-2-31.md](WO-260-the-kit-runs-on-git-2-31.md)
+
 ### WO-244
 
 [WO-244 — Paired planning passes and the synthesis pass: the dispatch line carries a host label the pass checks against the host it runs on, a paired pass is refused the reads that would unblind it, &#96;plan start&#96; records the pair, &#96;plan synthesize&#96; compares the two branches and names the collisions, the synthesis role folds the other pass in and files the receipt on the base, and the losing pull request is closed with a comment naming the synthesis; and a reviewed standard pass runs the executor's three reviewer types as Codex workers through &#96;plan review&#96; after its subject is committed and before the refuter (version assigned at activation)](WO-244-paired-planning-passes-and-the-synthesis-pass.md)
@@ -53,6 +71,54 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: machinery
 - Authority: [docs/work-orders/WO-244-paired-planning-passes-and-the-synthesis-pass.md](WO-244-paired-planning-passes-and-the-synthesis-pass.md)
+
+### WO-261
+
+[WO-261 — An instance's update keeps its own files: the update publish refusing a merge that rewrote a file the instance had changed, the words screen leaving out what a session wrote, a tag fetch refused against a remote set to bring none, and a kit launch counted in every spelling](WO-261-an-instances-update-keeps-its-own-files.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-244: not-control-closed; WO-258: control-closed; WO-259: control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-261-an-instances-update-keeps-its-own-files.md](WO-261-an-instances-update-keeps-its-own-files.md)
+
+### WO-262
+
+[WO-262 — Review findings are judged before they are fixed: the ladder's briefs admit a blocking finding only on an input a writer produces or a leak, the executor records its judgment of each finding as typed fields before writing a fix, and the document check refuses a fix recorded against its own judgment](WO-262-review-findings-are-judged-before-they-are-fixed.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-244: not-control-closed; WO-250: control-closed; WO-255: control-closed; WO-261: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md](WO-262-review-findings-are-judged-before-they-are-fixed.md)
+
+### WO-263
+
+[WO-263 — The complete run takes its exclusive suites in one convoy: the queue drains heavy work for them once instead of once per suite, the longest target-worktree file starts first, and WO-222's overlap lever is reassessed against the run it was meant to shorten](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-221: control-closed; WO-222: control-closed; WO-244: not-control-closed; WO-260: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
 
 ### WO-083
 
@@ -193,5 +259,7 @@ None.
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
 [WO-244]: WO-244-paired-planning-passes-and-the-synthesis-pass.md
-[WO-258]: WO-258-an-instances-first-cycle-meets-the-kit.md
-[WO-259]: WO-259-committed-words-and-filed-records.md
+[WO-260]: WO-260-the-kit-runs-on-git-2-31.md
+[WO-261]: WO-261-an-instances-update-keeps-its-own-files.md
+[WO-262]: WO-262-review-findings-are-judged-before-they-are-fixed.md
+[WO-263]: WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md

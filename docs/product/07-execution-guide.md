@@ -1751,7 +1751,11 @@ Preconditions and inputs:
    record it names, files, declines or defers it with its reopening
    condition, and answers in a paste-ready block the instance's next pass
    reads; an item is evidence the operator carried, never operator direction
-   (the 2026-10-20 and 2026-10-21 passes). When the pass files an order for an item,
+   (the 2026-10-20 and 2026-10-21 passes). An ask names the remedy its
+   instance's session chose: the pass reads the evidence under it against
+   what the operator needs from that host before it reads the remedy, and
+   files the remedy only when the two agree (the host-refusal screen below;
+   the 2026-11-08 pass). When the pass files an order for an item,
    its answer says whether the item blocks the instance's next order, so
    the instance waits for the carrying release, or is a convenience with a
    working route today, so the instance continues; a release's Read before
@@ -2176,6 +2180,17 @@ failures behind each are in the
   not measured is `unknown`, never assumed cheap
   ([the 2026-10-28 pass](../planning/passes/document-contract-and-release-close-2026-10-28.md);
   WO-236-D025).
+- An order that adds or tightens a refusal keyed to a host property (a
+  tool's version, a platform, an account) names every host the record shows
+  running the kit, this repository's and each one an instance's block or the
+  operator states, and what the refusal does on each. A refusal that would
+  stop a host the record shows is not filed on an instance's ask: the host
+  under the ask is the requirement, so the order makes the kit work there,
+  or it carries the operator's word that the host is dropped. WO-258
+  declared a Git floor of 2.40 on an instance's ask whose own evidence was
+  a work laptop on Git 2.31, and v0.121.0 refused that laptop at every gate
+  ([the 2026-11-08 pass](../planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md);
+  [WO-260](../work-orders/WO-260-the-kit-runs-on-git-2-31.md)).
 - Five defect classes
   ([the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md)):
   a criterion states a behavior observable on the uncommitted candidate by a
@@ -3474,7 +3489,27 @@ capture's `Items` table too, so a review that traced nothing is never recorded
 as one ([WO-255-D004](../evidence/WO-255/decisions.md#wo-255-d004--a-consistency-report-carries-its-traced-consumers-table-or-it-is-not-recorded)).
 It does not duplicate criterion attacks or design review.
 An issue discovered in another reviewer's brief is transferred,
-not reviewed twice. The executor fixes or records every distinct finding.
+not reviewed twice. The executor judges every distinct finding before it
+fixes one, and records that judgment in the round's decision: which writer
+the kit has (a tool, a role, an author's ordinary text) produces the input
+the finding names, or that none does; whether the failure is open (a copy,
+a broken link or a wrong pass admitted) or closed (a valid input refused
+with a plain remedy); and what the fix costs. It fixes an open failure and
+a closed failure on an input a writer produces, and it records a closed
+failure on an input no writer produces, with no code. A reviewer's
+`blocking` label is the reviewer's claim, never that judgment, and a
+round-one finding blocks on the verifier's standard above: the criterion it
+fails with a supported input, a leak, or behavior `main` had. A parsed
+structure is preferred to a new scanner of source text. WO-259's executor
+wrote and then reverted a second JSON reader for a key spelling no writer
+produces because its reviewer had marked the finding blocking, and thirteen
+of that order's twenty findings were of that kind
+([WO-259-D021](../evidence/WO-259/decisions.md#wo-259-d021),
+[WO-259-D022](../evidence/WO-259/decisions.md#wo-259-d022), reviewed by
+[the 2026-11-08 pass](../planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md));
+[WO-262](../work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md)
+carries the brief, the role text and the record's typed form, and until it
+lands this paragraph is the rule and the executor carries it as text.
 Round two is the recheck: each reviewer whose findings were fixed confirms
 those fixes, then reviews the whole current change against its base again,
 and a new finding is admitted only when it breaks an acceptance criterion or

@@ -4408,6 +4408,14 @@
           "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
           "targets": [],
           "at": "2026-10-30T17:15:36.417Z"
+        },
+        {
+          "sourceRevision": 28,
+          "status": "deferred",
+          "reason": "Source revision 28 read: WO-242's write-back turned product 12's plan-first paragraph from planned to delivered and linked the kit guide and its execution record; the demonstrations and first-screen claims are unchanged, and WO-083 is queued, not active. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
+          "targets": [],
+          "at": "2026-11-09T00:39:17.242Z"
         }
       ]
     },
@@ -24438,6 +24446,16 @@
           "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
           "targets": [],
           "at": "2026-10-31T16:02:16.194Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The cause the 2026-10-31 deferral lacked is named: seven fresh passing complete review rows of 2026-11-06 to 2026-11-08 sit at a median of 45.8 minutes with 24.1 to 42.3 minutes at three or fewer tasks running, because each of the four exclusive rows is placed by its own lead and the queue drains heavy work for each separately; WO-222-D015's reopening condition (a complete-run median above 2,538,373 ms) is met. WO-263 takes the ordering cut (the exclusive rows share the strongest lead among them; the target-worktree group starts its longest file first) with the same-source comparison product 07 requires. The thirty-day plain-gate reading above 600 s is one sample of 2026-10-24 and is not that order's evidence. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-263 is withdrawn or closes negative, or its comparison leaves the complete run above WO-222's before median.",
+          "targets": [
+            "WO-263"
+          ],
+          "at": "2026-11-09T00:39:16.946Z"
         }
       ]
     },
@@ -56168,7 +56186,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-261 step 6: kitWorkerLaunch counts a kit launch whose npm flag follows the script name, with a case per spelling. The active WO-244 edits a line near that recognizer, so the step records whether its merge already made the change and then adds only the missing cases. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-261 is withdrawn, or a session passes subagentCap on uncounted launches before it closes.",
+          "targets": [
+            "WO-261"
+          ],
+          "at": "2026-11-09T00:39:16.795Z"
+        }
+      ]
     },
     {
       "id": "FUP-7b7e2e59a8ef2e06",
@@ -56190,7 +56219,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Read by this pass: the row's condition (the same nested timeout recurring, or a reproducible cause) is not shown by the records read. Since receipt 065 no verification or final review failed; the 40 failed local gate rows of WO-258 and WO-259 were not read for cause. WO-263 names this row for either of its two comparison runs. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "The same nested timeout recurs, or a reproducible source, load or reservation defect explains it.",
+          "targets": [],
+          "at": "2026-11-09T00:39:17.094Z"
+        }
+      ]
     },
     {
       "id": "FUP-67944ed9c85b7199",
@@ -56212,7 +56250,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "The reviewer's admission rule WO-259-D021 boarded is WO-262 step 1: the canonical brief of every kind and round admits a blocking finding only on a criterion with an input a writer produces, a leak, or behavior main had, and prefers a parsed structure to a new scanner; the review protocol file stays unchanged so no live feedback episode is owed. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-262 is withdrawn, a record in the plain spelling loses its quotation's exemption, or a filed HTML link is read at another path than a browser follows.",
+          "targets": [
+            "WO-262"
+          ],
+          "at": "2026-11-09T00:39:16.643Z"
+        }
+      ]
     },
     {
       "id": "FUP-6fe1262fb31292b3",
@@ -56235,6 +56284,334 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-11-08T20:16:27.465Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Reviewed at this planning session as the operator directed during WO-259: the three questions of WO-259-D022 (the writer that produces the input, the failure's direction, the fix's cost) are adopted as the rule and written into product 07 §Verification review and attack, in force from this pass; WO-262 carries the rule into every review brief and the executor's role text and gives the judgment a typed reviewFindings record the document check reads. The readers WO-259 wrote for such inputs stay (the pass's NoOp 1). [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-262 is withdrawn, or an executor writes code for a review finding without recording that judgment after WO-262 closes.",
+          "targets": [
+            "WO-262"
+          ],
+          "at": "2026-11-09T00:39:16.488Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-45f299e70ae03a95",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::0e36e7dc321d11e7c34e77f034da0eeb457df77748763cf3d3b39e504bf0bb05",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c6322e239795bd8d6964f602e4774922bc0713eb71be5d3d5185a87de5090475",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "Removing the Git floor judgment.",
+          "summary": "7. **Removing the Git floor judgment.** Declined: a Git below 2.31.0 fails inside two forms with messages naming neither the floor nor the version. Useful if the judgment refuses a host the operator names again.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 7: a Git below 2.31.0 fails inside two forms with messages naming neither the floor nor the version, and an instance on an older Git has one declared line to lower; WO-260 keeps the judgment at the lowered floor. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "The judgment refuses a host the operator names again.",
+          "targets": [],
+          "at": "2026-11-09T00:39:18.281Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-05ec350ce7a047bd",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::1d31009a390a47ef772aaea9a2687f655e76ca58820e522c1125e97ca34e81e3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "00af555f52f68ac4ee04ccef09b27219cf806183f980c847c0179e9df3101fff",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "Putting the exclusive convoy above every lead, admitting heavy rows during a drain, widening the target-worktree group, or giving sync-fixtures peers",
+          "summary": "12. **Putting the exclusive convoy above every lead, admitting heavy rows during a drain, widening the target-worktree group, or giving `sync-fixtures` peers** (the scheduler research's other cuts). Declined in WO-263's Design: the first delays a failed suite about twenty minutes, and the others loosen reservations set after measured deadline failures. Useful when WO-263's comparison leaves the run above WO-222's before median.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 13, declined in WO-263's Design: a convoy above every lead delays a failed suite about twenty minutes, and the other cuts loosen reservations set after measured deadline failures (WO-242-D021, WO-258-D029, WO-222). [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-263's comparison leaves the complete run above WO-222's before median.",
+          "targets": [],
+          "at": "2026-11-09T00:39:19.034Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f09f90525fccd687",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::75ae89763212ad1f23aa2c68ed18b9a615823ee24b4f4d78484535ffd1703751",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e25c1ceea8a38582dd33ac97f00c006f76b9b0d0b05f65f0e46f746e0ff6f617",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "Removing the readers WO-259 wrote for inputs no writer produces",
+          "summary": "1. **Removing the readers WO-259 wrote for inputs no writer produces** (WO-259-D022 left the decision to this pass). Declined: the HTML link reading closes an open failure with a shared decoder, and the two closed cases in `requestedQuotes` are a few reviewed lines whose removal buys nothing a real writer meets. Useful when an order editing `requestedQuotes` finds those cases in its way, or one of their tests fails for a reason other than a real writer's case; delete them then.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 1: the HTML link reading in recordLinkTargets closes an open failure with the document check's shared decoder, and the two closed cases in requestedQuotes are a few reviewed lines whose removal costs a change and its review for inputs no writer produces. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "An order that edits requestedQuotes finds those cases in its way, or one of their tests fails for a reason other than a real writer's case; delete the cases then.",
+          "targets": [],
+          "at": "2026-11-09T00:39:17.392Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4eb50b52569cbb61",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::769108cc0b8e5b788bf9b0ee9fbee250260b71d95f5ee956c6a49833e8dac01c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6a8e97fa54e77560a1c0cd97438bae21e98919561fe8a954cb6ea670d0ae5ced",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "Building Git 2.31.0 in the planning session.",
+          "summary": "13. **Building Git 2.31.0 in the planning session.** Not done: the host's auto-mode classifier denied the run before any download, and the pass did not work around it. WO-260's step 11 and criterion 5 carry the host condition and its fallback. Useful when the operator admits the build on this host.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The real-binary evidence is WO-260's step 11 and criterion 5: where the executing host holds a Git 2.31.0 binary the suites run under it, and where it holds none the handoff names the denial or absence and the shim evidence stands. This pass's own build was denied by the host's auto-mode classifier before any download. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-260 is withdrawn, or the work laptop's instance reports a failure on Git 2.31.0 after WO-260's release.",
+          "targets": [
+            "WO-260"
+          ],
+          "at": "2026-11-09T00:39:19.184Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-629e8140473914e2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::7ac04257da78b8e367022559e431219bc5c231a0c67ac046ccae68993416baaa",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7d5a1a63d0603cc2d903bc745b8213285a33805a37ecd694bf5a5bc4166b6c7e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "Shipping the option list of Git 2.31.0's manual as the surface check's data.",
+          "summary": "8. **Shipping the option list of Git 2.31.0's manual as the surface check's data.** Declined: it is derived from the Git project's GPL-licensed documentation, which is the operator's decision to carry. Useful on the operator's word.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 8: that list is derived from the Git project's GPL-licensed documentation, and carrying data derived from it is the operator's decision; WO-260 records the kit's own surface instead. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "The operator decides the kit may carry that derived list.",
+          "targets": [],
+          "at": "2026-11-09T00:39:18.428Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7c523620a485d59e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::9b5ecb22eabc3e9c0fa6e4d7e7c5f5bd34e8ebad94008b0ecd5343ee0de27169",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6313393cc62f47bd5912a570afefd6e08ccf2175de5aac979c0a0aee25eb5061",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "One guide sentence as the whole answer to the seed merges",
+          "summary": "3. **One guide sentence as the whole answer to the seed merges** (the fork's first alternative in its item 2). Declined as the whole answer: a closed order's text changing without notice is what a check is for; WO-261 writes the sentence and the refusal. Useful never on its own.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 3: a sentence alone leaves a closed order's text changing without notice to a session's reading; WO-261 writes the sentence and the update publish refusal together. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-261 is withdrawn.",
+          "targets": [],
+          "at": "2026-11-09T00:39:17.688Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c231274142f79f08",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::9c85bed06906b89cf0e160d5a696f45a403fd21d0c143c04f30fc7887cda9b09",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b06f28959781222d242650b7ffde9087bf7a5a6b52c2dfee9e868073407b31db",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "An advisory for the tag fetch",
+          "summary": "5. **An advisory for the tag fetch** (as the fork's item 5 asked). Declined for a refusal: the hook's advisory arrives with the command's result, after the tags are in the instance. Useful if a session needs that fetch often enough that the operator's terminal is a burden.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 5: the hook's advisory reaches the session with the command's result, after the tags are in the instance; WO-261 step 5 refuses the fetch with the right commands in the reason. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "A session needs that fetch often enough that the operator's terminal is a burden.",
+          "targets": [],
+          "at": "2026-11-09T00:39:17.988Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d0952f1116267c3f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::a4d0a9f0e1256f440a908cf198b0e5605cf54928cbf14dd165e3ce1342be3e74",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e20672932a2c5d9c40d4f0bc78fceaec59992bea2718fab6ba9dc95c6d39e895",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "A marker in session-written intake files, an ignored list of them, or screening only named capture sub-roots",
+          "summary": "6. **A marker in session-written intake files, an ignored list of them, or screening only named capture sub-roots** (the alternatives in the fork's item 8). Declined for one sub-root the screen leaves out. Useful if an instance cannot move its existing files.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 6: a JSON batch and a log cannot carry a marker line, a list drifts from the files, and screening only named sub-roots stops screening a capture written in the wrong place; WO-261 leaves out one session sub-root and counts it. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "An instance cannot move its existing session-written files.",
+          "targets": [],
+          "at": "2026-11-09T00:39:18.135Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3da9181ebcd92fea",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::a5018425be4259a95844f6dbcaab16f590d9a8fc145e226b0c5b38d7cbb08ac4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3244a0012fc95002871d10355976bf8fee3e6d6cbf200a1b96b71ce245ac942c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "A route change for a released target order",
+          "summary": "2. **A route change for a released target order** (the fork's second block, item 6). Declined: the route already stops at `released`, on the release list or the local close record, and which reading missed for the fork's order is not readable here. Useful when the fork reports its close record's cleanup outcome and whether its release list names the order, or a session acts on the stale next step.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 2: the route already stops at released, from the launchpad's release list or the local close record (routeOrder and routeFacts in scripts/lib/drive-route.mjs); which of the two readings missed for the fork's closed target order cannot be told from this repository, and the fork asked nothing. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "The fork reports its close record's cleanup outcome and whether its release list names the order, or a session acts on the stale next step.",
+          "targets": [],
+          "at": "2026-11-09T00:39:17.543Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bc7f0e3b6928d9e9",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::b55ffc324f18510384486a653de3cd562cea2af026def8af117334899550e6c2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "faf7b67cf2c94ff92a149a8df767dfb5ebd792c7b8bc5b7da3330bb5b2663388",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "A starter refresh that leaves a seed alone unless the starter still holds the export's own bytes",
+          "summary": "4. **A starter refresh that leaves a seed alone unless the starter still holds the export's own bytes** (the fork's second alternative). Declined: the starter's history still changes the path, and the instance's merge is where the changes meet. Useful if a starter's own untouched seed is found rewritten against its owner's wish.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 4: the starter's history would still change the path, and the instance's merge is where the two changes meet; WO-261 judges the merge commit instead. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "A starter's own untouched seed is found rewritten against its owner's wish.",
+          "targets": [],
+          "at": "2026-11-09T00:39:17.835Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b7800bf39bacb415",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::c837dc755c8eb59322b48af8cf5379cb6372909a2c936f1df1924ca7a7a52528",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3d591455eb949c2387b06a02834079aff40ee82e4b9433b6716ca0b6fcf86ba3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "Rewriting a starter's older documentation index",
+          "summary": "11. **Rewriting a starter's older documentation index** (FUP-7de23c426e329c34). Left deferred: no order here edits the starter refresh's seed rules, and no instance has reported the red tags.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The pass's NoOp 11 restates WO-258-D014's deferred row; no order of this pass edits the starter refresh's seed rules. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "The target row reopens.",
+          "targets": [
+            "FUP-7de23c426e329c34"
+          ],
+          "at": "2026-11-09T00:39:18.879Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4b8d64e813ab717c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::cb6dfeaaf58ad4f747a65102bf44e21a897184839792a1c0f153f71dea907880",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "060c9ff984988c603b00322bb1562047709f6fa38ed06917f1fb89c801aa590c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "A complete run under a real Git 2.31.0 at every final review.",
+          "summary": "9. **A complete run under a real Git 2.31.0 at every final review.** Declined: it doubles the costliest step of every order to guard a change the surface check names in under a second. Useful if a form reaches a release past that check.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The pass's NoOp 9: it would double the costliest step of every order to guard a change the surface check names in under a second (a scratch extractor of the same reading ran in 0.91 to 0.94 s); the work laptop's own gates are the standing real-binary evidence. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "A Git form above the floor reaches a release past the surface check.",
+          "targets": [],
+          "at": "2026-11-09T00:39:18.578Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8d961207bf145a7d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08::d24b67a24b823fc0f9af26ff4e2398037356c3372699da491694971284bfecc5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b89cdede1ee164eccb8dfd135486911c9af84924e698f09fdb1952c4ca194b11",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-git-231-support-and-fork-returns-pass-recorded-2026-11-08",
+          "title": "Optimizing the roles' cold starts",
+          "summary": "10. **Optimizing the roles' cold starts** (six deferred rows a final review recorded as fired on 2026-11-08). Left deferred: one order's recorded tokens are in the hundreds of millions, against which a role root of about 42 KB per dispatch is not where the cost is. Useful when an allocation can show equivalent usefulness at fewer bytes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The pass's NoOp 10 restates the standing deferral of the role cold-start rows, of which this is the oldest; nothing new is nominated. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "The target row reopens.",
+          "targets": [
+            "FUP-957602bc42e32e1d"
+          ],
+          "at": "2026-11-09T00:39:18.729Z"
         }
       ]
     }
