@@ -110,6 +110,13 @@ the run before any download (its stated reason: code from an external
 source). The pass did not work around the denial. WO-260's criterion 5
 names that host condition and its fallback.
 
+Dated after the orders were judged, from Git's manual at four release
+tags: `rev-parse --show-ref-format` is absent at `v2.43.0` and present at
+`v2.44.0`, and `fsck --[no-]references` is absent at `v2.49.0` and present
+at `v2.50.0`. So one path of the kit needed Git 2.50 while v0.121.0 declared
+2.40 as what the kit needs; the dating is on WO-260's catalog row, since the
+order's text was already frozen.
+
 One behavior difference that is not a failure, for WO-260's executor to
 confirm on a real binary: `-c core.fsmonitor=false` is a boolean from Git
 2.36 on and a hook path before it, where Git runs a command of that name,
@@ -245,9 +252,10 @@ Filed as WO-263, fifth.
 
 - `npm run plan -- failures`, window since receipt 065: two orders made
   ready, no failed verification or final review, no escape at either final
-  review; 47 operator messages journaled during the two orders (31 in
-  WO-259), 37 of them unclassified; both orders' implementation phases
-  above twice their median.
+  review; 47 prompt rows journaled (31 in WO-259, 15 in WO-258, one
+  unassigned), 37 of them unclassified, the host's task notifications
+  counted apart; one completed phase attempt in each order above twice its
+  phase median.
 - WO-244 is active: activated 2026-11-08T22:07:44Z and in implementation in
   its own worktree. It changes `packages/skeleton/src/harness-host.ts`,
   `packages/skeleton/src/loadouts/contributor.ts`,
@@ -419,10 +427,9 @@ and no candidate.
 
 WO-258 (v0.121.0) and WO-259 (v0.122.0) are closed and leave the list.
 WO-260 is first, ahead of the active WO-244; WO-261 and WO-262 follow
-WO-244, in that order, because both edit files it is changing;
-WO-263 follows them, fifth, since it
-shortens later final reviews and stops nothing today; the rest of the list
-keeps its order. `Rules in force` gains the hosts rule.
+WO-244, in that order, because both edit files it is changing; WO-263
+follows them, fifth, since it shortens later final reviews and stops nothing
+today; the rest of the list keeps its order. `Rules in force` gains the hosts rule.
 
 ## Write-backs
 
@@ -501,10 +508,10 @@ What that does not fix. Six Git forms in the kit are newer than 2.31. With Git 2
 - worktree publish reads the order's pull request body with ls-tree --format (Git 2.36) and reports the body as not tracked;
 - release close's classification at a committed revision uses check-attr --source (2.40);
 - a target order's record and planning reads use ls-tree --format;
-- the stash prune reads rev-parse --show-ref-format and stops as an unsupported backend;
+- the stash prune reads rev-parse --show-ref-format (2.44) and stops as an unsupported backend;
 - the hook's grant for the main checkout's intake uses worktree list -z (2.36), so a write from an order worktree to main's intake is not granted;
 - the publication fixtures and the authority probe isolate Git with GIT_CONFIG_GLOBAL (2.32), which 2.31 ignores;
-- the source-change admission uses fsck --no-references and refuses every candidate (the resident's writing path only).
+- the source-change admission uses fsck --no-references (2.50) and refuses every candidate (the resident's writing path only).
 
 What core needs from this host in your next block, because no core session can run Git 2.31.0 (building it was denied on core's host): for each line above, whether you met it and the exact message; which Git ran each step of your first cycle; the output of git --version; and anything else that failed with Git 2.31 first on PATH. After WO-260's release: the result of the four gates with Git 2.31 first on PATH and no newer Git involved.
 
@@ -513,8 +520,52 @@ Two more. An update merge can rewrite files this instance changed: the fork foun
 
 ## Process cost
 
-PROCESS-COST
+Model and effort: Fable 5.1 at max, operator-selected (the session's
+`/model` line; `CLAUDE_EFFORT` max). Usage at entry (23:31:29Z): 103,111
+total tokens (46,946 cached input, 55,013 cache write, 1,146 output, 6
+input; source `claude-transcript-message-usage`, scope dispatch, cost
+unknown). At 00:56:06Z, with the receipt filed: 63,842,218 total
+(62,881,787 cached input, 631,528 cache write, 328,563 output, 340 input;
+same source and scope, cost unknown), 1 h 24 min after the dispatch.
+
+Workers: 2 uses of 20, both `dotln-worker`. The scheduler research took
+0 h 8 min (152,030 tokens, 49 tool uses) and the refuter 0 h 9 min (147,132
+tokens, 19 tool uses); neither was re-tasked.
+
+What the time bought and what it did not. The Git reading is static because
+the real-binary build was denied; it was the pass's longest reading and
+found four forms WO-258 had not, but it is weaker evidence than one run on
+Git 2.31.0, which WO-260's step 11 and the laptop still owe.
+`npm run plan -- conditions --slow` took 0 h 5 min and its document-gate
+probe timed out. The document gate ran once for each defect it found (a
+stale publication lock, a stale lineage index, four shared runs the words
+screen found against the fork's text inside the dispatch capture, each
+reworded, and the uncommitted subject) and once at the end. The research
+worker turned another deferral of the gate-time row into an order with a
+named cause; the alternative was a later pass reading the same rows again.
 
 ## Validation
 
-VALIDATION
+- Refutation: [receipt 066](../refutations/2026-11-09-planning-e5d09eea5c7031a4-066.md),
+  one fresh `dotln-worker` judgment (the generated definition's pin,
+  `claude-opus-5-5` at `xhigh`; effective settings unverified) of the
+  committed subject `a1852997d`, pass scope, launched once and never
+  re-tasked: `aligned-with-findings` for the plan and for each of the four
+  orders, no hold, nineteen known issues (six, six, four and three), each
+  with a reopening observation. Nine unchanged orders carried their
+  verdicts by hash. The known issues are on the four catalog rows of the
+  map with the planner's reading of each for the executor; three change
+  what an executor should do (WO-260's identity equality against the old
+  form, WO-261's failed-read behavior and `-C` spellings, WO-262's leak
+  wording), and the refuter's clean-room note is answered there and left
+  to the operator.
+- `npm run plan -- check`: the judged, committed and workspace subjects
+  agree; the `Rules recorded` entry matched its journal row and digest.
+- `npm run work-orders -- index --check`: both generated pages current;
+  one `criteria advisory`, on the active WO-244's criterion 3, which this
+  pass did not file or amend; none on WO-260 to WO-263.
+- `npm run test:docs`: every task passed on the bytes of the closing
+  commit. The words screen read the changed files against this
+  repository's captures with no shared run after four lines were reworded.
+- Published by `node scripts/refute-plan.mjs publish` after this commit;
+  the pull request's number is in the session's response.
