@@ -1,0 +1,639 @@
+{
+  "report": "docs/verifications/WO-260/VER-003.md",
+  "recordedAt": "2026-11-09T20:24:24.489Z",
+  "subject": {
+    "branch": "wo-260",
+    "head": "9adc11723fdf9a5f2e3d52d3ee37d342b6fdddaa",
+    "codeIdentity": "00cad38aa337787a27655fd20543fb4fe7eb4692ff1b0db51987e8027cf647c9",
+    "codeIdentityMatchesHandoff": true,
+    "candidateTreeAtProbe": "eefe4af0cf70610a47fcf02a4701ec124b0a2c24",
+    "verifyCheckpoint": "refs/dotln/checkpoint/WO-260/11 (5d920f03cd9c919d4240db6c0b223044c7eba361)",
+    "repairDelta": "refs/dotln/checkpoint/WO-260/9..10: code changes only in scripts/lib/git-surface.mjs and scripts/test-git-floor.mjs; documents: decisions (append-only), handoff, meta, repair-002 evidence, decisions index, follow-up register, product 07 (one paragraph), publication TOC source lock, work-order index; 10..11: control projection and order log only."
+  },
+  "consumedRows": {
+    "probe": "docs/evidence/WO-260/verification-003-gates.mjs",
+    "durationMs": 1372,
+    "rowsAtIdentity": [
+      {
+        "checkId": "structural",
+        "gateSelection": "structural",
+        "exitCode": 0,
+        "recordedAt": "2026-11-09T19:40:39.698Z",
+        "treeHash": "970f9fd71ec5549187835f7004f5e5720ea3b29b",
+        "suites": 7,
+        "tasks": 7,
+        "durationMs": 48678
+      },
+      {
+        "checkId": "npm test",
+        "gateSelection": "review",
+        "exitCode": 0,
+        "recordedAt": "2026-11-09T19:40:41.414Z",
+        "treeHash": "970f9fd71ec5549187835f7004f5e5720ea3b29b",
+        "suites": 46,
+        "tasks": 122,
+        "durationMs": 3124489
+      },
+      {
+        "checkId": "structural",
+        "gateSelection": "structural",
+        "exitCode": 0,
+        "recordedAt": "2026-11-09T19:49:06.613Z",
+        "treeHash": "c8620b5f74d00b9a246b44434498517db59fd9f9",
+        "suites": 7,
+        "tasks": 7,
+        "durationMs": 48288
+      },
+      {
+        "checkId": "npm run test:docs",
+        "gateSelection": "document",
+        "exitCode": 1,
+        "recordedAt": "2026-11-09T19:49:06.790Z",
+        "treeHash": "c8620b5f74d00b9a246b44434498517db59fd9f9",
+        "suites": 29,
+        "tasks": 29,
+        "durationMs": 121049
+      },
+      {
+        "checkId": "structural",
+        "gateSelection": "structural",
+        "exitCode": 0,
+        "recordedAt": "2026-11-09T19:52:36.662Z",
+        "treeHash": "df110aa50b34ddb9d36c24966316da0b0b1413d7",
+        "suites": 7,
+        "tasks": 7,
+        "durationMs": 55605
+      },
+      {
+        "checkId": "npm run test:docs",
+        "gateSelection": "document",
+        "exitCode": 0,
+        "recordedAt": "2026-11-09T19:52:36.842Z",
+        "treeHash": "df110aa50b34ddb9d36c24966316da0b0b1413d7",
+        "suites": 29,
+        "tasks": 29,
+        "durationMs": 139913
+      }
+    ],
+    "covering": {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "exitCode": 0,
+      "recordedAt": "2026-11-09T19:40:41.414Z",
+      "treeHash": "970f9fd71ec5549187835f7004f5e5720ea3b29b",
+      "suites": 46,
+      "tasks": 122,
+      "durationMs": 3124489,
+      "everyTaskPassed": true,
+      "reusedOrUnrun": [],
+      "preflightCovered": [
+        "runner-fixtures",
+        "worktree",
+        "target-worktree",
+        "target-publish",
+        "release",
+        "harness-fixtures",
+        "skeleton",
+        "launchpad",
+        "host"
+      ],
+      "preflightMissing": [],
+      "structural": [
+        {
+          "name": "format",
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "name": "generated",
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "name": "git-surface",
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "name": "host",
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "name": "plan-refutation",
+          "exitCode": 0,
+          "executed": true
+        }
+      ]
+    },
+    "note": "The covering npm test review row ran all 122 tasks fresh (none reused or unrun) and covers every Preflight suite. The document rows above precede this report; the verification-result transition consumes the document row run after VER-003's last document edit."
+  },
+  "criterion4Surface": {
+    "probe": "docs/evidence/WO-260/verification-003-surface.mjs",
+    "durationMs": 3598,
+    "cases": 84,
+    "readings": 299,
+    "judged": 255,
+    "optionPassedJudged": 255,
+    "namedJudged": 255,
+    "misses": [],
+    "falseNames": [],
+    "shellErrors": [],
+    "limits": [
+      {
+        "name": "limit: substitution in an assignment value",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a substitution"
+      },
+      {
+        "name": "limit: substitution in an assignment value",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a substitution"
+      },
+      {
+        "name": "limit: substitution in an assignment value",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a substitution"
+      },
+      {
+        "name": "limit: substitution in an assignment value",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a substitution"
+      },
+      {
+        "name": "limit: backtick in an assignment value",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a substitution"
+      },
+      {
+        "name": "limit: backtick in an assignment value",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a substitution"
+      },
+      {
+        "name": "limit: backtick in an assignment value",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a substitution"
+      },
+      {
+        "name": "limit: double-quoted piece inside a word",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "limit: double-quoted piece inside a word",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "limit: double-quoted piece inside a word",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "limit: double-quoted piece inside a word",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "limit: value not ending the word",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word (the value does not end at a blank or separator)"
+      },
+      {
+        "name": "limit: value not ending the word",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word (the value does not end at a blank or separator)"
+      },
+      {
+        "name": "limit: value not ending the word",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word (the value does not end at a blank or separator)"
+      },
+      {
+        "name": "limit: value not ending the word",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word (the value does not end at a blank or separator)"
+      },
+      {
+        "name": "limit: single-quoted piece holding a double quote inside a word",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a single-quoted piece inside a word that holds a double quote and does not end the word"
+      },
+      {
+        "name": "limit: single-quoted piece holding a double quote inside a word",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a single-quoted piece inside a word that holds a double quote and does not end the word"
+      },
+      {
+        "name": "limit: single-quoted piece holding a double quote inside a word",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a single-quoted piece inside a word that holds a double quote and does not end the word"
+      },
+      {
+        "name": "limit: single-quoted piece holding a double quote inside a word",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a single-quoted piece inside a word that holds a double quote and does not end the word"
+      },
+      {
+        "name": "limit: redirection before the option",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a redirection"
+      },
+      {
+        "name": "limit: redirection before the option",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a redirection"
+      },
+      {
+        "name": "limit: redirection before the option",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a redirection"
+      },
+      {
+        "name": "limit: redirection before the option",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": false,
+        "limit": "an option after a redirection"
+      },
+      {
+        "name": "limit: defaulted program",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a program named by a defaulted expansion (D030's consistency note)"
+      },
+      {
+        "name": "limit: defaulted program",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a program named by a defaulted expansion (D030's consistency note)"
+      },
+      {
+        "name": "limit: defaulted program",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a program named by a defaulted expansion (D030's consistency note)"
+      },
+      {
+        "name": "observation: whole name single-quoted before =",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: whole name single-quoted before =",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: whole name single-quoted before =",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: whole name single-quoted before =",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: whole name double-quoted before =",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: whole name double-quoted before =",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: whole name double-quoted before =",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: whole name double-quoted before =",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": true,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: name partly single-quoted",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: name partly single-quoted",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: name partly single-quoted",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: name partly single-quoted",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a quoted piece inside an option's word; only outer quotes are removed"
+      },
+      {
+        "name": "observation: name and value partly double-quoted",
+        "file": "scripts/tool.sh",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "observation: name and value partly double-quoted",
+        "file": "scripts/bin/tool",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "observation: name and value partly double-quoted",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "observation: name and value partly double-quoted",
+        "file": "packages/x/src/tool.ts",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a double-quoted piece elsewhere inside a word"
+      },
+      {
+        "name": "js limit: list held in a variable",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "arguments built from variables or arrays (planning receipt, criterion 4)"
+      },
+      {
+        "name": "js observation: GIT_* shorthand property",
+        "file": "scripts/tool.mjs",
+        "shellPassed": true,
+        "named": false,
+        "limit": "a GIT_* name as a shorthand property; criterion 4 names the ls-tree --format pair"
+      }
+    ],
+    "cli": [],
+    "cliSample": [
+      {
+        "file": "scripts/tool.sh",
+        "expected": "ls-tree --format (scripts/tool.sh:2)",
+        "exit": 1,
+        "named": true
+      },
+      {
+        "file": "scripts/bin/tool",
+        "expected": "ls-tree --format (scripts/bin/tool:2)",
+        "exit": 1,
+        "named": true
+      },
+      {
+        "file": "scripts/tool.mjs",
+        "expected": "worktree list -z (scripts/tool.mjs:2)",
+        "exit": 1,
+        "named": true
+      }
+    ]
+  },
+  "criterion4Corpus": {
+    "probe": "docs/evidence/WO-260/verification-003-corpus.mjs",
+    "durationMs": 3419,
+    "priorReader": "refs/dotln/checkpoint/WO-260/9:scripts/lib/git-surface.mjs",
+    "readings": {
+      "prior": 10248,
+      "current": 10306
+    },
+    "distinctForms": {
+      "prior": 488,
+      "current": 488
+    },
+    "lostOutsideChangedFiles": [],
+    "addedOutsideChangedFiles": [
+      "git --git-dir\tscripts/test-release.sh:484",
+      "git --git-dir\tscripts/test-release.sh:1185",
+      "git --git-dir\tscripts/test-release.sh:1256",
+      "git --git-dir\tscripts/test-release.sh:1625",
+      "git --git-dir\tscripts/test-release.sh:1641",
+      "git --git-dir\tscripts/test-release.sh:1674",
+      "git --git-dir\tscripts/test-release.sh:1759",
+      "git --git-dir\tscripts/test-release.sh:2088",
+      "git --git-dir\tscripts/test-release.sh:2204",
+      "git --git-dir\tscripts/test-release.sh:2207",
+      "git --git-dir\tscripts/test-release.sh:2552",
+      "git --git-dir\tscripts/test-release.sh:3598",
+      "git --git-dir\tscripts/test-release.sh:3619",
+      "git --git-dir\tscripts/test-release.sh:3696",
+      "git --git-dir\tscripts/test-release.sh:3782",
+      "git --git-dir\tscripts/test-worktree.sh:196",
+      "git --git-dir\tscripts/test-worktree.sh:260",
+      "git --git-dir\tscripts/test-worktree.sh:286",
+      "git --git-dir\tscripts/test-worktree.sh:392",
+      "git --git-dir\tscripts/test-worktree.sh:417",
+      "git --git-dir\tscripts/test-worktree.sh:437",
+      "git --git-dir\tscripts/test-worktree.sh:449",
+      "git --git-dir\tscripts/test-worktree.sh:485",
+      "git --git-dir\tscripts/test-worktree.sh:541",
+      "git --git-dir\tscripts/test-worktree.sh:542"
+    ],
+    "lostInChangedFiles": 0,
+    "addedInChangedFiles": 33,
+    "currentCheck": {
+      "exitCode": 0,
+      "output": ""
+    }
+  },
+  "criterion2Floor": {
+    "probe": "docs/evidence/WO-260/verification-003-floor.mjs",
+    "durationMs": 1526,
+    "readings": [
+      {
+        "command": "node scripts/harness.mjs check",
+        "version": "git version 2.31.0",
+        "exitCode": 0,
+        "output": "harness check: 43 generated surfaces; local-terms list: present"
+      },
+      {
+        "command": "node scripts/harness.mjs check",
+        "version": "git version 2.31.0.windows.1",
+        "exitCode": 0,
+        "output": "harness check: 43 generated surfaces; local-terms list: present"
+      },
+      {
+        "command": "node scripts/harness.mjs check",
+        "version": "git version 2.39.3 (Apple Git-146)",
+        "exitCode": 0,
+        "output": "harness check: 43 generated surfaces; local-terms list: present"
+      },
+      {
+        "command": "node scripts/harness.mjs check",
+        "version": "git version 2.30.9",
+        "exitCode": 1,
+        "output": "Git 2.30.9 (git --version) is below package.json engines.git >=2.31.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected."
+      },
+      {
+        "command": "node scripts/structural-checks.mjs host",
+        "version": "git version 2.31.0",
+        "exitCode": 0,
+        "output": "Node runtime v26.9.0 is inside package.json engines.node ^24.15.0 || ^26.0.0.\nGit 2.31.0 is at or above package.json engines.git >=2.31.0.\nHost memory: normal; pressure=1; swapBytes=0; physicalBytes=51539607552; source=proc_pid_rusage.ri_phys_footprint\nPer-lane memory budget 3221225472 bytes covers measured task peak RSS 1509638144 bytes (8 host lanes)\nSTRUCTURAL_RESULT {\"exitCode\":0,\"sample\":{\"pr"
+      },
+      {
+        "command": "node scripts/structural-checks.mjs host",
+        "version": "git version 2.31.0.windows.1",
+        "exitCode": 0,
+        "output": "Node runtime v26.9.0 is inside package.json engines.node ^24.15.0 || ^26.0.0.\nGit 2.31.0 is at or above package.json engines.git >=2.31.0.\nHost memory: normal; pressure=1; swapBytes=0; physicalBytes=51539607552; source=proc_pid_rusage.ri_phys_footprint\nPer-lane memory budget 3221225472 bytes covers measured task peak RSS 1509638144 bytes (8 host lanes)\nSTRUCTURAL_RESULT {\"exitCode\":0,\"sample\":{\"pr"
+      },
+      {
+        "command": "node scripts/structural-checks.mjs host",
+        "version": "git version 2.39.3 (Apple Git-146)",
+        "exitCode": 0,
+        "output": "Node runtime v26.9.0 is inside package.json engines.node ^24.15.0 || ^26.0.0.\nGit 2.39.3 is at or above package.json engines.git >=2.31.0.\nHost memory: normal; pressure=1; swapBytes=0; physicalBytes=51539607552; source=proc_pid_rusage.ri_phys_footprint\nPer-lane memory budget 3221225472 bytes covers measured task peak RSS 1509638144 bytes (8 host lanes)\nSTRUCTURAL_RESULT {\"exitCode\":0,\"sample\":{\"pr"
+      },
+      {
+        "command": "node scripts/structural-checks.mjs host",
+        "version": "git version 2.30.9",
+        "exitCode": 1,
+        "output": "Node runtime v26.9.0 is inside package.json engines.node ^24.15.0 || ^26.0.0.\nGit 2.30.9 (git --version) is below package.json engines.git >=2.31.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected.\nHost memory: normal; pressure=1; swapBytes=0; physicalBytes=51539607552; source=proc_pid_rusage.ri_phys_footprint\nPer-lane memory budget 3221225472 bytes covers "
+      }
+    ]
+  },
+  "otherRuns": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-git-floor.mjs",
+      "exitCode": 0,
+      "observed": "14 tests, 14 pass, 0 fail in 13.4 s; the classification comparison reports 8856 repository paths and 6 fixture paths classified alike"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs git-surface",
+      "exitCode": 0,
+      "observed": "STRUCTURAL_RESULT exitCode 0 with empty output, from the worktree root and, through sh -c, from scripts/ and packages/skeleton/ (findLaunchpad resolves the root from the tool's location, not the working directory)"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-260/verification-002-pairing.mjs",
+      "exitCode": 0,
+      "observed": "VER-002 F1: all twelve carrier/control readings as expected; the two-assignment text exits 1 naming ls-tree --format in both carriers, host Git 0, shim 129"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-260/verification-002-surface.mjs",
+      "exitCode": 0,
+      "observed": "53 texts, 106 readings, 0 failures; the floor mismatch exits 1 naming >=2.40.0 and >=2.31.0"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-260/verification-001-surface.mjs",
+      "exitCode": 0,
+      "observed": "VER-001 F1: the quoted-hash text exits 1 naming ls-tree --format (scripts/tool.sh:2); host Git 0, shim 129"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case git_floor",
+      "exitCode": 0,
+      "observed": "a release close dry run under a Git without check-attr --source completes its classification, and a failing check-attr stops it as the host runtime; 5.5 s"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "observed": "All matched files use Prettier code style (before the VER-003 probes were added; they were formatted and the check rerun on them)"
+    }
+  ],
+  "criterion5Inventory": {
+    "bounded": true,
+    "observed": [
+      "PATH: /opt/homebrew/bin/git reports git version 2.55.0; /usr/bin/git reports git version 2.50.1 (Apple Git-155)",
+      "Homebrew's Git cellar holds 2.55.0 only",
+      "no regular-file executable named git under /opt, /usr/local, ~/.local or ~/bin within four levels; that search does not reach Homebrew's symlinked PATH entry or its deeper cellar binary, which the cellar listing covers",
+      "an earlier DotLn session's scratch under the system temporary root holds a git-2.31.0 directory of source and manual text with no built git executable and no object files"
+    ],
+    "conclusion": "No Git 2.31.0 binary on this host; not an exhaustive disk search. The denied build (D013) was not retried."
+  },
+  "followups": [
+    {
+      "id": "F1",
+      "decision": "WO-260-D037",
+      "reproduction": "docs/evidence/WO-260/verification-003-surface.mjs (js observation: GIT_* shorthand property)",
+      "summary": "The JavaScript reading names a GIT_* identifier only as a member or before ':' in an object literal; a shorthand property passes a scoped GIT_* name to a child Git unnamed. The tree has no such shorthand today."
+    }
+  ],
+  "processCorrections": [
+    "The first surface-probe run included an apostrophe inside \"${unset:-...}\", which this host's sh rejects as a syntax error, and its summary counted JavaScript readings as shell errors; the text was replaced by a braced parameter before an apostrophe and the summary filter corrected before the recorded run.",
+    "The template-literal carrier's expected line was one too low in the first draft; it was corrected before any run.",
+    "One Git inventory command used unmatched zsh globs and zsh did not run it; the cellar was listed again without a glob.",
+    "The bounded wrapper refuses to start outside the worktree root; the subdirectory runs were repeated from the root with sh -c changing directory.",
+    "The first parse of the pairing reproducer's output read the bounded-start line as JSON; it was reparsed from the result object.",
+    "The four probe files failed Prettier when first copied into the evidence directory; they were formatted with prettier --write on those four paths only and rerun from their committed paths, which produced the results above.",
+    "The draft report and this record first said no git executable sits under /opt; the search covered regular files four levels deep and so could not see Homebrew's symlinked entry or its cellar binary. Both were corrected to the search's actual bounds before filing."
+  ]
+}

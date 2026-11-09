@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-260] — The kit runs on Git 2.31.0 · **queued**
+- [x] [WO-260] — The kit runs on Git 2.31.0 · **final-reviewed**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-261] — An instance's update keeps its own files · **queued**
 - [ ] [WO-262] — Review findings are judged before they are fixed · **queued**
@@ -39,22 +39,6 @@ None.
 None.
 
 ## Open
-
-### WO-260
-
-[WO-260 — The kit runs on Git 2.31.0: the six Git forms above it replaced, the declared floor lowered to the operator's work laptop's Git, and a recorded Git surface that stops the next newer form at the gate](WO-260-the-kit-runs-on-git-2-31.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-258: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-260-the-kit-runs-on-git-2-31.md](WO-260-the-kit-runs-on-git-2-31.md)
 
 ### WO-244
 
@@ -111,7 +95,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-221: control-closed; WO-222: control-closed; WO-244: not-control-closed; WO-260: not-control-closed.
+- References: WO-221: control-closed; WO-222: control-closed; WO-244: not-control-closed; WO-260: control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

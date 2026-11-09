@@ -1,0 +1,1169 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-260",
+  "verification": "VER-002",
+  "observedAt": "2026-11-09T17:40:16.626021+00:00",
+  "subject": {
+    "head": "9adc11723fdf9a5f2e3d52d3ee37d342b6fdddaa",
+    "codeIdentity": "636e663b66ac5d871322cf8956c9609baad2a48bbebb405813c029288375da94",
+    "repairComparison": [
+      "refs/dotln/checkpoint/WO-260/5",
+      "refs/dotln/checkpoint/WO-260/6"
+    ]
+  },
+  "entryState": {
+    "phase": "ready-to-verify",
+    "latestVerification": "VER-001",
+    "latestVerdict": "fail",
+    "legalNextActions": [
+      "verify",
+      "fix"
+    ],
+    "eventCount": 6,
+    "observedAt": "2026-11-09T17:25:57.216Z"
+  },
+  "completeGate": {
+    "identity": "636e663b66ac5d871322cf8956c9609baad2a48bbebb405813c029288375da94",
+    "candidateTree": "70f16ddd779ab8a8114660e5a777794618a7dc31",
+    "completeAt": "2026-11-09T17:19:25.058Z",
+    "completeExit": 0,
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "requiredSuites": 46,
+    "taskCount": 122,
+    "coveredPreflight": [
+      "runner-fixtures",
+      "worktree",
+      "target-worktree",
+      "target-publish",
+      "release",
+      "harness-fixtures",
+      "skeleton",
+      "launchpad",
+      "host"
+    ],
+    "durationMs": 3181567,
+    "evidenceRef": "host-gate:636e663b66ac5d871322cf8956c9609baad2a48bbebb405813c029288375da94:npm test",
+    "structuralTasks": [
+      {
+        "name": "format",
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "generated",
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "git-surface",
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "host",
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "plan-refutation",
+        "exitCode": 0,
+        "executed": true
+      }
+    ]
+  },
+  "repairedOriginalFinding": {
+    "baselineExit": 0,
+    "withoutHashExit": 1,
+    "shimExit": 129,
+    "script": "git ls-tree HEAD 'space # name' --format='%(path)'",
+    "hostGitExit": 0,
+    "hostGitOutput": "space # name\n",
+    "expectedExit": 1,
+    "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:2)",
+    "actualExit": 1,
+    "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:2)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:2)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+  },
+  "shellMatrix": {
+    "cases": 53,
+    "readings": 106,
+    "failures": 0,
+    "floorMismatch": {
+      "exitCode": 1,
+      "output": "scripts/lib/git-surface.json floor \">=2.40.0\" differs from package.json engines.git \">=2.31.0\": confirm every recorded form against the manual of the declared floor's Git, then set the record's floor."
+    },
+    "results": [
+      {
+        "name": "word 'alpha # beta'",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word 'alpha # beta'",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation 'alpha # beta'",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation 'alpha # beta'",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment 'alpha # beta'",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment 'alpha # beta'",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word \"alpha # beta\"",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word \"alpha # beta\"",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation \"alpha # beta\"",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation \"alpha # beta\"",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment \"alpha # beta\"",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment \"alpha # beta\"",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word a' # b'c",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word a' # b'c",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation a' # b'c",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation a' # b'c",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment a' # b'c",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment a' # b'c",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word a\\ #b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word a\\ #b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation a\\ #b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation a\\ #b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment a\\ #b",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment a\\ #b",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word \\#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word \\#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation \\#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation \\#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment \\#b",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment \\#b",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word x#y",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word x#y",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation x#y",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation x#y",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment x#y",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment x#y",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word 'a;b|c&d(e)<f>g`h'",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word 'a;b|c&d(e)<f>g`h'",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation 'a;b|c&d(e)<f>g`h'",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation 'a;b|c&d(e)<f>g`h'",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment 'a;b|c&d(e)<f>g`h'",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment 'a;b|c&d(e)<f>g`h'",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word a\\;b\\|c\\&d\\(e\\)\\<f\\>g",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word a\\;b\\|c\\&d\\(e\\)\\<f\\>g",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation a\\;b\\|c\\&d\\(e\\)\\<f\\>g",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation a\\;b\\|c\\&d\\(e\\)\\<f\\>g",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment a\\;b\\|c\\&d\\(e\\)\\<f\\>g",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment a\\;b\\|c\\&d\\(e\\)\\<f\\>g",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word 'a'\\ #b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word 'a'\\ #b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation 'a'\\ #b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation 'a'\\ #b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment 'a'\\ #b",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment 'a'\\ #b",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word 'a'\\#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word 'a'\\#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation 'a'\\#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation 'a'\\#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment 'a'\\#b",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment 'a'\\#b",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word ''#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word ''#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation ''#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation ''#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment ''#b",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment ''#b",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word \"\"#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word \"\"#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation \"\"#b",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation \"\"#b",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment \"\"#b",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment \"\"#b",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word 'a\\b # c'",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word 'a\\b # c'",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation 'a\\b # c'",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation 'a\\b # c'",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment 'a\\b # c'",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment 'a\\b # c'",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "word \"a\\\\b # c\"",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "word \"a\\\\b # c\"",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continuation \"a\\\\b # c\"",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continuation \"a\\\\b # c\"",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "real comment \"a\\\\b # c\"",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "real comment \"a\\\\b # c\"",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "empty comment before next command",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 3
+      },
+      {
+        "name": "empty comment before next command",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "comment following separator",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "comment following separator",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "tab before comment",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "tab before comment",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "continued hash word",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "continued hash word",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "continued real comment",
+        "form": "file",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 2
+      },
+      {
+        "name": "continued real comment",
+        "form": "string",
+        "optionPassed": false,
+        "checkExit": 0,
+        "sourceLine": 1
+      },
+      {
+        "name": "quoted global value",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "quoted global value",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "double quoted global value",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "double quoted global value",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "earlier apostrophe",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "earlier apostrophe",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "earlier quoted double quote",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "earlier quoted double quote",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "ansi escaped quote",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "ansi escaped quote",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      },
+      {
+        "name": "ansi double escape",
+        "form": "file",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 2
+      },
+      {
+        "name": "ansi double escape",
+        "form": "string",
+        "optionPassed": true,
+        "checkExit": 1,
+        "sourceLine": 1
+      }
+    ]
+  },
+  "corpusComparison": {
+    "baseline": "refs/dotln/checkpoint/WO-260/5",
+    "oldFindings": 10232,
+    "currentFindings": 10239,
+    "currentForms": 488,
+    "comparisonExcludes": [
+      "scripts/lib/git-surface.mjs",
+      "scripts/test-git-floor.mjs"
+    ],
+    "lost": [],
+    "added": [
+      "scripts/test-worktree.sh:433: commit -m"
+    ],
+    "candidateCheck": {
+      "exitCode": 0,
+      "output": ""
+    }
+  },
+  "pairingFinding": {
+    "baseline": "refs/dotln/checkpoint/WO-260/5",
+    "results": [
+      {
+        "name": "baseline without newer option",
+        "carrier": "shell-file",
+        "script": "msg=\"it's\"; git ls-tree HEAD; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "100644 blob ee8c1ee49b4799bbd170233915a897c19e3b55e1\tfixture.txt\n",
+        "shimExit": 0,
+        "priorExit": 0,
+        "expectedCheckExit": 0,
+        "actualCheckExit": 0,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:3)",
+        "actualOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+      },
+      {
+        "name": "baseline without newer option",
+        "carrier": "embedded-script",
+        "script": "msg=\"it's\"; git ls-tree HEAD; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "100644 blob ee8c1ee49b4799bbd170233915a897c19e3b55e1\tfixture.txt\n",
+        "shimExit": 0,
+        "priorExit": 0,
+        "expectedCheckExit": 0,
+        "actualCheckExit": 0,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.mjs:1)",
+        "actualOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+      },
+      {
+        "name": "plain newer option",
+        "carrier": "shell-file",
+        "script": "git ls-tree HEAD --format=plain",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:3)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      },
+      {
+        "name": "plain newer option",
+        "carrier": "embedded-script",
+        "script": "git ls-tree HEAD --format=plain",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.mjs:1)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      },
+      {
+        "name": "one quoted assignment",
+        "carrier": "shell-file",
+        "script": "msg=\"it's\"; git ls-tree HEAD --format=plain",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:3)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      },
+      {
+        "name": "one quoted assignment",
+        "carrier": "embedded-script",
+        "script": "msg=\"it's\"; git ls-tree HEAD --format=plain",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.mjs:1)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      },
+      {
+        "name": "two quoted assignments",
+        "carrier": "shell-file",
+        "script": "msg=\"it's\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 0,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:3)",
+        "actualOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+      },
+      {
+        "name": "two quoted assignments",
+        "carrier": "embedded-script",
+        "script": "msg=\"it's\"; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 0,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.mjs:1)",
+        "actualOutput": "STRUCTURAL_RESULT {\"exitCode\":0,\"output\":\"\"}\n"
+      },
+      {
+        "name": "blank before separator",
+        "carrier": "shell-file",
+        "script": "msg=\"it's\" ; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:3)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      },
+      {
+        "name": "blank before separator",
+        "carrier": "embedded-script",
+        "script": "msg=\"it's\" ; git ls-tree HEAD --format=plain; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.mjs:1)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      },
+      {
+        "name": "quoted option value control",
+        "carrier": "shell-file",
+        "script": "msg=\"it's\"; git ls-tree HEAD --format='plain'; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.sh:3)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.sh:3)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      },
+      {
+        "name": "quoted option value control",
+        "carrier": "embedded-script",
+        "script": "msg=\"it's\"; git ls-tree HEAD --format='plain'; note=\"dogs' toys\"",
+        "hostGitExit": 0,
+        "hostGitOutput": "plain\n",
+        "shimExit": 129,
+        "priorExit": 1,
+        "expectedCheckExit": 1,
+        "actualCheckExit": 1,
+        "expectedDiagnostic": "ls-tree --format (scripts/tool.mjs:1)",
+        "actualOutput": "Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\nSTRUCTURAL_RESULT {\"exitCode\":1,\"output\":\"Git form not in scripts/lib/git-surface.json: ls-tree --format (scripts/tool.mjs:1)\\nConfirm each form against the manual of the Git that package.json engines.git >=2.31.0 declares; then run node scripts/structural-checks.mjs git-surface --record and review the record's diff, scoping a form above the floor to the files that need it with its reason.\"}\n"
+      }
+    ]
+  },
+  "binaryInventory": {
+    "scope": "Git executables on PATH, system Git, and Homebrew Git cellar only",
+    "results": [
+      {
+        "scope": "Homebrew Git cellar",
+        "exit": 0,
+        "version": "git version 2.55.0"
+      },
+      {
+        "scope": "system",
+        "exit": 0,
+        "version": "git version 2.50.1 (Apple Git-155)"
+      }
+    ],
+    "git231Found": false
+  },
+  "checks": [
+    {
+      "command": "node --test scripts/test-git-floor.mjs",
+      "tests": 14,
+      "passed": 14,
+      "failed": 0,
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 8772,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 8772,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 129826680,
+        "peakRssBytes": 274038784,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-09T17:27:55.300Z",
+        "finishedAt": "2026-11-09T17:28:04.072Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "npm run format:check",
+      "result": "All matched files use Prettier code style!",
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 10746,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 10746,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 571565752,
+        "peakRssBytes": 648708096,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-09T17:30:17.589Z",
+        "finishedAt": "2026-11-09T17:30:28.335Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/structural-checks.mjs git-surface",
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 1277,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1277,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 189059448,
+        "peakRssBytes": 227934208,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-09T17:34:28.698Z",
+        "finishedAt": "2026-11-09T17:34:29.975Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node docs/evidence/WO-260/verification-002-pairing.mjs",
+      "result": "Expected-refusal assertion fails for both carriers; see pairingFinding",
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 1269,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1269,
+            "exitCode": 1,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 29953936,
+        "peakRssBytes": 102400000,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-11-09T17:42:29.719Z",
+        "finishedAt": "2026-11-09T17:42:30.988Z",
+        "exitCode": 1,
+        "executed": true
+      }
+    }
+  ],
+  "review": {
+    "executionReports": 9,
+    "repairReports": 7,
+    "repairLane": "docs/control/local/reviews/WO-260/repair-3",
+    "newWorkers": 0,
+    "installedFilesChanged": 17,
+    "installedNonDigestChanges": [],
+    "newSuppressionDirectives": [],
+    "generatedEvidence": "Current complete row includes generated, harness and console checks; feedback and console inputs follow the WO-260 edition."
+  },
+  "processCorrections": [
+    "The first status read emitted the entire order history and was truncated. The current-order fields were reread with orders removed before dispatch.",
+    "Several later source/report searches and generated diffs exceeded their output budgets. Missing verdict-relevant slices were reread, duplicated report wrappers were omitted, and manifest inputs and capture suffix were selected structurally. No verdict relies on a truncated batch.",
+    "A first working-tree comparison treated untracked additions as absent. The repair delta was established with checkpoint 5 against checkpoint 6 instead.",
+    "A first installed-file comparison normalized only 40- and 64-character digests, omitting the installed FNV digests. The corrected 16/40/64-character comparison found only digest substitutions in all 17 installed files.",
+    "One exploratory search named a nonexistent optional verification-report helper. The report contract was obtained from the verifier skill, product 07 and the actual handoff-ledger; no required input remains unresolved."
+  ],
+  "limits": [
+    "No real Git 2.31.0 ran; the inventory was limited to PATH, system Git and the Homebrew Git cellar. D013 records the prior build denial.",
+    "No new complete product gate was run; the current passing review row was consumed. The final document row is recorded by VerificationCompleted.",
+    "The broader static-reading limitations remain with FUP-d7ca8a89d9313a2b. This finding uses a literal command between ordinary quoted assignments, the supported D030 test class."
+  ],
+  "usage": {
+    "entryTokens": 51337,
+    "handoffTokens": 5429985,
+    "source": "codex-transcript-counter",
+    "scope": "dispatch",
+    "entryCutoff": "2026-11-09T17:26:32.140Z",
+    "handoffCutoff": "2026-11-09T17:42:30.716Z",
+    "costUsd": null
+  }
+}
