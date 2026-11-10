@@ -44,7 +44,7 @@ codebase before any order, recorded 2026-10-24), allocated by
 executor's grant to write it); WO-264 (open: it makes each shared rule a
 record that names its roles, and this order's sentence is such a record
 naming three).
-**Recommended placement:** ninth, after WO-267. It is the first of the
+**Recommended placement:** tenth, after WO-267. It is the first of the
 work instance's three jobs.
 **Cites (read these sections):** `scripts/resume.mjs` (`targetBriefing`,
 `executionBriefing`, `verificationBriefing`);
@@ -230,6 +230,9 @@ reopening conditions in `docs/evidence/WO-268/decisions.md`.
   upgrading that the seeded page changed and where the new text is.
 - The Entropy Reducer on a target stays what it is, a debt review; its
   findings may cite a note and do not write one.
+- From this pass's first refutation: The recurring cost is measured with
+  two notes while the use is a large codebase studied area by area: record
+  the briefing's time and bytes with twenty notes in the fixture as well.
 
 **Non-goals:** a scanner or an index generated from the target's tree; a
 refusal on an old note; reading a note's prose in a check; any change to

@@ -64,7 +64,7 @@ which removed this order's document-check refusal and added the fix rule,
 the header and the paired round.
 **Depends on:** WO-250 (closed, v0.111.0) and WO-255 (closed: the ladder,
 the review helper and its briefs this order adds a rule to). No open order.
-**Recommended placement:** first. Every later order's reviews and repairs
+**Recommended placement:** second. Every later order's reviews and repairs
 run under it, in core and in an instance whose model budget is limited,
 and every later order in this sequence is a paired round whose record
 this order makes readable.
@@ -305,8 +305,8 @@ decisions.
    that a paired round's reviewers are blind to one another. `npm run
    work-orders -- index --check` passes on an order whose header carries
    the line with each of the three values and shows the value on that order's card, refuses any other value on an open
-   order naming the order and the line, and passes a closed order's file
-   whatever its line holds.
+   order naming the order and the line, passes an open order whose header has no such line, which runs the full
+   ladder, and passes a closed order's file whatever its line holds.
 5. In the document fixture, `node scripts/docs-check.mjs` passes a current
    decision record whose `roundFindings` holds one entry of each class,
    fails naming the decision and the field on an entry whose class or
@@ -362,6 +362,11 @@ reopening conditions in `docs/evidence/WO-262/decisions.md`.
   helper, so no second text is kept in step.
 - A fix after a failed final review follows the same fix rule; the final
   reviewer's own reviews are not this order's subject.
+- From this pass's first refutation: The executor now judges findings on
+  its own change: the watch is the record's five-of-eight share of failed
+  first verifications and any verification that fails on a finding the
+  round's decision declined, which the pass that reads the paired rounds
+  also reads.
 
 **Non-goals:** a check that reads a decision's or a report's prose, or
 that refuses a fix; a field in the review protocol; removing the readers

@@ -45,7 +45,7 @@ and the reading.
 **Depends on:** WO-221 and WO-222 (closed: the priority leads, the light
 classification and the overlap lever this order reorders and reassesses).
 No open order.
-**Recommended placement:** second, after WO-262. It has no open
+**Recommended placement:** third, after WO-262. It has no open
 dependency, and each order after it pays several complete runs.
 **Cites (read these sections):** `scripts/test-runner.mjs`
 (`suitePriorityLeads`, `expandSuiteTasks`, `explicitlyIsolated`,
@@ -335,6 +335,15 @@ reopening conditions in `docs/evidence/WO-263/decisions.md`.
 - FUP-7b7e2e59a8ef2e06 (WO-225-D019, a timing-sensitive nested failure):
   if either comparison run meets that failure, the executor records it
   against that row.
+- From this pass's first refutation: No criterion requires the after run
+  to be shorter: deliberate, since a duration as a criterion's subject is
+  the bookkeeping class; the decisions state both walls, and an after run
+  not shorter by about one drain is a negative result the next pass
+  judges.
+- From this pass's first refutation: Shards share a reservation sized for
+  one process and may interfere under other load after the order closes: a
+  case that passes alone and fails sharded is recorded against this row by
+  its title.
 
 **Non-goals:** any change to a suite's assertions, deadlines, memory
 budget or reservation; `sync-fixtures`' exclusivity or its case; the group

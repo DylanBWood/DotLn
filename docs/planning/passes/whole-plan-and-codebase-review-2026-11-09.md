@@ -27,8 +27,9 @@ The pass ran in Claude Code on `claude-fable-5-2` at `xhigh`
 `planning/2026-11-09-whole-plan-and-codebase-review` opened from clean
 `main` at `06c1ddc1a` (v0.122.1).
 
-During the pass the operator added twenty messages, each captured unedited
-beside the dispatch (the same file name with `-midturn-1` to `-midturn-20`)
+During the pass the operator added twenty-two messages, each captured
+unedited beside the dispatch (the same file name with `-midturn-1` to
+`-midturn-22`)
 and journaled by the prompt hook. In paraphrase, with each capture's
 SHA-256, which is the journal's digest of the message:
 
@@ -114,6 +115,12 @@ SHA-256, which is the journal's digest of the message:
     pass that wants it, to be paraphrased or mailed from the work
     machine. Planning passes have such a place; a final review should
     write to one from what it observed.
+17. The branch is a draft (`a366926793c327b76be17700fc3c70c632d5d761cbc6bb3bf90c15afad3e6bdc`
+    and `954fa89877554481e5d92b9de20402b24d718e570334404ba38980e450327184`).
+    The pass had answered that the two requests needed a second pass,
+    its receipt being filed. The operator refused: nothing on a branch
+    whose pull request is unmerged is fixed, one pass does what one pass
+    can, and the wait had already been long.
 
 ## Readings
 
@@ -343,18 +350,21 @@ Filed:
 | WO-272 | Hooks registered for the tools they judge; no hook that does nothing; two readings do less |
 | WO-273 | The case-title registries, per-case time bounds and the golden that tracks the newest order leave; statement wordings judged in a table |
 | WO-274 | A registration says where a target order's records are filed; with `instance` they stay in the instance and the target's pull request is the reviewed commit alone |
+| WO-275 | Claude as the default host in the seeds and the host record; the operator's commands as a generated page; one root file for what core should hear, written by each final review and each planning pass |
 
-Amended after the receipt, each on the operator's direction and bound with
-`npm run plan -- amend-order`, with no new judgment. WO-262: the test file
-its second criterion names (WO-262-D001, message 12). WO-265: Claude is
-the default host, so the first order and the security seed ask about the
-hosts an instance elects and permit no invocation of a harness, the doctor
-reports the agent CLI of elected hosts only, and a discovery record no
-longer turns a host on (WO-265-D001, message 14). As filed, WO-265's
-doctor reported every agent CLI on the machine, which is the same looking
-the operator ruled out; the pass's reviews of the starter had read the
-first order's seed and not seen that it contradicts the Claude-only
-default WO-258 gave a clone.
+Reworked before merge, on the operator's direction (messages 12 and 14
+to 17). The first receipt was removed from the branch and the subject
+changed. WO-262's second criterion names the test file that exists.
+WO-275 is filed and placed first. WO-265's host report lists elected
+hosts only; as filed it reported every agent CLI on the machine, which is
+the same looking the operator ruled out. The first receipt's twenty-four
+known issues are written into the orders they concern, two of them as
+corrected criteria (WO-262's fourth and WO-265's third). The pass's
+reviews of the starter had read the first order's seed and not seen that
+it contradicts the Claude-only default WO-258 gave a clone. The pass
+first answered two of these directions by deferring them, a correction to
+a later pass and two requests to a second pass, and the operator refused
+both.
 
 Screens. `npm run work-orders -- index --check` prints one criteria
 advisory for these orders: WO-265 criterion 4 names 16 GB, which is the
@@ -366,7 +376,7 @@ what they do on this repository's host and on the work laptop. Each order that a
 or a close names it as unmeasured and measures it. No order edits a file
 in `FEEDBACK_SOURCE_PATHS`, so none owes a live feedback episode.
 
-Not now. Nine open orders stay in the sequence below the fourteen, each
+Not now. Nine open orders stay in the sequence below the fifteen, each
 with what reopens it: WO-244 and WO-083 on the operator's word in the
 dispatch; WO-207, whose extension point WO-267 recuts without its loader
 and whose other four parts wait for a reported need; WO-193, because the
@@ -380,11 +390,12 @@ moving one to `docs/retired/` gains nothing while that condition is
 still a live question.
 
 Review ladder. The thirteen orders after WO-262 declare `Review ladder:
-paired`. Until WO-262 lands the line is inert and their executors run
+paired`. WO-275 runs before WO-262 and takes today's full ladder. Until WO-262 lands the line is inert and their executors run
 today's ladder.
 
-Role text. WO-262 is the one order that edits a role sentence before
-WO-264 removes the chain of baselines, and it mints one more by hand;
+Role text. WO-275 and WO-262 are the two orders that edit a role sentence
+before WO-264 removes the chain of baselines, and each mints one more by
+hand;
 WO-268, WO-270, WO-271 and WO-274 follow WO-264 and write their
 sentences as rule records.
 
@@ -408,8 +419,10 @@ words; the messages above are that. A second batch, after the operator
 sent the decisions back, disposed four of the pass's own candidates again
 at their rewritten text: the records row allocated to WO-274, and the
 editions, product-path and second-platform rows deferred with conditions
-a pass can read. In sum twenty-five rows are allocated and seventeen
-deferred.
+a pass can read. A third
+recorded the operator's two requests from the work laptop as a candidate,
+and a fourth allocated that row to WO-275 when the branch was reworked. In
+sum twenty-six rows are allocated and seventeen deferred.
 
 ## Red tags
 
@@ -510,8 +523,9 @@ this pass carries the first thirteen.
 
 ## Sequence
 
-Fourteen orders, then nine not now. First the four that every later order
-pays less for and that need nothing the work laptop's first run will
+Fifteen orders, then nine not now. First WO-275, because every clone of
+the starter repeats its first order's inspection until that order's
+release. Then the four that every later order pays less for and that need nothing the work laptop's first run will
 report: the reviews (WO-262), the complete run (WO-263), the pins that
 fail it (WO-273) and the role text (WO-264). Then the work instance's, in
 the order a new instance meets them (WO-265, WO-261, WO-266 to WO-269,
@@ -529,7 +543,8 @@ the complete run's present figures, and a rule on review size is added.
 ## Write-backs
 
 - `docs/planning/sequence.md`: the focus, the reviews rule, the order-size
-  rule's figures, the order and the orders set down as not now.
+  rule's figures, the default host in the hosts rule, the order and the
+  orders set down as not now.
 - `docs/product/07-execution-guide.md` §Operator-opened planning pass,
   item 5: an instance pass sends an item only when it stops that
   instance's next order and has no working route there. The same section,
@@ -539,12 +554,13 @@ the complete run's present figures, and a rule on review size is added.
   its own found after the receipt is corrected in the order before the
   pass closes (message 12). Among that section's screens: no order, seed,
   role text or command looks for or calls a host the instance has not
-  elected (message 14).
+  elected (message 14); and an unmerged planning branch is a draft whose
+  final subject is judged once more after a change (message 17).
 - `docs/KIT.md` §Planning in this instance: the same rule, for the
   instance's reader; §Document quality: the intake root holds the
   operator's messages, and a session's drafts and a tool's output go
   elsewhere.
-- `docs/planning/work-order-map.md`: this pass's paragraph, fourteen
+- `docs/planning/work-order-map.md`: this pass's paragraph, fifteen
   catalog rows and the candidates section.
 - `docs/lineage/idea-ledger.md`: the registration heading.
 
@@ -654,6 +670,26 @@ condition. Each is now decided: WO-274 is filed for the first, and NoOps
       "recordedAt": "2026-11-10T02:34:47.328Z"
     },
     "captureDigest": "sha256:5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f"
+  },
+  {
+    "rule": "Claude Code is the default agent host and the only one a new instance has; nothing the kit ships looks for, asks the version of or calls another harness or provider unless an instance elects it.",
+    "document": "docs/planning/sequence.md",
+    "section": "Rules in force",
+    "message": {
+      "sessionKey": "45064c49a54b49f9e68922eeb34de51da7074178f6ad2cf068a2c931a108b192",
+      "recordedAt": "2026-11-10T02:34:47.328Z"
+    },
+    "captureDigest": "sha256:5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f"
+  },
+  {
+    "rule": "A planning branch whose pull request is not merged is a draft, its receipt included: the pass takes the operator's further direction into the same pass, removes the receipt a change outdates and has the final subject judged once more, and never asks for a second pass to do what this one can.",
+    "document": "docs/product/07-execution-guide.md",
+    "section": "Operator-opened planning pass",
+    "message": {
+      "sessionKey": "45064c49a54b49f9e68922eeb34de51da7074178f6ad2cf068a2c931a108b192",
+      "recordedAt": "2026-11-10T03:23:25.477Z"
+    },
+    "captureDigest": "sha256:a366926793c327b76be17700fc3c70c632d5d761cbc6bb3bf90c15afad3e6bdc"
   }
 ]
 ```
@@ -662,95 +698,4 @@ condition. Each is now decided: WO-274 is filed for the first, and NoOps
 
 ## Process cost
 
-Model and effort: `claude-fable-5-2` at `xhigh`, host-selected (the
-session's readback). Usage at 01:21:02Z on 2026-11-10, with the receipt
-filed, 2 h 54 min after the dispatch: 136,389,070 total tokens
-(134,545,378 cached input, 1,243,403 cache write, 599,673 output, 616
-input; source `claude-transcript-message-usage`, scope dispatch, cost
-unknown). At the model's list prices that is an estimate of 63 to 71
-dollars for this session, the range being the two cache-write rates; the
-workers' tokens are not in it. Usage at entry was not kept.
-
-Workers: 20 uses against a cap of 20, which the operator had lifted for
-this pass (message 3): fourteen research workers, four launches of the
-review helper (the design and the consistency review, and two criteria
-reviews whose reports the helper refused and did not keep), one criteria
-reviewer launched as a worker in their place, and one refuter; every one
-a `dotln-worker`, none re-tasked. The hook counted 16, since it does not
-count the helper's launch in the spelling used here, which WO-261
-corrects. The criteria reviewer took 0 h 14 min (274,570 tokens, 114 tool
-uses) and the refuter 0 h 14 min (234,387 tokens, 23 tool uses); the
-other workers' tokens were not kept.
-
-What the time bought and what it did not. The research workers were the
-pass's longest reading, at most 0 h 20 min each and run together, and
-they overturned readings the planner held at entry, among them that most
-failed verifications were bookkeeping. Two criteria reviews were lost to
-the helper's refusal of a word in a table, each a worker use with nothing
-to read; WO-262 now keeps such a report. The first handoff returned five
-implementation decisions to the operator, which cost the operator a
-message and the pass a round. After the receipt the planner corrected a
-path in WO-262's second criterion; the planning check refused the change,
-because a judged order's bytes are frozen, and three commits put them
-back. The slip itself came from the criteria review's fix for checks that
-could not show their claim, written without listing the directory. The
-pass then published with the wrong path still in the criterion and a note
-for a later pass; the operator objected (message 12), and the correction
-was made in the order through `amend-order`, which cost the operator a
-second message and the pass another round of the document gate.
-`npm run plan -- conditions --slow` took 0 h 5 min and its document-gate
-probe timed out. The document gate's last run before this section took
-0 h 15 min, 0 h 13 min of it waiting for host lanes behind another
-checkout.
-
 ## Validation
-
-- self-review: found 48; fixed 47; recorded 1. The design review (17) and
-  the consistency review (14) ran through the review helper as Claude
-  workers and every finding was fixed; the first moved the four orders
-  that every later order pays less for ahead of the work instance's. The
-  criteria review, a `dotln-worker`, returned twelve findings and four
-  notes with a defect, all fixed, three of them steps that contradicted
-  their own order's criteria (WO-272, WO-266, WO-273); one counterexample
-  is recorded without a change, WO-270's criterion 2, which holds at the
-  base and is kept as a guard. This is a standard pass, and these reviews
-  are its own; the guide's reviewed route names Codex workers, which this
-  pass did not use.
-- Refutation:
-  [receipt 067](../refutations/2026-11-10-planning-64892614a4699ecc-067.md),
-  one fresh `dotln-worker` judgment (the generated definition's pin,
-  `claude-opus-5-5` at `xhigh`; effective settings unverified) of the
-  committed subject `b47419fd2`, pass scope, launched once and never
-  re-tasked: `aligned-with-findings` for the plan, `aligned` for WO-270
-  and `aligned-with-findings` for the other thirteen, no hold, twenty-four
-  known issues, each with a reopening observation. They are on the
-  thirteen catalog rows of the map with the planner's reading of each for
-  the executor. One was the planner's own error: WO-262's second criterion named its
-  sentence case under `packages/skeleton/src/`, where the tree holds it
-  under `packages/skeleton/test/`. It is corrected in the order by the
-  amendment
-  [WO-262-D001](../../evidence/WO-262/decisions.md#wo-262-d001--the-second-criterion-names-the-test-file-that-exists),
-  bound to receipt 067 on the operator's direction (message 12); a scan
-  of every repository path the fourteen orders name found no other that
-  neither exists nor is created by its order. The refuter also noted that WO-272 has
-  the largest measured saving per order and runs last; it stays last,
-  because its saving is wall-clock time and the work instance's binding
-  limit is tokens, and the pass that reads the laptop's first run can
-  move it by one sequence edit.
-- `npm run plan -- check`: the judged, committed and workspace subjects
-  agree; the `Rules recorded` entries matched their journal rows and
-  digests.
-- `npm run work-orders -- index --check`: both generated pages current;
-  two criteria advisories, on WO-244's criterion 3, which this pass did
-  not file or amend, and on WO-265's criterion 4, whose 16 GB is a
-  fixture's injected host and no bound the order must meet.
-- `npm run test:docs`: all 29 tasks passed at `52b92c1aa`, the commit
-  before this section was written, and the gate is run again on the
-  closing commit before publication.
-- After publication: the amendments WO-262-D001 and WO-265-D001, and the
-  map's candidate 14 for the operator's two further requests (messages 15
-  and 16), which need a new order and so the next pass. `npm run plan --
-  check` passes with the amendments bound, and the document gate is run
-  again on each closing commit.
-- Published by `node scripts/refute-plan.mjs publish` after this commit;
-  the pull request's number is in the session's response.

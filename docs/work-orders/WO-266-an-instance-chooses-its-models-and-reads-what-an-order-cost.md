@@ -45,7 +45,7 @@ operator's dispatch of that day (ignored capture SHA-256
 that found the pins compiled in with no instance override.
 **Depends on:** WO-250 and WO-255 (closed: the review helper and its
 launch); WO-192 (closed: the drive). No open order.
-**Recommended placement:** seventh, after the two orders an instance meets
+**Recommended placement:** eighth, after the two orders an instance meets
 at install and update. It is the first order that changes what the work
 instance spends.
 **Cites (read these sections):** `packages/skeleton/src/loadouts/contributor.ts`
@@ -291,6 +291,10 @@ reopening conditions in `docs/evidence/WO-266/decisions.md`.
   has none for.
 - Codex sessions report their usage through a different counter; a class
   that counter does not give is `null`, never zero.
+- From this pass's first refutation: A malformed `workers` section refuses
+  the configuration load, which stops a driven phase mid-order: kept,
+  because every section of the configuration is validated that way; the
+  message names the key and the file.
 
 **Non-goals:** a list of model identifiers or prices in the kit; a new
 option name; a refusal when spending passes a figure; pacing or a weekly

@@ -41,7 +41,7 @@ sub-root and the tag-fetch refusal.
 changes an instance's merge meets); WO-260 (closed, v0.122.1: the recorded
 Git surface this order's Git forms are checked against); WO-265 (open: it
 edits `previewFromRevision` first).
-**Recommended placement:** sixth, after WO-265: both are met at an
+**Recommended placement:** seventh, after WO-265: both are met at an
 instance's next update, and the work instance takes updates regularly.
 **Cites (read these sections):** `scripts/launchpad.mjs` (`publishUpdate`,
 `kitProvenance`, `previewFromRevision`); `scripts/lib/starter-refresh.mjs`
@@ -215,6 +215,10 @@ reopening conditions in `docs/evidence/WO-261/decisions.md`.
   reported again from a hooked host; the session sub-root reopens when a
   session's drafts are found under intake after the kit guide's sentence
   shipped.
+- From this pass's first refutation: The order does not say what happens
+  when the update's merge base cannot be read, as in a shallow or grafted
+  clone: refuse before any push, naming the cause and the remedy, never
+  proceed in silence, and add the case.
 
 **Non-goals:** changing the starter refresh; resolving a merge for the
 session; restoring a file automatically; a sub-root the words screen leaves

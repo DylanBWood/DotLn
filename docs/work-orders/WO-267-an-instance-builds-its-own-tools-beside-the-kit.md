@@ -40,7 +40,7 @@ extension point of WO-207, which
 takes out of that order and recuts without its loader.
 **Depends on:** WO-261 (open: an update that keeps the files an instance
 changed is what makes an instance's own material safe to build).
-**Recommended placement:** eighth, after WO-266. The work instance's owner
+**Recommended placement:** ninth, after WO-266. The work instance's owner
 starts building private tools as soon as it runs.
 **Cites (read these sections):** `scripts/launchpad.mjs` (`KIT_FILES`,
 `kitPath`, the export's refusal of a kit path an instance file occupies);
@@ -263,6 +263,20 @@ reopening conditions in `docs/evidence/WO-267/decisions.md`.
   naming the file is the friction.
 - The words screen still reads every file under the intake root; a tool or
   a session that writes there meets it.
+- From this pass's first refutation: A fragment can add a permission rule
+  or a hook that admits a call an emitted refusal refuses, and no
+  criterion shows it cannot pre-empt the refusal: add a harness case in
+  which the fragment adds both for a refused call and the refusal still
+  fires, and if the host lets either pre-empt it, refuse that kind of
+  entry at the merge and say so in the decisions, since no instance
+  configuration may weaken the floor.
+- From this pass's first refutation: A change only under `extensions/`
+  owes no kit suite though a fragment's hook may run it on every tool
+  call: the kit guide says the instance owns the tests of what it
+  registers.
+- From this pass's first refutation: WO-207 still describes another
+  extension root and a loader: it is set down and is recut before any
+  reopening, with `extensions/` as the one root.
 
 **Non-goals:** a loader, an adapter interface or a registry of an
 instance's tools; running an instance's tests in the kit's gate; a

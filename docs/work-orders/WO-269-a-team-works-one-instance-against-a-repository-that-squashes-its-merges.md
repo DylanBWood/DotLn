@@ -40,7 +40,7 @@ many worktrees, parallel merges, recorded 2026-10-24), allocated by
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
 **Depends on:** WO-072 (closed: the target worktree lifecycle); WO-260
 (closed: the recorded Git surface). No open order.
-**Recommended placement:** tenth, after WO-268. The first order a teammate
+**Recommended placement:** eleventh, after WO-268. The first order a teammate
 closes against the team's repository meets it.
 **Cites (read these sections):** `scripts/lib/target-worktree-close.mjs`
 (`containsBranch` and the message that names the command to rerun);
@@ -235,6 +235,13 @@ reopening conditions in `docs/evidence/WO-269/decisions.md`.
   instance; this order's conventions say only where the planner looks.
 - The identities in `contributions.authors` are committed in the
   instance's configuration, which is that instance's own repository.
+- From this pass's first refutation: `--merged-as` admits any commit of
+  the base: refuse a named commit that changes none of the paths the
+  reviewed change touches, and print the named commit's subject before the
+  close proceeds.
+- From this pass's first refutation: Patch identity over a busy base is
+  measured only on the fixture: print the count of base commits read at
+  each close so an instance sees the cost.
 
 **Non-goals:** any change to the launchpad's own merged checks or to
 release close in the instance's repository; a forge call in the close; a

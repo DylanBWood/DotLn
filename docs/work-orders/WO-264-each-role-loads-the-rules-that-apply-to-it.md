@@ -53,7 +53,7 @@ twelve orders from WO-217 to WO-257, allocated by
 `contributor.ts` first, and this order composes them as it finds them);
 WO-263 and WO-273 (open: both edit `scripts/test-runner.mjs` and its test
 first).
-**Recommended placement:** fourth, ahead of the four orders that add a
+**Recommended placement:** fifth, ahead of the four orders that add a
 role sentence, so that none of them mints a baseline. Every later
 dispatch, in core and in an instance, loads the roots this order emits.
 **Cites (read these sections):** `packages/skeleton/src/loadouts/contributor.ts`
@@ -322,6 +322,16 @@ reopening conditions in `docs/evidence/WO-264/decisions.md`.
 - An instance receives the new roots at its next emit after the update;
   the release's Read before upgrading says that the roots change and that
   no instance action follows.
+- From this pass's first refutation: A rule record with no role list would
+  reach no root: the rule-table case refuses a record that names no role.
+- From this pass's first refutation: With the sentence assertions gone, an
+  edit can weaken a rule's text with only review to catch it: accepted,
+  since that is the order's purpose, and the consistency review of any
+  order that edits a rule record reads the emitted diff of every root.
+- From this pass's first refutation: WO-244 runs reviewers through `plan
+  review`, whose root clause and hook count this order removes: WO-244 is
+  set down, and the pass that reopens it recuts it first with the count
+  its route needs.
 
 **Non-goals:** rewording any rule; a root that differs between the Claude
 and Codex skill directories; changing a ceiling, an acceptance or the

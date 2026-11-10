@@ -57413,6 +57413,13 @@
           "title": "What an operator meets in a new instance: its commands and what core should hear.",
           "summary": "14. **What an operator meets in a new instance: its commands and what core should hear.** Requests of the operator from the work laptop's first cycle, made after this pass's receipt, which a published pass cannot turn into a new order. (a) The operator's commands for the release in hand. The one compact list is a section a planning pass wrote by hand for v0.120.1, stale since v0.121.0; the kit guide carries the commands inside its prose, and a release's notes carry Read before upgrading. A page generated from marked command blocks of the kit guide, shipped in every release, kept equal to the guide by the generated check and printed by one command in an instance, would end the hand-written li",
           "missing": false
+        },
+        {
+          "hash": "bad04e3f7b6fd9dac9017955252692d2ef1726c4f92ebcc37d1d6fa1ce6a6c94",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "What an operator meets in a new instance: its commands and what core should hear.",
+          "summary": "14. **What an operator meets in a new instance: its commands and what core should hear.** Filed as [WO-275](../work-orders/WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md) on the operator's findings from the work laptop: the operator's commands for the release in hand as a page generated from the kit guide's marked command blocks, and one fixed file at an instance's root for what core should hear, written by each order's final review and each planning pass, together with the first order's hosts. Reopen: WO-275 is withdrawn, or closes without one of the three.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -57423,6 +57430,16 @@
           "reopenWhen": "The operator opens the pass for the work instance's findings; it cuts one order for these and the first order's hosts and places it first.",
           "targets": [],
           "at": "2026-11-10T02:46:15.622Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated when the unmerged branch was reworked on the operator's direction: WO-275, placed first, carries the operator's commands as a generated page and the one file for what core should hear, with the first order's hosts. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-275 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-275"
+          ],
+          "at": "2026-11-10T03:30:24.230Z"
         }
       ]
     }

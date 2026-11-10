@@ -37,7 +37,7 @@ grouping); WO-202 (closed: an instance's own planning pass); WO-268 (open: the a
 this order's template names them and does not need them to exist);
 WO-264 (open: it makes each shared rule a record that names its roles,
 and this order's sentence is such a record naming the planner).
-**Recommended placement:** twelfth, after WO-274. It is the second of the
+**Recommended placement:** thirteenth, after WO-274. It is the second of the
 work instance's three jobs, and it is small.
 **Cites (read these sections):** `scripts/kit/workstream.template.md`;
 `scripts/lib/work-order-workstream.mjs` (`parseWorkstreamDocument`, which

@@ -2129,13 +2129,17 @@ later pass amends the order [2026-10-02 pass](../planning/passes/standard-pass-2
 A wrong statement of fact in an order is not a known issue and is never carried
 there. Before `plan refute` the pass checks every repository path its orders
 name against the tree, where a path that neither exists nor is created by its
-order is a defect; and an error of the pass's own found after the receipt (a
-path the tree does not hold, a name, a figure the record contradicts) is
-corrected in the order before the pass closes: the pass tells the operator at
-once, and on the operator's direction records the decision and binds the
-corrected text with `amend-order` (operator direction, 2026-11-09, ignored
-capture SHA-256 `e9baaba2af6587a90ef5aecabb3dcdeb43cef9cedfc7e4eedddf450dedf10b53`;
-[WO-262-D001](../evidence/WO-262/decisions.md#wo-262-d001--the-second-criterion-names-the-test-file-that-exists)).
+order is a defect. A planning
+branch whose pull request is not merged is a draft, its receipt included.
+While it is open the pass corrects its own errors in the orders and takes the
+operator's further direction into the same pass, a new order or a changed
+sequence among it; it removes the receipt the change outdates and has the
+final subject judged once more, so that the receipt the operator merges is of
+the plan the operator merges. The pass does not ask the operator for a second
+pass to do what this one can, and `amend-order` is for an order already on
+`main` (operator direction, 2026-11-09, ignored captures SHA-256
+`e9baaba2af6587a90ef5aecabb3dcdeb43cef9cedfc7e4eedddf450dedf10b53` and
+`a366926793c327b76be17700fc3c70c632d5d761cbc6bb3bf90c15afad3e6bdc`).
 
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the
@@ -2204,7 +2208,7 @@ failures behind each are in the
   installed is the defect this screen names (operator direction, 2026-11-09,
   ignored capture SHA-256
   `5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f`;
-  [WO-265-D001](../evidence/WO-265/decisions.md#wo-265-d001--claude-is-the-default-host-and-nothing-looks-for-another)).
+  [WO-275](../work-orders/WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md)).
 - An order that adds or tightens a refusal keyed to a host property (a
   tool's version, a platform, an account) names every host the record shows
   running the kit, this repository's and each one an instance's block or the

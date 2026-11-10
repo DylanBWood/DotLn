@@ -50,7 +50,7 @@ sent it back as the planner's to make (ignored capture SHA-256
 private-path screen); WO-264 (open: the reviewer's rule this order edits
 is a rule record after it); WO-269 (open: it edits the same kit guide
 section and the target's close first).
-**Recommended placement:** eleventh, after WO-269. The first order a team
+**Recommended placement:** twelfth, after WO-269. The first order a team
 runs against its application repository meets it.
 **Cites (read these sections):** `scripts/lib/config.mjs`
 (`REPOSITORY_KEYS`, the registration's validation, `planFirstDirectory`);
@@ -266,6 +266,11 @@ reopening conditions in `docs/evidence/WO-274/decisions.md`.
   order moves nothing back.
 - A target release declared in a registration reads tags in the target and
   is unchanged by where records go.
+- From this pass's first refutation: Records kept in the instance may
+  quote the target's code, and the order states no boundary toward core:
+  the kit guide sentence this order adds says that a target order's
+  records never leave the instance for core, and that what an instance
+  sends core is the block of what stops it, in generic words.
 
 **Non-goals:** changing the default; moving records already filed; a third
 destination; filing some kinds of record and not others; the

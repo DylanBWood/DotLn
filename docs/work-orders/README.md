@@ -4,6 +4,7 @@
 
 ## Proposed order
 
+- [ ] [WO-275] — A new instance starts on Claude alone and tells its operator what to type · **queued**
 - [ ] [WO-262] — Review findings are judged before they are fixed, and a review is sized by what the record shows · **queued**
 - [ ] [WO-263] — The complete run takes its exclusive suites in one convoy · **queued**
 - [ ] [WO-273] — A complete run fails for a defect in the change · **queued**
@@ -49,6 +50,22 @@ None.
 None.
 
 ## Open
+
+### WO-275
+
+[WO-275 — A new instance starts on Claude alone and tells its operator what to type: the first order and the security seed ask about the hosts an instance elects and permit no call to a harness, a discovery record no longer turns a host on, the operator's commands for the release in hand are one generated page, and what core should hear is one file at the instance's root that each final review and each planning pass writes](WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-258: control-closed; WO-259: control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Authority: [docs/work-orders/WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md](WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md)
 
 ### WO-262
 
@@ -121,7 +138,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-258: control-closed; WO-260: control-closed.
+- References: WO-258: control-closed; WO-260: control-closed; WO-275: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -443,3 +460,4 @@ None.
 [WO-272]: WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md
 [WO-273]: WO-273-a-complete-run-fails-for-a-defect-in-the-change.md
 [WO-274]: WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md
+[WO-275]: WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md

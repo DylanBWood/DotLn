@@ -43,7 +43,7 @@ times); the test-suite review of
 **Depends on:** WO-263 (open: it edits `scripts/test-runner.mjs` and
 `scripts/test-runner.test.mjs` first and takes the complete run's
 before-and-after reading this order's saving is read against).
-**Recommended placement:** third, after WO-263. It removes the commonest
+**Recommended placement:** fourth, after WO-263. It removes the commonest
 cause of a failed complete run in core for every order after it.
 **Cites (read these sections):** `scripts/test-runner.test.mjs` (the case
 titled for the launchpad files retaining their cases and its
@@ -246,6 +246,11 @@ reopening conditions in `docs/evidence/WO-273/decisions.md`.
   ran on 2026-09-06; it is unchanged here.
 - Wall-clock assertions elsewhere in the suites are listed in the
   decisions as the executor meets them and are not removed by this order.
+- From this pass's first refutation: The order does not say what the two
+  registries protected beyond names: before removing them, record in the
+  decisions what each comparison refused, and if either made sure that
+  every declared case ran, keep a declared-against-run comparison for
+  those two suites.
 
 **Non-goals:** any change to what a lifecycle command does in core or in
 a kit root; the suites' deadlines; the

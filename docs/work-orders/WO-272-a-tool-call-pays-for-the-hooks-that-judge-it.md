@@ -38,7 +38,7 @@ second and fourth goals; the hook-timing follow-up of WO-236
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
 **Depends on:** WO-264 and WO-271 (open: both edit
 `packages/skeleton/src/harness-host.ts` or the compiler's emission first).
-**Recommended placement:** fourteenth, after WO-264 and WO-271, which edit
+**Recommended placement:** fifteenth, after WO-264 and WO-271, which edit
 the same files. Every session on every host pays this on each tool call,
 a managed laptop most of all, and nothing is stopped by it today.
 **Cites (read these sections):** `.claude/settings.json` (the registered hooks and their matchers);
@@ -233,6 +233,18 @@ reopening conditions in `docs/evidence/WO-272/decisions.md`.
 - The session hook's own three seconds at each prompt are not this order's
   subject; it gains the heartbeat's call here and one read from WO-271,
   and the after-reading records its time.
+- From this pass's first refutation: A tool name outside the matcher list
+  would go unjudged where today every hook judges every call: build each
+  matcher to leave out the tools the table knows to be reads, where the
+  host's matcher can express that, so an unknown name is judged as today,
+  and where it cannot, list every name the hosts document and record the
+  gap.
+- From this pass's first refutation: A tool the kind test cannot classify
+  counts as a write, and a case says so.
+- From this pass's first refutation: A same-size rewrite within one
+  timestamp tick could keep a stale hash: key the cache on size,
+  modification time, change time and inode, and read again any file whose
+  times fall within the tick of the cache's own write.
 
 **Non-goals:** a dispatcher that replaces the per-unit hooks; any change to a refusal, its words or its journal row; the session hook's
 own work; moving code

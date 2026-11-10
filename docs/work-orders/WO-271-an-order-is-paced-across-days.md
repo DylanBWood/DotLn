@@ -46,7 +46,7 @@ instance's prices this order's figure is compared with); WO-264 (open: it
 makes each shared rule a record that names its roles, and this order's
 stopping rule is such a record naming the executor); WO-234 (closed: the
 dispatch bound).
-**Recommended placement:** thirteenth, after WO-270 and after WO-266, whose
+**Recommended placement:** fourteenth, after WO-270 and after WO-266, whose
 usage reading it shares.
 **Cites (read these sections):** `scripts/lib/dispatch-bound.mjs` (where
 the elapsed time is taken from the dispatch's start to now);
@@ -253,6 +253,16 @@ reopening conditions in `docs/evidence/WO-271/decisions.md`.
 - The idle interval is the planner's first figure, ten minutes; the
   executor records the reading on this repository's own journals and a
   later pass re-reads it.
+- From this pass's first refutation: A session that writes no journal
+  rows, or one long turn with rows far apart, would read as idle and the
+  bound would admit more than the base does: count as idle only a gap that
+  begins at a turn's end row, count every other span as worked, and where
+  a host writes no such row read elapsed time as today; add both cases.
+- From this pass's first refutation: `spend.daily` sits in the budgets
+  file, which an update's merge may touch: WO-261, which lands earlier,
+  refuses a merge that rewrote the instance's side, so the figure
+  survives, and it moves to the instance's configuration at a later pass
+  if that proves a nuisance.
 
 **Non-goals:** a refusal at the daily figure; a pause event in the control log; a section in the handoff file; a weekly or per-initiative cap; summing use across
 checkouts or people; moving an order between clones; a standing for
