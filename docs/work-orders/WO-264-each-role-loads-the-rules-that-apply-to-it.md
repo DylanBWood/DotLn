@@ -20,9 +20,10 @@ Removes every `*role-baseline*.json` fixture under
 `packages/skeleton/fixtures/` (62 files and 253,148 bytes on 2026-11-09,
 before WO-275 and WO-262 each add one), `scripts/check-role-oracle.mjs`,
 the structural task `role-oracle`, the chain case in
-`scripts/test-process-debt.mjs` with the lists of that chain in
-`scripts/test-gate-followups.mjs`, `scripts/test-runner.mjs` and
-`scripts/test-sync.mjs`, and the sentence assertions in
+`scripts/test-process-debt.mjs`, the lists of that chain in
+`scripts/test-gate-followups.mjs` and `scripts/test-runner.mjs`, the cases
+of `scripts/test-sync.mjs` that find, damage and sync the `role-oracle`
+artifact, and the sentence assertions in
 `packages/skeleton/test/executor-supports.test.ts` (100 `assert.match` and
 `assert.doesNotMatch` calls today); from a planning pass, the refuter skill
 it loads on top of its own (20,936 bytes); from the verifier's and the
