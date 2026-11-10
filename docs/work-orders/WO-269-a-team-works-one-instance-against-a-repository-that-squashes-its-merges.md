@@ -1,5 +1,24 @@
 # WO-269 — A team works one instance against a repository that squashes its merges: a target order closes when its change is in the base by any merge method, the instance declares the authors whose commits are its own, and the kit guide gives the conventions by which one planner assigns orders to several people and settles the order they merge in
 
+**Umbrella record (2026-11-10):** superseded whole by WO-276, which carries
+this order's obligations as its Part M under the operator's direction of
+2026-11-10 ([the 2026-11-10 pass](../planning/passes/one-order-for-the-whole-queue-2026-11-10.md));
+not activatable. The text below is this order's last committed form, kept
+as the record of what WO-276 absorbed: its observed gap, its cost detail,
+its provenance and its cited code are read from here, and what binds is
+WO-276's text.
+
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-276",
+    "relation": "superseded",
+    "reason": "2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part M.",
+    "by": "WO-276"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.

@@ -1,5 +1,24 @@
 # WO-266 — An instance chooses its models and reads what an order cost: a `workers` section of the configuration sets the model and effort each worker option and each driven phase runs, emit and the launch helpers read it, and the order meter keeps tokens by class and prints an estimate in dollars from prices the instance declares
 
+**Umbrella record (2026-11-10):** superseded whole by WO-276, which carries
+this order's obligations as its Part J under the operator's direction of
+2026-11-10 ([the 2026-11-10 pass](../planning/passes/one-order-for-the-whole-queue-2026-11-10.md));
+not activatable. The text below is this order's last committed form, kept
+as the record of what WO-276 absorbed: its observed gap, its cost detail,
+its provenance and its cited code are read from here, and what binds is
+WO-276's text.
+
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-276",
+    "relation": "superseded",
+    "reason": "2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part J.",
+    "by": "WO-276"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.

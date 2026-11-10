@@ -33,10 +33,14 @@ pointers and continuation command. Untouched items persist across passes.
   roots for `docs/retired/` with its bytes intact.
 - **Order size.** One subsystem's chain of work is one order with one
   outcome; the binding cost is the complete run and the fixed cycle every
-  order pays. Unrelated subsystems are not bundled. The complete review
-  run was 24.9 minutes when this rule was written on 2026-10-13 and 46.7
-  and 52.1 minutes in the committed rows of 2026-11-06 and 2026-11-09;
-  WO-263 and WO-273 are the orders that shorten it. Reopen when its
+  order pays. A pass does not bundle unrelated subsystems by its own
+  choice. The queue of 2026-11-09 is one order, WO-276, on the operator's
+  direction of 2026-11-10 (ignored capture SHA-256
+  `c1b4fac22420c3dc15f5bb20381de2c34a920129b4c036a93ae2841656a652f8`):
+  fifteen cycles were the cost the operator would not pay. The complete
+  review run was 24.9 minutes when this rule was written on 2026-10-13 and
+  46.7 and 52.1 minutes in the committed rows of 2026-11-06 and
+  2026-11-09; Parts D and E of WO-276 are what shorten it. Reopen when its
   median falls to half the figure of 2026-10-13, or when merged orders
   fail first verification more often than five of eight.
 - **Placement.** The operator places an order by one sequence edit; the
@@ -52,12 +56,13 @@ pointers and continuation command. Untouched items persist across passes.
   another harness or provider unless an instance elects it (operator
   direction, 2026-11-09, ignored capture SHA-256
   `5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f`).
-- **Reviews.** Every order after WO-262 declares `Review ladder: paired`,
-  so that its first round is read by the three kinds of reviewer and by
-  one combined reviewer, each blind to the others, and the record holds
-  which found what. The pass that reads fifteen such rounds sets the
-  default size and retires the paired form
-  ([WO-262](../work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md);
+- **Reviews.** WO-276 declares `Review ladder: paired`, and so does every
+  order filed after it: from WO-276's Part D on, a part's first round is
+  read by the three kinds of reviewer and by one combined reviewer, each
+  blind to the others, and the record holds which found what. The pass
+  that reads fifteen such rounds sets the default size and retires the
+  paired form
+  ([WO-276](../work-orders/WO-276-the-queue-lands-as-one-order.md), Part C;
   operator direction, 2026-11-09, ignored capture SHA-256
   `e1c8d0ae73fb667fbfa8aa82a58b9c6d054eaa53a521fd82a84bc8612e573237`: the
   number of reviewers follows the evidence).
@@ -87,74 +92,33 @@ DotLn-Angular remain where the same route is exercised in the open.
 
 ## The order, serial
 
-First, what a new instance meets. The operator's first cycle on the work
-laptop found a new kit's first order looking for every agent harness on
-the machine and calling each:
+One order carries the queue. The operator's first cycle on the work laptop
+and the execution of WO-275 on 2026-11-09 and 2026-11-10 showed what the
+kit owed before anything else, and the operator directed that the repairs
+and the whole queue land as one order
+([the 2026-11-10 pass](passes/one-order-for-the-whole-queue-2026-11-10.md)):
 
-- WO-275: a new instance starts on Claude alone and tells its operator
-  what to type: the first order and the security seed ask about the hosts
-  an instance elects and permit no call to a harness, the operator's
-  commands for the release in hand are one generated page, and what core
-  should hear is one file that each final review and each planning pass
-  writes; first, because every clone of the starter repeats that
-  inspection until this order's release.
-
-Then what every later order pays less for. These four need nothing the
-work laptop's later runs will report:
-
-- WO-262: review findings are judged before they are fixed, a fix takes
-  one combined review of the repair, an order's header sizes its first
-  round, and a paired round records which reviewer found what; second, because every later order's reviews and repairs run under it.
-- WO-263: the complete run takes its exclusive suites in one convoy and
-  runs the hook suite's cases as shards on the lanes it holds; third, because each order after it pays several complete runs of about three
-  quarters of an hour.
-- WO-273: a complete run fails for a defect in the change: the case-name
-  registries, the per-case time bounds and the golden that tracks the
-  newest order leave; fourth, after WO-263, since hand-written pins are
-  the commonest cause of a failed complete run.
-- WO-264: each role loads the rules that apply to it, a planning pass
-  reaches its refutation without a second skill, the reviewers' section
-  of the guide loses the executor's ladder mechanics, and a role-text
-  edit is checked by regeneration instead of a chain of hash baselines;
-  fifth, ahead of the four orders after it that add a role sentence.
-
-Then the work instance, in the order a new instance meets them:
-
-- WO-265: a new host learns what it lacks from one command: a read-only
-  report of every host assumption before the first install, an
-  instance's host check sized to the tasks it runs, and an update preview
-  that says when the incoming floors refuse this host; sixth.
-- WO-261: an instance's update keeps its own files: the publish refuses a
-  merge that rewrote a file both sides changed, the preview lists those
-  files, and a kit launch is counted in every spelling; seventh, after WO-265, which edits the same preview.
-- WO-266: an instance chooses the model and effort its workers and driven
-  phases run, and reads what an order and a day used, in tokens by class
-  and in dollars from prices it declares; eighth, the first order that
-  changes what the work instance spends.
-- WO-267: an instance builds its own tools beside the kit: one root the
-  kit never touches, a committed settings fragment, a configuration
-  section left to the instance, a versioned status output and the kit
-  guide's account of where each kind of extension goes; ninth.
-- WO-268: what a session learns about a target is loaded by the next:
-  area notes with their evidence at a commit, named by the dispatch
-  briefing with the workstream's rules and flagged when the code has moved; tenth, the first of the instance's three jobs.
-- WO-269: a team works one instance against a repository that squashes
-  its merges: a target order closes when its change is in the base by any
-  merge method, the instance declares its authors, and the kit guide gives one planner's conventions; eleventh.
-- WO-274: a target order's records stay in the instance where its
-  registration says so, and the target's pull request is then the
-  reviewed commit alone; twelfth, since the first order a team runs
-  against its application repository meets it.
-- WO-270: an initiative is laid out before its orders are cut: the layout
-  in the workstream document and orders filed a wave at a time; thirteenth,
-  the second of the three jobs.
-- WO-271: an order is paced across days: a declared daily figure shown to
-  the session, a recorded standing at each stop, and a dispatch bound
-  that counts worked time; fourteenth, after WO-266, whose usage reading it
-  shares.
-- WO-272: a tool call pays for the hooks that judge it, in the launchpad
-  and in a target worktree; fifteenth, after WO-264 and WO-271, which
-  edit the same files.
+- WO-276: the queue lands as one order of eighteen parts. First what
+  stops an order for no reason: a private list with a context class that
+  stops nothing and a refuse class that stops everything, a repair after
+  a failed run that restarts the run, a worker that cannot hand back with
+  shells running, a role that cannot wait on a question dialog (Part A);
+  and one reader for each format the sources read (Part B). Then what
+  every later part passes through: reviews judged before they are fixed
+  (Part C), the complete run as one convoy (Part D), a complete run that
+  fails for a defect in the change (Part E), and role text that binds the
+  role that loads it (Part F). Then the work instance, in the order a new
+  instance meets it: a first order that looks for Claude alone, the
+  operator's commands as a page and one file for what core should hear
+  (Part G); a host report (Part H); an update that keeps an instance's
+  files (Part I); models, effort and what an order used (Part J); a root
+  for an instance's own tools (Part K); area notes on a target (Part L);
+  a team on a repository that squashes its merges (Part M); a target
+  order's records kept in the instance (Part N); an initiative laid out
+  before its orders are cut (Part O); an order paced across days (Part
+  P); hooks that run for the tools they judge (Part Q); and what the
+  instance asked of core on 2026-11-10 (Part R). The orders it absorbs,
+  WO-261 to WO-275, are umbrella records.
 
 ## Not now
 
@@ -172,7 +136,8 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
   Reopen when the operator asks core to record a measured comparison of
   the instance route.
 - WO-207 (an instance's kit updates: rollback, extension point and build
-  channel): its extension point is recut as WO-267 without the loader.
+  channel): its extension point is recut as Part K of WO-276 without the
+  loader.
   The rollback, the build channel and the declared suites wait for a need
   an instance reports; a pass that reopens any of them recuts it first.
 - WO-193 (an instance's requests reach core's intake): the focus asks for
@@ -187,29 +152,14 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 - WO-091 (the full 5S set on the Repo Gardener): reopen when the operator
   directs the demonstration or a consumer needs a group with several
   active mechanics.
-- WO-096 (feedback rule migration): WO-264 is the route to less role
-  text. Reopen when that order's measurements show sentences only a
+- WO-096 (feedback rule migration): Part F of WO-276 is the route to less
+  role text. Reopen when that part's measurements show sentences only a
   mechanism can replace.
 - WO-014 (approval-burden baseline): reopen when a host reports approval
   requests to a hook, or the operator records approval friction.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-275 — A new instance starts on Claude alone and tells its operator what to type
-- WO-262 — Review findings are judged before they are fixed, and a review is sized by what the record shows
-- WO-263 — The complete run takes its exclusive suites in one convoy
-- WO-273 — A complete run fails for a defect in the change
-- WO-264 — Each role loads the rules that apply to it
-- WO-265 — A new host learns what it lacks from one command
-- WO-261 — An instance's update keeps its own files
-- WO-266 — An instance chooses its models and reads what an order cost
-- WO-267 — An instance builds its own tools beside the kit
-- WO-268 — What a session learns about a target is loaded by the next
-- WO-269 — A team works one instance against a repository that squashes its merges
-- WO-274 — A target order's records stay in the instance where its registration says so
-
-- WO-270 — An initiative is laid out before its orders are cut
-- WO-271 — An order is paced across days
-- WO-272 — A tool call pays for the hooks that judge it
+- WO-276 — The queue lands as one order
 - WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel

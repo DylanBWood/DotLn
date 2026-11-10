@@ -1,5 +1,24 @@
 # WO-265 — A new host learns what it lacks from one command: `node scripts/doctor.mjs` reports every host assumption at once before the first install, an instance's host check is sized to the tasks an instance runs, an update's preview judges the incoming floors against the host it runs on, and the kit guide names the compiler, the forge tool and the hosts the kit is exercised on
 
+**Umbrella record (2026-11-10):** superseded whole by WO-276, which carries
+this order's obligations as its Part H under the operator's direction of
+2026-11-10 ([the 2026-11-10 pass](../planning/passes/one-order-for-the-whole-queue-2026-11-10.md));
+not activatable. The text below is this order's last committed form, kept
+as the record of what WO-276 absorbed: its observed gap, its cost detail,
+its provenance and its cited code are read from here, and what binds is
+WO-276's text.
+
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-276",
+    "relation": "superseded",
+    "reason": "2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part H.",
+    "by": "WO-276"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
