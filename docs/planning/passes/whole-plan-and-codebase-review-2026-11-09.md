@@ -698,4 +698,90 @@ condition. Each is now decided: WO-274 is filed for the first, and NoOps
 
 ## Process cost
 
+Model and effort: `claude-fable-5-2` at `xhigh`, host-selected (the
+session's readback). Usage at 04:22:28Z on 2026-11-10, with the receipt
+filed, 5 h 55 min after the dispatch: 184,181,467 total tokens
+(181,882,107 cached input, 1,518,229 cache write, 780,307 output, 824
+input; source `claude-transcript-message-usage`, scope dispatch, cost
+unknown). At the model's list prices that is an estimate of 83 to 92
+dollars for this session, the range being the two cache-write rates; the
+workers' tokens are not in it. Usage at entry was not kept.
+
+Workers: 23 uses against a cap of 20, which the operator had lifted for
+this pass (message 3): fourteen research workers; four launches of the
+review helper (the design and the consistency review, and two criteria
+reviews whose reports the helper refused and did not keep); one criteria
+reviewer launched as a worker in their place; and four refuters, one for
+the first subject and three for the reworked one. Every one was a
+`dotln-worker` and none was re-tasked. The hook counted 19, since it does
+not count the helper's launch in the spelling used here, which WO-261
+corrects. The criteria reviewer took 0 h 14 min (274,570 tokens) and the
+refuters 0 h 14 min, 0 h 13 min, 0 h 15 min and 0 h 16 min (234,387,
+216,484, 215,966 and 218,546 tokens); the other workers' tokens were not
+kept.
+
+What the time bought and what it did not. The research workers were the
+pass's longest reading, at most 0 h 20 min each and run together, and
+they overturned readings the planner held at entry, among them that most
+failed verifications were bookkeeping. Two criteria reviews were lost to
+the helper's refusal of a word in a table; WO-262 now keeps such a
+report. About half of the pass came after its first publication, and
+most of that was the planner's own doing. It returned five decisions to
+the operator. It published with a wrong path it knew of and a note for a
+later pass. And it answered the operator's first findings from the work
+laptop by proposing a second pass, treating a receipt on an unmerged
+branch as fixed. Each cost the operator a message and a wait, and product
+07 now carries the rule against each. The rework took three judgments
+because the first two each found a statement of the planner's that
+another order contradicted: WO-264's roles against its own non-goal and
+WO-265's non-goal against WO-266, and then a clause the planner had just
+written about the sync tests. `npm run plan -- conditions --slow` took
+0 h 5 min and its document-gate probe timed out; one document gate waited
+0 h 13 min for host lanes behind another checkout.
+
 ## Validation
+
+- self-review: found 48; fixed 47; recorded 1. The design review (17) and
+  the consistency review (14) ran through the review helper as Claude
+  workers and every finding was fixed; the first moved the four orders
+  that every later order pays less for ahead of the work instance's. The
+  criteria review, a `dotln-worker`, returned twelve findings and four
+  notes with a defect, all fixed, three of them steps that contradicted
+  their own order's criteria (WO-272, WO-266, WO-273); one counterexample
+  is recorded without a change, WO-270's criterion 2, which holds at the
+  base and is kept as a guard. This is a standard pass, and these reviews
+  are its own; the guide's reviewed route names Codex workers, which this
+  pass did not use.
+- Refutation:
+  [receipt 067](../refutations/2026-11-10-planning-64892614a4699ecc-067.md),
+  one fresh `dotln-worker` judgment (the generated definition's pin,
+  `claude-opus-5-5` at `xhigh`; effective settings unverified) of the
+  committed subject `150becbb9`, pass scope: `aligned-with-findings` for
+  the plan and for each of the fifteen orders, no hold, forty-one known
+  issues, each with a reopening observation. They are on the fifteen
+  catalog rows of the map with the planner's reading of each for the
+  executor. The refuter was also asked to list any statement in a judged
+  order that is plainly false on the subject's own evidence, and listed
+  none. It is the fourth judgment made in this pass and the one receipt
+  the branch keeps. A receipt of the first subject was removed when the
+  branch was reworked before merge, and its twenty-four known issues went
+  into the orders. Two judgments of the reworked subject were not filed,
+  because each found a statement to correct, and the correction was made
+  first. The first refuter noted that WO-272 has the largest measured
+  saving per order and runs last; it stays last, because its saving is
+  wall-clock time and the work instance's binding limit is tokens.
+- Every repository path the fifteen orders name exists in the tree or is
+  created by the order that names it, by a scan run before each judgment.
+- `npm run plan -- check`: the judged, committed and workspace subjects
+  agree; the `Rules recorded` entries matched their journal rows and
+  digests.
+- `npm run work-orders -- index --check`: both generated pages current;
+  two criteria advisories, on WO-244's criterion 3, which this pass did
+  not file or amend, and on WO-265's criterion 4, whose 16 GB is a
+  fixture's injected host and no bound the order must meet.
+- `npm run test:docs`: all 29 tasks passed at `fda87f0e0`, the commit
+  before this section was written, and the gate is run again on the
+  closing commit before the push.
+- Published by `node scripts/refute-plan.mjs publish`; the pull request
+  is the one opened at the pass's first publication, and its description
+  is rewritten for the reworked plan.
