@@ -292,7 +292,7 @@ decisions.
 2. Every installed executor root under `.claude/skills/` and
    `.agents/skills/` carries the judgment rule, and no installed root
    carries the clause `Fix or record every finding`. Check: the case of
-   `packages/skeleton/src/executor-supports.test.ts` that reads the
+   `packages/skeleton/test/executor-supports.test.ts` that reads the
    emitted executor root (`npm test -- --only skeleton`); `node
    scripts/harness.mjs check` shows the installed roots equal the emitted
    ones.
@@ -305,8 +305,8 @@ decisions.
    that a paired round's reviewers are blind to one another. `npm run
    work-orders -- index --check` passes on an order whose header carries
    the line with each of the three values and shows the value on that order's card, refuses any other value on an open
-   order naming the order and the line, and passes a closed order's file
-   whatever its line holds.
+   order naming the order and the line, passes an open order whose header has no such line, which runs the
+   full ladder, and passes a closed order's file whatever its line holds.
 5. In the document fixture, `node scripts/docs-check.mjs` passes a current
    decision record whose `roundFindings` holds one entry of each class,
    fails naming the decision and the field on an entry whose class or
