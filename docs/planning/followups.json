@@ -2729,6 +2729,16 @@
             "WO-271"
           ],
           "at": "2026-11-09T23:56:09.969Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part P (the record WO-271), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated for an attended order paused by choice: WO-271 gives a session the day's figure, a recorded standing at each stop that the next briefing names, and a dispatch bound that counts worked time. A resident-owned continuation is not taken. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-271 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:31.102Z"
         }
       ]
     },
@@ -24466,6 +24476,16 @@
             "WO-263"
           ],
           "at": "2026-11-09T00:39:16.946Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part D (the record WO-263), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. The cause the 2026-10-31 deferral lacked is named: seven fresh passing complete review rows of 2026-11-06 to 2026-11-08 sit at a median of 45.8 minutes with 24.1 to 42.3 minutes at three or fewer tasks running, because each of the four exclusive rows is placed by its own lead and the queue drains heavy work for each separately; WO-222-D015's reopening condition (a complete-run median above 2,538,373 ms) is met. WO-263 takes the ordering cut (the exclusive rows share the strongest lead among them; the target-worktree group starts its longest file first) with the same-source comparison product 07 requires. The thirty-day plain-gate reading above 600 s is one sample of 2026-10-24 and is not that order's evidence. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-263 is withdrawn or closes negative, or its comparison leaves the complete run above WO-222's before median.",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:31.258Z"
         }
       ]
     },
@@ -39652,6 +39672,16 @@
             "WO-271"
           ],
           "at": "2026-11-09T23:56:09.840Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part P (the record WO-271), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated for an attended order paused by choice: WO-271 gives a session the day's figure, a recorded standing at each stop that the next briefing names, and a dispatch bound that counts worked time. A resident-owned continuation is not taken. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-271 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:31.414Z"
         }
       ]
     },
@@ -39782,6 +39812,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:09.199Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:31.566Z"
         }
       ]
     },
@@ -44412,6 +44452,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.296Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:31.721Z"
         }
       ]
     },
@@ -44616,6 +44666,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:09.327Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: WO-264 removes the chain of role baselines that scripts/test-gate-followups.mjs lists, which is this row's subject; WO-262 re-mints the oracle once before it. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:31.877Z"
         }
       ]
     },
@@ -45221,6 +45281,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.941Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:32.030Z"
         }
       ]
     },
@@ -45683,6 +45753,16 @@
             "WO-268"
           ],
           "at": "2026-11-09T23:56:09.455Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part L (the record WO-268), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator carried the need into a core planning pass in generic words on 2026-11-09, which is this row's condition. WO-268 gives a target's recorded understanding its form and its loading; the study of a particular codebase is that instance's own orders. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-268 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:32.184Z"
         }
       ]
     },
@@ -45780,6 +45860,16 @@
             "WO-270"
           ],
           "at": "2026-11-09T23:56:09.712Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part O (the record WO-270), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator carried the need into a core planning pass in generic words on 2026-11-09. WO-270 puts the layout in the workstream document and has a pass file the next wave. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-270 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:32.339Z"
         }
       ]
     },
@@ -45856,6 +45946,16 @@
             "WO-269"
           ],
           "at": "2026-11-09T23:56:09.583Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part M (the record WO-269), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator stated the first team arrangement on 2026-11-09 (one shared instance, one planner assigning orders). WO-269 takes the target close after a squash or rebase, the instance's authors and the conventions; several planners and a claim on an order stay unbuilt. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-269 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:32.491Z"
         }
       ]
     },
@@ -48930,6 +49030,16 @@
             "WO-272"
           ],
           "at": "2026-11-09T23:56:10.099Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part Q (the record WO-272), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: WO-272 measures the hooks' cost per tool call before and after and takes four cuts that move no refusal. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-272 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:32.647Z"
         }
       ]
     },
@@ -50073,6 +50183,16 @@
             "WO-263"
           ],
           "at": "2026-11-09T23:56:07.259Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part D (the record WO-263), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator named gate time as a goal in the dispatch of 2026-11-09, which is this row's condition; WO-263 as amended takes the exclusive rows' convoy and the hook suite's shards, and WO-273 the pins that fail complete runs. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-263 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:32.829Z"
         }
       ]
     },
@@ -51523,6 +51643,16 @@
             "WO-263"
           ],
           "at": "2026-11-09T23:56:07.389Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part D (the record WO-263), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator named gate time as a goal in the dispatch of 2026-11-09, which is this row's condition; WO-263 as amended takes the exclusive rows' convoy and the hook suite's shards, and WO-273 the pins that fail complete runs. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-263 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:32.997Z"
         }
       ]
     },
@@ -52790,6 +52920,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.425Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:33.201Z"
         }
       ]
     },
@@ -52995,6 +53135,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.037Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:33.432Z"
         }
       ]
     },
@@ -53832,6 +53982,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.168Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:33.630Z"
         }
       ]
     },
@@ -54381,6 +54541,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:07.777Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:33.818Z"
         }
       ]
     },
@@ -54494,6 +54664,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:09.070Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:34.034Z"
         }
       ]
     },
@@ -54593,6 +54773,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:07.906Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:34.253Z"
         }
       ]
     },
@@ -54840,6 +55030,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:07.648Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:34.472Z"
         }
       ]
     },
@@ -54976,6 +55176,16 @@
             "WO-273"
           ],
           "at": "2026-11-09T23:56:10.228Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part E (the record WO-273), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: WO-273 removes the two registries of case titles a consistency review would have had to trace; the third Traced consumers row is declined with them. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-273 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:34.720Z"
         }
       ]
     },
@@ -55125,6 +55335,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.814Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:34.929Z"
         }
       ]
     },
@@ -55650,6 +55870,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.555Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:35.155Z"
         }
       ]
     },
@@ -55969,6 +56199,16 @@
             "WO-264"
           ],
           "at": "2026-11-09T23:56:08.684Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part F (the record WO-264), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:35.377Z"
         }
       ]
     },
@@ -56442,6 +56682,16 @@
             "WO-261"
           ],
           "at": "2026-11-09T00:39:16.795Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part I (the record WO-261), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated to WO-261 step 6: kitWorkerLaunch counts a kit launch whose npm flag follows the script name, with a case per spelling. The active WO-244 edits a line near that recognizer, so the step records whether its merge already made the change and then adds only the missing cases. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-261 is withdrawn, or a session passes subagentCap on uncounted launches before it closes.",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:35.590Z"
         }
       ]
     },
@@ -56506,6 +56756,16 @@
             "WO-262"
           ],
           "at": "2026-11-09T00:39:16.643Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part C (the record WO-262), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. The reviewer's admission rule WO-259-D021 boarded is WO-262 step 1: the canonical brief of every kind and round admits a blocking finding only on a criterion with an input a writer produces, a leak, or behavior main had, and prefers a parsed structure to a new scanner; the review protocol file stays unchanged so no live feedback episode is owed. [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-262 is withdrawn, a record in the plain spelling loses its quotation's exemption, or a filed HTML link is read at another path than a browser follows.",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:35.813Z"
         }
       ]
     },
@@ -56540,6 +56800,16 @@
             "WO-262"
           ],
           "at": "2026-11-09T00:39:16.488Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part C (the record WO-262), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Reviewed at this planning session as the operator directed during WO-259: the three questions of WO-259-D022 (the writer that produces the input, the failure's direction, the fix's cost) are adopted as the rule and written into product 07 §Verification review and attack, in force from this pass; WO-262 carries the rule into every review brief and the executor's role text and gives the judgment a typed reviewFindings record the document check reads. The readers WO-259 wrote for such inputs stay (the pass's NoOp 1). [2026-11-08 planning pass (docs/planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md)]",
+          "reopenWhen": "WO-262 is withdrawn, or an executor writes code for a review finding without recording that judgment after WO-262 closes.",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:36.033Z"
         }
       ]
     },
@@ -56929,6 +57199,16 @@
             "WO-262"
           ],
           "at": "2026-11-09T23:56:07.129Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part C (the record WO-262), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated: WO-262 as amended carries the fix rule, a fix dispatch repairing the failing case and the class its report names with one combined review of the repair. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-262 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:36.248Z"
         }
       ]
     },
@@ -57201,6 +57481,16 @@
             "WO-274"
           ],
           "at": "2026-11-10T00:55:16.955Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part N (the record WO-274), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated by the pass's own decision after the operator returned it: WO-274 gives a registration a records key with which an instance keeps a target order's records and publishes the reviewed commit alone. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-274 is withdrawn, or closes without the key.",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:36.463Z"
         }
       ]
     },
@@ -57440,6 +57730,151 @@
             "WO-275"
           ],
           "at": "2026-11-10T03:30:24.230Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-276 as its Part G (the record WO-275), which the 2026-11-10 pass made of the queued order on the operator's direction; what the allocation covers is unchanged. Allocated when the unmerged branch was reworked on the operator's direction: WO-275, placed first, carries the operator's commands as a generated page and the one file for what core should hear, with the first order's hosts. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-275 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-10T14:56:36.674Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4d7e85f85870b389",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10::2e1ea7a84fea3b3ef1f23f588c8d665496a45a9cdc99bd4c4d921946f0a15ee5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b3274d8f80995271eca448fb16f6b669a586c367081f93c2787ef6a9040518e7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10",
+          "title": "A session's attestation names its mechanisms, and a dispatch records what it waited on.",
+          "summary": "1. **A session's attestation names its mechanisms, and a dispatch records what it waited on.** From the instance's block of 2026-11-10: the control rows of a closed order name no support a session ran with, no rung and no reason for a wait before a dispatch, so a tool that draws an order's history can show the consequence of two kinds of mechanism change in eight. Deferred: the instance asked only that it be routed, and no reader in core needs the fields. Reopen: core plans a view of an order's history, or an instance names the field its own tool is stopped for.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The instance asked only that the observation be routed, and no reader in core needs an attestation of the supports a session ran with or a recorded reason for a wait (the 2026-11-10 pass).",
+          "reopenWhen": "Core plans a view of an order's history, or an instance names the field its own tool is stopped for.",
+          "targets": [],
+          "at": "2026-11-10T14:56:36.892Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-180c3243e3d0edd4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10::63dac68207a740193f234ee999dadab4989455a91e031a3e4965a6ebd7852447",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6a79e18881782275da80b0be4f6766629eac3a119252bde9760959747a52260c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10",
+          "title": "Operator messages that arrive together read as one.",
+          "summary": "5. **Operator messages that arrive together read as one.** The host delivers queued messages one at a time between tool calls, and WO-275's executor answered the first of four before it had the rest. Declined: no hook sees the host's queue, so nothing the kit builds can hold a reply for it. Reopen: the host gives a hook the count of messages waiting.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The host delivers queued messages one at a time between tool calls and no hook sees its queue, so nothing the kit builds can hold a reply for the rest (the 2026-11-10 pass).",
+          "reopenWhen": "The host gives a hook the count of messages waiting.",
+          "targets": [],
+          "at": "2026-11-10T14:56:37.746Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-64b9558ae386adb7",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10::b94b1f99d20f7e435858013058e61e10a4c9a7bb479a7af2f939b16ca7ad82a2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5ddbfa7345ca5db5fb6b63a45ddb5b08710e61dc0869fbe693be709784fe3602",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10",
+          "title": "A record written while a complete run is live.",
+          "summary": "4. **A record written while a complete run is live.** The live-gate refusal admits no write to the active order's decisions during a review run, whose document tasks read them, so a correction named during a run waits for its end. Declined: a write there changes what the run's own tasks read. Reopen: a second execution stops a run to file a record.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "A write to the active order's decisions during a review run changes what that run's own document tasks read; a record named during a run waits in session scratch for the run's end (the 2026-11-10 pass, from the hooks' gate rule).",
+          "reopenWhen": "A second execution stops a complete run in order to file a record.",
+          "targets": [],
+          "at": "2026-11-10T14:56:37.530Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fddba57354445514",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10::cf970f7e011ca031f6c76d25f8b70ad6190d399a2b572fd1280ddf4a9f364f0c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3e4a23d1531a7813fb9af3070c134cf087493716039728dbda6c0b529eafdbfa",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10",
+          "title": "A refused review report repaired by the worker that wrote it.",
+          "summary": "2. **A refused review report repaired by the worker that wrote it.** From the same block: a report refused for its form could be repaired by its own worker, as a refuter's result is, instead of being run again. Deferred: WO-276 keeps every refused report in its lane, which is what a repair would start from. Reopen: after WO-276 a kept refused report is still run again from nothing.",
+          "missing": false
+        },
+        {
+          "hash": "4421583d969bfafbf2cfc8ef22403b5cc2e860a1c24c41dae89a5dd2d43f0b95",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10",
+          "title": "A refused review report repaired by the worker that wrote it.",
+          "summary": "2. **A refused review report repaired by the worker that wrote it.** From the same block: a report refused for its form could be repaired by its own worker, as a refuter's result is, instead of being run again. Carried in part: WO-276 admits the repair as a re-task where the session still holds the worker (step R6) and keeps every refused report in its lane (step C8). Deferred for a worker the review helper launched on another host, which no session holds. Reopen: after WO-276 a helper-launched report refused for its form is still run again from nothing.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-276 keeps every refused report in its lane (Part C, step C8), which is what a repair by the same worker would start from; whether a repair is still wanted is read after it (the 2026-11-10 pass).",
+          "reopenWhen": "After WO-276 a kept refused report is still run again from nothing.",
+          "targets": [],
+          "at": "2026-11-10T14:56:37.093Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Carried in part by WO-276: a repair of a refused report's form by its own worker is admitted as a re-task where the session still holds that worker (Part R, step R6), and every refused report is kept in its lane (Part C, step C8). Deferred for a worker the review helper launched on another host, which no session holds (the 2026-11-10 pass).",
+          "reopenWhen": "After WO-276 a helper-launched report refused for its form is still run again from nothing.",
+          "targets": [],
+          "at": "2026-11-10T16:00:51.291Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9978239ac93f69a5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10::e4f35ada220c2ad0c587ea0e453bd04c92fabe8e96b245d395a7bad4db8f451f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c6c6a4c7c94f7dff74d8854ee6b7f1b327ed14d50ed0b93a0e7042e57a4b0ef7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-one-order-pass-recorded-2026-11-10",
+          "title": "A confirmation for a planning publication into a target.",
+          "summary": "3. **A confirmation for a planning publication into a target.** `plan target-publish` lints its branch, commit, title and body with no `--confirm-terms` route, so a review item there refuses and the only route is to reword. Deferred: no instance has reported it. Reopen: a planning publication into a target is held by a review item its planner judges fine.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No instance has reported a planning publication into a target held by a review item; WO-276 leaves the target publication routes as they are (Part A's known issues).",
+          "reopenWhen": "A planning publication into a target is held by a review item its planner judges fine.",
+          "targets": [],
+          "at": "2026-11-10T14:56:37.308Z"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:f9c22c59b1715394c23428f1a9b0c30a0ef7f8b245595163a733aa884f1db928",
+  "subjectSourceHash": "sha256:15fc77c5787ee4fe0c81d796d87d2ca93e85a62589fb8e023280ca9d443329a7",
   "acceptances": [
     {
       "date": "2026-10-28",
@@ -219,127 +219,57 @@
       "reason": "WO-258 records the standing breach FUP-c61f76f60798e1b2 names: the planner root measures 30,780 bytes in each installed skill root against its effective acceptance, left advisory since the reviewed rules of WO-241 to WO-257 added to it. Under product 07's standing 2026-09-17 route, preserve those reviewed rules and accept the measured 30,780 plus one 4,096-byte step, 34,876; the byte-reduction row stays deferred with that follow-up. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-258/decisions.md#wo-258-d013."
     }
   ],
-  "observedAt": "2026-11-10T04:04:01.910Z",
-  "subjectRevision": "3847f1b50598f8dd22e45e383d5e9d6f8dfc8d92",
+  "observedAt": "2026-11-10T16:11:37.652Z",
+  "subjectRevision": "3c438df3239a79bf5e8f732d4908fdfbd36e3724",
   "rows": [
     {
-      "workOrder": "WO-275",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-262",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-263",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-273",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-264",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-265",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-261",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-266",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-267",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-268",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-269",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-274",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-270",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-271",
-      "observedAt": "2026-11-10T04:04:01.910Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-272",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "workOrder": "WO-276",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-244",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-11-10T04:04:01.910Z",
+      "observedAt": "2026-11-10T16:11:37.652Z",
       "metrics": null
     }
   ],
@@ -938,6 +868,11 @@
       "worsening": [],
       "reopenCandidate": false,
       "planningCaptures": [
+        {
+          "pass": "planning-da117019a9ace148",
+          "date": "2026-11-10",
+          "captures": 1
+        },
         {
           "pass": "planning-64892614a4699ecc",
           "date": "2026-11-09",

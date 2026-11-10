@@ -40,6 +40,21 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-10 — Planning pass: one order for the whole queue (WO-276 filed; WO-261 to WO-275 made umbrella records); registration only; the record is the planning document
+
+Dispatch: `planning:` with the operator's question about the state of the
+repository after WO-275's execution, journaled at 2026-11-10T13:41:31.815Z
+(hook time) in Claude Code (Fable 5.2 at max, operator-selected), captured
+in `docs/intake/planning-dispatch-2026-11-10-one-order-for-the-whole-queue.md`
+(SHA-256 `d163512c21ff163b724613120bc290bb4d27c1ae43f505e90475e2674c702156`,
+the journal's own digest of the message), with further messages during the
+pass captured beside it. The pass reads that execution's record, files
+WO-276 to carry its repairs, one reader for each format, the fifteen
+queued orders and the instance's asks of that day as one order, makes
+WO-261 to WO-275 umbrella records, and puts WO-276 alone at the head of
+the sequence. Record:
+[the planning document](../planning/passes/one-order-for-the-whole-queue-2026-11-10.md).
+
 ## 2026-11-09 — Planning pass: whole plan and codebase review (WO-261 to WO-263 amended, WO-264 to WO-273 filed); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with two items, journaled at

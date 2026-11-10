@@ -1,5 +1,24 @@
 # WO-261 — An instance's update keeps its own files: the update publish refuses a merge that rewrote a file both the instance and the starter had changed, the preview lists those files before the merge, and a kit worker launch is counted in every spelling
 
+**Umbrella record (2026-11-10):** superseded whole by WO-276, which carries
+this order's obligations as its Part I under the operator's direction of
+2026-11-10 ([the 2026-11-10 pass](../planning/passes/one-order-for-the-whole-queue-2026-11-10.md));
+not activatable. The text below is this order's last committed form, kept
+as the record of what WO-276 absorbed: its observed gap, its cost detail,
+its provenance and its cited code are read from here, and what binds is
+WO-276's text.
+
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-276",
+    "relation": "superseded",
+    "reason": "2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part I.",
+    "by": "WO-276"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.

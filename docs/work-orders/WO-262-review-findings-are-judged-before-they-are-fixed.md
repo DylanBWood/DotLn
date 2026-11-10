@@ -1,5 +1,24 @@
 # WO-262 — Review findings are judged before they are fixed, and a review is sized by what the record shows: the ladder's briefs admit a blocking finding only on an input a writer produces or a leak, the executor's root carries the judgment rule in place of fixing every finding, a fix dispatch repairs the class its report names and takes one combined review, an order's header sizes its first round, and a paired first round records which reviewers found what so that a later pass sets the default from it
 
+**Umbrella record (2026-11-10):** superseded whole by WO-276, which carries
+this order's obligations as its Part C under the operator's direction of
+2026-11-10 ([the 2026-11-10 pass](../planning/passes/one-order-for-the-whole-queue-2026-11-10.md));
+not activatable. The text below is this order's last committed form, kept
+as the record of what WO-276 absorbed: its observed gap, its cost detail,
+its provenance and its cited code are read from here, and what binds is
+WO-276's text.
+
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-276",
+    "relation": "superseded",
+    "reason": "2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part C.",
+    "by": "WO-276"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.

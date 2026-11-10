@@ -3902,6 +3902,21 @@ None.
 - [WO-206] — superseded by WO-204
 - [WO-208] — superseded by WO-207
 - [WO-209] — superseded by WO-207
+- [WO-261] — superseded by WO-276
+- [WO-262] — superseded by WO-276
+- [WO-263] — superseded by WO-276
+- [WO-264] — superseded by WO-276
+- [WO-265] — superseded by WO-276
+- [WO-266] — superseded by WO-276
+- [WO-267] — superseded by WO-276
+- [WO-268] — superseded by WO-276
+- [WO-269] — superseded by WO-276
+- [WO-270] — superseded by WO-276
+- [WO-271] — superseded by WO-276
+- [WO-272] — superseded by WO-276
+- [WO-273] — superseded by WO-276
+- [WO-274] — superseded by WO-276
+- [WO-275] — superseded by WO-276
 
 ### WO-033
 
@@ -4245,6 +4260,246 @@ None.
 - Track: delivery
 - Authority: [docs/work-orders/WO-209-build-as-update-channel.md](WO-209-build-as-update-channel.md)
 
+### WO-261
+
+[WO-261 — An instance's update keeps its own files: the update publish refuses a merge that rewrote a file both the instance and the starter had changed, the preview lists those files before the merge, and a kit worker launch is counted in every spelling](WO-261-an-instances-update-keeps-its-own-files.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part I..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-261-an-instances-update-keeps-its-own-files.md](WO-261-an-instances-update-keeps-its-own-files.md)
+
+### WO-262
+
+[WO-262 — Review findings are judged before they are fixed, and a review is sized by what the record shows: the ladder's briefs admit a blocking finding only on an input a writer produces or a leak, the executor's root carries the judgment rule in place of fixing every finding, a fix dispatch repairs the class its report names and takes one combined review, an order's header sizes its first round, and a paired first round records which reviewers found what so that a later pass sets the default from it](WO-262-review-findings-are-judged-before-they-are-fixed.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part C..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md](WO-262-review-findings-are-judged-before-they-are-fixed.md)
+
+### WO-263
+
+[WO-263 — The complete run takes its exclusive suites in one convoy and runs the largest on the lanes it holds: the queue drains heavy work for the exclusive rows once, the hook suite's cases run as concurrent shards inside its reservation, the longest target-worktree file starts first, and the pass's gate reading counts the runs the lifecycle makes](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part D..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
+
+### WO-264
+
+[WO-264 — Each role loads the rules that apply to it: a shared rule names the roles it binds, a planning pass reaches its refutation without a second skill, the verifier's and the reviewer's section of the guide no longer carries the executor's ladder mechanics, the meter counts the reads a role is told to make, and a role-text edit is checked by regeneration and a rule table in place of a chain of hash baselines](WO-264-each-role-loads-the-rules-that-apply-to-it.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part F..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-264-each-role-loads-the-rules-that-apply-to-it.md](WO-264-each-role-loads-the-rules-that-apply-to-it.md)
+
+### WO-265
+
+[WO-265 — A new host learns what it lacks from one command: &#96;node scripts/doctor.mjs&#96; reports every host assumption at once before the first install, an instance's host check is sized to the tasks an instance runs, an update's preview judges the incoming floors against the host it runs on, and the kit guide names the compiler, the forge tool and the hosts the kit is exercised on](WO-265-a-new-host-learns-what-it-lacks-from-one-command.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part H..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-265-a-new-host-learns-what-it-lacks-from-one-command.md](WO-265-a-new-host-learns-what-it-lacks-from-one-command.md)
+
+### WO-266
+
+[WO-266 — An instance chooses its models and reads what an order cost: a &#96;workers&#96; section of the configuration sets the model and effort each worker option and each driven phase runs, emit and the launch helpers read it, and the order meter keeps tokens by class and prints an estimate in dollars from prices the instance declares](WO-266-an-instance-chooses-its-models-and-reads-what-an-order-cost.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part J..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-266-an-instance-chooses-its-models-and-reads-what-an-order-cost.md](WO-266-an-instance-chooses-its-models-and-reads-what-an-order-cost.md)
+
+### WO-267
+
+[WO-267 — An instance builds its own tools beside the kit and keeps them across updates: one root the kit never ships into, scans or emits into, a committed settings fragment that emit merges, a configuration section the kit leaves to the instance, a versioned status output, and a section of the kit guide that says where each kind of extension goes](WO-267-an-instance-builds-its-own-tools-beside-the-kit.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part K..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-267-an-instance-builds-its-own-tools-beside-the-kit.md](WO-267-an-instance-builds-its-own-tools-beside-the-kit.md)
+
+### WO-268
+
+[WO-268 — What a session learns about a target is loaded by the next: a target's profile indexes area notes that state each rule with its evidence at a commit, the dispatch briefing of a target order names the profile, the notes and the order's workstream rules, a note older than the code it describes is flagged, and the kit guide gives the way to study a large codebase one bounded order at a time](WO-268-what-a-session-learns-about-a-target-is-loaded-by-the-next.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part L..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Authority: [docs/work-orders/WO-268-what-a-session-learns-about-a-target-is-loaded-by-the-next.md](WO-268-what-a-session-learns-about-a-target-is-loaded-by-the-next.md)
+
+### WO-269
+
+[WO-269 — A team works one instance against a repository that squashes its merges: a target order closes when its change is in the base by any merge method, the instance declares the authors whose commits are its own, and the kit guide gives the conventions by which one planner assigns orders to several people and settles the order they merge in](WO-269-a-team-works-one-instance-against-a-repository-that-squashes-its-merges.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part M..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Authority: [docs/work-orders/WO-269-a-team-works-one-instance-against-a-repository-that-squashes-its-merges.md](WO-269-a-team-works-one-instance-against-a-repository-that-squashes-its-merges.md)
+
+### WO-270
+
+[WO-270 — An initiative is laid out before its orders are cut: a workstream document carries the layout of a multi-week effort (what exists, what is asked, the way there in phases with the work each needs and what may run side by side), a planning pass files only the next wave of orders from it, and the kit guide gives that rolling way of planning](WO-270-an-initiative-is-laid-out-before-its-orders-are-cut.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part O..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor high; verifier high; reviewer high.
+- Track: delivery
+- Authority: [docs/work-orders/WO-270-an-initiative-is-laid-out-before-its-orders-are-cut.md](WO-270-an-initiative-is-laid-out-before-its-orders-are-cut.md)
+
+### WO-271
+
+[WO-271 — An order is paced across days: an instance declares a daily figure, each prompt shows the session what the day has used against it, a session that reaches it writes where the order stands and stops, the next day's briefing names that standing, and the dispatch bound counts the time sessions worked instead of the time between them](WO-271-an-order-is-paced-across-days.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part P..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-271-an-order-is-paced-across-days.md](WO-271-an-order-is-paced-across-days.md)
+
+### WO-272
+
+[WO-272 — A tool call pays for the hooks that judge it: a hook that judges one kind of tool is registered for that kind, the presence heartbeat rides a process that already runs, the planning-branch refusal asks Git only about a write, and the authorship snapshot rehashes only the files whose state changed](WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part Q..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md](WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md)
+
+### WO-273
+
+[WO-273 — A complete run fails for a defect in the change: the registries of case names and the per-case time bounds leave the suites, the console's self-host golden reads one fixed edition, and the vertical's statement wordings are judged in a table with one end-to-end run for each class](WO-273-a-complete-run-fails-for-a-defect-in-the-change.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part E..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-273-a-complete-run-fails-for-a-defect-in-the-change.md](WO-273-a-complete-run-fails-for-a-defect-in-the-change.md)
+
+### WO-274
+
+[WO-274 — A target order's records stay in the instance where its registration says so: a repository's registration names where its orders' records are filed, an order against a repository that keeps them in the instance publishes the reviewed commit with no records commit in the target, and the kit guide tells a team's instance to keep them](WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part N..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Authority: [docs/work-orders/WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md](WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md)
+
+### WO-275
+
+[WO-275 — A new instance starts on Claude alone and tells its operator what to type: the first order and the security seed ask about the hosts an instance elects and permit no call to a harness, a discovery record no longer turns a host on, the operator's commands for the release in hand are one generated page, and what core should hear is one file at the instance's root that each final review and each planning pass writes](WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md)
+
+- State: superseded.
+- Application target: unassigned.
+- Dependencies: typed; activation not applicable.
+- References: WO-276: superseded (non-blocking) by WO-276 — 2026-11-10 planning merge: this order's obligations are carried by WO-276 as its Part G..
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Authority: [docs/work-orders/WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md](WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md)
+
 ## Historical
 
 ### WO-001
@@ -4321,3 +4576,18 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-206]: WO-206-source-writer-object-store-protection.md
 [WO-208]: WO-208-instance-extension-point.md
 [WO-209]: WO-209-build-as-update-channel.md
+[WO-261]: WO-261-an-instances-update-keeps-its-own-files.md
+[WO-262]: WO-262-review-findings-are-judged-before-they-are-fixed.md
+[WO-263]: WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md
+[WO-264]: WO-264-each-role-loads-the-rules-that-apply-to-it.md
+[WO-265]: WO-265-a-new-host-learns-what-it-lacks-from-one-command.md
+[WO-266]: WO-266-an-instance-chooses-its-models-and-reads-what-an-order-cost.md
+[WO-267]: WO-267-an-instance-builds-its-own-tools-beside-the-kit.md
+[WO-268]: WO-268-what-a-session-learns-about-a-target-is-loaded-by-the-next.md
+[WO-269]: WO-269-a-team-works-one-instance-against-a-repository-that-squashes-its-merges.md
+[WO-270]: WO-270-an-initiative-is-laid-out-before-its-orders-are-cut.md
+[WO-271]: WO-271-an-order-is-paced-across-days.md
+[WO-272]: WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md
+[WO-273]: WO-273-a-complete-run-fails-for-a-defect-in-the-change.md
+[WO-274]: WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md
+[WO-275]: WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md
