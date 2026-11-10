@@ -1747,7 +1747,13 @@ Preconditions and inputs:
    own planning pass writes for core (its §Requests to core), one block per
    instance pass that has items, until WO-193 carries them as filed requests
    (operator question, 2026-10-21: the cadence is the instance's, and a pass
-   with nothing to ask sends nothing). The pass reads each item against the
+   with nothing to ask sends nothing). An instance pass sends an item only
+   when it stops that instance's next order and has no working route there,
+   and keeps every other observation in its own record (operator direction,
+   2026-11-09, ignored capture SHA-256
+   `9006bd8cbcdabb5647594adb6893150aaff9e5a8ee74260a4e890e9cba3d69ae`;
+   [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md)).
+   The pass reads each item against the
    record it names, files, declines or defers it with its reopening
    condition, and answers in a paste-ready block the instance's next pass
    reads; an item is evidence the operator carried, never operator direction
