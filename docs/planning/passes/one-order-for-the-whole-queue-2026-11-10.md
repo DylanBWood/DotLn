@@ -645,7 +645,10 @@ another.
   direction restated as a risk (an unmarked entry of an existing list
   stops nothing after the release; one verification judges every part),
   and none called for a change to the order.
-- `npm run test:docs`: recorded below at the handoff.
+- `npm run test:docs` passes on the published tree: 29 tasks, among them
+  the plan check, the receipt check, the document check, the terms
+  task and the index. The terms task found no match against the
+  operator's list in the 27 files this branch changes.
 - Outcome against the aim. The aim was one order that carries the
   repairs, the queue, the reader consolidation and the instance's
   fixable asks, written with every care the pass could bring. WO-276 is
