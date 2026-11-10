@@ -317,10 +317,9 @@ Screens. `npm run work-orders -- index --check` prints one criteria
 advisory for these orders: WO-265 criterion 4 names 16 GB, which is the
 injected host of a fixture and not a bound the order must meet. Each
 order's final criterion names `npm test -- --review`, `npm test` and
-`npm run test:docs`, since each edits a declared source of a machinery
-suite. No order adds or tightens a refusal keyed to a host; WO-265,
-WO-266, WO-271 and WO-272 say what they do on this repository's host and
-on the work laptop. Each order that adds recurring work to a gate, a hook
+`npm run test:docs`, since each edits a declared source of a machinery suite. No order adds or
+tightens a refusal keyed to a host; WO-265, WO-266, WO-271 and WO-272 say
+what they do on this repository's host and on the work laptop. Each order that adds recurring work to a gate, a hook
 or a close names it as unmeasured and measures it. No order edits a file
 in `FEEDBACK_SOURCE_PATHS`, so none owes a live feedback episode.
 
@@ -339,6 +338,11 @@ pass which reopens one recuts it first. Retiring any of them to
 Review ladder. The twelve orders after WO-262 declare `Review ladder:
 paired`. Until WO-262 lands the line is inert and their executors run
 today's ladder.
+
+Role text. WO-262 is the one order that edits a role sentence before
+WO-264 removes the chain of baselines, and it mints one more by hand;
+WO-268, WO-270 and WO-271 follow WO-264 and write their sentences as rule
+records.
 
 ## Register
 
@@ -440,8 +444,17 @@ this pass carries the first thirteen.
 
 ## Sequence
 
-Thirteen orders in the order a new work instance meets them, then every
-session's, then core's own gate; nine orders not now. The marked list in
+Thirteen orders, then nine not now. First the four that every later order
+pays less for and that need nothing the work laptop's first run will
+report: the reviews (WO-262), the complete run (WO-263), the pins that
+fail it (WO-273) and the role text (WO-264). Then the work instance's, in
+the order a new instance meets them (WO-265, WO-261, WO-266 to WO-271),
+and the hooks' cost last (WO-272), after the two orders that edit the
+same files. The first draft of this pass put the work instance's orders
+ahead of the four; its design review pointed out that eleven orders would
+then pay the costs the four remove, and the operator's word that the
+laptop's findings come in a separate pass means the instance's orders are
+better filed after it. The marked list in
 [the sequence](../sequence.md) is the subject. The focus section there is
 replaced by the mission the operator stated, the order-size rule states
 the complete run's present figures, and a rule on review size is added.

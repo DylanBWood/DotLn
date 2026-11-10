@@ -45,9 +45,10 @@ after v0.121.0 refused the work laptop at every gate.
 **Depends on:** WO-260 (closed, v0.122.1: the Git floor and its judgment
 this order's command reports); WO-258 (closed: the starter refresh that
 adds a seed a starter lacked). No open order.
-**Recommended placement:** second, after WO-262: every later order that
-reaches the work laptop is taken through this order's preview, and a second
-machine (a teammate's) meets the kit through this order's command.
+**Recommended placement:** fifth, the first of the work instance's orders:
+every later release that reaches the work laptop is taken through this
+order's preview, and a second machine (a teammate's) meets the kit through
+this order's command.
 **Cites (read these sections):** `scripts/lib/node-engines.mjs`
 (`judgeRunningNode`, `judgeRunningGit`); `scripts/structural-checks.mjs`
 (`checkHost`); `scripts/lib/host-resources.mjs` (`hostLaneCapacity`,
@@ -127,8 +128,9 @@ release's floors refuse this host. Nothing in this order refuses a host.
   of the clone; the origin as a forge the publish helpers accept and the
   forge tool's presence; the platform, as exercised, designed for or
   unsupported; and the presence and version of each agent CLI, reported
-  and never judged. The doctor and the host task call the same functions,
-  so the two cannot disagree.
+  and never judged. The doctor and the host task call the same functions, the per-lane
+  comparison among them once step 3 has moved it into the library, so the
+  two cannot disagree.
 - The output is generic. It prints versions, counts, sizes and yes or no,
   and no host name, user name or absolute path, so an operator can paste
   it into a planning dispatch from a managed machine.
@@ -159,8 +161,12 @@ release's floors refuse this host. Nothing in this order refuses a host.
    the running host's as defaults and returns the rows of the Design's
    second item, calling `judgeRunningNode`, `judgeRunningGit`,
    `nativeCompiler`, `hostLaneCapacity` and the peak reading of step 3.
-   Its cases join `checkHost`'s in `scripts/test-runner.test.mjs`. Check:
-   `npm test -- --only runner-fixtures`.
+   Its cases join `checkHost`'s in `scripts/test-runner.test.mjs`, one of
+   them asserting that the doctor's imports are Node's own modules and the
+   named build-free library modules and nothing else, and
+   `scripts/test-runner.mjs` gains the new modules in the source
+   declarations of the rows that load them. Check: `npm test -- --only
+   runner-fixtures`.
 2. `scripts/doctor.mjs` (new): the entry that prints the table or, with
    `--json`, the rows, and sets the exit code; it imports nothing outside
    Node's modules and `scripts/lib/`. `scripts/launchpad.mjs` (the kit's
@@ -168,10 +174,13 @@ release's floors refuse this host. Nothing in this order refuses a host.
    instance gains `npm run doctor`. Check: in the export fixture, before
    any install, `node scripts/doctor.mjs` runs (`npm test -- --only
    launchpad`).
-3. `scripts/lib/host-resources.mjs` (`largestTaskPeakRss`) and
-   `scripts/structural-checks.mjs` (`checkHost`): in a kit root, read the
-   peak over the baseline's samples of the tasks that root's gate carries;
-   in core, as today. Check: `npm test -- --only runner-fixtures`, whose
+3. `scripts/lib/host-resources.mjs` (`largestTaskPeakRss` and a new
+   exported comparison) and `scripts/structural-checks.mjs` (`checkHost`):
+   move the per-lane comparison and its remedy text, written inline in
+   `checkHost` today, into the library so that the host task and the
+   doctor call one function; in a kit root, read the peak over the
+   baseline's samples of the tasks that root's gate carries; in core, as
+   today. Check: `npm test -- --only runner-fixtures`, whose
    file holds `checkHost`'s cases, with a sample of 16 GB and twelve
    processors injected as `checkHost` takes its facts today.
 4. `scripts/launchpad.mjs` (`previewFromRevision`): read `engines` from

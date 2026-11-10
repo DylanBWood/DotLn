@@ -82,61 +82,64 @@ DotLn-Angular remain where the same route is exercised in the open.
 
 ## The order, serial
 
-For the work instance, in the order a new instance meets them:
+First, what every later order pays less for. These four need nothing the
+work laptop's first run will report, and the operator brings that report
+to a separate pass:
 
 - WO-262: review findings are judged before they are fixed, a fix takes
   one combined review of the repair, an order's header sizes its first
   round, and a paired round records which reviewer found what; first,
-  because every later order's reviews and repairs run under it and the
-  size of a review is the largest multiplier of an order's worker
-  launches.
-- WO-265: a new host learns what it lacks from one command: a read-only
-  report of every host assumption before the first install, an
-  instance's host check sized to the tasks it runs, and an update preview
-  that says when the incoming floors refuse this host; second.
-- WO-261: an instance's update keeps its own files: the publish refuses a
-  merge that rewrote a file both sides changed, the preview lists those
-  files, and a kit launch is counted in every spelling; third, after
-  WO-265, which edits the same preview.
-- WO-266: an instance chooses the model and effort its workers and driven
-  phases run, and reads what an order and a day used, in tokens by class
-  and in dollars from prices it declares; fourth, the first order that
-  changes what the work instance spends.
-- WO-267: an instance builds its own tools beside the kit: one root the
-  kit never touches, a committed settings fragment, a configuration
-  section left to the instance, a versioned status output and the kit
-  guide's account of where each kind of extension goes; fifth.
-- WO-268: what a session learns about a target is loaded by the next:
-  area notes with their evidence at a commit, named by the dispatch
-  briefing with the workstream's rules and flagged when the code has
-  moved; sixth, the first of the instance's three jobs.
-- WO-269: a team works one instance against a repository that squashes
-  its merges: a target order closes when its change is in the base by any
-  merge method, the instance declares its authors, and the kit guide
-  gives one planner's conventions; seventh.
-- WO-270: an initiative is laid out before its orders are cut: the layout
-  in the workstream document and orders filed a wave at a time; eighth,
-  the second of the three jobs.
-- WO-271: an order is paced across days: a declared daily figure shown to
-  the session, a recorded standing at each stop, and a dispatch bound
-  that counts worked time; ninth, after WO-266, whose report it reads.
-
-For every session, in core and in an instance:
-
+  because every later order's reviews and repairs run under it.
+- WO-263: the complete run takes its exclusive suites in one convoy and
+  runs the hook suite's cases as shards on the lanes it holds; second,
+  because each order after it pays several complete runs of about three
+  quarters of an hour.
+- WO-273: a complete run fails for a defect in the change: the case-name
+  registries, the per-case time bounds and the golden that tracks the
+  newest order leave; third, after WO-263, since hand-written pins are
+  the commonest cause of a failed complete run.
 - WO-264: each role loads the rules that apply to it, a planning pass
   reaches its refutation without a second skill, the reviewers' section
   of the guide loses the executor's ladder mechanics, and a role-text
   edit is checked by regeneration instead of a chain of hash baselines;
-  tenth.
-- WO-272: a tool call pays for the hooks that judge it; eleventh.
+  fourth, ahead of the four orders that add a role sentence.
 
-For core's own gate:
+Then the work instance, in the order a new instance meets them:
 
-- WO-263: the complete run takes its exclusive suites in one convoy and
-  runs the hook suite's cases as shards on the lanes it holds; twelfth.
-- WO-273: a complete run fails for a defect in the change: the case-name
-  registries, the per-case time bounds and the golden that tracks the
-  newest order leave; thirteenth, after WO-263.
+- WO-265: a new host learns what it lacks from one command: a read-only
+  report of every host assumption before the first install, an
+  instance's host check sized to the tasks it runs, and an update preview
+  that says when the incoming floors refuse this host; fifth.
+- WO-261: an instance's update keeps its own files: the publish refuses a
+  merge that rewrote a file both sides changed, the preview lists those
+  files, and a kit launch is counted in every spelling; sixth, after
+  WO-265, which edits the same preview.
+- WO-266: an instance chooses the model and effort its workers and driven
+  phases run, and reads what an order and a day used, in tokens by class
+  and in dollars from prices it declares; seventh, the first order that
+  changes what the work instance spends.
+- WO-267: an instance builds its own tools beside the kit: one root the
+  kit never touches, a committed settings fragment, a configuration
+  section left to the instance, a versioned status output and the kit
+  guide's account of where each kind of extension goes; eighth.
+- WO-268: what a session learns about a target is loaded by the next:
+  area notes with their evidence at a commit, named by the dispatch
+  briefing with the workstream's rules and flagged when the code has
+  moved; ninth, the first of the instance's three jobs.
+- WO-269: a team works one instance against a repository that squashes
+  its merges: a target order closes when its change is in the base by any
+  merge method, the instance declares its authors, and the kit guide
+  gives one planner's conventions; tenth.
+- WO-270: an initiative is laid out before its orders are cut: the layout
+  in the workstream document and orders filed a wave at a time; eleventh,
+  the second of the three jobs.
+- WO-271: an order is paced across days: a declared daily figure shown to
+  the session, a recorded standing at each stop, and a dispatch bound
+  that counts worked time; twelfth, after WO-266, whose usage reading it
+  shares.
+- WO-272: a tool call pays for the hooks that judge it, in the launchpad
+  and in a target worktree; thirteenth, after WO-264 and WO-271, which
+  edit the same files.
 
 ## Not now
 
@@ -177,6 +180,9 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 
 <!-- dotln-work-order-sequence:start -->
 - WO-262 — Review findings are judged before they are fixed, and a review is sized by what the record shows
+- WO-263 — The complete run takes its exclusive suites in one convoy
+- WO-273 — A complete run fails for a defect in the change
+- WO-264 — Each role loads the rules that apply to it
 - WO-265 — A new host learns what it lacks from one command
 - WO-261 — An instance's update keeps its own files
 - WO-266 — An instance chooses its models and reads what an order cost
@@ -185,10 +191,7 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 - WO-269 — A team works one instance against a repository that squashes its merges
 - WO-270 — An initiative is laid out before its orders are cut
 - WO-271 — An order is paced across days
-- WO-264 — Each role loads the rules that apply to it
 - WO-272 — A tool call pays for the hooks that judge it
-- WO-263 — The complete run takes its exclusive suites in one convoy
-- WO-273 — A complete run fails for a defect in the change
 - WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel

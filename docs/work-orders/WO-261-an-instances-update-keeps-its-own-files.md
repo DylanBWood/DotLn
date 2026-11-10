@@ -41,13 +41,15 @@ sub-root and the tag-fetch refusal.
 changes an instance's merge meets); WO-260 (closed, v0.122.1: the recorded
 Git surface this order's Git forms are checked against); WO-265 (open: it
 edits `previewFromRevision` first).
-**Recommended placement:** third, after WO-265: both are met at an
+**Recommended placement:** sixth, after WO-265: both are met at an
 instance's next update, and the work instance takes updates regularly.
 **Cites (read these sections):** `scripts/launchpad.mjs` (`publishUpdate`,
 `kitProvenance`, `previewFromRevision`); `scripts/lib/starter-refresh.mjs`
 and `scripts/lib/starter-seeds.mjs` (the seed rules, read only);
-`scripts/lib/git-surface.json`; `packages/skeleton/src/harness-host.ts`
-(`kitWorkerLaunch`, `npmScriptArgs`); the kit guide §Taking upstream
+`scripts/lib/git-surface.json`; `packages/skeleton/src/harness-host.ts` (`kitWorkerLaunch`);
+`packages/skeleton/src/test-selection.mjs` (`npmScriptArgs`, read only: it
+has two other callers and is a declared source of six suite rows); the kit
+guide §Taking upstream
 updates, §Opting in to instance actions and §Kit files and instance files.
 
 **Objective:** An update never changes a file its instance had changed
@@ -93,10 +95,15 @@ against the cap.
   leaves a seed alone unless the starter still holds the export's own bytes
   (the axis is where the collision is: the starter's history still changes
   the path, and the instance's merge is what meets it).
-- Judged at the merge commit, by the incoming launchpad, so the first
-  update that brings this order is already protected, and later commits on
-  the branch (the re-emit, the lineage index, the features page) are not
-  mistaken for the merge. `--take <path>` admits one named path whose
+- Judged at the update's own merge commit, by the incoming launchpad, so
+  the first update that brings this order is already protected. That
+  commit is the one on the branch with the starter's incoming revision,
+  the one the provenance names, as a parent; the instance's side is its
+  other parent, whichever position it holds. Later commits on the branch
+  (the re-emit, the lineage index, the features page) and a later merge of
+  `main` into the branch are not update merges and are not judged, so the
+  restore the refusal prints never puts the starter's bytes over the
+  instance's. `--take <path>` admits one named path whose
   starter bytes the operator wants; the publish prints each taken path.
 - The preview shows the same paths before the merge, under a line that
   says to keep the instance's bytes when merging.
@@ -113,11 +120,11 @@ against the cap.
 1. `scripts/launchpad.mjs`: beside `kitProvenance`, a function that takes
    a merge commit and returns the paths, outside the incoming
    `KIT-MANIFEST.json`'s list, that differ between the merge base and each
-   parent (or that both parents added with different bytes) and whose bytes
-   in the merge commit differ from the first parent's. `publishUpdate`'s
-   `ready` calls it for each merge commit on the branch since `main` and
-   refuses, naming each path, the command that restores it from the first
-   parent and `--take <path>`; `update --publish` accepts `--take` and
+   parent (or that both parents added with different bytes) and whose bytes in the merge commit differ from the instance's side. `publishUpdate`'s
+   `ready` calls it for the merge commit on the branch that has the
+   incoming starter revision as a parent, with the other parent as the
+   instance's side, and refuses, naming each path, the command that
+   restores it from that parent and `--take <path>`; `update --publish` accepts `--take` and
    prints each taken path. Every Git form it uses exists in Git 2.31.0
    (`scripts/lib/git-surface.json` gains its pairs). Record the reading's
    time on the update fixture. Check: `npm test -- --only launchpad`.
@@ -126,9 +133,12 @@ against the cap.
    their merge base, outside the incoming manifest, under a line that says
    to keep the instance's bytes when merging. Check: `npm test -- --only
    launchpad`.
-3. `packages/skeleton/src/harness-host.ts` (`kitWorkerLaunch`, with
-   `npmScriptArgs`): count a kit launch whose npm flag follows the script
-   name as the plain spelling is counted, with a case per spelling. Check:
+3. `packages/skeleton/src/harness-host.ts` (`kitWorkerLaunch`): read past
+   npm's own flags between the script name and the separator before
+   comparing the subcommand, so that a kit launch whose npm flag follows
+   the script name is counted as the plain spelling is, with a case per
+   spelling; `npmScriptArgs` in `packages/skeleton/src/test-selection.mjs`
+   and its other callers are unchanged. Check:
    `npm test -- --only harness-fixtures`.
 4. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: the kit guide §Taking upstream updates (the merge
@@ -151,9 +161,11 @@ and the decisions.
    <path>` refuses before any push, naming both paths, the restore command
    and `--take`. After the merge commit holds the instance's bytes for both
    paths, the same command proceeds. With `--take` naming one of the two
-   and the other restored, it proceeds and prints the taken path. A file
-   only the incoming revision changed, a file it added and a kit file the
-   incoming manifest lists are never named.
+   and the other restored, it proceeds and prints the taken path. A file only the incoming revision changed, a file it added and a kit file
+   the incoming manifest lists are never named. With `main` merged into the
+   update branch after the update's own merge, the same commit is judged,
+   the same paths are named and the restore command names the instance's
+   side.
 2. In the same fixture, `node <incoming>/scripts/launchpad.mjs preview
    --from <revision>` lists both paths in the section step 2 adds and lists
    none of the files criterion 1 says are never named.
@@ -192,7 +204,7 @@ reopening conditions in `docs/evidence/WO-261/decisions.md`.
   case, and the refusal names the base it used.
 - The kit's own `package.json` and lockfile are kit files that Git merges
   line by line, so an instance that adds a script entry or a dependency to
-  them meets a merge there; WO-266 gives an instance a root of its own for
+  them meets a merge there; WO-267 gives an instance a root of its own for
   both, and this order does not judge those two files.
 - FUP-7de23c426e329c34 (WO-258-D014, the older rendering of a starter's
   documentation index) stays deferred: this order does not edit the starter

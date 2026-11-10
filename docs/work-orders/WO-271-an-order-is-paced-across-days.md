@@ -6,22 +6,21 @@
 **Track:** machinery
 **Review ladder:** paired
 **Release classification:** minor. One optional figure in an instance's
-budgets; one line in the facts the prompt hook prints; one section of an
-order's handoff file and one line in the briefing; the dispatch bound's
-wall-clock reading. No refusal is added; one refusal fires later than it
+budgets; one line in the facts the prompt hook prints; one standing file beside an active order's evidence and one line in the
+briefing; the dispatch bound's wall-clock reading. No refusal is added; one refusal fires later than it
 does today. An instance that declares no figure and whose phases finish
 in a sitting behaves as today. Assigned at activation under the standing
 opt-out default.
 **Cost:** adds, in `scripts/lib/process-budget.mjs` (`readBudgets`), an
 optional `spend.daily` figure in tokens or dollars; in
 `packages/skeleton/src/observed-facts.ts` and the prompt hook that calls
-it, the day's use and the advisory, recurring work at each prompt (one
-read of the day's usage rollup; unmeasured, and measured by this order
+it, the day's use and the advisory, recurring work at each prompt (one call of the day reading WO-266 adds;
+unmeasured, and measured by this order
 from the hook's timing rows before and after, where a prompt hook takes
 about three seconds today); in `scripts/lib/dispatch-bound.mjs`, the
-reading of a phase's active time from its sessions' journal rows; in
-`scripts/resume.mjs` (`executionBriefing`), one line naming the standing
-section; in `packages/skeleton/src/loadouts/contributor.ts` (the
+reading of a phase's active time from its sessions' journal rows; in `scripts/resume.mjs` (`executionBriefing` and the
+`implementation-ready` transition), one line naming the standing file and
+that file's removal; in `packages/skeleton/src/loadouts/contributor.ts` (the
 executor), the stopping rule; cases in the suites the Preflight names;
 the kit guide, product 07 and the decisions. Removes these states: an
 order that pauses overnight refused its gates and worker launches the
@@ -42,11 +41,13 @@ may take several days to stay within it (ignored captures SHA-256
 continuation candidate (FUP-d8769cd30e3501af) and the context-continuity
 candidate (FUP-0091), read by
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
-**Depends on:** WO-266 (open: the usage by day and the instance's prices
-this order's figure is compared with); WO-234 (closed: the dispatch
-bound).
-**Recommended placement:** ninth, after WO-270 and after WO-266, whose
-report it reads.
+**Depends on:** WO-266 (open: the reading of usage by day and the
+instance's prices this order's figure is compared with); WO-264 (open: it
+makes each shared rule a record that names its roles, and this order's
+stopping rule is such a record naming the executor); WO-234 (closed: the
+dispatch bound).
+**Recommended placement:** twelfth, after WO-270 and after WO-266, whose
+usage reading it shares.
 **Cites (read these sections):** `scripts/lib/dispatch-bound.mjs` (where
 the elapsed time is taken from the dispatch's start to now);
 `scripts/lib/process-budget.mjs` (`readBudgets`);
@@ -56,8 +57,8 @@ usage line); `packages/skeleton/src/harness-host.ts` (the prompt hook
 that prints the facts); `packages/skeleton/src/dispatch-journal.mjs`;
 `scripts/resume.mjs` (`executionBriefing`); `scripts/lib/handoff-ledger.mjs`
 (how the handoff file is read at `implementation-ready`);
-`scripts/lib/checkpoint.mjs` (what a checkpoint holds); the kit guide's
-section on budgets and bounds; product 07 §Operator recovery controls
+`scripts/lib/checkpoint.mjs` (what a checkpoint holds); the kit guide §Owned cleanup and retention (where the dispatch bounds are
+described) and §Planning in this instance; product 07 §Operator recovery controls
 (the dispatch bound) and §Discipline (the handoff sequence).
 
 **Objective:** An instance says what a day may use. A session sees, at
@@ -99,31 +100,38 @@ the phase's bound.
 
 - The figure is the instance's and is advisory. `spend.daily` in
   `docs/control/budgets.json` holds a number of tokens or, where the
-  instance has declared prices under WO-266, a number of dollars. The
-  prompt hook adds one line to its facts: the day's use so far, summed
-  over this checkout's sessions for the calendar day in the host's local
-  time, and the figure. At or above the figure the line says to finish
-  the step in hand, write the standing and end the turn. It refuses
+  instance has declared prices under WO-266, a number of dollars. The prompt hook adds one line to its facts: the day's use so far, from the
+  reading of the usage ledger by local calendar day that WO-266 adds, and
+  the figure. At or above the figure the line says to finish the step in
+  hand, write the standing and end the turn. Where the figure is in
+  dollars and the day's sessions attest a model the instance has declared
+  no price for, the line gives the day's tokens and says the estimate is
+  unavailable. It refuses
   nothing, because the person at the keyboard may have reason to go on
   and the figure the operator gave is itself a guidance. Rejected: a
   refusal at the figure (the axis is who decides: a hard stop in the
   middle of a repair leaves a worse state than the overrun).
-- The standing is a section of the order's handoff file. The executor
-  creates `docs/evidence/WO-NNN/handoff.md` at its first stop if it does
-  not exist and keeps one section there, replaced at each stop: the
-  steps of the execution plan done, the step in hand and its state, what
-  comes next, and what is undecided. At `implementation-ready` the
-  section leaves and the file becomes the handoff it is today. The
-  briefing of an active order names the section when the file has one.
+- The standing is a file of its own, `docs/evidence/WO-NNN/standing.md`,
+  that exists only while the order is being executed. The executor writes
+  it at a stop and replaces it at the next: the steps of the execution
+  plan done, the step in hand and its state, what comes next, and what is
+  undecided. The briefing of an active order names the file when it
+  exists, and `implementation-ready` removes it and says so, so the
+  handoff file is never edited for it and nothing is refused. Rejected: a
+  section of the handoff file (the axis is the refusal it needs: a section
+  left in a handoff would have to be refused at `implementation-ready`,
+  and this order adds none).
   Rejected: a decision record at each stop (the axis is what a decision
   is: a stopping point is state that is overwritten, and the decisions
   file is already largely a log). Rejected: a new lifecycle event for a
   pause (the axis is blast radius: every reader of the control log would
   learn an event that changes no phase).
-- The bound measures work. A phase's wall-clock reading is the sum of
-  the spans in which its sessions' journals show activity, a gap between
-  two journal rows longer than a stated idle interval contributing
-  nothing. The interval is a constant beside the reading. A phase worked
+- The bound measures work. A phase's wall-clock reading is the sum of the
+  spans in which its sessions' journals show activity. The time from a
+  tool call's start row to its end row is worked however long it is, so a
+  complete run of three quarters of an hour or a wait on a worker counts
+  whole; a gap between one call's end, or a prompt, and the next row that
+  is longer than a stated idle interval contributes nothing. The interval is a constant beside the reading. A phase worked
   for nine hours without a break is refused where it is today.
 - On every host the record shows this order changes when one refusal
   fires and adds none: on this repository's host and on the work laptop
@@ -134,40 +142,45 @@ the phase's bound.
 
 1. `scripts/lib/dispatch-bound.mjs` (the standing's elapsed reading):
    compute the phase's wall-clock value from its sessions' journal rows as
-   the Design states, with the idle interval exported as a named
-   constant, and keep the elapsed time since the dispatch's start as a
-   separate, reported field. Check: `npm test -- --only harness-fixtures`,
-   whose file loads the dispatch-bound cases.
+   the Design states, pairing a tool call's start and end rows, with the
+   idle interval exported as a named constant, and keep the elapsed time
+   since the dispatch's start as a separate, reported field. The cases
+   elsewhere that stop a phase on this bound are read with it and changed
+   only where the reading changes them: the one in
+   `scripts/test-runner.test.mjs` and those in `scripts/test-off-ramps.mjs`.
+   Check: `npm test -- --only harness-fixtures`, whose file loads the
+   dispatch-bound cases, `npm test -- --only runner-fixtures` and `npm
+   test -- --only resume`.
 2. `scripts/lib/process-budget.mjs` (`readBudgets`): admit an optional
    `spend.daily` object with `tokens` or `usd`, each a positive number or
    null, refusing any other shape by field;
    `scripts/kit/budgets.template.json`: the field, null. Check: `npm test
    -- --only process-debt`.
 3. `packages/skeleton/src/observed-facts.ts` and the prompt hook in
-   `packages/skeleton/src/harness-host.ts`: when a daily figure is
-   declared, print the day's use from WO-266's rollup and the figure, and
-   at or above it the stopping advisory; print nothing more when none is
-   declared. Record the prompt hook's timing rows before and after.
+   `packages/skeleton/src/harness-host.ts`: when a daily figure is declared, print the day's use from the reading
+   WO-266 adds and the figure, at or above it the stopping advisory, and
+   the unavailable estimate where a dollar figure meets a model with no
+   declared price; print nothing more when none is declared. Record the prompt hook's timing rows before and after.
    Check: `npm test -- --only harness-fixtures`.
-4. `packages/skeleton/src/loadouts/contributor.ts` (the executor) and
-   `scripts/resume.mjs` (`executionBriefing`): the stopping rule and the
-   standing section's four parts in the executor's text; the briefing
-   names the section when the order's handoff file has one;
-   `scripts/lib/handoff-ledger.mjs`: `implementation-ready` refuses a
-   handoff file that still carries the standing section, naming it.
+4. `packages/skeleton/src/loadouts/contributor.ts` (a rule record naming
+   the executor) and `scripts/resume.mjs` (`executionBriefing` and the
+   `implementation-ready` transition): the stopping rule and the standing
+   file's four parts in the executor's text; the briefing names
+   `docs/evidence/WO-NNN/standing.md` when it exists; the transition
+   removes the file and prints that it did.
    Check: `npm test -- --only resume`, `npm test -- --only skeleton` and
    `npm test -- --only compiler`.
 5. Write-backs, each replacing the sentence now wrong and linking this
-   order's decisions: the kit guide (pacing an order across days: where
-   the figure is declared, what a session is shown, the standing, and
-   that the bound counts worked time); product 07 §Operator recovery
-   controls (the bound's reading) and §Discipline (the standing section
-   before the handoff); `docs/evidence/WO-271/decisions.md`. Then the
+   order's decisions: the kit guide §Owned cleanup and retention (the bound counts worked time)
+   and §Planning in this instance (pacing an order across days: where the
+   figure is declared, what a session is shown and the standing), adding
+   no second-level heading; product 07 §Operator recovery controls (the bound's reading) and
+   §Discipline (the standing file before the handoff); `docs/evidence/WO-271/decisions.md`. Then the
    handoff sequence of product 07 §Discipline.
 
 **Deliverables:** the bound's worked-time reading; the daily figure and
-its line in the facts; the standing section with the briefing's line and
-the handoff check; the executor's rule; the cases; the write-backs and
+its line in the facts; the standing file with the briefing's line and its
+removal at handoff; the executor's rule; the cases; the write-backs and
 the decisions.
 
 **Acceptance criteria (all required)**
@@ -176,33 +189,37 @@ the decisions.
    and twenty hours apart, the dispatch standing reports one hour of
    wall-clock for the phase and a bounded probe is admitted under an
    eight-hour bound; with rows that show nine hours of unbroken activity
-   it is refused with the message the bound gives today; the standing
-   also reports the elapsed time since the dispatch began.
+   it is refused with the message the bound gives today; with one tool call
+   whose start and end rows are fifty minutes apart, the fifty minutes are
+   counted; the standing also reports the elapsed time since the dispatch
+   began.
 2. With a daily figure declared and the day's recorded use below it, the
-   facts printed at a prompt carry the day's use and the figure; with the
-   use at or above it they also carry the stopping advisory; with no
-   figure declared they are the facts printed at the base.
+   facts printed at a prompt carry the day's use and the figure; with the use at or above it they also carry the stopping advisory; with a
+   dollar figure and a model that has no declared price they carry the
+   day's tokens and say the estimate is unavailable; with no figure
+   declared they are the facts printed at the base.
 3. A `spend.daily` that is not an object of the two admitted fields, or
    that holds a negative number, is refused when the budgets load, naming
    the field.
-4. Every installed executor root carries the stopping rule; with an
-   active order whose handoff file holds a standing section the execution
+4. Every installed executor root carries the stopping rule; with an active
+   order that has a `standing.md` beside its evidence the execution
    briefing names it, and without one it prints as at the base;
-   `implementation-ready` on a handoff file that still holds the section
-   is refused naming it.
+   `implementation-ready` removes the file, prints that it did, and
+   completes as at the base.
 5. The kit guide and product 07 state the figure, the line a session is
    shown, the standing and the bound's reading, each linking this order's
    decisions. Check: `npm run test:docs`.
 6. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures` for steps 1 and 3;
-`npm test -- --only process-debt` for step 2; `npm test -- --only resume`, `npm test -- --only skeleton`
+`npm test -- --only runner-fixtures` and `npm test -- --only resume` for
+step 1; `npm test -- --only process-debt` for step 2; `npm test -- --only resume`, `npm test -- --only skeleton`
 and `npm test -- --only compiler` for step 4; the structural phase; the
 complete run with `npm test -- --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-271/`: the two standings of
 criterion 1; the three printed facts of criterion 2 with the hook's
-timing rows before and after; the briefing with and without a standing;
+timing rows before and after; the briefing with and without a standing file;
 `npm run resume -- status --json` after `implementation-ready`.
 
 **Write-back duty:** as listed in step 5 and criterion 5; sources and
@@ -223,20 +240,20 @@ reopening conditions in `docs/evidence/WO-271/decisions.md`.
 - A day's use in dollars needs the instance's prices and the token
   classes of WO-266; with tokens only, the figure is in tokens.
 - A session that ends without writing a standing leaves what it leaves
-  today. The advisory asks for the standing; nothing enforces it before
+  today. The advisory asks for the standing and nothing enforces it.
+- The standing file is never committed: an order's work is uncommitted
+  until its final review, and the file is removed at
   `implementation-ready`.
 - The idle interval is the planner's first figure, ten minutes; the
   executor records the reading on this repository's own journals and a
   later pass re-reads it.
 
-**Non-goals:** a refusal at the daily figure; a pause event in the
-control log; a weekly or per-initiative cap; summing use across
+**Non-goals:** a refusal at the daily figure; a pause event in the control log; a section in the handoff file; a weekly or per-initiative cap; summing use across
 checkouts or people; moving an order between clones; a standing for
 phases other than the executor's.
 
 **Operator-review assumptions:** that a daily figure the session is shown
 and asked to honor serves better than one it is stopped by; that worked
-time is what the phase bound was meant to limit; that a standing
-overwritten at each stop, in the file that becomes the handoff, is where
-the next session should look; and that ten minutes is a fair first idle
+time is what the phase bound was meant to limit; that a standing overwritten at each stop, in a file the briefing names, is
+where the next session should look; and that ten minutes is a fair first idle
 interval.

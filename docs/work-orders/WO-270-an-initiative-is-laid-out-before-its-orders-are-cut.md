@@ -19,8 +19,8 @@ recent orders, all of it judged by one refuter and re-judged when week
 three changes the plan; an operator and a team with nowhere to read and
 argue with the plan before it is orders. No recurring work is added to a
 gate, a hook, a prune or a close. Tokens and wall-clock: unknown until
-this order's handoff records them. Re-mints: the role oracle edition,
-deterministically, unless WO-264 has removed it; no file in
+this order's handoff records them. Re-mints: the editions the registered sources this order edits stale,
+deterministically; no file in
 `FEEDBACK_SOURCE_PATHS` changes, so no live feedback episode is owed.
 `packages/skeleton/src/loadouts/contributor.ts` is a declared source of
 machinery suites, so the final criterion names `npm test -- --review`.
@@ -33,10 +33,11 @@ is the reopening condition of FUP-855495d77825af2b (the initiative layout
 before orders are cut, recorded 2026-10-24), allocated by
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
 **Depends on:** WO-080 (closed: the workstream document and its index
-grouping); WO-202 (closed: an instance's own planning pass); WO-268
-(open: the area notes a layout's account of what exists links to; this
-order's template names them and does not need them to exist).
-**Recommended placement:** eighth, after WO-269. It is the second of the
+grouping); WO-202 (closed: an instance's own planning pass); WO-268 (open: the area notes a layout's account of what exists links to;
+this order's template names them and does not need them to exist);
+WO-264 (open: it makes each shared rule a record that names its roles,
+and this order's sentence is such a record naming the planner).
+**Recommended placement:** eleventh, after WO-269. It is the second of the
 work instance's three jobs, and it is small.
 **Cites (read these sections):** `scripts/kit/workstream.template.md`;
 `scripts/lib/work-order-workstream.mjs` (`parseWorkstreamDocument`, which
@@ -119,8 +120,8 @@ a wave at a time, and the layout is revised as waves land.
    added to the marked block's members without an order file is still
    refused as today. Check: `npm test -- --only work-orders-fixtures` and
    `npm test -- --only launchpad-planning`.
-3. `packages/skeleton/src/loadouts/contributor.ts` (the planner): one
-   sentence, for a dispatch that describes an initiative, to write or
+3. `packages/skeleton/src/loadouts/contributor.ts` (a rule record naming
+   the planner): one sentence, for a dispatch that describes an initiative, to write or
    revise the workstream's layout before filing and to file only the next
    wave. Check: `npm test -- --only skeleton` and `npm test -- --only
    compiler`.
@@ -176,6 +177,10 @@ reopening conditions in `docs/evidence/WO-270/decisions.md`.
 - A typed layout that the index shows (planned counts by phase) reopens
   when an instance has run two initiatives this way and the operator
   wants the view.
+- The workstream page is a seed. A new export carries the layout section;
+  an existing instance has its own copy of the page and meets the layout
+  in the kit guide, and this order's release says in its Read before
+  upgrading that the seeded page changed and where the new text is.
 - An estimate of an initiative's spend is only as good as the instance's
   record of comparable orders; the layout says where its figures came
   from.

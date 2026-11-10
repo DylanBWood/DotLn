@@ -5,6 +5,9 @@
 ## Proposed order
 
 - [ ] [WO-262] — Review findings are judged before they are fixed, and a review is sized by what the record shows · **queued**
+- [ ] [WO-263] — The complete run takes its exclusive suites in one convoy · **queued**
+- [ ] [WO-273] — A complete run fails for a defect in the change · **queued**
+- [ ] [WO-264] — Each role loads the rules that apply to it · **queued**
 - [ ] [WO-265] — A new host learns what it lacks from one command · **queued**
 - [ ] [WO-261] — An instance's update keeps its own files · **queued**
 - [ ] [WO-266] — An instance chooses its models and reads what an order cost · **queued**
@@ -13,10 +16,7 @@
 - [ ] [WO-269] — A team works one instance against a repository that squashes its merges · **queued**
 - [ ] [WO-270] — An initiative is laid out before its orders are cut · **queued**
 - [ ] [WO-271] — An order is paced across days · **queued**
-- [ ] [WO-264] — Each role loads the rules that apply to it · **queued**
 - [ ] [WO-272] — A tool call pays for the hooks that judge it · **queued**
-- [ ] [WO-263] — The complete run takes its exclusive suites in one convoy · **queued**
-- [ ] [WO-273] — A complete run fails for a defect in the change · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -64,6 +64,54 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: machinery
 - Authority: [docs/work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md](WO-262-review-findings-are-judged-before-they-are-fixed.md)
+
+### WO-263
+
+[WO-263 — The complete run takes its exclusive suites in one convoy and runs the largest on the lanes it holds: the queue drains heavy work for the exclusive rows once, the hook suite's cases run as concurrent shards inside its reservation, the longest target-worktree file starts first, and the pass's gate reading counts the runs the lifecycle makes](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-221: control-closed; WO-222: control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
+
+### WO-273
+
+[WO-273 — A complete run fails for a defect in the change: the registries of case names and the per-case time bounds leave the suites, the console's self-host golden reads one fixed edition, and the vertical's statement wordings are judged in a table with one end-to-end run for each class](WO-273-a-complete-run-fails-for-a-defect-in-the-change.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-263: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-273-a-complete-run-fails-for-a-defect-in-the-change.md](WO-273-a-complete-run-fails-for-a-defect-in-the-change.md)
+
+### WO-264
+
+[WO-264 — Each role loads the rules that apply to it: a shared rule names the roles it binds, a planning pass reaches its refutation without a second skill, the verifier's and the reviewer's section of the guide no longer carries the executor's ladder mechanics, the meter counts the reads a role is told to make, and a role-text edit is checked by regeneration and a rule table in place of a chain of hash baselines](WO-264-each-role-loads-the-rules-that-apply-to-it.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-262: not-control-closed; WO-263: not-control-closed; WO-273: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-264-each-role-loads-the-rules-that-apply-to-it.md](WO-264-each-role-loads-the-rules-that-apply-to-it.md)
 
 ### WO-265
 
@@ -168,7 +216,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-080: control-closed; WO-202: control-closed; WO-268: not-control-closed.
+- References: WO-080: control-closed; WO-202: control-closed; WO-264: not-control-closed; WO-268: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -184,7 +232,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-234: control-closed; WO-266: not-control-closed.
+- References: WO-234: control-closed; WO-264: not-control-closed; WO-266: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -192,22 +240,6 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: machinery
 - Authority: [docs/work-orders/WO-271-an-order-is-paced-across-days.md](WO-271-an-order-is-paced-across-days.md)
-
-### WO-264
-
-[WO-264 — Each role loads the rules that apply to it: a shared rule names the roles it binds, a planning pass reaches its refutation without a second skill, the verifier's and the reviewer's section of the guide no longer carries the executor's ladder mechanics, the meter counts the reads a role is told to make, and a role-text edit is checked by regeneration and a rule table in place of a chain of hash baselines](WO-264-each-role-loads-the-rules-that-apply-to-it.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-262: not-control-closed; WO-268: not-control-closed; WO-270: not-control-closed; WO-271: not-control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-264-each-role-loads-the-rules-that-apply-to-it.md](WO-264-each-role-loads-the-rules-that-apply-to-it.md)
 
 ### WO-272
 
@@ -224,38 +256,6 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: machinery
 - Authority: [docs/work-orders/WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md](WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md)
-
-### WO-263
-
-[WO-263 — The complete run takes its exclusive suites in one convoy and runs the largest on the lanes it holds: the queue drains heavy work for the exclusive rows once, the hook suite's cases run as concurrent shards inside its reservation, the longest target-worktree file starts first, and the pass's gate reading counts the runs the lifecycle makes](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-221: control-closed; WO-222: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md](WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md)
-
-### WO-273
-
-[WO-273 — A complete run fails for a defect in the change: the registries of case names and the per-case time bounds leave the suites, the console's self-host golden reads one fixed edition, and the vertical's statement wordings are judged in a table with one end-to-end run for each class](WO-273-a-complete-run-fails-for-a-defect-in-the-change.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-263: not-control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-273-a-complete-run-fails-for-a-defect-in-the-change.md](WO-273-a-complete-run-fails-for-a-defect-in-the-change.md)
 
 ### WO-244
 

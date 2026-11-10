@@ -33,8 +33,7 @@ loses the `role-oracle` task. Tokens and wall-clock: unknown until this
 order's handoff records them. Re-mints: the editions that
 `packages/skeleton/src/loadouts/contributor.ts` and
 `packages/compiler/src/harness.ts` stale, deterministically (`npm run
-sync`), and the evidence registration that names the baseline fixtures
-leaves with them; a compiler release owes the deterministic
+sync`),  a compiler release owes the deterministic
 `feedback-evidence --carry` and a console re-pin; no file in
 `FEEDBACK_SOURCE_PATHS` changes beyond a component release label, so no
 live feedback episode is owed. The files this order edits are declared
@@ -50,12 +49,13 @@ FUP-f1c7a256bec46737 reserved for the operator to open; the role-text
 economy candidate (FUP-c1086ab57c145bac) and the cold-start rows boarded by
 twelve orders from WO-217 to WO-257, allocated by
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
-**Depends on:** WO-262, WO-268, WO-270 and WO-271 (open: each edits role
-sentences in `contributor.ts` first, and this order composes them as it
-finds them, giving each sentence the roles its order named).
-**Recommended placement:** tenth, after the nine orders the work instance
-waits on. Every later dispatch, in core and in an instance, loads the
-roots this order emits.
+**Depends on:** WO-262 (open: it edits the executor's review sentences in
+`contributor.ts` first, and this order composes them as it finds them);
+WO-263 and WO-273 (open: both edit `scripts/test-runner.mjs` and its test
+first).
+**Recommended placement:** fourth, ahead of the four orders that add a
+role sentence, so that none of them mints a baseline. Every later
+dispatch, in core and in an instance, loads the roots this order emits.
 **Cites (read these sections):** `packages/skeleton/src/loadouts/contributor.ts`
 (`operatorControls`, `sessionBoundaries`, `sharedCorrections`, the role
 list's composition and `targetRoles`); `packages/compiler/src/harness.ts`
@@ -173,11 +173,12 @@ regenerating.
 **Execution plan (the executor follows these steps in order; observed at `06c1ddc1a`, 2026-11-09):**
 
 1. `packages/skeleton/test/executor-supports.test.ts`: add the case that
-   reads the loadout's shared rules and asserts, for every role and both
-   skill roots, that each rule naming the role appears exactly once in the
-   emitted root and each rule not naming it does not appear; at this step
-   every rule names every lifecycle role, so the case passes on the
-   present roots. Remove the assertions that match a sentence of a root's
+   reads the loadout's shared rules as they are today (the entries of
+   `operatorControls`, `sessionBoundaries`, `sharedCorrections` and the
+   rules `targetRoles` inserts, each taken as binding every lifecycle
+   role) and asserts, for every role and both skill roots, that each
+   appears exactly once in the emitted root; step 3 turns those entries
+   into records, and the case then reads each record's roles. Remove the assertions that match a sentence of a root's
    prose, keeping those that assert structure (the role count, the
    router's exclusions, one occurrence of a rule). Check: `npm test --
    --only skeleton`.
@@ -185,14 +186,15 @@ regenerating.
    names and its helpers), `scripts/check-role-oracle.mjs`,
    `scripts/lib/generated-artifacts.mjs` (the `role-oracle` task),
    `scripts/test-gate-followups.mjs` (the baseline chain it lists),
-   `scripts/test-runner.mjs` and `scripts/lib/evidence-sources.mjs` (their
-   lists of those files) and `packages/skeleton/fixtures/` (the
-   `*role-baseline*.json` files): remove the chain, its checker, its task
-   and its fixtures, and keep or add among the harness cases one in which
+   `scripts/test-runner.mjs` (its lists of those files),
+   `scripts/test-sync.mjs` (the four cases that find, damage and sync the
+   `role-oracle` artifact) and `packages/skeleton/fixtures/` (the
+   `*role-baseline*.json` files): remove the chain, its checker, its task,
+   its fixtures and those cases' use of it, and keep or add among the harness cases one in which
    a committed skill root edited by hand makes `node scripts/harness.mjs
    check` fail.
-   Check: `npm test -- --only process-debt` and `npm test -- --only
-   harness-fixtures`.
+   Check: `npm test -- --only process-debt`, `npm test -- --only
+   harness-fixtures` and `npm test -- --only sync-fixtures`.
 3. `packages/skeleton/src/loadouts/contributor.ts` (`operatorControls`,
    `sessionBoundaries`, `sharedCorrections` and the rules `targetRoles`
    inserts): give each shared rule an identifier and its roles, and
@@ -276,7 +278,8 @@ and the decisions with the before and after measurements.
 
 **Preflight:** `npm test -- --only skeleton` for steps 1 and 3;
 `npm test -- --only process-debt` for steps 2 and 7; `npm test -- --only
-harness-fixtures` for steps 2 and 4; `npm test -- --only compiler` for step
+harness-fixtures` for steps 2 and 4; `npm test -- --only sync-fixtures`
+for step 2; `npm test -- --only compiler` for step
 3; `npm test -- --only plan-refutation` for step 5; the structural phase;
 the complete run with `npm test -- --review` at final review.
 
@@ -290,10 +293,12 @@ reopening conditions in `docs/evidence/WO-264/decisions.md`.
 
 **Known issues and carry-ins:**
 
-- FUP-f1c7a256bec46737, FUP-c1086ab57c145bac and the cold-start rows
-  boarded by WO-217, WO-219, WO-238, WO-243, WO-246, WO-249, WO-251,
-  WO-253, WO-254, WO-255 (two) and WO-257: this order is their
-  allocation.
+- FUP-c1086ab57c145bac (the role-text economy candidate), the cold-start
+  rows boarded by WO-217, WO-219, WO-238, WO-243, WO-246, WO-249, WO-251,
+  WO-253, WO-254, WO-255 (two) and WO-257, and FUP-eed385be08e5bdd9 (the
+  role oracle and the gate follow-up cases): this order is their
+  allocation. FUP-f1c7a256bec46737, the row that reserved an efficiency
+  pass for the operator, is settled; this order is the pass it reserved.
 - The executor's root changes least under role scoping, because most
   shared rules do bind it. Its own 12,215 bytes, the support paragraphs
   the dispatch briefing also summarizes and the ladder sentences the guide

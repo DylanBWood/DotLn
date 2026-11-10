@@ -45,9 +45,9 @@ operator's dispatch of that day (ignored capture SHA-256
 that found the pins compiled in with no instance override.
 **Depends on:** WO-250 and WO-255 (closed: the review helper and its
 launch); WO-192 (closed: the drive). No open order.
-**Recommended placement:** fourth, after the three orders an instance
-meets at install and update. It is the first order that changes what the
-work instance spends.
+**Recommended placement:** seventh, after the two orders an instance meets
+at install and update. It is the first order that changes what the work
+instance spends.
 **Cites (read these sections):** `packages/skeleton/src/loadouts/contributor.ts`
 (`contributorWorkerOptions`, `contributorWorkerDefaults`,
 `contributorWorkerPins`, `contributorVerifierEffort`, read only);
@@ -94,6 +94,19 @@ tokens by class and, from prices the instance declares, in dollars.
   `totalTokens` and a `costUsd` that is null for an attended Claude Code
   session. WO-260's executor row reads 360,480,028 tokens over 1,001
   steps with no class and no cost.
+- An emitted file that differs by instance is read as an edit. `kitPath`
+  in `scripts/launchpad.mjs` counts everything under `.claude/agents/` as
+  a kit path, the export records each emitted surface at the bytes
+  `expectedHarnessBundle` predicts from the host elections alone, and
+  `planUpdate` refuses, as locally modified, a kit file whose hash is
+  neither the prior manifest's nor the incoming one's; `verifyKit` reports
+  the same file as differing. A worker definition emitted from an
+  instance's own configuration would meet both.
+- The token classes do not mean one thing on every host. `fields` in
+  `packages/skeleton/src/usage-observation.mjs` puts Codex's cached input,
+  which that host counts inside its input tokens, and Claude's cache
+  reads, which that host counts apart from them, into one field, and adds
+  the cache classes to the total for Claude alone.
 - The cost is mostly re-read context. The planning session that filed this
   order read 28,462,926 of its 29,152,076 tokens from cache, wrote 478,481
   to cache and produced 210,467 of output, by its own readback. A total
@@ -122,10 +135,19 @@ tokens by class and, from prices the instance declares, in dollars.
   validates the section's shape, the option names and the effort against
   the levels its launchers accept; it does not hold a list of model ids.
   A launch that fails names the configuration key the model came from.
-- The meter keeps the classes the host reports: input, cache read, cache
-  write and output, per role and per order, with `unknown` where the host
-  reported none. `npm run meta -- --usage` prints them by order and by
-  day.
+- An emitted surface is judged as emitted. The manifest's prediction, the
+  update plan and `verifyKit` take the resolved `workers` values as they
+  take the host elections today, so a worker definition emitted from the
+  instance's configuration is neither a local modification nor a
+  difference.
+- The meter keeps four classes that do not overlap: uncached input, cache
+  read, cache write and output, derived for each usage source from what
+  that host's counters mean, per role and per order, with `unknown` where
+  the host reported none. One build-free reading under
+  `packages/skeleton/src/` sums the usage ledger by the host's local
+  calendar day, taking each observation on the day it was observed, and
+  `npm run meta -- --usage` prints that reading by order and by day;
+  WO-271's prompt line calls the same reading.
 - Dollars are an estimate from the instance's own prices. `workers.prices`
   maps a model id to its prices for the four classes; with it the report
   multiplies and prints an estimate, labeled as one, and a `costUsd` the
@@ -153,10 +175,14 @@ tokens by class and, from prices the instance declares, in dollars.
    Check: the review-worker cases (`node scripts/harness.mjs bounded --
    node --test scripts/test-review-worker.mjs`).
 3. `scripts/lib/harness.mjs` (emit and check) with
-   `packages/compiler/src/harness.ts` (the worker definitions): the
-   emitted worker definitions carry the resolved model and effort, and
-   check compares against the resolved values. Check: `npm test -- --only
-   harness-fixtures` and `npm test -- --only compiler`.
+   `packages/compiler/src/harness.ts` (the worker definitions): the emitted
+   worker definitions carry the resolved model and effort, and check
+   compares against the resolved values. `scripts/launchpad.mjs`
+   (`expectedHarnessBundle`, `planUpdate`, `verifyKit`): each takes the
+   resolved values, so the emitted definitions are neither refused as
+   locally modified nor reported as differing. Check: `npm test -- --only
+   harness-fixtures`, `npm test -- --only compiler` and `npm test -- --only
+   launchpad`.
 4. `scripts/lib/review-worker.mjs`, `scripts/refute-plan.mjs` (`refute
    --model`), `scripts/lib/entropy-review.mjs` and
    `scripts/lib/drive-session.mjs`: each takes its model and effort from
@@ -164,15 +190,22 @@ tokens by class and, from prices the instance declares, in dollars.
    model came from. Check: `npm test -- --only plan-refutation` and
    `npm test -- --only harness-fixtures`, whose row runs the drive's
    cases.
-5. `scripts/lib/meta.mjs` (`usageTotals`, the per-role usage written to an
-   order's `meta.json`): keep input, cache-read, cache-write and output
-   tokens beside the total, each `null` where the host reported none.
-   Check: `npm test -- --only process-debt`.
+5. `packages/skeleton/src/usage-observation.mjs` (`fields` and what it
+   feeds): derive uncached input, cache read, cache write and output as
+   four classes that do not overlap, for a Claude source and for a Codex
+   source each by that host's meaning, leaving the total as it is.
+   `scripts/lib/meta.mjs` (`usageTotals`, the per-role usage written to an
+   order's `meta.json`): keep the four beside the total, each `null` where
+   the host reported none. A build-free module under
+   `packages/skeleton/src/` (new, with its one-line shim under
+   `scripts/lib/`): the reading of the usage ledger by local calendar day.
+   Check: `npm test -- --only skeleton` and `npm test -- --only
+   process-debt`.
 6. `scripts/meta.mjs` and `scripts/lib/meta.mjs`: `--usage [--since
    <date>]` prints, by order and by the day of each dispatch, the tokens
    by class and role and, where `workers.prices` names the attested model,
-   an estimate in dollars marked as an estimate. Check: `npm test --
-   --only process-debt`.
+   an estimate in dollars marked as an estimate, each class multiplied once
+   by its own price. Check: `npm test -- --only process-debt`.
 7. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: the kit guide (the section on what an instance
    configures: the `workers` section, what each key changes and that the
@@ -193,7 +226,10 @@ the usage report; the cases; the write-backs and the decisions.
    an effort, `node scripts/harness.mjs emit` writes that option's worker
    definition with those two values and `node scripts/harness.mjs check`
    passes; with the section absent, the emitted files equal the files
-   emitted at the base.
+   emitted at the base. In the update fixture, an instance that emitted
+   with the section set is shown no worker definition as locally modified
+   by the update plan, and `node scripts/launchpad.mjs verify` reports none
+   as differing.
 2. In the same fixture, `npm run worker -- review --kind criteria --host
    claude --order <id> --dry-run` and `npm run plan -- refute --model
    <option>` each print a launch that names the configured model and
@@ -205,11 +241,14 @@ the usage report; the cases; the write-backs and the decisions.
 4. A launch that fails because its model was refused reports the
    `workers` key that named the model, shown with the fixture launcher's
    failing double.
-5. An order's `meta.json` written from usage rows that carry the four
-   classes holds them per role beside the total, and holds `null` for a
-   class no row reported.
-6. `npm run meta -- --usage` prints tokens by class for each order and
-   each day; with `workers.prices` naming the attested model it also
+5. An order's `meta.json` written from usage rows holds uncached input,
+   cache read, cache write and output per role beside the total, and holds
+   `null` for a class no row reported. For a Claude usage row and for a
+   Codex usage row with the same counters, the four classes of each sum to
+   that host's total, so no token is in two classes.
+6. `npm run meta -- --usage` prints tokens by class for each order and for
+   each local calendar day, an observation counted on the day it was
+   observed; with `workers.prices` naming the attested model it also
    prints an estimate marked as one; for a model with no declared price it
    prints `unknown` in place of the estimate.
 7. The kit guide and the example configuration state the section and the
@@ -217,10 +256,11 @@ the usage report; the cases; the write-backs and the decisions.
 8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only configuration-root` for step 1; the
-review-worker cases under the bounded wrapper for step 2; `npm test --
---only harness-fixtures` and `npm test -- --only compiler` for step 3;
+review-worker cases under the bounded wrapper for step 2; `npm test -- --only harness-fixtures`, `npm test -- --only compiler` and
+`npm test -- --only launchpad` for step 3;
 `npm test -- --only plan-refutation` and `npm test -- --only
-harness-fixtures` for step 4; `npm test -- --only process-debt` for steps 5 and 6; the
+harness-fixtures` for step 4; `npm test -- --only skeleton` for step 5 and `npm test -- --only
+process-debt` for steps 5 and 6; the
 structural phase; the complete run with `npm test -- --review` at final
 review.
 

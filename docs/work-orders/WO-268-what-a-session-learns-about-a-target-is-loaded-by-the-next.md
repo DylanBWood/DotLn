@@ -41,11 +41,10 @@ is the reopening condition of FUP-67b423fdf450129c (research the existing
 codebase before any order, recorded 2026-10-24), allocated by
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
 **Depends on:** WO-072 and WO-236 (closed: the target worktree and the
-executor's grant to write it); WO-264 (open: it scopes shared rules by
-role, and this order's sentence is written as a rule that names three
-roles; if this order runs first it adds the sentence to those three roles
-directly).
-**Recommended placement:** sixth, after WO-267. It is the first of the
+executor's grant to write it); WO-264 (open: it makes each shared rule a
+record that names its roles, and this order's sentence is such a record
+naming three).
+**Recommended placement:** ninth, after WO-267. It is the first of the
 work instance's three jobs.
 **Cites (read these sections):** `scripts/resume.mjs` (`targetBriefing`,
 `executionBriefing`, `verificationBriefing`);
@@ -54,8 +53,9 @@ work instance's three jobs.
 (the seed list); `scripts/kit/workstream.template.md` (`## Rules`);
 `scripts/lib/work-order-workstream.mjs`; `scripts/docs-check.mjs` (how a
 marker block's JSON is read); product 07 §Research and guided-operator
-work orders; product 12 (the sentence that says a role loads its
-workstream document); the kit guide's sections on targets.
+work orders; product 12 (the sentence that says a role loads its workstream document);
+the kit guide §First steps (where a target is registered and its profile
+written) and §Planning in this instance.
 
 **Objective:** When a session studies part of a target, what it learned
 is written as a short note that names the paths it covers, the commit it
@@ -148,15 +148,17 @@ tree.
    Record the briefing's time on the target fixture before and after.
    Check: `npm test -- --only resume` and `npm test -- --only
    target-worktree`.
-4. `packages/skeleton/src/loadouts/contributor.ts` (the executor, the
-   verifier and the reviewer): one sentence, for a target order, to read
+4. `packages/skeleton/src/loadouts/contributor.ts` (a shared rule record
+   naming the executor, the verifier and the reviewer): one sentence, for
+   a target order, to read
    the area notes that cover the paths the change touches and the
    workstream's rules the briefing names. Check: `npm test -- --only
    skeleton` and `npm test -- --only compiler`.
 5. Write-backs, each replacing the sentence now wrong and linking this
-   order's decisions: the kit guide (in its section on targets: the index
-   and notes, what the briefing prints, and the recipe for studying a
-   large target area by area with research orders); product 12 (the
+   order's decisions: the kit guide §First steps, where a target is registered (the index and
+   notes, and what the briefing prints), and §Planning in this instance
+   (the recipe for studying a large target area by area with research
+   orders), adding no second-level heading; product 12 (the
    sentence on the workstream document, which the briefing now makes
    true); product 07 §Research and guided-operator work orders (an area
    note as a research order's deliverable);
@@ -219,6 +221,10 @@ reopening conditions in `docs/evidence/WO-268/decisions.md`.
 - A target's dependencies on other repositories (the interfaces its code
   calls) are written in the note of the area that calls them; reading
   those repositories is a registration and an order of their own.
+- The profile page is a seed. A new export carries the convention; an
+  existing instance has its own copy of the page and meets the convention
+  in the kit guide, and this order's release says in its Read before
+  upgrading that the seeded page changed and where the new text is.
 - The Entropy Reducer on a target stays what it is, a debt review; its
   findings may cite a note and do not write one.
 

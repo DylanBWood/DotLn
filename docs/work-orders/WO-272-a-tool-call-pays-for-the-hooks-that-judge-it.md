@@ -37,13 +37,15 @@ second and fourth goals; the hook-timing follow-up of WO-236
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
 **Depends on:** WO-264 and WO-271 (open: both edit
 `packages/skeleton/src/harness-host.ts` or the compiler's emission first).
-**Recommended placement:** eleventh. Every session on every host pays
-this on each tool call, a managed laptop most of all, and nothing is
-stopped by it today.
-**Cites (read these sections):** `.claude/settings.json` (the registered
-hooks and their matchers); `packages/compiler/src/harness.ts` (where each
-hook is registered with the matcher `.*`, and where the four presence
-hooks are emitted); `packages/skeleton/src/presence-heartbeat.ts`;
+**Recommended placement:** thirteenth, after WO-264 and WO-271, which edit
+the same files. Every session on every host pays this on each tool call,
+a managed laptop most of all, and nothing is stopped by it today.
+**Cites (read these sections):** `.claude/settings.json` (the registered hooks and their matchers);
+`packages/compiler/src/harness.ts` (where each hook is registered with the
+matcher `.*`, where the four presence hooks are emitted, and
+`lowerTargetWorker`, which emits a target worktree's own settings and
+hooks); `packages/skeleton/src/harness-command.ts` (`harnessToolEffects`,
+the table from each host's tool names to the kinds a unit judges); `packages/skeleton/src/presence-heartbeat.ts`;
 `packages/skeleton/src/harness-host.ts` (`evaluateExistingHarnessHook`,
 `planningWriteRefusal`, `observeAuthorship`, the pinned-file check and
 the journal's read); the order meter's hook and authorship fields in
@@ -64,6 +66,13 @@ for the same input, with the same words.
   (`no-lint-type-disables-as-fixes`, `read-observer` and
   `presence-posttooluse`), each for every tool: the compiler emits the
   matcher `.*` for all of them.
+- A target worktree has hooks of its own. `lowerTargetWorker` emits a
+  target worktree's settings apart, with its own presence hook and with
+  its attribution and writer hooks on the matcher `.*`; most of a work
+  instance's tool calls run there.
+- One settings file serves more than one host. Copilot CLI loads the same
+  emitted settings, and a host's shell tool is not always named as
+  Claude's is: the attribution unit gathers its facts for two tool names.
 - Four hooks exist to do nothing by default. The compiler emits a
   presence hook for each of four events in every installation, and
   `packages/skeleton/src/presence-heartbeat.ts` returns at once unless
@@ -91,16 +100,21 @@ for the same input, with the same words.
   fixed sequence of tool calls on the harness fixture, and the last step
   records the same sequence again; the decisions hold both. A cut that
   does not show in the second reading is reverted.
-- A unit's matcher is the tools it judges. The loadout's unit states the
-  tool kinds its facts read, the compiler emits that as the hook's
-  matcher, and a unit that judges every tool keeps `.*`. Rejected: one
+- A unit's matcher is the tools it judges, by every name they go by. The
+  loadout's unit states the kinds its facts read, the compiler builds the
+  hook's matcher from every tool name `harnessToolEffects` maps to those
+  kinds, on every host that reads the settings, and a unit that judges
+  every tool keeps `.*`. The same holds in the settings emitted for a
+  target worktree. Rejected: one
   dispatcher process per event that evaluates every unit (the axis is
   risk: it is the larger saving, and it moves every refusal's evaluation
   into new code at once; it is recorded as the candidate that follows
   this order's measurements).
-- The heartbeat rides. The observer hook that already runs for an event
-  calls the heartbeat, which still does nothing without a store, and the
-  four presence hook files and their registrations leave.
+- The heartbeat rides. A hook that already runs for an event calls the
+  heartbeat, which still does nothing without a store: the observer hooks
+  before and after a tool call, the session hook at a prompt and the
+  finish hook at a stop. The presence hook files and their registrations
+  leave, in the launchpad and in a target worktree.
 - The planning-branch refusal asks whether the tool writes first, from
   the input it already holds, and calls Git only then.
 - The authorship snapshot keeps, in the session's own state, the size,
@@ -120,14 +134,17 @@ for the same input, with the same words.
    `docs/evidence/WO-272/before.json` with the count of hook processes
    started. Confirm from the two units' code which tools each judges and
    record it. Check: the file holds a row for each registered hook.
-2. `packages/compiler/src/harness.ts` (the hook registrations) with the
-   units' declarations in the loadout: emit each unit's matcher from the
-   tools it judges. Check: `npm test -- --only compiler` and `npm test --
+2. `packages/compiler/src/harness.ts` (the hook registrations of the
+   launchpad and of `lowerTargetWorker`) with the units' declarations in
+   the loadout and `harnessToolEffects`: emit each unit's matcher from
+   every tool name that maps to the kinds it judges, with a refusal case
+   for each such name. Check: `npm test -- --only compiler` and `npm test --
    --only harness-fixtures`.
-3. `packages/compiler/src/harness.ts` (the presence hooks' emission) and
-   the observer hooks' entry in `packages/skeleton/src/harness-host.ts`:
-   call the heartbeat from the observer for each of the four events and
-   emit no presence hook; `node scripts/harness.mjs emit` removes the four
+3. `packages/compiler/src/harness.ts` (the presence hooks' emission, in
+   both places) and the hooks' entries in
+   `packages/skeleton/src/harness-host.ts`: call the heartbeat from the
+   observer hooks before and after a tool call, from the session hook at a
+   prompt and from the finish hook at a stop, and emit no presence hook; `node scripts/harness.mjs emit` removes the four
    files as obsolete outputs. Check: `npm test -- --only harness-fixtures`
    and the presence cases in `npm test -- --only skeleton`.
 4. `packages/skeleton/src/harness-host.ts` (`planningWriteRefusal`): test
@@ -154,13 +171,16 @@ cases; the write-backs and the decisions.
 **Acceptance criteria (all required)**
 
 1. The emitted `.claude/settings.json` registers the attribution hook and
-   the lint-directive hook only for the tools step 1 found each judges,
-   registers no presence hook for any event, and `node
-   scripts/harness.mjs check` passes; `.claude/hooks/` holds no presence
-   hook file.
-2. Every refusal case of `npm test -- --only harness-fixtures` that
-   passed at the base passes unchanged, and the heartbeat's cases pass
-   with a store named in the environment.
+   the lint-directive hook only for the tool names that map to the kinds
+   step 1 found each judges, registers no presence hook for any event, and
+   `node scripts/harness.mjs check` passes; `.claude/hooks/` holds no
+   presence hook file; and the settings emitted for a target worktree hold
+   the same.
+2. Every refusal case of `npm test -- --only harness-fixtures` that passed
+   at the base passes unchanged, the attribution refusal fires for a shell
+   command under each tool name that maps to its kind, and the heartbeat's
+   cases pass for each of the four events with a store named in the
+   environment.
 3. For a read on a planning branch the hooks make no `git symbolic-ref`
    call, counted through the suite's stand-in Git, and a write outside
    the admitted paths on a planning branch is refused with the message it
@@ -205,12 +225,12 @@ reopening conditions in `docs/evidence/WO-272/decisions.md`.
 - Whether the host runs one event's hooks in parallel decides how much of
   the saved process time is saved waiting; the two readings record
   elapsed time per call as well as process time.
-- The session hook's three seconds at each prompt is not this order's
-  subject, and WO-271 adds one read to it; the after-reading records its
-  time.
+- The session hook's own three seconds at each prompt are not this order's
+  subject; it gains the heartbeat's call here and one read from WO-271,
+  and the after-reading records its time.
 
-**Non-goals:** a dispatcher that replaces the per-unit hooks; any change
-to a refusal, its words or its journal row; the session hook; moving code
+**Non-goals:** a dispatcher that replaces the per-unit hooks; any change to a refusal, its words or its journal row; the session hook's
+own work; moving code
 out of the reactor; the pinned-file check; hooks under Codex or Copilot
 beyond what the same emitted registration gives them.
 

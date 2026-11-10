@@ -31,8 +31,11 @@ marked it blocking; a second parser written for a spelling no writer
 produces and reverted hours later; a one-pattern repair that drew eleven
 findings from a fresh review of the whole order; the size of a review set
 by a direction nobody could test. Tokens and wall-clock: unknown until
-this order's handoff records them. Re-mints: the role oracle edition,
-deterministically (`contributor.ts` is a registered evidence source);
+this order's handoff records them. Re-mints: the role oracle, by hand and once: a new baseline fixture under
+`packages/skeleton/fixtures/` linked to the one before it, with its entry
+in the chain that `scripts/test-process-debt.mjs`,
+`scripts/test-gate-followups.mjs` and `scripts/test-runner.mjs` list
+(WO-264 removes that chain after this order);
 `packages/skeleton/src/change-review-protocol.ts` is in
 `FEEDBACK_SOURCE_PATHS` and this order leaves it unchanged, so no live
 feedback episode is owed. The files this order edits are declared sources
@@ -192,7 +195,8 @@ reviewers an order needs is answered by counting.
   never the same change, and a paired round compares both arms on one).
 - The pass that reads fifteen paired rounds sets the default and retires
   `paired`. Until then every order in the sequence after this one
-  declares it.
+  declares it. The header is judged on open orders only, so a value
+  retired later stays as written on the orders that closed with it.
 - The code WO-259 wrote for inputs no writer produces stays, as the
   2026-11-08 pass decided.
 
@@ -208,8 +212,13 @@ reviewers an order needs is answered by counting.
    sentences): replace the clause that reads `Fix or record every finding`
    with the judgment rule of the Design's second item, saying that a
    reviewer's label is the reviewer's claim and that the judgment is
-   written in the round's decision. Check: `npm test -- --only
-   process-debt` and `npm test -- --only compiler`.
+   written in the round's decision.
+   `packages/skeleton/test/executor-supports.test.ts`: the case that cuts
+   the consistency brief out of the executor's text ends its match at the
+   clause this step replaces; end it at the new sentence's opening. Mint
+   the role baseline as the Cost line states, after step 4, when the
+   executor's sentences are final. Check: `npm test -- --only skeleton`,
+   `npm test -- --only process-debt` and `npm test -- --only compiler`.
 3. `packages/skeleton/src/loadouts/contributor.ts` (the same sentences):
    state the fix rule of the Design's third item. On `resume: fix` the
    executor repairs the failing case and the class its failed report names,
@@ -220,8 +229,9 @@ reviewers an order needs is answered by counting.
    inside an execution is unchanged. Check: `npm test -- --only
    process-debt` and `npm test -- --only compiler`.
 4. `scripts/work-orders.mjs` (`parseHeader` and the index's Open card):
-   read `**Review ladder:**`, refuse a value other than `full`, `combined`
-   or `paired`, and show the value on the card;
+   read `**Review ladder:**` on an open order, refuse a value other than
+   `full`, `combined` or `paired` there, and show the value on the card; a
+   settled order's line is not judged;
    `packages/skeleton/src/loadouts/contributor.ts` (the same sentences):
    round one is one combined worker for `combined`, the three kinds and
    one combined worker each blind to the others for `paired`, and three
@@ -276,9 +286,9 @@ decisions.
 4. Every installed executor root states the three sizes of round one and
    that a paired round's reviewers are blind to one another. `npm run
    work-orders -- index --check` passes on an order whose header carries
-   the line with each of the three values and shows the value on that
-   order's card, and refuses any other value naming the order and the
-   line.
+   the line with each of the three values and shows the value on that order's card, refuses any other value on an open
+   order naming the order and the line, and passes a closed order's file
+   whatever its line holds.
 5. In the document fixture, `node scripts/docs-check.mjs` passes a current
    decision record whose `roundFindings` holds one entry of each class,
    fails naming the decision and the field on an entry whose class or
@@ -297,8 +307,8 @@ decisions.
 8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only plan-refutation` for steps 1 and 6;
-`npm test -- --only process-debt` and `npm test -- --only compiler` for
-steps 2 to 4; `npm test -- --only work-orders-fixtures` for step 4;
+`npm test -- --only skeleton`, `npm test -- --only process-debt` and
+`npm test -- --only compiler` for steps 2 to 4; `npm test -- --only work-orders-fixtures` for step 4;
 `npm test -- --only docs-check-fixtures` for step 5; the structural
 phase; the complete run with `npm test -- --review` at final review.
 
@@ -315,10 +325,9 @@ reopening conditions in `docs/evidence/WO-262/decisions.md`.
 
 - FUP-6fe1262fb31292b3 (WO-259-D022), FUP-67944ed9c85b7199 (WO-259-D021)
   and FUP-c052a580e9f69291 (WO-260-D028): this order is their allocation.
-- FUP-eed385be08e5bdd9 (WO-226-D022): this order re-mints the role oracle,
-  which is that row's condition; the executor reads the row and does its
-  work within the Boy Scout bound or records why not. WO-264 removes the
-  oracle chain after this order.
+- FUP-eed385be08e5bdd9 (WO-226-D022, the role oracle and the gate
+  follow-up cases) is allocated to WO-264, which removes the chain. This
+  order mints one more baseline in it and does nothing else for that row.
 - This order runs today's full ladder itself. Its own round one is not
   paired, since the paired round is what it builds.
 - A finding's class is the executor's judgment, written before the

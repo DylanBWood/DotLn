@@ -40,7 +40,7 @@ extension point of WO-207, which
 takes out of that order and recuts without its loader.
 **Depends on:** WO-261 (open: an update that keeps the files an instance
 changed is what makes an instance's own material safe to build).
-**Recommended placement:** fifth, after WO-266. The work instance's owner
+**Recommended placement:** eighth, after WO-266. The work instance's owner
 starts building private tools as soon as it runs.
 **Cites (read these sections):** `scripts/launchpad.mjs` (`KIT_FILES`,
 `kitPath`, the export's refusal of a kit path an instance file occupies);
@@ -115,9 +115,14 @@ tools, and core does not learn what they are.
   needed, and a loader makes core define what an instance may build).
 - The owner's hooks and permission rules are a committed fragment,
   `.claude/settings.instance.json`, that emit merges into the settings it
-  writes and check includes in what it compares. The merge only adds: a
-  fragment entry that would remove or replace an entry the kit emits is
-  refused, so the kit's refusals stay as emitted.
+  writes, for the launchpad and for a target worktree alike, since most of
+  an instance's tool calls run in a target worktree and the compiler emits
+  that worktree's settings apart. Check includes the fragment in what it
+  compares, and the manifest's prediction, the update plan and `verifyKit`
+  take it as they take the host elections, so merged settings are neither
+  a local modification nor a difference. The merge only adds: a fragment
+  entry that would remove or replace an entry the kit emits is refused, so
+  the kit's refusals stay as emitted.
 - The owner's settings live under an `extensions` section of
   `dotln.config.json`, which the kit requires to be an object and
   otherwise does not read.
@@ -154,13 +159,18 @@ tools, and core does not learn what they are.
    runner-fixtures` and `npm test -- --only target-worktree`, whose files
    hold that module's cases.
 3. `scripts/lib/harness.mjs` (the emit's settings write and the check's
-   comparison): when `.claude/settings.instance.json` exists, merge its
-   hooks after the kit's for each event and its permission rules into the
-   kit's lists, refuse a fragment that names a key the merge does not
-   define or that would remove or replace an emitted entry, and compare
-   the merged result in check. Record emit's and check's time on the
-   harness fixture before and after. Check: `npm test -- --only
-   harness-fixtures`.
+   comparison) with the target worktree's emission that
+   `packages/compiler/src/harness.ts` (`lowerTargetWorker`) feeds: when
+   `.claude/settings.instance.json` exists, merge its hooks after the kit's
+   for each event and its permission rules into the kit's lists, in the
+   launchpad's settings and in a target worktree's, refuse a fragment that
+   names a key the merge does not define or that would remove or replace
+   an emitted entry, and compare the merged result in check.
+   `scripts/launchpad.mjs` (`expectedHarnessBundle`, `planUpdate`,
+   `verifyKit`): each takes the fragment, so the merged settings are
+   neither refused as locally modified nor reported as differing. Record emit's and check's time on the harness fixture before and after.
+   Check: `npm test -- --only harness-fixtures` and `npm test -- --only
+   launchpad`.
 4. `scripts/lib/config.mjs` (`SECTION_KEYS` and the validation): admit an
    `extensions` section that must be an object and is returned unread.
    Check: `npm test -- --only configuration-root`.
@@ -200,9 +210,12 @@ the kit guide's section; the cases; the write-backs and the decisions.
    permission rule, emit writes a `.claude/settings.json` that holds every
    entry the kit emits without it and both of the fragment's, and check
    passes; with the fragment removed, emit restores the bytes emitted at
-   the base; a fragment that would remove or replace an emitted entry, or
-   that names a key the merge does not define, is refused by emit naming
-   the key.
+   the base; a fragment that would remove or replace an emitted entry, or that names a
+   key the merge does not define, is refused by emit naming the key. A
+   target worktree's emitted settings hold the fragment's hook and rule as
+   the launchpad's do, and in the update fixture the merged settings are
+   not shown as locally modified by the update plan nor as differing by
+   `node scripts/launchpad.mjs verify`.
 4. A `dotln.config.json` whose `extensions` is an object loads with that
    object returned as written, and one whose `extensions` is not an object
    is refused naming the section.
@@ -238,7 +251,8 @@ reopening conditions in `docs/evidence/WO-267/decisions.md`.
   may rely on instead. A wider stable surface waits for an owner's tool
   that needs one, named in a block to core.
 - Whether a session in an order's worktree loads the main checkout's
-  ignored local settings is unknown; the committed fragment makes the
+  ignored local settings is unknown; the committed fragment, merged into
+  the launchpad's settings and a target worktree's alike, makes the
   question moot for hooks an owner wants everywhere.
 - An instance that already keeps tools elsewhere keeps working; the
   section says which placements break and that moving them under the root

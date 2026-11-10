@@ -41,9 +41,8 @@ times); the test-suite review of
 **Depends on:** WO-263 (open: it edits `scripts/test-runner.mjs` and
 `scripts/test-runner.test.mjs` first and takes the complete run's
 before-and-after reading this order's saving is read against).
-**Recommended placement:** thirteenth, after WO-263. It removes the
-commonest cause of a failed complete run in core and stops nothing
-today.
+**Recommended placement:** third, after WO-263. It removes the commonest
+cause of a failed complete run in core for every order after it.
 **Cites (read these sections):** `scripts/test-runner.test.mjs` (the case
 titled for the launchpad files retaining their cases and its
 target-worktree counterpart); `scripts/test-runner.mjs` (the source lists
@@ -51,8 +50,10 @@ that name the two registries, `VERTICAL_STATEMENT_PATTERN` and the
 vertical row's expansion); `scripts/test-target-publish.mjs`
 (`repairedCaseMs`, the local `test` wrapper);
 `packages/skeleton/src/gate-deadlines.mjs` (`deadlineLimit`, read only);
-`scripts/console-fixtures.mjs` (the assertion on `manifest.inputs.maturity.path`
-and the `--record-current-selfhost` mode);
+`scripts/console-fixtures.mjs` (the assertion on
+`manifest.inputs.maturity.path` and the `--check-current-selfhost` and
+`--record-current-selfhost` modes); `scripts/lib/generated-artifacts.mjs`
+(the `console-fixtures` artifact);
 `packages/console/fixtures/manifest.json`;
 `packages/console/test/board.test.ts` (the byte comparison and the
 property checks); `scripts/test-vertical.mjs` (the statement cases);
@@ -140,10 +141,15 @@ by a check of the thing itself.
 3. `packages/console/fixtures/` and `scripts/console-fixtures.mjs`: copy
    the edition the self-host case reads today into the fixtures' inputs,
    point the manifest at it, remove the rule that the input follow the
-   current edition and the mode that re-records it, and record the
-   expected files once; `packages/console/test/board.test.ts`: run the
-   property checks on the current edition as well, without a byte
-   comparison. Check: `npm test -- --only console`.
+   current edition and the modes that check and re-record it, and record
+   the expected files once. The other readers of those modes change with
+   them: `scripts/lib/generated-artifacts.mjs` (the `console-fixtures`
+   artifact's check and regenerate commands and its stale message),
+   `scripts/test-sync.mjs` (the case that expects that message) and
+   `scripts/lib/worktree-integration.mjs` (the regeneration at
+   integration); `packages/console/test/board.test.ts`: run the
+   property checks on the current edition as well, without a byte comparison. Check: `npm test -- --only console`, `npm test
+   -- --only sync-fixtures` and `npm test -- --only worktree-integration`.
 4. `packages/compiler/test/story-contract.test.ts` and
    `scripts/test-vertical.mjs`: record the statement cases' wordings at
    the base under `docs/evidence/WO-273/wordings.json`; add the table
@@ -189,8 +195,8 @@ end-to-end cases; the write-backs and the decisions.
 6. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only runner-fixtures` for step 1;
-`npm test -- --only target-publish` for step 2; `npm test -- --only
-console` for step 3; `npm test -- --only compiler` and `npm test --
+`npm test -- --only target-publish` for step 2; `npm test -- --only console`, `npm test -- --only sync-fixtures` and
+`npm test -- --only worktree-integration` for step 3; `npm test -- --only compiler` and `npm test --
 --only vertical` for step 4; the structural phase; the complete run with
 `npm test -- --review` at final review.
 

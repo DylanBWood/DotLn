@@ -13,9 +13,8 @@ opt-out default.
 **Cost:** adds, in `scripts/test-runner.mjs` (`expandSuiteTasks`), one
 shared priority for the exclusive rows, the expansion of the
 `harness-fixtures` row into shard tasks and a changed file order in the
-`target-worktree` row; in `scripts/test-harness.mjs` and
-`scripts/test-drive.mjs`, a local `test` wrapper that registers a case
-only in its shard; cases in `scripts/test-runner.test.mjs`; in
+`target-worktree` row; one shard helper under `scripts/lib/` from which the nine files the hook
+row loads take their `test`; cases in `scripts/test-runner.test.mjs`; in
 `scripts/lib/planning-conditions.mjs`, the complete-run reading; two fresh
 complete review runs paid by the executor as the same-source comparison
 product 07 requires of a scheduling change (46.7 minutes in the committed
@@ -35,9 +34,8 @@ Steps: the executor's, below.
 capture SHA-256
 `a0fe7ccd9a08aa47c2a61fb80aecfc290248c7a1024a9b6cbfd53574914fd111`), item 4
 (efficiencies);
-[WO-222-D015](../evidence/WO-222/decisions.md)'s reopening condition; the
-cold-gate candidate (FUP-e96221b106cd136a) and its rows
-(FUP-77efd30be6cab5c1, FUP-7d7c75dfd2d1026c, FUP-dc31f381950a0b45), whose
+[WO-222-D015](../evidence/WO-222/decisions.md)'s reopening condition; the cold-gate candidate (FUP-e96221b106cd136a) and its rows
+(FUP-7d7c75dfd2d1026c, FUP-dc31f381950a0b45), whose
 condition that the operator name gate time as a goal the dispatch of
 2026-11-09 meets (ignored capture SHA-256
 `7fba59d31bea0047abb5eb0d381e2f90f3d110dbaf81b6157511d6e320d5f4e7`, item 1,
@@ -47,9 +45,8 @@ and the reading.
 **Depends on:** WO-221 and WO-222 (closed: the priority leads, the light
 classification and the overlap lever this order reorders and reassesses).
 No open order.
-**Recommended placement:** twelfth, after the orders the work instance
-waits on. It shortens every later final review in core and stops nothing
-today.
+**Recommended placement:** second, after WO-262. It has no open
+dependency, and each order after it pays several complete runs.
 **Cites (read these sections):** `scripts/test-runner.mjs`
 (`suitePriorityLeads`, `expandSuiteTasks`, `explicitlyIsolated`,
 `overlapSlots`, `reservedSlots`, `lightSuiteNames`, the `group` and
@@ -84,8 +81,9 @@ reading the next pass can take from the runs the lifecycle makes.
   exclusive rows took 1,386 seconds of it: `harness-fixtures` 591,
   `sync-fixtures` 350, `worktree-integration` 303 and `process-debt` 142.
 - The largest exclusive row is one process. The `harness-fixtures` row
-  runs `scripts/test-harness.mjs` (182 cases) and `scripts/test-drive.mjs`
-  (74 cases) with a file concurrency of one, while `reservedSlots` holds
+  runs `scripts/test-harness.mjs` (182 cases of its own and 141 in seven
+  test files it imports) and `scripts/test-drive.mjs` (74 cases) with a
+  file concurrency of one, while `reservedSlots` holds
   six of eight lanes for it and admits two light peers. Most of its cases
   build their own repository through the file's fixture helper, which is
   called 137 times, and spawn the generated hooks against it.
@@ -133,13 +131,17 @@ reading the next pass can take from the runs the lifecycle makes.
   behind suites that did not fail). Rejected: admitting heavy rows during
   a drain (the axis is what the reservation protects: an exclusive row's
   deadlines were measured with only light peers).
-- The hook suite's cases run in shards. A local `test` wrapper in each of
-  the row's two files registers a case only when a hash of its title
-  falls in the shard the environment names, and registers every case when
-  the environment names none, so a single case still runs by its name
-  under the bounded wrapper. `expandSuiteTasks` turns the row into one
-  task per shard, and the tasks share the row's reservation and run
-  together inside it. Every case is in exactly one shard by construction,
+- The hook suite's cases run in shards. Every file the row loads takes its
+  `test` from one helper, the row's two files and the seven test files
+  `scripts/test-harness.mjs` imports at its top alike; the helper
+  registers a case only when a hash of its title falls in the shard the
+  environment names, and registers every case when the environment names
+  none, so a single case still runs by its name under the bounded wrapper.
+  The row declares its shard count as a property any row may carry;
+  `expandSuiteTasks` turns it into tasks named `harness-fixtures:shard:<n>`,
+  so the lead a failed or changed suite carries reaches every shard, and
+  places them in one group whose limit is the shard count, inside the
+  row's reservation. Every case is in exactly one shard by construction,
   and a new case needs no registration. Rejected: splitting the file into
   several by subject (the axis is cost: twenty thousand moved lines and
   every list that names the file, for the same schedule). Rejected:
@@ -182,14 +184,23 @@ reading the next pass can take from the runs the lifecycle makes.
    the existing ordering case's expectation updated with its cause and
    provenance named in the decisions. Check: `npm test -- --only
    runner-fixtures`.
-3. `scripts/test-harness.mjs` and `scripts/test-drive.mjs`: a local `test`
-   wrapper, shared from one helper under `scripts/lib/`, that reads the
-   shard from the environment and registers a case only in its shard, and
-   every case when no shard is named. `scripts/test-runner.mjs`
-   (`expandSuiteTasks` and the `harness-fixtures` row): expand the row into
-   one task per shard, each naming its shard in its environment and all
-   sharing the row's reservation, with the number of shards a property of
-   the row. `scripts/test-runner.test.mjs`: a case that the expansion
+3. A shard helper under `scripts/lib/` (new) exporting a `test` that reads
+   the shard from the environment and registers a case only in its shard,
+   and every case when no shard is named. `scripts/test-harness.mjs`,
+   `scripts/test-drive.mjs` and the seven test files the first imports
+   (`test-plan-first`, `test-plan-first-boundaries`, `test-dispatch-bound`,
+   `test-fixture-temporary`, `test-temporary-roots`, `test-target-harness`
+   and `test-observed-facts`): take `test` from the helper.
+   `scripts/test-runner.mjs` (`expandSuiteTasks`, the `harness-fixtures`
+   row and the source declarations that must name the new helper): a
+   `shards` property on a row, expanded into tasks named
+   `harness-fixtures:shard:<n>`, each with its shard in its environment,
+   grouped under a limit equal to the count and sharing the row's
+   reservation; the baseline's samples and the deadline are read by the
+   row's name for every shard until a shard has samples of its own.
+   `scripts/test-runner.test.mjs`: the case that pins the row's command
+   takes the shard tasks' commands, with its cause named in the
+   decisions. `scripts/test-runner.test.mjs`: a case that the expansion
    yields every shard once and that the shard tasks are admitted together
    while no task that is neither exclusive nor light starts beside them.
    Check: `npm test -- --only runner-fixtures` and `npm test -- --only
@@ -210,10 +221,14 @@ reading the next pass can take from the runs the lifecycle makes.
 6. `scripts/lib/planning-conditions.mjs` (the plain-gate condition and its
    per-task rows): read fresh passing complete rows of the review
    selection as well as the plain one, label each sample with its
-   selection, and read a per-task row only for a task name the newest
-   complete row holds. Check: `npm test -- --only plan-refutation` and
-   `npm test -- --only process-debt`, whose files hold that module's
-   cases.
+   selection, and read a per-task row only for a task name the newest complete row
+   holds. The cases that assert this reading's rows are updated with it:
+   those in `scripts/test-runner.test.mjs` that assert the condition's
+   first row and the per-task identifiers, and the one in
+   `scripts/test-launchpad-planning.mjs` that asserts a task row's verdict.
+   Check: `npm test -- --only runner-fixtures`, `npm test -- --only
+   launchpad-planning`, `npm test -- --only plan-refutation` and `npm test
+   -- --only process-debt`.
 7. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: product 07 §Preflight before the full gate (the
    scheduling paragraph: the exclusive rows' shared priority, the hook
@@ -243,8 +258,9 @@ conditions reading; the write-backs and the decisions.
    <title> scripts/test-harness.mjs` runs the named case. Check: `npm test
    -- --only runner-fixtures`.
 3. `npm test -- --only harness-fixtures` passes, and the evidence lists
-   the titles `scripts/test-harness.mjs` and `scripts/test-drive.mjs`
-   declare beside the titles the shard tasks ran, the two lists equal.
+   the titles declared by every file the row loads, the seven imported
+   files included, beside the titles the shard tasks ran, each title run
+   once and the two lists equal.
 4. The expanded `target-worktree` group lists the close file's task first,
    and `npm test -- --only target-worktree` passes.
 5. `docs/evidence/WO-263/before.json` and `after.json` each hold a passing
@@ -266,8 +282,9 @@ conditions reading; the write-backs and the decisions.
 
 **Preflight:** `npm test -- --only runner-fixtures` for steps 2 to 5;
 `npm test -- --only harness-fixtures` for step 3; `npm test -- --only
-target-worktree` for step 4; `npm test -- --only plan-refutation` and
-`npm test -- --only process-debt` for step 6; the structural phase; the two fresh complete review runs of
+target-worktree` for step 4; `npm test -- --only runner-fixtures`, `npm test -- --only
+launchpad-planning`, `npm test -- --only plan-refutation` and `npm test --
+--only process-debt` for step 6; the structural phase; the two fresh complete review runs of
 steps 1 and 5 are this order's evidence, and final review reuses the after
 row at an unchanged identity.
 
@@ -282,10 +299,11 @@ reopening conditions in `docs/evidence/WO-263/decisions.md`.
 
 **Known issues and carry-ins:**
 
-- FUP-e96221b106cd136a (the cold-gate candidate) and the three rows that
-  repeat its reading: this order is their allocation for the ordering cut
-  and the hook suite; a result memo per task keyed by its inputs stays
-  declined with that row's history.
+- FUP-e96221b106cd136a (the cold-gate candidate) and the two rows that
+  repeat its reading (FUP-7d7c75dfd2d1026c and FUP-dc31f381950a0b45): this
+  order is their allocation for the ordering cut and the hook suite. The
+  result memo per task keyed by its inputs (FUP-77efd30be6cab5c1) is
+  declined again and deferred, not allocated here.
 - The leads of the row read by the 2026-11-08 pass are inferred from the
   order tasks started in; step 1's `scheduled first:` line confirms or
   corrects them, and a different cause found there is recorded before step

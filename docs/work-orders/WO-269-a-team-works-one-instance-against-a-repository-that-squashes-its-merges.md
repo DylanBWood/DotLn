@@ -40,17 +40,17 @@ many worktrees, parallel merges, recorded 2026-10-24), allocated by
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
 **Depends on:** WO-072 (closed: the target worktree lifecycle); WO-260
 (closed: the recorded Git surface). No open order.
-**Recommended placement:** seventh, after WO-268. The first order a
-teammate closes against the team's repository meets it.
+**Recommended placement:** tenth, after WO-268. The first order a teammate
+closes against the team's repository meets it.
 **Cites (read these sections):** `scripts/lib/target-worktree-close.mjs`
 (`containsBranch` and the message that names the command to rerun);
 `scripts/worktree.mjs` (the launchpad branch's own merged check, read
 only); `scripts/lib/config.mjs` (`validateContributions`);
 `scripts/lib/contributions.mjs` (`contributionSignoffRules`);
 `scripts/lib/git-surface.json`; `scripts/lib/worktree-integration.mjs`
-(what integrating main regenerates and unions); the kit guide §First
-steps (the merge-commit sentence), §Kit files and instance files (the
-author declaration) and its sections on targets and releases; product 07
+(what integrating main regenerates and unions); the kit guide §First steps (the merge-commit sentence and a target's
+registration), §Kit files and instance files (the author declaration) and
+§Releases in this instance; product 07
 §Independent workflows and integration.
 
 **Objective:** A target order closes once its reviewed change is in the
@@ -142,11 +142,16 @@ which of the kit's steps are one at a time.
 
 **Execution plan (the executor follows these steps in order; observed at `06c1ddc1a`, 2026-11-09):**
 
-1. `scripts/lib/target-worktree-close.mjs` (`containsBranch`): when the
-   branch is not an ancestor of the fetched base, compare patch
-   identities as the Design states and accept on a match, printing the
-   base commit or commits matched; otherwise refuse with today's message
-   extended by `--merged-as <commit>`. The close command accepts
+1. A function of its own in a `scripts/lib/` module (new), with unit cases
+   that need no close fixture: given a clone, an order branch and a
+   fetched base, it answers whether the branch's change is in the base, by
+   ancestry, by one base commit patch-equal to the branch's whole change,
+   or by a patch-equal base commit for each of the branch's commits that
+   is not itself a merge, and names the commits it matched.
+   `scripts/lib/target-worktree-close.mjs` (`containsBranch`, the closure
+   the close calls at both of its sites): call that function and accept on
+   a match, printing the base commit or commits matched; otherwise refuse
+   with today's message extended by `--merged-as <commit>`. The close command accepts
    `--merged-as`, verifies the commit is in the fetched base, and prints
    it. Every Git form used exists in Git 2.31.0, and
    `scripts/lib/git-surface.json` gains its pairs. Record the check's
@@ -161,9 +166,8 @@ which of the kit's steps are one at a time.
 3. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: the kit guide (a section on working as a team on
    one instance, stating the conventions of the Design's last item and
-   which steps are one at a time; §First steps and the target sections,
-   where the merge-commit sentence now distinguishes the instance's own
-   repository from a target; §Kit files and instance files, where the
+   which steps are one at a time; §First steps and §Releases in this instance, where the merge-commit
+   sentence now distinguishes the instance's own repository from a target; §Kit files and instance files, where the
    author declaration gains the list); `scripts/test-launchpad-export.mjs`
    (the kit guide's heading list gains the section, with its cause named
    in the decisions); `scripts/kit/dotln.config.example.json` (the list,
