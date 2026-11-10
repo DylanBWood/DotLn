@@ -557,6 +557,13 @@ an update unasked: the hold admits the command, and the session journal's
 admission row names the election instead of a capture
 ([decision](evidence/WO-258/decisions.md#wo-258-d005)).
 
+What this instance sends core is what blocks it. A planning pass here writes
+a block for core only for an item that stops this instance's next order and
+has no working route here, and keeps every other observation in its own
+record; a pass with nothing that blocks sends nothing (operator direction,
+2026-11-09;
+[the pass that recorded it](planning/passes/whole-plan-and-codebase-review-2026-11-09.md)).
+
 - `npm run plan -- followups` pages the register; `--export <file>` exports it;
   `--apply <batch.json>` applies dispositions against the revision read.
   `npm run plan -- followups --sync` reconciles changed public sources.
@@ -1638,7 +1645,13 @@ or joins by a deletion, to Markdown or to source under `scripts/` and
 text capture under this checkout's ignored intake root, and a run of twelve
 consecutive words both hold fails by file, line and the capture's digest,
 never the words; a run the repository already held is its own text, and a
-checkout with no capture prints `verbatim screen: no captures`. A record the
+checkout with no capture prints `verbatim screen: no captures`. The screen
+reads every text file under the intake root as the operator's words, so that
+root holds the operator's messages and nothing a session or a tool writes for
+itself: a session's drafts and a tool's output go under the ignored
+`docs/control/local/` lane or the session's scratch directory
+([the pass that recorded it](planning/passes/whole-plan-and-codebase-review-2026-11-09.md)).
+A record the
 branch adds that attributes words to the operator without a capture
 citation fails too, while one written before stays an advisory. An
 `operatorQuote` the branch adds carries `captureSha256` and `requestedIn`

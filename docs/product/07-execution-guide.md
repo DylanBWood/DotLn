@@ -1747,7 +1747,13 @@ Preconditions and inputs:
    own planning pass writes for core (its §Requests to core), one block per
    instance pass that has items, until WO-193 carries them as filed requests
    (operator question, 2026-10-21: the cadence is the instance's, and a pass
-   with nothing to ask sends nothing). The pass reads each item against the
+   with nothing to ask sends nothing). An instance pass sends an item only
+   when it stops that instance's next order and has no working route there,
+   and keeps every other observation in its own record (operator direction,
+   2026-11-09, ignored capture SHA-256
+   `9006bd8cbcdabb5647594adb6893150aaff9e5a8ee74260a4e890e9cba3d69ae`;
+   [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md)).
+   The pass reads each item against the
    record it names, files, declines or defers it with its reopening
    condition, and answers in a paste-ready block the instance's next pass
    reads; an item is evidence the operator carried, never operator direction
@@ -2120,6 +2126,20 @@ boarded item it takes, a known issue an earlier receipt named) is written in
 that order under `Known issues and carry-ins`; a known issue from the pass's
 own receipt, which finds the order frozen, goes on its catalog row until a
 later pass amends the order [2026-10-02 pass](../planning/passes/standard-pass-2026-10-02.md).
+A wrong statement of fact in an order is not a known issue and is never carried
+there. Before `plan refute` the pass checks every repository path its orders
+name against the tree, where a path that neither exists nor is created by its
+order is a defect. A planning
+branch whose pull request is not merged is a draft, its receipt included.
+While it is open the pass corrects its own errors in the orders and takes the
+operator's further direction into the same pass, a new order or a changed
+sequence among it; it removes the receipt the change outdates and has the
+final subject judged once more, so that the receipt the operator merges is of
+the plan the operator merges. The pass does not ask the operator for a second
+pass to do what this one can, and `amend-order` is for an order already on
+`main` (operator direction, 2026-11-09, ignored captures SHA-256
+`e9baaba2af6587a90ef5aecabb3dcdeb43cef9cedfc7e4eedddf450dedf10b53` and
+`a366926793c327b76be17700fc3c70c632d5d761cbc6bb3bf90c15afad3e6bdc`).
 
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the
@@ -2180,6 +2200,15 @@ failures behind each are in the
   not measured is `unknown`, never assumed cheap
   ([the 2026-10-28 pass](../planning/passes/document-contract-and-release-close-2026-10-28.md);
   WO-236-D025).
+- No order, seed, role text or command the kit ships looks for, asks the
+  version of or calls an agent harness or model provider the instance has not
+  elected. Claude Code is the default host and the only one a new instance
+  has; another is used when the instance's configuration elects it or the
+  operator's dispatch names it, and an instruction to inspect every harness
+  installed is the defect this screen names (operator direction, 2026-11-09,
+  ignored capture SHA-256
+  `5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f`;
+  [WO-275](../work-orders/WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md)).
 - An order that adds or tightens a refusal keyed to a host property (a
   tool's version, a platform, an account) names every host the record shows
   running the kit, this repository's and each one an instance's block or the

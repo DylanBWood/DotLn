@@ -40,6 +40,21 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-09 — Planning pass: whole plan and codebase review (WO-261 to WO-263 amended, WO-264 to WO-273 filed); registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass +` with two items, journaled at
+2026-11-09T22:27:09.158Z (hook time) in Claude Code (Fable 5.2 at xhigh,
+host-selected), captured in
+`docs/intake/planning-dispatch-2026-11-09-whole-plan-and-codebase-review.md`
+(SHA-256 `7fba59d31bea0047abb5eb0d381e2f90f3d110dbaf81b6157511d6e320d5f4e7`,
+the journal's own digest of the message), with thirteen further messages
+during the pass captured beside it. The pass reviews the whole codebase and
+every open order against the operator's five goals and the mission the
+operator stated during it, amends WO-261, WO-262 and WO-263, files WO-264
+to WO-273, orders the sequence by what the work instance meets first, and
+sets nine older orders down as not now. Record:
+[the planning document](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
+
 ## 2026-11-08 — Planning pass: Git 2.31 support and fork returns (WO-260, WO-261, WO-262 and WO-263 filed); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with four items, journaled at

@@ -2719,6 +2719,16 @@
           "reopenWhen": "WO-083 activates (the first resident-owned run in an operator's instance), or a session is observed losing its owned task after compaction",
           "targets": [],
           "at": "2026-10-13T14:49:26.973Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Allocated for an attended order paused by choice: WO-271 gives a session the day's figure, a recorded standing at each stop that the next briefing names, and a dispatch bound that counts worked time. A resident-owned continuation is not taken. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-271 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-271"
+          ],
+          "at": "2026-11-09T23:56:09.969Z"
         }
       ]
     },
@@ -29806,6 +29816,14 @@
           "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
           "targets": [],
           "at": "2026-10-31T16:02:16.420Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its condition occurred (the operator named gate time as a goal). Weighed and declined again: WO-263 and WO-273 take the cuts the committed rows show, and a result memo keyed by a task's inputs reuses a pass across code identities, which the runner's reuse rule exists to prevent. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "After WO-263 and WO-273 close, two orders still pay three or more complete runs each.",
+          "targets": [],
+          "at": "2026-11-09T23:56:07.520Z"
         }
       ]
     },
@@ -39624,6 +39642,16 @@
           "reopenWhen": "WO-083 activates, or a continuation repeats a completed effect.",
           "targets": [],
           "at": "2026-10-17T19:34:07.059Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated for an attended order paused by choice: WO-271 gives a session the day's figure, a recorded standing at each stop that the next briefing names, and a dispatch bound that counts worked time. A resident-owned continuation is not taken. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-271 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-271"
+          ],
+          "at": "2026-11-09T23:56:09.840Z"
         }
       ]
     },
@@ -39744,6 +39772,16 @@
           "reopenWhen": "The operator directs the WO-096 recut or opens the efficiency pass, or a cold-start ceiling is breached again.",
           "targets": [],
           "at": "2026-10-17T19:34:06.215Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:09.199Z"
         }
       ]
     },
@@ -44364,6 +44402,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-08T21:45:46.322Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.296Z"
         }
       ]
     },
@@ -44558,6 +44606,16 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-08T21:45:46.771Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: WO-264 removes the chain of role baselines that scripts/test-gate-followups.mjs lists, which is this row's subject; WO-262 re-mints the oracle once before it. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:09.327Z"
         }
       ]
     },
@@ -45153,6 +45211,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-05T14:28:45.413Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.941Z"
         }
       ]
     },
@@ -45605,6 +45673,16 @@
           "reopenWhen": "the operator carries the need into a core planning pass in generic words (the operator's item 3.b of 2026-10-30), or asks for the order sooner",
           "targets": [],
           "at": "2026-10-30T15:50:49.517Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator carried the need into a core planning pass in generic words on 2026-11-09, which is this row's condition. WO-268 gives a target's recorded understanding its form and its loading; the study of a particular codebase is that instance's own orders. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-268 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-268"
+          ],
+          "at": "2026-11-09T23:56:09.455Z"
         }
       ]
     },
@@ -45692,6 +45770,16 @@
           "reopenWhen": "the operator carries the need into a core planning pass in generic words (the operator's item 3.b of 2026-10-30), or asks for the order sooner",
           "targets": [],
           "at": "2026-10-30T15:50:49.742Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator carried the need into a core planning pass in generic words on 2026-11-09. WO-270 puts the layout in the workstream document and has a pass file the next wave. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-270 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-270"
+          ],
+          "at": "2026-11-09T23:56:09.712Z"
         }
       ]
     },
@@ -45758,6 +45846,16 @@
           "reopenWhen": "the operator carries the need into a core planning pass in generic words (the operator's item 3.b of 2026-10-30), or asks for the order sooner",
           "targets": [],
           "at": "2026-10-30T15:50:49.629Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator stated the first team arrangement on 2026-11-09 (one shared instance, one planner assigning orders). WO-269 takes the target close after a squash or rebase, the instance's authors and the conventions; several planners and a claim on an order stay unbuilt. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-269 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-269"
+          ],
+          "at": "2026-11-09T23:56:09.583Z"
         }
       ]
     },
@@ -48822,6 +48920,16 @@
           "reopenWhen": "An executor scratch write no longer spawns the lifecycle and its permission-hook median is within tens of milliseconds of a verifier's on the same build; or the fork's recorded cost from WO-019 exceeds a second per write.",
           "targets": [],
           "at": "2026-10-30T15:50:50.083Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: WO-272 measures the hooks' cost per tool call before and after and takes four cuts that move no refusal. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-272 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-272"
+          ],
+          "at": "2026-11-09T23:56:10.099Z"
         }
       ]
     },
@@ -49955,6 +50063,16 @@
           "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
           "targets": [],
           "at": "2026-10-31T16:02:16.307Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator named gate time as a goal in the dispatch of 2026-11-09, which is this row's condition; WO-263 as amended takes the exclusive rows' convoy and the hook suite's shards, and WO-273 the pins that fail complete runs. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-263 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-263"
+          ],
+          "at": "2026-11-09T23:56:07.259Z"
         }
       ]
     },
@@ -51395,6 +51513,16 @@
           "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
           "targets": [],
           "at": "2026-10-31T16:02:16.979Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator named gate time as a goal in the dispatch of 2026-11-09, which is this row's condition; WO-263 as amended takes the exclusive rows' convoy and the hook suite's shards, and WO-273 the pins that fail complete runs. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-263 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-263"
+          ],
+          "at": "2026-11-09T23:56:07.389Z"
         }
       ]
     },
@@ -52652,6 +52780,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing planner cold start below the unchanged ceiling.",
           "targets": [],
           "at": "2026-11-02T02:03:52.638Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.425Z"
         }
       ]
     },
@@ -52847,6 +52985,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-08T21:45:46.026Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.037Z"
         }
       ]
     },
@@ -53674,6 +53822,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-08T21:45:46.175Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.168Z"
         }
       ]
     },
@@ -54213,6 +54371,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-08T21:45:45.870Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:07.777Z"
         }
       ]
     },
@@ -54316,6 +54484,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, reviewer, release-close, planner and router cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-04T17:09:47.532Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:09.070Z"
         }
       ]
     },
@@ -54405,6 +54583,16 @@
           "reopenWhen": "A planning pass allocates the optimization, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-05T04:47:47.176Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:07.906Z"
         }
       ]
     },
@@ -54642,6 +54830,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-05T16:53:44.985Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:07.648Z"
         }
       ]
     },
@@ -54768,6 +54966,16 @@
           "reopenWhen": "A planning pass allocates the row, or a fifth order's complete or document gate fails on a hand-written inventory of files, modules, cases, tasks or headings that its consistency review did not trace.",
           "targets": [],
           "at": "2026-11-09T21:20:03.789Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: WO-273 removes the two registries of case titles a consistency review would have had to trace; the third Traced consumers row is declined with them. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-273 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-273"
+          ],
+          "at": "2026-11-09T23:56:10.228Z"
         }
       ]
     },
@@ -54907,6 +55115,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-05T20:29:19.748Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.814Z"
         }
       ]
     },
@@ -55422,6 +55640,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their accepted ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-08T21:45:46.470Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.555Z"
         }
       ]
     },
@@ -55731,6 +55959,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or a role's reviewed rules change again.",
           "targets": [],
           "at": "2026-11-08T21:45:46.621Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated: the operator opened the efficiency pass these rows waited on. WO-264 gives each role the shared rules that bind it, removes the planner's second skill and the executor's ladder mechanics from the verifier's and the reviewer's reading, and reports mandated reads beside installed bytes; it rewords no rule and sets no byte target, by the operator's standard that a root be usable and useful. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-264"
+          ],
+          "at": "2026-11-09T23:56:08.684Z"
         }
       ]
     },
@@ -56657,7 +56895,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Read against WO-260-D027 and D029: the shapes outside the regular-expression reading are stated in the module's header, the tree holds no newer form in any of them, and the operator ruled out a hand-written parser. No order is filed for a reading with no observed failure. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "A form newer than the floor reaches a Git 2.31 host through one of the stated shapes, or the operator admits a shell parser dependency.",
+          "targets": [],
+          "at": "2026-11-09T23:56:10.357Z"
+        }
+      ]
     },
     {
       "id": "FUP-c052a580e9f69291",
@@ -56672,7 +56919,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated: WO-262 as amended carries the fix rule, a fix dispatch repairing the failing case and the class its report names with one combined review of the repair. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-262 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-262"
+          ],
+          "at": "2026-11-09T23:56:07.129Z"
+        }
+      ]
     },
     {
       "id": "FUP-3cc8812a22cb1395",
@@ -56711,7 +56969,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-260-D037: the tree holds no GIT_ name written as a shorthand property, so the check's reading is complete for the code that exists. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "A GIT_* name appears as a shorthand property in scripts/ or packages/, an in-reading literal Git form is shown hidden from the check, or the consumed complete or document row no longer matches the candidate.",
+          "targets": [],
+          "at": "2026-11-09T23:56:10.486Z"
+        }
+      ]
     },
     {
       "id": "FUP-0c05d0b507dcd53f",
@@ -56726,7 +56993,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-260-D039: the six carried files under corpus/ name no form above the floor today. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "A kit-carried file outside scripts/ and packages/ names a Git form above the floor, or the kit's support list gains another file that calls Git.",
+          "targets": [],
+          "at": "2026-11-09T23:56:10.616Z"
+        }
+      ]
     },
     {
       "id": "FUP-7fe71f232887391b",
@@ -56741,7 +57017,431 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read against WO-260-D040: the fallback is right and its comment's premise is wider than Git's record; no host in the record runs a Git between 2.47 and 2.49. The comment is a Boy Scout item for the next order that edits that file. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "A source-change candidate is refused on a Git from 2.47 to 2.49 for a shared reference that fsck reports, or Git's own records show that fsck checked no references before 2.50.",
+          "targets": [],
+          "at": "2026-11-09T23:56:10.749Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cd77e0b603383ecb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::06953f6e0ee68b80c67451117094c4dede004260e1e015b1c785c552059db8a2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d33fe5dbb466b6d4efdca38db63c2bcdd4cc3b6a30ffc4066cd327a62e9b7777",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "The gate's remaining structure.",
+          "summary": "7. **The gate's remaining structure.** The `sync-fixtures` row holds the whole host for one case of three full syncs; the runner's source lists are written by hand though the coverage check computes the import graph; a failed complete run stops at its first failure and the next run starts over. Deferred until WO-263's and WO-273's rows are read. Reopen: two orders after them still pay three or more complete runs, or the `sync-fixtures` row is the longest exclusive row in the after reading.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "Two orders after WO-263 and WO-273 still pay three or more complete runs, or the sync-fixtures row is the longest exclusive row in WO-263's after reading.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.653Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1a6069599a65e17c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::0eaea8823d5db55af84003a640a61f188df9b30d13aa7fe76d6fe9fa8f096f5f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e8d8d1b112a16f5aa4b5c8cd26d379ac79aa0bf8646e101f129476f15f1497c9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "The scripts type-checked, layered and free of core's order history.",
+          "summary": "3. **The scripts type-checked, layered and free of core's order history.** No static check covers the lifecycle scripts, though a review worker's non-emitting pass found half of them clean as they stand; library modules import entry scripts; eight scripts have no live reference and ship in the kit; and branches keyed to core's own order numbers (the release-notes contract on WO-024, the effort exemption on WO-019, a delivery line on WO-112 and WO-118, among thirty-two literals) run in an instance at its own orders of those numbers. Deferred behind the work instance's orders. Reopen: those orders close, the operator places it, or an instance reports a wrong path at one of those numbers.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The work instance's orders close, the operator places it, or an instance reports a wrong path at one of core's order numbers.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.137Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dbccb0be00ebc96c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::358426ada9943c91bd9b691d2b159d6952d7ff0818fb2c494186adf098349f15",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d17bffdc42fb3d2c2ff812906cf354ce6aac15da2465a6163ae760526d037306",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "A second platform exercised.",
+          "summary": "13. **A second platform exercised.** Every committed run of the kit is on macOS; a run of the instance's gate on Linux needs continuous integration the operator authorizes. Reopen: the operator's word, or a teammate's machine that is not macOS.",
+          "missing": false
+        },
+        {
+          "hash": "75c93de81a6d9c80533d3da07c047630f52e918c52c7d4c9148cd52f8c080ca7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "A second platform exercised.",
+          "summary": "13. **A second platform exercised.** Every committed run of the kit is on macOS. Not now, by this pass's decision: no host in the record is another platform, a run in continuous integration would test one nobody uses, and WO-265's report is how a new host says what it lacks. Reopen: WO-265's report, or an instance's first run, comes from a host that is not macOS.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The operator's word, or a teammate's machine that is not macOS.",
+          "targets": [],
+          "at": "2026-11-09T23:56:12.427Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Not now by the pass's own decision: no host in the record is a platform other than macOS, and WO-265's report is how a new host says what it lacks. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-265's report, or an instance's first run, comes from a host that is not macOS.",
+          "targets": [],
+          "at": "2026-11-10T00:55:17.372Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fcd49380e2aacea4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::40f1fcd9a2f3cbd43476a0f39f2ad88fb644e1028e7587e6a5c0fb624099c5d8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d01244aa778b914207db638f741597d0e0cf336c6caa3876ae537e72db96f8ae",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "An order moves between clones.",
+          "summary": "1. **An order moves between clones.** A teammate puts an in-flight order where another can fetch it, and the planner pulls one down to run its final review. A checkpoint holds the launchpad side whole, one event behind and without ignored files; the target side is not checkpointed, and gate rows, review reports, the terms list and the target registry are local. The smallest route the pass's review found is a pushed snapshot adopted at `verified` for final review. Deferred: the operator's first arrangement has each teammate run an order through its own final review and close. Reopen: an assignee becomes unavailable mid-order, the operator wants final reviews funnelled through one machine, or ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "An assignee becomes unavailable mid-order, the operator wants final reviews funnelled through one machine, or two reviews in flight strand a pull request.",
+          "targets": [],
+          "at": "2026-11-09T23:56:10.879Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3f18a29777364ee1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::4ec94a31d702925ace54383dc4bd7b9c0d2c30f15abf5805f3c2b437c42f65c4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "feef245a79eba52de363373b6d9b8b8c07725f83d385e4631001ccba5c965134",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "A planning source a pass runs.",
+          "summary": "10. **A planning source a pass runs.** WO-267 has a tool write its output outside intake and the dispatch name the file. Declaring the tool so that a pass runs it is deferred. Reopen: an owner's reader exists and naming the file is the friction.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "An owner's reader exists and naming its output file in the dispatch is the friction.",
+          "targets": [],
+          "at": "2026-11-09T23:56:12.040Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0eaffdb4df49ad52",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::5d2a546c4c5178f87e8fb688c1c1aacbe66f24e686d14ef6c68456475550f60f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "be04189f98a4ec7d90922322edec98ba4f76edd650fd15607ca31b0e5617a558",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "A target order's records kept in the instance.",
+          "summary": "9. **A target order's records kept in the instance.** Every target order files its order, decisions and reports into the target's documentation root. Whether a team's application repository should hold them is the operator's to decide. Reopen: the operator's word.",
+          "missing": false
+        },
+        {
+          "hash": "b2212f9c723685b1f3a13e478f963ad05448b455283d602af8733d943fcae776",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "A target order's records kept in the instance.",
+          "summary": "9. **A target order's records kept in the instance.** Every target order files its order, decisions and reports into the target's documentation root, and the target's pull request carries them. Filed by this pass's decision as [WO-274](../work-orders/WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md): a registration's `records` key, its default unchanged, with which an instance working a team's application repository keeps them and publishes the reviewed commit alone. Reopen: WO-274 is withdrawn, or closes without the key.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The operator's word.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.911Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the pass's own decision after the operator returned it: WO-274 gives a registration a records key with which an instance keeps a target order's records and publishes the reviewed commit alone. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-274 is withdrawn, or closes without the key.",
+          "targets": [
+            "WO-274"
+          ],
+          "at": "2026-11-10T00:55:16.955Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c039ee701a3226b8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::8a4814e0fe097bcf0331ffd10d0b381e1322500c347091ec4d2a27c9ecb5d6b5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "934834ca2c62fb52f52d862dc27bd4174c9629484e3c6dfa467ab5614f70d469",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Role text judged by what a fresh reader does with it.",
+          "summary": "12. **Role text judged by what a fresh reader does with it.** The operator's standard for a role's reading is that it is usable and useful, neither confusing nor underspecified. A small set of scenarios per role, answered by a fresh worker holding only the root, would test a change to role text for that. Deferred until WO-264 lands. Reopen: the first role-text change whose effect the operator questions.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The first role-text change after WO-264 whose effect the operator questions.",
+          "targets": [],
+          "at": "2026-11-09T23:56:12.298Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-055df181d223db9b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::9638ce976389d41e3c93bba84934a2d982f8f277f671ba26e8d696ddc62e50d6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "dde818be13a47138bbd118717ced83ad4ea8c8449019431cab2db239c9c872af",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Evidence editions kept in place.",
+          "summary": "5. **Evidence editions kept in place.** Each order mints editions of generated evidence under its own directory, where one file a kind, overwritten when it changes, would leave Git to hold the history. It reverses recorded decisions on immutability and is the operator's to decide. Reopen: the operator's word.",
+          "missing": false
+        },
+        {
+          "hash": "861ca9b8b19cb5e550ed2baa505db65aae7049deee5493c9e454199b0b937b2f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Evidence editions kept in place.",
+          "summary": "5. **Evidence editions kept in place.** Each order mints editions of generated evidence under its own directory, where one file a kind, overwritten when it changes, would leave Git to hold the history. Declined for now, by this pass's decision: the one edition most orders had to record again, the console's self-host golden, is fixed by WO-273; what is left is storage, which this map's standing condition on evidence bytes watches (two consecutive orders each committing more than 1 MB of distinct blobs no criterion required); and keeping editions in place changes how a closed order's evidence is read back, against recorded decisions on immutability, for a saving nobody has measured. Reopen: af",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The operator's word.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.395Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Declined for now by the pass's own decision: WO-273 fixes the one edition most orders recorded again, the remaining cost is storage that the standing evidence-bytes condition watches, and the change alters how a closed order's evidence is read back for a saving nobody has measured. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "After WO-273 closes, two orders whose gate or handoff stops on a stale edition, or two consecutive orders each commit more than 1 MB of distinct evidence blobs no criterion required.",
+          "targets": [],
+          "at": "2026-11-10T00:55:17.092Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-987c132fea4de5fb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::a4f28113b5d67cb756d509b6d3d2aa0fdf2655df7d4429de17a313d856f9c18d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "22d5041aca35c4318f68b159ffb560e5828825f7bfc68b709b6c87385352f728",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Tests that pin behavior, shown to pin it.",
+          "summary": "8. **Tests that pin behavior, shown to pin it.** An order whose deliverable is tests for existing behavior passes its gate whether or not a test asserts anything, the target gate's commands are fixed per registration and not per order, and a test run that writes a file Git does not ignore fails its row. A criterion pattern with a named mutation for each pinned behavior, a verifier's scratch copy to run it in and an order's own subset of the gate would close this. Deferred until the work instance files its first tests-only order. Reopen: that order, or a test found to assert nothing after it passed.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The work instance files its first tests-only order, or a test is found to assert nothing after it passed.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.782Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e1cc0a62d60b3f2a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::d01ae3705f62f61a7554ec1c4457f954d672cadad83c4ca09c12582d64ce44f5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6327a2963ddb33de4e69e6eca7682f847f324ed3d9af1f29dcdf429ae54c7f1e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "The hook module split, with its judgments tested in process, and one process an event.",
+          "summary": "4. **The hook module split, with its judgments tested in process, and one process an event.** `packages/skeleton/src/harness-host.ts` is 8,637 lines with one function of 856 and no unit file; most hook cases build a repository and spawn the generated hook. Deferred until WO-272's after-reading says what a tool call still costs. Reopen: that reading, or the next order that adds a hook judgment.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-272's after-reading is recorded, or the next order adds a hook judgment.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.266Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-93540b548fc46c9b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::d6ea118809d957aea1f91fff26b696f8fb23b43cc83decafd786a46d0a0c4fe6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "de5bf0e90a8c4dc8e0469ecbedb48801232859fc8ada8688c7737cc290af8628",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "In-progress orders visible to a team.",
+          "summary": "2. **In-progress orders visible to a team.** An order activated on one machine is invisible to the others until its pull request opens, and nothing stops a second clone activating it. Deferred: the planner tracks assignment by hand. Reopen: a duplicate activation or a lost assignment is reported from a shared instance.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "A duplicate activation or a lost assignment is reported from a shared instance.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.008Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-914cd6b111dcac5d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::f6420b2fe604b618a739279118fe4d71db3c1e86375a2b59a097e73878834479",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a4410f9a75036e4cb23fdd2a3d9d67874e617a318ef4b5f4b358d9801c3dbd6a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Decisions as choices and the guide by rule.",
+          "summary": "11. **Decisions as choices and the guide by rule.** About half of recent decision entries narrate review rounds, runs and register disposals; one generated index of every decision has no reader beyond its own freshness check; all but one of the record's reopening conditions are prose nothing evaluates; and product 07 states standing rules with their history under twenty-one headings. The operator's quality pass on a section is the existing route for the guide. Deferred. Reopen: WO-264's measurements are read, or the operator asks for a section.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-264's measurements are read, or the operator asks for a quality pass on a section.",
+          "targets": [],
+          "at": "2026-11-09T23:56:12.169Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f7ee5a8c63a21f6d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::fd61f762eae634a94d85339efae2f47d7b2ee39017fa67602ff51d04828febf6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ffc88701946b0dd2dabc7a79f93c8fb5132e714e8417f5eb556621f15f848989",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Dormant product paths in the default gate.",
+          "summary": "6. **Dormant product paths in the default gate.** The vertical, resident and browser-evidence suites run in every complete run for code no lifecycle path uses today. Whether they leave the default selection is the operator's to decide. Reopen: the operator's word, or WO-263's after row showing the vertical row as the longest task.",
+          "missing": false
+        },
+        {
+          "hash": "20697e79f6b2e240eb04f12a7262967f1ea620f62eb63ff0965ae5f70f3bd6fd",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Dormant product paths in the default gate.",
+          "summary": "6. **Dormant product paths in the default gate.** The vertical file, which holds the resident's cases, and the browser-evidence suite run in every complete run for code no lifecycle path uses today. They stay, by this pass's decision. In the committed complete run of WO-255's third repair the vertical task took 750 seconds and browser-evidence 26, a tenth of 7,791 seconds of summed task time; neither row is exclusive, so both share the lanes; WO-273 replaces the vertical's wording cases, its longest task, with a table; and out of the default selection the vertical's loop would have no end-to-end judge. Reopen: an after reading of WO-263 or WO-273 shows the vertical row as the longest task ou",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded and declined by the pass that nominated it; its evidence and the reason it is not filed are in the pass document's NoOps. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The operator's word, or WO-263's after row shows the vertical row as the longest task.",
+          "targets": [],
+          "at": "2026-11-09T23:56:11.524Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Kept in the default gate by the pass's own decision: in docs/evidence/WO-255/repair-003/complete-gate.json the vertical task took 750 seconds and browser-evidence 26 of 7,791 summed, neither exclusive, and WO-273 replaces the vertical's longest task with a table. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "An after reading of WO-263 or WO-273 shows the vertical row as the longest task outside the exclusive rows.",
+          "targets": [],
+          "at": "2026-11-10T00:55:17.237Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e4189f78a94f2893",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::2bcd3bbba8ebf604eddc8272a0b556aeda0bef065064157c22883d1aeed469c2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "24369c56bcfd529395debb1c198ec720eaa083ecb3389c995aa6f7c1d2b377c4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "What an operator meets in a new instance: its commands and what core should hear.",
+          "summary": "14. **What an operator meets in a new instance: its commands and what core should hear.** Requests of the operator from the work laptop's first cycle, made after this pass's receipt, which a published pass cannot turn into a new order. (a) The operator's commands for the release in hand. The one compact list is a section a planning pass wrote by hand for v0.120.1, stale since v0.121.0; the kit guide carries the commands inside its prose, and a release's notes carry Read before upgrading. A page generated from marked command blocks of the kit guide, shipped in every release, kept equal to the guide by the generated check and printed by one command in an instance, would end the hand-written li",
+          "missing": false
+        },
+        {
+          "hash": "bad04e3f7b6fd9dac9017955252692d2ef1726c4f92ebcc37d1d6fa1ce6a6c94",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "What an operator meets in a new instance: its commands and what core should hear.",
+          "summary": "14. **What an operator meets in a new instance: its commands and what core should hear.** Filed as [WO-275](../work-orders/WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md) on the operator's findings from the work laptop: the operator's commands for the release in hand as a page generated from the kit guide's marked command blocks, and one fixed file at an instance's root for what core should hear, written by each order's final review and each planning pass, together with the first order's hosts. Reopen: WO-275 is withdrawn, or closes without one of the three.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded from the operator's findings on the work laptop after this pass's receipt: a command page kept current with each release, and one fixed file in an instance for what core should hear, written by each final review and each planning pass. A published pass has had its one judgment and cannot add an order. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The operator opens the pass for the work instance's findings; it cuts one order for these and the first order's hosts and places it first.",
+          "targets": [],
+          "at": "2026-11-10T02:46:15.622Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated when the unmerged branch was reworked on the operator's direction: WO-275, placed first, carries the operator's commands as a generated page and the one file for what core should hear, with the first order's hosts. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-275 is withdrawn, or closes without taking this up",
+          "targets": [
+            "WO-275"
+          ],
+          "at": "2026-11-10T03:30:24.230Z"
+        }
+      ]
     }
   ]
 }
