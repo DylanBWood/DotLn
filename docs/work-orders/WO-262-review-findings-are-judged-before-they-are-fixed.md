@@ -292,7 +292,7 @@ decisions.
 2. Every installed executor root under `.claude/skills/` and
    `.agents/skills/` carries the judgment rule, and no installed root
    carries the clause `Fix or record every finding`. Check: the case of
-   `packages/skeleton/src/executor-supports.test.ts` that reads the
+   `packages/skeleton/test/executor-supports.test.ts` that reads the
    emitted executor root (`npm test -- --only skeleton`); `node
    scripts/harness.mjs check` shows the installed roots equal the emitted
    ones.

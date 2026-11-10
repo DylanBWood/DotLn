@@ -27,8 +27,8 @@ The pass ran in Claude Code on `claude-fable-5-2` at `xhigh`
 `planning/2026-11-09-whole-plan-and-codebase-review` opened from clean
 `main` at `06c1ddc1a` (v0.122.1).
 
-During the pass the operator added fourteen messages, each captured unedited
-beside the dispatch (the same file name with `-midturn-1` to `-midturn-14`)
+During the pass the operator added fifteen messages, each captured unedited
+beside the dispatch (the same file name with `-midturn-1` to `-midturn-15`)
 and journaled by the prompt hook. In paraphrase, with each capture's
 SHA-256, which is the journal's digest of the message:
 
@@ -90,6 +90,11 @@ SHA-256, which is the journal's digest of the message:
     them: those earlier choices were never the operator's, so neither
     their later effects nor their cost can be weighed from that seat.
     They are the planner's to decide.
+12. A deferred error (`e9baaba2af6587a90ef5aecabb3dcdeb43cef9cedfc7e4eedddf450dedf10b53`).
+    After publication the pass reported that WO-262's second criterion
+    still named a test file at a path the tree does not hold, and that a
+    later pass should correct it. The operator objected: a pass does not
+    make a defect and then leave it for someone else.
 
 ## Readings
 
@@ -496,7 +501,12 @@ the complete run's present figures, and a rule on review size is added.
   rule's figures, the order and the orders set down as not now.
 - `docs/product/07-execution-guide.md` §Operator-opened planning pass,
   item 5: an instance pass sends an item only when it stops that
-  instance's next order and has no working route there.
+  instance's next order and has no working route there. The same section,
+  where it says a known issue of the pass's own receipt goes on the
+  catalog row: a wrong statement of fact is not a known issue, the pass
+  checks every path its orders name before `plan refute`, and an error of
+  its own found after the receipt is corrected in the order before the
+  pass closes (message 12).
 - `docs/KIT.md` §Planning in this instance: the same rule, for the
   instance's reader; §Document quality: the intake root holds the
   operator's messages, and a session's drafts and a tool's output go
@@ -591,6 +601,16 @@ condition. Each is now decided: WO-274 is filed for the first, and NoOps
     },
     "captureDigest": "sha256:7fba59d31bea0047abb5eb0d381e2f90f3d110dbaf81b6157511d6e320d5f4e7",
     "class": "direction"
+  },
+  {
+    "rule": "A wrong statement of fact in an order is not a known issue: a pass checks every repository path its orders name before plan refute, and corrects an error of its own found after the receipt in the order before it closes, never carrying it on a catalog row.",
+    "document": "docs/product/07-execution-guide.md",
+    "section": "Operator-opened planning pass",
+    "message": {
+      "sessionKey": "45064c49a54b49f9e68922eeb34de51da7074178f6ad2cf068a2c931a108b192",
+      "recordedAt": "2026-11-10T01:58:23.154Z"
+    },
+    "captureDigest": "sha256:e9baaba2af6587a90ef5aecabb3dcdeb43cef9cedfc7e4eedddf450dedf10b53"
   }
 ]
 ```
@@ -630,7 +650,11 @@ message and the pass a round. After the receipt the planner corrected a
 path in WO-262's second criterion; the planning check refused the change,
 because a judged order's bytes are frozen, and three commits put them
 back. The slip itself came from the criteria review's fix for checks that
-could not show their claim, written without listing the directory.
+could not show their claim, written without listing the directory. The
+pass then published with the wrong path still in the criterion and a note
+for a later pass; the operator objected (message 12), and the correction
+was made in the order through `amend-order`, which cost the operator a
+second message and the pass another round of the document gate.
 `npm run plan -- conditions --slow` took 0 h 5 min and its document-gate
 probe timed out. The document gate's last run before this section took
 0 h 15 min, 0 h 13 min of it waiting for host lanes behind another
@@ -658,9 +682,14 @@ checkout.
   and `aligned-with-findings` for the other thirteen, no hold, twenty-four
   known issues, each with a reopening observation. They are on the
   thirteen catalog rows of the map with the planner's reading of each for
-  the executor. One is the planner's own error: WO-262's second criterion
-  names its sentence case under `packages/skeleton/src/`, and the file is
-  under `packages/skeleton/test/`. The refuter also noted that WO-272 has
+  the executor. One was the planner's own error: WO-262's second criterion named its
+  sentence case under `packages/skeleton/src/`, where the tree holds it
+  under `packages/skeleton/test/`. It is corrected in the order by the
+  amendment
+  [WO-262-D001](../../evidence/WO-262/decisions.md#wo-262-d001--the-second-criterion-names-the-test-file-that-exists),
+  bound to receipt 067 on the operator's direction (message 12); a scan
+  of every repository path the fourteen orders name found no other that
+  neither exists nor is created by its order. The refuter also noted that WO-272 has
   the largest measured saving per order and runs last; it stays last,
   because its saving is wall-clock time and the work instance's binding
   limit is tokens, and the pass that reads the laptop's first run can

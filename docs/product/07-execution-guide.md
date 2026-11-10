@@ -2126,6 +2126,16 @@ boarded item it takes, a known issue an earlier receipt named) is written in
 that order under `Known issues and carry-ins`; a known issue from the pass's
 own receipt, which finds the order frozen, goes on its catalog row until a
 later pass amends the order [2026-10-02 pass](../planning/passes/standard-pass-2026-10-02.md).
+A wrong statement of fact in an order is not a known issue and is never carried
+there. Before `plan refute` the pass checks every repository path its orders
+name against the tree, where a path that neither exists nor is created by its
+order is a defect; and an error of the pass's own found after the receipt (a
+path the tree does not hold, a name, a figure the record contradicts) is
+corrected in the order before the pass closes: the pass tells the operator at
+once, and on the operator's direction records the decision and binds the
+corrected text with `amend-order` (operator direction, 2026-11-09, ignored
+capture SHA-256 `e9baaba2af6587a90ef5aecabb3dcdeb43cef9cedfc7e4eedddf450dedf10b53`;
+[WO-262-D001](../evidence/WO-262/decisions.md#wo-262-d001--the-second-criterion-names-the-test-file-that-exists)).
 
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the
