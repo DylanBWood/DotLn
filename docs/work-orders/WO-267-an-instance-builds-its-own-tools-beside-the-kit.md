@@ -282,7 +282,9 @@ reopening conditions in `docs/evidence/WO-267/decisions.md`.
 instance's tools; running an instance's tests in the kit's gate; a
 callback from a lifecycle step; an instance's own document kinds or order
 sections; changing which paths are kit files; anything that lets a
-fragment weaken an emitted refusal.
+fragment weaken an emitted refusal; the loader, rollback and build channel
+of WO-207, which is set down and is recut around this root before it
+reopens.
 
 **Operator-review assumptions:** that a guaranteed root and written
 placement rules serve an owner better than a loader core would have to

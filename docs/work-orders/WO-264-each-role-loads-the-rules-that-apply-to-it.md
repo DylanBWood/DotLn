@@ -16,10 +16,13 @@ printed with the prompt; one second-level heading in product 07; in
 `scripts/lib/process-budget.mjs` (`measureColdStarts`), the bytes of the
 fixed sections a root's `Read:` lines name, reported beside the installed
 bytes; a rule-table case in `packages/skeleton/test/executor-supports.test.ts`.
-Removes the 62 `*role-baseline*.json` fixtures under
-`packages/skeleton/fixtures/` (253,148 bytes), `scripts/check-role-oracle.mjs`,
+Removes every `*role-baseline*.json` fixture under
+`packages/skeleton/fixtures/` (62 files and 253,148 bytes on 2026-11-09,
+before WO-275 and WO-262 each add one), `scripts/check-role-oracle.mjs`,
 the structural task `role-oracle`, the chain case in
-`scripts/test-process-debt.mjs` and the sentence assertions in
+`scripts/test-process-debt.mjs` with the lists of that chain in
+`scripts/test-gate-followups.mjs`, `scripts/test-runner.mjs` and
+`scripts/test-sync.mjs`, and the sentence assertions in
 `packages/skeleton/test/executor-supports.test.ts` (100 `assert.match` and
 `assert.doesNotMatch` calls today); from a planning pass, the refuter skill
 it loads on top of its own (20,936 bytes); from the verifier's and the
@@ -53,8 +56,9 @@ twelve orders from WO-217 to WO-257, allocated by
 `contributor.ts` first, and this order composes them as it finds them);
 WO-263 and WO-273 (open: both edit `scripts/test-runner.mjs` and its test
 first).
-**Recommended placement:** fifth, ahead of the four orders that add a
-role sentence, so that none of them mints a baseline. Every later
+**Recommended placement:** fifth, ahead of the four later orders
+that add a role sentence (WO-268, WO-274, WO-270 and WO-271), so that none
+of them mints a baseline. Every later
 dispatch, in core and in an instance, loads the roots this order emits.
 **Cites (read these sections):** `packages/skeleton/src/loadouts/contributor.ts`
 (`operatorControls`, `sessionBoundaries`, `sharedCorrections`, the role
@@ -248,8 +252,9 @@ and the decisions with the before and after measurements.
 
 **Acceptance criteria (all required)**
 
-1. For every role and both skill roots, the emitted root holds exactly
-   once each shared rule whose record names that role and holds no shared
+1. For every role but the router, whose root this order leaves as it is,
+   and for both skill roots, the emitted root holds exactly once each
+   shared rule whose record names that role and holds no shared
    rule whose record does not, by the case that derives both from the rule
    records. Check: `npm test -- --only skeleton`.
 2. `docs/evidence/WO-264/` holds the rule-by-role table with a reason in
@@ -337,7 +342,8 @@ reopening conditions in `docs/evidence/WO-264/decisions.md`.
 and Codex skill directories; changing a ceiling, an acceptance or the
 standing cold-start route; rewriting a section of product 07; the root
 instruction file's generated block; the router's root; the support
-paragraphs of the executor.
+paragraphs of the executor; the reviewed-pass route of WO-244, which is set
+down and is recut before it reopens.
 
 **Operator-review assumptions:** that a rule may leave a role's root when
 that role never reaches what the rule governs, with the table of those

@@ -47,7 +47,8 @@ this order's command reports); WO-258 (closed: the starter refresh that
 adds a seed a starter lacked); WO-275 (open: it makes Claude the default
 in the first order's seed and the host record, and this order edits that
 seed after it).
-**Recommended placement:** sixth, the first of the work instance's orders:
+**Recommended placement:** sixth, after the four shared orders and
+first of the orders an instance meets at install:
 every later release that reaches the work laptop is taken through this
 order's preview, and a second machine (a teammate's) meets the kit through
 this order's command.
@@ -304,8 +305,8 @@ reopening conditions in `docs/evidence/WO-265/decisions.md`.
   upgrading names the one command that renormalizes it.
 
 **Non-goals:** any new or tightened refusal; a model or effort election
-for an instance (the pass that reads the work laptop's observation decides
-it); detecting hooks blocked by a managed policy; continuous integration;
+for an instance (WO-266 adds the section, and its values are the
+instance's); detecting hooks blocked by a managed policy; continuous integration;
 support for native Windows; the memory-pressure sample rule; the Git
 surface check.
 

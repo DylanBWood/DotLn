@@ -19,7 +19,8 @@ order); `scripts/kit/for-core.template.md`, seeded as `FOR-CORE.md` at an
 instance's root through `scripts/launchpad.mjs` and
 `scripts/lib/starter-seeds.mjs`; in `scripts/docs-check.mjs`, the shape
 check of that file's entries, recurring work in the document gate over one
-file (unmeasured, and measured by this order); in
+file (unmeasured, and measured by this order), and one read of that file
+at the entry of each planning pass in an instance; in
 `packages/skeleton/src/loadouts/contributor.ts`, one sentence for the
 final reviewer and one for the planner; cases in the suites the Preflight
 names; the kit guide, product 07 and the decisions. Removes, from
@@ -128,7 +129,9 @@ hear in one file, written without being asked for.
   was explicit: an attested phase ran under that host on the operator's
   own dispatch).
 - The operator's commands are a generated page. The kit guide marks each
-  command block of the operator's cycle with the step it belongs to: a
+  command block of the operator's cycle with the step it belongs to, and
+  every other fenced shell block as set aside, so that none is left out
+  unseen. The steps are a
   new instance, the first pass, running an order, closing it, taking a
   release, registering a repository, and telling core. A build-free
   module reads those blocks in the cycle's order, with the one sentence
@@ -231,16 +234,19 @@ two role sentences; the cases; the write-backs and the decisions.
    seeds.
 2. With a discovery record that holds observed versions of `codex-cli`
    and `copilot-cli`, no election and no attestation, the feature
-   inventory reports both hosts off and the emit writes Claude's surfaces
-   alone; with an attestation under a host it reports that host inferred,
+   inventory reports both hosts off, naming the discovery record as
+   showing each without an election, and the emit writes Claude's
+   surfaces alone; with an attestation under a host it reports that host inferred,
    as at the base; and this repository's emitted surfaces are the bytes
    they are at the base.
 3. `docs/OPERATOR.md` in a fresh export names the kit's version and
    holds, in the cycle's order, every command block the kit guide marks,
    byte for byte; `node scripts/launchpad.mjs commands` prints the same
-   blocks there before any install; and after a marked block of the kit
+   blocks there before any install; after a marked block of the kit
    guide changes in a scratch copy, the generated check fails naming the
-   page until it is regenerated.
+   page until it is regenerated; and a fenced shell block of the kit
+   guide that carries neither a step's marker nor the marker that sets it
+   aside fails that check naming its line.
 4. A fresh export holds `FOR-CORE.md` equal to its template; the starter
    refresh adds it to a starter that lacks it and leaves an instance's own
    file byte-identical; `node scripts/docs-check.mjs` passes an entry of
@@ -307,7 +313,9 @@ reopening conditions in `docs/evidence/WO-275/decisions.md`.
 
 **Non-goals:** removing a host's support; inference from attestations; a
 host report (WO-265); sending anything from an instance to core; a
-command that files an entry; core reading an instance's file; a rewrite
+command that files an entry; core reading an instance's file; the request
+route of WO-193, which is set down and is recut around this file before it
+reopens; a rewrite
 of the kit guide's prose beyond the markers and the sentences this order
 names.
 
