@@ -89,7 +89,7 @@ regenerating.
 - Some of those rules govern nothing a role that carries them does. The
   dispatch-bounds paragraph (1,087 bytes) is in the planner, refuter and
   release-close roots, whose bounds in `docs/control/budgets.json` are all
-  unset. The browser-verification paragraph (596 bytes) and the
+  unset here, though an instance may set them. The browser-verification paragraph (596 bytes) and the
   expected-data rule (325 bytes) are in the planner and the refuter, which
   change no product code. The worker-launch paragraph (1,996 bytes) and
   the fan-out paragraph (1,059 bytes) are in all six, release close
@@ -194,7 +194,8 @@ regenerating.
    a committed skill root edited by hand makes `node scripts/harness.mjs
    check` fail.
    Check: `npm test -- --only process-debt`, `npm test -- --only
-   harness-fixtures` and `npm test -- --only sync-fixtures`.
+   harness-fixtures`, `npm test -- --only sync-fixtures` and `npm test --
+   --only runner-fixtures`.
 3. `packages/skeleton/src/loadouts/contributor.ts` (`operatorControls`,
    `sessionBoundaries`, `sharedCorrections` and the rules `targetRoles`
    inserts): give each shared rule an identifier and its roles, and
@@ -215,10 +216,9 @@ regenerating.
    `packages/skeleton/src/loadouts/contributor.ts` (the planner): the
    refutation step names that command and no skill. Check: `npm test --
    --only plan-refutation`.
-6. `docs/product/07-execution-guide.md`: move the paragraphs of
-   §Verification review and attack from the one that opens with every
-   execution and fix running its reviews as a ladder through the review
-   helper's flags and reports under a new second-level heading placed
+6. `docs/product/07-execution-guide.md`: move every paragraph of §Verification review and attack that names the
+   review helper's `--kind` flags, its rounds or its report files, as
+   they read after WO-262, under a new second-level heading placed
    after that section, leave one linking sentence in their place, and
    update each link in a standing document that points at the moved text;
    `packages/skeleton/src/loadouts/contributor.ts` (the planner's `Read:`
@@ -252,10 +252,13 @@ and the decisions with the before and after measurements.
    once each shared rule whose record names that role and holds no shared
    rule whose record does not, by the case that derives both from the rule
    records. Check: `npm test -- --only skeleton`.
-2. No installed root of the planner, the refuter or release close holds
-   the dispatch-bounds paragraph, and every installed root of the
-   executor, the verifier and the reviewer holds it. Check: `node
-   scripts/harness.mjs check` and the case of criterion 1.
+2. `docs/evidence/WO-264/` holds the rule-by-role table with a reason in
+   every cell: for a rule a role keeps, the command, phase or host of
+   that role's procedure that the rule governs, and for a rule a role
+   loses, that the role reaches none. The rule records equal the table,
+   by the case of criterion 1, and a rule whose command a role can be
+   configured to reach, as the dispatch bounds of the planner, the
+   refuter and release close can, stays with that role.
 3. With a committed skill root changed by hand, `node scripts/harness.mjs
    check` fails naming that root; `packages/skeleton/fixtures/` holds no
    `*role-baseline*.json`, `scripts/check-role-oracle.mjs` is absent, and
@@ -270,7 +273,8 @@ and the decisions with the before and after measurements.
    lines name does not contain the review helper's `--kind` flags, the
    section that holds them is a second-level section of its own that the
    first links, and the installed planner roots name the ideation section
-   only for an `ideation:` entry. Check: `npm run test:docs`.
+   only for an `ideation:` entry. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 7. `npm run meta` prints, for each role, its installed bytes and the bytes
    of the fixed reads its root names, and the planner's second number
    includes §Operator-opened planning pass and the sequence.
@@ -279,7 +283,7 @@ and the decisions with the before and after measurements.
 **Preflight:** `npm test -- --only skeleton` for steps 1 and 3;
 `npm test -- --only process-debt` for steps 2 and 7; `npm test -- --only
 harness-fixtures` for steps 2 and 4; `npm test -- --only sync-fixtures`
-for step 2; `npm test -- --only compiler` for step
+and `npm test -- --only runner-fixtures` for step 2; `npm test -- --only compiler` for step
 3; `npm test -- --only plan-refutation` for step 5; the structural phase;
 the complete run with `npm test -- --review` at final review.
 

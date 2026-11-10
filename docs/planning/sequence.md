@@ -128,17 +128,20 @@ Then the work instance, in the order a new instance meets them:
   moved; ninth, the first of the instance's three jobs.
 - WO-269: a team works one instance against a repository that squashes
   its merges: a target order closes when its change is in the base by any
-  merge method, the instance declares its authors, and the kit guide
-  gives one planner's conventions; tenth.
+  merge method, the instance declares its authors, and the kit guide gives one planner's conventions; tenth.
+- WO-274: a target order's records stay in the instance where its
+  registration says so, and the target's pull request is then the
+  reviewed commit alone; eleventh, since the first order a team runs
+  against its application repository meets it.
 - WO-270: an initiative is laid out before its orders are cut: the layout
-  in the workstream document and orders filed a wave at a time; eleventh,
+  in the workstream document and orders filed a wave at a time; twelfth,
   the second of the three jobs.
 - WO-271: an order is paced across days: a declared daily figure shown to
   the session, a recorded standing at each stop, and a dispatch bound
-  that counts worked time; twelfth, after WO-266, whose usage reading it
+  that counts worked time; thirteenth, after WO-266, whose usage reading it
   shares.
 - WO-272: a tool call pays for the hooks that judge it, in the launchpad
-  and in a target worktree; thirteenth, after WO-264 and WO-271, which
+  and in a target worktree; fourteenth, after WO-264 and WO-271, which
   edit the same files.
 
 ## Not now
@@ -189,6 +192,8 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 - WO-267 — An instance builds its own tools beside the kit
 - WO-268 — What a session learns about a target is loaded by the next
 - WO-269 — A team works one instance against a repository that squashes its merges
+- WO-274 — A target order's records stay in the instance where its registration says so
+
 - WO-270 — An initiative is laid out before its orders are cut
 - WO-271 — An order is paced across days
 - WO-272 — A tool call pays for the hooks that judge it

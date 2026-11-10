@@ -12,7 +12,8 @@ round, with a paired form whose findings are recorded in a typed array;
 one table in the planning failures report. Assigned at activation under
 the standing opt-out default.
 **Cost:** adds, in `scripts/lib/review-worker.mjs` (`ladderRule` and the
-brief's preamble), the admission rule in round one; in
+brief's preamble), the admission rule in round one and, where a returned
+report is refused for its form, the keeping of that report; in
 `packages/skeleton/src/loadouts/contributor.ts` (the executor), the
 judgment rule, the fix rule and the header's reading; in
 `scripts/work-orders.mjs` (`parseHeader`), the header line; in
@@ -136,6 +137,13 @@ reviewers an order needs is answered by counting.
 - A full ladder spends seven worker uses (three round-one workers, three
   rechecks and one combined worker), and the same rule runs in every
   instance.
+- A report refused for its form is lost with its findings. Where
+  `recordedReportRefusal` refuses a returned report, the helper prints
+  how many findings it held and records none of it. On 2026-11-09 two
+  criteria reviews of this pass's own subject were refused for one word
+  in the `## Items` table's disposition column; the lines counted 13 and
+  9 findings and the lane kept neither report, so each was a worker use
+  with nothing to read.
 
 **Design (scope discipline):**
 
@@ -205,9 +213,11 @@ reviewers an order needs is answered by counting.
 1. `scripts/lib/review-worker.mjs` (`ladderRule` and the canonical brief's
    preamble): the round-one brief of every kind states the admission rule
    of the Design's first item and asks each finding to say which writer
-   produces its input or that it found none; later rounds keep their rule.
-   Check: `npm test -- --only plan-refutation`, whose file loads the
-   review-worker cases.
+   produces its input or that it found none; later rounds keep their rule. Where `recordedReportRefusal` refuses a
+   returned report, write that report into the round's lane under a name
+   that marks it refused and name the path in the refusal line; the round
+   still records no report. Check: `npm test -- --only plan-refutation`,
+   whose file loads the review-worker cases.
 2. `packages/skeleton/src/loadouts/contributor.ts` (the executor's review
    sentences): replace the clause that reads `Fix or record every finding`
    with the judgment rule of the Design's second item, saying that a
@@ -263,7 +273,8 @@ reviewers an order needs is answered by counting.
    handoff sequence of product 07 §Discipline, with this order's own
    findings judged as the rule it carries states.
 
-**Deliverables:** the brief's round-one rule; the executor's judgment rule
+**Deliverables:** the brief's round-one rule; the refused report kept in
+its lane; the executor's judgment rule
 and fix rule; the header line with its three values; the typed array's
 shape check; the paired rounds' table; the cases; the write-backs and the
 decisions.
@@ -273,16 +284,23 @@ decisions.
 1. `npm run worker -- review --kind criteria --host claude --order WO-262
    --dry-run`, and the same for `design`, `consistency` and `combined`,
    each prints a brief that carries the admission rule's sentence, and a
-   `--round 2 --recheck <report> --dry-run` brief carries it too.
+   `--round 2 --recheck <report> --dry-run` brief carries it too. In the
+   review-worker case whose worker returns a criteria report with a
+   disposition outside the three admitted, the lane holds that report
+   under a name that marks it refused, the refusal line names its path,
+   and the round has no recorded report.
 2. Every installed executor root under `.claude/skills/` and
    `.agents/skills/` carries the judgment rule, and no installed root
-   carries the clause `Fix or record every finding`. Check:
-   `node scripts/harness.mjs check`.
+   carries the clause `Fix or record every finding`. Check: the case of
+   `packages/skeleton/src/executor-supports.test.ts` that reads the
+   emitted executor root (`npm test -- --only skeleton`); `node
+   scripts/harness.mjs check` shows the installed roots equal the emitted
+   ones.
 3. Every installed executor root states that a fix dispatch repairs the
    class its failed report names and runs one combined review over the
    repair's change since the tree that report judged, and no installed
-   root says that a fix runs three round-one reviewers. Check:
-   `node scripts/harness.mjs check`.
+   root says that a fix runs three round-one reviewers. Check: the same
+   case and command as criterion 2.
 4. Every installed executor root states the three sizes of round one and
    that a paired round's reviewers are blind to one another. `npm run
    work-orders -- index --check` passes on an order whose header carries
@@ -303,7 +321,8 @@ decisions.
 7. Product 07 §Verification review and attack and the kit guide's ladder
    paragraph state the round-one rule, the fix dispatch's one review, the
    header line and the paired record, and link this order's decisions.
-   Check: `npm run test:docs`.
+   The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only plan-refutation` for steps 1 and 6;
@@ -346,7 +365,8 @@ reopening conditions in `docs/evidence/WO-262/decisions.md`.
 
 **Non-goals:** a check that reads a decision's or a report's prose, or
 that refuses a fix; a field in the review protocol; removing the readers
-WO-259 added; the recheck and the third round, the fifty-line figure for
+WO-259 added; the recheck and the third round of an execution's ladder, the
+fifty-line figure for
 a repair inside an execution, or the cap; a rule that sizes a review from
 the diff; a value for no review; the verifier's and the final reviewer's
 routes.

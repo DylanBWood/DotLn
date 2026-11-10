@@ -46,7 +46,7 @@ instance's prices this order's figure is compared with); WO-264 (open: it
 makes each shared rule a record that names its roles, and this order's
 stopping rule is such a record naming the executor); WO-234 (closed: the
 dispatch bound).
-**Recommended placement:** twelfth, after WO-270 and after WO-266, whose
+**Recommended placement:** thirteenth, after WO-270 and after WO-266, whose
 usage reading it shares.
 **Cites (read these sections):** `scripts/lib/dispatch-bound.mjs` (where
 the elapsed time is taken from the dispatch's start to now);
@@ -128,9 +128,11 @@ the phase's bound.
   learn an event that changes no phase).
 - The bound measures work. A phase's wall-clock reading is the sum of the
   spans in which its sessions' journals show activity. The time from a
-  tool call's start row to its end row is worked however long it is, so a
-  complete run of three quarters of an hour or a wait on a worker counts
-  whole; a gap between one call's end, or a prompt, and the next row that
+  tool call's start row to its end row is worked however long it is, so a complete run of three quarters of an hour made in the foreground
+  counts whole. A wait on background work counts only where that work's
+  own calls are rows of the session's journal; where they are not the
+  wait is idle, which makes the bound more lenient and never stricter,
+  and the decisions record which the executor observed; a gap between one call's end, or a prompt, and the next row that
   is longer than a stated idle interval contributes nothing. The interval is a constant beside the reading. A phase worked
   for nine hours without a break is refused where it is today.
 - On every host the record shows this order changes when one refusal
@@ -201,14 +203,18 @@ the decisions.
 3. A `spend.daily` that is not an object of the two admitted fields, or
    that holds a negative number, is refused when the budgets load, naming
    the field.
-4. Every installed executor root carries the stopping rule; with an active
+4. The emitted executor root carries the stopping rule, by the rule-record
+   case of the skeleton suite (`npm test -- --only skeleton`), and `node
+   scripts/harness.mjs check` shows the installed roots equal the emitted
+   ones; with an active
    order that has a `standing.md` beside its evidence the execution
    briefing names it, and without one it prints as at the base;
    `implementation-ready` removes the file, prints that it did, and
    completes as at the base.
 5. The kit guide and product 07 state the figure, the line a session is
    shown, the standing and the bound's reading, each linking this order's
-   decisions. Check: `npm run test:docs`.
+   decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 6. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures` for steps 1 and 3;

@@ -202,7 +202,8 @@ tokens by class and, from prices the instance declares, in dollars.
    Check: `npm test -- --only skeleton` and `npm test -- --only
    process-debt`.
 6. `scripts/meta.mjs` and `scripts/lib/meta.mjs`: `--usage [--since
-   <date>]` prints, by order and by the day of each dispatch, the tokens
+   <date>]` prints, by order and by the local calendar day of each observation, the
+   tokens
    by class and role and, where `workers.prices` names the attested model,
    an estimate in dollars marked as an estimate, each class multiplied once
    by its own price. Check: `npm test -- --only process-debt`.
@@ -252,7 +253,8 @@ the usage report; the cases; the write-backs and the decisions.
    prints an estimate marked as one; for a model with no declared price it
    prints `unknown` in place of the estimate.
 7. The kit guide and the example configuration state the section and the
-   report and link this order's decisions. Check: `npm run test:docs`.
+   report and link this order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only configuration-root` for step 1; the

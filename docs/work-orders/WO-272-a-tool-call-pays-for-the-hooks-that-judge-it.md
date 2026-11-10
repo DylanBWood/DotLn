@@ -7,8 +7,9 @@
 **Review ladder:** paired
 **Release classification:** patch. The emitted settings register two
 hooks for fewer tools and no separate presence hooks; two internal
-readings do less work. Every refusal and every journal row stays as it
-is. Assigned at activation under the standing opt-out default.
+readings do less work. Every refusal stays as it is. A hook process that no longer runs
+writes no journal row of its own; the rows that mark a tool call's start
+and end stay. Assigned at activation under the standing opt-out default.
 **Cost:** adds, in `packages/compiler/src/harness.ts` (the settings'
 matchers and the presence hooks' emission), a matcher per unit and the
 heartbeat's call inside the observer hooks; in
@@ -37,7 +38,7 @@ second and fourth goals; the hook-timing follow-up of WO-236
 [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md).
 **Depends on:** WO-264 and WO-271 (open: both edit
 `packages/skeleton/src/harness-host.ts` or the compiler's emission first).
-**Recommended placement:** thirteenth, after WO-264 and WO-271, which edit
+**Recommended placement:** fourteenth, after WO-264 and WO-271, which edit
 the same files. Every session on every host pays this on each tool call,
 a managed laptop most of all, and nothing is stopped by it today.
 **Cites (read these sections):** `.claude/settings.json` (the registered hooks and their matchers);
@@ -98,8 +99,9 @@ for the same input, with the same words.
 
 - Measure, then cut. The first step records the per-hook timing rows of a
   fixed sequence of tool calls on the harness fixture, and the last step
-  records the same sequence again; the decisions hold both. A cut that
-  does not show in the second reading is reverted.
+  records the same sequence again; the decisions hold both. Each cut stays whether or not the second reading shows it, since each
+  removes a process or a call and adds none; the readings say what a tool
+  call still costs.
 - A unit's matcher is the tools it judges, by every name they go by. The
   loadout's unit states the kinds its facts read, the compiler builds the
   hook's matcher from every tool name `harnessToolEffects` maps to those
@@ -156,8 +158,8 @@ for the same input, with the same words.
    -- --only harness-fixtures`, with a case that counts bytes read across
    two snapshots.
 6. Repeat step 1's sequence on the candidate into
-   `docs/evidence/WO-272/after.json`, record both readings in the
-   decisions, and revert any cut the second reading does not show.
+   `docs/evidence/WO-272/after.json`, and record both readings in the decisions with, for each cut, whether
+   the second reading shows it.
 7. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: the kit guide §Hooks (which hooks run for which
    tools, and that the heartbeat has no hook of its own);
@@ -178,9 +180,11 @@ cases; the write-backs and the decisions.
    the same.
 2. Every refusal case of `npm test -- --only harness-fixtures` that passed
    at the base passes unchanged, the attribution refusal fires for a shell
-   command under each tool name that maps to its kind, and the heartbeat's
-   cases pass for each of the four events with a store named in the
-   environment.
+   command under each tool name that maps to its kind, the heartbeat's cases pass for each of the four events with a store
+   named in the environment, and for a tool the two narrowed hooks no
+   longer run for, the session journal holds the rows for the call's
+   start and end that it holds at the base, which WO-271's reading of
+   worked time takes.
 3. For a read on a planning branch the hooks make no `git symbolic-ref`
    call, counted through the suite's stand-in Git, and a write outside
    the admitted paths on a planning branch is refused with the message it
@@ -192,7 +196,8 @@ cases; the write-backs and the decisions.
 5. `docs/evidence/WO-272/before.json` and `after.json` hold the timing
    rows of the same sequence, and the decisions state both readings.
 6. The kit guide §Hooks states which hooks run for which tools and links
-   this order's decisions. Check: `npm run test:docs`.
+   this order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 7. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only compiler` for step 2; `npm test --

@@ -57087,6 +57087,13 @@
           "title": "A second platform exercised.",
           "summary": "13. **A second platform exercised.** Every committed run of the kit is on macOS; a run of the instance's gate on Linux needs continuous integration the operator authorizes. Reopen: the operator's word, or a teammate's machine that is not macOS.",
           "missing": false
+        },
+        {
+          "hash": "75c93de81a6d9c80533d3da07c047630f52e918c52c7d4c9148cd52f8c080ca7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "A second platform exercised.",
+          "summary": "13. **A second platform exercised.** Every committed run of the kit is on macOS. Not now, by this pass's decision: no host in the record is another platform, a run in continuous integration would test one nobody uses, and WO-265's report is how a new host says what it lacks. Reopen: WO-265's report, or an instance's first run, comes from a host that is not macOS.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -57097,6 +57104,14 @@
           "reopenWhen": "The operator's word, or a teammate's machine that is not macOS.",
           "targets": [],
           "at": "2026-11-09T23:56:12.427Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Not now by the pass's own decision: no host in the record is a platform other than macOS, and WO-265's report is how a new host says what it lacks. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-265's report, or an instance's first run, comes from a host that is not macOS.",
+          "targets": [],
+          "at": "2026-11-10T00:55:17.372Z"
         }
       ]
     },
@@ -57159,6 +57174,13 @@
           "title": "A target order's records kept in the instance.",
           "summary": "9. **A target order's records kept in the instance.** Every target order files its order, decisions and reports into the target's documentation root. Whether a team's application repository should hold them is the operator's to decide. Reopen: the operator's word.",
           "missing": false
+        },
+        {
+          "hash": "b2212f9c723685b1f3a13e478f963ad05448b455283d602af8733d943fcae776",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "A target order's records kept in the instance.",
+          "summary": "9. **A target order's records kept in the instance.** Every target order files its order, decisions and reports into the target's documentation root, and the target's pull request carries them. Filed by this pass's decision as [WO-274](../work-orders/WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md): a registration's `records` key, its default unchanged, with which an instance working a team's application repository keeps them and publishes the reviewed commit alone. Reopen: WO-274 is withdrawn, or closes without the key.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -57169,6 +57191,16 @@
           "reopenWhen": "The operator's word.",
           "targets": [],
           "at": "2026-11-09T23:56:11.911Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the pass's own decision after the operator returned it: WO-274 gives a registration a records key with which an instance keeps a target order's records and publishes the reviewed commit alone. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "WO-274 is withdrawn, or closes without the key.",
+          "targets": [
+            "WO-274"
+          ],
+          "at": "2026-11-10T00:55:16.955Z"
         }
       ]
     },
@@ -57207,6 +57239,13 @@
           "title": "Evidence editions kept in place.",
           "summary": "5. **Evidence editions kept in place.** Each order mints editions of generated evidence under its own directory, where one file a kind, overwritten when it changes, would leave Git to hold the history. It reverses recorded decisions on immutability and is the operator's to decide. Reopen: the operator's word.",
           "missing": false
+        },
+        {
+          "hash": "861ca9b8b19cb5e550ed2baa505db65aae7049deee5493c9e454199b0b937b2f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Evidence editions kept in place.",
+          "summary": "5. **Evidence editions kept in place.** Each order mints editions of generated evidence under its own directory, where one file a kind, overwritten when it changes, would leave Git to hold the history. Declined for now, by this pass's decision: the one edition most orders had to record again, the console's self-host golden, is fixed by WO-273; what is left is storage, which this map's standing condition on evidence bytes watches (two consecutive orders each committing more than 1 MB of distinct blobs no criterion required); and keeping editions in place changes how a closed order's evidence is read back, against recorded decisions on immutability, for a saving nobody has measured. Reopen: af",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -57217,6 +57256,14 @@
           "reopenWhen": "The operator's word.",
           "targets": [],
           "at": "2026-11-09T23:56:11.395Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Declined for now by the pass's own decision: WO-273 fixes the one edition most orders recorded again, the remaining cost is storage that the standing evidence-bytes condition watches, and the change alters how a closed order's evidence is read back for a saving nobody has measured. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "After WO-273 closes, two orders whose gate or handoff stops on a stale edition, or two consecutive orders each commit more than 1 MB of distinct evidence blobs no criterion required.",
+          "targets": [],
+          "at": "2026-11-10T00:55:17.092Z"
         }
       ]
     },
@@ -57327,6 +57374,13 @@
           "title": "Dormant product paths in the default gate.",
           "summary": "6. **Dormant product paths in the default gate.** The vertical, resident and browser-evidence suites run in every complete run for code no lifecycle path uses today. Whether they leave the default selection is the operator's to decide. Reopen: the operator's word, or WO-263's after row showing the vertical row as the longest task.",
           "missing": false
+        },
+        {
+          "hash": "20697e79f6b2e240eb04f12a7262967f1ea620f62eb63ff0965ae5f70f3bd6fd",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "Dormant product paths in the default gate.",
+          "summary": "6. **Dormant product paths in the default gate.** The vertical file, which holds the resident's cases, and the browser-evidence suite run in every complete run for code no lifecycle path uses today. They stay, by this pass's decision. In the committed complete run of WO-255's third repair the vertical task took 750 seconds and browser-evidence 26, a tenth of 7,791 seconds of summed task time; neither row is exclusive, so both share the lanes; WO-273 replaces the vertical's wording cases, its longest task, with a table; and out of the default selection the vertical's loop would have no end-to-end judge. Reopen: an after reading of WO-263 or WO-273 shows the vertical row as the longest task ou",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -57337,6 +57391,14 @@
           "reopenWhen": "The operator's word, or WO-263's after row shows the vertical row as the longest task.",
           "targets": [],
           "at": "2026-11-09T23:56:11.524Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Kept in the default gate by the pass's own decision: in docs/evidence/WO-255/repair-003/complete-gate.json the vertical task took 750 seconds and browser-evidence 26 of 7,791 summed, neither exclusive, and WO-273 replaces the vertical's longest task with a table. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "An after reading of WO-263 or WO-273 shows the vertical row as the longest task outside the exclusive rows.",
+          "targets": [],
+          "at": "2026-11-10T00:55:17.237Z"
         }
       ]
     }

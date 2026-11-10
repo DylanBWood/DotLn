@@ -161,7 +161,8 @@ and the decisions.
    <path>` refuses before any push, naming both paths, the restore command
    and `--take`. After the merge commit holds the instance's bytes for both
    paths, the same command proceeds. With `--take` naming one of the two
-   and the other restored, it proceeds and prints the taken path. A file only the incoming revision changed, a file it added and a kit file
+   and the other restored, it proceeds and prints the taken path. A file only the incoming revision changed, a file only it added and a kit
+   file
    the incoming manifest lists are never named. With `main` merged into the
    update branch after the update's own merge, the same commit is judged,
    the same paths are named and the restore command names the instance's
@@ -173,7 +174,8 @@ and the decisions.
    `npm run --silent worker -- review`, `npm run worker --silent -- review`
    and `node scripts/worker.mjs review`.
 4. The kit guide states steps 1 and 2 in the sections step 4 names, each
-   linking this order's decisions. Check: `npm run test:docs`.
+   linking this order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 5. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only launchpad` for steps 1 and 2;

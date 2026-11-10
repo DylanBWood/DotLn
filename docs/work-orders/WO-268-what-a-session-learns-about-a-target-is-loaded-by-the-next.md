@@ -186,11 +186,14 @@ cases; the write-backs and the decisions.
    one note's paths, the briefing prints two for that note and zero for
    the other; with a note whose commit the clone does not hold it prints
    `unknown` for that note and the briefing completes.
-5. Every installed root of the executor, the verifier and the reviewer
-   carries step 4's sentence. Check: `node scripts/harness.mjs check`.
+5. The emitted roots of the executor, the verifier and the reviewer carry
+   step 4's sentence, by the rule-record case of the skeleton suite (`npm
+   test -- --only skeleton`), and `node scripts/harness.mjs check` shows
+   the installed roots equal the emitted ones.
 6. The kit guide states the convention, the briefing's lines and the
    recipe, product 12's sentence agrees with the briefing, and each links
-   this order's decisions. Check: `npm run test:docs`.
+   this order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 7. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only launchpad` for step 1;

@@ -157,7 +157,8 @@ release's floors refuse this host. Nothing in this order refuses a host.
 
 1. `scripts/lib/host-doctor.mjs` (new): a function that takes injected
    facts (versions, processor count, memory, a compiler runner, a symlink
-   probe, a Git configuration reader, an origin URL, a tool lookup) with
+   probe, a Git configuration reader, an origin URL, a tool lookup, and the host
+   name, user name and home directory its output must not carry) with
    the running host's as defaults and returns the rows of the Design's
    second item, calling `judgeRunningNode`, `judgeRunningGit`,
    `nativeCompiler`, `hostLaneCapacity` and the peak reading of step 3.
@@ -168,8 +169,9 @@ release's floors refuse this host. Nothing in this order refuses a host.
    declarations of the rows that load them. Check: `npm test -- --only
    runner-fixtures`.
 2. `scripts/doctor.mjs` (new): the entry that prints the table or, with
-   `--json`, the rows, and sets the exit code; it imports nothing outside
-   Node's modules and `scripts/lib/`. `scripts/launchpad.mjs` (the kit's
+   `--json`, the rows, and sets the exit code; it imports nothing outside Node's modules and `scripts/lib/`, and it
+   judges the running Node before it loads any other module of the kit,
+   so that a Node too old to load one still prints its row. `scripts/launchpad.mjs` (the kit's
    file list and the generated `package.json`): the two files ship and the
    instance gains `npm run doctor`. Check: in the export fixture, before
    any install, `node scripts/doctor.mjs` runs (`npm test -- --only
@@ -196,9 +198,11 @@ release's floors refuse this host. Nothing in this order refuses a host.
    runner-fixtures`, with a case that injects a failing compiler.
 6. `scripts/kit/gitattributes.template` (new) and `scripts/launchpad.mjs`
    (`KIT_TEMPLATE_FILES` and the export's `addSeed` calls, beside the
-   `.gitignore` seed): a new export writes `.gitattributes` from the
-   template as a seed, so the starter refresh's existing seed rules add it
-   to a starter that has none and leave one that exists. Check: `npm test
+   `.gitignore` seed): a new export writes `.gitattributes` from the template as a seed;
+   `scripts/lib/starter-seeds.mjs` (`seeds` and `exportSeedPaths`, the
+   lists the export is checked against and the starter refresh reads)
+   names it, so the refresh adds it to a starter that has none and leaves
+   one that exists. Check: `npm test
    -- --only launchpad`.
 7. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: the kit guide §First steps (the command as the first
@@ -225,8 +229,11 @@ cases; the write-backs and the decisions.
 2. With a Node below `engines.node`, a Git below `engines.git` and a
    compiler that fails all injected at once, the rows report all three
    unmet in one run and the command exits 1; with every assumption met it
-   exits 0; a fact the command cannot read is reported unknown and does
-   not change the exit code.
+   exits 0; a fact the command cannot read is reported unknown and does not change
+   the exit code; and with a Node below the floor injected and
+   `scripts/lib/host-doctor.mjs` replaced in the fixture by a file that
+   fails to load, the command still prints the Node row with the floor
+   and exits 1.
 3. With a host name, a user name and a home directory injected, no output
    of the command, table or JSON, contains any of the three.
 4. In a kit root, the host task passes on an injected host of 16 GB and
@@ -246,7 +253,8 @@ cases; the write-backs and the decisions.
 8. The kit guide §First steps names the command, the compiler, the forge
    tool, the merge policy and the three host statements, and §Taking
    upstream updates names the preview's floor lines, each linking this
-   order's decisions. Check: `npm run test:docs`.
+   order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only runner-fixtures` for steps 1, 3 and 5;

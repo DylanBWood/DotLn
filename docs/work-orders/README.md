@@ -14,6 +14,7 @@
 - [ ] [WO-267] — An instance builds its own tools beside the kit · **queued**
 - [ ] [WO-268] — What a session learns about a target is loaded by the next · **queued**
 - [ ] [WO-269] — A team works one instance against a repository that squashes its merges · **queued**
+- [ ] [WO-274] — A target order's records stay in the instance where its registration says so · **queued**
 - [ ] [WO-270] — An initiative is laid out before its orders are cut · **queued**
 - [ ] [WO-271] — An order is paced across days · **queued**
 - [ ] [WO-272] — A tool call pays for the hooks that judge it · **queued**
@@ -208,6 +209,22 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: delivery
 - Authority: [docs/work-orders/WO-269-a-team-works-one-instance-against-a-repository-that-squashes-its-merges.md](WO-269-a-team-works-one-instance-against-a-repository-that-squashes-its-merges.md)
+
+### WO-274
+
+[WO-274 — A target order's records stay in the instance where its registration says so: a repository's registration names where its orders' records are filed, an order against a repository that keeps them in the instance publishes the reviewed commit with no records commit in the target, and the kit guide tells a team's instance to keep them](WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-072: control-closed; WO-210: control-closed; WO-213: control-closed; WO-264: not-control-closed; WO-269: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Authority: [docs/work-orders/WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md](WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md)
 
 ### WO-270
 
@@ -425,3 +442,4 @@ None.
 [WO-271]: WO-271-an-order-is-paced-across-days.md
 [WO-272]: WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md
 [WO-273]: WO-273-a-complete-run-fails-for-a-defect-in-the-change.md
+[WO-274]: WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md

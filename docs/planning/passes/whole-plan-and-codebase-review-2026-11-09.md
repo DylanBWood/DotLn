@@ -27,8 +27,8 @@ The pass ran in Claude Code on `claude-fable-5-2` at `xhigh`
 `planning/2026-11-09-whole-plan-and-codebase-review` opened from clean
 `main` at `06c1ddc1a` (v0.122.1).
 
-During the pass the operator added thirteen messages, each captured unedited
-beside the dispatch (the same file name with `-midturn-1` to `-midturn-13`)
+During the pass the operator added fourteen messages, each captured unedited
+beside the dispatch (the same file name with `-midturn-1` to `-midturn-14`)
 and journaled by the prompt hook. In paraphrase, with each capture's
 SHA-256, which is the journal's digest of the message:
 
@@ -84,6 +84,12 @@ SHA-256, which is the journal's digest of the message:
     The operator began a clone and a first order on the work laptop
     against starter v0.122.1 during the pass, and will bring what it shows
     to a separate pass; this pass does not wait for it.
+11. Decisions sent back (`355b53d3b72345212e9f3696cdfe898b602009b9ccdced48b7fcdd11e1c0303a`).
+    The pass's first handoff listed questions about implementation and
+    architecture as the operator's to answer. The operator returned
+    them: those earlier choices were never the operator's, so neither
+    their later effects nor their cost can be weighed from that seat.
+    They are the planner's to decide.
 
 ## Readings
 
@@ -312,6 +318,7 @@ Filed:
 | WO-271 | A daily figure shown to the session; a recorded standing at each stop; a bound that counts worked time |
 | WO-272 | Hooks registered for the tools they judge; no hook that does nothing; two readings do less |
 | WO-273 | The case-title registries, per-case time bounds and the golden that tracks the newest order leave; statement wordings judged in a table |
+| WO-274 | A registration says where a target order's records are filed; with `instance` they stay in the instance and the target's pull request is the reviewed commit alone |
 
 Screens. `npm run work-orders -- index --check` prints one criteria
 advisory for these orders: WO-265 criterion 4 names 16 GB, which is the
@@ -323,7 +330,7 @@ what they do on this repository's host and on the work laptop. Each order that a
 or a close names it as unmeasured and measures it. No order edits a file
 in `FEEDBACK_SOURCE_PATHS`, so none owes a live feedback episode.
 
-Not now. Nine open orders stay in the sequence below the thirteen, each
+Not now. Nine open orders stay in the sequence below the fourteen, each
 with what reopens it: WO-244 and WO-083 on the operator's word in the
 dispatch; WO-207, whose extension point WO-267 recuts without its loader
 and whose other four parts wait for a reported need; WO-193, because the
@@ -332,17 +339,18 @@ WO-014, which nobody is waiting for. The reviews of those orders found
 criteria that the tree has since contradicted (WO-096 expects five
 refusals where there are nine; WO-088 and WO-207 name a client guide that
 is now a seed); they are not amended here, and the sequence says that a
-pass which reopens one recuts it first. Retiring any of them to
-`docs/retired/` is the operator's act and is not taken.
+pass which reopens one recuts it first. None is retired: each keeps a reopening condition a pass can read, and
+moving one to `docs/retired/` gains nothing while that condition is
+still a live question.
 
-Review ladder. The twelve orders after WO-262 declare `Review ladder:
+Review ladder. The thirteen orders after WO-262 declare `Review ladder:
 paired`. Until WO-262 lands the line is inert and their executors run
 today's ladder.
 
 Role text. WO-262 is the one order that edits a role sentence before
 WO-264 removes the chain of baselines, and it mints one more by hand;
-WO-268, WO-270 and WO-271 follow WO-264 and write their sentences as rule
-records.
+WO-268, WO-270, WO-271 and WO-274 follow WO-264 and write their
+sentences as rule records.
 
 ## Register
 
@@ -359,8 +367,13 @@ decision and none with an observed failure; the result memo per gate
 task, whose condition occurred and which is declined again; and the
 thirteen candidates this pass nominates. The three rows that
 core recorded on 2026-10-24 for this mission (research the codebase, the
-initiative layout, one team fork) had waited on the operator carrying the
-need into a core pass in generic words; the messages above are that.
+initiative layout, one team fork) had waited on the operator carrying the need into a core pass in generic
+words; the messages above are that. A second batch, after the operator
+sent the decisions back, disposed four of the pass's own candidates again
+at their rewritten text: the records row allocated to WO-274, and the
+editions, product-path and second-platform rows deferred with conditions
+a pass can read. In sum twenty-five rows are allocated and seventeen
+deferred.
 
 ## Red tags
 
@@ -398,11 +411,21 @@ this pass carries the first thirteen.
 4. **The hook module split and one process an event.** The larger cut,
    which moves every refusal's evaluation at once. `usefulWhen`: WO-272's
    after-reading is recorded.
-5. **Evidence editions kept in place.** Reverses recorded decisions on
-   immutability. `usefulWhen`: the operator's word.
-6. **Dormant product paths out of the default gate.** A decision about
-   the product's direction. `usefulWhen`: the operator's word, or the
-   vertical row is the longest task after WO-263.
+5. **Evidence editions kept in place.** Declined for now. WO-273 fixes
+   the one edition most orders recorded again, the console's self-host
+   golden; the rest is storage, which the map's standing condition on
+   evidence bytes watches; and the change alters how a closed order's
+   evidence is read back, against recorded decisions on immutability, for
+   a saving nobody has measured. `usefulWhen`: after WO-273, two orders
+   stop on a stale edition, or that standing condition occurs.
+6. **Dormant product paths out of the default gate.** They stay. In
+   `docs/evidence/WO-255/repair-003/complete-gate.json` the vertical task
+   took 750 seconds and browser-evidence 26, a tenth of 7,791 seconds of
+   summed task time; neither row is exclusive; WO-273 replaces the
+   vertical's longest task with a table; and outside the default
+   selection the vertical's loop would have no end-to-end judge.
+   `usefulWhen`: an after reading of WO-263 or WO-273 shows the vertical
+   row as the longest task outside the exclusive rows.
 7. **The gate's remaining structure** (one case holding the host, lists
    written by hand, fail-fast). Keep-going on a first complete run was
    weighed and left: with the pins gone a run should seldom hide a second
@@ -410,8 +433,11 @@ this pass carries the first thirteen.
    three or more complete runs.
 8. **Tests shown to pin behavior.** `usefulWhen`: the work instance's
    first tests-only order.
-9. **A target order's records kept in the instance.** `usefulWhen`: the
-   operator's word.
+9. **A target order's records kept in the instance.** No longer a NoOp:
+   filed as WO-274 once the code was read. The records step is a
+   lifecycle step both publishes require, and the target's pull request
+   head is the records commit, so the choice needed an order and not a
+   convention. `usefulWhen`: WO-274 is withdrawn.
 10. **A planning source a pass runs.** `usefulWhen`: an owner's reader
     exists and naming its output is the friction.
 11. **Decisions as choices and the guide by rule.** The quality pass on a
@@ -420,8 +446,10 @@ this pass carries the first thirteen.
 12. **Role text judged by what a fresh reader does with it.**
     `usefulWhen`: the first role-text change after WO-264 whose effect
     the operator questions.
-13. **A second platform exercised.** `usefulWhen`: the operator's word,
-    or a teammate's machine that is not macOS.
+13. **A second platform exercised.** Not now: no host in the record is
+    another platform, and WO-265's report is how a new host says what it
+    lacks. `usefulWhen`: that report, or an instance's first run, comes
+    from a host that is not macOS.
 14. **A value for no review.** Reviewers found first-class defects in
     every order read, and no order without them exists to compare.
     `usefulWhen`: the paired rounds show reviewers finding nothing a
@@ -436,19 +464,22 @@ this pass carries the first thirteen.
 17. **Caching Git queries in release close.** The cost is in tests, and
     the close is the riskiest path. `usefulWhen`: a host where a close is
     measured slow.
-18. **Retiring the nine orders set down as not now.** The operator's act.
-    `usefulWhen`: the operator's word.
+18. **Retiring the nine orders set down as not now.** Not taken: each
+    keeps a reopening condition a pass can read, and a pass that reopens
+    one recuts it first. `usefulWhen`: a pass finds one whose condition
+    can no longer occur.
 19. **A model-identifier election ahead of the laptop's observation** was
     not held back: four reviews found the pins with no override and the
     budget alone warrants the choice, so WO-266 is filed.
 
 ## Sequence
 
-Thirteen orders, then nine not now. First the four that every later order
+Fourteen orders, then nine not now. First the four that every later order
 pays less for and that need nothing the work laptop's first run will
 report: the reviews (WO-262), the complete run (WO-263), the pins that
 fail it (WO-273) and the role text (WO-264). Then the work instance's, in
-the order a new instance meets them (WO-265, WO-261, WO-266 to WO-271),
+the order a new instance meets them (WO-265, WO-261, WO-266 to WO-269,
+WO-274, WO-270 and WO-271),
 and the hooks' cost last (WO-272), after the two orders that edit the
 same files. The first draft of this pass put the work instance's orders
 ahead of the four; its design review pointed out that eleven orders would
@@ -470,16 +501,19 @@ the complete run's present figures, and a rule on review size is added.
   instance's reader; §Document quality: the intake root holds the
   operator's messages, and a session's drafts and a tool's output go
   elsewhere.
-- `docs/planning/work-order-map.md`: this pass's paragraph, thirteen
+- `docs/planning/work-order-map.md`: this pass's paragraph, fourteen
   catalog rows and the candidates section.
 - `docs/lineage/idea-ledger.md`: the registration heading.
 
-Questions that are the operator's, recorded here and filed nowhere:
-whether a team's application repository should hold each target order's
-records; whether generated evidence editions may be kept in place;
-whether the vertical, resident and browser-evidence suites stay in the
-default gate; whether a second platform is to be exercised by continuous
-integration; and whether the nine orders set down as not now are retired.
+Decisions the first handoff returned to the operator. That handoff
+listed five questions as the operator's: where a target order's records
+go, how evidence editions are kept, which product suites the default gate
+runs, a second platform, and the retirement of the nine orders set down.
+The operator sent them back (message 11). Returning them was this pass's
+error against its own role rule, under which a phase owns its
+implementation decisions and records them with evidence and a reopening
+condition. Each is now decided: WO-274 is filed for the first, and NoOps
+5, 6, 13 and 18 record the others.
 
 ## Rules recorded
 

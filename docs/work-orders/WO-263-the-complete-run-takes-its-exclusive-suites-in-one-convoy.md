@@ -187,10 +187,11 @@ reading the next pass can take from the runs the lifecycle makes.
 3. A shard helper under `scripts/lib/` (new) exporting a `test` that reads
    the shard from the environment and registers a case only in its shard,
    and every case when no shard is named. `scripts/test-harness.mjs`,
-   `scripts/test-drive.mjs` and the seven test files the first imports
-   (`test-plan-first`, `test-plan-first-boundaries`, `test-dispatch-bound`,
-   `test-fixture-temporary`, `test-temporary-roots`, `test-target-harness`
-   and `test-observed-facts`): take `test` from the helper.
+   `scripts/test-drive.mjs` and the files the first imports that register
+   cases (`test-plan-first`, `test-plan-first-boundaries`,
+   `test-dispatch-bound`, `test-temporary-roots`, `test-target-harness`
+   and `test-observed-facts`; `test-fixture-temporary` registers none):
+   take `test` from the helper.
    `scripts/test-runner.mjs` (`expandSuiteTasks`, the `harness-fixtures`
    row and the source declarations that must name the new helper): a
    `shards` property on a row, expanded into tasks named
@@ -210,15 +211,7 @@ reading the next pass can take from the runs the lifecycle makes.
    their present order; the runner test that names the launchpad row's file
    order gains the same assertion for this row. Check: `npm test -- --only
    runner-fixtures` and `npm test -- --only target-worktree`.
-5. Run one fresh complete review run (the same command, the same idle
-   host) on the candidate and keep the same three readings under
-   `docs/evidence/WO-263/after.json`. From the two rows, record in the
-   decisions the walls, the minutes with at most three tasks running, the
-   hook suite's span, and for `harness-fixtures`, `process-debt` and
-   `worktree-integration` whether a light peer ran beside each; remove
-   `overlap` from a row beside which none ran in either row, and run
-   `npm test -- --only runner-fixtures` again if one is removed.
-6. `scripts/lib/planning-conditions.mjs` (the plain-gate condition and its
+5. `scripts/lib/planning-conditions.mjs` (the plain-gate condition and its
    per-task rows): read fresh passing complete rows of the review
    selection as well as the plain one, label each sample with its
    selection, and read a per-task row only for a task name the newest complete row
@@ -229,6 +222,14 @@ reading the next pass can take from the runs the lifecycle makes.
    Check: `npm test -- --only runner-fixtures`, `npm test -- --only
    launchpad-planning`, `npm test -- --only plan-refutation` and `npm test
    -- --only process-debt`.
+6. Run one fresh complete review run (the same command, the same idle
+   host) on the candidate and keep the same three readings under
+   `docs/evidence/WO-263/after.json`. From the two rows, record in the
+   decisions the walls, the minutes with at most three tasks running, the
+   hook suite's span, and for `harness-fixtures`, `process-debt` and
+   `worktree-integration` whether a light peer ran beside each; remove
+   `overlap` from a row beside which none ran in either row, and run
+   `npm test -- --only runner-fixtures` again if one is removed.
 7. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: product 07 §Preflight before the full gate (the
    scheduling paragraph: the exclusive rows' shared priority, the hook
@@ -252,14 +253,16 @@ conditions reading; the write-backs and the decisions.
    too, and behind a heavy row that failed last when no exclusive row
    failed. Check: `npm test -- --only runner-fixtures`.
 2. `expandSuiteTasks` returns one task for each shard of the
-   `harness-fixtures` row, the scheduling case admits those tasks together
+   `harness-fixtures` row, the row declares more than one shard unless
+   the decisions name each case title that failed when shards ran
+   together and the three runs that showed it, the scheduling case admits those tasks together
    with no task that is neither exclusive nor light beside them, and with
    no shard named in the environment `node --test --test-name-pattern
    <title> scripts/test-harness.mjs` runs the named case. Check: `npm test
    -- --only runner-fixtures`.
 3. `npm test -- --only harness-fixtures` passes, and the evidence lists
-   the titles declared by every file the row loads, the seven imported
-   files included, beside the titles the shard tasks ran, each title run
+   the titles declared by every file the row loads, the imported files
+   included, beside the titles the shard tasks ran, each title run
    once and the two lists equal.
 4. The expanded `target-worktree` group lists the close file's task first,
    and `npm test -- --only target-worktree` passes.
@@ -271,22 +274,26 @@ conditions reading; the write-backs and the decisions.
 6. Each of `harness-fixtures`, `process-debt` and `worktree-integration`
    either shows at least one light peer beside it in a comparison row,
    cited in the decisions, or no longer declares `overlap`.
-7. Given gate rows that hold one fresh passing complete row of the review
-   selection and none of the plain selection, `npm run plan -- conditions`
-   reports that row as the complete run's sample with its selection named,
-   and reports no per-task row for a task name the row does not hold.
+7. In the case of `scripts/test-runner.test.mjs` that builds the gate
+   rows the conditions reading takes, with one fresh passing complete row
+   of the review selection and none of the plain selection, the reading
+   reports that row as the complete run's sample with its selection
+   named, and reports no per-task row for a task name the row does not
+   hold. Check: `npm test -- --only runner-fixtures`.
 8. Product 07 §Preflight before the full gate states the exclusive rows'
    shared priority, the shards and the target-worktree file order and
-   links this order's decisions. Check: `npm run test:docs`.
+   links this order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
-**Preflight:** `npm test -- --only runner-fixtures` for steps 2 to 5;
+**Preflight:** `npm test -- --only runner-fixtures` for steps 2 to 4 and 6;
 `npm test -- --only harness-fixtures` for step 3; `npm test -- --only
 target-worktree` for step 4; `npm test -- --only runner-fixtures`, `npm test -- --only
 launchpad-planning`, `npm test -- --only plan-refutation` and `npm test --
---only process-debt` for step 6; the structural phase; the two fresh complete review runs of
-steps 1 and 5 are this order's evidence, and final review reuses the after
-row at an unchanged identity.
+--only process-debt` for step 5; the structural phase; the two fresh complete review runs of steps 1 and 6 are this order's
+evidence. The after run is made once every code edit is in the candidate,
+so final review reuses its row while the code identity is unchanged and
+makes its own run otherwise.
 
 **Evidence gate:** under `docs/evidence/WO-263/`: `before.json` and
 `after.json`; the two title lists of criterion 3 and the three successive
@@ -341,5 +348,5 @@ a suite that failed last keeps its lead; that two complete runs are an
 acceptable price for a comparison the guide requires; that the committed
 row of 2026-11-06 and the local series the 2026-11-08 pass read represent
 this host; and that a negative result (the after run no shorter, or a
-suite missing its deadline at every shard count above one) is recorded
-with its measurement and that part reverted, never tuned until it passes.
+suite missing its deadline at every shard count above one) is recorded with its measurement and left as the criteria state it for
+the next pass to judge, never tuned until it passes.

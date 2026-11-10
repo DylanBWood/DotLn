@@ -196,8 +196,8 @@ write-backs and the decisions.
    author fails without one and passes with one, and a malformed entry is
    refused when the configuration loads, naming its index.
 4. The kit guide states the team conventions, the two repositories' merge
-   methods and the author list, and links this order's decisions. Check:
-   `npm run test:docs`.
+   methods and the author list, and links this order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 5. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only target-worktree` for step 1;
@@ -229,10 +229,10 @@ reopening conditions in `docs/evidence/WO-269/decisions.md`.
   merge, matches no identity; `--merged-as` is its route and the decisions
   record how often the fixture's variants needed it.
 - Every target order's records are committed into the target's
-  documentation root. Whether a team's application repository should
-  hold them is the operator's decision, recorded by the 2026-11-09 pass
-  as a question; an option to keep them in the instance reopens on that
-  answer.
+  documentation root, and the target's pull request carries them.
+  [WO-274](WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md),
+  the next order, gives a registration the choice to keep them in the
+  instance; this order's conventions say only where the planner looks.
 - The identities in `contributions.authors` are committed in the
   instance's configuration, which is that instance's own repository.
 

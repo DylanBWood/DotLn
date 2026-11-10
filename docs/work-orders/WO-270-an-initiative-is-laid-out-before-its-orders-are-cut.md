@@ -37,7 +37,7 @@ grouping); WO-202 (closed: an instance's own planning pass); WO-268 (open: the a
 this order's template names them and does not need them to exist);
 WO-264 (open: it makes each shared rule a record that names its roles,
 and this order's sentence is such a record naming the planner).
-**Recommended placement:** eleventh, after WO-269. It is the second of the
+**Recommended placement:** twelfth, after WO-274. It is the second of the
 work instance's three jobs, and it is small.
 **Cites (read these sections):** `scripts/kit/workstream.template.md`;
 `scripts/lib/work-order-workstream.mjs` (`parseWorkstreamDocument`, which
@@ -146,11 +146,14 @@ planner's sentence; the recipe; the write-backs and the decisions.
    planned items with no order files passes `npm run work-orders -- index
    --check` and `npm run plan -- check`, and a member added to the marked
    block without an order file is refused as at the base.
-3. Every installed planner root carries step 3's sentence. Check: `node
-   scripts/harness.mjs check`.
+3. The emitted planner root carries step 3's sentence, by the rule-record
+   case of the skeleton suite (`npm test -- --only skeleton`), and `node
+   scripts/harness.mjs check` shows the installed roots equal the emitted
+   ones.
 4. The kit guide §Planning in this instance states the rolling way of
    planning and where the layout lives, and links this order's decisions.
-   Check: `npm run test:docs`.
+   The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 5. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only launchpad` for step 1; `npm test --

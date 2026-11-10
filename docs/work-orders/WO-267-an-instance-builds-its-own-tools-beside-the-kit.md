@@ -225,7 +225,8 @@ the kit guide's section; the cases; the write-backs and the decisions.
 7. The kit guide has the section step 6 names, stating the guarantee, the
    fragment, the configuration section, the listed outputs and each
    placement rule, and linking this order's decisions; product 07 states
-   the release rule. Check: `npm run test:docs`.
+   the release rule. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only launchpad` for step 1; `npm test --

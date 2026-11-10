@@ -5,10 +5,12 @@
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
 **Track:** machinery
 **Review ladder:** paired
-**Release classification:** patch. Tests and fixtures only: two registry
+**Release classification:** patch. Tests, fixtures and the scripts that check them: two registry
 files and their comparisons removed, one wrapper of time bounds removed,
 one golden fixture's input fixed, one class of end-to-end cases moved to
-a table over the function they exercise. No shipped behavior changes.
+a table over the function they exercise. The scripts this order edits ship in the kit, and no lifecycle command
+behaves differently in core or in a kit root: the console fixtures
+artifact is one of core's alone.
 Assigned at activation under the standing opt-out default.
 **Cost:** removes `scripts/fixtures/launchpad-cases.json` and
 `scripts/fixtures/target-worktree-cases.json` with the cases in
@@ -20,7 +22,7 @@ and with it the re-recording of `packages/console/fixtures/expected/selfhost.*`
 that most orders pay; and the full end-to-end loop that each statement
 wording in `scripts/test-vertical.mjs` runs today. Adds one check that no
 suite file declares a title twice; one fixed input for the self-host
-case; one table of wordings in `packages/compiler/test/story-contract.test.ts`.
+case; one table of wordings in `packages/skeleton/test/vertical-judgment.test.ts`.
 The complete run loses the vertical row's statement task as its longest
 task outside the exclusive rows; the measured before and after go in the
 decisions. No recurring work is added to a gate, a hook, a prune or a
@@ -119,8 +121,12 @@ by a check of the thing itself.
   no byte comparison, so the console is still exercised against live
   evidence. Rejected: dropping the self-host case (the axis is coverage:
   it is the one case built from a real order's evidence).
-- The wordings move to a table over `compileStoryContract`: one row a
-  wording, with the class and the judgment expected. The end-to-end file
+- The wordings move to a table over `compileStoryContract` and the
+  functions that judge its contract (`baselineClass` and
+  `baselineStoryClass` in `packages/skeleton/src/vertical.ts`), in the
+  skeleton test that already imports both: one row a wording, with the
+  statement role and the assertion kind the row supplies and the
+  classification expected. The end-to-end file
   keeps one case for each statement class and outcome, so the path from a
   story to a judged run is still walked. The executor records the list of
   wordings at the base and the table's rows as evidence that none was
@@ -131,8 +137,8 @@ by a check of the thing itself.
 1. `scripts/test-runner.test.mjs`, `scripts/test-runner.mjs` (the source
    lists that name them) and `scripts/fixtures/`: remove the two
    registries and the comparisons with them, keep those cases' scheduling
-   assertions, and add a case that fails when a suite file declares one
-   title twice. Check: `npm test -- --only runner-fixtures`.
+   assertions, and add a case that fails when a suite file's top-level registrations
+   declare one title twice. Check: `npm test -- --only runner-fixtures`.
 2. `scripts/test-target-publish.mjs`: remove `repairedCaseMs` and the
    wrapper, leaving each case's assertions and any deadline the case
    itself declares; record in the decisions the decision that added the
@@ -150,14 +156,17 @@ by a check of the thing itself.
    integration); `packages/console/test/board.test.ts`: run the
    property checks on the current edition as well, without a byte comparison. Check: `npm test -- --only console`, `npm test
    -- --only sync-fixtures` and `npm test -- --only worktree-integration`.
-4. `packages/compiler/test/story-contract.test.ts` and
-   `scripts/test-vertical.mjs`: record the statement cases' wordings at
-   the base under `docs/evidence/WO-273/wordings.json`; add the table
-   over `compileStoryContract` holding each; reduce the end-to-end file
+4. `packages/skeleton/test/vertical-judgment.test.ts` and
+   `scripts/test-vertical.mjs`: record under
+   `docs/evidence/WO-273/wordings.json` every wording the four statement
+   cases iterate at the base, with the statement role and assertion kind
+   each supplies; add the table that compiles each with
+   `compileStoryContract` and judges it with `baselineClass` and
+   `baselineStoryClass`; reduce the end-to-end file
    to one case for each statement class and outcome;
    `scripts/test-runner.mjs` (`VERTICAL_STATEMENT_PATTERN` and the
    vertical row's expansion): keep or merge the row's two tasks as the
-   remaining cases warrant. Check: `npm test -- --only compiler` and
+   remaining cases warrant. Check: `npm test -- --only skeleton` and
    `npm test -- --only vertical`.
 5. Write-backs, each replacing the sentence now wrong and linking this
    order's decisions: product 07 §Preflight before the full gate and
@@ -174,29 +183,41 @@ end-to-end cases; the write-backs and the decisions.
 
 **Acceptance criteria (all required)**
 
-1. `scripts/fixtures/` holds neither registry and no source file names
-   one; a suite file that declares one title twice fails the
-   duplicate-title case, naming the file and the title; `npm test --
+1. `scripts/fixtures/` holds neither registry and no file under
+   `scripts/` or `packages/` names one; a fixture suite file whose
+   top-level registrations declare one title twice fails the
+   duplicate-title case, naming the file and the title, and one that
+   repeats a title only inside a nested case or a fixture's text passes; `npm test --
    --only runner-fixtures` passes.
 2. `scripts/test-target-publish.mjs` holds no per-case time bound, and
    `npm test -- --only target-publish` passes.
-3. After a new feedback edition is minted in a scratch copy, `node
-   scripts/console-fixtures.mjs --check` passes with the self-host
-   expected files unchanged, and the console's property checks run on
-   that new edition.
-4. Every wording `docs/evidence/WO-273/wordings.json` lists is a row of
-   the table in `packages/compiler/test/story-contract.test.ts` with its
-   class and judgment, `scripts/test-vertical.mjs` keeps one end-to-end
-   case for each statement class and outcome, and `npm test -- --only
-   compiler` and `npm test -- --only vertical` pass.
+3. With a newer feedback edition selected than the one the self-host
+   case reads, the `console-fixtures` artifact that sync and the
+   structural phase check is current and
+   `packages/console/fixtures/expected/selfhost.*` keep their bytes,
+   where at the base that check fails naming the selected edition; and
+   `packages/console/test/board.test.ts` holds a case that loads the
+   edition `currentEvidence` selects and applies the property checks to
+   it with no byte comparison. `npm test -- --only console` and `npm test
+   -- --only sync-fixtures` pass.
+4. `docs/evidence/WO-273/wordings.json` lists every wording the four
+   statement cases of `scripts/test-vertical.mjs` iterate at this order's
+   base, which the verifier compares with that file at the base commit;
+   each is a row of the table in
+   `packages/skeleton/test/vertical-judgment.test.ts` with the statement
+   role and assertion kind it supplies and the classification kind and
+   rule it expects from `baselineClass` and `baselineStoryClass`;
+   `scripts/test-vertical.mjs` keeps one end-to-end case for each
+   statement class and outcome; and `npm test -- --only skeleton` and
+   `npm test -- --only vertical` pass.
 5. Product 07 states that case titles are checked for duplicates and not
-   against a registry, and links this order's decisions. Check:
-   `npm run test:docs`.
+   against a registry, and links this order's decisions. The verifier reads the
+   named section; `npm run test:docs` judges its links and form.
 6. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only runner-fixtures` for step 1;
 `npm test -- --only target-publish` for step 2; `npm test -- --only console`, `npm test -- --only sync-fixtures` and
-`npm test -- --only worktree-integration` for step 3; `npm test -- --only compiler` and `npm test --
+`npm test -- --only worktree-integration` for step 3; `npm test -- --only skeleton` and `npm test --
 --only vertical` for step 4; the structural phase; the complete run with
 `npm test -- --review` at final review.
 
@@ -226,7 +247,8 @@ reopening conditions in `docs/evidence/WO-273/decisions.md`.
 - Wall-clock assertions elsewhere in the suites are listed in the
   decisions as the executor meets them and are not removed by this order.
 
-**Non-goals:** any change to shipped code; the suites' deadlines; the
+**Non-goals:** any change to what a lifecycle command does in core or in
+a kit root; the suites' deadlines; the
 exclusive rows or the runner's schedule; the role baselines; deriving the
 runner's source lists; the mutation corpus; tests of the repository's own
 documents.
