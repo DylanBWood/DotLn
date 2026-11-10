@@ -565,8 +565,91 @@ Two things to do once you have taken it: run the work-order index refresh once, 
 
 ## Process cost
 
-Recorded at handoff, below Validation's last line.
+Model and effort: `claude-fable-5-2` at `max`, host-selected (the
+session's readback). Usage at 16:27:56Z on 2026-11-10, with the receipt
+filed, 2 h 46 min after the dispatch: 141,265,871 total tokens
+(139,005,571 cached input, 1,547,385 cache write, 712,379 output, 536
+input; source `claude-transcript-message-usage`, scope dispatch, cost
+unknown). The workers' tokens are not in it. The session's context
+filled once and it continued from a summary. Usage at entry was not
+kept.
+
+Workers: 17 uses against a cap of 20, every one a `dotln-worker`
+(`claude-opus-5-5` at `xhigh` by the generated definition; effective
+settings unverified): five research workers; five reviewers of the
+composed order; six re-tasks, each reviewer rechecking its own findings
+and one of them reading the words changed after that; and one refuter.
+The research workers took 0 h 14 min to 0 h 23 min each and ran
+together; their tokens were not kept. The reviewers took 0 h 23 min to
+0 h 28 min each in round one (348,849 to 427,012 tokens), 0 h 3 min to
+0 h 6 min each in their recheck (462,960 to 512,701 tokens with round
+one), and the last reading 0 h 2 min. The refuter took 0 h 12 min
+(181,995 tokens).
+
+What the time bought and what it did not. The research workers read
+WO-275's execution, the terms screen's callers and the instance's items
+against the code while the planner read the decisions, and the order's
+shape came from that. The review bought the most: the order as first
+composed would have stopped its executor at the first machinery suite
+after Part B's seventh step, since a judged feedback source had changed
+and no episode was due until the order's end; the lifecycle would have
+read no Preflight suite from it, since it reads the field's first
+paragraph; and a listed address or host and port would have stopped
+matching its own spelling under the narrower join rule. None of those
+was visible from the order's text alone. What the time did not buy is a
+measurement: nothing here says how long WO-276 will run, and the figure
+the pass can give is WO-275's, 8 h 52 min for one part and the start of
+another.
 
 ## Validation
 
-Recorded at handoff.
+- self-review: found 182; fixed 177; recorded 4; withdrawn by its
+  reviewer 1. Five reviewers read the composed order, none given
+  another's report: a criteria adversary (40 findings and 3 notes), a
+  design reviewer (39) and three consistency reviewers that read Parts
+  A, B and R (28), Parts C to I (25) and Parts J to Q (30) against the
+  tree; 34 were blocking by their reviewers' labels. Each was checked
+  against the code before the order changed. The same five rechecked
+  their findings on the recomposed order and named 13 further defects,
+  one of them blocking and reported by three of them: a live feedback
+  episode must follow each step that edits a judged source, and the
+  first repair had put it at each part's end. One reviewer then read
+  the words changed after that and named 3. The planner found one more
+  while closing a reviewer's open question, the index page's second data
+  comment. Recorded without a change: criterion Q5 is kept, since it
+  asks that two readings exist and names no figure; the four steps added
+  for the instance's asks stay after their parts' write-back steps, each
+  with its own write-back sentence, so that every carried label keeps
+  its number; the sentence that a pass reading fifteen paired rounds
+  sets the default is kept, with a known issue that this order's fifteen
+  are one order's; and each part's sync still mints edition revisions,
+  since the structural phase refuses a stale one. The criteria reviewer
+  withdrew its own claim that the structural `configuration-root` task
+  was owed on the Preflight lines.
+- Mechanical checks of the composed order, each by a script in session
+  scratch: the criteria are numbered 1 to 133 with unique labels; every
+  step and criterion a sentence names exists; the 217 paths it names
+  exist, or are evidence paths, or are files a step marks new; 122
+  identifiers named beside a file are in that file; the lifecycle's own
+  reader returns 36 suites from the Preflight field and each is in the
+  runner's table; and each part's Preflight line carries every machinery
+  suite the runner selects for the files its steps name, computed from
+  `machinerySources`.
+- Refutation:
+  [receipt 068](../refutations/2026-11-10-planning-da117019a9ace148-068.md),
+  one fresh `dotln-worker` judgment (the generated definition's pin,
+  `claude-opus-5-5` at `xhigh`; effective settings unverified) of the
+  committed subject: aligned with findings, no hold. Its thirteen known
+  issues are carried on WO-276's catalog row in the map, each with the
+  planner's reading and what reopens it. Two are the operator's
+  direction restated as a risk (an unmarked entry of an existing list
+  stops nothing after the release; one verification judges every part),
+  and none called for a change to the order.
+- `npm run test:docs`: recorded below at the handoff.
+- Outcome against the aim. The aim was one order that carries the
+  repairs, the queue, the reader consolidation and the instance's
+  fixable asks, written with every care the pass could bring. WO-276 is
+  that order, and it has been read by six independent workers and
+  corrected twice. What the pass cannot show is that its execution is
+  short: it is the operator's one cycle in place of fifteen, and how
+  long that cycle runs is unknown until it has run.
