@@ -362,16 +362,6 @@ reopening conditions in `docs/evidence/WO-262/decisions.md`.
   helper, so no second text is kept in step.
 - A fix after a failed final review follows the same fix rule; the final
   reviewer's own reviews are not this order's subject.
-- Criterion 2's check names the sentence case's file under
-  `packages/skeleton/src/`. The file is
-  `packages/skeleton/test/executor-supports.test.ts`, as step 2 names it;
-  the criterion's text was judged before the slip was found (receipt
-  067) and a later pass corrects it. The executor and the verifier read
-  the check at the file that exists.
-- An open order whose header has no `**Review ladder:**` line runs the
-  full ladder, as the Design says, and `index --check` does not refuse
-  it; criterion 4 does not say so, and the executor's case for the header
-  covers it (receipt 067).
 
 **Non-goals:** a check that reads a decision's or a report's prose, or
 that refuses a fix; a field in the review protocol; removing the readers
