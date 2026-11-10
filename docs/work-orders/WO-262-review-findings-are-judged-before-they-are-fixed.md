@@ -292,7 +292,7 @@ decisions.
 2. Every installed executor root under `.claude/skills/` and
    `.agents/skills/` carries the judgment rule, and no installed root
    carries the clause `Fix or record every finding`. Check: the case of
-   `packages/skeleton/test/executor-supports.test.ts` that reads the
+   `packages/skeleton/src/executor-supports.test.ts` that reads the
    emitted executor root (`npm test -- --only skeleton`); `node
    scripts/harness.mjs check` shows the installed roots equal the emitted
    ones.
@@ -305,8 +305,8 @@ decisions.
    that a paired round's reviewers are blind to one another. `npm run
    work-orders -- index --check` passes on an order whose header carries
    the line with each of the three values and shows the value on that order's card, refuses any other value on an open
-   order naming the order and the line, passes an open order whose header has no such line, which runs the
-   full ladder, and passes a closed order's file whatever its line holds.
+   order naming the order and the line, and passes a closed order's file
+   whatever its line holds.
 5. In the document fixture, `node scripts/docs-check.mjs` passes a current
    decision record whose `roundFindings` holds one entry of each class,
    fails naming the decision and the field on an entry whose class or
@@ -362,6 +362,16 @@ reopening conditions in `docs/evidence/WO-262/decisions.md`.
   helper, so no second text is kept in step.
 - A fix after a failed final review follows the same fix rule; the final
   reviewer's own reviews are not this order's subject.
+- Criterion 2's check names the sentence case's file under
+  `packages/skeleton/src/`. The file is
+  `packages/skeleton/test/executor-supports.test.ts`, as step 2 names it;
+  the criterion's text was judged before the slip was found (receipt
+  067) and a later pass corrects it. The executor and the verifier read
+  the check at the file that exists.
+- An open order whose header has no `**Review ladder:**` line runs the
+  full ladder, as the Design says, and `index --check` does not refuse
+  it; criterion 4 does not say so, and the executor's case for the header
+  covers it (receipt 067).
 
 **Non-goals:** a check that reads a decision's or a report's prose, or
 that refuses a fix; a field in the review protocol; removing the readers
