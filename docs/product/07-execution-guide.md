@@ -2196,6 +2196,15 @@ failures behind each are in the
   not measured is `unknown`, never assumed cheap
   ([the 2026-10-28 pass](../planning/passes/document-contract-and-release-close-2026-10-28.md);
   WO-236-D025).
+- No order, seed, role text or command the kit ships looks for, asks the
+  version of or calls an agent harness or model provider the instance has not
+  elected. Claude Code is the default host and the only one a new instance
+  has; another is used when the instance's configuration elects it or the
+  operator's dispatch names it, and an instruction to inspect every harness
+  installed is the defect this screen names (operator direction, 2026-11-09,
+  ignored capture SHA-256
+  `5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f`;
+  [WO-265-D001](../evidence/WO-265/decisions.md#wo-265-d001--claude-is-the-default-host-and-nothing-looks-for-another)).
 - An order that adds or tightens a refusal keyed to a host property (a
   tool's version, a platform, an account) names every host the record shows
   running the kit, this repository's and each one an instance's block or the

@@ -57401,6 +57401,30 @@
           "at": "2026-11-10T00:55:17.237Z"
         }
       ]
+    },
+    {
+      "id": "FUP-e4189f78a94f2893",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09::2bcd3bbba8ebf604eddc8272a0b556aeda0bef065064157c22883d1aeed469c2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "24369c56bcfd529395debb1c198ec720eaa083ecb3389c995aa6f7c1d2b377c4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-whole-plan-and-codebase-review-pass-recorded-2026-11-09",
+          "title": "What an operator meets in a new instance: its commands and what core should hear.",
+          "summary": "14. **What an operator meets in a new instance: its commands and what core should hear.** Requests of the operator from the work laptop's first cycle, made after this pass's receipt, which a published pass cannot turn into a new order. (a) The operator's commands for the release in hand. The one compact list is a section a planning pass wrote by hand for v0.120.1, stale since v0.121.0; the kit guide carries the commands inside its prose, and a release's notes carry Read before upgrading. A page generated from marked command blocks of the kit guide, shipped in every release, kept equal to the guide by the generated check and printed by one command in an instance, would end the hand-written li",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded from the operator's findings on the work laptop after this pass's receipt: a command page kept current with each release, and one fixed file in an instance for what core should hear, written by each final review and each planning pass. A published pass has had its one judgment and cannot add an order. [2026-11-09 whole plan and codebase review pass (docs/planning/passes/whole-plan-and-codebase-review-2026-11-09.md)]",
+          "reopenWhen": "The operator opens the pass for the work instance's findings; it cuts one order for these and the first order's hosts and places it first.",
+          "targets": [],
+          "at": "2026-11-10T02:46:15.622Z"
+        }
+      ]
     }
   ]
 }

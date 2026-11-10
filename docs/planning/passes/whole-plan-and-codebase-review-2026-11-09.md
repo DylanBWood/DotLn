@@ -27,8 +27,8 @@ The pass ran in Claude Code on `claude-fable-5-2` at `xhigh`
 `planning/2026-11-09-whole-plan-and-codebase-review` opened from clean
 `main` at `06c1ddc1a` (v0.122.1).
 
-During the pass the operator added fifteen messages, each captured unedited
-beside the dispatch (the same file name with `-midturn-1` to `-midturn-15`)
+During the pass the operator added twenty messages, each captured unedited
+beside the dispatch (the same file name with `-midturn-1` to `-midturn-20`)
 and journaled by the prompt hook. In paraphrase, with each capture's
 SHA-256, which is the journal's digest of the message:
 
@@ -95,6 +95,25 @@ SHA-256, which is the journal's digest of the message:
     still named a test file at a path the tree does not hold, and that a
     later pass should correct it. The operator objected: a pass does not
     make a defect and then leave it for someone else.
+13. A question (`66fa775cc670af2aaadf59cf327d3a52b1d42b845ca8d40f6c649e56d0258542`).
+    Whether the pull request could be merged. It could.
+14. The work laptop's first finding (`5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f`).
+    A new kit's first order had gone through every agent harness and
+    provider it knew of and made test calls. Claude is the default unless
+    the operator says otherwise, and nothing is to look for another
+    harness or call one, however small the call.
+15. The second (`394db09ac4b950c801bc9f06256bc9e1ac81e00c241e52a9f3c936f7bdb11e92`).
+    The command list in the 2026-11-07 pass document is workable by hand;
+    the operator asked whether one is kept current with each release,
+    without a planning pass to produce it.
+16. The third (`1eff9b69860dc02244d9ad75aee6f709dd955375917531fe4ec90cd76b674dc9`
+    and `06895d90d9cdfdb6f13e9132a22ecfe57aa7c1564d43ec12451fafa3e28288dd`).
+    The operator does not want to ask each instance for what core should
+    hear, nor to have passes heap text on their reader. One consistent,
+    findable place should hold it, for the operator and for any order or
+    pass that wants it, to be paraphrased or mailed from the work
+    machine. Planning passes have such a place; a final review should
+    write to one from what it observed.
 
 ## Readings
 
@@ -325,6 +344,18 @@ Filed:
 | WO-273 | The case-title registries, per-case time bounds and the golden that tracks the newest order leave; statement wordings judged in a table |
 | WO-274 | A registration says where a target order's records are filed; with `instance` they stay in the instance and the target's pull request is the reviewed commit alone |
 
+Amended after the receipt, each on the operator's direction and bound with
+`npm run plan -- amend-order`, with no new judgment. WO-262: the test file
+its second criterion names (WO-262-D001, message 12). WO-265: Claude is
+the default host, so the first order and the security seed ask about the
+hosts an instance elects and permit no invocation of a harness, the doctor
+reports the agent CLI of elected hosts only, and a discovery record no
+longer turns a host on (WO-265-D001, message 14). As filed, WO-265's
+doctor reported every agent CLI on the machine, which is the same looking
+the operator ruled out; the pass's reviews of the starter had read the
+first order's seed and not seen that it contradicts the Claude-only
+default WO-258 gave a clone.
+
 Screens. `npm run work-orders -- index --check` prints one criteria
 advisory for these orders: WO-265 criterion 4 names 16 GB, which is the
 injected host of a fixture and not a bound the order must meet. Each
@@ -506,7 +537,9 @@ the complete run's present figures, and a rule on review size is added.
   catalog row: a wrong statement of fact is not a known issue, the pass
   checks every path its orders name before `plan refute`, and an error of
   its own found after the receipt is corrected in the order before the
-  pass closes (message 12).
+  pass closes (message 12). Among that section's screens: no order, seed,
+  role text or command looks for or calls a host the instance has not
+  elected (message 14).
 - `docs/KIT.md` §Planning in this instance: the same rule, for the
   instance's reader; §Document quality: the intake root holds the
   operator's messages, and a session's drafts and a tool's output go
@@ -611,6 +644,16 @@ condition. Each is now decided: WO-274 is filed for the first, and NoOps
       "recordedAt": "2026-11-10T01:58:23.154Z"
     },
     "captureDigest": "sha256:e9baaba2af6587a90ef5aecabb3dcdeb43cef9cedfc7e4eedddf450dedf10b53"
+  },
+  {
+    "rule": "Claude Code is the default host and the only one a new instance has: no order, seed, role text or command the kit ships looks for, asks the version of or calls an agent harness or model provider the instance has not elected.",
+    "document": "docs/product/07-execution-guide.md",
+    "section": "Operator-opened planning pass",
+    "message": {
+      "sessionKey": "45064c49a54b49f9e68922eeb34de51da7074178f6ad2cf068a2c931a108b192",
+      "recordedAt": "2026-11-10T02:34:47.328Z"
+    },
+    "captureDigest": "sha256:5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f"
   }
 ]
 ```
@@ -704,5 +747,10 @@ checkout.
 - `npm run test:docs`: all 29 tasks passed at `52b92c1aa`, the commit
   before this section was written, and the gate is run again on the
   closing commit before publication.
+- After publication: the amendments WO-262-D001 and WO-265-D001, and the
+  map's candidate 14 for the operator's two further requests (messages 15
+  and 16), which need a new order and so the next pass. `npm run plan --
+  check` passes with the amendments bound, and the document gate is run
+  again on each closing commit.
 - Published by `node scripts/refute-plan.mjs publish` after this commit;
   the pull request's number is in the session's response.

@@ -7,8 +7,10 @@
 **Review ladder:** paired
 **Release classification:** minor. One new read-only command; one host
 check relaxed in a kit root; one advisory line in the update preview; one
-clearer compiler error; one seeded attributes file; the kit guide's first
-steps. No refusal is added or tightened. Assigned at activation under the
+clearer compiler error; one seeded attributes file; the seeded first order and the security seed
+ask about the hosts an instance elects and no other; a discovery record no
+longer turns a host on; the kit guide's first steps. No refusal is added or
+tightened. Assigned at activation under the
 standing opt-out default.
 **Cost:** adds `scripts/doctor.mjs` and `scripts/lib/host-doctor.mjs`; in
 `scripts/structural-checks.mjs` (`checkHost`) and
@@ -19,9 +21,15 @@ the incoming `package.json` at the revision and two version judgments;
 unmeasured, and measured by this order on the update fixture); in
 `scripts/lib/host-resources.mjs` (`nativeCompiler`, `nativeBinary`), a
 remedy in the compile error; `scripts/kit/gitattributes.template` and its
-entry in `KIT_TEMPLATE_FILES`; cases in the suites the Preflight names; the
-kit guide and the decisions. Removes these states: a host learning one
-unmet assumption per refused gate; an instance's gate refused on a machine
+entry in `KIT_TEMPLATE_FILES`; in `scripts/kit/first-order.template.md` and
+`scripts/kit/AI-HARNESS-SECURITY.template.md`, the elected hosts in place
+of every harness installed; cases in the suites the Preflight names; the
+kit guide and the decisions. Removes, from `scripts/lib/features.mjs`
+(`hostRecord`), the discovery record as a source that turns a host on.
+Removes these states: a new instance's first order looking for every agent
+harness on the machine and calling each; a host turned on because that
+order recorded its version; a host learning one unmet assumption per
+refused gate; an instance's gate refused on a machine
 whose per-lane memory is below the peak of a core-only suite it never runs;
 an update taken into a host its floors refuse, found at the next gate; a
 compiler error with no remedy. Tokens and wall-clock: unknown until this
@@ -41,7 +49,13 @@ instance's use is the mission of the next months (ignored captures SHA-256
 `b0d47c79b7177b1ba603220acaa9c9feaf219b0a59d03b074d7a0adbf48f11bb` and
 `04a12c3c90a61336651b1910af75c11abaa3c990c3e18427b3b8fa8efb33e3e3`); the
 host-refusal screen of product 07 §Operator-opened planning pass, written
-after v0.121.0 refused the work laptop at every gate.
+after v0.121.0 refused the work laptop at every gate; and the operator's
+direction of 2026-11-09, after a new instance's first order on the work
+laptop looked for and called harnesses that instance had not elected, that
+Claude is the default host and nothing looks for or calls another unless
+told to (ignored capture SHA-256
+`5f21df63b6d668b25ea93859af6a87396d5afed9c5d11d6ef34d1e27e54ee50f`;
+[WO-265-D001](../evidence/WO-265/decisions.md#wo-265-d001--claude-is-the-default-host-and-nothing-looks-for-another)).
 **Depends on:** WO-260 (closed, v0.122.1: the Git floor and its judgment
 this order's command reports); WO-258 (closed: the starter refresh that
 adds a seed a starter lacked). No open order.
@@ -59,17 +73,38 @@ this order's command.
 export's `addSeed` calls); `scripts/lib/starter-refresh.mjs` (the seed
 rules, read only); `scripts/lib/github-repository.mjs` (the origin parse and the `gh`
 proof); `scripts/bootstrap.mjs`; the kit guide §First steps and §Taking
-upstream updates; `scripts/kit/first-order.template.md`.
+upstream updates; `scripts/kit/first-order.template.md`;
+`scripts/kit/AI-HARNESS-SECURITY.template.md`; `scripts/lib/features.mjs`
+(`hostRecord`, `readHostFeatures`); `scripts/lib/feature-registry.mjs` (the
+`host-codex` and `host-copilot` rows); the kit guide §Features.
 
 **Objective:** A person on a machine the kit has never run on runs one
 command before installing anything and reads, in one table, every
 assumption the kit makes of that host and which are unmet, with the remedy
 for each. An instance's gate is not refused for memory a core-only suite
 needs. An update's preview says, before the merge, that the incoming
-release's floors refuse this host. Nothing in this order refuses a host.
+release's floors refuse this host. A new instance's first order inspects
+the host its session runs in and the hosts its configuration elects, and
+looks for or calls no other. Nothing in this order refuses a host.
 
 **Observed gap (dated 2026-11-09 at `main` `06c1ddc1a`, v0.122.1):**
 
+- The first order looks for every harness and calls each. The seed
+  `scripts/kit/first-order.template.md` permits one smoke invocation per
+  harness surface in its Authority, asks in its second checklist item for
+  each AI coding harness as installed, puts its audit questions to each
+  harness, and records each under `effortReadbackProbe.harnesses`. Since
+  v0.121.0 a clone starts Claude-only (WO-258-D003), and WO-258 edited
+  that seed and left the inspection in it. By the operator's report of
+  2026-11-09, a new instance's first order on the work laptop went
+  through the harnesses and providers it knew of and made test calls.
+  `scripts/kit/AI-HARNESS-SECURITY.template.md` asks in the same way for
+  the posture of each harness.
+- That inspection then turns the hosts on. `hostRecord` in
+  `scripts/lib/features.mjs` counts an observed version in
+  `docs/discovery/environment.json` as a record that shows a host, so a
+  first order that found another harness's CLI makes the next emit write
+  that host's surfaces with no election.
 - One refusal at a time. `requireDeclaredNode` in `scripts/harness.mjs`
   throws on the Node floor before it judges Git, and the host task of
   `scripts/structural-checks.mjs` prints Node, Git and memory but runs
@@ -127,13 +162,31 @@ release's floors refuse this host. Nothing in this order refuses a host.
   creation in a temporary directory; the effective line-ending conversion
   of the clone; the origin as a forge the publish helpers accept and the
   forge tool's presence; the platform, as exercised, designed for or
-  unsupported; and the presence and version of each agent CLI, reported
-  and never judged. The doctor and the host task call the same functions, the per-lane
+  unsupported; and the presence and version of the agent CLI of each host
+  this instance elects, which is Claude Code alone unless its
+  configuration elects another, reported and never judged. The command
+  looks for no other agent CLI. The doctor and the host task call the same functions, the per-lane
   comparison among them once step 3 has moved it into the library, so the
   two cannot disagree.
 - The output is generic. It prints versions, counts, sizes and yes or no,
   and no host name, user name or absolute path, so an operator can paste
   it into a planning dispatch from a managed machine.
+- Claude Code is the default host and the only one a new instance has.
+  The seeded first order inspects the host its session runs in and any
+  host that `features.host-codex` or `features.host-copilot` elects in
+  the instance's configuration. It names no other harness or provider,
+  looks for none on the machine, asks no version of one and permits no
+  invocation of any harness; the live smoke stays the instance's own
+  choice, as that order's third item says. Its discovery record and its
+  audit questions cover the elected hosts, and the security seed asks for
+  the posture of the same hosts. A discovery record no longer turns a
+  host on. An attestation in the instance's control log still does, since
+  a phase run under a host is the operator using it, and an election
+  decides either way. Rejected: keeping the inspection behind a question
+  to the operator (the axis is the default: nothing looks unless it is
+  told to). Rejected: ending inference from attestations as well (the
+  axis is what was explicit: an attested phase ran under that host on the
+  operator's own dispatch).
 - In a kit root the host check takes its peak over the tasks that root's
   gate carries. Core keeps its present sizing. Rejected: lowering the
   baseline for every root (the axis is what the check protects: core's
@@ -204,9 +257,27 @@ release's floors refuse this host. Nothing in this order refuses a host.
    names it, so the refresh adds it to a starter that has none and leaves
    one that exists. Check: `npm test
    -- --only launchpad`.
-7. Write-backs, each replacing the sentence now wrong and linking this
-   order's decisions: the kit guide §First steps (the command as the first
-   step, the compiler, the forge tool and the merge policy release close
+7. `scripts/kit/first-order.template.md` and
+   `scripts/kit/AI-HARNESS-SECURITY.template.md`: rewrite to the hosts of
+   the Design's fourth item the first seed's Authority, second checklist
+   item, audit questions, deliverable shape and second criterion, removing
+   the permitted smoke invocation, and the second seed's opening and its
+   paragraph on settings layers; the cases of
+   `scripts/test-launchpad-seeds.mjs`, `scripts/test-launchpad-planning.mjs`
+   and `scripts/test-launchpad-update.mjs` that read either seed change
+   with them. `scripts/lib/features.mjs` (`hostRecord`): drop the discovery
+   record from the rows that show a host and keep the attestations;
+   `scripts/resume.mjs` keeps reading that record for the attested host's
+   advisory. This repository's `dotln.config.json` elects each host its
+   own record shows only in the discovery file (`host-copilot` when WO-258
+   read it), so that its emitted surfaces do not change. Check: `npm test
+   -- --only launchpad`, `npm test -- --only launchpad-planning`, `npm
+   test -- --only configuration-root` and `node scripts/harness.mjs
+   check`.
+8. Write-backs, each replacing the sentence now wrong and linking this
+   order's decisions: the kit guide §Features (a discovery record shows no
+   host; an attestation or an election does) and §First steps (the first
+   order's hosts, the command as the first step, the compiler, the forge tool and the merge policy release close
    needs, and the three statements about hosts: macOS exercised, Linux and
    WSL2 designed for and not exercised, native Windows unsupported),
    §Taking upstream updates (the preview's floor lines);
@@ -217,7 +288,9 @@ release's floors refuse this host. Nothing in this order refuses a host.
 
 **Deliverables:** the command and its library; the kit-root host check;
 the preview's floor lines; the compiler error; the attributes seed; the
-cases; the write-backs and the decisions.
+first order and the security seed for elected hosts only; the host record
+without the discovery source; the cases; the write-backs and the
+decisions.
 
 **Acceptance criteria (all required)**
 
@@ -255,20 +328,38 @@ cases; the write-backs and the decisions.
    upstream updates names the preview's floor lines, each linking this
    order's decisions. The verifier reads the
    named section; `npm run test:docs` judges its links and form.
-9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+9. A fresh export's first order and security seed name no agent harness
+   or model provider other than Claude Code, permit no invocation of a
+   harness, and say that another host is inspected only when the
+   instance's configuration elects it; the seed cases refuse a first order
+   that holds the phrases `each AI coding harness` or `smoke invocation`,
+   and the verifier reads both seeds. With stand-in `codex` and `copilot`
+   commands first on the path that record every invocation, `node
+   scripts/doctor.mjs` prints the Claude CLI's row alone and runs neither
+   stand-in; with `features.host-codex` elected it prints that host's row
+   as well and runs that stand-in's version query alone.
+10. With a discovery record that holds observed versions of `codex-cli`
+    and `copilot-cli`, no election and no attestation, the feature
+    inventory reports both hosts off and the emit writes Claude's
+    surfaces alone; with an attestation under a host it reports that host
+    inferred, as at the base; and this repository's emitted surfaces are
+    the bytes they are at the base.
+11. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only runner-fixtures` for steps 1, 3 and 5;
-`npm test -- --only launchpad` for steps 2, 4 and 6; the structural
-phase; the complete run with
+`npm test -- --only launchpad` for steps 2, 4, 6 and 7; `npm test --
+--only launchpad-planning` and `npm test -- --only configuration-root` for
+step 7; the structural phase; the complete run with
 `npm test -- --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-265/`: the command's table and
 JSON on this host; criterion 2's three outputs; the kit-root and core host
-task outputs of criterion 4; the two previews of criterion 5 with the
-reading's time; `npm run resume -- status --json` after
+task outputs of criterion 4; the two previews of criterion 5 with the reading's time; the command's
+output with the stand-ins of criterion 9 and the two inventories of
+criterion 10; `npm run resume -- status --json` after
 `implementation-ready`.
 
-**Write-back duty:** as listed in step 7 and criterion 8; sources and
+**Write-back duty:** as listed in step 8 and criterion 8; sources and
 reopening conditions in `docs/evidence/WO-265/decisions.md`.
 
 **Known issues and carry-ins:**
@@ -279,6 +370,16 @@ reopening conditions in `docs/evidence/WO-265/decisions.md`.
   observed only by a session on that machine; the 2026-11-09 pass asks the
   operator for those observations in generic terms, and a row for any of
   them is added when a session can read it.
+- An instance that ran the earlier first order keeps the rows that order
+  wrote in its discovery record. After this order they turn no host on.
+  What the next emit does with surfaces an earlier emit wrote for such a
+  host is recorded by the executor, and the release's Read before
+  upgrading names the command. Until an instance takes this release it
+  sets `features.host-codex` and `features.host-copilot` to `false`,
+  which the kit respects today beside a record that shows the host.
+- The role skills name Codex as the other host a worker runs on when the
+  operator's dispatch line names it. That is an election by the
+  operator's own words and is unchanged.
 - The host task still exits 1 on one memory-pressure sample at `warning`;
   that behavior is unchanged here and is recorded for the pass that reads
   an instance's refusal on it.
@@ -292,14 +393,17 @@ reopening conditions in `docs/evidence/WO-265/decisions.md`.
   arrives keeps its working tree as it is; the release's Read before
   upgrading names the one command that renormalizes it.
 
-**Non-goals:** any new or tightened refusal; a model or effort election
+**Non-goals:** any new or tightened refusal; removing a host's support;
+inference from attestations; a model or effort election
 for an instance (the pass that reads the work laptop's observation decides
 it); detecting hooks blocked by a managed policy; continuous integration;
 support for native Windows; the memory-pressure sample rule; the Git
 surface check.
 
-**Operator-review assumptions:** that a report which refuses nothing is
-what a new host needs first, and that the existing gates remain the
+**Operator-review assumptions:** that a host the operator has not elected
+is never looked for, asked its version or called, by an order, a seed or
+a command; that a report which refuses nothing is what a new host needs
+first, and that the existing gates remain the
 refusals; that output free of host names, user names and paths may be
 pasted from a managed machine into a planning dispatch; that an instance's
 gate should be sized by the tasks it runs; and that stating Linux and WSL2
