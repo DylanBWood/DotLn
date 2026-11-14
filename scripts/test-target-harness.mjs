@@ -4,8 +4,8 @@ import {
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
 import { runGit } from "./lib/git.mjs";
-import { write, sha256Hex as digest } from "./lib/helpers.mjs";
-import test from "node:test";
+import { json, write, sha256Hex as digest } from "./lib/helpers.mjs";
+import test from "./lib/test-shards.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 
@@ -30,8 +30,12 @@ import {
   checkTargetHarness,
   removeTargetHarness,
   runtimeModuleDirectory,
+  SETTINGS_FRAGMENT,
 } from "./lib/harness.mjs";
-import { compileFeedbackUnits } from "../packages/compiler/dist/src/index.js";
+import {
+  compileFeedbackUnits,
+  fnv1a64,
+} from "../packages/compiler/dist/src/index.js";
 import { personalFeedbackUnits } from "../packages/skeleton/dist/src/loadouts/feedback.js";
 import { targetWorkerProfiles } from "../packages/skeleton/dist/src/loadouts/contributor.js";
 import {
@@ -189,13 +193,9 @@ for (const unrelated of [false, true])
       const installed = JSON.parse(
         readFileSync(join(f.target, manifestPath), "utf8"),
       ).installed;
-      assert.equal(installed.length, 7);
-      assert.equal(
-        installed.filter(
-          (file) => file.path === ".claude/hooks/presence-pretooluse.mjs",
-        ).length,
-        1,
-      );
+      // The bundle holds no presence hook (WO-276 criterion Q1).
+      assert.equal(installed.length, 6);
+      assert.ok(installed.every((file) => !file.path.includes("/presence-")));
       assert.deepEqual(
         Object.keys(tree(f.target)).sort(),
         [...Object.keys(before), ...installed.map((file) => file.path)].sort(),
@@ -220,7 +220,7 @@ for (const unrelated of [false, true])
         ),
         "",
       );
-      assert.equal(checkTargetHarness(f.target, f.options).files, 7);
+      assert.equal(checkTargetHarness(f.target, f.options).files, 6);
       const post = tree(f.target);
       emitTargetHarness(f.target, f.options);
       assert.deepEqual(tree(f.target), post);
@@ -305,7 +305,7 @@ test("WO-049 removal preserves appended user rules and refuses duplicate exclude
         .filter((line) => line === "/CLAUDE.local.md").length,
       1,
     );
-    assert.equal(checkTargetHarness(f.target, f.options).files, 7);
+    assert.equal(checkTargetHarness(f.target, f.options).files, 6);
     removeTargetHarness(f.target, f.options);
     assert.equal(readFileSync(exclude, "utf8"), revised);
 
@@ -326,36 +326,228 @@ test("WO-049 removal preserves appended user rules and refuses duplicate exclude
   }
 });
 
+// Makes a fresh installation the one a compiler wrote while a target's bundle
+// held a presence hook: the file is there, and the manifest, the launchpad's
+// receipt of it and the exclude block with its registry all name it.
+const earlierPresenceHook = ".claude/hooks/presence-pretooluse.mjs";
+function installedWithPresenceHook(f) {
+  const hash = (text) => `fnv1a64:${fnv1a64(text)}`;
+  const contents = "// The presence hook of an earlier bundle.\n";
+  write(f.target, earlierPresenceHook, contents);
+  const manifestFile = join(f.target, manifestPath);
+  const payload = JSON.parse(readFileSync(manifestFile, "utf8"))
+    .installed.filter((file) => file.path !== manifestPath)
+    .concat({ path: earlierPresenceHook, hash: hash(contents) });
+  const manifestText = json({
+    installed: [
+      ...payload,
+      { path: manifestPath, hash: hash(json({ installed: payload })) },
+    ],
+  });
+  writeFileSync(manifestFile, manifestText);
+  const receiptFile = join(f.lane, "installation.json");
+  writeFileSync(
+    receiptFile,
+    json({
+      ...JSON.parse(readFileSync(receiptFile, "utf8")),
+      manifestHash: hash(manifestText),
+    }),
+  );
+  const excludes = join(f.launchpad, "docs/control/local/harness/excludes");
+  const names = readdirSync(excludes);
+  assert.equal(names.length, 1);
+  const registryFile = join(excludes, names[0]);
+  const registry = JSON.parse(readFileSync(registryFile, "utf8"));
+  const members = Object.keys(registry.members);
+  assert.equal(members.length, 1);
+  registry.members[members[0]].push(`/${earlierPresenceHook}`);
+  const lines = registry.block.split("\n");
+  const block = [
+    lines[0],
+    ...[...lines.slice(1, -2), `/${earlierPresenceHook}`].sort(),
+    lines.at(-2),
+    "",
+  ].join("\n");
+  const exclude = join(f.target, ".git/info/exclude");
+  const before = readFileSync(exclude, "utf8");
+  assert.equal(before.split(registry.block).length, 2);
+  writeFileSync(exclude, before.split(registry.block).join(block));
+  writeFileSync(registryFile, json({ ...registry, block }));
+}
+
+test("WO-276 criterion Q1: a target installed while its bundle held a presence hook verifies, is replaced without the hook and is removed", () => {
+  const f = fixture();
+  try {
+    const before = tree(f.target);
+    const exclude = join(f.target, ".git/info/exclude");
+    const original = readFileSync(exclude, "utf8");
+    emitTargetHarness(f.target, f.options);
+    const current = tree(f.target);
+    installedWithPresenceHook(f);
+    assert.equal(checkTargetHarness(f.target, f.options).files, 7);
+    // The next emission owns the earlier installation's files, and removes
+    // the one its bundle no longer holds.
+    emitTargetHarness(f.target, f.options);
+    assert.deepEqual(tree(f.target), current);
+    assert.equal(checkTargetHarness(f.target, f.options).files, 6);
+    assert.ok(!readFileSync(exclude, "utf8").includes(earlierPresenceHook));
+    // Removed without an emission between, the earlier installation leaves
+    // nothing behind, the presence hook included.
+    installedWithPresenceHook(f);
+    assert.equal(removeTargetHarness(f.target, f.options).files, 7);
+    assert.deepEqual(tree(f.target), before);
+    assert.equal(readFileSync(exclude, "utf8"), original);
+  } finally {
+    rmSync(f.base, { recursive: true, force: true });
+  }
+});
+
 test("WO-049 target hooks execute pinned runtime, enforce boundary, keep state off target and fail closed", () => {
   const f = fixture();
   try {
     emitTargetHarness(f.target, f.options);
     const after = tree(f.target);
+    // A target's bundle holds no observer hook, so its permission hook carries
+    // the heartbeat, once a call and after its decision, and the other two
+    // hooks carry none (WO-276 criterion Q2).
     const presenceStore = join(f.launchpad, ".runtime/presence");
+    const bound = {
+      DOTLN_RESIDENT_STORE: presenceStore,
+      DOTLN_RESIDENT_EPISODE_ID: "fixture-episode",
+    };
+    const heartbeats = () =>
+      existsSync(presenceStore)
+        ? new ResidentStore(presenceStore)
+            .read()
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => JSON.parse(line))
+            .filter(
+              (event) =>
+                event.type === "OperatorPresenceObserved" &&
+                event.payload.signal.kind === "heartbeat",
+            )
+        : [];
+    assert.deepEqual(invoke(f, "permissions", {}, "fixture-writer", bound), {});
     assert.deepEqual(
-      invoke(f, "presence-pretooluse", {}, "fixture-session", {
-        DOTLN_RESIDENT_STORE: presenceStore,
-        DOTLN_RESIDENT_EPISODE_ID: "fixture-episode",
-      }),
-      {},
+      heartbeats().map((event) => [
+        event.payload.signal.event,
+        event.payload.signal.sessionId,
+        event.payload.stamp,
+      ]),
+      [["PreToolUse", "fixture-writer", { episodeId: "fixture-episode" }]],
     );
     const resident = replayResident(new ResidentStore(presenceStore).read())
       .state.resident;
     assert.equal(resident.actors["episode:fixture-episode"].status, "live");
     assert.equal(resident.present, true);
     assert.deepEqual(tree(f.target), after, "heartbeat state stays off target");
+    // The heartbeat decides nothing: with it recorded a refusal is still made.
+    assert.ok(
+      denied(
+        invoke(
+          f,
+          "permissions",
+          { name: "Bash", input: { command: "git push origin HEAD" } },
+          "fixture-writer",
+          bound,
+        ),
+      ),
+    );
+    assert.equal(heartbeats().length, 2);
+    // A heartbeat that fails (its store is a file) allows what the hook
+    // allows and refuses what it refuses, and says so on standard error.
+    const broken = { DOTLN_RESIDENT_STORE: join(f.target, "source.txt") };
     assert.deepEqual(
-      invoke(f, "presence-pretooluse", {}, "fixture-session", {
-        DOTLN_RESIDENT_STORE: join(f.target, "source.txt"),
-      }),
+      invoke(f, "permissions", {}, "fixture-writer", broken),
       {},
       "heartbeat failure cannot introduce a permission decision",
+    );
+    assert.ok(
+      denied(
+        invoke(
+          f,
+          "permissions",
+          { name: "Bash", input: { command: "git push origin HEAD" } },
+          "fixture-writer",
+          broken,
+        ),
+      ),
+      "heartbeat failure cannot remove a permission decision",
+    );
+    const advised = spawnSync(
+      process.execPath,
+      [join(f.target, ".claude/hooks/permissions.mjs")],
+      {
+        cwd: f.target,
+        encoding: "utf8",
+        env: { ...process.env, CLAUDE_PID: String(process.pid), ...broken },
+        input: JSON.stringify({
+          hook_event_name: "PreToolUse",
+          cwd: f.target,
+          session_id: "fixture-writer",
+          tool_name: "Write",
+          tool_input: {
+            file_path: join(f.target, "allowed.txt"),
+            content: "allowed\n",
+          },
+        }),
+        timeout: 10000,
+      },
+    );
+    assert.equal(advised.status, 0, advised.stderr);
+    assert.equal(advised.stdout, "{}");
+    assert.match(
+      advised.stderr,
+      /DotLn advisory: presence heartbeat unavailable/,
     );
     assert.deepEqual(
       tree(f.target),
       after,
       "failed heartbeat preserves target files",
     );
+    // The writer hook and the attribution hook run beside the permission hook
+    // for a shell command; the heartbeat is the permission hook's alone.
+    const count = heartbeats().length;
+    invoke(
+      f,
+      "concurrent-work-requires-worktrees",
+      {},
+      "fixture-writer",
+      bound,
+    );
+    invoke(
+      f,
+      "no-attribution",
+      { name: "Bash", input: { command: "git commit -m 'A plain message'" } },
+      "fixture-writer",
+      bound,
+    );
+    assert.equal(heartbeats().length, count);
+    // An input the hook refuses to read (it names no directory) is denied,
+    // and still names its session: the heartbeat is recorded for it, as the
+    // presence hook, which read no more than the event and the session,
+    // recorded it.
+    const unread = spawnSync(
+      process.execPath,
+      [join(f.target, ".claude/hooks/permissions.mjs")],
+      {
+        cwd: f.target,
+        encoding: "utf8",
+        env: { ...process.env, CLAUDE_PID: String(process.pid), ...bound },
+        input: JSON.stringify({
+          hook_event_name: "PreToolUse",
+          session_id: "fixture-writer",
+          tool_name: "Write",
+          tool_input: { file_path: join(f.target, "allowed.txt") },
+        }),
+        timeout: 10000,
+      },
+    );
+    assert.equal(unread.status, 0, unread.stderr);
+    assert.ok(denied(JSON.parse(unread.stdout)));
+    assert.equal(heartbeats().length, count + 1);
+    assert.deepEqual(tree(f.target), after);
     assert.deepEqual(invoke(f, "permissions", {}), {});
     assert.ok(
       denied(
@@ -448,12 +640,7 @@ test("WO-049 target hooks execute pinned runtime, enforce boundary, keep state o
     for (const [path, contents] of Object.entries(after))
       for (const line of contents.split("\n")) {
         if (line.includes("file://"))
-          assert.match(
-            line,
-            /recordHarnessHeartbeat/.test(line)
-              ? /^const .*await import\("file:\/\//
-              : /^const .*await import\(new URL\("file:\/\//,
-          );
+          assert.match(line, /^const .*await import\(new URL\("file:\/\//);
         else assert.ok(!line.includes(f.base), `${path} leaked path`);
       }
     const receipt = JSON.parse(
@@ -581,6 +768,71 @@ test("WO-049 target ignore negations refuse before installation and are detected
       () => checkTargetHarness(f.target, f.options),
       /ignore rule exposes/,
     );
+  } finally {
+    rmSync(f.base, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion K3: a target worktree's emitted settings hold the launchpad's settings fragment as the launchpad's own do, its check passes on them, a fragment the merge refuses stops the emit before anything is written, and with the fragment removed the emit writes the bytes it writes with none", () => {
+  const f = fixture();
+  const settingsFile = join(f.target, ".claude/settings.json");
+  try {
+    emitTargetHarness(f.target, f.options);
+    const bare = readFileSync(settingsFile, "utf8");
+    const kit = JSON.parse(bare);
+    const hook = {
+      matcher: "Edit|Write",
+      hooks: [{ type: "command", command: "instance-after-edit", timeout: 30 }],
+    };
+    const rule = "Bash(instance-deploy *)";
+    write(
+      f.launchpad,
+      SETTINGS_FRAGMENT,
+      JSON.stringify({
+        hooks: { PostToolUse: [hook] },
+        permissions: { deny: [rule], allow: ["Bash(instance-report *)"] },
+      }),
+    );
+    emitTargetHarness(f.target, f.options);
+    checkTargetHarness(f.target, f.options);
+    const merged = JSON.parse(readFileSync(settingsFile, "utf8"));
+    // Every entry the kit emits for a target worktree, then the fragment's.
+    assert.deepEqual(merged.hooks.PreToolUse, kit.hooks.PreToolUse);
+    assert.deepEqual(merged.hooks.PostToolUse, [hook]);
+    assert.deepEqual(merged.permissions.deny, [...kit.permissions.deny, rule]);
+    assert.deepEqual(merged.permissions.allow, ["Bash(instance-report *)"]);
+    for (const key of Object.keys(kit))
+      if (!["hooks", "permissions"].includes(key))
+        assert.deepEqual(merged[key], kit[key], key);
+    // The bundle stays out of the target's Git view with the fragment in it.
+    assert.equal(
+      runGit(f.target, ["status", "--porcelain"], fixtureGitOptions),
+      "",
+    );
+    // A refused fragment stops the emit and leaves the installed bundle.
+    const installed = tree(f.target);
+    write(f.launchpad, SETTINGS_FRAGMENT, JSON.stringify({ env: { A: "1" } }));
+    assert.throws(
+      () => emitTargetHarness(f.target, f.options),
+      /invalid settings fragment in \.claude\/settings\.instance\.json: unknown key env/u,
+    );
+    write(
+      f.launchpad,
+      SETTINGS_FRAGMENT,
+      JSON.stringify({ hooks: { PreToolUse: [hook] } }),
+    );
+    assert.throws(
+      () => emitTargetHarness(f.target, f.options),
+      /hooks\.PreToolUse: a fragment adds no hook under PreToolUse/u,
+    );
+    assert.deepEqual(tree(f.target), installed);
+    checkTargetHarness(f.target, f.options);
+    // With no fragment, the bytes a launchpad that never held one emits.
+    unlinkSync(join(f.launchpad, SETTINGS_FRAGMENT));
+    emitTargetHarness(f.target, f.options);
+    checkTargetHarness(f.target, f.options);
+    assert.equal(readFileSync(settingsFile, "utf8"), bare);
+    removeTargetHarness(f.target, f.options);
   } finally {
     rmSync(f.base, { recursive: true, force: true });
   }

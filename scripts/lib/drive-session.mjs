@@ -12,7 +12,9 @@ import { pathToFileURL } from "node:url";
 import { docPath, loadConfig } from "./config.mjs";
 import { latestActivationAt, readControl } from "./control-store.mjs";
 import {
+  currentDrivenLimits,
   dispatchEvents,
+  drivenSubagentLimits,
   dispatchPhase,
   effectiveDispatchLimits,
 } from "./dispatch-bound.mjs";
@@ -33,6 +35,7 @@ import { readBudgets } from "./process-budget.mjs";
 import { phaseWorkerNotes } from "./drive-prompts.mjs";
 import { driveHost, launchRole } from "./drive-worker.mjs";
 import { shellQuote } from "./git.mjs";
+import { modelKeyNote, resolveLaunch } from "./worker-launch.mjs";
 import {
   commandFailed,
   deadlineRefusal,
@@ -154,11 +157,7 @@ export async function phaseDefinition(launchpad, role, host = "claude") {
     runtimeRoot: launchpad,
     overlay: readBuildOverlay(launchpad),
   });
-  const {
-    contributorConfiguredProgram,
-    contributorVerifierEffort,
-    contributorWorkerPins,
-  } = await import(
+  const { contributorConfiguredProgram } = await import(
     pathToFileURL(
       join(launchpad, "packages/skeleton/dist/src/loadouts/contributor.js"),
     )
@@ -167,12 +166,19 @@ export async function phaseDefinition(launchpad, role, host = "claude") {
     pathToFileURL(join(launchpad, "packages/compiler/dist/src/harness.js"))
   );
   const workers = contributorConfiguredProgram().workers;
+  // What a phase runs on this host, from the launchpad's worker table: the
+  // default worker, and the verifier worker for an independent
+  // verification.
+  const runs = (worker) =>
+    resolveLaunch(launchpad, worker, { provider: host, flag: "the worker" });
+  const phase = runs(role === "verifier" ? "verifier" : "default");
+  const pin = ({ model, effort }) => ({ model, effort });
   const name = `dotln-${role}`;
   const selected =
     role === "router"
       ? {
           name,
-          ...contributorWorkerPins[host],
+          ...pin(phase),
           skills: ["dotln-router"],
           body: "Use the preloaded router skill. The entire input is the drive phrase. Do not read an order, diff, report or worker narrative.",
         }
@@ -186,9 +192,10 @@ export async function phaseDefinition(launchpad, role, host = "claude") {
       skills,
       ...definition
     } = workerSpecification(worker);
-    Object.assign(definition, contributorWorkerPins[host]);
-    if (worker.name === "dotln-verifier")
-      definition.effort = contributorVerifierEffort;
+    Object.assign(
+      definition,
+      pin(worker.name === name ? phase : runs("default")),
+    );
     definition.prompt += skills
       .map(
         (skill) =>
@@ -203,6 +210,9 @@ export async function phaseDefinition(launchpad, role, host = "claude") {
     name,
     definition: adapt(selected),
     helpers: { [helper.name]: adapt(helper) },
+    // Where the instance wrote the phase's model, or null where the kit's
+    // list supplied it; a launch that fails names it.
+    modelKey: phase.modelKey,
   };
 }
 
@@ -426,8 +436,8 @@ export function attemptTimeLimit(record, budgets, route, events, requested) {
  * per drive: the spawn cap and the descendant ceiling, the phase timeout and
  * the router's own token and dollar limits. The record stores exactly this,
  * so a reader proof that observes it observes the drive's own reads. */
-export function driveLimits(budgets) {
-  const { cap, ceiling } = subagentLimits(budgets);
+export function driveLimits(budgets, events = []) {
+  const { cap, ceiling } = drivenSubagentLimits(budgets, events);
   return {
     subagentCap: cap,
     drivenSessionCeiling: ceiling,
@@ -436,17 +446,6 @@ export function driveLimits(budgets) {
     costUsd: budgets?.dispatches.router.costUsd ?? null,
     costScope: "phase-workers",
   };
-}
-
-function subagentLimits(budgets) {
-  const cap = budgets?.subagentCap === undefined ? 20 : budgets.subagentCap;
-  const ceiling =
-    budgets?.drivenSessionCeiling === undefined
-      ? cap === null
-        ? null
-        : cap * 4
-      : budgets.drivenSessionCeiling;
-  return { cap, ceiling };
 }
 
 // A new worker holds nothing yet, so any holder in its worktrees is another.
@@ -551,16 +550,7 @@ function admitWorker(drive, worker) {
 }
 
 function workerObservers(drive, { worker, route, context }) {
-  const {
-    record,
-    saveRecord,
-    budget,
-    trees,
-    directory,
-    session,
-    cap,
-    ceiling,
-  } = drive;
+  const { record, saveRecord, budget, trees, directory, session } = drive;
   const observedChildren = new Set();
   const observedSpawners = new Map();
   return {
@@ -627,6 +617,8 @@ function workerObservers(drive, { worker, route, context }) {
         directory,
         session,
       ).count;
+      // Read now: an acceptance recorded since this worker began counts.
+      const { cap, ceiling } = drive;
       if (
         (ceiling !== null && total > ceiling) ||
         (cap !== null && spawned.size > cap)
@@ -739,7 +731,7 @@ async function launchAttempt(drive, route, before) {
   if (unenforceable) return { refused: unenforceable };
   elapsed = expired();
   if (elapsed) return elapsed;
-  const { name, definition, helpers } = await phaseDefinition(
+  const { name, definition, helpers, modelKey } = await phaseDefinition(
     route.launchpad,
     route.role,
     workerHost,
@@ -810,6 +802,11 @@ async function launchAttempt(drive, route, before) {
       saveRecord();
       return result;
     }
+    // A worker that started and failed may have been refused its model:
+    // its failure says where the model was named. A refusal made before any
+    // process started (a deadline, the cap) is not about the model.
+    if (result.error && result.refused)
+      result.refused += modelKeyNote(definition.model, modelKey);
     if (workerHost === "codex" && result.workerStarted !== false) {
       // The transport's refusal is the more specific: entry never replaces it.
       const { refused } = result;
@@ -833,6 +830,9 @@ async function launchAttempt(drive, route, before) {
       harness,
       observedChildren,
     });
+    // The record says where the model came from: the configuration key, or
+    // null where the compiled table supplied it.
+    result.selectedModelKey = modelKey;
     if (
       result.costUsd !== null &&
       remainingUsd !== null &&
@@ -897,7 +897,7 @@ async function runDriveUnlocked(
   // The election is read once per drive and reaches every phase launch.
   const sandbox = loadConfig(trees.launchpad).drive.sandbox;
   const budgets = readBudgets(trees.launchpad);
-  const { cap, ceiling } = subagentLimits(budgets);
+  const accepted = dispatchEvents(trees.launchpad, order);
   const session = previous?.session ?? randomUUID();
   const directory = docPath(trees.main, "control", "local/drives", order);
   mkdirSync(directory, { recursive: true, mode: 0o700 });
@@ -948,7 +948,7 @@ async function runDriveUnlocked(
     incomplete: factsCurrent ? old.incomplete : {},
     factsAt: initialStatus.route.eventCount,
     sandbox,
-    limits: driveLimits(budgets),
+    limits: driveLimits(budgets, accepted),
     routerUsage: {
       totalTokens: null,
       costUsd: null,
@@ -978,8 +978,14 @@ async function runDriveUnlocked(
     budget,
     directory,
     session,
-    cap,
-    ceiling,
+    // The two limits are read at each use, never once a drive: a cap the
+    // operator accepts while the drive runs reaches the launches after it.
+    get cap() {
+      return currentDrivenLimits(trees.launchpad, order).cap;
+    },
+    get ceiling() {
+      return currentDrivenLimits(trees.launchpad, order).ceiling;
+    },
     workerHost,
     sandbox,
     signal,

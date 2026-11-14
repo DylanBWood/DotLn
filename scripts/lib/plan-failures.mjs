@@ -2,7 +2,7 @@ import { dispatchBoundActivity } from "./dispatch-bound.mjs";
 import { json as encode, sha256Hex } from "./helpers.mjs";
 import { docPath, docRelative } from "./config.mjs";
 import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 
 import { controlPaths } from "./control.mjs";
 import { readControl } from "./control-store.mjs";
@@ -21,6 +21,9 @@ import { parseHeader } from "../work-orders.mjs";
 import { measuredFindingCounts } from "./review-findings.mjs";
 import { historicalDependencyIds } from "./dependencies.mjs";
 import { CLOSE_BLOCKER_CLASSES } from "./release-steps.mjs";
+import { pairedRounds } from "./round-findings.mjs";
+import { reviewLadderLines } from "./work-order-document.mjs";
+import { workOrderAuthorityFiles } from "./paths.mjs";
 
 // What failed since the pass before, folded from the public record:
 // the control logs, the planning control log and the structured decisions.
@@ -1311,6 +1314,84 @@ export function operationalFailures(root, control, includes) {
   };
 }
 
+/** The paired rounds on record: every order whose header declares a paired
+ * ladder, open or settled, and whose decisions hold a round's findings, with
+ * each round's counts, the order's first verification and the sums. It is
+ * not windowed: the pass that sets the default reads every paired round. */
+export function pairedRoundReport(root, record = failureRecord(root)) {
+  const decisions = readDecisions(root);
+  const first = new Map(
+    record.facts
+      .filter((fact) => fact.fact === "first-verification")
+      .map((fact) => [fact.order, fact.failed ? "fail" : "pass"]),
+  );
+  // The orders are the ones every reader of the orders enumerates: the
+  // catalog's and its derived child's, by identifier.
+  const orders = workOrderAuthorityFiles(root)
+    .map((path) => ({
+      path,
+      workOrder: /^(WO-\d{3})-.+\.md$/u.exec(basename(path))?.[1],
+    }))
+    .filter(({ workOrder }) => workOrder)
+    .sort((left, right) => left.workOrder.localeCompare(right.workOrder))
+    .flatMap(({ path, workOrder }) => {
+      const source = readFileSync(join(root, path), "utf8");
+      // Most orders never name the line, and their headers are not parsed.
+      if (!source.includes("Review ladder")) return [];
+      const lines = reviewLadderLines(source);
+      return lines.length === 1 && lines[0].value === "paired"
+        ? [
+            {
+              workOrder,
+              decisions: decisions.filter((row) => row.workOrder === workOrder),
+              firstVerification: first.get(workOrder) ?? "none",
+            },
+          ]
+        : [];
+    });
+  return pairedRounds(orders);
+}
+
+// The orders the page shows a line for: the latest by identifier. The page
+// is bounded and every later order declares a paired ladder until the
+// default is set, so a row for each would in time refuse the page.
+const PAGE_PAIRED_ORDERS = 8;
+/** The report's `pairedRounds` field: absent while no order has recorded a
+ * paired round, so the page of an instance without one is as it was. The
+ * page, which is bounded, holds the sums over every order and one line for
+ * each of the latest orders, its counts written as combined worker alone,
+ * the three kinds alone and both; the export holds every order and every
+ * round. */
+const pairedRoundsField = (root, record, { page = false } = {}) => {
+  const paired = pairedRoundReport(root, record);
+  if (!paired.orders.length) return {};
+  if (!page) return { pairedRounds: paired };
+  const shown = paired.orders.slice(-PAGE_PAIRED_ORDERS);
+  return {
+    pairedRounds: {
+      sums: paired.sums,
+      counts: "each class as combined worker alone/the three kinds alone/both",
+      orders: shown.map(
+        ({ workOrder, firstVerification, rounds, counts }) =>
+          `${workOrder}: first verification ${firstVerification}; rounds ${rounds}; ${Object.entries(
+            counts,
+          )
+            .map(
+              ([name, count]) =>
+                `${name} ${count.combinedOnly}/${count.kindsOnly}/${count.both}`,
+            )
+            .join("; ")}`,
+      ),
+      ...(paired.orders.length > shown.length
+        ? {
+            ordersNotShown: paired.orders.length - shown.length,
+            every: "npm run plan -- failures --export <file>",
+          }
+        : {}),
+    },
+  };
+};
+
 function selection(root, options) {
   const view = failureWindow(root, options);
   const record = failureRecord(root);
@@ -1365,6 +1446,7 @@ export function planningFailures(
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
     ...(chosen.memory ? { localMemoryStops: chosen.memory } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
+    ...pairedRoundsField(root, chosen.record, { page: true }),
     ...Object.fromEntries(
       Object.entries(chosen.operational).filter(
         ([key]) => key !== "observations",
@@ -1406,6 +1488,7 @@ export function exportFailures(
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
     ...(chosen.memory ? { localMemoryStops: chosen.memory } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
+    ...pairedRoundsField(root, chosen.record),
     ...chosen.operational,
     items: chosen.items.length,
     rows: chosen.items,

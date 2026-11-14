@@ -2,6 +2,8 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { docPath, docRelative } from "./config.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
+import { markdownCodeBlocks, markdownHeadings } from "./markdown-links.mjs";
+import { readWorkOrder } from "./work-order-document.mjs";
 
 // The order format's field labels. A bold label outside this list inside the
 // section is one of its paragraphs, so an unlisted field over-prints rather
@@ -31,33 +33,19 @@ const ORDER_FIELDS = [
   "Operator-review assumptions",
 ].join("|");
 const NAME = "Known issues and carry-ins";
-// The order is read line by line, and structure counts only at the start of a
-// line: no inline code, list, quote or continuation is interpreted, so
-// anything indented or behind a marker is text. A field label has three exact
-// forms, each with an optional parenthetical after the name: `**Name:**`,
-// `**Name**:` (text may follow either) and `**Name**` alone on its line.
-const labelForm = (names) =>
-  `\\*\\*(?:${names})(?: ?\\([^)]*\\))?(?::\\*\\*|\\*\\*:|\\*\\*[ \\t]*$)`;
-const FIELD = new RegExp(`^${labelForm(ORDER_FIELDS)}`, "iu");
-// The section's label is that field's label, or a heading of that name alone
-// or with its colon; [1] is a heading's marker and [2] the text after it.
-const LABEL = new RegExp(
-  `^(?:${labelForm(NAME)}|(#{1,6})[ \\t]+${NAME}(?: ?\\([^)]*\\))?(?::|[ \\t]*$))(.*)$`,
-  "isu",
+// A field's name, with an optional parenthetical after it.
+const fieldName = (names) =>
+  new RegExp(`^(?:${names})(?: ?\\([^)]*\\))?$`, "iu");
+const ORDER_FIELD = fieldName(ORDER_FIELDS);
+const LABEL = fieldName(NAME);
+// A heading labels the section when its title is the name, with an optional
+// parenthetical, alone or before a colon; [1] is the text after the colon.
+const HEADING_LABEL = new RegExp(
+  `^${NAME}(?: ?\\([^)]*\\))?(?::([\\s\\S]*)|[ \\t]*)$`,
+  "iu",
 );
-const HEADING = /^(#{1,6})[ \t]/u;
 // A bold label sits below every heading, so any heading ends its section.
 const BOLD_LABEL_LEVEL = 6;
-// A fence opens at a line that starts with three or more backticks (and holds
-// no later backtick, so a line opening with inline code opens nothing) or
-// three or more tildes. It closes at a line of that character, at least as
-// long, indented at most three spaces, with nothing after it; a shorter or
-// other fence inside is text.
-const FENCE = /^(?:(`{3,})[^`]*|(~{3,}).*)$/su;
-const closes = (marker, line) => {
-  const run = /^ {0,3}(`+|~+)[ \t]*$/u.exec(line)?.[1];
-  return run?.[0] === marker[0] && run.length >= marker.length;
-};
 // A line whose first letters are `Known issue(s)`, behind any marker and
 // however the two words are joined, and that is no label: it advises rather
 // than hide a carry-in.
@@ -66,59 +54,133 @@ const clip = (line) => {
   const text = [...line.trim()];
   return text.length > 60 ? `${text.slice(0, 60).join("")}…` : text.join("");
 };
+const LINE_END = /\r\n?|\n/u;
+
+/** The order's field labels as the order format's reader finds them, each
+ * opening a line of a top-level paragraph in one of three forms, with an
+ * optional parenthetical after the name: `**Name:**` or `**Name**:` (text
+ * may follow either) or `**Name**` alone on its line. A bold phrase with
+ * other words after it labels nothing. Each carries its name, the label as
+ * written, the text after it on its line and whether it opens its
+ * paragraph. */
+function fieldLabels(order) {
+  const paragraphs = order.tree.children.filter(
+    (node) => node.type === "paragraph",
+  );
+  return order.fields.flatMap((field) => {
+    const paragraph = paragraphs.find(
+      (node) =>
+        node.position.start.offset <= field.start &&
+        field.start < node.position.end.offset,
+    );
+    if (!paragraph) return [];
+    const rest = order.source.slice(field.valueStart).split(LINE_END, 1)[0];
+    const colon = field.raw.endsWith(":")
+      ? 0
+      : rest.startsWith(":")
+        ? 1
+        : rest.trim()
+          ? -1
+          : 0;
+    if (colon < 0) return [];
+    return [
+      {
+        name: field.label,
+        line: field.line,
+        by: order.source.slice(field.start, field.valueStart + colon),
+        text: rest.slice(colon),
+        opens: paragraph.children[0].position.start.offset === field.start,
+      },
+    ];
+  });
+}
 
 /**
- * The `Known issues and carry-ins` sections of an order's text.
+ * The `Known issues and carry-ins` sections of an order's text, read with
+ * the order format's reader.
  *
- * A section starts at a label line. It ends before the first later line that
- * is a heading at the label's level or above (any heading, for a bold label)
- * or that follows a blank line and is an order-field label; a field label on
- * a line that continues a paragraph is that paragraph's text. Inside a fence
- * no label, field or heading is read. `lines` holds the text after the label
- * and every later line of the section as written, and `end` the line that
- * ended it with that line's label or heading, or null at the order's end.
- * `unread` lists the lines outside any section and fence that start
- * `Known issue` in another layout, and `openFence` the line of a fence the
- * order never closes.
+ * A section starts at a label: a field label of that name, or a top-level
+ * heading of that name alone or with its colon. It ends before the first
+ * later line that holds another label, a heading at the label's level or
+ * above (any heading, for a bold label) or an order-field label opening a
+ * paragraph; a field label on a line that continues a paragraph is that
+ * paragraph's text. Fenced code holds no label, field or heading. `lines`
+ * holds the text after the label and every later line of the section as
+ * written, and `end` the line that ended it with that line's label or
+ * heading, or null at the order's end. `unread` lists the lines outside any
+ * section and top-level fence whose first letters are `Known issue` in
+ * another layout, and `openFence` the line of a top-level fence the order
+ * never closes.
  */
-export function knownIssueSections(order) {
-  const sections = [];
-  const unread = [];
-  let fence = null;
-  let open = null;
-  let blank = true;
-  for (const [index, line] of order.split(/\r\n?|\n/u).entries()) {
-    const opener = fence ? null : FENCE.exec(line);
-    if (fence || opener) {
-      if (opener) fence = { line: index + 1, marker: opener[1] ?? opener[2] };
-      else if (closes(fence.marker, line)) fence = null;
-      open?.lines.push(line);
-      blank = false;
-      continue;
-    }
-    const label = LABEL.exec(line);
-    const heading = HEADING.exec(line)?.[1].length;
-    const field = FIELD.exec(line)?.[0].trimEnd();
-    if (open && (label || (blank && field) || heading <= open.level)) {
-      open.end = { line: index + 1, by: field ?? clip(line) };
-      open = null;
-    }
-    if (label) {
-      open = {
-        line: index + 1,
-        level: label[1]?.length ?? BOLD_LABEL_LEVEL,
-        lines: [label[2].trimStart()],
-        end: null,
-      };
-      sections.push(open);
-    } else if (open) open.lines.push(line);
-    else if (NEAR_LABEL.test(line)) unread.push(index + 1);
-    blank = !line.trim();
-  }
+export function knownIssueSections(text) {
+  const order = readWorkOrder(text);
+  const lines = order.source.split(LINE_END);
+  const fields = fieldLabels(order);
+  const headings = markdownHeadings(order.source, order.tree).map(
+    (heading) => ({
+      line: heading.line,
+      depth: heading.depth,
+      label: HEADING_LABEL.exec(heading.title),
+      by: clip(lines[heading.line - 1]),
+    }),
+  );
+  const labels = [
+    ...fields
+      .filter((field) => LABEL.test(field.name))
+      .map(({ line, by, text }) => ({
+        line,
+        by,
+        level: BOLD_LABEL_LEVEL,
+        text,
+      })),
+    ...headings
+      .filter((heading) => heading.label)
+      .map(({ line, by, depth, label }) => ({
+        line,
+        by,
+        level: depth,
+        text: label[1] ?? "",
+      })),
+  ].sort((a, b) => a.line - b.line);
+  const fieldEnds = fields.filter(
+    (field) => field.opens && ORDER_FIELD.test(field.name),
+  );
+  const sections = labels.map((label) => {
+    const end = [
+      ...labels,
+      ...fieldEnds,
+      ...headings.filter((heading) => heading.depth <= label.level),
+    ]
+      .filter((other) => other.line > label.line)
+      .sort((a, b) => a.line - b.line)[0];
+    return {
+      line: label.line,
+      lines: [
+        label.text.trimStart(),
+        ...lines.slice(label.line, end ? end.line - 1 : lines.length),
+      ],
+      end: end ? { line: end.line, by: end.by } : null,
+    };
+  });
+  const fences = markdownCodeBlocks(order.source, order.tree).filter((block) =>
+    order.tree.children.some(
+      (node) => node.position.start.offset === block.start,
+    ),
+  );
+  const unread = lines.flatMap((line, index) => {
+    const number = index + 1;
+    const read =
+      sections.some(
+        (section) =>
+          number >= section.line && number < (section.end?.line ?? Infinity),
+      ) ||
+      fences.some((fence) => number >= fence.line && number <= fence.endLine);
+    return !read && NEAR_LABEL.test(line) ? [number] : [];
+  });
   return {
-    sections: sections.map(({ line, lines, end }) => ({ line, lines, end })),
+    sections,
     unread,
-    openFence: fence?.line ?? null,
+    openFence: fences.find((fence) => !fence.closed)?.line ?? null,
   };
 }
 

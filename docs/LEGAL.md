@@ -1,6 +1,7 @@
 # Legal and licensing posture
 
-**Status:** project record; dependency inventory updated 2026-09-19. The license posture was
+**Status:** project record; dependency inventory updated 2026-09-19 and
+carried third-party material on 2026-11-10. The license posture was
 decided on 2026-09-06 (see §Decision — 2026-09-06); the remaining gates below
 stay open. This document is not a license or legal advice.
 
@@ -56,10 +57,11 @@ carries `LICENSE`, `LICENSE-docs` and `NOTICE` by default as manifest-listed
 kit files, byte-identical to the three pinned hashes below; its fixture checks
 them against the pins `scripts/license-surfaces.mjs` exports. `--license none`
 writes `LICENSE-PENDING.md` in their place, a notice that grants no rights and
-names no license. The export carries no compiled or bundled third-party
+names no license. That export carried no compiled or bundled third-party
 material: the fork's own `npm ci` installs the three pinned development
-dependencies from the pruned lockfile, so the `THIRD_PARTY_NOTICES` duty stays
-open until WO-075's first built distribution. The kit `package.json` keeps
+dependencies from the pruned lockfile, so the `THIRD_PARTY_NOTICES` duty stayed
+open then. It fell due on 2026-11-10, when the scripts began to carry a
+third-party file (§Carried parser below). The kit `package.json` keeps
 `private: true`, the Apache-2.0 label (`UNLICENSED` under `--license none`)
 and the publication guard.
 
@@ -74,10 +76,37 @@ file (the fixture's rebuild compares every byte to `tsc` output of the
 project's sources, and the export walks only `dist/src` and `dist/test`). The
 compiled tests travel under the same terms as the runtime. The fork's
 `npm ci` installs its pinned development dependencies from the registry or a
-local cache. This order therefore writes no `THIRD_PARTY_NOTICES` file; the
-duty becomes due at the first export that copies a third-party file (a
-compiled browser dependency among the candidates), and the kit manifest is
-where to check. Package metadata is unchanged from the WO-074 observation.
+local cache. That order therefore wrote no `THIRD_PARTY_NOTICES` file; the
+duty falls due at each export that copies a third-party file, and the kit
+manifest is where to check. The first such file is the carried parser
+(§Carried parser below), and a compiled browser dependency would be another.
+Package metadata is unchanged from the WO-074 observation.
+
+**Carried parser — 2026-11-10 (WO-276).** The
+scripts carry one third-party work: the self-contained Markdown plugin of
+Prettier 3.9.6, at `scripts/lib/vendor/prettier-markdown.mjs`, so that the
+lifecycle reads a work order before any install. It is the npm package's
+`plugins/markdown.mjs` byte for byte and is licensed MIT; the license text is
+`scripts/lib/vendor/prettier-LICENSE`, and
+`scripts/lib/vendor/prettier-THIRD-PARTY-NOTICES.md` is Prettier's own notices
+file for the packages its published files bundle, carried whole because the
+package states its notices for all of Prettier and for no one plugin. The
+three files are in the `scripts` tree, so every kit export distributes them
+under either license option, and `THIRD_PARTY_NOTICES` at the repository
+root, a kit file too, names them with the version. `node
+scripts/lib/vendored-parser.mjs --check` compares the three files with the
+installed package and with the SHA-256 of each in
+`scripts/lib/vendored-parser.json`, and fails naming this page when it does
+not name the carried version; `npm run sync` rewrites the copies, the record
+and the notices file after a Prettier update, and this paragraph is then
+brought up to date by hand. The checks that judge this repository's own
+text leave out exactly the files that record proves; a copy that differs by
+a byte is screened as any file is. Prettier remains a development dependency
+in the lockfile as well, and `NOTICE` and the three pinned hashes below are
+unchanged. This is an inventory of what is carried, not an audit of every
+license in the notices file.
+[WO-276-D032](evidence/WO-276/decisions.md#wo-276-d032--the-carried-parser-is-proven-by-recorded-hash-and-left-out-of-the-screens-by-its-bytes)
+records the choice.
 
 **2026-09-06 observation (phase-two planning pass):** the operator intends
 `DotLn-Enterprise-Starter`, an exported launchpad kit of this repository's
@@ -130,10 +159,14 @@ decision recorded by its author; it is not legal advice.
   distribution channel. Exporting the kit into the operator's own or an
   external organization's repository carries `LICENSE`, `LICENSE-docs`, and
   `NOTICE` as kit files.
-- **Third-party material.** Nothing vendored. Development dependencies are
+- **Third-party material.** Nothing was vendored at this decision. Since
+  2026-11-10 the scripts carry Prettier's Markdown plugin with its license
+  and notices, and `THIRD_PARTY_NOTICES` names them (§Current state, Carried
+  parser). Development dependencies are
   MIT (`@types/node`, `undici-types`, Prettier) and Apache-2.0 (TypeScript),
-  observed from the lockfile; a `THIRD_PARTY_NOTICES` file becomes due when a
-  built or bundled artifact is distributed. The source-associated phrasebook
+  observed from the lockfile; the `THIRD_PARTY_NOTICES` file gains an entry
+  whenever a further third-party file is carried or a built or bundled
+  artifact is distributed. The source-associated phrasebook
   keeps the bounded disposition in §Inspiration is not incorporation; the
   documentation license covers the operator's compilation and does not
   enlarge rights in the underlying short expressions.
@@ -145,7 +178,7 @@ decision recorded by its author; it is not legal advice.
   project used at work is the operator's question to settle with their own
   agreement or counsel; this record does not answer it.
 
-The decision discharges the copyright notice, the code and documentation licenses, and the inbound rule. WO-038 implements the contribution document, package `license` and `private` metadata, and publication guards. Remaining gates are a separate package-publication decision, `THIRD_PARTY_NOTICES` at first bundled distribution, the name-confusion check before brand investment, and privacy and service reviews if a hosted or data-collecting surface appears.
+The decision discharges the copyright notice, the code and documentation licenses, and the inbound rule. WO-038 implements the contribution document, package `license` and `private` metadata, and publication guards. Remaining gates are a separate package-publication decision, a `THIRD_PARTY_NOTICES` entry for each further third-party file a distribution carries (the carried parser has its entry), the name-confusion check before brand investment, and privacy and service reviews if a hosted or data-collecting surface appears.
 
 ## Interim direction
 
@@ -203,7 +236,8 @@ The bounded decision should include (status as of 2026-09-06 in brackets):
   CLA if additional rights such as relicensing are needed [decided: DCO 1.1,
   no CLA; `CONTRIBUTING.md` and the publish-time check implemented in WO-038 source];
 - an inventory of material actually distributed and any required
-  `THIRD_PARTY_NOTICES` [open until a bundled artifact is distributed];
+  `THIRD_PARTY_NOTICES` [met for the carried Markdown parser on 2026-11-10;
+  open again with each further third-party file or bundled artifact];
 - a non-affiliation/trademark statement [decided; names reserved] and a check
   for confusingly similar product names before serious brand investment
   [open]; and

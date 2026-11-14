@@ -3,7 +3,7 @@ import {
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
 import { write, sha256Hex as nativeNoticeHash } from "./lib/helpers.mjs";
-import test from "node:test";
+import test from "./lib/test-shards.mjs";
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -20,6 +20,7 @@ import {
   correctionCounts,
   observeTypedCorrection,
   observeBackgroundTool,
+  renderDailyUse,
 } from "../packages/skeleton/dist/src/observed-facts.js";
 import { trapRows } from "./lib/meta.mjs";
 import { observedFactsReport } from "./lib/harness-runtime.mjs";
@@ -1369,4 +1370,101 @@ test("VER-003 N1 prompt parser ignores ordinary prose, quoted envelopes and unsu
     observationBoundary(f.root, f.scope, { prompt, now });
     assert.deepEqual(observedFacts(f.root, f.scope, now).tasks, []);
   }
+});
+
+test("WO-276 criterion P2: the day's line carries the use and the figure, the stopping advisory at or above the figure, and unknown for an estimate no declared price can make", (t) => {
+  const use = {
+    day: "2026-11-12",
+    totalTokens: 1_500_000,
+    partial: false,
+    estimateUsd: 12.5,
+    unpriced: [],
+    unattested: false,
+  };
+  const head = "Day's use (2026-11-12, local calendar day): ";
+  const advisory =
+    " The daily figure is reached: finish the step in hand, write the standing and end the turn. This is advisory and refuses nothing.";
+  // Below the figure: the use and the figure, and no advisory.
+  assert.equal(
+    renderDailyUse({ tokens: 2_000_000, usd: null }, use),
+    `${head}1500000 tokens of a daily figure of 2000000 tokens.`,
+  );
+  // At the figure and above it: the advisory follows.
+  for (const tokens of [1_500_000, 1_000_000])
+    assert.equal(
+      renderDailyUse({ tokens }, use),
+      `${head}1500000 tokens of a daily figure of ${tokens} tokens.${advisory}`,
+    );
+  // Dollars at the instance's declared prices.
+  assert.equal(
+    renderDailyUse({ usd: 50 }, use),
+    `${head}1500000 tokens, an estimated $12.50 of a daily figure of $50.00.`,
+  );
+  assert.equal(
+    renderDailyUse({ usd: 12.5 }, use),
+    `${head}1500000 tokens, an estimated $12.50 of a daily figure of $12.50.${advisory}`,
+  );
+  // A model with no declared price: the day's tokens, and unknown for the
+  // estimate. An unknown estimate reaches no figure.
+  assert.equal(
+    renderDailyUse(
+      { usd: 1 },
+      { ...use, estimateUsd: null, unpriced: ["model-c"] },
+    ),
+    `${head}1500000 tokens, estimate unknown (no price declared for model-c) against a daily figure of $1.00.`,
+  );
+  assert.equal(
+    renderDailyUse(
+      { usd: 1 },
+      { ...use, estimateUsd: null, unpriced: ["model-c"], unattested: true },
+    ),
+    `${head}1500000 tokens, estimate unknown (no price declared for model-c; a session of the day attests no model) against a daily figure of $1.00.`,
+  );
+  // An unknown estimate still says what the priced sessions alone come to,
+  // and that least amount reaches a figure as an estimate would: a day with
+  // sixty priced dollars beside an unpriced model is over a five-dollar
+  // figure, and under a hundred-dollar one it is not yet known to be.
+  const least = {
+    ...use,
+    estimateUsd: null,
+    pricedUsd: 60,
+    unpriced: ["model-c"],
+  };
+  assert.equal(
+    renderDailyUse({ usd: 5 }, least),
+    `${head}1500000 tokens, estimate unknown (no price declared for model-c), at least $60.00 for the sessions that have one, against a daily figure of $5.00.${advisory}`,
+  );
+  assert.equal(
+    renderDailyUse({ usd: 100 }, least),
+    `${head}1500000 tokens, estimate unknown (no price declared for model-c), at least $60.00 for the sessions that have one, against a daily figure of $100.00.`,
+  );
+  // A session with no count leaves the estimate unknown and is named as
+  // the cause.
+  assert.equal(
+    renderDailyUse(
+      { usd: 5 },
+      { ...use, estimateUsd: null, pricedUsd: 60, partial: true },
+    ),
+    `${head}at least 1500000 tokens (an observation of the day holds no count), estimate unknown (an observation of the day holds no count), at least $60.00 for the sessions that have one, against a daily figure of $5.00.${advisory}`,
+  );
+  // Both figures: each beside its own use, and either reaches the advisory.
+  assert.equal(
+    renderDailyUse({ tokens: 2_000_000, usd: 10 }, use),
+    `${head}1500000 tokens of a daily figure of 2000000 tokens; an estimated $12.50 of a daily figure of $10.00.${advisory}`,
+  );
+  // A day one of whose observations holds no count used at least its sum.
+  assert.equal(
+    renderDailyUse({ tokens: 2_000_000 }, { ...use, partial: true }),
+    `${head}at least 1500000 tokens (an observation of the day holds no count) of a daily figure of 2000000 tokens.`,
+  );
+  // The facts carry the line after their own lines, and without one they
+  // are the facts printed before.
+  const root = fixture(t);
+  task(root);
+  const plain = observationBoundary(root, scope, { now });
+  const line = renderDailyUse({ tokens: 2_000_000 }, use);
+  const carried = observationBoundary(root, scope, { now, daily: line });
+  assert.doesNotMatch(plain, /Day's use/u);
+  assert.equal(carried, `${plain}\n${line}`);
+  assert.equal(observationBoundary(root, scope, { now, daily: "" }), plain);
 });

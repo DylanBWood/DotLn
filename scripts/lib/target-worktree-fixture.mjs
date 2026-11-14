@@ -19,9 +19,20 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { TOOL_ROOT, docPath } from "./config.mjs";
+import { TOOL_ROOT, docPath, docRelative } from "./config.mjs";
 import { runGit } from "./git.mjs";
 import { write } from "./helpers.mjs";
+import {
+  applyPlanCandidate,
+  candidateDiff,
+  draftPlanCandidate,
+  planDigest,
+  planFirstContext,
+  planFirstView,
+  planMarker,
+  proposalPatch,
+  selectedPlanState,
+} from "./plan-first.mjs";
 import { runtimeModuleDirectory } from "./harness.mjs";
 import { installBeaconFixture } from "../test-beacon-fixture.mjs";
 import {
@@ -162,7 +173,11 @@ const profile = {
 };
 const fixture = (
   base,
-  { baseIgnore, roots = { docs: "records", control: "records/state" } } = {},
+  {
+    baseIgnore,
+    baseFiles = {},
+    roots = { docs: "records", control: "records/state" },
+  } = {},
 ) => {
   symlinkSync(join(TOOL_ROOT, "node_modules"), join(base, "node_modules"));
   const env = { ...process.env, DOTLN_FIXTURE_RUNTIME: TOOL_ROOT };
@@ -188,6 +203,8 @@ const fixture = (
   const clone = repository("target");
   write(clone, "source.txt", "declared base\n");
   if (baseIgnore) write(clone, ".gitignore", baseIgnore);
+  for (const [path, bytes] of Object.entries(baseFiles))
+    write(clone, path, bytes);
   git(clone, "add", "-A");
   git(clone, "-c", "maintenance.auto=false", "commit", "-qm", "Target base");
   const baseCommit = git(clone, "rev-parse", "HEAD");
@@ -262,10 +279,17 @@ const fixture = (
     recursive: true,
   });
   installBeaconFixture(main);
-  cpSync(
-    join(TOOL_ROOT, "packages/skeleton/src/evidence-editions.mjs"),
-    join(main, "packages/skeleton/src/evidence-editions.mjs"),
-  );
+  // The build-free modules the copied scripts import from the package's
+  // sources: the evidence editions and the two readers.
+  for (const name of [
+    "evidence-editions.mjs",
+    "shell-reading.mjs",
+    "source-reading.mjs",
+  ])
+    cpSync(
+      join(TOOL_ROOT, "packages/skeleton/src", name),
+      join(main, "packages/skeleton/src", name),
+    );
   // The fixture's bootstrap provides the installed build without a dependency
   // install; both launchpad worktrees still run the real lifecycle commands.
   write(
@@ -419,7 +443,10 @@ const commitInstanceRecords = (f, message = "docs: the instance records") => {
   return git(f.orderRoot, "rev-parse", "HEAD");
 };
 
-const publicationSetup = (f) => {
+/** The fixture's publication authority and its forge. With
+ * `launchpadForge` the launchpad's own origin is a forge address too, so
+ * that an order's records branch can be published. */
+const publicationSetup = (f, { launchpadForge = false } = {}) => {
   f.config.repositories.target.authorityProfile = {
     ...profile,
     allowedEffects: [...profile.allowedEffects, "repo.push", "pr.open"],
@@ -434,7 +461,7 @@ const publicationSetup = (f) => {
   write(
     f.main,
     `${f.config.roots.control}/local/terms.txt`,
-    "Private Fixture Term\n",
+    "refuse: Private Fixture Term\n",
   );
   write(
     f.main,
@@ -452,10 +479,15 @@ const publicationSetup = (f) => {
   );
   git(f.main, "push", "-q", "origin", "main");
   const url = fixtureForgeUrl();
+  const launchpadUrl = fixtureForgeUrl("launchpad");
   const forge = installTargetPublicationFixture(f.base, f.env, [
     { url, origin: join(f.base, "target.git") },
+    ...(launchpadForge
+      ? [{ url: launchpadUrl, origin: join(f.base, "launchpad.git") }]
+      : []),
   ]);
   git(f.clone, "remote", "set-url", "origin", url);
+  if (launchpadForge) git(f.main, "remote", "set-url", "origin", launchpadUrl);
   assertNoResolvableFixtureRemote(f);
   return forge;
 };
@@ -508,7 +540,282 @@ const launchpadCommands = (f, text) => {
   });
 };
 
+// The release surfaces an order's own publish checks at its committed
+// head, which the lifecycle fixture's launchpad does not carry, written to
+// main before the order starts so that the order branch changes no launchpad
+// code and its publish needs no launchpad gate row: the license
+// files and the legal record as this repository holds them, the root
+// manifest's publication guards and a README release block.
+const releaseSurfaces = (f, { documentationMark = true } = {}) => {
+  const kit = (file) => readFileSync(join(TOOL_ROOT, file));
+  for (const file of ["LICENSE", "LICENSE-docs", "NOTICE"])
+    writeFileSync(join(f.main, file), kit(file));
+  // The legal record's three pins, written here from the files just copied:
+  // the repository's own record is a document, which no product case reads.
+  const legal = docPath(f.main, "docs", "LEGAL.md");
+  mkdirSync(dirname(legal), { recursive: true });
+  writeFileSync(
+    legal,
+    `# Legal\n\n${["LICENSE", "LICENSE-docs", "NOTICE"]
+      .map(
+        (file) =>
+          `- \`${file}\` — \`sha256:${createHash("sha256").update(kit(file)).digest("hex")}\``,
+      )
+      .join("\n")}\n`,
+  );
+  const own = JSON.parse(kit("package.json").toString());
+  const manifest = JSON.parse(
+    readFileSync(join(f.main, "package.json"), "utf8"),
+  );
+  write(
+    f.main,
+    "package.json",
+    JSON.stringify({
+      ...manifest,
+      workspaces: own.workspaces,
+      license: own.license,
+      scripts: {
+        ...manifest.scripts,
+        prepublishOnly: own.scripts.prepublishOnly,
+      },
+    }),
+  );
+  // The fixture keeps its documents under records/: marked as documentation,
+  // an order's records are no change of launchpad code. A case leaves the
+  // mark out to hold what an instance with a moved root and no mark meets.
+  if (documentationMark)
+    write(f.main, ".gitattributes", "records/** dotln-documentation\n");
+  write(
+    f.main,
+    "README.md",
+    "# Fixture instance\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n",
+  );
+};
+const reviewedRecordsOrder = (
+  f,
+  records,
+  {
+    reviewedFiles = { "reviewed.txt": "Reviewed change.\n" },
+    // Paths of the target's base that the reviewed change deletes.
+    removedFiles = [],
+    documentationMark = true,
+  } = {},
+) => {
+  if (records) f.config.repositories.target.records = records;
+  // The fixture's one author is the instance's own.
+  f.config.contributions = {
+    operatorAuthor: "Fixture <fixture@example.invalid>",
+  };
+  releaseSurfaces(f, { documentationMark });
+  const forge = publicationSetup(f, { launchpadForge: true });
+  f.mapClone();
+  f.start();
+  for (const [path, bytes] of Object.entries(reviewedFiles))
+    write(f.target, path, bytes);
+  for (const path of removedFiles) rmSync(join(f.target, path));
+  git(f.target, "add", "-A");
+  git(
+    f.target,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fix: preserve reviewed text",
+  );
+  const reviewed = git(f.target, "rev-parse", "HEAD");
+  // Where plan-first would keep this order's plan, proposal and
+  // conversation (criterion N5): the directory its commands and its view
+  // read, whether or not the instance elects the feature.
+  const planFirst = planFirstContext(f.orderRoot, {
+    workOrderId: "WO-999",
+    repositoryId: "target",
+  }).directory;
+  prepareFinalReview(f);
+  const passed = f.ok(f.resume(["final-review-result", "pass", ...actorArgs]));
+  write(
+    f.orderRoot,
+    "records/evidence/WO-999/decisions.md",
+    "# Decisions\n\nThe fixture keeps the reviewed behavior.\n",
+  );
+  write(
+    f.orderRoot,
+    "reviewed-body.md",
+    "## Result\n\nPreserve reviewed text and its validation.\n",
+  );
+  write(
+    f.orderRoot,
+    "records-body.md",
+    "# WO-999\n\nThe order and its records: its text, its decisions and its two reports.\n",
+  );
+  commitInstanceRecords(f);
+  return { forge, reviewed, passed, planFirst };
+};
+
+const publishRecordsTarget = (f) =>
+  f.worktree(
+    "publish",
+    "WO-999",
+    "--target-worktree",
+    "--branch",
+    "fix/preserve-reviewed-text",
+    "--title",
+    "fix: preserve reviewed text",
+    "--body-file",
+    "reviewed-body.md",
+  );
+const publishRecordsOrder = (f) =>
+  f.worktree(
+    "publish",
+    "WO-999",
+    "--title",
+    "docs: the order's records",
+    "--body-file",
+    "records-body.md",
+  );
+
+/**
+ * The fixture's order carried from its start to a passing final review with
+ * plan-first elected: a plan proposed, approved and applied under the
+ * registration value `before`, main's value then set to `after`, which the
+ * order branch does not take in, and the lifecycle run as it runs for a plan:
+ * the executor's gate and completion on the applied working tree, the
+ * reviewed commit after them. Returns where the plan's documents are, whether
+ * the approval stood across the change, the reviewed commit and the pass's
+ * message.
+ */
+const plannedRecordsOrder = (f, { before, after }) => {
+  const date = "2026-11-06T00:00:00.000Z";
+  f.config.features = { "plan-first": true };
+  f.config.contributions = {
+    operatorAuthor: "Fixture <fixture@example.invalid>",
+  };
+  if (before) f.config.repositories.target.records = before;
+  releaseSurfaces(f);
+  // The approval's capture is an ignored file of the intake lane.
+  const ignore = join(f.main, ".gitignore");
+  writeFileSync(
+    ignore,
+    `${existsSync(ignore) ? readFileSync(ignore, "utf8") : ""}${docRelative(f.main, "intake")}/\n`,
+  );
+  publicationSetup(f, { launchpadForge: true });
+  f.mapClone();
+  // With plan-first elected the first start of a target order stops at
+  // activation and the retry it prints succeeds (WO-276-D091 records it).
+  try {
+    f.start();
+  } catch {
+    f.start();
+  }
+  const state = () => selectedPlanState(f.orderRoot, "WO-999");
+  const candidate = draftPlanCandidate(f.orderRoot, state(), f.base);
+  const { directory } = planFirstContext(f.orderRoot, state());
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(
+    join(directory, "conversation.md"),
+    `### ${date} — Operator\n\nPlease add the reviewed text.\n`,
+  );
+  writeFileSync(join(candidate.path, "reviewed.txt"), "Reviewed change.\n");
+  const marker = planMarker({
+    status: "proposed",
+    proposedAt: date,
+    conversationDigest: planDigest(
+      readFileSync(join(directory, "conversation.md")),
+    ),
+    transformations: [],
+  });
+  writeFileSync(
+    join(directory, "plan.md"),
+    `${marker}# Plan\n\nAdd reviewed.txt with the reviewed text. The file is new. Keep the wording or change it. No unresolved questions.\n`,
+  );
+  writeFileSync(
+    join(directory, "proposal.md"),
+    `${marker}# Proposal\n\nreviewed.txt: the reviewed text.\n\n${proposalPatch(candidateDiff(f.orderRoot, state()).diff)}`,
+  );
+  f.ok(f.resume(["plan-proposed", "WO-999", ...actorArgs]));
+  const approval = "Go ahead with this proposal.\n";
+  const capture = `${docRelative(f.orderRoot, "intake")}/approval.txt`;
+  write(f.orderRoot, capture, approval);
+  f.ok(
+    f.resume([
+      "plan-approved",
+      "WO-999",
+      "--capture",
+      capture,
+      "--capture-hash",
+      `sha256:${planDigest(approval)}`,
+      ...actorArgs,
+    ]),
+  );
+  applyPlanCandidate(f.orderRoot, state());
+  if (after !== before) {
+    if (after) f.config.repositories.target.records = after;
+    else delete f.config.repositories.target.records;
+    write(f.main, "dotln.config.json", JSON.stringify(f.config));
+    git(f.main, "add", "-A");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: the registration's records value changes",
+    );
+    git(f.main, "push", "-q", "origin", "main");
+  }
+  const view = planFirstView(f.orderRoot, state());
+  const approvalStood = Boolean(view.approvedAt) && view.changed.length === 0;
+  f.ok(f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999"]));
+  f.ok(f.resume(["implementation-ready", ...actorArgs]));
+  git(f.target, "add", "-A");
+  git(
+    f.target,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fix: preserve reviewed text",
+  );
+  const reviewed = git(f.target, "rev-parse", "HEAD");
+  f.ok(f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]));
+  f.ok(f.resume(["verify"]));
+  write(
+    f.orderRoot,
+    docRelative(f.orderRoot, "verifications", "WO-999/VER-001.md"),
+    `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+  );
+  f.ok(f.resume(["verification-result", "pass", ...actorArgs]));
+  f.ok(f.resume(["final-review"]));
+  write(
+    f.orderRoot,
+    docRelative(f.orderRoot, "finalReviews", "WO-999/FINAL-001.md"),
+    `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+  );
+  const passed = f.ok(f.resume(["final-review-result", "pass", ...actorArgs]));
+  write(
+    f.orderRoot,
+    `${docRelative(f.orderRoot, "evidence")}/WO-999/decisions.md`,
+    "# Decisions\n\nThe fixture keeps the reviewed behavior.\n",
+  );
+  write(
+    f.orderRoot,
+    "reviewed-body.md",
+    "## Result\n\nPreserve reviewed text and its validation.\n",
+  );
+  write(
+    f.orderRoot,
+    "records-body.md",
+    "# WO-999\n\nThe order and its records: its text, its decisions and its two reports.\n",
+  );
+  commitInstanceRecords(f);
+  return { directory, approvalStood, reviewed, passed };
+};
+
 export {
+  plannedRecordsOrder,
+  releaseSurfaces,
+  reviewedRecordsOrder,
+  publishRecordsTarget,
+  publishRecordsOrder,
   git,
   FIXTURE_FORGE_HOST,
   fixtureForgeUrl,

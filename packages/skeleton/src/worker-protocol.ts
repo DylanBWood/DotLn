@@ -54,16 +54,28 @@ export const HEARTBEAT_MS = 1_000;
 export const LEASE_MS = 5_000;
 export const WORKER_TIMEOUT_MS = 180_000;
 
+/** Every way a worker's run fails, as an observation records it: one list
+ * the failure's type and the contracts that check a recorded code read. */
+export const WORKER_FAILURE_CODES = [
+  "model-unavailable",
+  "transport-failed",
+  "interrupted",
+  "invalid-result",
+  "deadline-exceeded",
+  "output-limit",
+  "profile-refused",
+  // A mission check's documents were never read: the resident holds no
+  // reader of them, as one started by the package's own entry does not.
+  "documents-unread",
+  // The order's criteria list cannot be read whole as it is written, so the
+  // check has no contract to judge against.
+  "contract-unreadable",
+] as const;
+export type WorkerFailureCode = (typeof WORKER_FAILURE_CODES)[number];
+
 export class WorkerFailure extends Error {
   constructor(
-    readonly code:
-      | "model-unavailable"
-      | "transport-failed"
-      | "interrupted"
-      | "invalid-result"
-      | "deadline-exceeded"
-      | "output-limit"
-      | "profile-refused",
+    readonly code: WorkerFailureCode,
     readonly detail?: string,
   ) {
     super(detail ? `${code}: ${detail}` : code);

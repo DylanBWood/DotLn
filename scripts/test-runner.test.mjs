@@ -5,11 +5,19 @@ import {
   registeredTemporaryRoots,
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
-import { spawnGit, execGit, runGit } from "./lib/git.mjs";
+import { spawnGit, execGit, runGit, runGitPathList } from "./lib/git.mjs";
+import {
+  sourceImports,
+  sourceNodes,
+  sourceSyntax,
+  sourceTreeStarts,
+  sourceTrees,
+} from "../packages/skeleton/src/source-reading.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { gateLoad } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { createHash } from "node:crypto";
 import {
   chmodSync,
@@ -25,7 +33,14 @@ import {
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { delimiter, dirname, isAbsolute, join, resolve } from "node:path";
+import {
+  basename,
+  delimiter,
+  dirname,
+  isAbsolute,
+  join,
+  resolve,
+} from "node:path";
 import { pathToFileURL } from "node:url";
 import { measurementGateForRun } from "./measure-gates.mjs";
 import {
@@ -36,6 +51,7 @@ import {
   judgeRunningNode,
 } from "./lib/node-engines.mjs";
 import {
+  probeEnvironment,
   suiteEnvironment,
   withoutDrivenContext,
 } from "./lib/suite-evidence.mjs";
@@ -111,6 +127,38 @@ test("a driven worker's context never reaches a suite's environment", () => {
     ...Object.fromEntries(names.map((name) => [name, "from the worker"])),
   });
   assert.deepEqual(probe, { PATH: "fixture-path" });
+});
+
+test("a session's resident binding never reaches a suite's environment", () => {
+  // A suite runs the generated hooks against its fixtures, and the hooks carry
+  // the presence heartbeat: an inherited binding would record fixture
+  // sessions in the invoking session's resident.
+  const env = suiteEnvironment({
+    PATH: process.env.PATH,
+    DOTLN_RESIDENT_STORE: "/fixture/resident",
+    DOTLN_RESIDENT_EPISODE_ID: "fixture-episode",
+    DOTLN_FIXTURE_OTHER: "kept",
+  });
+  assert.equal(env.DOTLN_RESIDENT_STORE, undefined);
+  assert.equal(env.DOTLN_RESIDENT_EPISODE_ID, undefined);
+  assert.equal(env.DOTLN_FIXTURE_OTHER, "kept");
+  // A bounded probe, where a case runs alone, drops the store and the driven
+  // context and keeps the rest of its session's environment: the episode's
+  // identity among it, by which a resident's actor is known as one.
+  assert.deepEqual(
+    probeEnvironment({
+      PATH: "fixture-path",
+      HOME: "/fixture/home",
+      DOTLN_RESIDENT_STORE: "/fixture/resident",
+      DOTLN_RESIDENT_EPISODE_ID: "fixture-episode",
+      DOTLN_DRIVEN_WORKER: "from the worker",
+    }),
+    {
+      PATH: "fixture-path",
+      HOME: "/fixture/home",
+      DOTLN_RESIDENT_EPISODE_ID: "fixture-episode",
+    },
+  );
 });
 
 test("a gate child that finds node or npm by name runs on the selected runtime", (t) => {
@@ -2440,15 +2488,18 @@ test("stale generated evidence stops the gate before expensive fixtures", async 
   });
   assert.ok(started.includes("authority-evidence"));
   assert.ok(started.includes("index"));
-  assert.ok(!started.includes("harness-fixtures"));
-  assert.match(
-    rows.find((row) => row.name === "harness-fixtures").output,
-    /Not started after authority-evidence failed/,
+  assert.ok(!started.some((name) => name.startsWith("harness-fixtures")));
+  const shards = rows.filter((row) =>
+    row.name.startsWith("harness-fixtures:shard:"),
   );
   assert.equal(
-    rows.find((row) => row.name === "harness-fixtures").executed,
-    false,
+    shards.length,
+    suites.find((row) => row.name === "harness-fixtures").shards,
   );
+  for (const row of shards) {
+    assert.match(row.output, /Not started after authority-evidence failed/);
+    assert.equal(row.executed, false);
+  }
 });
 test("a kit formats before verifying carried code and refuses every later task on drift", async () => {
   const table = [
@@ -2593,52 +2644,47 @@ test("product suites describe protection and only declared file and case suites 
     assert.ok(row.sources.length, row.name);
   const selected = suites.filter(
     (row) =>
-      !["release", "vertical", "launchpad", "target-worktree"].includes(
-        row.name,
-      ),
+      ![
+        "release",
+        "vertical",
+        "launchpad",
+        "target-worktree",
+        "harness-fixtures",
+      ].includes(row.name),
   );
+  // The exclusive rows stand together in the expansion, so the names are
+  // compared as a set.
   assert.deepEqual(
-    expandSuiteTasks(selected, root).map((row) => row.name),
-    selected.map((row) => row.name),
+    expandSuiteTasks(selected, root)
+      .map((row) => row.name)
+      .sort(),
+    selected.map((row) => row.name).sort(),
+  );
+  const hooks = suites.find((row) => row.name === "harness-fixtures");
+  assert.deepEqual(
+    expandSuiteTasks([hooks], root).map((row) => row.name),
+    Array.from(
+      { length: hooks.shards },
+      (_, at) => `harness-fixtures:shard:${at + 1}`,
+    ),
   );
   for (const name of ["harness-fixtures", "process-debt"])
     assert.equal(suites.find((row) => row.name === name).exclusive, true);
 });
-test("vertical tasks preserve complementary coverage, guards and the two-task concurrency bound", async () => {
+test("vertical tasks are one a file and keep the row's guards and the two-task concurrency bound", async () => {
   const suite = suites.find((row) => row.name === "vertical");
   const tasks = expandSuiteTasks([suite], root);
-  assert.deepEqual(tasks.map((row) => row.command.at(-1)).sort(), [
-    "scripts/test-vertical-judgment.mjs",
-    "scripts/test-vertical.mjs",
-    "scripts/test-vertical.mjs",
-    "scripts/test-vertical.recovery.mjs",
-  ]);
-  const main = tasks.filter(
-    (row) => row.command.at(-1) === "scripts/test-vertical.mjs",
-  );
-  const statements = main.find((row) => row.name.endsWith(":statements"));
-  const workflow = main.find((row) => row.name.endsWith(":workflow"));
-  assert.equal(main.length, 2);
-  assert.equal(statements.namePattern, workflow.skipPattern);
-  assert.ok(
-    statements.command.includes(
-      `--test-name-pattern=${statements.namePattern}`,
-    ),
-  );
-  assert.ok(
-    workflow.command.includes(`--test-skip-pattern=${statements.namePattern}`),
+  assert.deepEqual(
+    tasks.map((row) => [row.name, row.command.at(-1)]),
+    [
+      "scripts/test-vertical.mjs",
+      "scripts/test-vertical-judgment.mjs",
+      "scripts/test-vertical.recovery.mjs",
+    ].map((file) => [`vertical:file:${basename(file)}`, file]),
   );
   for (const task of tasks) {
-    assert.deepEqual(
-      task.command
-        .slice(0, -1)
-        .filter(
-          (part) =>
-            !part.startsWith("--test-name-pattern=") &&
-            !part.startsWith("--test-skip-pattern="),
-        ),
-      suite.command.slice(0, -1),
-    );
+    // No task selects cases by name: each runs every case of its file.
+    assert.deepEqual(task.command.slice(0, -1), suite.command.slice(0, -1));
     assert.deepEqual(task.args, []);
     assert.equal(task.product, true);
     assert.equal(task.needs, OUTSIDE_CONFINEMENT);
@@ -2687,64 +2733,6 @@ test("vertical tasks preserve complementary coverage, guards and the two-task co
       );
   }
 });
-test("vertical task dispatch executes every declared case exactly once across partitions", async (t) => {
-  const repo = createFixtureRoot(join(tmpdir(), "dotln-vertical-dispatch-"));
-  t.after(() => rmSync(repo, { recursive: true, force: true }));
-  execGit(["init", "-q"], { cwd: repo });
-  excludeFixtureOwnership(repo);
-  mkdirSync(join(repo, "scripts"));
-  const files = [
-    "scripts/test-vertical.mjs",
-    "scripts/test-vertical-judgment.mjs",
-    "scripts/test-vertical.recovery.mjs",
-  ];
-  const matrix = [
-    "composed baseline records source-bound failure judgments: fixture",
-    "composed baseline walks requirement-voice wording: fixture",
-    "resident consumes source-bound failure judgments: fixture",
-    "healthy negative wording: fixture",
-  ];
-  const ordinary = [
-    "ordinary workflow",
-    "future workflow without a matching family",
-  ];
-  for (const file of files)
-    writeFileSync(
-      join(repo, file),
-      file === "scripts/test-vertical.mjs"
-        ? `import test from 'node:test';\n${[...matrix, ...ordinary].map((name) => `test(${JSON.stringify(name)}, () => {});`).join("\n")}\ntest('healthy negative wording: nested fixture', async t => { await t.test('nested selected case', () => {}); });\n`
-        : `import test from 'node:test'; test(${JSON.stringify(file)}, () => {});\n`,
-    );
-  const tasks = expandSuiteTasks(
-    [suites.find((row) => row.name === "vertical")],
-    repo,
-  );
-  const observed = [];
-  for (const task of tasks) {
-    const result = await executeSuite(task, repo);
-    assert.equal(result.exitCode, 0, result.output);
-    observed.push(
-      ...[...result.output.matchAll(/^\s*ok \d+ - (.+)$/gm)]
-        .map((match) => match[1])
-        .filter((name) => !name.includes("# SKIP")),
-    );
-    if (task.name.endsWith(":statements")) {
-      assert.ok(result.output.includes("nested selected case"));
-      assert.ok(!result.output.includes("ordinary workflow"));
-    }
-  }
-  assert.deepEqual(
-    observed.sort(),
-    [
-      ...matrix,
-      ...ordinary,
-      "healthy negative wording: nested fixture",
-      "nested selected case",
-      "scripts/test-vertical-judgment.mjs",
-      "scripts/test-vertical.recovery.mjs",
-    ].sort(),
-  );
-});
 test("exclusive suites without an overlap declaration run alone and shared suites use remaining lanes", async () => {
   const isolatedNames = new Set([
     "harness-fixtures",
@@ -2767,6 +2755,7 @@ test("exclusive suites without an overlap declaration run alone and shared suite
   );
   const active = new Map(),
     overlap = new Set();
+  let shardPeak = 0;
   const tasks = expandSuiteTasks(
     selected.map((row) => ({
       ...row,
@@ -2779,9 +2768,13 @@ test("exclusive suites without an overlap declaration run alone and shared suite
     concurrency: 4,
     lightTasks: new Set(),
     execute: async (row) => {
+      const shard = row.shard?.row === "harness-fixtures";
+      const shardsActive = [...active.keys()].filter((name) =>
+        name.startsWith("harness-fixtures:shard:"),
+      );
       assert.equal(
         row.gateContext.loadClass,
-        row.build || row.exclusive ? "isolated" : "shared",
+        row.build || (row.exclusive && !shard) ? "isolated" : "shared",
       );
       assert.ok(
         [...active.values()].reduce((sum, slots) => sum + slots, 0) +
@@ -2789,6 +2782,14 @@ test("exclusive suites without an overlap declaration run alone and shared suite
           4,
       );
       assert.ok(![...active.keys()].some((name) => isolatedNames.has(name)));
+      // A shard runs beside its own row's shards and beside nothing else:
+      // with no overlap declared, the four lanes are the row's.
+      if (shard) {
+        assert.equal(shardsActive.length, active.size);
+        assert.equal(row.gateContext.reservedSlots, 1);
+        assert.equal(row.gateContext.concurrency, row.shard.count);
+        shardPeak = Math.max(shardPeak, shardsActive.length + 1);
+      } else assert.equal(shardsActive.length, 0);
       if (isolatedNames.has(row.name)) {
         assert.equal(active.size, 0);
         assert.equal(row.gateContext.reservedSlots, 4);
@@ -2806,10 +2807,8 @@ test("exclusive suites without an overlap declaration run alone and shared suite
         assert.equal(row.gateContext.loadFactor, 8);
       }
       active.set(row.name, row.gateContext.reservedSlots);
-      if (active.has("harness-fixtures") && active.has("process-debt"))
-        overlap.add("hooks");
-      if (active.has("harness-fixtures") && active.has("console:fixtures"))
-        overlap.add("hook-light");
+      if (shard && active.has("process-debt")) overlap.add("hooks");
+      if (shard && active.has("console:fixtures")) overlap.add("hook-light");
       if (active.has("skeleton") && active.has("console"))
         overlap.add("heavy-pair");
       await new Promise((done) => setTimeout(done, 10));
@@ -2821,6 +2820,8 @@ test("exclusive suites without an overlap declaration run alone and shared suite
   assert.equal(overlap.has("hook-light"), false);
   assert.ok(overlap.has("heavy-pair"));
   assert.equal(overlap.has("hooks"), false);
+  // Four lanes hold the three shards at once, a lane each.
+  assert.equal(shardPeak, 3);
   for (const concurrency of [1, 2, 4]) {
     await scheduleSuites(
       [
@@ -3203,6 +3204,35 @@ test("the document gate's terms task fails a line the branch adds with a refused
       /^FAIL docs\/space dir\/notes file\.md:3: a local term in refuse mode$/mu,
     );
     assert.doesNotMatch(failed.output, /zephyrcanary/u);
+    // A passing terms task's context-mode lines are relayed as advisories
+    // are (WO-276 criterion A1): the list holds an entry in each section,
+    // one marked review and one unmarked line above both, and the branch
+    // adds a line carrying each but the refuse entry.
+    writeFileSync(
+      join(repo, "docs/control/local/terms.txt"),
+      "plainword\nrefuse:\nabsentcanary\ncontext:\nquietharbor\nreview: readword\n",
+    );
+    writeFileSync(
+      join(repo, "docs/classes.md"),
+      "# Classes\n\nA plainword line.\nA quiet-harbor line.\nA readword line.\n",
+    );
+    const printed = [];
+    const log = console.log;
+    console.log = (line) => printed.push(String(line));
+    let listed;
+    try {
+      listed = await runGate(["--document", "--serial"], repo);
+    } finally {
+      console.log = log;
+    }
+    assert.equal(listed.exitCode, 0, listed.output);
+    const relayed = printed.join("\n");
+    assert.match(
+      relayed,
+      /^PASS terms .*\n {2}\[terms\] CONTEXT docs\/classes\.md:3: a local term in context mode\n {2}\[terms\] CONTEXT docs\/classes\.md:4: a local term in context mode\n {2}\[terms\] CONTEXT docs\/classes\.md:5: a local term in context mode$/mu,
+    );
+    assert.doesNotMatch(relayed, /plainword|quiet-?harbor|readword/u);
+    rmSync(join(repo, "docs/classes.md"));
     // Without a registered list the task says so, as an advisory, and passes.
     rmSync(join(repo, "docs/control/local/terms.txt"));
     assert.equal((await runGate(["--document", "--serial"], repo)).exitCode, 0);
@@ -3219,6 +3249,160 @@ test("the document gate's terms task fails a line the branch adds with a refused
   } finally {
     rmSync(repo, { recursive: true, force: true });
   }
+});
+
+// A repository whose branch adds the given files, for the terms task run as
+// the document gate runs it: from the repository's root, against its merge
+// base with main, with the given text as the ignored private list.
+function termsBranchFixture(t, list, files) {
+  const repo = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-terms-branch-")),
+  );
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const git = (...args) =>
+    runGit(repo, ["-c", "maintenance.auto=false", ...args], {
+      exec: true,
+      trim: false,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  git("init", "-q", "-b", "main");
+  excludeFixtureOwnership(repo);
+  git("config", "user.name", "Fixture");
+  git("config", "user.email", "fixture@example.invalid");
+  writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n");
+  git("add", ".");
+  git("commit", "-qm", "Terms fixture");
+  git("switch", "-q", "-c", "wo-901");
+  mkdirSync(join(repo, "docs/control/local"), { recursive: true });
+  const write = (path, text) => writeFileSync(join(repo, path), text);
+  const setList = (text) => write("docs/control/local/terms.txt", text);
+  setList(list);
+  for (const [path, text] of Object.entries(files)) write(path, text);
+  const branch = () =>
+    spawnSync(process.execPath, [join(root, "scripts/terms.mjs"), "branch"], {
+      cwd: repo,
+      encoding: "utf8",
+    });
+  return { repo, write, setList, branch };
+}
+
+test("WO-276 criterion A1: the terms task fails one line for a refuse entry and lists a line for each context entry, sectioned, marked review or unmarked, naming no term", (t) => {
+  const lines = [
+    "# Classes",
+    "",
+    "A plainword line.",
+    "A quiet harbor line.",
+    "A readword line.",
+    "The zephyr-canary system.",
+  ];
+  const { write, branch } = termsBranchFixture(
+    t,
+    "plainword\nrefuse:\nZephyr Canary\ncontext:\nQuiet Harbor\nreview: readword\n",
+    { "docs/classes.md": `${lines.join("\n")}\n` },
+  );
+  const context = [3, 4, 5].map(
+    (line) => `CONTEXT docs/classes.md:${line}: a local term in context mode`,
+  );
+  const status = (refused) =>
+    `local-terms list: present; entries: 1 refuse, 3 context; changed files screened: 1; lines found: ${refused} refuse, 3 context`;
+  const refused = branch();
+  assert.equal(refused.status, 1);
+  assert.equal(
+    refused.stderr,
+    "FAIL docs/classes.md:6: a local term in refuse mode\n",
+  );
+  assert.equal(refused.stdout, `${[status(1), ...context].join("\n")}\n`);
+  // With the refuse entry's line gone from the branch the task passes and
+  // still lists the three.
+  write("docs/classes.md", `${lines.slice(0, 5).join("\n")}\n`);
+  const passed = branch();
+  assert.equal(passed.status, 0, passed.stderr);
+  assert.equal(passed.stderr, "");
+  assert.equal(passed.stdout, `${[status(0), ...context].join("\n")}\n`);
+  for (const result of [refused, passed])
+    assert.doesNotMatch(
+      result.stdout + result.stderr,
+      /plainword|quiet.?harbor|readword|zephyr|canary/iu,
+    );
+});
+
+test("WO-276 criterion B5: the terms task leaves out the carried parser where its bytes are the recorded ones and screens a copy changed by one byte, and a file beside it, as any added file", (t) => {
+  const carried = "scripts/lib/vendor/prettier-LICENSE";
+  const text = "Copyright the Zephyr Canary authors.\n";
+  const record = (bytes) =>
+    `${JSON.stringify({
+      schemaVersion: 1,
+      package: "prettier",
+      version: "0.0.0",
+      files: { [carried]: createHash("sha256").update(bytes).digest("hex") },
+    })}\n`;
+  const { repo, write, branch } = termsBranchFixture(
+    t,
+    "refuse:\nZephyr Canary\n",
+    {},
+  );
+  mkdirSync(join(repo, "scripts/lib/vendor"), { recursive: true });
+  write(carried, text);
+  write("scripts/lib/vendored-parser.json", record(text));
+  const proven = branch();
+  assert.equal(proven.status, 0, proven.stderr);
+  assert.equal(proven.stderr, "");
+  assert.match(proven.stdout, /changed files screened: 1; /u);
+  // One byte more and the file is this branch's text like any other.
+  write(carried, `${text}\n`);
+  const changed = branch();
+  assert.equal(changed.status, 1);
+  assert.equal(
+    changed.stderr,
+    `FAIL ${carried}:1: a local term in refuse mode\n`,
+  );
+  // A file beside the proven copy is never left out, whatever it holds.
+  write(carried, text);
+  write("scripts/lib/vendor/other-LICENSE", text);
+  const beside = branch();
+  assert.equal(beside.status, 1);
+  assert.equal(
+    beside.stderr,
+    "FAIL scripts/lib/vendor/other-LICENSE:1: a local term in refuse mode\n",
+  );
+});
+
+test("WO-276 criterion A16: the kit's example list answers its sample with the two streams the kit guide shows, and without its section lines every entry is context", (t) => {
+  const example = readFileSync(
+    join(root, "scripts/kit/terms.example.txt"),
+    "utf8",
+  );
+  const expected = (name) =>
+    readFileSync(join(root, "scripts/fixtures/terms-example", name), "utf8");
+  const { setList, branch } = termsBranchFixture(t, example, {
+    "docs/sample.md": expected("sample.md"),
+  });
+  const sectioned = branch();
+  assert.equal(sectioned.status, 1);
+  assert.equal(sectioned.stdout, expected("expected-stdout.txt"));
+  assert.equal(sectioned.stderr, expected("expected-stderr.txt"));
+  // The same entries with the two section lines removed are all context.
+  const plain = example
+    .split("\n")
+    .filter((line) => line !== "refuse:" && line !== "context:")
+    .join("\n");
+  assert.notEqual(plain, example);
+  setList(plain);
+  const unsectioned = branch();
+  assert.equal(unsectioned.status, 0, unsectioned.stderr);
+  assert.equal(unsectioned.stderr, "");
+  assert.equal(
+    unsectioned.stdout,
+    [
+      "local-terms list: present; entries: 0 refuse, 3 context; changed files screened: 1; lines found: 0 refuse, 3 context",
+      ...[1, 2, 3].map(
+        (line) =>
+          `CONTEXT docs/sample.md:${line}: a local term in context mode`,
+      ),
+      "",
+    ].join("\n"),
+  );
 });
 
 // An unclassified docs JSONL and an unstubbed document suite fail the document
@@ -8011,6 +8195,83 @@ test("WO-186 planning performance excludes reused zero durations, compares earli
   assert.equal(includingFailed[1].holds, true);
 });
 
+test("WO-276 criterion D7: the complete-run condition takes a fresh passing row of the review selection as its sample, names the selection, and reads no per-task row for a task that row does not hold", async () => {
+  const { gatePerformanceConditions } =
+    await import("./lib/planning-conditions.mjs");
+  const task = (name, durationMs) => ({
+    name,
+    executed: true,
+    exitCode: 0,
+    durationMs,
+  });
+  const row = (day, selection, tasks, more = {}) => ({
+    checkId: "npm test",
+    executed: true,
+    exitCode: 0,
+    recordedAt: `2026-10-0${day}T00:00:00Z`,
+    durationMs: 3_000_000,
+    evidenceRef: `fixture:${day}`,
+    gateSelection: selection,
+    executionMode: "fresh",
+    taskTimeline: tasks,
+    ...more,
+  });
+  const checks = [
+    // A single-suite row and a failed review row are no complete run; the
+    // tasks they ran are samples all the same.
+    row(1, "single", [task("kept", 1000), task("renamed-away", 9000)]),
+    row(2, "review", [task("kept", 1000), task("renamed-away", 9000)], {
+      exitCode: 1,
+    }),
+    row(3, "review", [task("kept", 1200), task("added", 500)]),
+  ];
+  const [complete, ...tasks] = gatePerformanceConditions(
+    checks,
+    "2026-10-04T00:00:00Z",
+  );
+  assert.equal(complete.id, "plain-gate");
+  assert.deepEqual(complete.sampleRows, [
+    { recordedAt: "2026-10-03T00:00:00Z", selection: "review", value: 3000 },
+  ]);
+  assert.equal(complete.samples, 1);
+  assert.equal(complete.value, 3000);
+  assert.equal(complete.holds, true);
+  // The newest complete row holds `kept` and `added`: the task an earlier
+  // row ran under a name that row no longer holds has no row.
+  assert.deepEqual(
+    tasks.map((entry) => entry.id),
+    ["gate-task:kept", "gate-task:added"],
+  );
+  assert.equal(tasks[0].samples, 2);
+  // Both selections are samples, each named; with no complete row there is
+  // no sample and no per-task row.
+  const both = gatePerformanceConditions(
+    [...checks, row(4, "plain", [task("kept", 1100)], { durationMs: 400_000 })],
+    "2026-10-05T00:00:00Z",
+  );
+  assert.deepEqual(
+    both[0].sampleRows.map((sample) => [sample.selection, sample.value]),
+    [
+      ["review", 3000],
+      ["plain", 400],
+    ],
+  );
+  assert.deepEqual(
+    both.slice(1).map((entry) => entry.id),
+    ["gate-task:kept"],
+  );
+  const none = gatePerformanceConditions(
+    checks.slice(0, 2),
+    "2026-10-04T00:00:00Z",
+  );
+  assert.equal(none.length, 1);
+  assert.equal(none[0].value, null);
+  assert.equal(
+    none[0].unavailable,
+    "no fresh complete rows of the plain or the review selection in thirty days",
+  );
+});
+
 test("WO-186 concurrent duplicate names and runtime skip/todo clear at execution completion", async (t) => {
   const { repo } = taskReuseFixture(t);
   writeFileSync(
@@ -9175,6 +9436,189 @@ test("host structural check refuses warning and critical samples and reports the
     assert.deepEqual(result.sample, sample);
     assert.deepEqual(result.fileEvents, fileEvents);
     assert.match(result.output, /swapBytes=1234; physicalBytes=8192/);
+    assert.doesNotMatch(result.output, /admitted on the running gate/u);
+    // A gate started inside a gate that was admitted stands on that
+    // admission at warning pressure, which the run it belongs to may itself
+    // have produced, and says so; critical pressure still refuses it, and
+    // its sample is reported whichever way it is judged.
+    const nested = checkHost(sample, { fileEvents, underRunningGate: true });
+    assert.equal(nested.exitCode, level === "critical" ? 1 : 0, level);
+    assert.deepEqual(nested.sample, sample);
+    assert.match(nested.output, new RegExp(`Host memory: ${level};`, "u"));
+    assert.equal(
+      /admitted on the running gate that started this one and holds its lanes/u.test(
+        nested.output,
+      ),
+      level === "warning",
+      level,
+    );
+  }
+});
+
+test("a gate shows the file-events daemon's sample at every start, refuses above its limit naming the restart, and a gate inside a running gate stands on that gate", async () => {
+  const { checkHost, judgeFileEventDaemon, FILE_EVENT_DAEMON_LIMIT_BYTES } =
+    await import("./structural-checks.mjs");
+  assert.equal(FILE_EVENT_DAEMON_LIMIT_BYTES, 2 ** 30);
+  const sampled = (residentBytes) => ({
+    residentBytes,
+    source: "fixture",
+    observedAt: "2026-11-13T00:00:00.000Z",
+  });
+  // A healthy daemon, small or at the limit itself: shown, and no refusal.
+  for (const bytes of [8 * 2 ** 20, 0.17 * 2 ** 30, 2 ** 30]) {
+    const judged = judgeFileEventDaemon(sampled(bytes));
+    assert.equal(judged.refused, false, String(bytes));
+    assert.equal(
+      judged.message,
+      `File-events daemon: residentBytes=${bytes}; limitBytes=1073741824`,
+    );
+  }
+  // One byte over, and the size it was found at: refused, with the reading,
+  // what it means and the one command that clears it.
+  for (const bytes of [2 ** 30 + 1, 15 * 2 ** 30]) {
+    const judged = judgeFileEventDaemon(sampled(bytes));
+    assert.equal(judged.refused, true, String(bytes));
+    for (const part of [
+      `residentBytes=${bytes}`,
+      "over the limit",
+      "only when it was restarted",
+      "needs an administrator",
+      "sudo killall fseventsd",
+    ])
+      assert.ok(judged.message.includes(part), judged.message);
+    // The same reading inside a running gate is reported and not refused.
+    const nested = judgeFileEventDaemon(sampled(bytes), {
+      underRunningGate: true,
+    });
+    assert.equal(nested.refused, false);
+    for (const part of [
+      `residentBytes=${bytes}`,
+      "over the limit",
+      "admitted on the running gate that started this one",
+      "before the next gate",
+      "sudo killall fseventsd",
+    ])
+      assert.ok(nested.message.includes(part), nested.message);
+  }
+  // No daemon on this host, a sample that could not be taken, or none
+  // given: said so, and nothing refused.
+  for (const [fileEvents, reason] of [
+    [{ residentBytes: null, source: "not-macos" }, "not-macos"],
+    [
+      {
+        residentBytes: null,
+        source: "ps",
+        unavailable: "fseventsd not identified in the RSS-first process table",
+      },
+      "fseventsd not identified in the RSS-first process table",
+    ],
+    [{}, "not sampled"],
+    [null, "not sampled"],
+    [undefined, "not sampled"],
+  ]) {
+    const judged = judgeFileEventDaemon(fileEvents);
+    assert.equal(judged.refused, false);
+    assert.equal(judged.message, `File-events daemon: no sample (${reason})`);
+  }
+  // Through the host check: its line stands under the host memory line, and
+  // it alone can refuse a host that is otherwise admitted.
+  const daemonLine = (output) =>
+    output.split("\n").find((line) => line.startsWith("File-events daemon:"));
+  const sample = {
+    level: "normal",
+    pressure: 1,
+    swapBytes: 0,
+    physicalBytes: 2 ** 36,
+    source: "fixture",
+  };
+  const options = {
+    limits: { taskBytes: 2 ** 30, hostLanes: 8 },
+    requiredPeakBytes: 0,
+  };
+  const healthy = checkHost(sample, { ...options, fileEvents: sampled(1024) });
+  assert.equal(healthy.exitCode, 0);
+  assert.equal(
+    daemonLine(healthy.output),
+    "File-events daemon: residentBytes=1024; limitBytes=1073741824",
+  );
+  assert.equal(healthy.output.split("\n").length, 5);
+  const stuck = checkHost(sample, {
+    ...options,
+    fileEvents: sampled(15 * 2 ** 30),
+  });
+  assert.equal(stuck.exitCode, 1);
+  assert.match(daemonLine(stuck.output), /sudo killall fseventsd/u);
+  assert.equal(
+    checkHost(sample, {
+      ...options,
+      fileEvents: sampled(15 * 2 ** 30),
+      underRunningGate: true,
+    }).exitCode,
+    0,
+  );
+});
+
+test("a gate tells its host check that it runs inside a running gate only where it validated an inherited lease", async () => {
+  const { hostTaskUnder } = await import("./test-runner.mjs");
+  const row = { name: "host", args: ["host"], structural: true };
+  // No lease was inherited: the task is the one the table names.
+  assert.equal(hostTaskUnder(row, null), row);
+  assert.equal(hostTaskUnder(row, undefined), row);
+  // A validated lease: the same task with the one flag, the table's row
+  // left as it was.
+  const under = hostTaskUnder(row, { file: "lease.json", record: {} });
+  assert.deepEqual(under, {
+    name: "host",
+    args: ["host", "--under-running-gate"],
+    structural: true,
+  });
+  assert.deepEqual(row.args, ["host"]);
+  // A row put in the host task's place keeps its own command whole: a
+  // fixture's stand-in is another program, and the word appended to it
+  // made Node refuse the command line in every fixture gate started inside
+  // a running gate.
+  for (const standIn of [
+    { name: "host", structural: true, command: [process.execPath, "-e", ""] },
+    {
+      name: "host",
+      structural: true,
+      command: [process.execPath, "-e", ""],
+      args: [],
+    },
+    {
+      name: "host",
+      structural: true,
+      command: [process.execPath, "fixture-host.mjs"],
+      args: ["--strict"],
+    },
+  ]) {
+    const kept = hostTaskUnder(standIn, { file: "lease.json", record: {} });
+    assert.equal(kept, standIn);
+    if (kept.command[1] !== "-e") continue;
+    const ran = spawnSync(
+      kept.command[0],
+      [...kept.command.slice(1), ...(kept.args ?? [])],
+      { encoding: "utf8" },
+    );
+    assert.equal(ran.status, 0, ran.stderr);
+  }
+  // The check takes the flag for the host mode alone, and no other word.
+  for (const [args, expected] of [
+    [["host", "--under-running-gate"], 0],
+    [["host", "--under-running-gate", "again"], 1],
+    [["host", "--anything-else"], 1],
+    [["declarations", "--under-running-gate"], 1],
+  ]) {
+    const run = spawnSync(
+      process.execPath,
+      [join(root, "scripts/structural-checks.mjs"), ...args],
+      { cwd: root, encoding: "utf8" },
+    );
+    // The host's own state decides a well-formed call; a malformed one is
+    // refused with the usage whatever the host reads.
+    if (expected)
+      assert.match(run.stderr + run.stdout, /usage: structural-checks\.mjs/u);
+    else assert.doesNotMatch(run.stderr + run.stdout, /usage:/u);
   }
 });
 
@@ -9930,7 +10374,7 @@ finally { clearInterval(poll); }
     }
 });
 
-test("launchpad files retain all 37 cases and run at most two independent deadline tasks", async () => {
+test("launchpad files run as at most two independent deadline tasks", async () => {
   const suite = suites.find((row) => row.name === "launchpad");
   const tasks = expandSuiteTasks([suite], root);
   assert.deepEqual(
@@ -9941,18 +10385,6 @@ test("launchpad files retain all 37 cases and run at most two independent deadli
       "launchpad:file:test-launchpad-seeds.mjs",
     ],
   );
-  const names = tasks.flatMap((task) =>
-    [
-      ...readFileSync(join(root, task.command.at(-1)), "utf8").matchAll(
-        /^test\(\s*"([^"]+)"/gmu,
-      ),
-    ].map((match) => match[1]),
-  );
-  const baseline = JSON.parse(
-    readFileSync(join(root, "scripts/fixtures/launchpad-cases.json"), "utf8"),
-  );
-  assert.equal(names.length, baseline.length);
-  assert.deepEqual(names.sort(), baseline.sort());
   for (const task of tasks) {
     assert.equal(task.timeoutMs, 900_000);
     assert.equal(task.loadSlots, 2);
@@ -10158,6 +10590,81 @@ test("copied fixtures use the checked declaration and directory coverage never s
   row.provided = ["scripts/entry.mjs"];
   save();
   assert.deepEqual(uncoveredFixtureInputs(repo), []);
+  // A dependency reached through a helper the fixture copies by directory
+  // (WO-276): the entry's own import is covered by the directory, and what
+  // the helper loads when it is loaded is the fixture's to hold too. What
+  // only an import() call of the helper loads is not, and a declared double
+  // of the helper is not read.
+  delete row.provided;
+  row.directories = ["scripts/lib"];
+  row.files = ["scripts/entry.mjs"];
+  mkdirSync(join(repo, "scripts/lib"));
+  mkdirSync(join(repo, "packages"));
+  writeFileSync(
+    join(repo, "scripts/entry.mjs"),
+    'import "./lib/helper.mjs";\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/lib/helper.mjs"),
+    'import "../../packages/leaf.mjs";\nexport const later = () => import("../../packages/lazy.mjs");\nconsole.log("through a helper");\n',
+  );
+  writeFileSync(join(repo, "packages/leaf.mjs"), "export {};\n");
+  writeFileSync(join(repo, "packages/lazy.mjs"), "export {};\n");
+  save();
+  assert.deepEqual(
+    uncoveredFixtureInputs(repo).map((row) => row.path),
+    ["packages/leaf.mjs"],
+  );
+  // The copy as declared fails where the check says it would.
+  const partial = join(repo, "copied-partial");
+  copyFixtureFiles(repo, partial, declaration);
+  cpSync(join(repo, "scripts/lib"), join(partial, "scripts/lib"), {
+    recursive: true,
+  });
+  assert.match(
+    spawnSync(process.execPath, ["scripts/entry.mjs"], {
+      cwd: partial,
+      encoding: "utf8",
+    }).stderr,
+    /ERR_MODULE_NOT_FOUND/u,
+  );
+  row.provided = ["scripts/lib/helper.mjs"];
+  save();
+  assert.deepEqual(uncoveredFixtureInputs(repo), []);
+  delete row.provided;
+  row.files.push("packages/leaf.mjs");
+  save();
+  assert.deepEqual(uncoveredFixtureInputs(repo), []);
+  const whole = join(repo, "copied-whole");
+  copyFixtureFiles(repo, whole, declaration);
+  cpSync(join(repo, "scripts/lib"), join(whole, "scripts/lib"), {
+    recursive: true,
+  });
+  const through = spawnSync(process.execPath, ["scripts/entry.mjs"], {
+    cwd: whole,
+    encoding: "utf8",
+  });
+  assert.equal(through.status, 0, through.stderr);
+  assert.match(through.stdout, /through a helper/u);
+  // A listed file that only an import() call of the entry reaches is read
+  // as well: what it loads when it is loaded is the fixture's to hold.
+  writeFileSync(
+    join(repo, "scripts/entry.mjs"),
+    'await import("./listed.mjs");\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/listed.mjs"),
+    'import "./lib/helper.mjs";\n',
+  );
+  row.files = ["scripts/entry.mjs", "scripts/listed.mjs"];
+  save();
+  assert.deepEqual(
+    uncoveredFixtureInputs(repo).map((row) => row.path),
+    ["packages/leaf.mjs"],
+  );
+  row.files.push("packages/leaf.mjs");
+  save();
+  assert.deepEqual(uncoveredFixtureInputs(repo), []);
 });
 
 test("priority-regression: a complete selection leads with suites whose inputs changed since the newest gate row", (t) => {
@@ -10359,11 +10866,13 @@ test("priority-regression: branch history preserves exclusive priority while fre
     failed: ["target-publish"],
   });
   const tasks = expandSuiteTasks(selected, root, "<gate-template>", { first });
-  const priority = (name) => tasks.find((row) => row.name === name).priority;
+  // The hook suite's tasks are its shards, which share one priority.
+  const named = (name) => (row) =>
+    row.name === name || row.name.startsWith(`${name}:shard:`);
+  const priority = (name) => tasks.find(named(name)).priority;
   for (const [higher, lower] of [
     ["target-publish", "runner-fixtures"],
     ["runner-fixtures", "harness-fixtures"],
-    ["harness-fixtures", "worktree-integration"],
     ["worktree-integration", "launchpad-planning"],
     ["launchpad-planning", "worktree"],
   ])
@@ -10371,6 +10880,14 @@ test("priority-regression: branch history preserves exclusive priority while fre
       priority(higher) > priority(lower),
       `${higher} must lead ${lower}`,
     );
+  // The exclusive rows share the highest priority any of them holds, the
+  // hook suite's branch lead here, and keep the order their own gave.
+  assert.equal(priority("harness-fixtures"), 300);
+  assert.equal(priority("worktree-integration"), 300);
+  assert.ok(
+    tasks.findIndex(named("harness-fixtures")) <
+      tasks.findIndex(named("worktree-integration")),
+  );
   const started = [];
   const result = await scheduleSuites(tasks, {
     concurrency: 8,
@@ -10382,16 +10899,3516 @@ test("priority-regression: branch history preserves exclusive priority while fre
     },
   });
   assert.equal(result.length, tasks.length);
-  assert.ok(
-    started.indexOf("target-publish") < started.indexOf("harness-fixtures"),
+  const hooksStarted = started.findIndex((name) =>
+    name.startsWith("harness-fixtures:shard:"),
   );
-  assert.ok(
-    started.indexOf("runner-fixtures") < started.indexOf("harness-fixtures"),
-  );
+  assert.ok(started.indexOf("target-publish") < hooksStarted);
+  assert.ok(started.indexOf("runner-fixtures") < hooksStarted);
+  assert.ok(hooksStarted < started.indexOf("worktree-integration"));
   assert.ok(
     started.indexOf("worktree-integration") <
       started.indexOf("launchpad-planning"),
   );
+});
+
+test("WO-276 criterion D1: the exclusive rows stand together under the highest priority any of them holds, ahead of a heavy row that changed since the last gate and behind a heavy row that failed last", async () => {
+  const names = [
+    "build",
+    "target-publish",
+    "runner-fixtures",
+    "harness-fixtures",
+    "process-debt",
+    "worktree-integration",
+    "sync-fixtures",
+    "launchpad-planning",
+  ];
+  const selected = suites.filter((row) => names.includes(row.name));
+  // Leads that interleaved before: an exclusive row and a heavy row both
+  // changed since the last gate, another exclusive row carries the branch
+  // lead, two carry none, and a heavy row failed last.
+  const first = suitePriorityLeads({
+    branch: ["harness-fixtures", "launchpad-planning"],
+    changed: ["process-debt", "runner-fixtures"],
+    failed: ["target-publish"],
+  });
+  const tasks = expandSuiteTasks(selected, root, "<gate-template>", { first });
+  const exclusive = tasks.filter((row) => row.exclusive);
+  const at = tasks.indexOf(exclusive[0]);
+  assert.deepEqual(tasks.slice(at, at + exclusive.length), exclusive);
+  assert.deepEqual(
+    exclusive.map((row) => row.name.replace(/:shard:\d+$/u, "")),
+    [
+      "process-debt",
+      "harness-fixtures",
+      "harness-fixtures",
+      "harness-fixtures",
+      // The two without a lead keep the order the table declares them in.
+      ...suites
+        .filter((row) =>
+          ["worktree-integration", "sync-fixtures"].includes(row.name),
+        )
+        .map((row) => row.name),
+    ],
+  );
+  const priority = (name) => tasks.find((row) => row.name === name).priority;
+  assert.ok(exclusive.every((row) => row.priority === 2200));
+  assert.equal(priority("runner-fixtures"), 2000);
+  assert.equal(priority("target-publish"), 3000);
+  // One exclusive row alone keeps its own priority.
+  assert.equal(
+    expandSuiteTasks(
+      suites.filter((row) => ["build", "process-debt"].includes(row.name)),
+      root,
+    ).find((row) => row.name === "process-debt").priority,
+    200,
+  );
+  const started = [];
+  const result = await scheduleSuites(tasks, {
+    concurrency: 8,
+    parallelism: 16,
+    lightTasks: new Set(),
+    execute: async (row) => {
+      started.push(row.name);
+      return { name: row.name, executed: true, exitCode: 0 };
+    },
+  });
+  assert.equal(result.length, tasks.length);
+  const order = started.filter((name) => name !== "build");
+  assert.equal(order[0], "target-publish");
+  assert.deepEqual(
+    order.slice(1, 1 + exclusive.length),
+    exclusive.map((row) => row.name),
+  );
+  assert.equal(order[1 + exclusive.length], "runner-fixtures");
+});
+
+test("WO-276 criterion D2: the hook suite's shards expand once each, carry their shard to their process, and are admitted together inside the row's lanes beside light peers only", async (t) => {
+  const hooks = suites.find((row) => row.name === "harness-fixtures");
+  assert.ok(hooks.shards > 1);
+  const light = ["light-1", "light-2", "light-3", "light-4"].map((name) => ({
+    name,
+    command: ["fixture"],
+  }));
+  const tasks = expandSuiteTasks(
+    [
+      barrier,
+      { name: "heavy", command: ["fixture"], priority: 500 },
+      hooks,
+      ...light,
+    ],
+    root,
+  );
+  const shards = tasks.filter((row) => row.shard);
+  assert.deepEqual(
+    shards.map((row) => [row.name, row.shard, row.group, row.groupLimit]),
+    Array.from({ length: hooks.shards }, (_, at) => [
+      `harness-fixtures:shard:${at + 1}`,
+      { row: "harness-fixtures", number: at + 1, count: hooks.shards },
+      "harness-fixtures:shards",
+      hooks.shards,
+    ]),
+  );
+  for (const row of shards) {
+    // Every shard runs the row's own files; its shard is in its environment.
+    assert.deepEqual(row.command, hooks.command);
+    assert.deepEqual(row.args, hooks.args);
+    assert.equal(row.exclusive, true);
+    assert.equal(row.overlap, hooks.overlap);
+    assert.ok(!Object.hasOwn(row, "shards"));
+  }
+  assert.throws(
+    () =>
+      validateSuites([barrier, { name: "x", command: ["fixture"], shards: 2 }]),
+    /Invalid shard count: x/u,
+  );
+  assert.throws(
+    () =>
+      validateSuites([
+        barrier,
+        { name: "x", command: ["fixture"], exclusive: true, shards: 1.5 },
+      ]),
+    /Invalid shard count: x/u,
+  );
+  for (const [concurrency, slots, together] of [
+    [8, 2, 3],
+    [4, 1, 2],
+  ]) {
+    const active = new Map();
+    let peak = 0,
+      lightBeside = 0;
+    const rows = await scheduleSuites(tasks, {
+      concurrency,
+      parallelism: 16,
+      lightTasks: new Set(light.map((row) => row.name)),
+      execute: async (row) => {
+        const shardsActive = [...active.keys()].filter((name) =>
+          name.startsWith("harness-fixtures:shard:"),
+        );
+        if (row.shard) {
+          // Beside a shard: its row's other shards and light peers.
+          assert.ok(!active.has("heavy"));
+          assert.equal(row.gateContext.reservedSlots, slots);
+          assert.equal(
+            row.gateContext.concurrency,
+            Math.min(hooks.overlap, concurrency - 1) + together,
+          );
+          peak = Math.max(peak, shardsActive.length + 1);
+        } else if (row.name === "heavy") assert.equal(shardsActive.length, 0);
+        else if (!row.build && shardsActive.length)
+          lightBeside = Math.max(
+            lightBeside,
+            active.size - shardsActive.length + 1,
+          );
+        if (row.build) return { name: row.name, executed: true, exitCode: 0 };
+        active.set(row.name, true);
+        // The first shard ends early: the lanes it frees stay the row's.
+        await new Promise((done) =>
+          setTimeout(done, row.shard ? (row.shard.number === 1 ? 10 : 60) : 15),
+        );
+        active.delete(row.name);
+        return { name: row.name, executed: true, exitCode: 0 };
+      },
+    });
+    assert.equal(rows.length, tasks.length);
+    assert.ok(rows.every((row) => row.exitCode === 0));
+    assert.equal(peak, together, `shards together at ${concurrency} lanes`);
+    assert.ok(
+      lightBeside >= 1 && lightBeside <= hooks.overlap,
+      `light peers beside the shards at ${concurrency} lanes: ${lightBeside}`,
+    );
+  }
+  // On every host size the declaration a shard's process is given passes
+  // the deadline's own validator: beside a shard run the light peers and
+  // the other shards its row's lanes hold at once, never more than the host
+  // has lanes (rolling review 7, F5).
+  for (const [parallelism, expected] of [
+    [2, 1],
+    [4, 2],
+    [8, 4],
+    [16, 5],
+  ]) {
+    const loads = [];
+    await scheduleSuites(tasks, {
+      parallelism,
+      lightTasks: new Set(light.map((row) => row.name)),
+      execute: async (row) => {
+        if (row.shard)
+          loads.push(gateLoad(suiteEnvironment({}, row.gateContext)));
+        return { name: row.name, executed: true, exitCode: 0 };
+      },
+    });
+    assert.deepEqual(
+      loads.map((load) => load.concurrency),
+      Array(hooks.shards).fill(expected),
+      `a shard's declared load at parallelism ${parallelism}`,
+    );
+  }
+  // The shard reaches the task's process, and a file that takes `test` from
+  // the helper runs each case in exactly one shard.
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-shard-dispatch-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
+  mkdirSync(join(repo, "scripts/lib"), { recursive: true });
+  cpSync(
+    join(root, "scripts/lib/test-shards.mjs"),
+    join(repo, "scripts/lib/test-shards.mjs"),
+  );
+  const titles = Array.from({ length: 24 }, (_, at) => `shard case ${at}`);
+  // A case registered through a modifier is one case too (rolling review 36).
+  const modified = Array.from({ length: 12 }, (_, at) =>
+    at % 2 ? `owed ${at}` : `held back ${at}`,
+  );
+  writeFileSync(
+    join(repo, "scripts/imported.mjs"),
+    `import test from "./lib/test-shards.mjs";\n${titles
+      .slice(12)
+      .map((name) => `test(${JSON.stringify(name)}, () => {});`)
+      .join("\n")}\n`,
+  );
+  writeFileSync(
+    join(repo, "scripts/entry.mjs"),
+    `import "./imported.mjs";\nimport test from "./lib/test-shards.mjs";\n${titles
+      .slice(0, 12)
+      .map((name) => `test(${JSON.stringify(name)}, () => {});`)
+      .join(
+        "\n",
+      )}\ntest("the shard ends with this process", () => { if (process.env.DOTLN_TEST_SHARD !== undefined) throw new Error("inherited"); });\n${modified
+      .map(
+        (name) =>
+          `test.${name.startsWith("owed") ? "todo" : "skip"}(${JSON.stringify(name)}, () => {});`,
+      )
+      .join("\n")}\n`,
+  );
+  const fixtureTasks = expandSuiteTasks(
+    [
+      {
+        name: "fixture-shards",
+        command: [process.execPath, "--test", "scripts/entry.mjs"],
+        exclusive: true,
+        shards: 3,
+      },
+    ],
+    repo,
+  );
+  const ran = [];
+  const heldOrOwed = [];
+  for (const task of fixtureTasks) {
+    const result = await executeSuite(task, repo);
+    assert.equal(result.exitCode, 0, result.output);
+    const mine = [
+      ...result.output.matchAll(/^ok \d+ - ((?:(?! # ).)+)$/gmu),
+    ].map((match) => match[1]);
+    assert.ok(mine.length > 0, `${task.name} ran no case`);
+    ran.push(...mine);
+    heldOrOwed.push(
+      ...[...result.output.matchAll(/^ok \d+ - (.+) # (?:SKIP|TODO)\b/gmu)].map(
+        (match) => match[1],
+      ),
+    );
+  }
+  const all = [...titles, "the shard ends with this process"];
+  assert.deepEqual(ran.toSorted(), all.toSorted());
+  // Each skipped or owed case registered in one shard, and the title listing
+  // names it once beside the others.
+  assert.deepEqual(heldOrOwed.toSorted(), modified.toSorted());
+  const listing = join(repo, "titles.jsonl");
+  const listed = spawnSync(process.execPath, ["scripts/entry.mjs"], {
+    cwd: repo,
+    env: { ...process.env, DOTLN_TEST_TITLES: listing },
+    encoding: "utf8",
+  });
+  assert.equal(listed.status, 0, listed.stderr);
+  assert.deepEqual(
+    readFileSync(listing, "utf8")
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line))
+      .toSorted(),
+    [...all, ...modified].toSorted(),
+  );
+  // With no shard named every case registers, so one runs by its name.
+  const single = await executeSuite(
+    {
+      name: "fixture-single",
+      command: [
+        process.execPath,
+        "--test",
+        "--test-name-pattern=^shard case 7$",
+        "scripts/entry.mjs",
+      ],
+    },
+    repo,
+  );
+  assert.equal(single.exitCode, 0, single.output);
+  assert.match(single.output, /^ok \d+ - shard case 7$/mu);
+});
+
+/** What node:test exports, and what its test function holds as members,
+ * that registers no case: the hooks and the module's utilities. */
+const NOT_REGISTERING = new Set([
+  "after",
+  "afterEach",
+  "before",
+  "beforeEach",
+  "getTestContext",
+  "run",
+  "mock",
+  "assert",
+  "snapshot",
+]);
+/** What node:test exports that registers a case or a suite of them, and
+ * the members of a registrar that register as it does: every one that is
+ * no hook and no utility, so a member node adds later is read as
+ * registering and is never passed over. */
+const REGISTERING = { has: (name) => !NOT_REGISTERING.has(name) };
+/** Those of them the family below runs under node, wherever the node it
+ * runs under has them: what each registers is held to node. */
+const HELD_REGISTERING = [
+  "test",
+  "it",
+  "describe",
+  "suite",
+  "skip",
+  "only",
+  "todo",
+  "expectFailure",
+];
+/** What the kit's shard helper exports that registers a case: `test`, by
+ * name and as its default, which it hands on to node:test. */
+const SHARD_REGISTERING = new Set(["test", "default"]);
+/** An expression without the parentheses written around it. */
+const bare = (K, node) => {
+  while (node.kind === K.ParenthesizedExpression) node = node.expression;
+  return node;
+};
+/** A member taken by a name the source spells, `a.b` or `a["b"]` with a
+ * literal key: its object, without parentheses, and the name. Null for
+ * anything else, a member taken by a computed key among them. */
+const spelledMember = (K, node) =>
+  node.kind === K.PropertyAccessExpression
+    ? { object: bare(K, node.expression), name: node.name.text }
+    : node.kind === K.ElementAccessExpression &&
+        [K.StringLiteral, K.NoSubstitutionTemplateLiteral].includes(
+          node.argumentExpression.kind,
+        )
+      ? { object: bare(K, node.expression), name: node.argumentExpression.text }
+      : null;
+/** The specifier of the module an expression awaits where it imports it,
+ * where the specifier is a text `fixed` gives (a literal, or a name fixed to
+ * one); undefined for anything else. */
+const awaitedImport = (K, node, fixed) => {
+  const awaited =
+    node.kind === K.AwaitExpression ? bare(K, node.expression) : undefined;
+  const [specifier] =
+    awaited?.kind === K.CallExpression &&
+    awaited.expression.kind === K.ImportKeyword
+      ? awaited.arguments
+      : [];
+  return specifier ? fixed(specifier) : undefined;
+};
+/** Whether a token is an assignment: `=`, a compound one or a logical one. */
+const assigns = (K, token) =>
+  token.kind >= K.FirstAssignment && token.kind <= K.LastAssignment;
+/** The names an assignment's left side gives a value to, as the nodes that
+ * name them: a name; each name of a destructuring; and for a member written
+ * on an object, the object's own name, since what is written on it later
+ * is reached through it (left out where `members` is false: the object
+ * itself is given no other value). */
+const assignmentTargets = (K, left, into = [], members = true) => {
+  const node = bare(K, left);
+  if (node.kind === K.Identifier) into.push(node);
+  else if (
+    node.kind === K.PropertyAccessExpression ||
+    node.kind === K.ElementAccessExpression
+  ) {
+    if (members) assignmentTargets(K, node.expression, into, members);
+  } else if (node.kind === K.ArrayLiteralExpression)
+    for (const element of node.elements)
+      assignmentTargets(
+        K,
+        element.kind === K.SpreadElement ? element.expression : element,
+        into,
+        members,
+      );
+  else if (node.kind === K.ObjectLiteralExpression)
+    for (const property of node.properties) {
+      if (property.kind === K.PropertyAssignment)
+        assignmentTargets(K, property.initializer, into, members);
+      else if (property.kind === K.ShorthandPropertyAssignment)
+        into.push(property.name);
+      else if (property.kind === K.SpreadAssignment)
+        assignmentTargets(K, property.expression, into, members);
+    }
+  else if (
+    node.kind === K.BinaryExpression &&
+    node.operatorToken.kind === K.EqualsToken
+  )
+    assignmentTargets(K, node.left, into, members);
+  return into;
+};
+/** Which declaration each name of a file stands for, by the scopes the
+ * language gives it: a module's imports and top-level declarations; a
+ * function's parameters and its `var`s; a block's `let`, `const`, class
+ * and function declarations; a loop's own declarations; a catch clause's
+ * variable; and the name a function or class expression has inside itself.
+ * `key` answers, for a name written as a use or as a declaration, a text
+ * that two names share exactly when they stand for one declaration, with
+ * every name the file does not declare sharing one for its spelling; and
+ * for a name that is no use of a variable (a member's name, a property's
+ * key, a label) a text nothing else has. `reference` says which it is. */
+const fileBindings = (file) => {
+  const { SyntaxKind: K, NodeFlags } = sourceSyntax();
+  const FUNCTIONS = functionKinds(K);
+  const BLOCKS = new Set([
+    K.SourceFile,
+    K.Block,
+    K.CaseBlock,
+    K.ModuleBlock,
+    K.ClassStaticBlockDeclaration,
+  ]);
+  const LOOPS = new Set([K.ForStatement, K.ForOfStatement, K.ForInStatement]);
+  const scopes = new Map();
+  const home = new Map();
+  // The keys of names a scope declares more than once (a `var` again, a
+  // `var` and a function): each such name has had more than one value.
+  const redeclared = new Set();
+  const declare = (scope, identifier) => {
+    home.set(identifier, scope);
+    if (!scopes.has(scope)) scopes.set(scope, new Map());
+    const first = scopes.get(scope).get(identifier.text);
+    if (first) redeclared.add(`${identifier.text}@${first.pos}`);
+    else scopes.get(scope).set(identifier.text, identifier);
+  };
+  const enclosing = (node, is) => {
+    for (let at = node.parent; at; at = at.parent) if (is(at)) return at;
+    return file;
+  };
+  const block = (node) =>
+    enclosing(node, (at) => BLOCKS.has(at.kind) || FUNCTIONS.has(at.kind));
+  // Where a `var` belongs: the module, a static block, or a function's
+  // body, which is a scope apart from its parameters, so that a
+  // parameter's default value does not see the body's own `var`.
+  const body = (node) => {
+    const holder = enclosing(
+      node,
+      (at) =>
+        at.kind === K.SourceFile ||
+        at.kind === K.ClassStaticBlockDeclaration ||
+        FUNCTIONS.has(at.kind),
+    );
+    return holder.body?.kind === K.Block ? holder.body : holder;
+  };
+  const bound = (pattern, into = []) => {
+    if (pattern.kind === K.Identifier) into.push(pattern);
+    else
+      for (const element of pattern.elements ?? [])
+        if (element.name) bound(element.name, into);
+    return into;
+  };
+  for (const node of sourceNodes(file)) {
+    if (node.kind === K.ImportClause) {
+      if (node.name) declare(file, node.name);
+    } else if ([K.NamespaceImport, K.ImportSpecifier].includes(node.kind))
+      declare(file, node.name);
+    else if (node.kind === K.VariableDeclaration) {
+      const list = node.parent;
+      const scope =
+        list.kind === K.CatchClause
+          ? list
+          : !(list.flags & (NodeFlags.Let | NodeFlags.Const))
+            ? body(node)
+            : LOOPS.has(list.parent.kind)
+              ? list.parent
+              : block(list);
+      for (const identifier of bound(node.name)) declare(scope, identifier);
+    } else if (node.kind === K.Parameter) {
+      for (const identifier of bound(node.name))
+        declare(node.parent, identifier);
+    } else if (
+      [
+        K.FunctionDeclaration,
+        K.ClassDeclaration,
+        K.EnumDeclaration,
+        K.ModuleDeclaration,
+        K.ImportEqualsDeclaration,
+      ].includes(node.kind)
+    ) {
+      if (node.name?.kind === K.Identifier) declare(block(node), node.name);
+    } else if ([K.FunctionExpression, K.ClassExpression].includes(node.kind)) {
+      if (node.name) declare(node, node.name);
+    }
+  }
+  const NAMED = new Set([
+    K.PropertyAccessExpression,
+    K.PropertyAssignment,
+    K.MethodDeclaration,
+    K.PropertyDeclaration,
+    K.GetAccessor,
+    K.SetAccessor,
+    K.PropertySignature,
+    K.MethodSignature,
+    K.EnumMember,
+  ]);
+  const reference = (identifier) => {
+    const parent = identifier.parent;
+    if (!parent) return false;
+    if (NAMED.has(parent.kind) && parent.name === identifier) return false;
+    if (parent.kind === K.QualifiedName && parent.right === identifier)
+      return false;
+    if (
+      [K.BindingElement, K.ImportSpecifier].includes(parent.kind) &&
+      parent.propertyName === identifier
+    )
+      return false;
+    if (
+      parent.kind === K.ExportSpecifier &&
+      parent.propertyName &&
+      parent.name === identifier
+    )
+      return false;
+    return ![
+      K.LabeledStatement,
+      K.BreakStatement,
+      K.ContinueStatement,
+      K.MetaProperty,
+    ].includes(parent.kind);
+  };
+  const keys = new Map();
+  const key = (identifier) => {
+    if (keys.has(identifier)) return keys.get(identifier);
+    let declared = null;
+    let found = `\0${identifier.text}`;
+    if (home.has(identifier))
+      declared = scopes.get(home.get(identifier)).get(identifier.text);
+    else if (reference(identifier))
+      for (let at = identifier.parent; at && !declared; at = at.parent)
+        declared = scopes.get(at)?.get(identifier.text) ?? null;
+    if (home.has(identifier) || reference(identifier))
+      found = declared
+        ? `${identifier.text}@${declared.pos}`
+        : `${identifier.text}@`;
+    keys.set(identifier, found);
+    return found;
+  };
+  return { key, reference, redeclared };
+};
+/** The text a node is fixed to in a file: a literal's own, and that of a
+ * name declared with `const` or `let`, to a literal, that the file never
+ * gives another value (by an assignment of any kind, an increment or a
+ * loop). Undefined for anything else: a `var`, which a use can come
+ * before; a name given a second value; a name that stands for another
+ * declaration than the one with the text. Its `assigned` are the names the
+ * file gives another value after declaring them. */
+const fixedTexts = (file, key) => {
+  const { SyntaxKind: K, NodeFlags } = sourceSyntax();
+  const literal = (node) =>
+    node?.kind === K.StringLiteral ||
+    node?.kind === K.NoSubstitutionTemplateLiteral;
+  const constants = new Map();
+  const assigned = new Set();
+  const assign = (left) => {
+    for (const target of assignmentTargets(K, left, [], false))
+      assigned.add(key(target));
+  };
+  for (const node of sourceNodes(file)) {
+    if (
+      node.kind === K.VariableDeclaration &&
+      node.name.kind === K.Identifier &&
+      literal(node.initializer) &&
+      node.parent.kind === K.VariableDeclarationList &&
+      node.parent.flags & (NodeFlags.Let | NodeFlags.Const)
+    )
+      constants.set(key(node.name), node.initializer.text);
+    if (node.kind === K.BinaryExpression && assigns(K, node.operatorToken))
+      assign(node.left);
+    if (
+      [K.PrefixUnaryExpression, K.PostfixUnaryExpression].includes(node.kind) &&
+      [K.PlusPlusToken, K.MinusMinusToken].includes(node.operator)
+    )
+      assign(node.operand);
+    if (
+      [K.ForOfStatement, K.ForInStatement].includes(node.kind) &&
+      node.initializer.kind !== K.VariableDeclarationList
+    )
+      assign(node.initializer);
+  }
+  return Object.assign(
+    (node) =>
+      literal(node)
+        ? node.text
+        : node?.kind === K.Identifier && !assigned.has(key(node))
+          ? constants.get(key(node))
+          : undefined,
+    { assigned },
+  );
+};
+/** The kinds of node whose body runs when it is called, not where it is
+ * written. */
+const functionKinds = (K) =>
+  new Set([
+    K.ArrowFunction,
+    K.FunctionExpression,
+    K.FunctionDeclaration,
+    K.MethodDeclaration,
+    K.Constructor,
+    K.GetAccessor,
+    K.SetAccessor,
+  ]);
+/** The registering exports of a module a suite imports, or null for a
+ * module that registers nothing: node:test, and the shard helper by its
+ * file's name wherever the suite stands. */
+const registeringExports = (specifier) =>
+  specifier === "node:test"
+    ? REGISTERING
+    : /(?:^|\/)test-shards\.mjs$/u.test(specifier)
+      ? SHARD_REGISTERING
+      : null;
+/** How a read suite file registers its cases. Every name is read as the
+ * declaration it stands for (`fileBindings`), so the tables here hold
+ * declarations and two things of one spelling are two. `names` maps each
+ * declaration a case is registered through to the place of the title among
+ * its arguments. They are `test` where the file does not show what it is
+ * (undeclared, imported from any module, or taken at the top level out of
+ * a call's result), whatever the file imports from node:test or from the
+ * shard helper (the default export under any name; a registering export
+ * under any alias; a member of the module's namespace, of a registrar or of
+ * the module awaited where it is imported, to any depth, taken by a member
+ * access, by a literal key or by a destructuring), and the file's own
+ * functions that hand a parameter on to one of these as its title, found to
+ * a fixed point, so a function declared after its caller is one too.
+ * `registration` answers, for a call or a tagged template, the node of its
+ * title where it registers a case (null where it names none the rule can
+ * read) and undefined where it registers nothing. */
+function registrars(read) {
+  const K = sourceSyntax().SyntaxKind;
+  const { key, reference, redeclared } = fileBindings(read.file);
+  const fixed = fixedTexts(read.file, key);
+  // A name the file gives a second value, by an assignment or by declaring
+  // it again, is not read as what its first value was: it is no registrar,
+  // no namespace and no function of the file's whose calls are counted.
+  // Where one of its values names a registrar it is a derived name, below.
+  const mutable = (name) => fixed.assigned.has(name) || redeclared.has(name);
+  const FUNCTIONS = functionKinds(K);
+  const holdsCall = (value) => {
+    let any = false;
+    const visit = (node) => {
+      if (any || FUNCTIONS.has(node.kind)) return;
+      if (node.kind === K.CallExpression) any = true;
+      else node.forEachChild(visit);
+    };
+    visit(value);
+    return any;
+  };
+  // `test` is read as a registrar by its name where the file declares no
+  // such name. Where it imports one from a module that is not the test
+  // module, or takes one at its top level out of a call's result, what it
+  // is cannot be read: such a `test` is a derived name (`unshown`, made
+  // one below unless a read form shows it to be a registrar), so what is
+  // called through it is counted as unread and never reported. A `test`
+  // the file declares otherwise, a parameter, a local, a function of its
+  // own, is what it is declared as.
+  const names = new Map([["test@", 0]]);
+  const unshown = [];
+  const patternNames = (pattern, into = []) => {
+    if (pattern.kind === K.Identifier) into.push(pattern);
+    else
+      for (const element of pattern.elements ?? [])
+        if (element.name) patternNames(element.name, into);
+    return into;
+  };
+  for (const statement of read.file.statements) {
+    const seeded =
+      statement.kind === K.ImportDeclaration
+        ? registeringExports(statement.moduleSpecifier.text)
+          ? []
+          : [
+              statement.importClause?.name,
+              ...(statement.importClause?.namedBindings?.elements ?? []).map(
+                (element) => element.name,
+              ),
+            ]
+        : statement.kind === K.VariableStatement
+          ? statement.declarationList.declarations
+              .filter(
+                (declaration) =>
+                  declaration.initializer && holdsCall(declaration.initializer),
+              )
+              .flatMap((declaration) => patternNames(declaration.name))
+          : [];
+    for (const name of seeded)
+      if (name?.text === "test") unshown.push(key(name));
+  }
+  const namespaces = new Map();
+  // Names the file makes from the test module, a registrar or a namespace
+  // in a way that is none of the forms read here (found last, below).
+  const derived = new Set();
+  for (const statement of read.file.statements) {
+    if (statement.kind !== K.ImportDeclaration) continue;
+    const registering = registeringExports(statement.moduleSpecifier.text);
+    if (!registering) continue;
+    const clause = statement.importClause;
+    if (clause?.name) names.set(key(clause.name), 0);
+    const bindings = clause?.namedBindings;
+    if (bindings?.kind === K.NamespaceImport)
+      namespaces.set(key(bindings.name), registering);
+    else
+      for (const element of bindings?.elements ?? [])
+        if (registering.has((element.propertyName ?? element.name).text))
+          names.set(key(element.name), 0);
+  }
+  // What an expression is where it is a registrar by the forms read here:
+  // a name of one, a registering export of a namespace or of the module
+  // awaited in place, or a member of any of these, to any depth, that is
+  // no hook and no utility (`test.skip`, `ns.test`, `ns["test"]["skip"]`,
+  // `test.describe.only`). It answers the place of the title among the
+  // arguments, and the name at its root where that is one of `names`.
+  const registrar = (expression) => {
+    const chain = [];
+    let root = bare(K, expression);
+    for (
+      let taken = spelledMember(K, root);
+      taken;
+      taken = spelledMember(K, root)
+    ) {
+      chain.unshift(taken.name);
+      root = taken.object;
+    }
+    const module = awaitedImport(K, root, fixed);
+    const exported =
+      root.kind === K.Identifier && namespaces.has(key(root))
+        ? namespaces.get(key(root))
+        : module !== undefined
+          ? registeringExports(module)
+          : undefined;
+    if (exported !== undefined)
+      return exported &&
+        chain.length &&
+        exported.has(chain[0]) &&
+        !chain.slice(1).some((name) => NOT_REGISTERING.has(name))
+        ? { index: 0 }
+        : undefined;
+    return root.kind === K.Identifier &&
+      names.has(key(root)) &&
+      !chain.some((name) => NOT_REGISTERING.has(name))
+      ? { index: names.get(key(root)), root: key(root) }
+      : undefined;
+  };
+  // A registrar used as a template's tag registers a case too, under no
+  // title the rule can read.
+  const calleeOf = (call) =>
+    call.kind === K.TaggedTemplateExpression ? call.tag : call.expression;
+  const registration = (call) => {
+    const direct = registrar(calleeOf(call));
+    if (direct) return call.arguments?.[direct.index] ?? null;
+    // None of the read forms. A callee that still reaches a registrar
+    // registers a case the rule cannot read, which is counted as unread
+    // and never passed over: a derived name or a member of one; a member
+    // of a registrar or of a namespace taken by a computed key, which may
+    // be any of them; and any other expression that names the test module,
+    // a registrar, a namespace or a derived name (one of two chosen in
+    // place, the last of a sequence, an element of a list). A hook or a
+    // utility taken by its spelled name registers nothing.
+    let root = bare(K, calleeOf(call));
+    let computed = false;
+    let spared = false;
+    for (;;) {
+      const taken = spelledMember(K, root);
+      if (taken) {
+        spared ||= NOT_REGISTERING.has(taken.name);
+        root = taken.object;
+      } else if (root.kind === K.ElementAccessExpression) {
+        computed = true;
+        root = bare(K, root.expression);
+      } else break;
+    }
+    if (root.kind === K.Identifier && derived.has(key(root))) return null;
+    if (spared) return undefined;
+    if (root.kind === K.Identifier)
+      return computed && (names.has(key(root)) || namespaces.has(key(root)))
+        ? null
+        : undefined;
+    return mentions(root) ? null : undefined;
+  };
+  // The file's own functions, wherever they are declared.
+  const functions = [];
+  const inner = new Map();
+  for (const node of sourceNodes(read.file)) {
+    if (
+      node.kind === K.FunctionDeclaration &&
+      node.name &&
+      node.body &&
+      !mutable(key(node.name))
+    )
+      functions.push([key(node.name), node]);
+    if (
+      node.kind === K.VariableDeclaration &&
+      node.name.kind === K.Identifier &&
+      [K.ArrowFunction, K.FunctionExpression].includes(
+        node.initializer?.kind,
+      ) &&
+      !mutable(key(node.name))
+    ) {
+      functions.push([key(node.name), node.initializer]);
+      // The name a function expression has inside itself is that function.
+      if (node.initializer.name)
+        inner.set(key(node.name), key(node.initializer.name));
+    }
+  }
+  // Whether a value names the test module, a registrar, a namespace or a
+  // derived name: what makes a name derived (below), and a callee unread.
+  const own = new Set(functions.map(([name]) => name));
+  const mentions = (value) => {
+    let found = false;
+    const visit = (node) => {
+      if (found) return;
+      // A function written inside the value has parameters of its own,
+      // which may bear a registrar's name; what it holds is not the value.
+      if (
+        [
+          K.ArrowFunction,
+          K.FunctionExpression,
+          K.FunctionDeclaration,
+          K.MethodDeclaration,
+        ].includes(node.kind)
+      )
+        return;
+      // The result of a registration is no registrar, and its arguments
+      // are the case's own.
+      if (
+        [K.CallExpression, K.TaggedTemplateExpression].includes(node.kind) &&
+        registration(node) !== undefined
+      )
+        return;
+      // A module that registers, imported or required in place by a
+      // specifier the file fixes; and the test module handed by its name
+      // to any call at all, which is how it is required under another name
+      // or asked of the process. A path in a list is neither.
+      if (node.kind === K.CallExpression) {
+        const callee = node.expression;
+        const loads =
+          callee.kind === K.ImportKeyword ||
+          (callee.kind === K.Identifier && callee.text === "require");
+        if (
+          node.arguments.some((argument) => {
+            const specifier = fixed(argument);
+            return (
+              specifier !== undefined &&
+              (specifier === "node:test" ||
+                (loads && registeringExports(specifier)))
+            );
+          })
+        ) {
+          found = true;
+          return;
+        }
+      }
+      if (
+        node.kind === K.Identifier &&
+        reference(node) &&
+        !own.has(key(node)) &&
+        (names.has(key(node)) ||
+          namespaces.has(key(node)) ||
+          derived.has(key(node)))
+      ) {
+        found = true;
+        return;
+      }
+      // A member's name and a property's key are no uses of a name, and
+      // a hook or a utility taken from a registrar is no registrar.
+      if (node.kind === K.PropertyAccessExpression) {
+        if (!NOT_REGISTERING.has(node.name.text)) visit(node.expression);
+      } else if (node.kind === K.PropertyAssignment) visit(node.initializer);
+      else node.forEachChild(visit);
+    };
+    visit(value);
+    return found;
+  };
+  // What one call of a registrar registers at the top level: for node:test's
+  // own, its first argument once; for a function of the file's, each
+  // argument its body hands on as a title, as often as the body hands that
+  // parameter on (a hand-on inside a loop counting twice, and one to
+  // another such function as often as that one registers). What stands
+  // inside a registration's own arguments is a nested case and is not read.
+  const forwards = new Map();
+  // A registrar under another name: a variable initialized with one, with
+  // a member of one or with a registering member of a namespace registers
+  // as it does, and so does a name given to one of the file's own
+  // functions that hands a title on. Read until nothing is added, so that
+  // a name given to such a name is one too; it answers whether it added
+  // any, since a function found to hand a title on may have a name of this
+  // kind that was not one a round before.
+  const aliases = () => {
+    let any = false;
+    for (let added = true; added;) {
+      added = false;
+      for (const node of sourceNodes(read.file)) {
+        if (node.kind !== K.VariableDeclaration || !node.initializer) continue;
+        const source = bare(K, node.initializer);
+        const imported = awaitedImport(K, source, fixed);
+        if (node.name.kind === K.ObjectBindingPattern) {
+          // A destructuring gives each registering member a name of the
+          // file's own: of a module's namespace, of the module awaited
+          // where it is imported, or of a registrar.
+          const registering =
+            source.kind === K.Identifier && namespaces.has(key(source))
+              ? namespaces.get(key(source))
+              : imported !== undefined
+                ? registeringExports(imported)
+                : registrar(source)
+                  ? REGISTERING
+                  : null;
+          for (const element of registering ? node.name.elements : []) {
+            if (
+              element.name.kind !== K.Identifier ||
+              names.has(key(element.name)) ||
+              mutable(key(element.name)) ||
+              !registering.has((element.propertyName ?? element.name).text)
+            )
+              continue;
+            names.set(key(element.name), 0);
+            added = any = true;
+          }
+          continue;
+        }
+        if (
+          node.name.kind !== K.Identifier ||
+          names.has(key(node.name)) ||
+          mutable(key(node.name))
+        )
+          continue;
+        // A name given to a module's namespace, or to the module awaited
+        // where it is imported, is that namespace under the name, and a
+        // name given to that one is too.
+        const namespace =
+          source.kind === K.Identifier && namespaces.has(key(source))
+            ? namespaces.get(key(source))
+            : imported !== undefined
+              ? registeringExports(imported)
+              : undefined;
+        if (namespace !== undefined) {
+          if (namespace && !namespaces.has(key(node.name))) {
+            namespaces.set(key(node.name), namespace);
+            added = any = true;
+          }
+          continue;
+        }
+        const given = registrar(source);
+        if (given) {
+          names.set(key(node.name), given.index);
+          if (given.root && forwards.has(given.root))
+            forwards.set(key(node.name), forwards.get(given.root));
+          added = any = true;
+        }
+      }
+    }
+    return any;
+  };
+  aliases();
+  // Each name a variable gives to another name, as [the name, what it was
+  // given]: a function's forwarding, read again in a later round, is its
+  // alias's too.
+  const aliasTargets = () =>
+    [...sourceNodes(read.file)]
+      .filter(
+        (node) =>
+          node.kind === K.VariableDeclaration &&
+          node.name.kind === K.Identifier &&
+          node.initializer &&
+          bare(K, node.initializer).kind === K.Identifier,
+      )
+      .map((node) => [key(node.name), key(bare(K, node.initializer))]);
+  const registrations = (call) => {
+    const first = registration(call);
+    if (first === undefined) return undefined;
+    // A function's name is the name whether or not it is written in
+    // parentheses, here as where its call sites are collected.
+    const callee = bare(K, calleeOf(call));
+    const own =
+      callee.kind === K.Identifier ? forwards.get(key(callee)) : undefined;
+    return own
+      ? [...own].map(([index, times]) => ({
+          title: call.arguments?.[index] ?? null,
+          times,
+        }))
+      : [{ title: first, times: 1 }];
+  };
+  const LOOPS = loopKinds(K);
+  const handsOn = (body, parameters) => {
+    const handed = new Map();
+    const visit = (node, weight) => {
+      if (node.kind === K.CallExpression) {
+        const registered = registrations(node);
+        if (registered) {
+          for (const { title, times } of registered) {
+            const index =
+              title?.kind === K.Identifier
+                ? parameters.indexOf(key(title))
+                : -1;
+            if (index >= 0)
+              handed.set(
+                index,
+                Math.min(1_000_000, (handed.get(index) ?? 0) + weight * times),
+              );
+          }
+          // The callee is read; the arguments are the case's own.
+          visit(node.expression, weight);
+          return;
+        }
+        const callee = node.expression;
+        if (ITERATING.has(spelledMember(K, bare(K, callee))?.name)) {
+          visit(callee, weight);
+          for (const argument of node.arguments) visit(argument, 2);
+          return;
+        }
+      }
+      const inner = LOOPS.has(node.kind) ? 2 : weight;
+      node.forEachChild((child) => visit(child, inner));
+    };
+    visit(body, 1);
+    return handed;
+  };
+  // Every function is read again until no reading changes: one that hands
+  // a title on through a function declared after it is known for what it
+  // is only once that one is. A function that hands a title to itself
+  // never settles; the rounds end and leave it at a count above one.
+  const settled = (handed, before) =>
+    handed.size === before?.size &&
+    [...handed].every(([index, times]) => before.get(index) === times);
+  for (
+    let round = 0, grew = true;
+    grew && round <= functions.length + 1;
+    round++
+  ) {
+    grew = false;
+    for (const [name, written] of functions) {
+      const handed = handsOn(
+        written.body,
+        written.parameters.map((parameter) =>
+          parameter.name.kind === K.Identifier ? key(parameter.name) : null,
+        ),
+      );
+      if (!handed.size || settled(handed, forwards.get(name))) continue;
+      names.set(name, [...handed.keys()][0]);
+      forwards.set(name, handed);
+      if (inner.has(name)) {
+        names.set(inner.get(name), [...handed.keys()][0]);
+        forwards.set(inner.get(name), handed);
+      }
+      grew = true;
+    }
+    // A name given to a function this round found, or whose forwarding
+    // this round changed.
+    for (const [alias, target] of aliasTargets())
+      if (
+        forwards.has(target) &&
+        forwards.get(alias) !== forwards.get(target)
+      ) {
+        forwards.set(alias, forwards.get(target));
+        grew = true;
+      }
+    if (aliases()) grew = true;
+  }
+  // The stopping condition of this reading. A name the file declares or
+  // assigns with a value that mentions the test module, a registrar, a
+  // namespace or another such name, and that is none of the forms read
+  // above, is derived: a conditional, a container, a wrapper's result, a
+  // required module, a reassignment. What is registered through it is
+  // counted as unread. The rule stays silent only where a registrar
+  // reaches a call by a route no declaration or assignment of the file
+  // or callee names: a function's parameter or return value, a global,
+  // another module, and a module loaded by a specifier the file computes.
+  const bound = (name, into) => {
+    if (name.kind === K.Identifier) into.push(key(name));
+    else
+      for (const element of name.elements ?? [])
+        if (element.name) bound(element.name, into);
+    return into;
+  };
+  for (const name of unshown)
+    if (!names.has(name) && !namespaces.has(name) && !own.has(name))
+      derived.add(name);
+  for (let grew = true; grew;) {
+    grew = false;
+    const give = (name, value) => {
+      if (
+        names.has(name) ||
+        namespaces.has(name) ||
+        derived.has(name) ||
+        own.has(name) ||
+        !mentions(value)
+      )
+        return;
+      derived.add(name);
+      grew = true;
+    };
+    for (const node of sourceNodes(read.file)) {
+      if (
+        node.kind === K.VariableDeclaration &&
+        node.initializer &&
+        ![K.ArrowFunction, K.FunctionExpression].includes(node.initializer.kind)
+      )
+        for (const name of bound(node.name, [])) give(name, node.initializer);
+      // An assignment of any kind, to a name, to the names of a
+      // destructuring or to a member of an object, which is then reached
+      // through the object.
+      if (node.kind === K.BinaryExpression && assigns(K, node.operatorToken))
+        for (const target of assignmentTargets(K, node.left))
+          give(key(target), node.right);
+      // A class that holds one in a field, by its declared name or by
+      // the name its expression has inside itself, and a namespace that
+      // holds one; a module imported by an assignment.
+      if (
+        [K.ClassDeclaration, K.ClassExpression].includes(node.kind) &&
+        node.name
+      )
+        give(key(node.name), node);
+      // What a catch clause binds, where its try block names one as a
+      // value: it may be what was thrown.
+      if (
+        node.kind === K.CatchClause &&
+        node.variableDeclaration &&
+        node.parent.kind === K.TryStatement
+      )
+        for (const name of bound(node.variableDeclaration.name, []))
+          give(name, node.parent.tryBlock);
+      if (
+        node.kind === K.ModuleDeclaration &&
+        node.name.kind === K.Identifier &&
+        node.body
+      )
+        give(key(node.name), node.body);
+      if (
+        node.kind === K.ImportEqualsDeclaration &&
+        node.moduleReference.kind === K.ExternalModuleReference &&
+        registeringExports(fixed(node.moduleReference.expression) ?? "")
+      )
+        derived.add(key(node.name));
+      // A loop's variable, where the loop runs over them.
+      if (
+        [K.ForOfStatement, K.ForInStatement].includes(node.kind) &&
+        node.initializer.kind === K.VariableDeclarationList
+      )
+        for (const declaration of node.initializer.declarations)
+          for (const name of bound(declaration.name, []))
+            give(name, node.expression);
+    }
+  }
+  return { registrations, functions, fixed, key, reference };
+}
+/** The statements that can run their body more than once, and the array
+ * methods that can call what they are handed more than once. */
+const loopKinds = (K) =>
+  new Set([
+    K.ForStatement,
+    K.ForOfStatement,
+    K.ForInStatement,
+    K.WhileStatement,
+    K.DoStatement,
+  ]);
+const ITERATING = new Set([
+  "forEach",
+  "map",
+  "flatMap",
+  "filter",
+  "find",
+  "some",
+  "every",
+  "reduce",
+]);
+/** The titles a read suite file registers at its top level, where a name
+ * pattern selects a case, each as often as the file's text can register it.
+ * The reading is of the text, not of what runs: every call that registers a
+ * case counts unless it stands inside another such call's arguments, which
+ * is a nested case, or inside a string, which is no code. So a registration
+ * in a block, a guard, a `switch`, an expression or a function the module
+ * calls is one; one inside a loop, or inside the callback an array's
+ * iteration is handed, counts twice, since it can run more than once; and
+ * one inside a function of the file's own counts once for each time the
+ * file's text calls that function, a call made inside another such function
+ * counting as often as that one is called in turn; and a call of a function
+ * that hands arguments on as titles counts each as often as that function
+ * registers it at the top level, a case it registers inside another's body
+ * being nested and not counted. A title is a string, a template with no
+ * substitution, or a name the file binds once to either; a title built
+ * from a substitution is not read. Two registrations of one title on
+ * branches that never both run are counted as two, which asks an author
+ * for two titles and never hides a repeat. */
+function topLevelTitles(read) {
+  const K = sourceSyntax().SyntaxKind;
+  const { registrations, functions, fixed, key, reference } = registrars(read);
+  const literal = (node) => (node ? fixed(node) : undefined);
+  const LOOPS = loopKinds(K);
+  const FUNCTIONS = functionKinds(K);
+  // The file's own functions: a registration inside one happens where the
+  // function is called, as often as it is called. That holds for one that
+  // also hands a title on: the title it is handed is counted at its call,
+  // and a title its body fixes is counted at each call too.
+  const owners = new Map(functions.map(([name, written]) => [written, name]));
+  const owned = new Set(owners.values());
+  // Another name for one of those functions (`const check = register`) is
+  // that function wherever it is called or handed on, and so is a name
+  // given to such a name: a call through it is a call of the function, and
+  // counts toward how often the titles its body fixes are registered.
+  const known = new Map([...owned].map((name) => [name, name]));
+  // The name a function expression has inside itself is that function.
+  for (const [written, name] of owners)
+    if (written.kind === K.FunctionExpression && written.name)
+      known.set(key(written.name), name);
+  for (let added = true; added;) {
+    added = false;
+    for (const node of sourceNodes(read.file))
+      if (
+        node.kind === K.VariableDeclaration &&
+        node.name.kind === K.Identifier &&
+        node.initializer &&
+        bare(K, node.initializer).kind === K.Identifier &&
+        !known.has(key(node.name)) &&
+        known.has(key(bare(K, node.initializer)))
+      ) {
+        known.set(key(node.name), known.get(key(bare(K, node.initializer))));
+        added = true;
+      }
+  }
+  const sites = [];
+  const found = [];
+  // Registrations whose title the reading cannot give: one built at run
+  // time, or none at all. They are counted and shown, never taken as
+  // cleared. A parameter a function hands on is no such title: it is read
+  // at that function's calls.
+  const parametersOf = new Map(
+    functions.map(([name, written]) => [
+      name,
+      written.parameters.map((parameter) =>
+        parameter.name.kind === K.Identifier ? key(parameter.name) : null,
+      ),
+    ]),
+  );
+  let unread = 0;
+  // The file's functions that a registration is handed by name as its body:
+  // what such a function registers is nested in that case, and is counted
+  // at the top level only where the file also calls it.
+  const bodies = new Set();
+  // How often a body runs is known at the top level (once), in one of the
+  // file's own named functions (as often as the file calls it), in a
+  // function called where it is written (once) and in one handed to a
+  // listed iteration (counted twice). Any other function's body, a
+  // method's, a property's, a callback's handed to anything else, an
+  // instance field's value, runs as often as something the rule does not
+  // read calls it: what registers there is counted as unread. `entered`
+  // are the functions of the two known kinds; `uncountable` the file's own
+  // functions whose calls cannot all be seen, because one is named other
+  // than to call it or is called from a body of the unknown kind.
+  const entered = new Set();
+  const uncountable = new Set();
+  const perInstance = (node) =>
+    node.kind === K.PropertyDeclaration &&
+    !node.modifiers?.some((modifier) => modifier.kind === K.StaticKeyword);
+  // A use of one of the file's functions by its name that is no call of
+  // it and no declaration, alias or export of it.
+  const escapes = (node) => {
+    let inner = node;
+    let parent = node.parent;
+    while (parent?.kind === K.ParenthesizedExpression) {
+      inner = parent;
+      parent = parent.parent;
+    }
+    if (!parent) return false;
+    if (
+      [K.VariableDeclaration, K.FunctionDeclaration].includes(parent.kind) ||
+      [K.FunctionExpression, K.ClassDeclaration].includes(parent.kind)
+    )
+      return false;
+    if (
+      [
+        K.Parameter,
+        K.BindingElement,
+        K.ExportSpecifier,
+        K.TypeQuery,
+        K.TypeReference,
+      ].includes(parent.kind)
+    )
+      return false;
+    if (parent.kind === K.CallExpression && parent.expression === inner)
+      return false;
+    if (
+      [K.PropertyAccessExpression, K.PropertyAssignment].includes(
+        parent.kind,
+      ) &&
+      parent.name === node
+    )
+      return false;
+    // Handed to a listed iteration by its name: counted there.
+    if (
+      parent.kind === K.CallExpression &&
+      ITERATING.has(spelledMember(K, bare(K, parent.expression))?.name)
+    )
+      return false;
+    return true;
+  };
+  const visit = (node, weight, owner, counted = true) => {
+    if (
+      node.kind === K.Identifier &&
+      reference(node) &&
+      known.has(key(node)) &&
+      escapes(node)
+    )
+      uncountable.add(known.get(key(node)));
+    if (node.kind === K.TaggedTemplateExpression && registrations(node)) {
+      unread += 1;
+      visit(node.tag, weight, owner, counted);
+      return;
+    }
+    if (node.kind === K.CallExpression) {
+      // A function called where it is written runs once there.
+      {
+        const called = bare(K, node.expression);
+        if ([K.ArrowFunction, K.FunctionExpression].includes(called.kind))
+          entered.add(called);
+      }
+      // A call of one of the file's functions is a call site of it,
+      // whether or not it hands a title on, and whether or not its name is
+      // written in parentheses, which the reading of a name's other uses
+      // sets aside too.
+      const site = bare(K, node.expression);
+      if (site.kind === K.Identifier && known.has(key(site))) {
+        sites.push({ callee: known.get(key(site)), weight, owner });
+        if (!counted) uncountable.add(known.get(key(site)));
+      }
+      const registered = registrations(node);
+      if (registered) {
+        // A function of the file's registers each title it hands on, as
+        // often as it hands it on, at each call of it.
+        for (const { title, times } of registered) {
+          const text = literal(title);
+          if (text !== undefined)
+            found.push({ title: text, weight: weight * times, owner, counted });
+          else if (!(
+            title?.kind === K.Identifier &&
+            owner &&
+            parametersOf.get(owner)?.includes(key(title))
+          ))
+            unread += 1;
+        }
+        // A function of the file's that the case's own body names, to
+        // call it or to hand it on (to an iteration, say), is nested in
+        // that case as one handed to the case by name is: what it
+        // registers there is no top-level title. A property of that name
+        // is another thing and is not read.
+        const nested = (inside) => {
+          if (inside.kind === K.PropertyAccessExpression)
+            return nested(inside.expression);
+          if (
+            inside.kind === K.Identifier &&
+            reference(inside) &&
+            known.has(key(inside))
+          )
+            bodies.add(known.get(key(inside)));
+          inside.forEachChild(nested);
+        };
+        // An argument runs when the registration is made, up to the first
+        // function written in it. A registration made there, a function
+        // called where it is written and a call of one of the file's
+        // functions run at this level, as the same call on a line of its
+        // own would, and what they register is counted here. A function
+        // written in an argument and not called there is the case's own,
+        // with every function it names; so is one named and not called.
+        const eager = (inside) => {
+          if ([K.ArrowFunction, K.FunctionExpression].includes(inside.kind)) {
+            nested(inside);
+            return;
+          }
+          if (inside.kind === K.CallExpression) {
+            const called = bare(K, inside.expression);
+            if (
+              registrations(inside) ||
+              [K.ArrowFunction, K.FunctionExpression].includes(called.kind)
+            ) {
+              visit(inside, weight, owner, counted);
+              return;
+            }
+            if (called.kind === K.Identifier && known.has(key(called))) {
+              sites.push({ callee: known.get(key(called)), weight, owner });
+              if (!counted) uncountable.add(known.get(key(called)));
+              for (const handed of inside.arguments) eager(handed);
+              return;
+            }
+          }
+          if (inside.kind === K.PropertyAccessExpression) {
+            eager(inside.expression);
+            return;
+          }
+          if (
+            inside.kind === K.Identifier &&
+            reference(inside) &&
+            known.has(key(inside))
+          ) {
+            bodies.add(known.get(key(inside)));
+            return;
+          }
+          inside.forEachChild(eager);
+        };
+        for (const argument of node.arguments)
+          if (argument.kind === K.Identifier && known.has(key(argument)))
+            bodies.add(known.get(key(argument)));
+          else eager(argument);
+        // The callee is read; a function the arguments hold is the case's
+        // own.
+        visit(node.expression, weight, owner, counted);
+        return;
+      }
+      const callee = node.expression;
+      if (ITERATING.has(spelledMember(K, bare(K, callee))?.name)) {
+        visit(callee, weight, owner, counted);
+        for (const argument of node.arguments) {
+          // A function handed to an iteration by its name is called as
+          // often as the iteration runs.
+          const handed = bare(K, argument);
+          if (handed.kind === K.Identifier && known.has(key(handed))) {
+            sites.push({
+              callee: known.get(key(handed)),
+              weight: 2,
+              owner,
+            });
+            if (!counted) uncountable.add(known.get(key(handed)));
+          }
+          if (FUNCTIONS.has(bare(K, argument).kind))
+            entered.add(bare(K, argument));
+          visit(argument, 2, owner, counted);
+        }
+        return;
+      }
+    }
+    const inner = LOOPS.has(node.kind) ? 2 : weight;
+    const within = owners.has(node) ? owners.get(node) : owner;
+    // One of the file's own functions is read at the weight of one call
+    // of it, and counted by its calls; a body of the unknown kind is not.
+    const here = owners.has(node)
+      ? true
+      : (FUNCTIONS.has(node.kind) && !entered.has(node)) || perInstance(node)
+        ? false
+        : counted;
+    node.forEachChild((child) =>
+      visit(child, owners.has(node) ? 1 : inner, within, here),
+    );
+  };
+  visit(read.file, 1, null);
+  // A function called from one whose calls cannot all be seen is one too.
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const site of sites)
+      if (
+        site.owner &&
+        uncountable.has(site.owner) &&
+        !uncountable.has(site.callee)
+      ) {
+        uncountable.add(site.callee);
+        grew = true;
+      }
+  }
+  // How often each of those functions is called: the sum over its call
+  // sites of the site's weight, times how often the function the site
+  // stands in is called. A function the file never calls counts once,
+  // save one it hands to a registration as that case's body, which then
+  // registers nothing at the top level. The sums settle in as many rounds
+  // as the calls nest; a function that calls itself never settles, and is
+  // left at a count above one.
+  const called = new Map([...owners.values()].map((name) => [name, 1]));
+  for (let round = 0; round <= called.size; round++) {
+    let moved = false;
+    for (const name of called.keys()) {
+      const own = sites.filter((site) => site.callee === name);
+      const count = own.length
+        ? Math.min(
+            1_000_000,
+            own.reduce(
+              (sum, site) =>
+                sum + site.weight * (site.owner ? called.get(site.owner) : 1),
+              0,
+            ),
+          )
+        : bodies.has(name)
+          ? 0
+          : 1;
+      if (count !== called.get(name)) {
+        called.set(name, count);
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  const counts = new Map();
+  for (const { title, weight, owner, counted } of found) {
+    // A title whose registration runs an unknown number of times is one
+    // the rule cannot judge.
+    if (!counted || (owner && uncountable.has(owner))) {
+      unread += 1;
+      continue;
+    }
+    counts.set(
+      title,
+      (counts.get(title) ?? 0) + weight * (owner ? called.get(owner) : 1),
+    );
+  }
+  return { counts, unread };
+}
+/** What each suite file of a batch registers when node loads it: its own
+ * top-level registrations with those of every suite file of the batch it
+ * loads, by an import declaration or a re-export at any depth. Importing a
+ * suite file runs it, so its cases register under the file that imported
+ * it; a file reached along two chains is one module and registers once. A
+ * typed file names its neighbour by the `.js` its build writes. A module
+ * outside the batch is not followed: what it registers is a registration
+ * another module holds, which the rule does not read. The files are read
+ * as one batch, one start of the reader. */
+const loadedTitles = (inputs) => {
+  const reads = sourceTrees(inputs);
+  const own = new Map(
+    reads.map((read, index) => [
+      read.path,
+      { ...topLevelTitles(read), source: inputs[index].source },
+    ]),
+  );
+  const held = (path) =>
+    own.has(path)
+      ? path
+      : path.endsWith(".js") && own.has(`${path.slice(0, -3)}.ts`)
+        ? `${path.slice(0, -3)}.ts`
+        : null;
+  const loaded = (path, seen = new Set()) => {
+    if (seen.has(path)) return seen;
+    seen.add(path);
+    for (const specifier of sourceImports(own.get(path).source, {
+      dynamic: false,
+    })) {
+      const target = specifier.startsWith(".")
+        ? held(join(dirname(path), specifier))
+        : null;
+      if (target) loaded(target, seen);
+    }
+    return seen;
+  };
+  return reads.map((read) => {
+    const counts = new Map();
+    let unread = 0;
+    for (const path of loaded(read.path)) {
+      const file = own.get(path);
+      unread += file.unread;
+      for (const [title, count] of file.counts)
+        counts.set(title, (counts.get(title) ?? 0) + count);
+    }
+    return { path: read.path, counts, unread };
+  });
+};
+/** `<file>: <title>` for each title one of the given suite files can
+ * register more than once at its top level, the suite files it loads
+ * counted with it. */
+const duplicateTitles = (inputs) =>
+  loadedTitles(inputs).flatMap(({ path, counts }) =>
+    [...counts]
+      .filter(([, count]) => count > 1)
+      .map(([title]) => `${path}: ${title}`),
+  );
+/** `<file>: <count>` for each suite file with top-level registrations whose
+ * title the rule cannot read. The rule clears no such registration: the
+ * case that runs it prints these, so a reader of its output sees what was
+ * not judged. */
+const unreadTitles = (inputs) =>
+  sourceTrees(inputs).flatMap((read) => {
+    const { unread } = topLevelTitles(read);
+    return unread ? [`${read.path}: ${unread}`] : [];
+  });
+
+// Every name the rule reads is resolved to its declaration (fileBindings):
+// its tables hold declarations, so two things of one spelling are two.
+// A corpus of small suite files. What each registers at its top level is not
+// written here: the case below runs each under node and reads the titles
+// node reports, so the rule is held to what node does and not to what its
+// author expects. `overstated` names the titles the rule reports although
+// node registers each once: registrations on branches that never both run.
+// So the rule's forms are of three kinds, and the corpus shows the first
+// two by example and does not claim to list every form there is: forms it
+// reads exactly as node registers them (a direct call, a function the
+// module calls, an iteration, a statement, an import under any name, a
+// wrapper of the file's own); forms it overstates on purpose, asking for
+// two titles where node would register one (alternative branches); and
+// forms it does not read (a title built from a substitution, a
+// registration made by a function another module holds), which no file
+// here holds and which the rule therefore neither reports nor clears. A
+// suite file that loads another suite file is read with it; the case holds
+// that form to node with two files of its own, since a corpus file is one.
+const SHARD_HELPER = JSON.stringify(
+  pathToFileURL(join(root, "scripts/lib/test-shards.mjs")).href,
+);
+// The declared family (the twenty-sixth critic's third point): every way a
+// name comes to be a registrar or a module's namespace, crossed with every
+// way a case is then registered through it, and each of those again with
+// every member access written as a literal key. The members are node's
+// own: each registering member the node this runs under has, so what a
+// member registers is held to node and not to a list written here. Each
+// file registers one title twice and another once, and the case holds the
+// rule to what node reports for every one of them, so a form is covered by
+// standing here and not by an example somebody thought of.
+const TITLE_FAMILY = (() => {
+  const held = HELD_REGISTERING.filter(
+    (member) => typeof test[member] === "function",
+  );
+  const body = (member) =>
+    member === "expectFailure"
+      ? '() => { throw new Error("expected"); }'
+      : "() => {}";
+  const registrar = {
+    "a default import": ['import r from "node:test";'],
+    "a named import": ['import { test as r } from "node:test";'],
+    "a member of a namespace": [
+      'import * as n from "node:test";',
+      "const r = n.test;",
+    ],
+    "a destructured namespace": [
+      'import * as n from "node:test";',
+      "const { test: r } = n;",
+    ],
+    "a destructured awaited import": [
+      'const { test: r } = await import("node:test");',
+    ],
+    "the default of an awaited import": [
+      'const { default: r } = await import("node:test");',
+    ],
+    "an alias of an alias": [
+      'import test from "node:test";',
+      "const a = test;",
+      "const r = a;",
+    ],
+    "a member of an awaited namespace": [
+      'const n = await import("node:test");',
+      "const r = n.test;",
+    ],
+    "a member of an aliased namespace": [
+      'import * as n0 from "node:test";',
+      "const n = n0;",
+      "const r = n.test;",
+    ],
+    "a member of the module awaited in place": [
+      'const r = (await import("node:test")).test;',
+    ],
+  };
+  const namespace = {
+    "a namespace import": ['import * as ns from "node:test";'],
+    "an awaited namespace": ['const ns = await import("node:test");'],
+    "an alias of a namespace": [
+      'import * as n0 from "node:test";',
+      "const ns = n0;",
+    ],
+    "an alias of an awaited namespace": [
+      'const n0 = await import("node:test");',
+      "const ns = n0;",
+    ],
+  };
+  // How a title is registered: the lines before, and the call for a title.
+  const throughRegistrar = {
+    called: [[], (title) => `r(${title}, () => {});`],
+    ...Object.fromEntries(
+      held.map((member) => [
+        `its ${member}`,
+        [[], (title) => `r.${member}(${title}, ${body(member)});`],
+      ]),
+    ),
+    "its describe's skip": [
+      [],
+      (title) => `r.describe.skip(${title}, () => {});`,
+    ],
+    "a name given to its skip": [
+      ["const s = r.skip;"],
+      (title) => `s(${title}, () => {});`,
+    ],
+    "its todo destructured": [
+      ["const { todo: s } = r;"],
+      (title) => `s(${title});`,
+    ],
+  };
+  const throughNamespace = {
+    ...Object.fromEntries(
+      [...held, "default"].map((member) => [
+        `its ${member}`,
+        [[], (title) => `ns.${member}(${title}, ${body(member)});`],
+      ]),
+    ),
+    "its test's skip": [[], (title) => `ns.test.skip(${title}, () => {});`],
+    "a name given to its test": [
+      ["const s = ns.test;"],
+      (title) => `s(${title}, () => {});`,
+    ],
+    "a name given to its test's skip": [
+      ["const s = ns.test.skip;"],
+      (title) => `s(${title}, () => {});`,
+    ],
+    "its it destructured": [
+      ["const { it: s } = ns;"],
+      (title) => `s(${title}, () => {});`,
+    ],
+  };
+  // A registering export imported by its own name is a registrar for a
+  // call, and has no members of its own.
+  const named = Object.fromEntries(
+    held
+      .filter((member) => member !== "test")
+      .map((member) => [
+        `a named import of ${member}`,
+        [
+          [`import { ${member} as r } from "node:test";`],
+          (title) => `r(${title}, ${body(member)});`,
+        ],
+      ]),
+  );
+  const forms = [];
+  for (const [bindings, uses] of [
+    [registrar, throughRegistrar],
+    [namespace, throughNamespace],
+  ])
+    for (const [binding, bindingLines] of Object.entries(bindings))
+      for (const [use, [useLines, call]] of Object.entries(uses))
+        forms.push([
+          `${binding}, ${use}`,
+          [...bindingLines, ...useLines],
+          call,
+        ]);
+  for (const [form, [lines, call]] of Object.entries(named))
+    forms.push([`${form}, called`, lines, call]);
+  const files = [];
+  for (const [form, lines, call] of forms) {
+    const source = [...lines, call('"same"'), call('"same"'), call('"once"')];
+    files.push({ name: `family-${files.length}`, form, source });
+    // The same file with every member taken by a literal key.
+    const keyed = source.map((line) =>
+      line.replace(/(?<=[\w)\]])\.([A-Za-z]+)/gu, '["$1"]'),
+    );
+    if (keyed.join("\n") !== source.join("\n"))
+      files.push({
+        name: `family-${files.length}`,
+        form: `${form}, by a literal key`,
+        source: keyed,
+      });
+  }
+  return Object.assign(files, {
+    held,
+    // The cross's size, from its own dimensions: ten bindings of a
+    // registrar by the uses of one, four of a namespace by the uses of
+    // one, and the named imports; and again by a literal key wherever a
+    // form takes a member at all, which is every form but a member-free
+    // binding (six of a registrar's ten, all four of a namespace's)
+    // with a member-free use (two of a registrar's, one of a namespace's)
+    // and the named imports.
+    expected: (() => {
+      const dotted =
+        10 * (held.length + 4) + 4 * (held.length + 5) + (held.length - 1);
+      return dotted + (dotted - 6 * 2 - 4 * 1 - (held.length - 1));
+    })(),
+  });
+})();
+// The boundary of the reading, held to node as well. It has two sides,
+// and each file registers one title twice by a way from one of them.
+// `unread` files: the rule reports no repeat it cannot prove and counts
+// what it could not read (two registrations, or the number a file states).
+// They are a registrar reached through a name the file derives from the
+// test module in a way the rule does not read (an assignment of any kind,
+// a container, a class's field, a loop over registrars, a wrapper's
+// result, the module required or asked of the process under any name), or
+// through a callee that reaches one by a computed key or by an expression
+// that only names it; a registrar used as a template's tag; a title whose
+// name is given a second value; and a registration in a body the rule
+// cannot count the runs of (a method, a function kept in a property or a
+// list, a callback handed to anything but a listed iteration, an instance
+// field's value, one of the file's functions handed on by its name).
+// `silent` files: the rule neither reports nor counts them, and they are
+// the whole of what it is known not to see, a registrar that reaches a
+// call by a route no declaration, assignment or callee of the file names:
+// a function's parameter or return value, and a module loaded by a
+// specifier the file computes (a global and another module are the same
+// side, and no file here can hold them).
+const TITLE_BOUNDARY = [
+  {
+    name: "boundary-thrown-and-caught",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "try {",
+      "  throw test;",
+      "} catch (r) {",
+      '  r("same", () => {});',
+      '  r("same", () => {});',
+      "}",
+    ],
+  },
+  {
+    // The two registrations, and the call of the method that makes them,
+    // which is a call through a derived name too.
+    name: "boundary-class-expression-by-its-own-name",
+    kind: "unread",
+    unread: 3,
+    source: [
+      'import test from "node:test";',
+      "const Held = class Inner {",
+      "  static r = test;",
+      "  static twice() {",
+      '    Inner.r("same", () => {});',
+      '    Inner.r("same", () => {});',
+      "  }",
+      "};",
+      "Held.twice();",
+    ],
+  },
+  {
+    // A title's name that stands, where it is used, for another declaration
+    // than the one that holds a text.
+    name: "boundary-title-name-declared-again",
+    kind: "unread",
+    repeats: ["title"],
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      'const title = "a";',
+      "const inner = () => {",
+      "  function title() {}",
+      "  test(title);",
+      "};",
+      "inner();",
+      'test("title", () => {});',
+    ],
+  },
+  {
+    // A `var` read before its declaration has no value yet.
+    name: "boundary-title-var-read-early",
+    kind: "unread",
+    repeats: ["b"],
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      "test(title, function b() {});",
+      'test("b", () => {});',
+      'var title = "a";',
+    ],
+  },
+  {
+    name: "boundary-class-field",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "class Cases {",
+      "  static register = test;",
+      "}",
+      'Cases.register("same", () => {});',
+      'Cases.register("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-destructuring-assignment",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "let r;",
+      "[r] = [test];",
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-logical-assignment",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "let r = null;",
+      "r ??= test;",
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-required-under-another-name",
+    kind: "unread",
+    source: [
+      'import { createRequire } from "node:module";',
+      "const load = createRequire(import.meta.url);",
+      'const r = load("node:test");',
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-asked-of-the-process",
+    kind: "unread",
+    source: [
+      'const r = process.getBuiltinModule("node:test");',
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-loop-over-registrars",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test, { it } from "node:test";',
+      'for (const r of [test, it]) r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-tagged-template",
+    kind: "unread",
+    repeats: ["<anonymous>"],
+    source: ['import test from "node:test";', "test`a`;", "test`a`;"],
+  },
+  {
+    name: "boundary-title-given-a-second-value",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      'let title = "one";',
+      'title = "same";',
+      "test(title, () => {});",
+      'test("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-method",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      "class Cases {",
+      "  static run() {",
+      '    test("same", () => {});',
+      "  }",
+      "}",
+      "Cases.run();",
+      "Cases.run();",
+    ],
+  },
+  {
+    name: "boundary-function-kept-in-a-property",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      'const held = { run: () => test("same", () => {}) };',
+      "held.run();",
+      "held.run();",
+    ],
+  },
+  {
+    name: "boundary-function-kept-in-a-list",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      'const held = [() => test("same", () => {})];',
+      "held[0]();",
+      "held[0]();",
+    ],
+  },
+  {
+    name: "boundary-callback",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      "const twice = (body) => {",
+      "  body();",
+      "  body();",
+      "};",
+      'twice(() => test("same", () => {}));',
+    ],
+  },
+  {
+    name: "boundary-own-function-handed-on",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      'const register = () => test("same", () => {});',
+      "const twice = (body) => {",
+      "  body();",
+      "  body();",
+      "};",
+      "twice(register);",
+    ],
+  },
+  {
+    name: "boundary-instance-field",
+    kind: "unread",
+    unread: 1,
+    source: [
+      'import test from "node:test";',
+      "class Cases {",
+      '  made = test("same", () => {});',
+      "}",
+      "new Cases();",
+      "new Cases();",
+    ],
+  },
+  {
+    name: "boundary-computed-specifier",
+    kind: "silent",
+    source: [
+      'const r = (await import("node:" + "test")).test;',
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-hook-parameter",
+    kind: "silent",
+    source: [
+      'import test, { before } from "node:test";',
+      "before((t) => {",
+      '  t.test("same", () => {});',
+      '  t.test("same", () => {});',
+      "});",
+      'test("once", () => {});',
+    ],
+  },
+  {
+    name: "boundary-computed-key-of-a-namespace",
+    kind: "unread",
+    source: [
+      'import * as ns from "node:test";',
+      'const key = "test";',
+      'ns[key]("same", () => {});',
+      'ns[key]("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-computed-key-of-a-registrar",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      'const key = "skip";',
+      'test[key]("same", () => {});',
+      'test[key]("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-computed-key-of-the-module-awaited-in-place",
+    kind: "unread",
+    source: [
+      'const key = "test";',
+      '(await import("node:test"))[key]("same", () => {});',
+      '(await import("node:test"))[key]("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-chosen-in-place",
+    kind: "unread",
+    source: [
+      'import test, { it } from "node:test";',
+      '(process.env.DOTLN_NO_SUCH_VARIABLE ? it : test)("same", () => {});',
+      '(process.env.DOTLN_NO_SUCH_VARIABLE ? it : test)("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-last-of-a-sequence",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      '(0, test)("same", () => {});',
+      '(0, test)("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-element-of-a-list",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      '[test][0]("same", () => {});',
+      '[test][0]("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-reassigned",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "let r;",
+      "r = test;",
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-conditional",
+    kind: "unread",
+    source: [
+      'import test, { it } from "node:test";',
+      "const r = process.env.DOTLN_NO_SUCH_VARIABLE ? it : test;",
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-container",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "const held = { r: test };",
+      'held.r("same", () => {});',
+      'held.r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-wrapped",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "const wrap = (registrar) => registrar;",
+      "const r = wrap(test);",
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-required",
+    kind: "unread",
+    source: [
+      'import { createRequire } from "node:module";',
+      "const require = createRequire(import.meta.url);",
+      'const r = require("node:test");',
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-returned",
+    kind: "silent",
+    source: [
+      'import test from "node:test";',
+      "const pick = () => test;",
+      "const r = pick();",
+      'r("same", () => {});',
+      'r("same", () => {});',
+    ],
+  },
+  {
+    name: "boundary-parameter",
+    kind: "silent",
+    source: [
+      'import test from "node:test";',
+      "const twice = (r) => {",
+      '  r("same", () => {});',
+      '  r("same", () => {});',
+      "};",
+      "twice(test);",
+    ],
+  },
+  {
+    name: "boundary-property-written-later",
+    kind: "unread",
+    source: [
+      'import test from "node:test";',
+      "const held = {};",
+      "held.r = test;",
+      'held.r("same", () => {});',
+      'held.r("same", () => {});',
+    ],
+  },
+];
+// The scope classes of the resolver (the twenty-eighth critic's first
+// point): every place the language lets a file declare a name. For each,
+// one file where the module's `r` is the registrar and the inner `r` is
+// none, so that what is called through the inner one registers nothing,
+// and one where the inner `r` is the registrar and the module's is none.
+// Each is run under node, as the corpus and the boundary are, and reads as
+// its `reads` says: `exact` (the repeat is reported, or nothing is, as node
+// registers), `unread` (counted, with the number) or `silent`. The family
+// above crosses bindings with uses at the top level alone; these files are
+// what holds the scopes.
+const TITLE_SCOPES = (() => {
+  const none = "(text) => text";
+  // [the class, the lines that declare an inner `r` as `value` and call it
+  // twice with "same"]
+  const classes = {
+    "a function's parameter": (value) => [
+      "const inner = (r) => {",
+      '  r("same", () => {});',
+      '  r("same", () => {});',
+      "};",
+      `inner(${value});`,
+    ],
+    "a function body's var": (value) => [
+      "const inner = () => {",
+      `  var r = ${value};`,
+      '  r("same", () => {});',
+      '  r("same", () => {});',
+      "};",
+      "inner();",
+    ],
+    "a block's const": (value) => [
+      "{",
+      `  const r = ${value};`,
+      '  r("same", () => {});',
+      '  r("same", () => {});',
+      "}",
+    ],
+    "a block's function": (value) => [
+      "{",
+      "  function r(title) {",
+      `    return (${value})(title, () => {});`,
+      "  }",
+      '  r("same");',
+      '  r("same");',
+      "}",
+    ],
+    "a block's class": (value) => [
+      "{",
+      "  class r {",
+      `    static register = ${value};`,
+      "  }",
+      '  r.register("same", () => {});',
+      '  r.register("same", () => {});',
+      "}",
+    ],
+    "a loop's declaration": (value) => [
+      `for (const r of [${value}]) {`,
+      '  r("same", () => {});',
+      '  r("same", () => {});',
+      "}",
+    ],
+    "a catch clause": (value) => [
+      "try {",
+      `  throw ${value};`,
+      "} catch (r) {",
+      '  r("same", () => {});',
+      '  r("same", () => {});',
+      "}",
+    ],
+    "a function expression's own name": (value) => [
+      "const outer = function r(title, again) {",
+      `  (${value})(title, () => {});`,
+      "  if (again) r(title, false);",
+      "};",
+      'outer("same", true);',
+    ],
+    "a class expression's own name": (value) => [
+      "const Outer = class r {",
+      `  static register = ${value};`,
+      "  static twice() {",
+      '    r.register("same", () => {});',
+      '    r.register("same", () => {});',
+      "  }",
+      "};",
+      "Outer.twice();",
+    ],
+  };
+  // How the rule reads the file whose inner `r` is the registrar.
+  const inward = {
+    "a function's parameter": { reads: "silent" },
+    "a function body's var": { reads: "exact" },
+    "a block's const": { reads: "exact" },
+    "a block's function": { reads: "exact" },
+    "a block's class": { reads: "unread", unread: 2 },
+    "a loop's declaration": { reads: "unread", unread: 2 },
+    "a catch clause": { reads: "unread", unread: 2 },
+    "a function expression's own name": { reads: "exact" },
+    "a class expression's own name": { reads: "unread", unread: 3 },
+  };
+  const files = [];
+  for (const [scope, lines] of Object.entries(classes)) {
+    // The module's `r` is the registrar; the inner one is none.
+    files.push({
+      name: `scope-${files.length}`,
+      scope,
+      side: "the module's is the registrar",
+      reads: "exact",
+      unread: 0,
+      source: [
+        'import { test as r } from "node:test";',
+        ...lines(none),
+        'r("once", () => {});',
+      ],
+    });
+    // The inner `r` is the registrar; the module's is none.
+    files.push({
+      name: `scope-${files.length}`,
+      scope,
+      side: "the inner one is the registrar",
+      ...inward[scope],
+      source: [
+        'import test from "node:test";',
+        `const r = ${none};`,
+        ...lines("test"),
+        'r("once");',
+      ],
+    });
+  }
+  // A parameter's default value stands outside the body's declarations.
+  files.push({
+    name: `scope-${files.length}`,
+    scope: "a parameter's default value",
+    side: "the module's is the registrar",
+    reads: "exact",
+    unread: 0,
+    source: [
+      'import { test as r } from "node:test";',
+      'const inner = (made = r("same", () => {})) => {',
+      "  var r = null;",
+      "  return [made, r];",
+      "};",
+      "inner();",
+      "inner();",
+    ],
+  });
+  return files;
+})();
+const TITLE_CORPUS = [
+  {
+    // A function expression called through the name it has inside itself
+    // is called again; scopes of a switch, a block and a label hold.
+    name: "scopes",
+    source: [
+      'import test from "node:test";',
+      "const outer = function inner(depth) {",
+      '  test("same", () => {});',
+      "  if (depth) inner(depth - 1);",
+      "};",
+      "outer(1);",
+      "switch (1) {",
+      "  case 1: {",
+      "    const r = test;",
+      '    r("twice", () => {});',
+      '    r("twice", () => {});',
+      "  }",
+      "}",
+      "{",
+      "  function register() {",
+      '    test("thrice", () => {});',
+      "  }",
+      "  register();",
+      "  register();",
+      "  register();",
+      "}",
+      "test: for (const each of [1]) {",
+      "  if (each) break test;",
+      "}",
+      'const title = "once";',
+      "{",
+      '  const title = "also once";',
+      "  test(title, () => {});",
+      "}",
+      "test(title, () => {});",
+    ],
+  },
+  {
+    // A parameter's default value is outside the body's own declarations:
+    // the registrar it names is the module's, whatever the body declares.
+    name: "default-value-beside-a-body-var",
+    source: [
+      'import test from "node:test";',
+      'const register = (made = test("same", () => {})) => {',
+      "  var test = null;",
+      "  return [made, test];",
+      "};",
+      "register();",
+      "register();",
+      'test("once", () => {});',
+    ],
+  },
+  {
+    // A name given a second value is not read as its first: declared
+    // again, or assigned. What is called through it is counted as unread,
+    // and no repeat is reported for a title node registers once.
+    name: "name-with-a-second-value",
+    unread: 2,
+    source: [
+      'import test, { it } from "node:test";',
+      "var again = test;",
+      "var again = (text) => text;",
+      'again("a");',
+      "let given = test;",
+      "given = (text) => text;",
+      'given("b");',
+      'it("a", () => {});',
+      'it("b", () => {});',
+    ],
+  },
+  {
+    // A `test` the file takes from a module that is not the test module,
+    // or out of a call's result: unread, never a report.
+    name: "test-of-unshown-origin",
+    unread: 1,
+    helper: ["export const test = (text) => text.length;"],
+    source: [
+      'import { it } from "node:test";',
+      'import { test } from "./helper-test-of-unshown-origin.mjs";',
+      'test("a");',
+      'it("a", () => {});',
+    ],
+  },
+  {
+    name: "test-out-of-a-call",
+    unread: 1,
+    source: [
+      'import { it } from "node:test";',
+      "const test = Boolean.bind(null);",
+      'test("a");',
+      'it("a", () => {});',
+    ],
+  },
+  {
+    // A name stands for the declaration its scope gives it: a local `test`
+    // in a function or a block is no registrar, a parameter or a local
+    // that shares a helper's name is not the helper, and neither is a
+    // method of that name. Nothing here is reported and nothing counted
+    // as unread.
+    name: "names-by-their-declarations",
+    unread: 0,
+    source: [
+      'import test, { it } from "node:test";',
+      "const matches = () => {",
+      "  const test = /ok/;",
+      '  return test.exec("ok");',
+      "};",
+      "matches();",
+      "{",
+      "  const test = /ok/;",
+      '  test.exec("ok");',
+      "}",
+      'it("ok", () => {});',
+      "const setup = () => {",
+      '  test("a", () => {});',
+      "};",
+      "const verify = (setup) => setup();",
+      "verify(() => {});",
+      "const other = () => {",
+      "  const setup = () => 1;",
+      "  return setup();",
+      "};",
+      "other();",
+      "setup();",
+      "const check = () => {",
+      '  test("b", () => {});',
+      "};",
+      "const fixture = {",
+      "  check() {",
+      "    return 1;",
+      "  },",
+      "};",
+      "const trimmed = (value) => {",
+      "  const check = value.trim();",
+      "  return check;",
+      "};",
+      "check();",
+      'trimmed(" x ");',
+      'test("c", () => fixture.check());',
+    ],
+  },
+  {
+    // A module awaited by a specifier the file fixes in a name is read as
+    // the module is.
+    name: "fixed-specifier",
+    source: [
+      'const specifier = "node:test";',
+      "const runner = await import(specifier);",
+      'runner.test("same", () => {});',
+      'runner.test("same", () => {});',
+      'runner.it("once", () => {});',
+    ],
+  },
+  {
+    // A function called where it is written, and a class's static field
+    // and static block, run once there.
+    name: "run-where-written",
+    source: [
+      'import test from "node:test";',
+      "(() => {",
+      '  test("same", () => {});',
+      "})();",
+      "(function () {",
+      '  test("same", () => {});',
+      "})();",
+      "class Cases {",
+      '  static made = test("twice", () => {});',
+      "  static {",
+      '    test("twice", () => {});',
+      "  }",
+      "}",
+      'test("once", () => {});',
+    ],
+  },
+  {
+    // `test` as the file's own name for something that is no registrar,
+    // and as a function's parameter: neither registers, nothing is counted.
+    name: "own-name-test",
+    unread: 0,
+    source: [
+      'import { it } from "node:test";',
+      "const test = /ok/;",
+      'test.exec("ok");',
+      'it("ok", () => {});',
+    ],
+  },
+  {
+    name: "parameter-named-test",
+    unread: 0,
+    source: [
+      'import { it } from "node:test";',
+      'const has = (test) => test.includes("ok");',
+      'has("okay");',
+      'for (const each of ["ok"]) void each.includes("ok");',
+      'it("ok", () => {});',
+    ],
+  },
+  {
+    // Parentheses around a callee or around the object of a member are no
+    // part of it, and the module awaited in place is its namespace.
+    name: "parenthesized",
+    source: [
+      'import test, * as ns from "node:test";',
+      '(test)("same", () => {});',
+      '(ns.test)("same", () => {});',
+      '(ns).it("thrice", () => {});',
+      '(test).skip("thrice", () => {});',
+      '(await import("node:test")).test("thrice", () => {});',
+      'test("once", () => {});',
+    ],
+  },
+  {
+    // An iteration named by a literal key runs what it is handed as often
+    // as one named by a member access.
+    name: "iteration-by-a-literal-key",
+    source: [
+      'import test from "node:test";',
+      '["a", "b"]["forEach"]((each) => test("same", () => void each));',
+      'test("once", () => {});',
+    ],
+  },
+  {
+    // The hooks and the module's utilities register no case, however they
+    // are reached and however often: nothing is reported and nothing is
+    // counted as unread.
+    name: "hooks-and-utilities",
+    unread: 0,
+    source: [
+      'import test, * as ns from "node:test";',
+      "test.before(() => {});",
+      "test.before(() => {});",
+      'test["after"](() => {});',
+      'test["after"](() => {});',
+      "ns.beforeEach(() => {});",
+      "ns.beforeEach(() => {});",
+      "const hook = test.afterEach;",
+      "hook(() => {});",
+      "hook(() => {});",
+      // A member the lower of the two supported nodes does not have.
+      ...(typeof test.getTestContext === "function"
+        ? ["test.getTestContext();", "test.getTestContext();"]
+        : []),
+      "const made = ns.mock.fn();",
+      "const again = ns.mock.fn();",
+      "void made, again;",
+      'test("once", () => {});',
+    ],
+  },
+  {
+    // A function called from inside a suite's own body, written in place:
+    // its cases are nested there, and are top-level only where the file
+    // also calls it outside one (rolling review 32).
+    name: "helper-in-inline-body",
+    source: [
+      'import test, { describe, it } from "node:test";',
+      "function children() {",
+      '  it("same", () => {});',
+      '  it("same", () => {});',
+      "}",
+      'describe("group", () => {',
+      "  children();",
+      "});",
+      "function shared() {",
+      '  it("in a group and outside", () => {});',
+      "}",
+      'describe("second group", () => {',
+      "  shared();",
+      "});",
+      "shared();",
+      "shared();",
+      // Handed on inside the suite's body, to an iteration (the ladder's
+      // first round, criteria).
+      "function iterated() {",
+      '  it("once for each", () => {});',
+      '  it("once for each", () => {});',
+      "}",
+      'describe("third group", () => {',
+      "  [0, 1].forEach(iterated);",
+      "});",
+    ],
+  },
+  {
+    name: "namespace-aliased",
+    source: [
+      // A name given to the module's namespace, and a name given to that
+      // name (rolling review 39, criteria).
+      'import * as runner from "node:test";',
+      "const checks = runner;",
+      'checks.test("same", () => {});',
+      'checks.test("same", () => {});',
+      "const again = checks;",
+      'again.it("once", () => {});',
+      "const { describe: group } = again;",
+      'group("a suite twice", () => {});',
+      'group("a suite twice", () => {});',
+    ],
+  },
+  {
+    name: "registrar-destructured",
+    source: [
+      // A registrar taken by destructuring the module's namespace, a
+      // registrar's own members, and the module awaited where it is
+      // imported (rolling review 35, criteria).
+      'import * as runner from "node:test";',
+      "const { test: check, it } = runner;",
+      'check("same", () => {});',
+      'check("same", () => {});',
+      'it("once", () => {});',
+      "const { skip, only: never } = check;",
+      'skip("skipped twice", () => {});',
+      'skip("skipped twice", () => {});',
+      "void never;",
+      'const { describe: group } = await import("node:test");',
+      'group("a suite twice", () => {});',
+      'group("a suite twice", () => {});',
+    ],
+  },
+  {
+    // A registrar under another name, a member of one under another name,
+    // and a name given to such a name (the ladder's first round,
+    // consistency).
+    name: "registrar-alias",
+    source: [
+      'import test, * as runner from "node:test";',
+      "const check = test;",
+      'check("same", () => {});',
+      'check("same", () => {});',
+      "const later = test.skip;",
+      'later("skipped twice", () => {});',
+      'later("skipped twice", () => {});',
+      "const group = runner.describe;",
+      "const again = check;",
+      'group("a suite", () => {});',
+      'again("once more", () => {});',
+      'again("same", () => {});',
+      // A name given to one of the file's own functions that hands a title
+      // on (the ladder's recheck round, criteria).
+      "function define(title) {",
+      "  test(title, () => {});",
+      "}",
+      "const named = define;",
+      'named("through a helper", () => {});',
+      'named("through a helper", () => {});',
+      // The same, of a function that hands the body on as well (the
+      // recheck round, combined).
+      "function wrap(title, body) {",
+      "  test(title, body);",
+      "}",
+      "const wrapped = wrap;",
+      'wrapped("with its body", () => {});',
+      'wrapped("with its body", () => {});',
+      // A title the function's own body fixes, registered at each call
+      // through the other name (the ladder's last round).
+      "function pair(title) {",
+      "  test(title, () => {});",
+      '  test("fixed in the helper", () => {});',
+      "}",
+      "const paired = pair;",
+      'paired("first of a pair", () => {});',
+      'paired("second of a pair", () => {});',
+    ],
+  },
+  {
+    // A function handed by its name: to an iteration, which calls it as
+    // often as it runs, and to a suite as its body, whose cases are nested
+    // (rolling review 30).
+    name: "callback-by-name",
+    source: [
+      'import test, { describe, it } from "node:test";',
+      "function register() {",
+      '  test("same", () => {});',
+      "}",
+      "[1, 2].forEach(register);",
+      "function children() {",
+      '  it("inner", () => {});',
+      '  it("inner", () => {});',
+      "}",
+      'describe("group", children);',
+      "function both() {",
+      '  it("in both", () => {});',
+      "}",
+      'describe("other group", both);',
+      "both();",
+      "both();",
+    ],
+  },
+  {
+    // A function that hands a title on through one declared after it, and
+    // one whose body fixes a title beside the one it is handed: each call
+    // registers both (rolling review 29).
+    name: "wrapper-declared-later",
+    source: [
+      'import test from "node:test";',
+      "function register(first, second) {",
+      "  test(first, () => {});",
+      "  later(second);",
+      "}",
+      "function later(title) {",
+      "  test(title, () => {});",
+      "}",
+      'register("same", "same");',
+      'register("one", "other");',
+    ],
+  },
+  {
+    name: "wrapper-fixed-title",
+    source: [
+      'import test from "node:test";',
+      "function register(title) {",
+      "  test(title, () => {});",
+      '  test("shared", () => {});',
+      "}",
+      'register("first");',
+      'register("second");',
+      "function quiet(title) {",
+      "  test(title, () => {});",
+      '  test("fixed once", () => {});',
+      "}",
+      'quiet("third");',
+      "function unused(title) {",
+      "  test(title, () => {});",
+      '  test("never registered", () => {});',
+      "}",
+    ],
+  },
+  {
+    // A function that registers a suite and, inside it, a case of the same
+    // title registers one at the top level (rolling review 27).
+    name: "wrapper-nested",
+    source: [
+      'import { describe, it } from "node:test";',
+      "function register(title) {",
+      "  describe(title, () => {",
+      "    it(title, () => {});",
+      "  });",
+      "}",
+      'register("once at the top");',
+      'register("another");',
+    ],
+  },
+  {
+    // A function that hands two parameters on, each once: a call that gives
+    // both one title registers it twice (rolling review 27).
+    name: "wrapper-two-parameters",
+    source: [
+      'import test from "node:test";',
+      "function register(first, second) {",
+      "  test(first, () => {});",
+      "  test(second, () => {});",
+      "}",
+      'register("same", "same");',
+      'register("one", "other");',
+      "const swapped = (body, first, second) => {",
+      "  test(second, body);",
+      "  test(first, body);",
+      "};",
+      'swapped(() => {}, "left", "left");',
+    ],
+  },
+  {
+    // A function that hands its title on more than once registers it that
+    // often at each call: directly, through another such function, and in
+    // a loop; one that hands it on once registers it once.
+    name: "wrapper-repeats",
+    source: [
+      'import test from "node:test";',
+      "function register(title) {",
+      "  test(title, () => {});",
+      "  test(title, () => {});",
+      "}",
+      'register("same");',
+      "function once(title) {",
+      "  test(title, () => {});",
+      "}",
+      'once("single");',
+      "function outer(title) {",
+      "  register(title);",
+      "}",
+      'outer("nested");',
+      "function looped(title) {",
+      "  for (const each of [1, 2]) test(title, () => void each);",
+      "}",
+      'looped("in a loop");',
+      "const twice = (title) => [1, 2].forEach(() => test(title, () => {}));",
+      'twice("iterated");',
+    ],
+  },
+  {
+    // The kit's shard helper under other names: its default, its named
+    // export and its namespace register as node:test's do, and another
+    // member of the namespace registers nothing.
+    name: "shard-helper",
+    source: [
+      `import check, { test as named } from ${SHARD_HELPER};`,
+      `import * as shards from ${SHARD_HELPER};`,
+      'check("default alias", () => {});',
+      'check("default alias", () => {});',
+      'named("named alias", () => {});',
+      'named("named alias", () => {});',
+      'shards.test("spaced", () => {});',
+      'shards.default("spaced", () => {});',
+      'shards.shardOf("counted once", 2);',
+      'check("counted once", () => {});',
+    ],
+  },
+  {
+    name: "direct",
+    source: [
+      'import test from "node:test";',
+      'test("one", () => {});',
+      'test("two", async (t) => {',
+      '  await t.test("one", () => {});',
+      '  await t.test("inner", () => {});',
+      "});",
+      'await test("one", () => {});',
+      'test.skip("two", () => {});',
+      'test("alone", async (t) => {',
+      '  await t.test("inner", () => {});',
+      "});",
+      'const text = \'test("alone", () => {}); test("alone", () => {});\';',
+      "void text;",
+    ],
+  },
+  {
+    name: "called-function",
+    source: [
+      'import test from "node:test";',
+      "export async function fixtures() {",
+      "  try {",
+      '    await test("a", () => {});',
+      '    await test("a", () => {});',
+      '    await test("b", () => {});',
+      "  } finally {",
+      "    // nothing to release",
+      "  }",
+      "}",
+      "await fixtures();",
+    ],
+  },
+  {
+    name: "function-called-twice",
+    source: [
+      'import test from "node:test";',
+      "function register() {",
+      '  test("twice", () => {});',
+      "}",
+      "register();",
+      "register();",
+    ],
+  },
+  {
+    // A call made inside another function of the file's counts as often as
+    // that function is called (rolling review 19).
+    name: "function-inside-a-function",
+    source: [
+      'import test from "node:test";',
+      "function register() {",
+      '  test("same", () => {});',
+      "}",
+      "function cases() {",
+      "  register();",
+      "}",
+      "cases();",
+      "cases();",
+      "function once() {",
+      '  test("single", () => {});',
+      "}",
+      "function outer() {",
+      "  once();",
+      "}",
+      "outer();",
+    ],
+  },
+  {
+    name: "iteration",
+    source: [
+      'import test from "node:test";',
+      '[1, 2].forEach(() => test("eight", () => {}));',
+      'test("eight", () => {});',
+      'for (const each of [1, 2]) test("loop", () => void each);',
+      "for (const each of [1, 2]) test(`case ${each}`, () => {});",
+    ],
+  },
+  {
+    name: "statements",
+    source: [
+      'import test from "node:test";',
+      "switch (process.env.DOTLN_NO_SUCH_VARIABLE) {",
+      "  default:",
+      '    test("same", () => {});',
+      '    test("same", () => {});',
+      "}",
+      'true ? test("ternary", () => {}) : null;',
+      'void test("ternary", () => {});',
+      'test("comma", () => {}), test("comma", () => {});',
+      'test("then", () => {}).then(() => {});',
+      'test("then", () => {});',
+      'await Promise.all([test("all", () => {}), test("all", () => {})]);',
+      "{",
+      '  test("block", () => {});',
+      "}",
+      'test("block", () => {});',
+    ],
+  },
+  {
+    name: "imports",
+    source: [
+      'import nodeTest, { describe, it, test as check } from "node:test";',
+      'nodeTest("default", () => {});',
+      'nodeTest("default", () => {});',
+      'check("alias", () => {});',
+      'check("alias", () => {});',
+      'describe("group", () => {',
+      '  it("inside", () => {});',
+      "});",
+      'describe("group", () => {',
+      '  it("inside", () => {});',
+      "});",
+      'it("it", () => {});',
+      'it("it", () => {});',
+    ],
+  },
+  {
+    name: "namespace",
+    source: [
+      'import * as runner from "node:test";',
+      'runner.test("spaced", () => {});',
+      'runner.test.skip("spaced", () => {});',
+    ],
+  },
+  {
+    name: "wrappers",
+    source: [
+      'import test from "node:test";',
+      'outer("hoisted", () => {});',
+      'outer("hoisted", () => {});',
+      "function outer(title, body) {",
+      "  inner(title, body);",
+      "}",
+      "function inner(title, body) {",
+      "  test(title, body);",
+      "}",
+      "const second = (body, title) => test(title, body);",
+      'second(() => {}, "second place");',
+      'second(() => {}, "second place");',
+      'const HELD = "held";',
+      "test(HELD, () => {});",
+      "test(HELD, () => {});",
+    ],
+  },
+  {
+    // One of the file's functions called with its name in parentheses is
+    // called there, once for each such call.
+    name: "parenthesized-calls",
+    source: [
+      'import test from "node:test";',
+      "function register() {",
+      '  test("same", () => {});',
+      "}",
+      "(register)();",
+      "((register))();",
+      "function named(title) {",
+      "  test(title, () => {});",
+      "}",
+      '(named)("handed");',
+      '(named)("handed");',
+    ],
+  },
+  {
+    // The positions of a registration's arguments (the closing ladder's
+    // combined review). What an argument runs when the registration is
+    // made registers at the top level: a call of one of the file's
+    // functions, alone, inside another call, in a conditional, in a
+    // container or among the options; a function called where it is
+    // written; and a registration made in the argument. What runs when the
+    // case does is nested in it: a function handed by its name, one written
+    // in the argument with what it calls, and one written in the argument
+    // of a call that hands it on. Each form has a title of its own, twice,
+    // and node says which repeat at the top level.
+    name: "argument-positions",
+    unread: 0,
+    source: [
+      'import test from "node:test";',
+      "const pass = (value) => value;",
+      "function direct() {",
+      '  test("called in an argument", () => {});',
+      "  return () => {};",
+      "}",
+      'test("direct one", direct());',
+      'test("direct two", direct());',
+      "function wrapped() {",
+      '  test("called inside another call", () => {});',
+      "  return () => {};",
+      "}",
+      'test("wrapped one", pass(wrapped()));',
+      'test("wrapped two", pass(wrapped()));',
+      "function chosen() {",
+      '  test("called in a conditional", () => {});',
+      "  return () => {};",
+      "}",
+      'test("chosen one", pass ? chosen() : pass);',
+      'test("chosen two", pass ? chosen() : pass);',
+      "function held() {",
+      '  test("called in a container", () => {});',
+      "  return () => {};",
+      "}",
+      'test("held one", [held()][0]);',
+      'test("held two", { run: held() }.run);',
+      "function option() {",
+      '  test("called among the options", () => {});',
+      "  return false;",
+      "}",
+      'test("option one", { skip: option() }, () => {});',
+      'test("option two", { skip: option() }, () => {});',
+      'test("written one", (() => {',
+      '  test("registered where a function is called as it is written", () => {});',
+      "  return () => {};",
+      "})());",
+      'test("written two", (() => {',
+      '  test("registered where a function is called as it is written", () => {});',
+      "  return () => {};",
+      "})());",
+      'test("made one", (test("registered in an argument", () => {}), () => {}));',
+      'test("made two", (test("registered in an argument", () => {}), () => {}));',
+      "async function handed() {",
+      '  await test("nested by name", () => {});',
+      "}",
+      'test("by name one", handed);',
+      'test("by name two", handed);',
+      "async function inner() {",
+      '  await test("nested in a body", () => {});',
+      "}",
+      'test("in a body one", async () => {',
+      "  await inner();",
+      "});",
+      'test("in a body two", async function () {',
+      "  await inner();",
+      "});",
+      "async function deep() {",
+      '  await test("nested in a function handed on", () => {});',
+      "}",
+      'test("handed on one", pass(async () => {',
+      "  await deep();",
+      "}));",
+      'test("handed on two", pass(async () => {',
+      "  await deep();",
+      "}));",
+    ],
+  },
+  {
+    // The same name in parentheses in the other places the rule reads it:
+    // as a call that hands one title on twice, handed to an iteration, and
+    // as the initializer of another name for the function.
+    name: "parenthesized-names",
+    overstated: ["iterated"],
+    source: [
+      'import test from "node:test";',
+      "function twice(title) {",
+      "  test(title, () => {});",
+      "  test(title, () => {});",
+      "}",
+      '(twice)("doubled");',
+      "function each() {",
+      '  test("iterated", () => {});',
+      "}",
+      "[1].forEach((each));",
+      "function once() {",
+      '  test("aliased", () => {});',
+      "}",
+      "const again = (once);",
+      "again();",
+      "again();",
+    ],
+  },
+  {
+    name: "alternatives",
+    overstated: ["guarded", "branched", "caught", "single"],
+    source: [
+      'import test from "node:test";',
+      "const on = Boolean(process.env.DOTLN_NO_SUCH_VARIABLE);",
+      'if (on) test("guarded", () => {});',
+      'if (!on) test("guarded", () => {});',
+      'if (on) test("branched", () => {});',
+      'else test("branched", () => {});',
+      "try {",
+      '  test("caught", () => {});',
+      "} catch {",
+      '  test("caught", () => {});',
+      "}",
+      'for (const each of [1]) test("single", () => void each);',
+    ],
+  },
+];
+
+test("WO-276 criterion E1: no suite file can register one title twice at its top level, held to what node registers for a corpus of the forms the rule reads, with the titles it overstates on purpose named; a repeat inside a nested case or a fixture's text is none", (t) => {
+  // What node registers at the top level of each corpus file.
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-titles-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const environment = { ...process.env };
+  delete environment.NODE_TEST_CONTEXT;
+  // A corpus file runs whole, whatever shard this case itself runs in.
+  delete environment.DOTLN_TEST_SHARD;
+  delete environment.DOTLN_TEST_TITLES;
+  // The family is the whole cross, its size computed from its dimensions,
+  // so a cell cannot go missing unseen; and the members it crosses are
+  // node's, of which the seven every supported node has must be there.
+  for (const member of [
+    "test",
+    "it",
+    "describe",
+    "suite",
+    "skip",
+    "only",
+    "todo",
+  ])
+    assert.ok(TITLE_FAMILY.held.includes(member), member);
+  assert.equal(TITLE_FAMILY.length, TITLE_FAMILY.expected);
+  assert.equal(
+    new Set(TITLE_FAMILY.map((file) => file.form)).size,
+    TITLE_FAMILY.length,
+  );
+  // A function node's test holds that this rule classes neither as
+  // registering nor as a hook or a utility is read as registering and is
+  // run by no file here: named, so that it is seen.
+  const unclassed = Object.keys(test).filter(
+    (member) =>
+      typeof test[member] === "function" &&
+      !HELD_REGISTERING.includes(member) &&
+      !NOT_REGISTERING.has(member),
+  );
+  if (unclassed.length)
+    t.diagnostic(
+      `members of node's test function the family does not run: ${unclassed.join(", ")}`,
+    );
+  // Both sides of every scope class are there.
+  assert.equal(TITLE_SCOPES.length, 9 * 2 + 1);
+  assert.equal(
+    new Set(TITLE_SCOPES.map((file) => `${file.scope}, ${file.side}`)).size,
+    TITLE_SCOPES.length,
+  );
+  t.diagnostic(`the scope classes: ${TITLE_SCOPES.length} files`);
+  t.diagnostic(
+    `the family: ${TITLE_FAMILY.length} files over node's ${TITLE_FAMILY.held.join(", ")}; the boundary: ${TITLE_BOUNDARY.filter((file) => file.kind === "unread").length} unread and ${TITLE_BOUNDARY.filter((file) => file.kind === "silent").length} silent files`,
+  );
+  // The rule reads every file of the corpus, the family, the boundary and
+  // the scope classes as one batch, one start of the source reader for
+  // what it reports and one for what it counts as unread. No file of them
+  // loads another, so each is read as it would be alone.
+  const held = [
+    ...TITLE_CORPUS,
+    ...TITLE_FAMILY,
+    ...TITLE_BOUNDARY,
+    ...TITLE_SCOPES,
+  ];
+  const heldInputs = held.map(({ name, source }) => ({
+    path: `scripts/test-${name}.mjs`,
+    source: `${source.join("\n")}\n`,
+  }));
+  assert.equal(
+    new Set(heldInputs.map((input) => input.path)).size,
+    heldInputs.length,
+    "every held file has a name of its own",
+  );
+  const linesOf = (lines) => (name) =>
+    lines
+      .filter((line) => line.startsWith(`scripts/test-${name}.mjs: `))
+      .map((line) => line.slice(`scripts/test-${name}.mjs: `.length));
+  const reportedOf = linesOf(duplicateTitles(heldInputs));
+  const unreadOf = linesOf(unreadTitles(heldInputs));
+  for (const {
+    name,
+    source,
+    overstated = [],
+    form,
+    kind,
+    unread,
+    repeats = ["same"],
+    helper,
+    reads,
+    scope,
+    side,
+  } of held) {
+    const file = join(directory, `test-${name}.mjs`);
+    const text = `${source.join("\n")}\n`;
+    writeFileSync(file, text);
+    // A module of another kind that the file imports, beside it.
+    if (helper)
+      writeFileSync(
+        join(directory, `helper-${name}.mjs`),
+        `${helper.join("\n")}\n`,
+      );
+    const ran = spawnSync(process.execPath, ["--test-reporter=tap", file], {
+      encoding: "utf8",
+      env: environment,
+    });
+    assert.equal(ran.status, 0, `${name}: ${ran.stdout}${ran.stderr}`);
+    const registered = new Map();
+    for (const [, title] of ran.stdout.matchAll(
+      /^(?:not ok|ok) \d+ - (.*?)(?: # (?:SKIP|TODO|EXPECTED FAILURE)\b.*)?$/gmu,
+    ))
+      registered.set(title, (registered.get(title) ?? 0) + 1);
+    const repeated = [...registered]
+      .filter(([, count]) => count > 1)
+      .map(([title]) => title)
+      .sort();
+    const reported = reportedOf(name).sort();
+    // What the rule counts as unread in this file: the count, or none.
+    const counted = unreadOf(name).map(
+      (found) => `scripts/test-${name}.mjs: ${found}`,
+    );
+    // Every title node registers twice is reported, and nothing else is
+    // but the titles the corpus names as overstated. The corpus is a set
+    // of examples: it holds the rule to node on the forms it lists (see
+    // TITLE_CORPUS for the three kinds: read exactly, overstated on
+    // purpose, and not read), and proves nothing of a form it lacks.
+    if (reads) {
+      // A file of the scope classes: held to node on what it registers
+      // twice, and to the reading its class and side state.
+      const label = `${scope}, ${side}: node registered ${JSON.stringify([...registered])}`;
+      assert.deepEqual(reported, reads === "exact" ? repeated : [], label);
+      assert.deepEqual(
+        counted,
+        reads === "unread" ? [`scripts/test-${name}.mjs: ${unread}`] : [],
+        label,
+      );
+      // The module's registrar registers "once" alone; the inner
+      // registrar registers "same" twice.
+      assert.deepEqual(
+        repeated,
+        side === "the module's is the registrar" &&
+          scope !== "a parameter's default value"
+          ? []
+          : ["same"],
+        label,
+      );
+      continue;
+    }
+    if (kind) {
+      // A boundary file: node registers the title twice, the rule reports
+      // nothing it cannot prove, and what it could not read is counted for
+      // an unread form and is nothing at all for a silent one.
+      assert.deepEqual(repeated, repeats, name);
+      assert.deepEqual(reported, [], name);
+      assert.deepEqual(
+        counted,
+        kind === "unread" ? [`scripts/test-${name}.mjs: ${unread ?? 2}`] : [],
+        `${name}: ${kind}`,
+      );
+      continue;
+    }
+    assert.deepEqual(
+      reported,
+      [...repeated, ...overstated].sort(),
+      `${form ?? name}: node registered ${JSON.stringify([...registered])}`,
+    );
+    // A family file repeats exactly the one title, so a form the rule read
+    // as nothing cannot pass by node registering nothing either.
+    if (form) assert.deepEqual(repeated, ["same"], form);
+    // A control file states how many registrations the rule may count as
+    // unread in it.
+    if (unread !== undefined)
+      assert.deepEqual(
+        counted,
+        unread ? [`scripts/test-${name}.mjs: ${unread}`] : [],
+        `${name}: unread`,
+      );
+    assert.ok(
+      overstated.every((title) => registered.get(title) === 1),
+      `${name}: an overstated title is one node registers once`,
+    );
+  }
+  // A suite file that loads another registers that file's cases too, so a
+  // title the two share is registered twice in the one process. Held to
+  // node as the corpus is: the importer run under node, and the rule given
+  // both files. The imported file alone repeats nothing.
+  {
+    const imported = [
+      'import test from "node:test";',
+      'test("shared by both", () => {});',
+      'test("the imported file\'s own", () => {});',
+    ].join("\n");
+    const importer = [
+      'import test from "node:test";',
+      'import "./test-imported.mjs";',
+      'test("shared by both", () => {});',
+      'test("the importer\'s own", () => {});',
+    ].join("\n");
+    writeFileSync(join(directory, "test-imported.mjs"), `${imported}\n`);
+    writeFileSync(join(directory, "test-importer.mjs"), `${importer}\n`);
+    const ran = spawnSync(
+      process.execPath,
+      ["--test-reporter=tap", join(directory, "test-importer.mjs")],
+      { encoding: "utf8", env: environment },
+    );
+    assert.equal(ran.status, 0, `${ran.stdout}${ran.stderr}`);
+    const registered = new Map();
+    for (const [, title] of ran.stdout.matchAll(
+      /^(?:not ok|ok) \d+ - (.*)$/gmu,
+    ))
+      registered.set(title, (registered.get(title) ?? 0) + 1);
+    assert.deepEqual(
+      [...registered].filter(([, count]) => count > 1).map(([title]) => title),
+      ["shared by both"],
+      JSON.stringify([...registered]),
+    );
+    assert.deepEqual(
+      duplicateTitles([
+        { path: "scripts/test-importer.mjs", source: `${importer}\n` },
+        { path: "scripts/test-imported.mjs", source: `${imported}\n` },
+      ]),
+      ["scripts/test-importer.mjs: shared by both"],
+    );
+  }
+  // Beside the corpus, a file whose only repeats are nested or inside a
+  // fixture's text, and a typed file: both sides of the rule are exercised.
+  assert.deepEqual(
+    duplicateTitles([
+      {
+        path: "scripts/test-nested.mjs",
+        source:
+          'import test from "node:test";\ntest("a", async (t) => {\n  await t.test("same", () => {});\n  await t.test("same", () => {});\n});\nconst fixture = `test("a", () => {});`;\nvoid fixture;\n',
+      },
+      {
+        path: "packages/skeleton/test/fixture.test.ts",
+        source:
+          'import test from "node:test";\ntest("two", (): void => {});\ntest("two", (): void => {});\n',
+      },
+    ]),
+    ["packages/skeleton/test/fixture.test.ts: two"],
+  );
+  // A typed file's namespace that holds a registrar: what is registered
+  // through it is counted as unread. This one is read and not run, since
+  // node runs no typed source here.
+  assert.deepEqual(
+    unreadTitles([
+      {
+        path: "packages/skeleton/test/namespace.test.ts",
+        source:
+          'import test from "node:test";\nnamespace Held {\n  export const register = test;\n}\nHeld.register("a", (): void => {});\nHeld.register("a", (): void => {});\n',
+      },
+    ]),
+    ["packages/skeleton/test/namespace.test.ts: 2"],
+  );
+  // Every suite file of the repository: the scripts' test files and the
+  // packages' and the corpus's.
+  const files = runGitPathList(root, [
+    "ls-files",
+    "-z",
+    "--cached",
+    "--others",
+    "--exclude-standard",
+  ]).filter(
+    (path) =>
+      /(?:^|\/)(?:test-[^/]*\.mjs|[^/]*\.test\.(?:mjs|ts))$/u.test(path) &&
+      !/(?:^|\/)fixtures\//u.test(path) &&
+      existsSync(join(root, path)),
+  );
+  assert.ok(files.length > 100, `${files.length} suite files`);
+  const suiteFiles = files.map((path) => ({
+    path,
+    source: readFileSync(join(root, path), "utf8"),
+  }));
+  const starts = sourceTreeStarts();
+  assert.deepEqual(duplicateTitles(suiteFiles), []);
+  // Every suite file in one batch: one start of the reader, not one a file.
+  assert.equal(sourceTreeStarts() - starts, 1);
+  // What the rule did not judge is said, not passed over: a registration
+  // whose title is built at run time is counted for its file, and the
+  // count over the repository's suite files is printed with this case.
+  assert.deepEqual(
+    unreadTitles([
+      {
+        path: "scripts/test-computed.mjs",
+        source:
+          'import test from "node:test";\nfor (const n of [1, 2]) test(`case ${n}`, () => {});\ntest("read", () => {});\n',
+      },
+    ]),
+    ["scripts/test-computed.mjs: 1"],
+  );
+  const unjudged = unreadTitles(suiteFiles);
+  t.diagnostic(
+    `titles the rule does not read: ${unjudged.reduce((sum, line) => sum + Number(line.split(": ").at(-1)), 0)} registrations in ${unjudged.length} suite files`,
+  );
+});
+
+test("WO-276 (the attack on Part D): below eight lanes a shard does not open past a higher-priority heavy row that waits only for lanes, and the hook suite's shards follow one another with no heavy row between them", async () => {
+  const hooks = suites.find((row) => row.name === "harness-fixtures");
+  const sync = suites.find((row) => row.name === "sync-fixtures");
+  // Two light rows that failed last hold three lanes between them, one of
+  // them two lanes wide; a heavy row of two lanes changed since the last
+  // gate; the hook suite and another exclusive row carry no lead.
+  const table = [
+    barrier,
+    { name: "light-wide", command: ["fixture"], loadSlots: 2 },
+    { name: "light-one", command: ["fixture"] },
+    { name: "heavy-two", command: ["fixture"], loadSlots: 2 },
+    hooks,
+    sync,
+  ];
+  const tasks = expandSuiteTasks(table, root, "<gate-template>", {
+    first: suitePriorityLeads({
+      failed: ["light-wide", "light-one"],
+      changed: ["heavy-two"],
+    }),
+  });
+  const shards = tasks
+    .filter((row) => row.name.startsWith("harness-fixtures:shard:"))
+    .map((row) => row.name);
+  assert.ok(shards.length > 1);
+  for (const concurrency of [2, 3, 4, 6, 8]) {
+    const started = [];
+    await scheduleSuites(tasks, {
+      concurrency,
+      parallelism: 16,
+      lightTasks: new Set(["light-wide", "light-one"]),
+      execute: async (row) => {
+        if (!row.build) {
+          started.push(row.name);
+          await new Promise((done) => setTimeout(done, 15));
+        }
+        return { name: row.name, executed: true, exitCode: 0 };
+      },
+    });
+    // The heavy row, which outranks every exclusive row, starts before any
+    // of them, and nothing but a shard starts between two shards.
+    const heavy = started.indexOf("heavy-two");
+    const first = started.indexOf(shards[0]);
+    const last = Math.max(...shards.map((name) => started.indexOf(name)));
+    assert.ok(heavy < first, `${concurrency} lanes: ${started.join(" -> ")}`);
+    assert.deepEqual(
+      started.slice(first, last + 1).filter((name) => !shards.includes(name)),
+      [],
+      `${concurrency} lanes: ${started.join(" -> ")}`,
+    );
+    assert.equal(started.length, tasks.filter((row) => !row.build).length);
+  }
+});
+
+test("WO-276 (rolling review 20): the hook suite's shards share one host reservation until the last of them and its light peers has finished, so a host with lanes for one shard at a time runs them all", async (t) => {
+  const { acquireHostLaneCapacity, acquireHostLanes } =
+    await import("./lib/host-lanes.mjs");
+  const hooks = suites.find((row) => row.name === "harness-fixtures");
+  const tasks = expandSuiteTasks(
+    [barrier, { name: "light-one", command: ["fixture"] }, hooks],
+    root,
+    "<gate-template>",
+  );
+  const shards = tasks
+    .filter((row) => row.name.startsWith("harness-fixtures:shard:"))
+    .map((row) => row.name);
+  assert.ok(shards.length > 1);
+  for (const capacity of [2, 3, 4, 8]) {
+    const directory = createFixtureRoot(
+      join(tmpdir(), `dotln-shard-lease-${capacity}-`),
+    );
+    t.after(() => rmSync(directory, { recursive: true, force: true }));
+    await acquireHostLaneCapacity({ directory, capacity });
+    const results = await scheduleSuites(tasks, {
+      concurrency: capacity,
+      parallelism: 16,
+      lightTasks: new Set(["light-one"]),
+      hostLanes: { directory, capacity, parentLease: null },
+      acquireLanes: acquireHostLanes,
+      execute: async (row) => {
+        if (!row.build) await new Promise((done) => setTimeout(done, 20));
+        return { name: row.name, executed: true, exitCode: 0 };
+      },
+    });
+    assert.deepEqual(
+      results
+        .filter((result) => result.exitCode !== 0)
+        .map((result) => [result.name, result.output]),
+      [],
+      `${capacity} lanes`,
+    );
+    for (const name of shards)
+      assert.ok(
+        results.some((result) => result.name === name && result.executed),
+        `${capacity} lanes: ${name}`,
+      );
+    // Nothing of the gate's is left holding a lane.
+    const after = await acquireHostLanes({
+      directory,
+      parentLease: null,
+      slots: capacity,
+      task: "after",
+      worktree: root,
+    });
+    await after.release();
+  }
 });
 
 test("priority-regression: launchpad admits update first when only one file fits", async () => {
@@ -10460,7 +14477,10 @@ test("a lead raises a suite's tasks above every other priority while their own o
   ]);
   const tasks = expandSuiteTasks(selected, root, "<gate-template>", { first });
   const priority = (name) => tasks.find((row) => row.name === name).priority;
-  assert.equal(priority("harness-fixtures"), 2200);
+  const shards = (rows) =>
+    rows.filter((row) => row.name.startsWith("harness-fixtures:shard:"));
+  assert.equal(shards(tasks).length, 3);
+  assert.ok(shards(tasks).every((row) => row.priority === 2200));
   assert.equal(priority("release:prepare"), 1100);
   const cases = tasks.filter((row) => row.name.startsWith("release:case:"));
   assert.ok(cases.length > 0);
@@ -10472,10 +14492,7 @@ test("a lead raises a suite's tasks above every other priority while their own o
     plain.find((row) => row.name === "release:prepare").priority,
     100,
   );
-  assert.equal(
-    plain.find((row) => row.name === "harness-fixtures").priority,
-    200,
-  );
+  assert.ok(shards(plain).every((row) => row.priority === 200));
 });
 
 test("host parallelism derives scheduler defaults and bounds explicit concurrency", async () => {
@@ -10529,7 +14546,11 @@ test("per-lane host admission compares the divided gate share with measured task
     const capacity = hostLaneCapacity(parallelism);
     const limits = memoryBudgets(repo, { capacity, physicalBytes: 1600 });
     assert.equal(limits.taskBytes, Math.floor(limits.gateBytes / capacity));
-    const result = checkHost(sample, { limits, requiredPeakBytes });
+    const result = checkHost(sample, {
+      limits,
+      requiredPeakBytes,
+      fileEvents: {},
+    });
     assert.equal(result.exitCode, limits.taskBytes < requiredPeakBytes ? 1 : 0);
     assert.ok(result.output.includes(`budget ${limits.taskBytes} bytes`));
     assert.ok(result.output.includes("peak RSS 110 bytes"));
@@ -10538,6 +14559,939 @@ test("per-lane host admission compares the divided gate share with measured task
     () => largestTaskPeakRss([{ peakRssBytes: null }]),
     /Invalid measured/,
   );
+});
+
+test("WO-276 criterion H4: on a host of 16 GB and twelve processors the host task passes in a kit root, whose gate carries lighter tasks, and refuses in core with the per-lane shortfall; the kit's peak is the suite table's own reading", async (t) => {
+  const {
+    carriedTaskPeak,
+    hostLaneCapacity,
+    judgeLaneMemory,
+    largestTaskPeakRss,
+    memoryBudgets,
+    requiredTaskPeakRss,
+    schedulingBaseline,
+  } = await import("./lib/host-resources.mjs");
+  const { checkHost } = await import("./structural-checks.mjs");
+  // A kit root: a manifest and no package sources.
+  const kit = createFixtureRoot(join(tmpdir(), "dotln-host-kit-"));
+  t.after(() => rmSync(kit, { recursive: true, force: true }));
+  writeFileSync(join(kit, "KIT-MANIFEST.json"), "{}\n");
+  // The baseline's kit peak is the largest sample among the tasks of the
+  // suites this table does not mark core-only: a suite that changes sides,
+  // or a heavier carried sample, moves it here and fails until it follows.
+  const coreOnly = new Set(
+    suites
+      .filter((row) => row.kit?.startsWith("core-only: "))
+      .map((row) => row.name),
+  );
+  assert.deepEqual(
+    schedulingBaseline.kitTaskPeak,
+    carriedTaskPeak((name) => !coreOnly.has(name.split(":")[0])),
+  );
+  assert.equal(
+    requiredTaskPeakRss(kit),
+    schedulingBaseline.kitTaskPeak.peakRssBytes,
+  );
+  assert.equal(requiredTaskPeakRss(root), largestTaskPeakRss());
+  assert.ok(requiredTaskPeakRss(kit) < requiredTaskPeakRss(root));
+  const physicalBytes = 16 * 2 ** 30;
+  const sample = {
+    level: "normal",
+    pressure: 1,
+    swapBytes: 0,
+    physicalBytes,
+    source: "fixture",
+  };
+  const limits = memoryBudgets(kit, {
+    capacity: hostLaneCapacity(12),
+    physicalBytes,
+  });
+  assert.equal(limits.hostLanes, 6);
+  const inKit = checkHost(sample, { root: kit, limits, fileEvents: {} });
+  assert.equal(inKit.exitCode, 0, inKit.output);
+  assert.ok(
+    inKit.output.includes(
+      `Per-lane memory budget ${limits.taskBytes} bytes covers measured task peak RSS ${schedulingBaseline.kitTaskPeak.peakRssBytes} bytes (6 host lanes)`,
+    ),
+    inKit.output,
+  );
+  const inCore = checkHost(sample, { root, limits, fileEvents: {} });
+  assert.equal(inCore.exitCode, 1);
+  assert.match(
+    inCore.output,
+    new RegExp(
+      `Per-lane memory budget ${limits.taskBytes} bytes is below measured task peak RSS ${largestTaskPeakRss()} bytes \\(6 host lanes\\); memory\\.gateShare must be at least 0\\.\\d+ to admit this peak at 6 lanes; set it in docs/control/budgets\\.json`,
+      "u",
+    ),
+  );
+  // The host task prints what the one comparison returns.
+  const lane = judgeLaneMemory({
+    limits,
+    requiredPeakBytes: largestTaskPeakRss(),
+    physicalBytes,
+  });
+  assert.equal(lane.underBudget, true);
+  assert.ok(inCore.output.endsWith(lane.message));
+});
+
+test("WO-276 criterion H6: a compiler that cannot be run fails the lock helper's first use naming the compiler tried, what the kit needs it for and the platform's remedy, with the tool's own message", async (t) => {
+  const { compilerRemedy, nativeCompiler, taskLauncher } =
+    await import("./lib/host-resources.mjs");
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-host-compiler-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  chmodSync(directory, 0o700);
+  const missing = join(directory, "no-such-compiler");
+  assert.throws(
+    () =>
+      taskLauncher(directory, {
+        compiler: () => ({ compiler: missing, args: [] }),
+      }),
+    (error) => {
+      assert.ok(
+        error.message.includes(`The native compiler ${missing} was not found.`),
+      );
+      assert.ok(
+        error.message.includes("the lock every gate task starts through"),
+      );
+      assert.ok(error.message.includes(compilerRemedy()));
+      assert.match(error.message, /The tool's own message: .*ENOENT/u);
+      assert.equal(error.cause.code, "ENOENT");
+      return true;
+    },
+  );
+  // A compiler that runs and fails keeps its own words.
+  assert.throws(
+    () =>
+      taskLauncher(directory, {
+        compiler: () => ({ compiler: "cc-fixture", args: [] }),
+        run: () => {
+          throw Object.assign(new Error("Command failed: cc-fixture"), {
+            stderr: "fatal error: 'stdio.h' file not found",
+          });
+        },
+      }),
+    /The native compiler cc-fixture could not be run\..*The tool's own message: fatal error: 'stdio\.h' file not found \| Command failed: cc-fixture/su,
+  );
+  // The remedy is the platform's, and on macOS a missing SDK lookup is the
+  // same error.
+  assert.match(compilerRemedy("darwin"), /xcode-select --install/u);
+  assert.match(compilerRemedy("linux"), /answers to cc/u);
+  assert.match(compilerRemedy("win32"), /WSL2/u);
+  assert.throws(
+    () =>
+      nativeCompiler({
+        platform: "darwin",
+        run: () => {
+          throw Object.assign(new Error("spawn /usr/bin/xcrun ENOENT"), {
+            code: "ENOENT",
+          });
+        },
+      }),
+    /The native compiler \/usr\/bin\/xcrun was not found\..*xcode-select --install/su,
+  );
+  assert.deepEqual(nativeCompiler({ platform: "linux" }), {
+    compiler: "cc",
+    args: [],
+  });
+  // Nothing was left behind by a failed build.
+  assert.deepEqual(
+    readdirSync(directory).filter((name) => name.includes("host-lock")),
+    [],
+  );
+});
+
+// Injected facts for the host report: every assumption met, on a host whose
+// name, user, home directory and origin must never be printed.
+const doctorFacts = (over = {}) => ({
+  root,
+  nodeVersion: process.version,
+  gitVersion: "git version 2.55.0",
+  platform: "darwin",
+  wsl: false,
+  processors: 16,
+  memoryBytes: 48 * 2 ** 30,
+  compile: () => {},
+  symlink: () => {},
+  laneCapacity: () => 8,
+  gitConfig: () => null,
+  lineAttributes: () => [{ text: "unset", eol: "unspecified" }],
+  originUrl: () =>
+    "git@forge.example.net:synthetic-owner/synthetic-repository.git",
+  pushTarget: () => ({
+    host: "forge.example.net",
+    selector: "forge.example.net/synthetic-owner/synthetic-repository",
+  }),
+  tool: (command) =>
+    command === "gh"
+      ? "gh version 2.98.0 (2026-01-01)"
+      : command === "claude"
+        ? "2.1.322 (Claude Code)"
+        : null,
+  electedHosts: () => ({ "host-codex": false, "host-copilot": false }),
+  hostName: "build-host-17.corp.example.net",
+  userName: "synthetic-user",
+  homeDirectory: "/Users/synthetic-user",
+  ...over,
+});
+
+test("WO-276 criteria H1 to H3: the host report gives a row for each assumption with its observed value, verdict, dependant and remedy; three unmet at once exit 1; a fact it cannot read is unknown and changes no exit code; and no row carries the host's name, the user's, the home directory, the origin or an absolute path", async () => {
+  const { hostReport, renderHostReport, reportExitCode } =
+    await import("./lib/host-doctor.mjs");
+  const { compilerFailure } = await import("./lib/host-resources.mjs");
+  const met = hostReport(root, doctorFacts());
+  assert.deepEqual(
+    met.map((row) => [row.id, row.verdict]),
+    [
+      ["node", "met"],
+      ["git", "met"],
+      ["compiler", "met"],
+      ["lane-memory", "met"],
+      ["symlinks", "met"],
+      ["line-endings", "met"],
+      ["forge", "met"],
+      ["platform", "met"],
+      ["agent-claude", "reported"],
+    ],
+  );
+  for (const row of met)
+    for (const field of [
+      "assumption",
+      "observed",
+      "verdict",
+      "dependsOn",
+      "remedy",
+    ])
+      assert.ok(row[field].length > 0, `${row.id}: ${field}`);
+  assert.equal(reportExitCode(met), 0);
+  // A Node below the floor, a Git below the floor and a compiler that
+  // fails, all at once: three rows unmet in one run, each with its remedy.
+  const failing = () => {
+    throw new Error(
+      "spawn /usr/bin/cc ENOENT in /Users/synthetic-user/work on build-host-17.corp.example.net",
+    );
+  };
+  const unmet = hostReport(
+    root,
+    doctorFacts({
+      nodeVersion: "v18.20.0",
+      gitVersion: "git version 2.20.1",
+      // The helpers' own error for a compiler that cannot be run.
+      compile: () => {
+        try {
+          failing();
+        } catch (error) {
+          throw compilerFailure("/usr/bin/cc", error, "darwin");
+        }
+      },
+    }),
+  );
+  assert.deepEqual(
+    unmet.filter((row) => row.verdict === "unmet").map((row) => row.id),
+    ["node", "git", "compiler"],
+  );
+  assert.equal(reportExitCode(unmet), 1);
+  const remedyOf = (rows, id) => rows.find((row) => row.id === id).remedy;
+  assert.match(remedyOf(unmet, "node"), /engines\.node/u);
+  assert.match(remedyOf(unmet, "git"), /engines\.git >=2\.31\.0/u);
+  assert.match(remedyOf(unmet, "compiler"), /xcode-select --install/u);
+  // A fact that cannot be read is unknown, and unknown changes no exit code.
+  const unknown = hostReport(
+    root,
+    doctorFacts({
+      gitConfig: failing,
+      originUrl: () => null,
+      symlink: failing,
+    }),
+  );
+  assert.deepEqual(
+    unknown
+      .map((row) => [row.id, row.verdict])
+      .filter(([, verdict]) => verdict !== "met" && verdict !== "reported"),
+    [
+      ["symlinks", "unmet"],
+      ["line-endings", "unknown"],
+      ["forge", "unknown"],
+    ],
+  );
+  const onlyUnknown = hostReport(
+    root,
+    doctorFacts({ gitConfig: failing, originUrl: () => null }),
+  );
+  assert.equal(reportExitCode(onlyUnknown), 0);
+  // An origin the publish helpers refuse, a conversion that is on, and the
+  // other platforms.
+  const other = hostReport(
+    root,
+    doctorFacts({
+      originUrl: () => "https://forge.example.net/a/b/c/d",
+      pushTarget: failing,
+      gitConfig: () => "true",
+      lineAttributes: () => [{ text: "unspecified", eol: "unspecified" }],
+      platform: "win32",
+    }),
+  );
+  assert.deepEqual(
+    other.filter((row) => row.verdict === "unmet").map((row) => row.id),
+    ["line-endings", "forge", "platform"],
+  );
+  assert.match(
+    hostReport(root, doctorFacts({ platform: "linux", wsl: 2 })).find(
+      (row) => row.id === "platform",
+    ).observed,
+    /^WSL2, which the kit is designed for and not exercised on$/u,
+  );
+  // Nothing of the host: its name, the user's, the home directory, the
+  // origin's host or owner, any host name, any URL, any absolute path.
+  for (const rows of [met, unmet, unknown, onlyUnknown, other]) {
+    const printed = `${renderHostReport(rows)}\n${JSON.stringify(rows, null, 2)}`;
+    for (const withheld of [
+      "build-host-17",
+      "synthetic-user",
+      "/Users/",
+      "forge.example.net",
+      "synthetic-owner",
+      "synthetic-repository",
+    ])
+      assert.ok(!printed.includes(withheld), withheld);
+    assert.doesNotMatch(
+      printed,
+      /\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|net|org|io|dev|local|internal|corp|lan)\b/iu,
+    );
+    assert.doesNotMatch(printed, /[a-z][a-z0-9+.-]*:\/\//iu);
+    assert.doesNotMatch(printed, /(?:^|[\s"'(|:=])\/(?:[\w.@+-]+\/)+/mu);
+    assert.doesNotMatch(printed, /\b[A-Za-z]:\\/u);
+  }
+});
+
+test("WO-276 criteria H2 and H3: host elections that cannot be read are one unknown row that changes no exit code and no elected host's CLI is looked for; and a path, an address or a share written in any script is withheld from the table and the JSON", async () => {
+  const { hostReport, renderHostReport, reportExitCode } =
+    await import("./lib/host-doctor.mjs");
+  const verdicts = (rows) => rows.map((row) => [row.id, row.verdict]);
+  // The elections read: a host that is on has its CLI looked for.
+  const asked = [];
+  const tool = (command) => {
+    asked.push(command);
+    return command === "codex" ? "codex-cli 0.167.2" : "1.0.0";
+  };
+  const on = hostReport(
+    root,
+    doctorFacts({
+      tool,
+      electedHosts: () => ({ "host-codex": true, "host-copilot": false }),
+    }),
+  );
+  assert.deepEqual(verdicts(on).slice(-2), [
+    ["agent-claude", "reported"],
+    ["agent-codex", "reported"],
+  ]);
+  // The elections unreadable, whatever the read's failure says: one unknown
+  // row, no row for a host that may or may not be on, and its CLI not asked.
+  asked.length = 0;
+  const unread = hostReport(
+    root,
+    doctorFacts({
+      tool,
+      electedHosts: () => {
+        throw new Error(
+          "dotln.config.json: Unexpected token in /Users/synthetic-user/work/dotln.config.json",
+        );
+      },
+    }),
+  );
+  assert.deepEqual(verdicts(unread).slice(-3), [
+    ["platform", "met"],
+    ["host-elections", "unknown"],
+    ["agent-claude", "reported"],
+  ]);
+  assert.deepEqual(asked, ["gh", "claude"]);
+  assert.equal(reportExitCode(unread), 0);
+  assert.match(
+    renderHostReport(unread),
+    /^0 unmet, 1 unknown, of 10 rows\.$/mu,
+  );
+  const elections = unread.find((row) => row.id === "host-elections");
+  for (const field of ["assumption", "observed", "dependsOn", "remedy"])
+    assert.ok(elections[field].length > 0, field);
+  assert.ok(!JSON.stringify(unread).includes("synthetic-user"));
+  // With a floor unmet beside it the exit code is the floor's, not its.
+  assert.equal(
+    reportExitCode(
+      hostReport(
+        root,
+        doctorFacts({
+          nodeVersion: "v18.20.0",
+          electedHosts: () => {
+            throw new Error("unreadable");
+          },
+        }),
+      ),
+    ),
+    1,
+  );
+  // A tool that is on the path and does not answer for its version is a
+  // fact that could not be read: the forge row is unknown and the exit code
+  // unchanged. A tool that is not there is still unmet.
+  const silent = (names) => (command) => {
+    if (names.includes(command))
+      throw new Error(
+        "Command failed: gh --version in /Users/synthetic-user/work",
+      );
+    return doctorFacts().tool(command);
+  };
+  const unanswered = hostReport(root, doctorFacts({ tool: silent(["gh"]) }));
+  const forgeOf = (rows) => rows.find((row) => row.id === "forge");
+  assert.equal(forgeOf(unanswered).verdict, "unknown");
+  assert.match(
+    forgeOf(unanswered).observed,
+    /; gh found, and its version could not be read$/u,
+  );
+  assert.match(forgeOf(unanswered).remedy, /gh --version/u);
+  assert.equal(reportExitCode(unanswered), 0);
+  assert.ok(!JSON.stringify(unanswered).includes("synthetic-user"));
+  const absent = hostReport(
+    root,
+    doctorFacts({
+      tool: (command) =>
+        command === "gh" ? null : doctorFacts().tool(command),
+    }),
+  );
+  assert.deepEqual(
+    [forgeOf(absent).verdict, reportExitCode(absent)],
+    ["unmet", 1],
+  );
+  // An origin the helpers refuse is unmet whatever the tool answers.
+  assert.equal(
+    forgeOf(
+      hostReport(
+        root,
+        doctorFacts({
+          tool: silent(["gh"]),
+          pushTarget: () => {
+            throw new Error("two targets");
+          },
+        }),
+      ),
+    ).verdict,
+    "unmet",
+  );
+  // An agent CLI that does not answer is reported so, and judged no more
+  // than one that does.
+  const quiet = hostReport(root, doctorFacts({ tool: silent(["claude"]) }));
+  const agent = quiet.find((row) => row.id === "agent-claude");
+  assert.deepEqual(
+    [agent.observed, agent.verdict],
+    ["found, and its version could not be read", "reported"],
+  );
+  assert.equal(reportExitCode(quiet), 0);
+  // A fact that reaches a row as the host gave it, in scripts other than
+  // ASCII: each of these is withheld whole, with the words around it kept.
+  for (const [given, withheld] of [
+    ["from /équipe", ["équipe"]],
+    ["from /文書/проект/", ["文書", "проект"]],
+    ["at /Users/Ünïcödé/work", ["Ünïcödé", "/Users"]],
+    ['in "/tmp/π"', ["π", "/tmp"]],
+    ["by utilisateur-é@hôte-ü:/chemin/π", ["utilisateur", "hôte", "chemin"]],
+    ["on \\\\sërveur\\partagé\\x", ["sërveur", "partagé"]],
+    ["on C:\\Üsers\\ñ", ["Üsers", "ñ"]],
+    ["via ssh://hôte.example/répertoire", ["hôte", "répertoire"]],
+  ]) {
+    const rows = hostReport(root, doctorFacts({ nodeVersion: given }));
+    const printed = `${renderHostReport(rows)}\n${JSON.stringify(rows, null, 2)}`;
+    for (const text of withheld) assert.ok(!printed.includes(text), given);
+    // No slash opens a path anywhere in what is printed.
+    assert.doesNotMatch(printed, /(?:^|[\s"'(|:=])\/[^\s/]/mu, given);
+    assert.ok(printed.includes(`Node ${given.split(" ")[0]} `), given);
+  }
+  // The report's own words that hold a slash stand.
+  const own = renderHostReport(hostReport(root, doctorFacts()));
+  assert.ok(own.includes("HOST/OWNER/REPO"));
+});
+
+test("WO-276 criteria H2 and H9: the doctor's entry prints the table or the same rows as JSON; with its library unable to load it still prints the Node row with the floor and exits 1; it lists the agent CLI of a host only when the instance has that host on, and asks no other tool its version; and its imports are Node's own modules and build-free modules", async () => {
+  const { hostReport } = await import("./lib/host-doctor.mjs");
+  const { doctor, nodeRowAlone, KIT_PACKAGE } = await import("./doctor.mjs");
+  const { judgeRunningNode } = await import("./lib/node-engines.mjs");
+  // The entry derives no root of its own: the one file it reads before the
+  // library loads is the package.json at the configuration module's root,
+  // and without a root it judges Node by that file.
+  const { TOOL_ROOT } = await import("./lib/config.mjs");
+  const { fileURLToPath } = await import("node:url");
+  assert.equal(fileURLToPath(KIT_PACKAGE), join(TOOL_ROOT, "package.json"));
+  assert.deepEqual(
+    nodeRowAlone(process.version),
+    nodeRowAlone(process.version, TOOL_ROOT),
+  );
+  const run = async (argv, options) => {
+    const lines = [];
+    const exitCode = await doctor(argv, {
+      root,
+      write: (text) => lines.push(text),
+      ...options,
+    });
+    return { exitCode, output: lines.join("\n") };
+  };
+  const table = await run([], { facts: doctorFacts() });
+  const json = await run(["--json"], { facts: doctorFacts() });
+  assert.equal(table.exitCode, 0);
+  assert.deepEqual(JSON.parse(json.output), hostReport(root, doctorFacts()));
+  for (const row of JSON.parse(json.output))
+    assert.ok(
+      table.output.includes(
+        `| ${row.assumption} | ${row.observed} | ${row.verdict} |`,
+      ),
+      row.id,
+    );
+  assert.equal(
+    (await run(["--verbose"], { facts: doctorFacts() })).exitCode,
+    2,
+  );
+  // A Node below the floor and a library that cannot be loaded under it:
+  // the Node row is printed with the floor, from package.json alone.
+  const range = JSON.parse(readFileSync(join(root, "package.json"), "utf8"))
+    .engines.node;
+  const old = await run([], {
+    nodeVersion: "v18.20.0",
+    load: () => Promise.reject(new SyntaxError("Unexpected token")),
+  });
+  assert.equal(old.exitCode, 1);
+  assert.ok(old.output.includes("Node v18.20.0"), old.output);
+  assert.ok(old.output.includes(range), old.output);
+  const unloadable = await run(["--json"], {
+    load: () => Promise.reject(new Error("Cannot find module")),
+  });
+  assert.equal(unloadable.exitCode, 0);
+  assert.deepEqual(
+    JSON.parse(unloadable.output).map((row) => [row.id, row.verdict]),
+    [
+      ["node", "met"],
+      ["modules", "unknown"],
+    ],
+  );
+  // The entry's own judgment of Node and the kit's agree, version by
+  // version, so the row is the same whichever module printed it.
+  for (const version of [
+    "v18.20.0",
+    "v24.14.9",
+    "v24.15.0",
+    "v25.1.0",
+    "v26.0.0",
+    process.version,
+    "v27.0.0",
+    // A prerelease of an admitted version is admitted by neither.
+    "v24.15.0-rc.1",
+    "v26.0.0-nightly20260101abcdef",
+  ])
+    assert.equal(
+      nodeRowAlone(version, root).verdict === "met",
+      judgeRunningNode(version, root).admitted,
+      version,
+    );
+  // A host's agent CLI is looked for only when the instance has the host
+  // on; no other tool is asked its version.
+  const asked = [];
+  const tool = (command) => {
+    asked.push(command);
+    return `${command} 1.2.3`;
+  };
+  const claudeOnly = hostReport(root, doctorFacts({ tool }));
+  assert.deepEqual(asked.sort(), ["claude", "gh"]);
+  assert.deepEqual(
+    claudeOnly
+      .filter((row) => row.id.startsWith("agent-"))
+      .map((row) => row.id),
+    ["agent-claude"],
+  );
+  asked.length = 0;
+  const withCodex = hostReport(
+    root,
+    doctorFacts({
+      tool,
+      electedHosts: () => ({ "host-codex": true, "host-copilot": false }),
+    }),
+  );
+  assert.deepEqual(asked.sort(), ["claude", "codex", "gh"]);
+  assert.deepEqual(
+    withCodex
+      .filter((row) => row.id.startsWith("agent-"))
+      .map((row) => [row.id, row.verdict]),
+    [
+      ["agent-claude", "reported"],
+      ["agent-codex", "reported"],
+    ],
+  );
+  // The imports, followed from the entry: Node's own modules, and files of
+  // this repository that need no build and no install (no compiled output,
+  // no package a registry supplies).
+  const seen = new Set();
+  const outside = [];
+  const visit = (file) => {
+    if (seen.has(file)) return;
+    seen.add(file);
+    if (!/\.m?js$/u.test(file)) return;
+    for (const specifier of sourceImports(
+      readFileSync(join(root, file), "utf8"),
+    )) {
+      if (specifier.startsWith("node:")) continue;
+      if (!specifier.startsWith(".")) {
+        outside.push(`${file}: ${specifier}`);
+        continue;
+      }
+      const target = join(dirname(file), specifier);
+      if (/(?:^|\/)dist\//u.test(target) || !existsSync(join(root, target)))
+        outside.push(`${file}: ${specifier}`);
+      else visit(target);
+    }
+  };
+  assert.deepEqual(
+    sourceImports(
+      readFileSync(join(root, "scripts/doctor.mjs"), "utf8"),
+    ).sort(),
+    ["./lib/host-doctor.mjs", "node:fs", "node:path", "node:url"],
+  );
+  visit("scripts/doctor.mjs");
+  assert.deepEqual(outside, []);
+  assert.ok(seen.has("scripts/lib/host-doctor.mjs"));
+  assert.ok(seen.size > 5, `${seen.size} modules`);
+});
+
+test("WO-276 (the attack on Part H): the report sizes a lane by the host's own record, judges the origin as the publish helpers do, reads core.autocrlf as Git reads it and every kit file's attributes, calls a build that never reached the compiler unknown, prints with no user name to withhold and through a linked path, withholds a name of two letters, an address and a path of one segment, and reads a prerelease, an unknown platform and WSL1 as unmet", async (t) => {
+  const {
+    autocrlfWord,
+    hostFacts,
+    hostReport,
+    renderHostReport,
+    reportExitCode,
+    wslGeneration,
+  } = await import("./lib/host-doctor.mjs");
+  const { recordedHostLaneCapacity, checkHost } =
+    await import("./lib/host-resources.mjs");
+  const { nodeRowAlone } = await import("./doctor.mjs");
+  const rowOf = (rows, id) => rows.find((row) => row.id === id);
+  const failing = (message) => () => {
+    throw new Error(message);
+  };
+
+  // The lane row and the host task read one record: a host of four
+  // processors whose record says eight lanes is judged at eight, and one of
+  // sixteen whose record says two at two.
+  const sized = (processors, capacity) =>
+    rowOf(
+      hostReport(
+        root,
+        doctorFacts({
+          processors,
+          memoryBytes: 16 * 2 ** 30,
+          laneCapacity: () => capacity,
+        }),
+      ),
+      "lane-memory",
+    );
+  assert.equal(sized(4, 8).verdict, "unmet", sized(4, 8).observed);
+  assert.match(sized(4, 8).observed, /, 8 lanes of 1\.0 GiB each$/u);
+  assert.equal(sized(16, 2).verdict, "met", sized(16, 2).observed);
+  assert.match(sized(16, 2).observed, /, 2 lanes of /u);
+  assert.equal(hostFacts(root).laneCapacity(), recordedHostLaneCapacity());
+  const noRecord = rowOf(
+    hostReport(
+      root,
+      doctorFacts({ laneCapacity: failing("lane-capacity.json is malformed") }),
+    ),
+    "lane-memory",
+  );
+  assert.equal(noRecord.verdict, "unknown");
+  assert.match(noRecord.remedy, /lane-capacity\.json/u);
+
+  // A clone of its own: the facts as the report reads them from Git.
+  const clone = createFixtureRoot(join(tmpdir(), "dotln-doctor-facts-"));
+  t.after(() => rmSync(clone, { recursive: true, force: true }));
+  runGit(clone, ["init", "-q", "-b", "main"]);
+  writeFileSync(join(clone, "package.json"), "{}\n");
+  writeFileSync(join(clone, "reader.mjs"), "export {};\n");
+  writeFileSync(join(clone, "notes.md"), "# Notes\n");
+  writeFileSync(join(clone, ".gitattributes"), "* -text\n");
+  runGit(clone, [
+    "add",
+    "package.json",
+    "reader.mjs",
+    "notes.md",
+    ".gitattributes",
+  ]);
+  const facts = () => hostFacts(clone);
+  const judged = (over = {}) => hostReport(root, doctorFacts({ ...over }));
+  // The origin: one target for fetch and push, as the helpers require.
+  runGit(clone, [
+    "remote",
+    "add",
+    "origin",
+    "https://github.com/example/reader.git",
+  ]);
+  assert.equal(facts().pushTarget().selector, "github.com/example/reader");
+  runGit(clone, [
+    "remote",
+    "set-url",
+    "--push",
+    "origin",
+    "https://github.com/example/writer.git",
+  ]);
+  assert.throws(() => facts().pushTarget());
+  const split = rowOf(
+    judged({
+      originUrl: facts().originUrl,
+      pushTarget: facts().pushTarget,
+    }),
+    "forge",
+  );
+  assert.equal(split.verdict, "unmet");
+  assert.match(split.remedy, /for both fetch and push/u);
+  runGit(clone, [
+    "remote",
+    "set-url",
+    "--push",
+    "origin",
+    "https://github.com/example/reader.git",
+  ]);
+  runGit(clone, [
+    "config",
+    "--add",
+    "remote.origin.url",
+    "https://github.com/example/second.git",
+  ]);
+  assert.throws(() => facts().pushTarget(), "two fetch addresses");
+
+  // core.autocrlf in each spelling Git reads as a boolean.
+  for (const [raw, word] of [
+    [null, "unset"],
+    ["true", "true"],
+    ["True", "true"],
+    ["yes", "true"],
+    ["on", "true"],
+    ["1", "true"],
+    ["", "true"],
+    ["false", "false"],
+    ["No", "false"],
+    ["off", "false"],
+    ["0", "false"],
+    ["input", "input"],
+    ["sometimes", "of a value Git does not read"],
+  ])
+    assert.equal(autocrlfWord(raw), word, String(raw));
+  runGit(clone, ["config", "core.autocrlf", "yes"]);
+  assert.equal(facts().gitConfig("core.autocrlf"), "yes");
+  assert.equal(facts().gitConfig("core.no-such-key"), null);
+  const lineRow = (over) => rowOf(judged(over), "line-endings");
+  // With every file `-text` nothing converts, whatever core.autocrlf says.
+  assert.deepEqual(facts().lineAttributes(), [
+    { text: "unset", eol: "unspecified" },
+    { text: "unset", eol: "unspecified" },
+    { text: "unset", eol: "unspecified" },
+    { text: "unset", eol: "unspecified" },
+  ]);
+  assert.equal(
+    lineRow({
+      gitConfig: facts().gitConfig,
+      lineAttributes: facts().lineAttributes,
+    }).verdict,
+    "met",
+  );
+  // An attribute under that line that converts the kit's scripts, while
+  // package.json stays `-text`.
+  writeFileSync(
+    join(clone, ".gitattributes"),
+    "* -text\n*.mjs text eol=crlf\n",
+  );
+  const scripts = lineRow({
+    gitConfig: () => "false",
+    lineAttributes: facts().lineAttributes,
+  });
+  assert.equal(scripts.verdict, "unmet");
+  assert.match(
+    scripts.observed,
+    /^core\.autocrlf false; 1 of 4 tracked kit files open to conversion$/u,
+  );
+  // An `eol` with `text` unspecified converts too, and so does a file the
+  // attributes say nothing of once core.autocrlf is on.
+  writeFileSync(join(clone, ".gitattributes"), "* eol=crlf\n");
+  assert.equal(
+    lineRow({ gitConfig: () => null, lineAttributes: facts().lineAttributes })
+      .verdict,
+    "unmet",
+  );
+  writeFileSync(join(clone, ".gitattributes"), "*.json -text\n");
+  assert.equal(
+    lineRow({ gitConfig: () => null, lineAttributes: facts().lineAttributes })
+      .verdict,
+    "met",
+  );
+  assert.match(
+    lineRow({ gitConfig: () => "On", lineAttributes: facts().lineAttributes })
+      .observed,
+    /^core\.autocrlf true; 3 of 4 tracked kit files open to conversion$/u,
+  );
+  // core.autocrlf input changes no file on checkout, and on add only
+  // toward the line endings the kit ships: the row says so and is met
+  // (rolling review 25).
+  const input = lineRow({
+    gitConfig: () => "input",
+    lineAttributes: facts().lineAttributes,
+  });
+  assert.equal(input.verdict, "met");
+  assert.equal(
+    input.observed,
+    "core.autocrlf input (Git then converts on add alone, toward the line endings the kit ships); 0 of 4 tracked kit files open to conversion",
+  );
+  // In an instance the kit's files are the manifest's: an attribute on a
+  // file of the instance's own is no conversion of a kit file.
+  writeFileSync(join(clone, ".gitattributes"), "* -text\n*.md text\n");
+  writeFileSync(
+    join(clone, "KIT-MANIFEST.json"),
+    `${JSON.stringify({ files: [{ path: "package.json" }, { path: "reader.mjs" }] })}\n`,
+  );
+  assert.deepEqual(facts().lineAttributes(), [
+    { text: "unset", eol: "unspecified" },
+    { text: "unset", eol: "unspecified" },
+  ]);
+
+  // A build that stopped before the compiler says nothing of the compiler.
+  const stopped = hostReport(
+    root,
+    doctorFacts({
+      compile: () => {
+        throw new TypeError(
+          'The "path" argument must be of type string. Received undefined',
+        );
+      },
+    }),
+  );
+  assert.equal(rowOf(stopped, "compiler").verdict, "unknown");
+  assert.doesNotMatch(rowOf(stopped, "compiler").remedy, /xcode-select/u);
+  assert.equal(reportExitCode(stopped), 0);
+
+  // The entry itself, started through a linked path, and on a host that
+  // gives no user name: the rows are printed either way.
+  const linked = createFixtureRoot(join(tmpdir(), "dotln-doctor-link-"));
+  t.after(() => rmSync(linked, { recursive: true, force: true }));
+  symlinkSync(root, join(linked, "kit"));
+  const preload = join(linked, "no-user.cjs");
+  writeFileSync(
+    preload,
+    'const os = require("node:os");\nos.userInfo = () => {\n  throw new Error("uv_os_get_passwd returned ENOENT");\n};\nrequire("node:module").syncBuiltinESMExports();\n',
+  );
+  for (const [label, args] of [
+    ["a linked path", [join(linked, "kit/scripts/doctor.mjs"), "--json"]],
+    [
+      "no user name",
+      ["--require", preload, join(root, "scripts/doctor.mjs"), "--json"],
+    ],
+  ]) {
+    const ran = spawnSync(process.execPath, args, {
+      cwd: linked,
+      encoding: "utf8",
+    });
+    assert.notEqual(ran.status, 2, `${label}: ${ran.stderr}`);
+    assert.ok(
+      JSON.parse(ran.stdout).some((row) => row.id === "platform"),
+      label,
+    );
+  }
+
+  // A host or a user named for one of the report's own words changes no
+  // verdict, no row's identity and so not the exit status (rolling review
+  // 26): the redaction is of what a row shows, never of how it is judged.
+  const namesake = hostReport(
+    root,
+    doctorFacts({
+      hostName: "unmet",
+      userName: "met",
+      homeDirectory: "/Users/met",
+      gitVersion: "git version 2.20.1",
+    }),
+  );
+  assert.equal(reportExitCode(namesake), 1);
+  assert.ok(namesake.some((row) => row.verdict === "unmet"));
+  assert.ok(namesake.some((row) => row.verdict === "met"));
+  assert.ok(
+    namesake.every((row) => !/withheld/u.test(`${row.id} ${row.verdict}`)),
+  );
+  // What a row must not carry, put where a row prints a fact as the host
+  // gave it (the Node version's own text), in each form.
+  const host = {
+    hostName: "Build-Host",
+    userName: "dw",
+    homeDirectory: "/Users/dw",
+  };
+  for (const [secret, kept] of [
+    ["built by dw today", "built by <withheld> today"],
+    ["on build-host now", "on <withheld> now"],
+    ["a hardware window", "a hardware window"],
+    ["in /Users/dw/work", null],
+    ["in /dw", null],
+    ["from \\\\fileserver\\share\\dw", null],
+    ["git@forge.example.net:synthetic-owner/synthetic-repository.git", null],
+    ["at fe80::1ff:fe23:4567:890a", null],
+    ["at [2001:db8::1]:8443", null],
+    ["https://forge.example.net/synthetic-owner", null],
+    ["C:\\Users\\dw", null],
+  ]) {
+    const rows = hostReport(
+      root,
+      doctorFacts({ ...host, nodeVersion: secret }),
+    );
+    const printed = `${renderHostReport(rows)}\n${JSON.stringify(rows)}`;
+    if (kept) assert.ok(printed.includes(`Node ${kept}`), secret);
+    else
+      for (const part of [
+        secret,
+        "fileserver",
+        "forge.example.net",
+        "synthetic-owner",
+        "fe80",
+        "2001:db8",
+        "/dw",
+        "Users",
+      ])
+        assert.ok(!printed.includes(part), `${secret}: ${part}`);
+  }
+  // A Git version line the judge cannot read is not repeated.
+  const odd = hostReport(
+    root,
+    doctorFacts({ gitVersion: "git from /Users/dw/bin on Build-Host" }),
+  );
+  assert.equal(rowOf(odd, "git").verdict, "unmet");
+  assert.match(rowOf(odd, "git").remedy, /a line this report does not repeat/u);
+
+  // A prerelease is outside the range in the entry's own judgment, as in
+  // the kit's; a platform that was read and is not one the kit runs on is
+  // unmet; so is the first generation of WSL.
+  assert.equal(nodeRowAlone("v24.15.0-rc.1", root).verdict, "unmet");
+  assert.equal(
+    nodeRowAlone("v26.0.0-nightly20260101abcdef", root).verdict,
+    "unmet",
+  );
+  assert.equal(
+    rowOf(hostReport(root, doctorFacts({ platform: "freebsd" })), "platform")
+      .verdict,
+    "unmet",
+  );
+  assert.equal(
+    wslGeneration(
+      "Linux version 5.15.90.1-microsoft-standard-WSL2 (oe-user@oe-host)",
+    ),
+    2,
+  );
+  assert.equal(
+    wslGeneration(
+      "Linux version 4.4.0-19041-Microsoft (Microsoft@Microsoft.com)",
+    ),
+    1,
+  );
+  assert.equal(wslGeneration("Linux version 6.8.0-45-generic"), null);
+  const first = rowOf(
+    hostReport(root, doctorFacts({ platform: "linux", wsl: 1 })),
+    "platform",
+  );
+  assert.equal(first.verdict, "unmet");
+  assert.match(first.observed, /^WSL1, /u);
+  void checkHost;
 });
 
 test("exclusive overlap uses only measured light peers and preserves its nested lease", async (t) => {
@@ -10772,53 +15726,15 @@ test("each hand-copied control entry is declared and copy drift is refused", asy
   }
 });
 
-test("target-worktree file tasks keep all declared cases and two independent deadlines at eight lanes", async () => {
+test("target-worktree file tasks run under two independent deadlines at eight lanes", async () => {
   const suite = suites.find((row) => row.name === "target-worktree");
   const tasks = expandSuiteTasks([suite], root);
   assert.deepEqual(
     tasks.map((row) => row.name),
-    ["start", "publish", "close", "release"].map(
+    ["close", "start", "publish", "release"].map(
       (group) => `target-worktree:file:test-target-worktree-${group}.mjs`,
     ),
   );
-  const declarations = tasks.flatMap((row) =>
-    [
-      ...readFileSync(join(root, row.command.at(-1)), "utf8").matchAll(
-        /^\s*test\(\s*("(?:[^"\\]|\\.)*"|`[^`]*`)/gm,
-      ),
-    ].map((match) => match[1]),
-  );
-  const expected = JSON.parse(
-    readFileSync(
-      join(root, "scripts/fixtures/target-worktree-cases.json"),
-      "utf8",
-    ),
-  );
-  assert.equal(declarations.length, expected.declarations.length);
-  assert.deepEqual(declarations.sort(), expected.declarations.sort());
-  const names = [];
-  for (const task of tasks) {
-    const file = join(root, task.command.at(-1));
-    // Collect registrations without running the expensive case bodies. This
-    // also witnesses names generated by loops, beyond their declarations.
-    const source = readFileSync(file, "utf8")
-      .replace(
-        'import test from "node:test";',
-        "export const registeredNames = []; const test = (name) => registeredNames.push(name);",
-      )
-      .replace(
-        /from "(\.\.?\/[^"]+)"/gu,
-        (_, specifier) =>
-          `from ${JSON.stringify(pathToFileURL(resolve(dirname(file), specifier)).href)}`,
-      );
-    const collected = await import(
-      `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`
-    );
-    names.push(...collected.registeredNames);
-  }
-  assert.equal(names.length, expected.names.length);
-  assert.equal(new Set(names).size, names.length);
-  assert.deepEqual(names.sort(), expected.names.sort());
   let active = 0,
     peak = 0;
   const observed = await scheduleSuites([barrier, ...tasks], {
@@ -11179,4 +16095,39 @@ console.log("STRUCTURAL_RESULT "+JSON.stringify(result)); process.exitCode=resul
   });
   assert.equal(admitted.exitCode, 0);
   assert.equal(consumed(), 1, "one admitted review consumes exactly one run");
+});
+
+// A sharded row runs one process a shard, and a case runs in one of them
+// only where its file takes `test` from the shard helper: a file that
+// registered through node:test would run every case in every shard. The
+// row's files are its entry files and the test files they import.
+test("WO-276: no test file a sharded row loads registers its cases through node:test", async () => {
+  const { relativeImportsOf } = await import("./lib/evidence-sources.mjs");
+  const testFile = /^scripts\/test-[\w.-]+\.mjs$/u;
+  const sharded = suites.filter((row) => row.shards !== undefined);
+  assert.ok(sharded.length > 0, "a row declares shards");
+  for (const row of sharded) {
+    const entries = [...row.command.slice(1), ...(row.args ?? [])].filter(
+      (path) => testFile.test(path),
+    );
+    assert.ok(entries.length > 0, `${row.name} names its test files`);
+    const loaded = new Set(entries);
+    let batch = entries;
+    while (batch.length) {
+      const next = [];
+      for (const imports of relativeImportsOf(root, batch).values())
+        for (const target of imports)
+          if (testFile.test(target) && !loaded.has(target)) {
+            loaded.add(target);
+            next.push(target);
+          }
+      batch = next;
+    }
+    for (const file of loaded)
+      assert.doesNotMatch(
+        readFileSync(join(root, file), "utf8"),
+        /\bfrom\s+["']node:test["']/u,
+        `${row.name}: ${file} registers through node:test`,
+      );
+  }
 });

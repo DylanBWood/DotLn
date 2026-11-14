@@ -1,8 +1,10 @@
 import {
   boundJournal,
   dispatchJournalDirectory,
+  dispatchNamesOrder,
   readDispatchJournal,
   readDispatchJournals,
+  readJournalRows,
 } from "../../packages/skeleton/src/dispatch-journal.mjs";
 import { formatDuration } from "./duration.mjs";
 import { spawnSync } from "node:child_process";
@@ -71,38 +73,231 @@ export function dispatchJournals(root) {
   return readDispatchJournals(directory(root));
 }
 
-/** Fold phase-scoped operator authority once for lifecycle and execution. */
-export function effectiveDispatchLimits(budgets, role, phase, events) {
-  const configured = budgets?.dispatches[role];
-  const limits =
-    phase === "repairing" ? (configured?.repair ?? configured) : configured;
-  const acceptances = phaseBoundEvents(events, phase).filter(
+/** What the operator's acceptances leave of one metric's base: no ceiling
+ * when one says as needed or the base is unset, and never below the base. */
+const acceptedCeiling = (acceptances, metric, base) => {
+  const own = acceptances.filter((event) => event.metric === metric);
+  if (own.some((event) => event.ceiling === null)) return null;
+  if (base === null) return null;
+  return Math.max(base, ...own.map((event) => event.ceiling));
+};
+/** The budgets file's subagent cap, every role's base: 20 when the file
+ * states none, null when it disables the cap. */
+export const baseSubagentCap = (budgets) =>
+  budgets?.subagentCap === undefined ? 20 : budgets.subagentCap;
+/** The acceptances of one dispatch: those recorded for its phase since that
+ * phase last completed. */
+const phaseAcceptances = (events, phase) =>
+  phaseBoundEvents(events, phase).filter(
     (event) =>
       event.type === "DispatchBoundAccepted" &&
       scopePhase(event.phase) === phase,
   );
-  const ceiling = (metric) => {
-    const base = limits?.[metric] ?? null;
-    if (
-      acceptances.some(
-        (event) => event.metric === metric && event.ceiling === null,
-      )
-    )
-      return null;
-    if (base === null) return null;
-    return Math.max(
-      base,
-      ...acceptances
-        .filter((event) => event.metric === metric)
-        .map((event) => event.ceiling),
-    );
-  };
+
+/** Fold phase-scoped operator authority once for lifecycle and execution.
+ * The two bounds start from the role's row; the subagent cap starts from the
+ * budgets file's top-level value, whatever the role. */
+export function effectiveDispatchLimits(budgets, role, phase, events) {
+  const configured = budgets?.dispatches[role];
+  const limits =
+    phase === "repairing" ? (configured?.repair ?? configured) : configured;
+  const acceptances = phaseAcceptances(events, phase);
+  const ceiling = (metric) =>
+    acceptedCeiling(acceptances, metric, limits?.[metric] ?? null);
   return {
     wallClockMs: ceiling("wallClockMs"),
     completeRuns: ceiling("completeRuns"),
+    subagentCap: acceptedCeiling(
+      acceptances,
+      "subagentCap",
+      baseSubagentCap(budgets),
+    ),
     acceptances,
     wallClockBasis: limits?.wallClockBasis ?? null,
   };
+}
+
+/** The subagent cap a session's dispatch runs under: `base`, the budgets
+ * file's value, or the ceiling an acceptance recorded for that dispatch since
+ * its phase began. A session that dispatched no order reads the base, so one
+ * order's acceptance never reaches another's dispatch. The runtime's cap
+ * reader calls this with the value it read, and no session edits the budgets
+ * file for one order. */
+export function dispatchSubagentCap(
+  root,
+  base,
+  { session = dispatchSession(), sessionKey, journal, events } = {},
+) {
+  const key = sessionKey ?? (session ? keyOf(session) : undefined);
+  if (!journal && key) {
+    const file = join(directory(root), `${key}.json`);
+    if (existsSync(file)) journal = readDispatchJournal(file);
+  }
+  journal = boundJournal(journal);
+  if (!journal?.role || !/^WO-\d{3}$/u.test(journal.workOrder ?? ""))
+    return base;
+  return acceptedCeiling(
+    phaseAcceptances(
+      events ?? dispatchEvents(root, journal.workOrder),
+      dispatchPhase(journal),
+    ),
+    "subagentCap",
+    base,
+  );
+}
+/** The cap a drive of one order runs under: the largest ceiling any
+ * acceptance of the order's current activation records for the cap, since a
+ * drive's counter spans its phases. */
+export const activationSubagentCap = (base, events) =>
+  acceptedCeiling(
+    events.filter((event) => event.type === "DispatchBoundAccepted"),
+    "subagentCap",
+    base,
+  );
+
+/** A drive's two limits as they stand now: the cap, which is the budgets
+ * file's value or the largest one an acceptance of the order's current
+ * activation records, and the descendant ceiling, which the file states or
+ * which is four times whichever cap applies. A drive and the hooks of its
+ * workers read this at each admission, so a cap the operator accepts while a
+ * drive runs reaches the launches after it. */
+export function drivenSubagentLimits(budgets, events = []) {
+  const cap = activationSubagentCap(baseSubagentCap(budgets), events);
+  const ceiling =
+    budgets?.drivenSessionCeiling === undefined
+      ? cap === null
+        ? null
+        : cap * 4
+      : budgets.drivenSessionCeiling;
+  return { cap, ceiling };
+}
+/** The same limits read from the order's control log as it stands, for a
+ * reader that holds no events: a drive between launches, and the hook of a
+ * drive's worker, which passes the two budget values it read itself. */
+export function currentDrivenLimits(
+  root,
+  workOrder,
+  budgets = readBudgets(root),
+) {
+  return drivenSubagentLimits(budgets, dispatchEvents(root, workOrder));
+}
+
+/** A gap in a phase's journals that begins at a turn's end row and is longer
+ * than this is idle and adds nothing to the phase's wall-clock value. */
+export const IDLE_INTERVAL_MS = 10 * 60 * 1000;
+
+const callEnds = (row) =>
+  row.event === "PostToolUse" || row.event === "PostToolUseFailure";
+
+/** The spans of one session's tool calls, each from a start row to an end
+ * row. Rows that name their call (`call`) pair exactly: the span runs from
+ * the call's first start row to its last end row, and a call with no end row
+ * (one refused or interrupted) has no span. Rows that name none, which an
+ * earlier kit and some hosts write, pair by tool: an end row closes the
+ * earliest start row of its tool still open, and a further end row with none
+ * open extends the span just closed. That reading keeps a long call beside
+ * shorter ones of the same tool worked, and errs toward worked time where a
+ * call never ended and its tool was used again. */
+function callSpans(events) {
+  const named = new Map();
+  const open = new Map();
+  const closed = new Map();
+  const spans = [];
+  for (const { row, at } of events) {
+    if (typeof row.tool !== "string") continue;
+    const starts = row.event === "PreToolUse";
+    if (!starts && !callEnds(row)) continue;
+    // An end row that names a call whose start row named none (the hooks
+    // were replaced while the call ran) pairs by tool, as an unnamed row.
+    if (
+      typeof row.call === "string" &&
+      row.call &&
+      (starts || named.has(row.call))
+    ) {
+      const call = named.get(row.call) ?? { from: at, to: null };
+      if (!starts) call.to = at;
+      named.set(row.call, call);
+    } else if (starts) {
+      if (!open.has(row.tool)) open.set(row.tool, at);
+    } else if (open.has(row.tool)) {
+      const span = { from: open.get(row.tool), to: at };
+      spans.push(span);
+      closed.set(row.tool, span);
+      open.delete(row.tool);
+    } else if (closed.has(row.tool)) closed.get(row.tool).to = at;
+  }
+  for (const call of named.values()) if (call.to !== null) spans.push(call);
+  return spans;
+}
+
+/** The idle time between two instants in the journals of a phase's sessions,
+ * given as one list of rows for each session. A gap between two rows that
+ * follow one another, or between the last row and `to`, is idle only when it
+ * begins at a turn's end row (the hosts' `Stop` event), is longer than the
+ * interval, and no tool call's start row and end row lie on either side of
+ * it. Every other span is worked. A turn's end row counts only in a session
+ * whose journal holds a tool call's start row: a host whose tool calls no
+ * hook sees writes nothing while it works, so its journal cannot show a gap
+ * as idle and its phase reads elapsed time. Only a hook event's own row marks
+ * activity: the rows a hook derives while it handles an event carry no event
+ * and are passed over.
+ * @param {readonly (readonly Record<string, any>[])[]} journals
+ * @param {number} from @param {number} to @param {number} [interval] */
+export function idleTime(journals, from, to, interval = IDLE_INTERVAL_MS) {
+  const marks = [];
+  const calls = [];
+  for (const rows of journals) {
+    const events = rows
+      .filter((row) => typeof row?.event === "string")
+      .map((row) => ({ row, at: Date.parse(row.recordedAt ?? "") }))
+      .filter(({ at }) => Number.isFinite(at))
+      .sort((a, b) => a.at - b.at);
+    const showsWork = events.some(({ row }) => row.event === "PreToolUse");
+    for (const { row, at } of events)
+      if (at >= from && at <= to)
+        marks.push({ at, turnEnd: showsWork && row.event === "Stop" });
+    calls.push(...callSpans(events));
+  }
+  // At one instant a row that is no turn's end sorts last, so a tie never
+  // makes the gap after it idle.
+  marks.sort((a, b) => a.at - b.at || Number(b.turnEnd) - Number(a.turnEnd));
+  let idle = 0;
+  marks.forEach((mark, index) => {
+    if (!mark.turnEnd) return;
+    const next = marks[index + 1]?.at ?? to;
+    if (
+      next - mark.at > interval &&
+      !calls.some((call) => call.from <= mark.at && call.to >= next)
+    )
+      idle += next - mark.at;
+  });
+  return idle;
+}
+
+/** The journals of a phase's sessions: this session's, and for a dispatch
+ * that names an order every session of the same attempt, which is the same
+ * role, line and order, the same phase boundary where both journals record
+ * one, and a start no earlier than this one's (the anchor is the attempt's
+ * earliest, and a session bound while the lane could not be read keeps a
+ * later start of its own). A dispatch that names no order is its own
+ * session alone. */
+function phaseJournalRows(root, journal, key) {
+  const keys = new Set(key ? [key] : []);
+  if (dispatchNamesOrder(journal.intent))
+    for (const other of dispatchJournals(root))
+      if (
+        other.journal.role === journal.role &&
+        other.journal.intent === journal.intent &&
+        (other.journal.workOrder ?? null) === (journal.workOrder ?? null) &&
+        (!other.journal.phaseBoundary ||
+          !journal.phaseBoundary ||
+          other.journal.phaseBoundary === journal.phaseBoundary) &&
+        Date.parse(other.journal.startedAt) >= Date.parse(journal.startedAt)
+      )
+        keys.add(other.key);
+  return [...keys].map((session) =>
+    readJournalRows(join(directory(root), `${session}.jsonl`)),
+  );
 }
 
 /** The gate and hooks share the same checkout-local journal and run census.
@@ -141,11 +336,12 @@ export function dispatchStanding(
     journal = recovered?.journal ?? journal;
   }
   const routes =
-    "Use analysis: to diagnose. The operator can authorize proceeding in ordinary language in this conversation, including an early run for as long as needed; the agent records the contextual authorization with npm run resume -- accept-overrun <wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags> and continues in the same session. No special phrase, session exit or manual operator command is required.";
+    "Use analysis: to diagnose. The operator can authorize proceeding in ordinary language in this conversation, including an early run for as long as needed; the agent records the contextual authorization with npm run resume -- accept-overrun <wallClockMs|completeRuns|subagentCap> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags> and continues in the same session. No special phrase, session exit or manual operator command is required.";
   if (!journal?.role || !Number.isFinite(Date.parse(journal.startedAt)))
     return {
       role: journal?.role ?? null,
       elapsedMs: null,
+      workedMs: null,
       wallClockMs: null,
       completeRuns: null,
       bound: null,
@@ -159,13 +355,18 @@ export function dispatchStanding(
   const {
     wallClockMs,
     completeRuns: bound,
-    acceptances,
+    acceptances: recorded,
     wallClockBasis,
   } = effectiveDispatchLimits(
     readBudgets(root, { cutoff: journal.startedAt }),
     journal.role,
     phase,
     events,
+  );
+  // The standing is the two bounds': an accepted subagent cap changes
+  // neither its rows nor whether it reads as unset.
+  const acceptances = recorded.filter(
+    (event) => event.metric !== "subagentCap",
   );
   const started = Date.parse(journal.startedAt);
   const completeRuns = (gates ?? readGateChecks(root)).filter(
@@ -179,8 +380,17 @@ export function dispatchStanding(
       Date.parse(row.startedAt ?? row.recordedAt) >= started,
   ).length;
   const elapsedMs = Math.max(0, now - started);
+  // The bound measures work: the elapsed time less the idle gaps the phase's
+  // journals show. Where they cannot be read the value is the elapsed time.
+  let idleMs = 0;
+  try {
+    idleMs = idleTime(phaseJournalRows(root, journal, key), started, now);
+  } catch {
+    idleMs = 0;
+  }
+  const workedMs = Math.max(0, elapsedMs - idleMs);
   const exceeded = [
-    { metric: "wallClockMs", value: elapsedMs, bound: wallClockMs },
+    { metric: "wallClockMs", value: workedMs, bound: wallClockMs },
     { metric: "completeRuns", value: completeRuns, bound },
   ].filter((row) => row.bound !== null && row.value >= row.bound);
   return {
@@ -190,6 +400,7 @@ export function dispatchStanding(
     sessionKey: key ?? null,
     startedAt: journal.startedAt,
     elapsedMs,
+    workedMs,
     wallClockMs,
     wallClockBasis,
     completeRuns,
@@ -219,8 +430,16 @@ function hostAdmitted(row) {
     : !row.unrunSuites?.includes("host");
 }
 
+/** The phase's wall-clock value as a reader sees it: the worked time, and
+ * beside it the elapsed time since the dispatch where the two differ. */
+const wallClockShown = (standing) => {
+  const worked = standing.workedMs ?? standing.elapsedMs;
+  return worked === standing.elapsedMs
+    ? formatDuration(worked)
+    : `${formatDuration(worked)} worked (${formatDuration(standing.elapsedMs)} elapsed)`;
+};
 export const dispatchStandingLine = (standing) =>
-  `dispatch standing: ${formatDuration(standing.elapsedMs)} of ${standing.acceptance?.some((event) => event.metric === "wallClockMs" && event.ceiling === null) ? "as needed" : standing.wallClockMs === null ? "unset" : formatDuration(standing.wallClockMs)}; complete runs ${standing.completeRuns ?? "unknown"} of ${standing.acceptance?.some((event) => event.metric === "completeRuns" && event.ceiling === null) ? "as needed" : (standing.bound ?? "unset")}; ${standing.state}`;
+  `dispatch standing: ${wallClockShown(standing)} of ${standing.acceptance?.some((event) => event.metric === "wallClockMs" && event.ceiling === null) ? "as needed" : standing.wallClockMs === null ? "unset" : formatDuration(standing.wallClockMs)}; complete runs ${standing.completeRuns ?? "unknown"} of ${standing.acceptance?.some((event) => event.metric === "completeRuns" && event.ceiling === null) ? "as needed" : (standing.bound ?? "unset")}; ${standing.state}`;
 export const dispatchBoundMessage = (standing) =>
   `DOTLN_DISPATCH_BOUND: ${standing.exceeded.map(({ metric, value, bound }) => `${metric === "wallClockMs" ? "wall clock" : "complete runs"}=${metric === "wallClockMs" ? formatDuration(value) : value}, bound=${metric === "wallClockMs" ? formatDuration(bound) : bound}`).join("; ")}. ${dispatchStandingLine(standing)}. ${standing.routes}`;
 
@@ -284,7 +503,9 @@ export function requireDispatchBound(root, options = {}) {
 }
 
 /** Preserve the earliest dispatch in the unfinished attempt so a new thread
- * cannot replenish elapsed time or consumed complete runs. */
+ * cannot replenish elapsed time or consumed complete runs. A dispatch whose
+ * line names no order has no attempt to share: a planning pass starts at its
+ * own session, so no other session's journal is its anchor. */
 export function phaseDispatchAnchor(
   root,
   {
@@ -320,6 +541,7 @@ export function phaseDispatchAnchor(
         : phase === "verifying"
           ? "resume: verify"
           : "resume: final review";
+  if (!dispatchNamesOrder(intent)) return undefined;
   const boundPhase =
     phase ??
     (intent === "resume: fix"

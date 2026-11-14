@@ -13,7 +13,13 @@ import { spawnGit } from "./git.mjs";
 // the run files. Rows derive their observed/blocked/unavailable/ambiguous
 // label from the run files, and the report renders every row with the
 // command shape it ran.
-import { TOOL_ROOT, docPath, docRelative, findLaunchpad } from "./config.mjs";
+import {
+  TOOL_ROOT,
+  docPath,
+  docRelative,
+  findLaunchpad,
+  workerSelector,
+} from "./config.mjs";
 import { spawn, spawnSync } from "node:child_process";
 import {
   closeSync,
@@ -43,10 +49,6 @@ export const MARKERS = [
   "DETACHED_OK",
 ];
 export const LABELS = ["observed", "blocked", "unavailable", "ambiguous"];
-const SELECTORS = {
-  claude: { model: "claude-opus-5-5", effort: "xhigh" },
-  codex: { model: "gpt-6.1-sol", effort: "max" },
-};
 
 /* ------------------------------------------------------------------------ */
 /* Shape reduction: field names and value shapes, never values.              */
@@ -1074,7 +1076,8 @@ export async function runWritingWorker({
   env: callerEnv = process.env,
   binary = harness === "claude" ? "claude" : "codex",
   base = tmpdir(),
-  selector = SELECTORS[harness],
+  // What the launchpad's default worker runs on this host.
+  selector = workerSelector(harness),
   timing = { idleSampleMs: 3000, settleMs: 1500 },
   attempt = null,
 }) {

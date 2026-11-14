@@ -36,10 +36,14 @@
       "scripts/lib/config.mjs",
       "scripts/lib/feature-registry.mjs",
       "scripts/lib/features.mjs",
+      "scripts/lib/markdown-links.mjs",
+      "scripts/lib/vendor/prettier-markdown.mjs",
       "scripts/lib/build-overlay.mjs",
       "scripts/lib/temporary-roots.mjs",
       "packages/skeleton/src/temporary-root-records.mjs",
-      "scripts/temporary-root.mjs"
+      "scripts/temporary-root.mjs",
+      "packages/skeleton/src/worker-catalog.mjs",
+      "packages/skeleton/src/worker-models.mjs"
     ]
   }
 ]

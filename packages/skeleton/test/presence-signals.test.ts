@@ -4,11 +4,10 @@ import {
 } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, mkdirSync, writeFileSync, symlinkSync } from "node:fs";
+import { readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { setTimeout as delay } from "node:timers/promises";
 import { decodeLog } from "@dotln/kernel";
@@ -555,38 +554,71 @@ test("WO-121 generated hooks emit exactly one reduced observation per event and 
   );
   const storePath = join(directory, "store");
   await recordPresence(storePath, "away", () => 0);
+  // The heartbeat has no hook of its own: for each of its events, the file of
+  // one hook that already runs for the event ends with the call, behind the
+  // store's binding and after the hook has answered (WO-276 Part Q). The
+  // harness suite runs those hooks with a store named.
+  assert.ok(!bundle.files.some((f) => f.path.includes("/presence-")));
+  assert.doesNotMatch(JSON.stringify(settings.hooks), /presence-/);
+  const carriers: Record<string, string> = {
+    PreToolUse: "write-observer",
+    PostToolUse: "read-observer",
+    UserPromptSubmit: "session",
+    Stop: "finish",
+  };
+  const heartbeatTail =
+    /\nif \(process\.env\.DOTLN_RESIDENT_STORE([^\n]*)\) \{\ntry \{\nawait new Promise\(\(resolve\) => process\.stdout\.write\("", resolve\)\);\nconst \{ recordHarnessHeartbeat \} = await import\("[^"\n]*packages\/skeleton\/dist\/src\/presence-heartbeat\.js"\);\nawait recordHarnessHeartbeat\(([^\n]+), input\);\n\} catch \{ process\.stderr\.write\("DotLn advisory: presence heartbeat unavailable\\n"\); \}\n\}\n$/u;
   for (const event of PRESENCE_HOOK_EVENTS) {
-    const file = bundle.files.find(
-      (f) => f.path === `.claude/hooks/presence-${event.toLowerCase()}.mjs`,
-    )!;
-    assert.ok(file);
-    assert.equal(
-      JSON.stringify(settings.hooks[event]).split(file.path).length - 1,
-      1,
+    const holders = bundle.files.filter(
+      (f) =>
+        f.path.startsWith(".claude/hooks/") &&
+        f.contents.includes("recordHarnessHeartbeat(") &&
+        JSON.stringify(settings.hooks[event]).includes(f.path),
     );
-    const path = join(directory, file.path);
-    mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, file.contents);
-    for (const stamped of [false, true]) {
-      const run = spawnSync(process.execPath, [path], {
-        encoding: "utf8",
-        input: JSON.stringify({
+    assert.deepEqual(
+      holders.map((f) => f.path),
+      [`.claude/hooks/${carriers[event]}.mjs`],
+      event,
+    );
+    const tail = heartbeatTail.exec(holders[0]!.contents);
+    assert.ok(tail, event);
+    // The session hook's file serves the session's start too, and records a
+    // heartbeat at a prompt alone; the others name their one event.
+    if (event === "UserPromptSubmit") {
+      assert.match(tail[1]!, / === "UserPromptSubmit"$/u);
+      assert.match(
+        JSON.stringify(settings.hooks["SessionStart"]),
+        /hooks\/session\.mjs/u,
+      );
+    } else {
+      assert.equal(tail[1], "");
+      assert.equal(tail[2], JSON.stringify(event));
+    }
+    for (const stamped of [false, true])
+      await recordHarnessHeartbeat(
+        event,
+        {
           hook_event_name: event,
           session_id: "fixture-session",
           prompt: "DO_NOT_STORE_PROMPT",
           tool_input: { secret: "DO_NOT_STORE_TOOL" },
-        }),
-        env: {
+        },
+        {
           DOTLN_RESIDENT_STORE: storePath,
           ...(stamped ? { DOTLN_RESIDENT_EPISODE_ID: "fixture-episode" } : {}),
         },
-      });
-      assert.equal(run.status, 0);
-      assert.equal(run.stdout, "{}");
-      assert.equal(run.stderr, "");
-    }
+      );
   }
-  assert.doesNotMatch(JSON.stringify(settings.hooks.SessionStart), /presence-/);
+  // No other generated hook holds the call.
+  assert.deepEqual(
+    bundle.files
+      .filter((f) => f.contents.includes("recordHarnessHeartbeat("))
+      .map((f) => f.path)
+      .sort(),
+    Object.values(carriers)
+      .map((name) => `.claude/hooks/${name}.mjs`)
+      .sort(),
+  );
   const store = new ResidentStore(storePath);
   const observations = decodeLog(store.read()).filter(
     (e) => e.type === "OperatorPresenceObserved",

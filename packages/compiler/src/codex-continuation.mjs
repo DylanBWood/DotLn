@@ -12,8 +12,8 @@
  * dispatch is still outstanding reserves it again, as Claude's hooks do around
  * each turn. Only a session whose prompt hook has been observed releases, so a
  * host that delivers no prompt event keeps the reservation until completion.
- * A `resume:` or `planning:` line also journals the worker options it names,
- * which the kit's review helper reads when its launch names no model.
+ * A `resume:` or `planning:` line makes the session's lane in a checkout
+ * that has none yet.
  * Missing observations leave native stopping available.
  * @param {Record<string, any>} input
  * @param {typeof import('./operator-control.mjs').operatorControl} operatorControl
@@ -21,8 +21,6 @@
  * @param {(root: string) => Promise<Record<string, any> | null>} [loadRuntime]
  * @param {(session: { intent?: string, role?: string }) => string} [phaseOf]
  *   The harness's own phase resolver, so both journal writers name a phase alike.
- * @param {(prompt: string) => Record<string, string> | null} [workerWords]
- *   The harness's own reader of a dispatch line's worker options.
  * @returns {Promise<Record<string, any>>}
  */
 export async function codexContinuation(
@@ -31,7 +29,6 @@ export async function codexContinuation(
   classify,
   loadRuntime,
   phaseOf,
-  workerWords,
 ) {
   const event = input?.hook_event_name;
   if (
@@ -202,24 +199,24 @@ export async function codexContinuation(
     // for a compaction to restore, and a resumed turn reserves its writer.
     // Each step fails alone, so a lost capture never costs the writer and an
     // unreadable state never withholds the operator's prompt.
-    // Every dispatch line states its selection, an empty one included, so a
-    // later dispatch that names no option returns to the defaults.
-    let options = null;
+    let dispatched = false;
     try {
-      options =
-        typeof workerWords === "function"
-          ? workerWords(typeof input.prompt === "string" ? input.prompt : "")
-          : null;
+      dispatched =
+        typeof classify === "function" &&
+        ["resume:", "planning:"].includes(
+          classify(typeof input.prompt === "string" ? input.prompt : "")
+            .prefix ?? "",
+        );
     } catch {
-      // The selection is an observation; the launch then takes its default.
+      // An unread line makes no lane; one that stands is still read.
     }
     let found = null;
     /** @type {Record<string, any> | null} */
     let session = null;
     try {
       // A dispatch line makes the lane in a checkout that has none yet, so
-      // the first line's selection is kept for the session's launches.
-      found = lane({ create: Boolean(options) });
+      // the session it starts is journaled from its first line.
+      found = lane({ create: dispatched });
       if (found) session = read(join(found.directory, `${key}.json`));
     } catch {
       return control ?? {};
@@ -227,17 +224,6 @@ export async function codexContinuation(
     if (!found) return control ?? {};
     const { root, directory } = found;
     const journal = join(directory, `${key}.jsonl`);
-    try {
-      if (options)
-        append(journal, {
-          event,
-          typedEvent: "WorkerOptionsSelected",
-          options,
-          source: "codex-prompt-hook",
-        });
-    } catch {
-      // The selection is an observation; the launch then takes its default.
-    }
     if (!session || !/^WO-\d{3}$/.test(session.workOrder ?? "")) {
       try {
         append(journal, { event, codexPromptObserved: true });

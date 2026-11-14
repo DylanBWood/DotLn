@@ -1,0 +1,224 @@
+{
+  "what": "Each role root's installed bytes (the instruction file plus the role's skill root) and its fixed reads (what the root's explicit Read: lines name outright, a selector that begins with @ left out), read from one tree by scripts/lib/harness-context.mjs's fixedReads as the working tree holds it.",
+  "command": "node docs/evidence/WO-276/part-f/reads.mjs worktree after.json",
+  "tree": "worktree",
+  "instructionBytes": 7446,
+  "roles": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "skillBytes": 41720,
+      "installedBytes": 49166,
+      "fixedReadBytes": 2761,
+      "fixedReads": [
+        {
+          "selector": "package.json",
+          "startLine": 1,
+          "endLine": 59,
+          "bytes": 2761
+        }
+      ]
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "skillBytes": 33272,
+      "installedBytes": 40718,
+      "fixedReadBytes": 25672,
+      "fixedReads": [
+        {
+          "selector": "package.json",
+          "startLine": 1,
+          "endLine": 59,
+          "bytes": 2761
+        },
+        {
+          "selector": "docs/product/07-execution-guide.md#Verification review and attack",
+          "startLine": 3419,
+          "endLine": 3731,
+          "bytes": 22911
+        }
+      ]
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "skillBytes": 36202,
+      "installedBytes": 43648,
+      "fixedReadBytes": 35784,
+      "fixedReads": [
+        {
+          "selector": "package.json",
+          "startLine": 1,
+          "endLine": 59,
+          "bytes": 2761
+        },
+        {
+          "selector": "docs/product/08-publication-compiler.md#PRs and commits",
+          "startLine": 246,
+          "endLine": 398,
+          "bytes": 10112
+        },
+        {
+          "selector": "docs/product/07-execution-guide.md#Verification review and attack",
+          "startLine": 3419,
+          "endLine": 3731,
+          "bytes": 22911
+        }
+      ]
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "skillBytes": 18744,
+      "installedBytes": 26190,
+      "fixedReadBytes": 0,
+      "fixedReads": []
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "skillBytes": 25419,
+      "installedBytes": 32865,
+      "fixedReadBytes": 68360,
+      "fixedReads": [
+        {
+          "selector": "docs/product/07-execution-guide.md#Operator-opened planning pass",
+          "startLine": 1654,
+          "endLine": 2464,
+          "bytes": 58167
+        },
+        {
+          "selector": "docs/planning/sequence.md",
+          "startLine": 1,
+          "endLine": 173,
+          "bytes": 10193
+        }
+      ]
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "skillBytes": 20513,
+      "installedBytes": 27959,
+      "fixedReadBytes": 0,
+      "fixedReads": []
+    },
+    {
+      "role": "router",
+      "skillsRoot": ".claude/skills",
+      "skillBytes": 10611,
+      "installedBytes": 18057,
+      "fixedReadBytes": 0,
+      "fixedReads": []
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "skillBytes": 41720,
+      "installedBytes": 49166,
+      "fixedReadBytes": 2761,
+      "fixedReads": [
+        {
+          "selector": "package.json",
+          "startLine": 1,
+          "endLine": 59,
+          "bytes": 2761
+        }
+      ]
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "skillBytes": 33272,
+      "installedBytes": 40718,
+      "fixedReadBytes": 25672,
+      "fixedReads": [
+        {
+          "selector": "package.json",
+          "startLine": 1,
+          "endLine": 59,
+          "bytes": 2761
+        },
+        {
+          "selector": "docs/product/07-execution-guide.md#Verification review and attack",
+          "startLine": 3419,
+          "endLine": 3731,
+          "bytes": 22911
+        }
+      ]
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "skillBytes": 36202,
+      "installedBytes": 43648,
+      "fixedReadBytes": 35784,
+      "fixedReads": [
+        {
+          "selector": "package.json",
+          "startLine": 1,
+          "endLine": 59,
+          "bytes": 2761
+        },
+        {
+          "selector": "docs/product/08-publication-compiler.md#PRs and commits",
+          "startLine": 246,
+          "endLine": 398,
+          "bytes": 10112
+        },
+        {
+          "selector": "docs/product/07-execution-guide.md#Verification review and attack",
+          "startLine": 3419,
+          "endLine": 3731,
+          "bytes": 22911
+        }
+      ]
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "skillBytes": 18744,
+      "installedBytes": 26190,
+      "fixedReadBytes": 0,
+      "fixedReads": []
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "skillBytes": 25419,
+      "installedBytes": 32865,
+      "fixedReadBytes": 68360,
+      "fixedReads": [
+        {
+          "selector": "docs/product/07-execution-guide.md#Operator-opened planning pass",
+          "startLine": 1654,
+          "endLine": 2464,
+          "bytes": 58167
+        },
+        {
+          "selector": "docs/planning/sequence.md",
+          "startLine": 1,
+          "endLine": 173,
+          "bytes": 10193
+        }
+      ]
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "skillBytes": 20513,
+      "installedBytes": 27959,
+      "fixedReadBytes": 0,
+      "fixedReads": []
+    },
+    {
+      "role": "router",
+      "skillsRoot": ".agents/skills",
+      "skillBytes": 10611,
+      "installedBytes": 18057,
+      "fixedReadBytes": 0,
+      "fixedReads": []
+    }
+  ]
+}

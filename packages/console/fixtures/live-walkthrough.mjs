@@ -7,6 +7,7 @@ import { mkdirSync, realpathSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { missionConfiguration } from "../../../scripts/resident-bind.mjs";
+import { workOrderCardSource } from "../../../scripts/lib/work-order-cards.mjs";
 import { decodeResidentConfiguration } from "../../skeleton/dist/src/resident-state.js";
 import { ResidentHost } from "../../skeleton/dist/src/resident-host.js";
 
@@ -98,5 +99,6 @@ await new ResidentHost({
   policyId: decoded.policyId,
   configuration: decoded,
   commandRoot: kit,
-  workOrderIndexPath: join(kit, "docs/work-orders/README.md"),
+  // The cards, as the launcher hands them to a resident it starts.
+  workOrderCards: workOrderCardSource(kit),
 }).run({ tickMs: 250, signal: abort.signal });

@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { mkdirSync, cpSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { runGit } from "./lib/git.mjs";
@@ -46,13 +47,9 @@ export const streamRepositoryProfile = () => ({
     revocationEventTypes: [],
   },
 });
-export const streamSnapshot = (text) =>
-  JSON.parse(
-    text
-      .split("\n")
-      .find((line) => line.startsWith("<!-- dotln-workstreams: "))
-      .slice("<!-- dotln-workstreams: ".length, -4),
-  );
+/** The index record's text, as data; its `workstreams` is the observation
+ * the board reads. */
+export const streamSnapshot = (text) => JSON.parse(text);
 
 /** One deterministic real-Git fixture is both the index assertion subject
  * and the source of the board's pinned input. Local clone paths stay ignored. */
@@ -131,5 +128,13 @@ export const createWorkstreamIndexFixture = (root) => {
     clientBase,
     readme: () =>
       readFileSync(join(launchpad, "docs/work-orders/README.md"), "utf8"),
+    // The cards and the workstream observation, as the index command prints
+    // them: no file records them.
+    record: () =>
+      execFileSync(
+        process.execPath,
+        [join(launchpad, "scripts/work-orders.mjs"), "index", "--json"],
+        { cwd: launchpad, encoding: "utf8", maxBuffer: 64_000_000 },
+      ),
   };
 };

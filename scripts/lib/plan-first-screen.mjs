@@ -1,7 +1,7 @@
 import { appendFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { docPath } from "./config.mjs";
-import { checkLocalTerms } from "./terms.mjs";
+import { localTermFindings, screenLocalTerms } from "./terms.mjs";
 import { lintOutwardArtifact } from "./outward-lint.mjs";
 import { planFirstContext } from "./plan-first.mjs";
 import { containedRegularFile } from "./paths.mjs";
@@ -9,18 +9,22 @@ import { containedRegularFile } from "./paths.mjs";
 export function screenPlanPassage(root, state, text, name = "carried passage") {
   let localTerms;
   try {
-    localTerms = checkLocalTerms(root, [{ name, text }]);
-  } catch (error) {
-    const prefix = "local-terms list present; refused ";
-    if (!error.message.startsWith(prefix))
-      throw new Error("plan-first terms input unavailable");
-    const findings = JSON.parse(error.message.slice(prefix.length));
+    localTerms = localTermFindings(root, [{ name, text }]);
+  } catch {
+    throw new Error("plan-first terms input unavailable");
+  }
+  // A context-mode match is the review item of the passage; one refuse-mode
+  // match refuses it.
+  if (localTerms.findings?.length)
     localTerms = {
-      status: findings.some((row) => row.mode === "refuse")
+      status: localTerms.findings.some((row) => row.mode === "refuse")
         ? "refused"
         : "review",
-      findings,
+      findings: localTerms.findings,
     };
+  else {
+    const { findings, ...status } = localTerms;
+    localTerms = status;
   }
   const vocabularyPath = docPath(root, "control", "outward-vocabulary.json");
   const vocabulary = existsSync(vocabularyPath)
@@ -47,9 +51,13 @@ export function screenPlanPassage(root, state, text, name = "carried passage") {
 export function screenPlanFirst(root, state, passage) {
   const context = planFirstContext(root, state);
   const results = context.documents
-    .filter((doc) => doc.name !== "conversation.md" || !state.repositoryId)
+    // A conversation kept in a private target is unscreened until a passage
+    // leaves it; one kept in this instance is a document of the instance.
+    .filter(
+      (doc) => doc.name !== "conversation.md" || context.documentRoot === root,
+    )
     .map((doc) => {
-      if (!containedRegularFile(doc.path, context.codeRoot))
+      if (!containedRegularFile(doc.path, context.documentRoot))
         throw new Error(`missing plan-first document: ${doc.name}`);
       return screenPlanPassage(
         root,
@@ -104,5 +112,5 @@ export function checkPublicPlanConversations(root) {
         );
       return { name: relative(root, file), text: readFileSync(file, "utf8") };
     });
-  if (surfaces.length) checkLocalTerms(root, surfaces);
+  if (surfaces.length) screenLocalTerms(root, surfaces);
 }

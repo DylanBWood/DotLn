@@ -9,10 +9,25 @@ import { parseWorkstreamDocument } from "./work-order-workstream.mjs";
 import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
 import { readControl } from "./control-store.mjs";
-import { readGitObjects, runGit } from "./git.mjs";
+import { readGitObjectsInBatches, runGit } from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { hasPackageSources } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
+import {
+  htmlComment,
+  inlineSource,
+  markdownCodeSpans,
+  markdownComments,
+  markdownListItems,
+  markdownMarkerBlocks,
+  markdownNodes,
+  markdownSections,
+  markdownTables,
+  parseMarkdown,
+} from "./markdown-links.mjs";
+import { readWorkOrder, refuseUnreadList } from "./work-order-document.mjs";
+import { readVision, VISION_EXCLUSIONS_TITLE } from "./vision-document.mjs";
+import { ledgerSections } from "../lineage.mjs";
 
 // Default-layout names for peers that hold no launchpad; `planPaths` resolves
 // the same documents under a launchpad's configured roots.
@@ -84,25 +99,16 @@ const retain = (cache, key, value, limit) => {
   while (cache.size > limit) cache.delete(cache.keys().next().value);
   return value;
 };
-const readBlobBatch = (root, oids) => {
-  try {
-    return new Map(
-      [...readGitObjects(root, oids, "blob")].map(([oid, bytes]) => [
-        oid,
-        bytes.toString("utf8"),
-      ]),
-    );
-  } catch (error) {
-    // Combined payloads can exceed Git's fixed output buffer even when each
-    // object fits. Retry smaller batches; singleton failures still propagate.
-    if (oids.length <= 1) throw error;
-    const middle = Math.ceil(oids.length / 2);
-    return new Map([
-      ...readBlobBatch(root, oids.slice(0, middle)),
-      ...readBlobBatch(root, oids.slice(middle)),
-    ]);
-  }
-};
+// Combined payloads can exceed Git's fixed output buffer even when each
+// object fits, so the read retries smaller batches; singleton failures
+// still propagate.
+const readBlobBatch = (root, oids) =>
+  new Map(
+    [...readGitObjectsInBatches(root, oids, "blob")].map(([oid, bytes]) => [
+      oid,
+      bytes.toString("utf8"),
+    ]),
+  );
 
 const committedTree = (root, revision) => {
   // Reuse only full ids already resolved as commits in this root. An unseen
@@ -209,79 +215,171 @@ export const prefetchCommittedSources = (root, requests) => {
   }
 };
 
-const section = (source, heading) => {
-  const lines = source.match(/[^\n]*\n|[^\n]+$/g) ?? [];
-  const positions = lines.flatMap((line, i) =>
-    line.trimEnd() === `## ${heading}` ? [i] : [],
+// The subject reads every document through the pinned Markdown parser, and
+// each projection keeps the bytes the subject has always bound, so a receipt
+// rebuilt at its revision still matches what it judged.
+
+// A document's sections, each with its `text`: its heading and the body under
+// it up to the next heading at its level or shallower, as written.
+const sectionsOf = (source, tree = parseMarkdown(source)) =>
+  markdownSections(source, tree).map((row) => ({
+    ...row,
+    text: source.slice(row.start, row.bodyEnd),
+  }));
+
+/** The one level-2 section titled `title` among `sections`. */
+const oneSection = (sections, title) => {
+  const found = sections.filter(
+    (row) => row.depth === 2 && row.title === title,
   );
-  if (positions.length !== 1)
-    throw new Error(`expected exactly one section: ${heading}`);
-  const start = positions[0];
-  const end = lines.findIndex((line, i) => i > start && /^#{1,2} /u.test(line));
-  return lines.slice(start, end < 0 ? undefined : end).join("");
+  if (found.length !== 1)
+    throw new Error(`expected exactly one section: ${title}`);
+  return found[0];
 };
 
-const field = (source, label) => {
-  const lines = source.split(/\r?\n/);
-  const matches = lines.flatMap((line, i) =>
-    line.startsWith(`**${label}`) ? [i] : [],
-  );
-  if (matches.length !== 1) throw new Error(`expected one ${label} field`);
-  const start = matches[0];
-  const end = lines.findIndex(
-    (line, i) => i > start && /^(?:\*\*[A-Z][^*]+\*\*|#{1,6} )/u.test(line),
-  );
-  const body = lines.slice(start, end < 0 ? undefined : end);
-  body[0] = body[0].replace(/^\*\*[^*]+\*\*\s*/, "");
-  return body.join("\n").trim();
+/** The one label of the order whose words begin with `label`, with the block
+ * it leads: where that block ends and its text. */
+const field = (order, label) => {
+  const found = order.labels.filter((row) => row.raw.startsWith(label));
+  if (found.length !== 1) throw new Error(`expected one ${label} field`);
+  const { end, body } = order.block(found[0]);
+  return { ...found[0], blockEnd: end, text: body.trim() };
+};
+
+// Judged order text reads a CRLF line break as LF, so an order's line
+// endings never change what was judged.
+const judgedText = (text) => text.replaceAll("\r\n", "\n");
+
+// The offset just past the line break that ends the line holding `offset`.
+const lineEnd = (source, offset) => {
+  const at = source.indexOf("\n", offset);
+  return at < 0 ? source.length : at + 1;
 };
 
 /** Exact Cost declaration bytes, including its trailing separator. Absence is
  * an empty block, so adding or removing only this field can be disposed. */
 export const planCostDeclaration = (source) => {
-  const lines = source.match(/[^\n]*\n|[^\n]+$/g) ?? [];
-  const starts = lines.flatMap((line, i) =>
-    line.startsWith("**Cost:**") ? [i] : [],
-  );
-  if (!starts.length) return "";
-  if (starts.length !== 1) throw new Error("expected one Cost: field");
-  const start = starts[0];
-  const end = lines.findIndex(
-    (line, i) => i > start && /^(?:\*\*[A-Z][^*]+\*\*|#{1,6} )/u.test(line),
-  );
-  return lines.slice(start, end < 0 ? undefined : end).join("");
+  const order = readWorkOrder(source);
+  const found = order.labels.filter((row) => row.raw === "Cost:");
+  if (!found.length) return "";
+  if (found.length !== 1) throw new Error("expected one Cost: field");
+  return order.source.slice(found[0].start, order.block(found[0]).end);
 };
 
+/** The numbered items of an order's criteria between two offsets, each with
+ * its start in `source`. A wrapped line that opens with an HTML tag name
+ * ends the list where Markdown reads it: the tag opens a raw block that runs
+ * to the next blank line and holds the items after it. A receipt filed while
+ * criteria were read by line holds those items, and its subject is rebuilt
+ * from the same committed text, so the list is read on from the first line
+ * of that raw block at which the numbering resumes. Nothing here reads a
+ * line by pattern: each candidate line is handed to the parser. */
+function numberedCriteria(source, tree, from, to) {
+  const numbered = (text, parsed, base) =>
+    markdownListItems(text, parsed)
+      .filter(
+        (item) =>
+          item.ordered &&
+          item.marker.endsWith(".") &&
+          base + item.start > from &&
+          base + item.start < to,
+      )
+      .map((item) => ({ ...item, start: base + item.start }));
+  const read = (text, parsed, base) => {
+    const items = numbered(text, parsed, base);
+    const last = items.at(-1);
+    if (!last) return items;
+    const raw = [...markdownNodes(parsed)].find(
+      (node) =>
+        node.type === "html" &&
+        base + node.position.start.offset > last.start &&
+        base + node.position.start.offset < to,
+    );
+    if (!raw) return items;
+    const rawEnd = base + raw.position.end.offset;
+    for (
+      let at = source.indexOf("\n", base + raw.position.start.offset);
+      at >= 0 && at < rawEnd;
+      at = source.indexOf("\n", at + 1)
+    ) {
+      const rest = source.slice(at + 1, to);
+      const resumed = read(rest, parseMarkdown(rest), at + 1);
+      if (
+        resumed[0]?.start === at + 1 &&
+        resumed[0].written === last.written + 1
+      )
+        return [...items, ...resumed];
+    }
+    return items;
+  };
+  return read(source, tree, 0);
+}
+
+/** An order's judged parts. `filing` is set where the subject is read from
+ * the working tree, as a pass files or checks its orders: there a criteria
+ * list the parser reads as shorter than written is refused, as the
+ * lifecycle's reader refuses it. A subject rebuilt from a committed revision
+ * for a stored receipt reads such a list on, as it was filed. */
 export const parsePlanOrder = (
   source,
   path,
   workOrderId,
-  { includeCost = false, historicalIds = new Set() } = {},
+  { includeCost = false, historicalIds = new Set(), filing = false } = {},
 ) => {
   const { title } = parseHeader(source, path, { historicalIds });
   if (!title.startsWith(`${workOrderId} — `))
     throw new Error(`order title/id mismatch: ${path}`);
-  const criteriaSource = field(source, "Acceptance criteria");
-  const matches = [
-    ...criteriaSource.matchAll(/^(\d+)\. ([\s\S]*?)(?=^\d+\. |$(?![\s\S]))/gm),
-  ];
-  const criteria = matches.map((match, i) => {
-    if (Number(match[1]) !== i + 1)
+  const order = readWorkOrder(source);
+  // Each criterion is a numbered item under its label, with everything up to
+  // the next numbered item or the label's end; the list opens the label's
+  // text and counts from one as written.
+  const criteriaField = field(order, "Acceptance criteria");
+  if (filing) {
+    try {
+      refuseUnreadList(order, criteriaField, "acceptance criteria");
+    } catch (error) {
+      throw new Error(`${path}: ${error.message}`, { cause: error });
+    }
+  }
+  const items = numberedCriteria(
+    order.source,
+    order.tree,
+    criteriaField.valueStart,
+    criteriaField.blockEnd,
+  );
+  const criteria = items.map((item, i) => {
+    if (item.written !== i + 1)
       throw new Error(`non-sequential acceptance criteria: ${path}`);
-    return { id: `criterion:${match[1]}`, text: match[2].trim() };
+    return {
+      id: `criterion:${i + 1}`,
+      text: judgedText(
+        order.source.slice(
+          item.start + item.marker.length,
+          items[i + 1]?.start ?? criteriaField.blockEnd,
+        ),
+      ).trim(),
+    };
   });
-  if (!criteria.length || !/^1\. /u.test(criteriaSource))
+  if (
+    !criteria.length ||
+    order.source.slice(criteriaField.valueStart, items[0].start).trim()
+  )
     throw new Error(`missing acceptance criteria: ${path}`);
+  const text = (label) => judgedText(field(order, label).text);
   return {
     workOrderId,
     path,
     title,
-    objective: field(source, "Objective:"),
+    objective: text("Objective:"),
     ...(includeCost
-      ? { cost: /^\*\*Cost:\*\*/m.test(source) ? field(source, "Cost:") : null }
+      ? {
+          cost: order.labels.some((row) => row.raw === "Cost:")
+            ? text("Cost:")
+            : null,
+        }
       : {}),
     criteria,
-    nonGoals: field(source, "Non-goals:"),
+    nonGoals: text("Non-goals:"),
   };
 };
 
@@ -401,9 +499,29 @@ export function buildPlanSubject(
   // (WO-258); the generated index keeps the closed order.
   if (sequence.length > 100)
     throw new Error("plan sequence must contain 0–100 orders");
-  const block = map.match(
-    /^<!-- dotln-work-order-sequence:start -->\r?\n[\s\S]*?^<!-- dotln-work-order-sequence:end -->[^\S\r\n]*(?:\r?\n|$)/m,
-  )?.[0];
+  // The block's bytes: from its opening marker, written exactly and alone
+  // on its line, through its closing marker, which opens a line, and the
+  // blanks and line break after it.
+  const marked = markdownMarkerBlocks(
+    map,
+    "dotln-work-order-sequence:start",
+    "dotln-work-order-sequence:end",
+  ).find(
+    ({ start, openEnd, closeStart, end }) =>
+      (start === 0 || map[start - 1] === "\n") &&
+      map.slice(start, openEnd) ===
+        htmlComment("dotln-work-order-sequence:start") &&
+      /^\r?\n/u.test(map.slice(openEnd)) &&
+      map[closeStart - 1] === "\n" &&
+      map.slice(closeStart, end) ===
+        htmlComment("dotln-work-order-sequence:end"),
+  );
+  const closing =
+    marked && /^[^\S\r\n]*(?:\r?\n|$)/u.exec(map.slice(marked.end));
+  const block =
+    marked && closing
+      ? `${map.slice(marked.start, marked.end)}${closing[0]}`
+      : undefined;
   if (!block) throw new Error("expected a byte-addressable sequence block");
   const parts = [["sequence", block]];
   const orderRoot = rootPattern(root, "workOrders");
@@ -460,42 +578,78 @@ export function buildPlanSubject(
     const path = orderPaths[index];
     const source = read(path);
     parts.push([path, source]);
-    return parsePlanOrder(source, path, id, { includeCost, historicalIds });
+    return parsePlanOrder(source, path, id, {
+      includeCost,
+      historicalIds,
+      filing: Boolean(workspace),
+    });
   });
   const vision = optionalRead(standardPaths[0]);
   if (vision === null) parts.push(["vision:unavailable", standardPaths[0]]);
+  // The vision's own reader supplies its sections and exclusions; the subject
+  // binds each thesis section and the exclusions section as written.
+  const visionDocument = vision === null ? null : readVision(vision);
   const theses = (vision === null ? [] : THESIS_HEADINGS).map(([id, title]) => {
-    const text = section(vision, title);
+    const { text } = oneSection(visionDocument.sections, title);
     parts.push([`vision:${id}`, text]);
     return { id, title, text };
   });
-  const exclusionsSource =
-    vision === null ? "" : section(vision, "What DotLn is not");
-  parts.push(["vision:what-dotln-is-not", exclusionsSource]);
-  const exclusions = [
-    ...exclusionsSource.matchAll(/^- ([\s\S]*?)(?=^- |\n\n)/gm),
-  ].map((match, i) => ({
+  parts.push([
+    "vision:what-dotln-is-not",
+    vision === null
+      ? ""
+      : oneSection(visionDocument.sections, VISION_EXCLUSIONS_TITLE).text,
+  ]);
+  const exclusions = (visionDocument?.exclusions ?? []).map((text, i) => ({
     id: `what-dotln-is-not:${i + 1}`,
-    text: match[1].trim(),
+    text,
   }));
   if (vision !== null && !exclusions.length)
     throw new Error("vision exclusions missing");
   const rolesSource = optionalRead(standardPaths[1]);
-  const rolesText =
-    rolesSource === null
-      ? ""
-      : section(rolesSource, "The five roles").split(/^### /m)[0];
-  const rolesTable = rolesText
-    .split(/\r?\n/)
-    .filter((line) => line.startsWith("|"))
+  const rolesTree = rolesSource === null ? null : parseMarkdown(rolesSource);
+  const rolesSections =
+    rolesSource === null ? [] : sectionsOf(rolesSource, rolesTree);
+  const rolesSection =
+    rolesSource === null ? null : oneSection(rolesSections, "The five roles");
+  // The role table stands under the heading, before the first role's own
+  // level-3 section.
+  const rolesEnd = rolesSection
+    ? (rolesSections.find(
+        (row) =>
+          row.depth === 3 &&
+          row.start > rolesSection.start &&
+          row.start < rolesSection.bodyEnd,
+      )?.start ?? rolesSection.bodyEnd)
+    : 0;
+  const rolesTables = rolesSection
+    ? markdownTables(rolesSource, rolesTree).filter(
+        (table) => table.start > rolesSection.start && table.end <= rolesEnd,
+      )
+    : [];
+  // Each table's lines as written: the judged table keeps its CRLF and its
+  // spaces.
+  const rolesLines = rolesTables.map((table) =>
+    rolesSource.slice(table.start, lineEnd(rolesSource, table.end)),
+  );
+  const rolesBytes = rolesLines.join("");
+  const rolesTable = rolesLines
+    .map((lines) => judgedText(lines).replace(/\n$/u, ""))
     .join("\n");
-  const roles = [...rolesTable.matchAll(/\*\*(UIFA [^*]+)\*\*/g)].map(
-    ([, role]) => role,
+  // A role is the bold UIFA name a table row carries.
+  const roles = rolesTables.flatMap((table) =>
+    [...markdownNodes(rolesTree)]
+      .filter(
+        (node) =>
+          node.type === "strong" &&
+          node.position.start.offset >= table.start &&
+          node.position.end.offset <= table.end,
+      )
+      .map((node) => inlineSource(rolesSource, node))
+      .filter((name) => name.startsWith("UIFA ")),
   );
   if (rolesSource !== null && (roles.length !== 5 || new Set(roles).size !== 5))
     throw new Error("expected the five-role table");
-  // Preserve CRLF as well as spaces in the judged table.
-  const rolesBytes = rolesText.match(/^\|[^\n]*(?:\n|$)/gm)?.join("") ?? "";
   parts.push([
     "roles",
     rolesSource === null ? `unavailable: ${standardPaths[1]}` : rolesBytes,
@@ -503,34 +657,34 @@ export function buildPlanSubject(
   const capabilitiesSource = optionalRead(standardPaths[2]);
   if (capabilitiesSource === null)
     parts.push(["capability:unavailable", standardPaths[2]]);
-  const capabilities = (capabilitiesSource ?? "")
-    .split(/\r?\n/)
-    .filter((line) => line.startsWith("|"))
-    .flatMap((line) => {
-      const cells = line.split("|").slice(1, -1);
-      const id = cells[0]?.match(/`([a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+)`/u)?.[1];
-      if (!id) return [];
-      if (!cells[1]?.trim()) throw new Error(`capability level missing: ${id}`);
-      // Multiple dated assessments are retained in source order, not silently
-      // collapsed to whichever row a Map happened to keep.
-      parts.push([`capability:${id}`, [cells[0], cells[1]]]);
-      return [{ id, level: cells[1].trim() }];
-    });
+  // The judged row binds its first two cells' bytes between their pipes.
+  const capabilities = capabilityRows(
+    capabilitiesSource === null ? [] : markdownTables(capabilitiesSource),
+  ).map(({ id, raw: [first, level] }) => {
+    if (!level?.trim()) throw new Error(`capability level missing: ${id}`);
+    // Multiple dated assessments are retained in source order, not silently
+    // collapsed to whichever row a Map happened to keep.
+    parts.push([`capability:${id}`, [first, level]]);
+    return { id, level: level.trim() };
+  });
   if (capabilitiesSource !== null && !capabilities.length)
     throw new Error("capability table has no identified rows");
   const deferrals = orders.flatMap((order, index) =>
-    [
-      ...order.nonGoals.matchAll(
-        /<!-- dotln-plan-defer: ([a-z0-9:-]+) -> (WO-\d{3}) -->/g,
-      ),
-    ].map(([, thesis, laterWorkOrderId]) => {
-      if (
-        !theses.some(({ id }) => id === thesis) ||
-        !judged.slice(index + 1).some(({ id }) => id === laterWorkOrderId)
-      )
-        throw new Error("invalid named later-order deferral");
-      return { thesis, workOrderId: order.workOrderId, laterWorkOrderId };
-    }),
+    markdownComments(order.nonGoals)
+      .flatMap(({ text }) => {
+        const named = /^dotln-plan-defer: ([a-z0-9:-]+) -> (WO-\d{3})$/u.exec(
+          text,
+        );
+        return named ? [named] : [];
+      })
+      .map(([, thesis, laterWorkOrderId]) => {
+        if (
+          !theses.some(({ id }) => id === thesis) ||
+          !judged.slice(index + 1).some(({ id }) => id === laterWorkOrderId)
+        )
+          throw new Error("invalid named later-order deferral");
+        return { thesis, workOrderId: order.workOrderId, laterWorkOrderId };
+      }),
   );
   let costs;
   if (includeCost) {
@@ -696,33 +850,25 @@ function buildGoalSubject(root, revision, { workspace, separateTrack = true }) {
   )?.[0];
   if (!platformStandard)
     throw new Error("product 07 platform-first standard missing");
-  let goalStandard = section(guide, "Goal-aligned decisions");
+  let goalStandard = oneSection(
+    sectionsOf(guide),
+    "Goal-aligned decisions",
+  ).text;
   if (kit) {
     const blocks = (source, name, path) => {
-      const start = `<!-- ${name}:start -->`,
-        end = `<!-- ${name}:end -->`;
-      const contents = [];
-      let open = null;
-      for (const line of source.match(/[^\n]*\n|[^\n]+$/g) ?? []) {
-        const marker = line.replace(/\r?\n$/, "");
-        if (marker === start) {
-          if (open !== null)
-            throw new Error(`${path}: unbalanced ${name} markers`);
-          open = "";
-        } else if (marker === end) {
-          if (open === null)
-            throw new Error(`${path}: unbalanced ${name} markers`);
-          contents.push(open);
-          open = null;
-        } else {
-          if (line.includes(`<!-- ${name}:`))
-            throw new Error(`${path}: malformed ${name} marker`);
-          if (open !== null) open += line;
-        }
-      }
-      if (open !== null || contents.length === 0)
+      const names = [`${name}:start`, `${name}:end`];
+      const found = markdownMarkerBlocks(source, ...names);
+      if (found.unbalanced)
+        throw new Error(`${path}: unbalanced ${name} markers`);
+      if (
+        markdownComments(source).some(
+          ({ text }) => text.startsWith(`${name}:`) && !names.includes(text),
+        )
+      )
+        throw new Error(`${path}: malformed ${name} marker`);
+      if (!found.length)
         throw new Error(`${path}: missing or unbalanced ${name} markers`);
-      return contents;
+      return found.map(({ inner }) => inner);
     };
     const rules = blocks(
       goalStandard,
@@ -748,7 +894,8 @@ function buildGoalSubject(root, revision, { workspace, separateTrack = true }) {
       ? !lstatSync(join(root, criticalPathSource), { throwIfNoEntry: false })
       : !committed.paths.includes(criticalPathSource))
       ? `unavailable: ${criticalPathSource}; this instance has not declared a critical path`
-      : section(read(criticalPathSource), "The critical path");
+      : oneSection(sectionsOf(read(criticalPathSource)), "The critical path")
+          .text;
   const path = docRelative(root, "planning", "cost-table.json");
   const costs = has(path) ? JSON.parse(read(path)) : null;
   const costEvidenceStatus = costs
@@ -798,6 +945,7 @@ function buildGoalSubject(root, revision, { workspace, separateTrack = true }) {
         historicalIds: workspace
           ? historicalDependencyIds(root)
           : historicalDependencyIdsAt(committed),
+        filing: Boolean(workspace),
       }),
     ),
     hash: hashParts([subject.hash, ...extra]),
@@ -847,9 +995,24 @@ export const criticalPathCandidates = (root) => [
   docRelative(root, "planning", "critical-path-2026-09-08.md"),
 ];
 
+/** The capability rows of `tables`: each row whose first cell names a
+ * capability id in a code span, in source order, with its cells' text and
+ * their bytes between the pipes. The planning subject binds a capability by
+ * these rows, and a dated reassessment names its capabilities the same way. */
+export const capabilityRows = (tables) =>
+  tables.flatMap((table) =>
+    table.rows.flatMap((row) => {
+      const id = markdownCodeSpans(row.cells[0] ?? "")
+        .map((span) => span.value)
+        .find((value) => /^[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+$/u.test(value));
+      return id ? [{ id, line: row.line, cells: row.cells, raw: row.raw }] : [];
+    }),
+  );
+
+/** The idea ledger's dated planning passes, each by its section heading. */
 export const planningPasses = (ledger) =>
-  [...ledger.matchAll(/^## (.+)$/gm)]
-    .map(([, heading]) => ({
+  ledgerSections(ledger)
+    .map(({ title: heading }) => ({
       heading,
       date: heading.match(/\b\d{4}-\d{2}-\d{2}\b/u)?.[0],
     }))

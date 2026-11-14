@@ -12,75 +12,114 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { planFixture } from "../lib/plan-first-fixture.mjs";
 import { runGit } from "../lib/git.mjs";
-import { emitHarness } from "../lib/harness.mjs";
-import { planDigest } from "../lib/plan-first.mjs";
 import { docPath, docRelative } from "../lib/config.mjs";
-import { beginHarnessSession } from "../../packages/skeleton/dist/src/harness-host.js";
+import { isMainModule } from "../lib/paths.mjs";
+import {
+  sourceNodes,
+  sourceSyntax,
+  sourceTrees,
+} from "../../packages/skeleton/src/source-reading.mjs";
 
-const root = process.cwd();
-const evidencePath = docPath(root, "evidence", "WO-242/controls.json");
-const evidence = JSON.parse(readFileSync(evidencePath, "utf8"));
-const baseHook = runGit(
-  root,
-  ["show", `${evidence.baseCommit}:.claude/hooks/permissions.mjs`],
-  { trim: false },
-);
-const snapshot = /"snapshot": "(\.runtime\/harness\/[^"]+)"/.exec(
-  baseHook,
-)?.[1];
-assert.ok(snapshot, "base hook names its retained runtime");
-const rows = [];
-for (const features of [{}, { "plan-first": false }]) {
-  const f = planFixture();
-  try {
-    const hookRoot = realpathSync(f.root);
-    appendFileSync(
-      join(f.root, ".gitignore"),
-      ".runtime/\nnode_modules/\n**/dist/\n",
-    );
-    // Hook output inspection rejects outside-pointing source links. This
-    // control needs only the same canonical-status stub as the hook fixtures.
-    unlinkSync(join(f.root, "scripts"));
-    mkdirSync(join(f.root, "scripts"));
-    writeFileSync(
-      join(f.root, "scripts/resume.mjs"),
-      `console.log(${JSON.stringify(JSON.stringify({ workOrder: "WO-099", workOrderPath: docRelative(f.root, "workOrders", "WO-099-test.md"), phase: "active", latestVerdict: null }))});\n`,
-    );
-    writeFileSync(
-      join(f.root, "CLAUDE.md"),
-      "# Fixture locked floor\nKeep fixture source isolated.\n",
-    );
-    writeFileSync(
-      join(f.root, "dotln.config.json"),
-      JSON.stringify({ version: 1, features }),
-    );
-    emitHarness(hookRoot);
-    cpSync(join(root, snapshot), join(f.root, snapshot), { recursive: true });
-    const hook = join(f.root, ".claude/hooks/base-permissions.mjs");
-    mkdirSync(join(f.root, ".claude/hooks"), { recursive: true });
-    writeFileSync(hook, baseHook);
-    for (const session of ["off-control-base", "off-control-candidate"])
-      beginHarnessSession(hookRoot, session, "executor");
-    for (const [name, tool_name, tool_input] of [
-      ["source write", "Edit", { file_path: join(f.root, "hello.txt") }],
-      ["read", "Read", { file_path: join(f.root, "hello.txt") }],
-      ["push advisory", "Bash", { command: "git push" }],
-      [
-        "malformed later destination",
-        "Bash",
-        { command: "touch hello.txt /dev/null/child" },
-      ],
-    ]) {
-      const payload = {
-        cwd: hookRoot,
-        hook_event_name: "PreToolUse",
-        tool_name,
-        tool_input,
-      };
-      const outputs = [hook, join(f.root, ".claude/hooks/permissions.mjs")].map(
-        (file, index) => {
+/** The retained runtime a permission hook names: the string its embedded
+ * control object holds under `snapshot`, read from the hook's syntax tree.
+ * Undefined for a hook that names none or that is no source the reader
+ * parses. Importing this module runs nothing and loads no built output: what
+ * the probe itself needs is loaded where it runs.
+ * @param {string} hook the hook's source text */
+export function hookRetainedRuntime(hook) {
+  const { SyntaxKind: K } = sourceSyntax();
+  const [tree] = sourceTrees([
+    { path: ".claude/hooks/permissions.mjs", source: hook },
+  ]);
+  if (!tree) return undefined;
+  for (const node of sourceNodes(tree.file)) {
+    if (node.kind !== K.PropertyAssignment) continue;
+    const { name, initializer } = node;
+    if (
+      (name.kind === K.StringLiteral || name.kind === K.Identifier) &&
+      name.text === "snapshot" &&
+      (initializer.kind === K.StringLiteral ||
+        initializer.kind === K.NoSubstitutionTemplateLiteral) &&
+      initializer.text.startsWith(".runtime/harness/")
+    )
+      return initializer.text;
+  }
+  return undefined;
+}
+
+if (isMainModule(import.meta.url)) await main();
+
+async function main() {
+  // The fixture, the harness emitter and the hook host reach built output,
+  // so they are loaded where the probe runs.
+  const { planFixture } = await import("../lib/plan-first-fixture.mjs");
+  const { emitHarness } = await import("../lib/harness.mjs");
+  const { planDigest } = await import("../lib/plan-first.mjs");
+  const { beginHarnessSession } =
+    await import("../../packages/skeleton/dist/src/harness-host.js");
+  const root = process.cwd();
+  const evidencePath = docPath(root, "evidence", "WO-242/controls.json");
+  const evidence = JSON.parse(readFileSync(evidencePath, "utf8"));
+  const baseHook = runGit(
+    root,
+    ["show", `${evidence.baseCommit}:.claude/hooks/permissions.mjs`],
+    { trim: false },
+  );
+  const snapshot = hookRetainedRuntime(baseHook);
+  assert.ok(snapshot, "base hook names its retained runtime");
+  const rows = [];
+  for (const features of [{}, { "plan-first": false }]) {
+    const f = planFixture();
+    try {
+      const hookRoot = realpathSync(f.root);
+      appendFileSync(
+        join(f.root, ".gitignore"),
+        ".runtime/\nnode_modules/\n**/dist/\n",
+      );
+      // Hook output inspection rejects outside-pointing source links. This
+      // control needs only the same canonical-status stub as the hook fixtures.
+      unlinkSync(join(f.root, "scripts"));
+      mkdirSync(join(f.root, "scripts"));
+      writeFileSync(
+        join(f.root, "scripts/resume.mjs"),
+        `console.log(${JSON.stringify(JSON.stringify({ workOrder: "WO-099", workOrderPath: docRelative(f.root, "workOrders", "WO-099-test.md"), phase: "active", latestVerdict: null }))});\n`,
+      );
+      writeFileSync(
+        join(f.root, "CLAUDE.md"),
+        "# Fixture locked floor\nKeep fixture source isolated.\n",
+      );
+      writeFileSync(
+        join(f.root, "dotln.config.json"),
+        JSON.stringify({ version: 1, features }),
+      );
+      emitHarness(hookRoot);
+      cpSync(join(root, snapshot), join(f.root, snapshot), { recursive: true });
+      const hook = join(f.root, ".claude/hooks/base-permissions.mjs");
+      mkdirSync(join(f.root, ".claude/hooks"), { recursive: true });
+      writeFileSync(hook, baseHook);
+      for (const session of ["off-control-base", "off-control-candidate"])
+        beginHarnessSession(hookRoot, session, "executor");
+      for (const [name, tool_name, tool_input] of [
+        ["source write", "Edit", { file_path: join(f.root, "hello.txt") }],
+        ["read", "Read", { file_path: join(f.root, "hello.txt") }],
+        ["push advisory", "Bash", { command: "git push" }],
+        [
+          "malformed later destination",
+          "Bash",
+          { command: "touch hello.txt /dev/null/child" },
+        ],
+      ]) {
+        const payload = {
+          cwd: hookRoot,
+          hook_event_name: "PreToolUse",
+          tool_name,
+          tool_input,
+        };
+        const outputs = [
+          hook,
+          join(f.root, ".claude/hooks/permissions.mjs"),
+        ].map((file, index) => {
           const result = spawnSync(process.execPath, [file], {
             cwd: hookRoot,
             input: JSON.stringify({
@@ -97,25 +136,27 @@ for (const features of [{}, { "plan-first": false }]) {
             /runtime unavailable|pinned runtime|snapshot-missing/i,
           );
           return result.stdout;
-        },
-      );
-      assert.equal(outputs[0], outputs[1], name);
-      rows.push({
-        surface: `hook: ${name}`,
-        election: Object.hasOwn(features, "plan-first") ? "false" : "absent",
-        base: planDigest(outputs[0]),
-        candidate: planDigest(outputs[1]),
-        equal: true,
-        response: JSON.parse(outputs[1]),
-      });
+        });
+        assert.equal(outputs[0], outputs[1], name);
+        rows.push({
+          surface: `hook: ${name}`,
+          election: Object.hasOwn(features, "plan-first") ? "false" : "absent",
+          base: planDigest(outputs[0]),
+          candidate: planDigest(outputs[1]),
+          equal: true,
+          response: JSON.parse(outputs[1]),
+        });
+      }
+    } finally {
+      f.cleanup();
     }
-  } finally {
-    f.cleanup();
   }
+  evidence.rows = evidence.rows.filter(
+    (row) => !row.surface.startsWith("hook:"),
+  );
+  evidence.rows.push(...rows);
+  writeFileSync(evidencePath, JSON.stringify(evidence, null, 2) + "\n");
+  console.log(
+    `Recorded ${rows.length} identical base/current permission-hook controls.`,
+  );
 }
-evidence.rows = evidence.rows.filter((row) => !row.surface.startsWith("hook:"));
-evidence.rows.push(...rows);
-writeFileSync(evidencePath, JSON.stringify(evidence, null, 2) + "\n");
-console.log(
-  `Recorded ${rows.length} identical base/current permission-hook controls.`,
-);

@@ -18,6 +18,7 @@ import { performance } from "node:perf_hooks";
 import { docPath } from "./config.mjs";
 import { checksPath } from "./gate-evidence.mjs";
 import { dirname } from "node:path";
+import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
 
 export function hostLaneCapacity(parallelism = availableParallelism()) {
   if (!Number.isSafeInteger(parallelism) || parallelism < 1)
@@ -52,6 +53,58 @@ export function largestTaskPeakRss(rows = schedulingBaseline.taskPeaks) {
       return row.peakRssBytes;
     }),
   );
+}
+
+/** The largest measured peak among the baseline's samples of the tasks
+ * `carries` admits by name: the reading a root's gate is sized to. */
+export function carriedTaskPeak(carries, baseline = schedulingBaseline) {
+  return [...baseline.taskSamples, ...baseline.taskPeaks]
+    .filter((row) => carries(row.name))
+    .reduce(
+      (largest, row) => {
+        if (!Number.isFinite(row.peakRssBytes) || row.peakRssBytes < 0)
+          throw new Error("Invalid measured task peak RSS");
+        return row.peakRssBytes > largest.peakRssBytes
+          ? { name: row.name, peakRssBytes: row.peakRssBytes }
+          : largest;
+      },
+      { name: null, peakRssBytes: 0 },
+    );
+}
+
+/** The measured task peak a root's gate must fit in one lane. Core's gate
+ * carries every task and keeps the largest peak measured. A kit root's gate
+ * carries the suites the table does not mark core-only, and the baseline
+ * holds the largest sample among those (`kitTaskPeak`, which a case of the
+ * runner's tests holds equal to the table's reading), so an instance is not
+ * refused for memory only a core-only suite needs. The host task and the
+ * host report both read this. */
+export function requiredTaskPeakRss(root, baseline = schedulingBaseline) {
+  if (!isKitRoot(root)) return largestTaskPeakRss(baseline.taskPeaks);
+  const peak = baseline.kitTaskPeak?.peakRssBytes;
+  if (!Number.isFinite(peak) || peak < 0)
+    throw new Error("Invalid measured kit task peak RSS");
+  return peak;
+}
+
+/** Whether one lane's memory budget covers the measured task peak, with the
+ * sentence the host task prints and the remedy where it does not. The host
+ * task and the host report call this one function. */
+export function judgeLaneMemory({ limits, requiredPeakBytes, physicalBytes }) {
+  const underBudget = limits.taskBytes < requiredPeakBytes;
+  const minimumGateShare =
+    Math.ceil(
+      ((requiredPeakBytes * limits.hostLanes) / physicalBytes) * 1_000_000,
+    ) / 1_000_000;
+  const remedy = underBudget
+    ? `memory.gateShare must be at least ${minimumGateShare} to admit this peak at ${limits.hostLanes} lanes${minimumGateShare > limits.hostShare ? "; that exceeds memory.hostShare, so use a host with more memory or reduce the task's measured peak" : "; set it in docs/control/budgets.json after judging the shared host budget, then retry"}`
+    : "";
+  return {
+    underBudget,
+    minimumGateShare,
+    remedy,
+    message: `Per-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy ? `; ${remedy}` : ""}`,
+  };
 }
 
 export function recordedHostLaneCapacity(
@@ -161,26 +214,62 @@ export function atomicJson(file, value) {
   renameSync(prepared, file);
 }
 
+/** What supplies a C compiler on a platform, for the error below and for
+ * the host report's row. */
+export const compilerRemedy = (platform = process.platform) =>
+  platform === "darwin"
+    ? "install the Command Line Tools (xcode-select --install) or Xcode, then retry"
+    : platform === "win32"
+      ? "native Windows is unsupported: run the kit under WSL2 with a C compiler installed there"
+      : "install a C compiler that answers to cc (your distribution's build-essential, gcc or clang package), then retry";
+
+/** The error a missing or failing compiler raises: the compiler tried, what
+ * the kit needs it for, the platform's remedy, and the tool's own words. */
+export function compilerFailure(compiler, error, platform = process.platform) {
+  const said = [error?.stderr, error?.message]
+    .map((part) => (part == null ? "" : String(part).trim()))
+    .filter(Boolean)
+    .join(" | ")
+    .slice(0, 2000);
+  return new Error(
+    `The native compiler ${compiler} ${error?.code === "ENOENT" ? "was not found" : "could not be run"}. DotLn compiles two small C helpers once per host, the lock every gate task starts through and the memory reader beside it, and a suite's first task needs the first; ${compilerRemedy(platform)}. The tool's own message: ${said || "none"}`,
+    { cause: error },
+  );
+}
+
 // The Command Line Tools compiler matches xcrun's SDK on hosts that have it;
 // /usr/bin/clang selects Xcode's toolchain where only Xcode is installed.
-export function nativeCompiler() {
-  if (process.platform !== "darwin") return { compiler: "cc", args: [] };
+export function nativeCompiler({
+  platform = process.platform,
+  exists = existsSync,
+  run = execFileSync,
+} = {}) {
+  if (platform !== "darwin") return { compiler: "cc", args: [] };
   const tools = "/Library/Developer/CommandLineTools/usr/bin/clang";
+  let sdk;
+  try {
+    sdk = run("/usr/bin/xcrun", ["--show-sdk-path"], {
+      encoding: "utf8",
+      timeout: 5000,
+    }).trim();
+  } catch (error) {
+    throw compilerFailure("/usr/bin/xcrun", error, platform);
+  }
   return {
-    compiler: existsSync(tools) ? tools : "/usr/bin/clang",
-    args: [
-      "-isysroot",
-      execFileSync("/usr/bin/xcrun", ["--show-sdk-path"], {
-        encoding: "utf8",
-        timeout: 5000,
-      }).trim(),
-    ],
+    compiler: exists(tools) ? tools : "/usr/bin/clang",
+    args: ["-isysroot", sdk],
   };
 }
 
+// A helper is prepared in the directory that asks for it and remembered for
+// that directory alone. Inspection runs a helper from the directory it
+// inspects and never compiles one, so a directory answered with another's
+// helper would hold none of its own.
 const binaries = new Map();
-function nativeBinary(directory, name) {
-  const cached = binaries.get(name);
+// `tools` stands in for the compiler in a test: its build is never cached.
+function nativeBinary(directory, name, tools) {
+  const key = `${directory ?? ""}\0${name}`;
+  const cached = tools ? null : binaries.get(key);
   if (cached && existsSync(cached)) return cached;
   const source = join(import.meta.dirname, `${name}.c`);
   const digest = createHash("sha256")
@@ -188,28 +277,33 @@ function nativeBinary(directory, name) {
     .digest("hex")
     .slice(0, 16);
   const binary = join(ensureHostRoot(directory), `${name}-${digest}`);
-  if (!existsSync(binary)) {
+  if (tools || !existsSync(binary)) {
     const prepared = `${binary}.${randomUUID()}.prepare`;
     try {
-      const { compiler, args } = nativeCompiler();
-      execFileSync(
-        compiler,
-        [...args, "-O2", "-std=c11", source, "-o", prepared],
-        {
-          timeout: 30_000,
-          maxBuffer: 65536,
-          stdio: ["ignore", "pipe", "pipe"],
-        },
-      );
+      const { compiler, args } = (tools?.compiler ?? nativeCompiler)();
+      try {
+        (tools?.run ?? execFileSync)(
+          compiler,
+          [...args, "-O2", "-std=c11", source, "-o", prepared],
+          {
+            timeout: 30_000,
+            maxBuffer: 65536,
+            stdio: ["ignore", "pipe", "pipe"],
+          },
+        );
+      } catch (error) {
+        throw compilerFailure(compiler, error);
+      }
       renameSync(prepared, binary);
     } finally {
       rmSync(prepared, { force: true });
     }
   }
-  binaries.set(name, binary);
+  if (!tools) binaries.set(key, binary);
   return binary;
 }
-export const taskLauncher = (directory) => nativeBinary(directory, "host-lock");
+export const taskLauncher = (directory, tools) =>
+  nativeBinary(directory, "host-lock", tools);
 
 function macTopFootprint(sample) {
   const processes = sample.processes;

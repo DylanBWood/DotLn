@@ -176,7 +176,8 @@ for (const kind of ["writer", "inspection"] as const)
     let at = 0,
       calls = 0;
     const host: ResidentHost = new ResidentHost({
-      ...f,
+      directory: f.directory,
+      configuration: f.configuration,
       policyId: f.configuration.policyId,
       now: () => at,
       capabilities: () => ["adapter.fixture"],
@@ -245,7 +246,8 @@ test("WO-122 unavailable launch row names its source and never falls back; neste
         f.configuration.graph.presence![0]!.phases[0]!.envelope as any
       ).allowedEffects = ["repo.inspect"];
     const host = new ResidentHost({
-      ...f,
+      directory: f.directory,
+      configuration: f.configuration,
       policyId: f.configuration.policyId,
       now: () => 10,
       capabilities: () => ["adapter.fixture"],
@@ -292,7 +294,8 @@ test("WO-122 transport rejection and synchronous refusal become one durable fail
     const f = actorFixture();
     t.after(f.dispose);
     const host = new ResidentHost({
-      ...f,
+      directory: f.directory,
+      configuration: f.configuration,
       policyId: f.configuration.policyId,
       now: () => 10,
       capabilities: () => ["adapter.fixture"],
@@ -345,7 +348,8 @@ test("WO-122 human packet survives restart, rejects invalid answers, and resumes
   };
   let at = 10;
   const options = {
-    ...f,
+    directory: f.directory,
+    configuration: f.configuration,
     policyId: f.configuration.policyId,
     now: () => at,
     capabilities: () => ["adapter.fixture"],
@@ -444,7 +448,8 @@ for (const returned of [false, true])
     let at = 10;
     let dispatchGeneration: number;
     const options = {
-      ...f,
+      directory: f.directory,
+      configuration: f.configuration,
       policyId: f.configuration.policyId,
       now: () => at,
       capabilities: () => ["adapter.fixture"],
@@ -529,7 +534,8 @@ test("WO-122 nested expiry, missing evidence and unrepresentable revocation refu
         request.authorityEnvelope.revocationEventTypes.push("ExtraRevocation");
     }
     const host = new ResidentHost({
-      ...f,
+      directory: f.directory,
+      configuration: f.configuration,
       policyId: f.configuration.policyId,
       now: () => 10,
       capabilities: () => ["adapter.fixture"],
@@ -569,7 +575,8 @@ test("WO-122 late answers release the hold without advancing an expired policy",
     },
   };
   const host = new ResidentHost({
-    ...f,
+    directory: f.directory,
+    configuration: f.configuration,
     policyId: f.configuration.policyId,
     now: () => 10,
     capabilities: () => ["adapter.fixture"],
@@ -612,7 +619,8 @@ test("WO-122 pending handoff holds its order across return while another order d
   f.configuration.actors.widen = handoff("held");
   let at = 10;
   const host = new ResidentHost({
-    ...f,
+    directory: f.directory,
+    configuration: f.configuration,
     policyId: f.configuration.policyId,
     now: () => at,
     capabilities: () => ["adapter.fixture"],

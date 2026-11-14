@@ -5,7 +5,7 @@
 // branch only moved or left alone is not the branch's.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { runGit } from "./git.mjs";
+import { gitTreeEntry, runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 
 const git = (root, args, options) =>
@@ -45,7 +45,8 @@ const unquote = (value) => {
  *
  * The base is the merge base of HEAD with `main`, and the working tree is
  * compared with it, so an order's uncommitted work counts; `committed`
- * compares HEAD instead, as a publish carries only commits. On `main` itself
+ * compares HEAD instead, as a publish carries only commits, and the result
+ * says so (`committed: true`), so a screen reads each file as HEAD holds it. On `main` itself
  * the merge base is HEAD, so only uncommitted work counts, unless
  * `lastMergeOnMain` is set: then the base is the first parent of the last
  * merge, so what the last merge brought in counts. Without a commit or a
@@ -141,8 +142,16 @@ export function branchChanges(
   // A changed file with no hunk (a mode change alone) touches nothing.
   for (const [name, lines] of files)
     if (lines !== null && !lines.size && !joins.has(name)) files.delete(name);
-  return { base, files, joins };
+  return { base, files, joins, committed };
 }
+
+const decodeText = (bytes) => {
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return null;
+  }
+};
 
 /**
  * A changed file's text, or null when its bytes are not UTF-8 text (an image,
@@ -159,11 +168,26 @@ export function readChangedText(root, path) {
       `${path} cannot be read (${error.code ?? "unreadable"}); the screens read every file a branch changes`,
     );
   }
-  try {
-    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-  } catch {
+  return decodeText(bytes);
+}
+
+/**
+ * A changed file's text as HEAD holds it, which is what a publish carries: a
+ * working file left dirty, or hidden from the index, is not what reaches the
+ * remote. Null when HEAD holds no regular file at the path (a symbolic link,
+ * a submodule) or its bytes are not UTF-8 text.
+ */
+export function readCommittedText(root, path) {
+  const entry = gitTreeEntry(root, "HEAD", path, HOST_GIT_READ);
+  if (entry?.type !== "blob" || !["100644", "100755"].includes(entry.mode))
     return null;
-  }
+  return decodeText(
+    git(root, ["cat-file", "blob", entry.object], {
+      trim: false,
+      encoding: "buffer",
+      maxBuffer: 256 * 1024 * 1024,
+    }),
+  );
 }
 
 /** Whether lines `start` to `end` of `path` hold a line the branch adds or

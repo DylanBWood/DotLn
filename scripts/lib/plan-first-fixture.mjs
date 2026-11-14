@@ -23,7 +23,7 @@ import {
   proposedPlan,
 } from "./plan-first.mjs";
 const date = "2026-11-06T00:00:00.000Z";
-export function planFixture(targetOrder = false) {
+export function planFixture(targetOrder = false, { records } = {}) {
   const base = createFixtureRoot(join(tmpdir(), "dotln-plan-test-"));
   const root = join(base, "launchpad");
   const target = targetOrder ? join(base, "target") : root;
@@ -48,6 +48,7 @@ export function planFixture(targetOrder = false) {
                 revocationEventTypes: [],
               },
               documentationRoot: "guide",
+              ...(records ? { records } : {}),
             },
           },
         }

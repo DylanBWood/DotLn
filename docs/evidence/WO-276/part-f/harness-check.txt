@@ -1,0 +1,4 @@
+$ node scripts/harness.mjs check
+# with a line added by hand to the committed root .claude/skills/dotln-refuter/SKILL.md
+harness drift: .claude/skills/dotln-refuter/SKILL.md
+exit 1

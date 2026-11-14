@@ -34,6 +34,7 @@ import {
 import { tmpdir } from "node:os";
 import { join, relative, resolve, sep } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
+import { markdownMarkerBlocks } from "./markdown-links.mjs";
 import {
   deliveredPackets,
   deliverRoutedPackets,
@@ -51,7 +52,7 @@ export {
   validDelivery,
 };
 import { committedReader, sha256, sha256Hex } from "./plan-subject.mjs";
-import { checkLocalTerms } from "./terms.mjs";
+import { screenLocalTerms } from "./terms.mjs";
 import { privatePathLines, withoutHomeDirectories } from "./private-paths.mjs";
 import {
   mainWorktree,
@@ -68,6 +69,7 @@ import {
   TRANSPORT_DEFAULTS,
   launchWorker,
   readWire,
+  transportLaunch,
 } from "./worker-launch.mjs";
 
 // The transports' pinned defaults live with the shared launch; this module
@@ -875,8 +877,11 @@ const appendControl = (root, ...events) => {
   return events[0];
 };
 
+// Cut after collapsing and trim again, so a cut that lands after a space
+// cannot leave a space before the bold text's closing asterisks, which would
+// end the candidate's bold label as plain text.
 const paragraph = (value, limit) =>
-  value.replace(/\s+/gu, " ").trim().slice(0, limit);
+  value.replace(/\s+/gu, " ").trim().slice(0, limit).trimEnd();
 
 /** The frozen copy's path as a receipt's Markdown shows it: the system
  * temporary directory rendered as `<tmp>`, the placeholder the Markdown
@@ -1071,7 +1076,7 @@ async function fileReceipt(root, { payload, kind }) {
       FILING_TYPES.includes(event.type),
     );
     const previous = filings.at(-1) ?? null;
-    const localTerms = checkLocalTerms(root, [
+    const localTerms = screenLocalTerms(root, [
       { name: `${receiptId}.payload`, text: JSON.stringify(payload) },
     ]);
     const body = {
@@ -1086,7 +1091,7 @@ async function fileReceipt(root, { payload, kind }) {
     const receipt = { ...body, receiptHash: sha256(JSON.stringify(body)) };
     const rendered = renderReceipt(receipt);
     // Copied standard prose travels beside validated model text; screen both.
-    checkLocalTerms(root, [
+    screenLocalTerms(root, [
       { name: `${receiptId}.json`, text: JSON.stringify(receipt) },
       { name: `${receiptId}.md`, text: rendered },
     ]);
@@ -1234,6 +1239,7 @@ async function runEpisode(root, request, pending, role) {
       dispatch: pending.episodeId,
       fake: fakeEntropyTransport,
       label: "entropy",
+      modelKey: pending.modelKey ?? null,
     });
     mkdirSync(request.capture, { recursive: true, mode: 0o700 });
     const resultPath = join(request.capture, "result.json");
@@ -1375,15 +1381,19 @@ export async function beginEntropyReview(
     const { ENTROPY_REVIEW_TOOLS } = await skeleton("entropy-review-protocol");
     const capture = join(parent, "capture");
     mkdirSync(capture, { recursive: true, mode: 0o700 });
-    const defaults = TRANSPORT_DEFAULTS[transport ?? "claude-cli-print"];
+    // What the transport runs: the worker or the model the caller names,
+    // read from this launchpad's table like every other launch, at the
+    // effort given for it, and with neither the default worker for the
+    // transport's provider.
+    const launched = transportLaunch(root, transport, model, effort);
     const request = {
       kind: "entropy-review",
       command: grant.command,
       workOrder: compiled.workOrder,
       subject,
       episodeId,
-      model: model ?? (transport ? defaults.model : "unknown"),
-      effort: effort ?? (transport ? defaults.effort : "unknown"),
+      model: launched.model,
+      effort: launched.effort,
       cwd: repository,
       temporaryDirectory,
       capture,
@@ -1427,6 +1437,9 @@ export async function beginEntropyReview(
       transport,
       requestedModel: request.model,
       requestedEffort: request.effort,
+      // Where the instance wrote the model, if it did; a failed launch
+      // says so.
+      modelKey: launched.modelKey,
       source: source ?? null,
       accountLabel: accountLabel ?? null,
       tools: [...ENTROPY_REVIEW_TOOLS],
@@ -1911,7 +1924,11 @@ export async function beginEntropyRefutation(
     const { ENTROPY_REVIEW_TOOLS } = await skeleton("entropy-review-protocol");
     const capture = join(parent, "capture");
     mkdirSync(capture, { recursive: true, mode: 0o700 });
-    const defaults = TRANSPORT_DEFAULTS[transport ?? "claude-cli-print"];
+    // What the transport runs: the worker or the model the caller names,
+    // read from this launchpad's table like every other launch, at the
+    // effort given for it, and with neither the default worker for the
+    // transport's provider.
+    const launched = transportLaunch(root, transport, model, effort);
     const request = {
       kind: "entropy-refutation",
       command: grant.command,
@@ -1922,8 +1939,8 @@ export async function beginEntropyRefutation(
         inspection: selection.inspectionSubjects,
       },
       episodeId,
-      model: model ?? (transport ? defaults.model : "unknown"),
-      effort: effort ?? (transport ? defaults.effort : "unknown"),
+      model: launched.model,
+      effort: launched.effort,
       cwd: repository,
       temporaryDirectory,
       capture,
@@ -1962,6 +1979,9 @@ export async function beginEntropyRefutation(
       transport,
       requestedModel: request.model,
       requestedEffort: request.effort,
+      // Where the instance wrote the model, if it did; a failed launch
+      // says so.
+      modelKey: launched.modelKey,
       source: source ?? null,
       accountLabel: accountLabel ?? null,
       tools: [...ENTROPY_REVIEW_TOOLS],
@@ -2333,7 +2353,7 @@ function filePacket(root, reviewReceiptId, packet, reason, date) {
     packet,
   };
   const bytes = prettyJson(filed);
-  checkLocalTerms(root, [{ name: path, text: bytes }]);
+  screenLocalTerms(root, [{ name: path, text: bytes }]);
   writeFileSync(absolute, bytes, { flag: "wx", mode: 0o644 });
   return { path, packetHash: sha256(bytes) };
 }
@@ -2558,19 +2578,16 @@ export function workstreamRepositories(root, id) {
     containedRegularFile(file, root),
     `${id}: workstream must be a contained regular file`,
   );
-  const lines = readFileSync(file, "utf8").split(/\r?\n/u);
-  const markers = (value) =>
-    lines.flatMap((line, index) => (line === value ? [index] : []));
-  const starts = markers("<!-- dotln-workstream:start -->"),
-    ends = markers("<!-- dotln-workstream:end -->");
+  const marked = markdownMarkerBlocks(
+    readFileSync(file, "utf8"),
+    "dotln-workstream:start",
+    "dotln-workstream:end",
+  );
   check(
-    starts.length === 1 && ends.length === 1 && starts[0] < ends[0],
+    marked.length === 1 && !marked.unbalanced,
     `${id}: expected one dotln-workstream block`,
   );
-  const block = parseWithLabel(
-    lines.slice(starts[0] + 1, ends[0]).join("\n"),
-    id,
-  );
+  const block = parseWithLabel(marked[0].inner, id);
   check(
     block?.id === id &&
       Array.isArray(block.members) &&

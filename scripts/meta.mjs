@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import { json as prettyJson } from "./lib/helpers.mjs";
-import { docPath, findLaunchpad, rootPattern } from "./lib/config.mjs";
+import {
+  docPath,
+  findLaunchpad,
+  loadConfig,
+  rootPattern,
+} from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -14,6 +19,7 @@ import {
   planCostTable,
   planCostText,
   writeOrderSnapshot,
+  usageLedgerRows,
 } from "./lib/meta.mjs";
 import {
   recordUsageObservation,
@@ -32,7 +38,9 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
   for (let index = 0; index < args.length; index++) {
     const flag = args[index];
     if (
-      ["--check", "--json", "--collect", "--plan-cost"].includes(flag) &&
+      ["--check", "--json", "--collect", "--plan-cost", "--usage"].includes(
+        flag,
+      ) &&
       options[flag] === undefined
     )
       options[flag] = true;
@@ -52,8 +60,37 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       options[flag] = args[++index];
     else
       throw new Error(
-        "usage: meta [--check|--json] [--write docs/evidence/WO-NNN/meta[-baseline].json] [--collect --work-order WO-NNN --role <kind> --since <UTC> [--session <session> --transcript <path>] [--dispatch <planning-pass>]]",
+        "usage: meta [--check|--json] [--write docs/evidence/WO-NNN/meta[-baseline].json] [--collect --work-order WO-NNN --role <kind> --since <UTC> [--session <session> --transcript <path>] [--dispatch <planning-pass>]] | meta --usage [--since <YYYY-MM-DD>] [--json]",
       );
+  }
+  if (options["--usage"]) {
+    // The usage report reads and prints, and returns before any page this
+    // command writes. Under it --since is a local calendar date.
+    if (
+      Object.keys(options).some(
+        (flag) => !["--usage", "--since", "--json"].includes(flag),
+      )
+    )
+      throw new Error(
+        "meta --usage takes only --since <YYYY-MM-DD> and --json",
+      );
+    const since = options["--since"];
+    if (since !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(since))
+      throw new Error(
+        "meta --usage --since takes a local calendar date, YYYY-MM-DD",
+      );
+    const { renderUsageReading, usageReading } =
+      await import("./lib/usage-reading.mjs");
+    const reading = usageReading(usageLedgerRows(repo), {
+      ...(since ? { since } : {}),
+      prices: loadConfig(repo).workers.prices,
+    });
+    console.log(
+      options["--json"]
+        ? JSON.stringify(reading, null, 2)
+        : renderUsageReading(reading),
+    );
+    return reading;
   }
   if (
     options["--check"] &&

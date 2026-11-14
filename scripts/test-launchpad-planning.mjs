@@ -127,12 +127,14 @@ const copyCoreSource = (source) => {
     "LICENSE",
     "LICENSE-docs",
     "NOTICE",
+    "THIRD_PARTY_NOTICES",
     ".gitignore",
     "docs/product/07-execution-guide.md",
     "docs/product/operator-reference.md",
     "docs/product/08-publication-compiler.md",
     "docs/PLAYBOOK.md",
     "docs/KIT.md",
+    "docs/OPERATOR.md",
     "docs/publication/implementation-overlay-template.md",
     "docs/releases/tag-manifest.template.json",
     "docs/LEGAL.md",
@@ -327,6 +329,8 @@ test("planning and release-close reads run in a fresh exported instance", async 
         const pages = [
           "docs/work-orders/README.md",
           "docs/work-orders/HISTORY.md",
+          "docs/control/release-history.json",
+          "docs/control/workstream-observations.json",
           "docs/planning/sequence.md",
         ];
         const previous = new Map(
@@ -746,9 +750,39 @@ test("planning and release-close reads run in a fresh exported instance", async 
     }
     write(kit, guidePath, guide);
     commit(kit, "docs: retain undeclared instance purpose fixture");
+    // An initiative's layout as the seeded workstreams page describes it
+    // (WO-276 Part O): four parts in prose and a plain table, its planned
+    // items lines of the document with no order file. Both workstream
+    // fixtures below carry it, and every reader takes the marked block alone.
+    const layoutSection = [
+      "## Layout",
+      "",
+      "### What exists",
+      "",
+      "Prices are stored as integer cents with no currency.",
+      "",
+      "### What the initiative asks",
+      "",
+      "A customer can pay in euros or dollars.",
+      "",
+      "### The way there",
+      "",
+      "| Phase | Planned item | Depends on | Side by side with |",
+      "| ----- | ------------ | ---------- | ----------------- |",
+      "| 1 | Store a currency beside every stored amount | nothing | the rate source |",
+      "| 1 | Choose one source of exchange rates | the unknown below | the stored column |",
+      "| 2 | Invoices and refunds in the paid currency | both items of phase 1 | nothing |",
+      "",
+      "### What is unknown",
+      "",
+      "- Which rate source finance accepts: a research order would settle it.",
+      "",
+      "",
+    ].join("\n");
     // The open members of a track: separate workstream follow the sequenced
-    // orders in the export's judged subject (WO-257 criterion 13); the
-    // fixture is restored before the receipt below is filed.
+    // orders in the export's judged subject (WO-257 criterion 13), with a
+    // layout in the document as without one; the fixture is restored before
+    // the receipt below is filed.
     {
       const memberOrder = (id, title) =>
         `# ${id} — ${title}\n\n**Workstream:** WS-001\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Nomination provenance:** the export fixture.\n\n**Objective:** ${title}.\n\n**Design:** a bounded fixture.\n\n**Acceptance criteria (all required)**\n\n1. Evidence confirms a useful shape.\n\n**Evidence gate:** the fixture suite.\n\n**Non-goals:** other shapes.\n\n**Operator-review assumptions**\n\n1. None.\n`;
@@ -766,7 +800,7 @@ test("planning and release-close reads run in a fresh exported instance", async 
       write(
         kit,
         fixtureFiles[2],
-        `# WS-001 — Separate fixture\n\n<!-- dotln-workstream:start -->\n${JSON.stringify(
+        `# WS-001 — Separate fixture\n\n${layoutSection}<!-- dotln-workstream:start -->\n${JSON.stringify(
           {
             id: "WS-001",
             track: "separate",
@@ -957,6 +991,75 @@ test("planning and release-close reads run in a fresh exported instance", async 
           "after product 00 was restored to the receipt's bytes",
         ),
         "after product 00 was restored to the receipt's bytes",
+      );
+    }
+    // A workstream document whose layout names planned items with no order
+    // file, committed with the index refreshed, passes the index's check and
+    // the plan check under the receipt already filed. A member added to its
+    // marked block with no order file is refused by both, in the words each
+    // prints for the same document without a layout (WO-276 criterion O2).
+    // The four runs with the layout are printed for the order's evidence,
+    // and the fixture is removed before the reads below.
+    {
+      const stream = "docs/workstreams/WS-002-layout-fixture.md";
+      const document = (members, layout = layoutSection) =>
+        `# WS-002 — Layout fixture\n\n${layout}<!-- dotln-workstream:start -->\n${JSON.stringify({ id: "WS-002", members, edges: [] })}\n<!-- dotln-workstream:end -->\n`;
+      const commands = [
+        ["work-orders", "--", "index", "--check"],
+        ["plan", "--", "check"],
+      ];
+      const answers = () =>
+        commands.map((args) => {
+          const result = run(kit, "npm", ["run", "--silent", ...args]);
+          return {
+            command: `npm run ${args.join(" ")}`,
+            exitCode: result.status,
+            output: `${result.stdout}${result.stderr}`
+              .replaceAll(scratch, "<fixture>")
+              .trim(),
+          };
+        });
+      write(kit, stream, document([]));
+      commit(kit, "fixture: a workstream with a layout and no filed member");
+      ok(
+        run(kit, "npm", ["run", "--silent", "work-orders", "--", "index"]),
+        "the index with the layout's workstream",
+      );
+      commit(kit, "fixture: the index with the layout's workstream");
+      const passing = answers();
+      assert.deepEqual(
+        passing.map((row) => row.exitCode),
+        [0, 0],
+        JSON.stringify(passing),
+      );
+      const stray = [{ workOrderId: "WO-905", repositoryId: "self" }];
+      write(kit, stream, document(stray));
+      const refused = answers();
+      write(kit, stream, document(stray, ""));
+      const refusedAtBase = answers();
+      for (const row of refused) {
+        assert.notEqual(row.exitCode, 0, row.command);
+        assert.match(
+          row.output,
+          /WS-002-layout-fixture\.md: WO-905 must declare \*\*Workstream:\*\* WS-002 in its order/u,
+        );
+      }
+      assert.deepEqual(
+        refused,
+        refusedAtBase,
+        "a member with no order file is refused as without a layout",
+      );
+      console.log(`LAYOUT-RUNS ${JSON.stringify([...passing, ...refused])}`);
+      rmSync(join(kit, stream));
+      commit(kit, "fixture: remove the layout's workstream");
+      ok(
+        run(kit, "npm", ["run", "--silent", "work-orders", "--", "index"]),
+        "the index without the layout's workstream",
+      );
+      commit(kit, "fixture: the index without the layout's workstream");
+      ok(
+        run(kit, "npm", ["run", "--silent", "plan", "--", "check"]),
+        "plan check after the layout's workstream is removed",
       );
     }
     const entropySubject = observe(["entropy", "--", "subject"]);
@@ -1808,7 +1911,7 @@ test("planning and release-close reads run in a fresh exported instance", async 
       },
     });
     write(kit, "docs/control/outward-vocabulary.json", publicationVocabulary);
-    write(kit, "docs/control/local/terms.txt", "PrivateFixtureTerm\n");
+    write(kit, "docs/control/local/terms.txt", "refuse: PrivateFixtureTerm\n");
     write(kit, "packages/skeleton/loadouts/grants.json", [publicationGrant]);
     const targetOrder = "docs/work-orders/WO-002-target-fixture.md";
     write(
@@ -2271,7 +2374,11 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
     setup(fork);
     lgit(fork, ["remote", "add", "upstream", starterUrl]);
     linkDependencies(fork);
-    write(fork, "docs/control/local/terms.txt", "SyntheticForbiddenTerm\n");
+    write(
+      fork,
+      "docs/control/local/terms.txt",
+      "refuse: SyntheticForbiddenTerm\n",
+    );
     write(
       fork,
       "docs/intake/fork.md",
@@ -2448,7 +2555,9 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
     for (const sentence of [
       "The update reaches the instance's `main` through its own update pull request",
       "reviews and merges with a merge commit, so `main` keeps the starter's history",
-      "The operator merges each pull request with a merge commit",
+      // The instance's own repository alone: a target's merge method is
+      // its team's (WO-276 Part M).
+      "The operator merges each pull request of the instance's own repository with a merge commit",
       "If `git status --porcelain --untracked-files=all` then lists an untracked lineage index (`docs/lineage/README.md` under the default documentation root), the session deletes that file before the stash",
       "The export seeds the lineage index; for an older export, step 1 or the update branch of §Taking upstream updates generates and commits it, and bootstrap never writes it",
       "regenerates it after ledger edits and generates it for an older export, in step 1 or on the update branch, and bootstrap never writes it",

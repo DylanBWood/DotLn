@@ -1,4 +1,11 @@
 import { docRelative, findLaunchpad } from "./config.mjs";
+import {
+  holdsHtmlComment,
+  inlineSource,
+  markdownNodes,
+  parseMarkdown,
+} from "./markdown-links.mjs";
+import { readWorkOrder } from "./work-order-document.mjs";
 export const releaseNoteHeadings = Object.freeze([
   "Release overview",
   "Read before upgrading",
@@ -10,187 +17,110 @@ export const releaseNoteHeadings = Object.freeze([
 export const releaseNotesPathFor = (workOrderId, root = findLaunchpad()) =>
   docRelative(root, "finalReviews", `${workOrderId}/RELEASE-NOTES.md`);
 
-const quotedContent = (line) => {
-  let content = line;
-  let depth = 0;
-  while (true) {
-    const marker = /^ {0,3}>[ \t]?/.exec(content);
-    if (!marker) return depth === 0 ? undefined : { content, depth };
-    content = content.slice(marker[0].length);
-    depth += 1;
-  }
-};
-
-// Lists and quotations can contain real Markdown headings too.
-const headingContent = (line) => {
-  let content = line;
-  while (true) {
-    const marker = /^ {0,3}(?:>[ \t]?|(?:[-+*]|\d{1,9}[.)])[ \t]+)/.exec(
-      content,
-    );
-    if (!marker) return content;
-    content = content.slice(marker[0].length);
-  }
-};
+const BOM = "﻿";
 const reservedHeading =
   /^(?:WO-\d{3}[ \t]+[—–-][ \t]+|Derived from the diff[ \t]*#*[ \t]*$|Machine-derived release evidence[ \t]*#*[ \t]*$)/;
 
-// Match visible reserved titles after inline Markdown decoration, escapes and
-// the dash/space entities used in generated title shapes.
-const visibleHeading = (text) => {
-  let visible = text.replace(/[ \t]+#+[ \t]*$/, "");
-  // Strip paired decoration before unescaping, so escaped literal markers and
-  // unpaired punctuation do not manufacture a reserved title.
-  while (true) {
-    const stripped = visible.replace(
-      /(?<![\\\w])(\*{1,2}|_{1,2}|`+)(?=\S)(.*?\S)\1(?!\w)/g,
-      "$2",
-    );
-    if (stripped === visible) break;
-    visible = stripped;
-  }
-  return visible
-    .replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])/g, "$1")
-    .replace(/&#(?:x([0-9a-f]+)|(\d+));/gi, (entity, hex, decimal) => {
-      const point = Number.parseInt(hex ?? decimal, hex ? 16 : 10);
-      return point <= 0x10ffff ? String.fromCodePoint(point) : entity;
-    })
-    .replace(
-      /&(?:mdash|ndash|nbsp);/g,
-      (entity) => ({ "&mdash;": "—", "&ndash;": "–", "&nbsp;": " " })[entity],
-    )
-    .replace(/\s+/g, " ")
-    .trim();
-};
+// The text a reader sees in a heading: its text and code as the parser
+// decodes them, with emphasis, links, escapes and character references
+// resolved. A generated title spelled through decoration or references is
+// still the generated title.
+const visibleText = (node) =>
+  node.type === "text" || node.type === "inlineCode"
+    ? node.value
+    : (node.children ?? []).map(visibleText).join("");
 
-const levelTwoHeadings = (markdown, displayPath) => {
-  const lines = markdown.split("\n");
+// A setext heading spans its text and its underline; an ATX heading is one
+// line.
+const setext = (heading) =>
+  heading.position.start.line !== heading.position.end.line;
+
+// On one line, a reserved title is named before raw HTML, and raw HTML
+// before a heading's form.
+const refusalOrder = Object.freeze({
+  reserved: 0,
+  comment: 1,
+  html: 2,
+  setext: 3,
+  markers: 4,
+});
+
+/** The notes' section headings, read from the parser's tree, after the
+ * first structural refusal in document order is thrown. A section heading is
+ * a level-two ATX heading at the top level, opening its line, with a title.
+ * Every heading is judged: a generated title is reserved at any depth and in
+ * any container, a setext level-two heading is refused, and a level-two ATX
+ * heading that is indented, nested in a quotation or a list, or empty is
+ * refused. Raw HTML, comments included, is refused wherever the parser reads
+ * it; HTML-like text in code is code. */
+const sectionHeadings = (source, displayPath, { marked }) => {
+  const tree = parseMarkdown(source);
+  const topLevel = new Set(tree.children);
+  const refusals = [];
+  const refuse = (kind, line, message) =>
+    refusals.push({ rank: refusalOrder[kind], line, message });
   const headings = [];
-  let fence;
-  let paragraph = [];
-  let listIndent = 0;
-  let paragraphQuoteDepth = 0;
-
-  lines.forEach((line, index) => {
-    const withoutCarriageReturn = line.replace(/\r$/, "");
-    const quote = quotedContent(withoutCarriageReturn);
-    const quoteDepth = quote?.depth ?? 0;
-    if (fence?.quoteDepth && quoteDepth < fence.quoteDepth) fence = undefined;
-    let fenceContent = withoutCarriageReturn;
-    const fenceDepth = fence?.quoteDepth ?? quoteDepth;
-    for (let depth = 0; depth < fenceDepth; depth++)
-      fenceContent = fenceContent.replace(/^ {0,3}>[ \t]?/, "");
-    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(fenceContent);
-    if (fenceMatch) {
-      const marker = fenceMatch[1];
-      if (!fence) {
-        const info = fenceContent.slice(fenceMatch[0].length);
-        if (marker[0] !== "`" || !info.includes("`")) {
-          fence = { character: marker[0], length: marker.length, quoteDepth };
-          paragraph = [];
-          listIndent = 0;
-          return;
-        }
-      } else if (
-        marker[0] === fence.character &&
-        marker.length >= fence.length &&
-        new RegExp(`^ {0,3}${fence.character}{${fence.length},}[ \\t]*$`).test(
-          fenceContent,
-        )
-      ) {
-        fence = undefined;
-        return;
-      }
+  for (const node of markdownNodes(tree)) {
+    if (node.type === "html") {
+      const comment = holdsHtmlComment(node.value);
+      const line = node.position.start.line;
+      refuse(
+        comment ? "comment" : "html",
+        line,
+        `${displayPath}: ${comment ? "HTML comments are" : "raw HTML is"} not allowed in reviewed notes (line ${line})`,
+      );
+      continue;
     }
-    if (fence) return;
-    if (quoteDepth !== paragraphQuoteDepth) {
-      paragraph = [];
-      listIndent = 0;
-    }
-    paragraphQuoteDepth = quoteDepth;
-    const unquoted = quote?.content ?? withoutCarriageReturn;
-    const list = /^ {0,3}(?:[-+*]|\d{1,9}[.)])[ \t]+/.exec(unquoted);
-    if (list) {
-      listIndent = list[0].length;
-      paragraph = [];
-    } else if (unquoted.trim() && !unquoted.startsWith(" ".repeat(listIndent)))
-      listIndent = 0;
-    const continuation =
-      listIndent > 0 && !list && unquoted.startsWith(" ".repeat(listIndent));
-    const content = headingContent(
-      continuation ? unquoted.slice(listIndent) : withoutCarriageReturn,
-    );
-    const atx = /^ {0,3}#{1,6}[ \t]+(.*)$/.exec(content);
-    const setext =
-      /^ {0,3}(?:=+|-+)[ \t]*$/.test(content) && paragraph.length
-        ? paragraph.join(" ")
-        : undefined;
-    if (
-      (atx && reservedHeading.test(visibleHeading(atx[1]))) ||
-      (setext && reservedHeading.test(visibleHeading(setext)))
-    )
-      throw new Error(
-        `${displayPath}: generated release heading is reserved (line ${index + 1})`,
+    if (node.type !== "heading") continue;
+    // The parser drops a leading byte-order mark that the Release body and
+    // the tag message keep: the line it opens holds the mark before any `#`,
+    // so it is read as text, never as a heading.
+    if (marked && node.position.start.line === 1) continue;
+    const line = setext(node)
+      ? node.position.end.line
+      : node.position.start.line;
+    if (reservedHeading.test(visibleText(node).replace(/\s+/g, " ").trim()))
+      refuse(
+        "reserved",
+        line,
+        `${displayPath}: generated release heading is reserved (line ${line})`,
       );
-    if (atx || setext || !content.trim()) paragraph = [];
-    else if (!/^(?: {4}|\t)/.test(content)) paragraph.push(content.trim());
-    else paragraph = [];
-    if (
-      withoutCarriageReturn.includes("<!--") ||
-      withoutCarriageReturn.includes("-->")
-    )
-      throw new Error(
-        `${displayPath}: HTML comments are not allowed in reviewed notes (line ${index + 1})`,
+    if (node.depth !== 2) continue;
+    if (setext(node))
+      refuse(
+        "setext",
+        line,
+        `${displayPath}: setext level-two headings are not allowed (line ${line}); use only the five exact required headings`,
       );
-    if (
-      /<\/?[A-Za-z][A-Za-z0-9-]*(?=[ \t/>]|$)/.test(withoutCarriageReturn) ||
-      /<!(?!----)|<\?/.test(withoutCarriageReturn)
+    else if (
+      !topLevel.has(node) ||
+      node.position.start.column !== 1 ||
+      !node.children.length
     )
-      throw new Error(
-        `${displayPath}: raw HTML is not allowed in reviewed notes (line ${index + 1})`,
+      refuse(
+        "markers",
+        line,
+        `${displayPath}: level-two heading markers are allowed only as exact column-one section headings (line ${line})`,
       );
-    if (
-      index > 0 &&
-      /^[ \t]*-+[ \t]*$/.test(withoutCarriageReturn) &&
-      /\S/.test(lines[index - 1].replace(/\r$/, ""))
-    )
-      throw new Error(
-        `${displayPath}: setext level-two headings are not allowed (line ${index + 1}); use only the five exact required headings`,
-      );
-    const quoted = quotedContent(withoutCarriageReturn);
-    const previousQuoted =
-      index > 0
-        ? quotedContent(lines[index - 1].replace(/\r$/, ""))
-        : undefined;
-    if (
-      quoted &&
-      /^ {0,3}-+[ \t]*$/.test(quoted.content) &&
-      previousQuoted?.depth === quoted.depth &&
-      /\S/.test(previousQuoted.content)
-    )
-      throw new Error(
-        `${displayPath}: setext level-two headings are not allowed (line ${index + 1}); use only the five exact required headings`,
-      );
-    const match = /^##[ \t]+(.+?)[ \t]*$/.exec(withoutCarriageReturn);
-    if (match) {
-      headings.push({ name: match[1], line: index + 1, index });
-      return;
-    }
-    if (
-      /^(?:##[ \t]*$|[ \t]+##(?:[ \t]+|$)| {0,3}(?:(?:>[ \t]?)|(?:(?:[-+*]|\d{1,9}[.)])[ \t]+))+ {0,3}##(?:[ \t]+|$))/.test(
-        withoutCarriageReturn,
-      )
-    )
-      throw new Error(
-        `${displayPath}: level-two heading markers are allowed only as exact column-one section headings (line ${index + 1})`,
-      );
-  });
-
-  return { headings, lines };
+    else
+      headings.push({
+        name: inlineSource(source, node).trim(),
+        line,
+        start: node.position.start.offset,
+        end: node.position.end.offset,
+      });
+  }
+  const [first] = refusals.sort(
+    (left, right) => left.line - right.line || left.rank - right.rank,
+  );
+  if (first) throw new Error(first.message);
+  return headings;
 };
 
-const sectionBody = (lines, start, end) => {
-  const body = lines.slice(start, end);
+// A section's text without the blank lines that open or close it; every
+// other line keeps its bytes.
+const sectionBody = (text) => {
+  const body = text.split("\n");
   while (body.length > 0 && /^\s*$/.test(body[0])) body.shift();
   while (body.length > 0 && /^\s*$/.test(body.at(-1))) body.pop();
   return body.join("\n");
@@ -202,7 +132,10 @@ export const parseReleaseNotes = (markdown, displayPath) => {
     throw new Error(
       `${displayPath}: reserved tag marker line "${reserved[1]}" is not allowed in reviewed notes`,
     );
-  const { headings, lines } = levelTwoHeadings(markdown, displayPath);
+  const marked = markdown.startsWith(BOM);
+  // The parser's offsets count from after a leading byte-order mark.
+  const source = marked ? markdown.slice(BOM.length) : markdown;
+  const headings = sectionHeadings(source, displayPath, { marked });
   const observed = headings.map(({ name }) => name);
 
   for (const required of releaseNoteHeadings) {
@@ -233,7 +166,7 @@ export const parseReleaseNotes = (markdown, displayPath) => {
       `${displayPath}: required headings are misordered; expected ${releaseNoteHeadings.map((heading) => `"## ${heading}"`).join(", ")}`,
     );
 
-  const preamble = sectionBody(lines, 0, headings[0].index);
+  const preamble = sectionBody(source.slice(0, headings[0].start));
   if (preamble !== "")
     throw new Error(
       `${displayPath}: content appears before the first required heading`,
@@ -243,9 +176,7 @@ export const parseReleaseNotes = (markdown, displayPath) => {
   headings.forEach((heading, index) => {
     const next = headings[index + 1];
     const body = sectionBody(
-      lines,
-      heading.index + 1,
-      next?.index ?? lines.length,
+      source.slice(heading.end, next?.start ?? source.length),
     );
     if (body === "")
       throw new Error(
@@ -258,19 +189,21 @@ export const parseReleaseNotes = (markdown, displayPath) => {
 };
 
 /** The body source a target order names for its Release (WO-227): the header
- * `**Target release notes:** reviewed` makes the Release body the order's
- * rendered RELEASE-NOTES.md; `objective`, or no header, keeps the title,
- * objective and close line. More than one header, or another word, refuses. */
+ * field `**Target release notes:** reviewed` makes the Release body the
+ * order's rendered RELEASE-NOTES.md; `objective`, or no field, keeps the
+ * title, objective and close line. The field is read from the order's header
+ * through the work-order reader, as its value's first word; a field with no
+ * value names no source. More than one field, or another word, refuses. */
 export const targetReleaseNotesSource = (markdown, displayPath) => {
-  const headers = [
-    ...markdown.matchAll(/^\*\*Target release notes:\*\*[ \t]*(\S+)/gmu),
-  ];
+  const headers = readWorkOrder(markdown)
+    .headerFields("Target release notes")
+    .filter((field) => field.value !== "");
   if (!headers.length) return "objective";
   if (headers.length > 1)
     throw new Error(
       `${displayPath}: carries ${headers.length} **Target release notes:** headers; at most one is read`,
     );
-  const value = headers[0][1].replace(/[.,;]$/u, "");
+  const value = headers[0].value.split(/\s/u)[0].replace(/[.,;]$/u, "");
   if (!["reviewed", "objective"].includes(value))
     throw new Error(
       `${displayPath}: **Target release notes:** must be reviewed or objective, not ${value}`,

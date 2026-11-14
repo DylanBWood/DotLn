@@ -45,7 +45,8 @@ if (process.argv[2] === "--child") {
   }
   let at = 0;
   const host = new ResidentHost({
-    ...f,
+    directory: f.directory,
+    configuration: f.configuration,
     policyId: f.configuration.policyId,
     now: () => at,
     capabilities: () => ["adapter.fixture"],

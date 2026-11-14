@@ -27,6 +27,7 @@ import {
   checkPlanGate,
   overridePlanHold,
   disposePlanHold,
+  knownIssues,
   amendPlanOrder,
   withdrawPlanAmendment,
   requireChangedPlanEvidence,
@@ -37,9 +38,9 @@ import { containedRegularFile } from "./lib/paths.mjs";
 import { failureOf, runGit, shellQuote, spawnGit } from "./lib/git.mjs";
 import { TRANSPORT_DEFAULTS } from "./lib/entropy-review.mjs";
 import {
-  resolveWorkerOption,
-  sessionHost,
-  workerOptionNamed,
+  modelKeyNote,
+  resolveLaunch,
+  showWorker,
 } from "./lib/worker-launch.mjs";
 import { prospectiveRealpath } from "./lib/gate-evidence.mjs";
 import {
@@ -47,10 +48,11 @@ import {
   readControl,
   selectWorkOrder,
 } from "./lib/control-store.mjs";
-import { reportHarnessRuntime } from "./lib/harness-runtime.mjs";
+import { isCoreRoot, reportHarnessRuntime } from "./lib/harness-runtime.mjs";
 import { parseActor } from "./resume.mjs";
 import {
   beginDirectRefutation,
+  refutationSteps,
   fileDirectRefutation,
   latestPlanningPass,
 } from "./lib/plan-direct.mjs";
@@ -80,7 +82,7 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check [--timing] | documents [--cursor <revision>:<row>] | publish --title <title> --body-file <path> | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] [--model opus|fable|sol|astra] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model opus|fable|sol|astra] [--effort <the option's effort>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check [--timing] | documents [--cursor <revision>:<row>] | publish --title <title> --body-file <path> | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] [--model <worker or model>] [--effort <level>] [--provider <provider>] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <worker or model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id|known-issue-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const followupsUsage =
   "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json or batch.json> | --touching [<path or WO-NNN>…] [--cursor <cursor>] | --touching --work-order <WO-NNN> [--cursor <cursor>] | --export <file> [--all]";
 const failuresUsage =
@@ -579,7 +581,9 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   }
   if (command === "dispose") {
     if (rest.length !== 3)
-      throw new Error("usage: plan dispose <receipt-id> <hold-id> <reason>");
+      throw new Error(
+        "usage: plan dispose <receipt-id> <hold-id|known-issue-id> <reason>",
+      );
     return disposePlanHold(root, {
       receiptId: rest[0],
       holdId: rest[1],
@@ -652,21 +656,33 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     "--evidence-only",
     "--direct",
     "--scope",
+    "--provider",
   ]);
   if (opt["--direct"] || !opt["--transport"]) {
-    if (
-      Object.keys(opt).some(
-        (key) => !["--direct", "--scope", "--model"].includes(key),
-      )
-    )
+    // The direct form names the parent's launch and nothing else: a worker
+    // or a model, an effort for the launch and the provider it runs on.
+    const direct = ["--direct", "--scope", "--model", "--effort", "--provider"];
+    if (Object.keys(opt).some((key) => !direct.includes(key)))
       throw new Error(
-        "Background refutation accepts only --direct, --scope and --model; external options require an explicit --transport",
+        `Background refutation accepts only ${direct.join(", ")}; external options require an explicit --transport`,
       );
-    return beginDirectRefutation(root, {
+    const prompt = await beginDirectRefutation(root, {
       scope: opt["--scope"] ?? "pass",
-      launch: await directLaunch(root, opt["--model"]),
+      launch: await directLaunch(root, opt["--model"], {
+        effort: opt["--effort"],
+        provider: opt["--provider"],
+      }),
     });
+    // The parent's steps go with the prompt, on the other stream: the
+    // worker is given standard output and nothing else, and a planning pass
+    // reads its part here instead of loading the refuter's skill.
+    process.stderr.write(await refutationSteps());
+    return prompt;
   }
+  if (opt["--provider"])
+    throw new Error(
+      "--provider names the provider of the direct form's launch; a transport is its own provider's",
+    );
   if (opt["--scope"] && opt["--scope"] !== "full")
     throw new Error(
       "Pass-scoped refutation uses --direct; the external transport judges the full horizon",
@@ -731,37 +747,41 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
           ? new FakePlanRefutationTransport()
           : null;
   if (!transport) throw new Error("unknown plan transport");
-  // A CLI transport launches one of the operator's four options on its host:
-  // the one --model names, else the dispatch line's, else the host default.
-  // Codex launches ignore user configuration, so the effort is always
-  // recorded and passed; an unrecorded one would run at the model's own
-  // default. The fake transport runs the fixture model alone.
+  // A CLI transport launches, on its provider, the worker or model --model
+  // names, else the default worker, at --effort where that is given. Codex
+  // launches ignore user configuration, so the effort is always recorded
+  // and passed; an unrecorded one would run at the model's own default. The
+  // fake transport runs the fixture model alone.
   let { model, effort } = TRANSPORT_DEFAULTS.fake;
+  // The configuration key the model came from, where the instance named it.
+  let modelKey = null;
   if (name === "fake") {
     if (opt["--model"] !== undefined || opt["--effort"] !== undefined)
       throw new Error(
         "the fake transport runs the fixture model; it takes no --model or --effort",
       );
   } else {
-    const option = await resolveWorkerOption(
-      root,
-      name === "codex-cli-exec" ? "codex" : "claude",
-      opt["--model"],
-    );
-    if (opt["--effort"] !== undefined && opt["--effort"] !== option.effort)
-      throw new Error(
-        `--effort ${opt["--effort"]} is outside the operator's options: ${option.name} runs at ${option.effort}`,
-      );
-    ({ model, effort } = option);
+    ({ model, effort, modelKey } = resolveLaunch(root, opt["--model"], {
+      provider: TRANSPORT_DEFAULTS[name].host,
+      effort: opt["--effort"],
+    }));
   }
-  const episode = await runPlanRefutation(
-    subject,
-    transport,
-    model,
-    effort,
-    Date.now,
-    docPath(root, "control", "local/refutations"),
-  );
+  let episode;
+  try {
+    episode = await runPlanRefutation(
+      subject,
+      transport,
+      model,
+      effort,
+      Date.now,
+      docPath(root, "control", "local/refutations"),
+      isCoreRoot(root),
+    );
+  } catch (error) {
+    // A launch that failed says where its model was named.
+    if (error instanceof Error) error.message += modelKeyNote(model, modelKey);
+    throw error;
+  }
   const receipt = await writePlanReceipt(root, {
     pass,
     slug: opt["--slug"] ?? pass.id,
@@ -778,57 +798,35 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       workOrderId,
       criterionId,
     })),
+    knownIssues: knownIssues(receipt.result).map(
+      ({ id, workOrderId, criterionId }) => ({ id, workOrderId, criterionId }),
+    ),
     localTerms: receipt.localTerms.status,
   };
 }
 
 /**
  * The worker a direct refutation's parent launches, printed beside the
- * prompt: the option `--model` names, or, without it, a non-default option
- * the session's dispatch line named for the session's host. Null keeps the
- * parent's ordinary launch. A named option is printed for its own host; a
- * session on the other host cannot spawn it and is pointed at the external
- * transport, which judges the full horizon.
+ * prompt: what `--model` names, at `--effort` and on `--provider` where
+ * those are given, as `npm run worker -- show` prints it for this session.
+ * Null, where the launch names nothing, keeps the parent's ordinary launch
+ * of the default worker. A session that cannot
+ * launch the named worker itself is pointed at the external transport,
+ * which judges the full horizon. Exported so that the launch can be read
+ * where no planning pass stands for the command to judge.
  * @param {string} root
  * @param {string} [requested]
  */
-async function directLaunch(root, requested) {
-  const session = sessionHost();
-  let option;
-  if (requested === undefined) {
-    if (!session) return null;
-    option = await resolveWorkerOption(root, session);
-    if (option.selection === "host-default") return null;
-  } else {
-    // An unknown word is refused by name with the four options listed.
-    const host = (await workerOptionNamed(requested))?.[1].host;
-    option = await resolveWorkerOption(root, host ?? "claude", requested);
-  }
-  const transport =
-    option.host === "codex" ? "codex-cli-exec" : "claude-cli-print";
-  return {
-    option: option.name,
-    selection: option.selection,
-    host: option.host,
-    model: option.model,
-    effort: option.effort,
-    ...(option.host === "claude"
-      ? { tool: "Agent", subagentType: option.workerType }
-      : {
-          tool: "spawn_agent",
-          forkTurns: "none",
-          ...(option.workerType === "codex-spawn-agent"
-            ? {}
-            : { agentType: option.workerType }),
-          reasoningEffort: option.effort,
-        }),
-    receipt: `--worker-type ${option.workerType}`,
-    ...(session && session !== option.host
-      ? {
-          note: `this ${session === "claude" ? "Claude" : "Codex"} session cannot spawn a ${option.host === "claude" ? "Claude" : "Codex"} worker; npm run plan -- refute --transport ${transport} --model ${option.name} launches it over the full horizon`,
-        }
-      : {}),
-  };
+export async function directLaunch(root, requested, choice = {}) {
+  const { effort, provider } = choice;
+  return requested === undefined &&
+    effort === undefined &&
+    provider === undefined
+    ? null
+    : showWorker(root, requested ?? "default", {
+        effort: effort ?? null,
+        provider: provider ?? null,
+      });
 }
 
 if (isMainModule(import.meta.url)) {

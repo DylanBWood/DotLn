@@ -1,3 +1,5 @@
+import { HARNESS_END, HARNESS_START } from "./harness-instruction.mjs";
+import { markdownComments, replaceMarkerBlocks } from "./markdown-links.mjs";
 import {
   createScratchRoot,
   removeTemporaryPath as rmSync,
@@ -158,9 +160,14 @@ const pureProjection = (root, path) =>
     docRelative(root, "control", "current.md"),
     docRelative(root, "workOrders", "README.md"),
     docRelative(root, "workOrders", "HISTORY.md"),
+    docRelative(root, "control", "release-history.json"),
+    docRelative(root, "control", "workstream-observations.json"),
     docRelative(root, "lineage", "decisions-index.md"),
     docRelative(root, "siblings", "README.md"),
     docRelative(root, "siblings", "tag-observations.json"),
+    // Core's operator commands page: regenerated below from the merged kit
+    // guide and the version release preparation assigns.
+    docRelative(root, "docs", "OPERATOR.md"),
     ".claude/settings.json",
     ".codex/config.toml",
     ".codex/hooks.json",
@@ -174,9 +181,11 @@ const pureProjection = (root, path) =>
 const mixedProjectionMask = (root, path) =>
   path === "CLAUDE.md"
     ? (s) =>
-        s.replace(
-          /<!-- dotln-harness:start -->[\s\S]*?<!-- dotln-harness:end -->/g,
-          "<!-- dotln-harness:start -->\n<!-- dotln-harness:end -->",
+        replaceMarkerBlocks(
+          s,
+          "dotln-harness:start",
+          "dotln-harness:end",
+          () => `${HARNESS_START}\n${HARNESS_END}`,
         )
     : editionPages(root).includes(path)
       ? (s) =>
@@ -186,8 +195,10 @@ const mixedProjectionMask = (root, path) =>
           )
       : path === "README.md"
         ? (s) =>
-            s.replace(
-              /<!-- DOTLN-RELEASE-BEGIN -->[\s\S]*?<!-- DOTLN-RELEASE-END -->/g,
+            replaceMarkerBlocks(
+              s,
+              "DOTLN-RELEASE-BEGIN",
+              "DOTLN-RELEASE-END",
               (block) => {
                 const versions = strictVersionsIn(block);
                 return versions.length === 1
@@ -196,6 +207,15 @@ const mixedProjectionMask = (root, path) =>
               },
             )
         : null;
+// The front page's release block after a masked merge, with the version the
+// mask set aside written back in place of the placeholder.
+const restoreReleaseVersion = (contents, version) =>
+  replaceMarkerBlocks(
+    contents,
+    "DOTLN-RELEASE-BEGIN",
+    "DOTLN-RELEASE-END",
+    (block) => block.replace("v0.0.0", version),
+  );
 function mixedProjection(root, path, recordedPath) {
   const mask = mixedProjectionMask(root, path);
   if (!mask) return false;
@@ -233,10 +253,7 @@ function mixedProjection(root, path, recordedPath) {
         readFileSync(join(root, authority), "utf8").split("\n")[0],
       );
       if (versions.length !== 1) return false;
-      contents = contents.replace(
-        /<!-- DOTLN-RELEASE-BEGIN -->[\s\S]*?<!-- DOTLN-RELEASE-END -->/g,
-        (block) => block.replace("v0.0.0", versions[0]),
-      );
+      contents = restoreReleaseVersion(contents, versions[0]);
     }
     put(root, path, contents);
     return true;
@@ -324,9 +341,18 @@ function command(root, program, args) {
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
   });
+  // A command that wrote nothing still says how it ended: its exit status,
+  // or the signal that ended it.
   if (result.status !== 0)
     throw new Error(
-      `${program} ${args.join(" ")}: ${(result.stderr || result.stdout || result.error?.message || "failed").trim()}`,
+      `${program} ${args.join(" ")}: ${(
+        result.stderr ||
+        result.stdout ||
+        result.error?.message ||
+        (result.signal
+          ? `ended by ${result.signal} with no output`
+          : `exit ${result.status} with no output`)
+      ).trim()}`,
     );
   return result.stdout;
 }
@@ -461,8 +487,8 @@ function regenerate(root, receipt) {
   try {
     stubbed =
       existsSync(decisions) &&
-      readFileSync(decisions, "utf8").includes(
-        `<!-- integration ${receipt.checkpointRef} -->`,
+      markdownComments(readFileSync(decisions, "utf8")).some(
+        ({ text }) => text === `integration ${receipt.checkpointRef}`,
       );
   } catch {
     // A record that is not a file holds no stub; release preparation refuses
@@ -491,6 +517,14 @@ function regenerate(root, receipt) {
     } else if (!savedRelease)
       run("integration decision stub", () => decisionStub(root, receipt));
   }
+  // The operator commands page names the version release preparation just
+  // assigned; a core checkout that holds the page writes it again from the
+  // merged kit guide, and a kit carries core's copy and never regenerates it.
+  run(
+    "operator commands page",
+    () => node("scripts/lib/operator-commands.mjs"),
+    () => !kit && documentEntry(root, docRelative(root, "docs", "OPERATOR.md")),
+  );
   run("decisions index, follow-up register and meta", () =>
     node("scripts/meta.mjs"),
   );

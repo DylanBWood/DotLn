@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
+import { archivedCloseAttempts } from "./close-history.mjs";
 import { docPath } from "./config.mjs";
 import { resolveOrderWorktrees } from "./order-worktrees.mjs";
 import { localReleaseRecords } from "./release-tags.mjs";
@@ -11,6 +12,8 @@ import {
   REMOTE_READ_TIMEOUT_MS,
 } from "./github-repository.mjs";
 import { parseWorktrees, runGit, spawnGit } from "./git.mjs";
+import { readFindingsBlock } from "./review-findings.mjs";
+import { inHistory, mergedChange, partialClone } from "./merged-change.mjs";
 
 export const lifecycleRoutes = Object.freeze({
   next: { role: "executor", phrase: "resume: next" },
@@ -104,7 +107,7 @@ export function routeOrder(state, events = [], facts = {}) {
   if (facts.released)
     return stopped(
       "released",
-      "The local release attribution or no-release close is recorded.",
+      "The local release attribution, a no-release close or a target's own published release is recorded.",
     );
   if (facts.awaitingClose && state.phase === "closed")
     return awaitingCloseStop(
@@ -158,7 +161,14 @@ export function routeOrder(state, events = [], facts = {}) {
   if (state.phase === "closed" && !orderMerged(state, facts))
     return stopped(
       "awaiting-merge",
-      "The operator merges the reviewed pull request(s), then types the same drive phrase again.",
+      // A target whose base holds the change under an edited patch is merged
+      // to no reading of Git's: the person who merged it names the commit at
+      // an attended close.
+      state.repositoryId && facts.merged && !facts.targetMerged
+        ? facts.targetUncompared
+          ? "The reviewed branch is not in the history of the target's base, and the target's clone is a partial clone, where status compares no patches, so a squash or a rebase of the change is not seen from here. The operator merges the target's pull request; once it is merged by either, the operator types resume: release close in the launchpad's main checkout, where the close fetches and judges it."
+          : "The target's base does not hold the reviewed change: not as the branch, as one commit of the same patch or as its commits replayed. The operator merges the target's pull request, then types the same drive phrase again; where it was squashed with an edit, the operator runs the release close with --merged-as <commit>, naming the commit of the base that carries the change."
+        : "The operator merges the reviewed pull request(s), then types the same drive phrase again.",
     );
   if (!action)
     return stopped(
@@ -206,6 +216,20 @@ export function readDriveRecord(root, id) {
   const file = driveRecordPath(root, id);
   return existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : null;
 }
+/** Whether the base holds the branch's change, as the target close judges
+ * it; a clone that cannot answer is not merged. Status is a local read: in a
+ * partial clone a patch's blobs would be fetched to compare it, so there only
+ * the branch's own history is asked and the answer says nothing was compared
+ * (`uncompared`); the close, which fetches anyway, judges the rest. */
+const changeInBase = (clone, branch, base) => {
+  try {
+    if (inHistory(clone, branch, base)) return { merged: true };
+    if (partialClone(clone)) return { merged: false, uncompared: true };
+    return { merged: mergedChange(clone, branch, base).merged };
+  } catch {
+    return { merged: false };
+  }
+};
 const ancestor = (root, branch, base) =>
   spawnGit(["merge-base", "--is-ancestor", branch, base], {
     cwd: root,
@@ -314,14 +338,12 @@ export function routeFacts(root, state, events = [], context = {}) {
           failure.reportHash.replace(/^sha256:/, "")
         )
           throw new Error("bound failure report changed");
-        const block =
-          /<!-- dotln-findings:start -->\s*([\s\S]*?)\s*<!-- dotln-findings:end -->/.exec(
-            bytes.toString(),
+        // The report's findings block, read as the result commands read it.
+        const block = readFindingsBlock(bytes.toString());
+        if (block.readable)
+          facts.operatorFinding = block.entries.some(
+            (row) => row.route === "operator",
           );
-        if (block)
-          facts.operatorFinding = JSON.parse(
-            block[1].replace(/^```(?:json)?\s*|\s*```$/g, ""),
-          ).some((row) => row.route === "operator");
       }
     }
     if (state.phase !== "closed") {
@@ -351,13 +373,64 @@ export function routeFacts(root, state, events = [], context = {}) {
     const thisActivation = (recordedAt) =>
       !reactivated ||
       (typeof recordedAt === "string" && recordedAt === activation.recordedAt);
-    const noReleaseClose =
-      close?.workOrderId === state.workOrderId &&
-      close.dryRun !== true &&
-      close.publication?.outcome === "no-release" &&
-      thisActivation(close.activation?.recordedAt);
-    const targetRemoved =
-      noReleaseClose && close.targetCleanup?.outcome === "removed";
+    // The record holds its own attempt and the eight before it, and the
+    // archives it names hold every earlier one, read as the close reads
+    // them. A later attempt, a dry run or one stopped in its prerequisites,
+    // rewrites the record without undoing what an earlier one did, so what
+    // a real attempt of this activation recorded stands however many
+    // attempts followed it: the branch it deleted, the target it removed,
+    // the close it settled. An archive that cannot be read gives nothing,
+    // so the order then routes to the close, which names the archive.
+    const list = (value) => (Array.isArray(value) ? value : []);
+    const attempts = (
+      close
+        ? [
+            close,
+            ...list(close.previousAttempts),
+            ...(close.retainedHistoryAttempt
+              ? [close.retainedHistoryAttempt]
+              : []),
+            ...archivedCloseAttempts(
+              trees.main,
+              state.workOrderId,
+              list(close.archivedAttempts),
+            ).attempts,
+          ]
+        : []
+    ).filter(
+      (attempt) =>
+        attempt?.workOrderId === state.workOrderId &&
+        attempt.dryRun !== true &&
+        thisActivation(attempt.activation?.recordedAt),
+    );
+    const noRelease = (attempt) =>
+      attempt.publication?.outcome === "no-release";
+    // A target that declares a release policy: the launchpad publishes
+    // nothing for the order and the target's own outcome says whether its
+    // tag and Release stand. Prepared is not published. The row is read by
+    // the target's block, since a refusal after the target published
+    // rewrites the launchpad's own outcome.
+    const declared = (attempt) =>
+      Boolean(state.repositoryId) &&
+      attempt.publication?.target?.policy === "declared" &&
+      attempt.publication.target.repositoryId === state.repositoryId;
+    const closing = attempts.filter(
+      (attempt) => noRelease(attempt) || declared(attempt),
+    );
+    const targetRemoved = closing.some(
+      (attempt) => attempt.targetCleanup?.outcome === "removed",
+    );
+    const branchDeleted = closing.some(
+      (attempt) => attempt.cleanup?.branch?.outcome === "deleted",
+    );
+    const settledClose = closing.some(
+      (attempt) =>
+        attempt.cleanup?.outcome === "clean" &&
+        (noRelease(attempt) ||
+          ["published", "current"].includes(
+            attempt.publication.target.outcome,
+          )),
+    );
     facts.released =
       releaseCache
         .get(trees.main)
@@ -372,9 +445,7 @@ export function routeFacts(root, state, events = [], context = {}) {
                 activation,
               )),
         ) ||
-      (noReleaseClose &&
-        close.cleanup?.outcome === "clean" &&
-        (!state.repositoryId || targetRemoved));
+      (settledClose && (!state.repositoryId || targetRemoved));
     if (facts.released) return facts;
     const branch = `wo-${state.workOrderId.slice(3)}`;
     // Ancestry alone is true of a branch with no commits, so, as close does, ask
@@ -389,20 +460,27 @@ export function routeFacts(root, state, events = [], context = {}) {
       (ancestor(trees.main, branch, "origin/main") &&
         passed !== undefined &&
         passAtBase(trees.main, state.workOrderId, passed)) ||
-      (noReleaseClose && close.cleanup?.branch?.outcome === "deleted");
+      // A close that deleted the branch found it merged: what it left
+      // undone is its own to finish, never a merge to wait for.
+      branchDeleted;
     // Close judges the remote base and moves the local one afterward, so a
     // merge counts only once it is in the clone's remote-tracking branch, and
     // a target branch still at its base has nothing to merge.
+    // As the close reads it: the branch itself, one commit of the same
+    // patch (a squash) or its commits replayed (a rebase).
+    const inBase =
+      state.repositoryId && !targetRemoved && trees.target
+        ? changeInBase(
+            trees.target.clone,
+            trees.target.branch,
+            `origin/${trees.target.baseBranch}`,
+          )
+        : { merged: false };
     facts.targetMerged =
       !state.repositoryId ||
       targetRemoved ||
       Boolean(
-        trees.target &&
-        ancestor(
-          trees.target.clone,
-          trees.target.branch,
-          `origin/${trees.target.baseBranch}`,
-        ) &&
+        inBase.merged &&
         !(
           trees.target.baseCommit &&
           ancestor(
@@ -412,6 +490,7 @@ export function routeFacts(root, state, events = [], context = {}) {
           )
         ),
       );
+    if (inBase.uncompared) facts.targetUncompared = true;
     if (facts.merged) facts.cwd = facts.launchpad = trees.main;
     return facts;
   } catch (error) {

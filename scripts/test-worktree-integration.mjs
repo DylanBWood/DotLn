@@ -702,6 +702,27 @@ function fixture(
       put(main, bridge.decisionPath, bridge.decisionText);
       put(main, bridge.planningLogPath, priorLog + bridge.amendmentLine);
     }
+    // A clone of the revision before this release's branch holds an order as
+    // filed that wraps a line of its criteria so that it opens with a
+    // placeholder the parser reads as a raw HTML block, which this release's
+    // index check refuses in an open order (WO-276). The branch amends the
+    // order; the clone takes the frozen re-wrap of those two lines, and a
+    // clone that already holds them re-wrapped takes nothing.
+    const wrap = JSON.parse(
+      text(
+        source,
+        "scripts/fixtures/worktree-integration/wo276-criteria-wrap-bridge.json",
+      ),
+    );
+    assert.equal(wrap.schemaVersion, 1);
+    const filedWO276 = text(main, wrap.orderPath);
+    const filedParts = filedWO276.split(wrap.filedLines);
+    assert.ok(
+      filedParts.length <= 2,
+      "the filed lines stand at most once in the cloned order",
+    );
+    if (filedParts.length === 2)
+      put(main, wrap.orderPath, filedParts.join(wrap.rewrappedLines));
   }
   if (kit) {
     rmSync(join(main, "tsconfig.json"), { force: true });

@@ -1,0 +1,4 @@
+# Git converts no line ending in this instance's files: the kit verifies its
+# files by their bytes, and a conversion at checkout changes them. Keep the
+# line below; add this repository's own attributes under it.
+* -text

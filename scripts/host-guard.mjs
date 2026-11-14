@@ -117,6 +117,12 @@ export function handledStopMembers(members, incident, protectedPids, current) {
   );
 }
 
+/** What the process table shows for the guard. One guard serves every DotLn
+ * session of the user, on any worktree, so a session that did not start it
+ * must not take it for a stale process of another checkout. */
+export const HOST_GUARD_TITLE =
+  "dotln-host-guard: shared by every DotLn session of this user";
+
 export async function runHostGuard(directory = hostStateRoot()) {
   ensureHostRoot(directory);
   return withHostLock(directory, "guard", async () => {
@@ -130,6 +136,8 @@ export async function runHostGuard(directory = hostStateRoot()) {
       birth: owner.birth,
       startedAt: new Date().toISOString(),
       contract: "host-guard-v1",
+      // The title this process reports for itself, as its record names it.
+      title: process.title,
     };
     atomicJson(file, guardRecord);
     const known = new Map(),
@@ -593,6 +601,7 @@ if (isMainModule(import.meta.url)) {
       throw new Error(
         "usage: host-guard [--directory <private-system-temp-root>]",
       );
+    process.title = HOST_GUARD_TITLE;
     await runHostGuard(args[1]);
   } catch (error) {
     console.error(error.message);

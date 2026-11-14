@@ -1,0 +1,3 @@
+# Prettier's build, byte for byte: its whitespace is the package's, not
+# the repository's to correct, and this file travels with the copy.
+* -whitespace

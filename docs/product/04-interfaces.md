@@ -257,7 +257,8 @@ session that launched the resident. A caller that disconnects interrupts its
 command's process group, as Ctrl-C would, and the group is killed if it is
 still running two seconds later. Five seconds after the command's own process
 exits, a descendant still holding its output no longer holds the result. The
-first stop request (`SIGINT`, `SIGTERM` or `SIGHUP` for `dotln resident`) ends
+first stop request (`SIGINT`, `SIGTERM` or `SIGHUP` for `dotln resident` and
+`scripts/resident.mjs`) ends
 admission, interrupts in-flight commands and records their results. A console
 result is one complete exit code and byte pair, so any `--watch` argument to
 `console.status` is refused before its parser runs; streaming remains a
@@ -272,6 +273,7 @@ outside the categories this contract names: the resume role results and
 off-ramps (`implementation-ready`, `verification-result`, `repair-complete`, `final-review-result`, `accept-overrun`, `waive`,
 `defect`, `retract`, `reopen-handoff`, `withdraw`, `correct`, `override-record`), `briefing` and `usage`, `worktree
 constellation`, `resident-bind WO-NNN` and `--check`, `dotln resident`,
+`scripts/resident.mjs`,
 `demo`, `verify-demo`, `feedback-audit` and `handoff`, and `console board`.
 The board and runtime status are available to a browser through the two
 read routes above without adding a command ID.

@@ -12,12 +12,15 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { createScratchRoot } from "./temporary-roots.mjs";
-import { TOOL_ROOT } from "./config.mjs";
+import { TOOL_ROOT, workerSelector } from "./config.mjs";
 import { fixture } from "./target-worktree-fixture.mjs";
 import { write, json } from "./helpers.mjs";
 import { shellQuote } from "./git.mjs";
 
-export function identityRows(events, { lateWrite = false } = {}) {
+export function identityRows(
+  events,
+  { lateWrite = false, effort = workerSelector("claude").effort } = {},
+) {
   const calls = events.filter((row) => row.event === "PreToolUse" && row.agent);
   const observed = (yes, reason) => ({
     status: yes ? "observed" : calls.length ? "absent" : "untestable",
@@ -41,8 +44,8 @@ export function identityRows(events, { lateWrite = false } = {}) {
       "directory created by SubagentStart after spawn; declared synthetic write succeeded",
     ),
     pinnedEffort: observed(
-      calls.length > 0 && calls.every((row) => row.effort === "xhigh"),
-      "child tool hooks report the definition's xhigh pin; selection only, not effective inference effort",
+      calls.length > 0 && calls.every((row) => row.effort === effort),
+      `child tool hooks report the definition's ${effort} pin; selection only, not effective inference effort`,
     ),
     targetHooks: observed(
       calls.some((row) => row.source === "target" && row.cwd === "target"),
@@ -57,6 +60,9 @@ export async function agentIdentityProbe(args) {
     "1",
     "explicit live harness probe required",
   );
+  // What the launchpad's default worker runs on Claude: the probe's root
+  // and its synthetic worker definition both take it.
+  const selected = workerSelector("claude");
   assert.equal(
     args.length,
     1,
@@ -115,7 +121,7 @@ export async function agentIdentityProbe(args) {
     write(
       root,
       ".claude/agents/dotln-worker.md",
-      `---\nname: dotln-worker\ndescription: Synthetic identity probe worker\nmodel: claude-opus-5-5\neffort: xhigh\ntools: Read, Write, Bash, Agent, TaskOutput\n---\nFollow the synthetic probe prompt. No additional work.\n`,
+      `---\nname: dotln-worker\ndescription: Synthetic identity probe worker\nmodel: ${selected.model}\neffort: ${selected.effort}\ntools: Read, Write, Bash, Agent, TaskOutput\n---\nFollow the synthetic probe prompt. No additional work.\n`,
     );
     // Keep the real emitted target hooks and add an observation alongside
     // them. The source label establishes which project's settings ran.
@@ -134,9 +140,9 @@ export async function agentIdentityProbe(args) {
     const argv = [
       "-p",
       "--model",
-      "claude-opus-5-5",
+      selected.model,
       "--effort",
-      "xhigh",
+      selected.effort,
       "--no-session-persistence",
       "--setting-sources",
       "project",
@@ -240,16 +246,8 @@ export async function agentIdentityProbe(args) {
       observedAt: new Date().toISOString(),
       harness: "claude-code",
       version,
-      rootSelection: {
-        model: "claude-opus-5-5",
-        effort: "xhigh",
-        source: "launch-selector",
-      },
-      workerSelection: {
-        model: "claude-opus-5-5",
-        effort: "xhigh",
-        source: "agent-definition",
-      },
+      rootSelection: { ...selected, source: "launch-selector" },
+      workerSelection: { ...selected, source: "agent-definition" },
       ...result,
       ...observed,
       rows: capabilities,

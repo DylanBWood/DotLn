@@ -41,8 +41,14 @@ export const exportSeedPaths = () => [
   "README.md",
   CONFIG_FILENAME,
   ".gitignore",
+  // An absent-seed addition like the file for core: the refresh adds it to a
+  // starter that has none and never rewrites one that exists.
+  ".gitattributes",
   "CLAUDE.md",
   "AI-HARNESS-SECURITY.md",
+  // The instance's own file from its first byte: an absent-seed addition,
+  // never a template seed, so no refresh rewrites or refuses its entries.
+  "FOR-CORE.md",
   defaultDocRelative("workstreams", "README.md"),
   defaultDocRelative("docs", "repositories", "README.md"),
   defaultDocRelative("workOrders", "WO-001-environment-truth.md"),

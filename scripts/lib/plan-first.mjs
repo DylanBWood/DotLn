@@ -15,6 +15,11 @@ import { readControl } from "./control-store.mjs";
 import { targetWorktreeForOrder } from "./target-worktrees.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import {
+  markdownCodeBlocks,
+  markdownComments,
+  markdownHeadings,
+} from "./markdown-links.mjs";
+import {
   createTemporaryRoot,
   readTemporaryOwner,
   writeTemporaryOwner,
@@ -44,9 +49,28 @@ export function planFirstContext(root, state) {
   }
   const codeRoot = target?.target ?? root;
   const directory = planFirstDirectory(root, state.workOrderId, target);
+  // The checkout that holds the three documents: the code's own, except for
+  // a target order whose registration keeps records in the instance, whose
+  // documents are born under the launchpad's evidence root.
+  const inInstance = directory === planFirstDirectory(root, state.workOrderId);
+  const documentRoot = inInstance ? root : codeRoot;
   return {
     codeRoot,
+    documentRoot,
     directory,
+    // For a target order, where the documents would be under the
+    // registration's other value: a refusal names it when the value changed
+    // under a proposed plan.
+    ...(target
+      ? {
+          elsewhere: planFirstDirectory(
+            root,
+            state.workOrderId,
+            target,
+            inInstance ? "target" : "instance",
+          ),
+        }
+      : {}),
     evidenceDirectory: docPath(root, "evidence", state.workOrderId),
     intakeDirectory: docPath(root, "intake"),
     documents: ["plan.md", "conversation.md", "proposal.md"].map((name) => ({
@@ -70,11 +94,11 @@ export function planFirstView(root, state) {
       changed.push("base commit");
     for (const doc of context.documents) {
       const expected = recorded.documents.find(
-        (row) => row.path === relative(context.codeRoot, doc.path),
+        (row) => row.path === relative(context.documentRoot, doc.path),
       );
       if (
         !expected ||
-        !containedRegularFile(doc.path, context.codeRoot) ||
+        !containedRegularFile(doc.path, context.documentRoot) ||
         planDigest(readFileSync(doc.path)) !== expected.sha256
       )
         changed.push(doc.name);
@@ -87,7 +111,7 @@ export function planFirstView(root, state) {
     documents:
       recorded?.documents ??
       context.documents.map((doc) => ({
-        path: relative(context.codeRoot, doc.path),
+        path: relative(context.documentRoot, doc.path),
         sha256: null,
       })),
     changed,
@@ -97,7 +121,15 @@ export function planFirstRefusal(root, state = undefined, order = undefined) {
   state ??= selectedPlanState(root, order);
   const view = planFirstView(root, state);
   if (state?.phase !== "active" || !view || view.approvedAt) return null;
-  return `DOTLN_PLAN_FIRST_REFUSED: read ${join(planFirstContext(root, state).directory, "conversation.md")}; ${view.changed.length ? `changed since proposal: ${view.changed.join(", ")}; revise the proposal, then ` : ""}record the operator's approval with npm run resume -- plan-approved --work-order ${state.workOrderId} before implementation.`;
+  const context = planFirstContext(root, state);
+  // The registration's records value changed while the order was active:
+  // the documents are where they were born, and are read from the other
+  // place now.
+  const moved =
+    context.elsewhere &&
+    !existsSync(join(context.directory, "conversation.md")) &&
+    existsSync(join(context.elsewhere, "conversation.md"));
+  return `DOTLN_PLAN_FIRST_REFUSED: ${moved ? `the registration's records value changed while this order was active: its plan-first documents are in ${context.elsewhere} and are now read from ${context.directory}; move the three documents there, or restore the value, then propose again` : `read ${join(context.directory, "conversation.md")}`}; ${view.changed.length ? `changed since proposal: ${view.changed.join(", ")}; revise the proposal, then ` : ""}record the operator's approval with npm run resume -- plan-approved --work-order ${state.workOrderId} before implementation.`;
 }
 export function requirePlanApproval(root, state) {
   const refusal = planFirstRefusal(root, state);
@@ -226,10 +258,19 @@ export function candidateDiff(root, state) {
   return { ...candidate, diff, diffDigest: planDigest(diff) };
 }
 export function readPlanMarker(text) {
-  const match = /^<!-- dotln-plan-first\n([\s\S]*?)\n-->\n/.exec(text);
+  // The marker is the document's first bytes: one comment, on lines of its
+  // own, whose text opens with the marker's name.
+  const [first] = markdownComments(text);
+  const named = "dotln-plan-first\n";
   let marker;
   try {
-    marker = JSON.parse(match?.[1]);
+    marker = JSON.parse(
+      first?.start === 0 &&
+        text[first.end] === "\n" &&
+        first.text.startsWith(named)
+        ? first.text.slice(named.length)
+        : undefined,
+    );
   } catch {
     throw new Error("invalid dotln-plan-first marker");
   }
@@ -252,6 +293,8 @@ export function readPlanMarker(text) {
 }
 export const planMarker = (marker) =>
   `<!-- dotln-plan-first\n${JSON.stringify(marker, null, 2)}\n-->\n`;
+const DIFF_START = "<!-- dotln-plan-first-diff:start -->";
+const DIFF_END = "<!-- dotln-plan-first-diff:end -->";
 export const proposalPatch = (diff) => {
   const fence = "~".repeat(
     Math.max(
@@ -259,7 +302,28 @@ export const proposalPatch = (diff) => {
       ...[...diff.matchAll(/~+/g)].map((match) => match[0].length + 1),
     ),
   );
-  return `<!-- dotln-plan-first-diff:start -->\n${fence}diff\n${diff}${fence}\n<!-- dotln-plan-first-diff:end -->\n`;
+  return `${DIFF_START}\n${fence}diff\n${diff}${fence}\n${DIFF_END}\n`;
+};
+/** The diff a proposal carries: the bytes of the tilde-fenced diff block
+ * that sits between the two markers, each on the line next to it, closed by
+ * a fence as long as its opening one; null when there is none. The fence is
+ * longer than any tilde run in the diff, so no payload line can close it. */
+const proposalDiff = (proposal) => {
+  const block = markdownCodeBlocks(proposal).find(
+    (row) =>
+      row.fence[0] === "~" &&
+      row.info === "diff" &&
+      proposal.slice(row.start - DIFF_START.length - 1, row.start) ===
+        `${DIFF_START}\n` &&
+      (row.start === DIFF_START.length + 1 ||
+        proposal[row.start - DIFF_START.length - 2] === "\n") &&
+      proposal.startsWith(`\n${DIFF_END}\n`, row.end) &&
+      proposal.slice(proposal.lastIndexOf("\n", row.end - 1) + 1, row.end) ===
+        row.fence,
+  );
+  if (!block) return null;
+  const text = proposal.slice(block.start, block.end);
+  return text.slice(text.indexOf("\n") + 1, text.lastIndexOf("\n") + 1);
 };
 export function proposedPlan(
   root,
@@ -273,15 +337,21 @@ export function proposedPlan(
     );
   const texts = Object.fromEntries(
     context.documents.map((doc) => {
-      if (!containedRegularFile(doc.path, context.codeRoot))
+      if (!containedRegularFile(doc.path, context.documentRoot))
         throw new Error(`missing plan-first document: ${doc.name}`);
       return [doc.name, readFileSync(doc.path, "utf8")];
     }),
   );
   const conversationDigest = planDigest(texts["conversation.md"]);
+  // Each turn of the conversation is a level-3 heading naming its date and
+  // its writer.
   if (
-    !/^### \d{4}-\d{2}-\d{2}[^\n]* — (Operator|Agent|Agent, paraphrasing the terminal)\s*$/m.test(
-      texts["conversation.md"],
+    !markdownHeadings(texts["conversation.md"]).some(
+      (heading) =>
+        heading.depth === 3 &&
+        /^\d{4}-\d{2}-\d{2}.* — (?:Operator|Agent|Agent, paraphrasing the terminal)$/u.test(
+          heading.title,
+        ),
     )
   )
     throw new Error("conversation.md requires dated writer headings");
@@ -295,22 +365,21 @@ export function proposedPlan(
     JSON.stringify(markers[0]) !== JSON.stringify(markers[1])
   )
     throw new Error("plan-first markers differ or conversation digest changed");
-  const patch =
-    /(?:^|\n)<!-- dotln-plan-first-diff:start -->\n(~{3,})diff\n([\s\S]*?)(?<=\n)\1\n<!-- dotln-plan-first-diff:end -->\n/.exec(
-      texts["proposal.md"],
-    );
   // Git diff framing uses LF; CR and Unicode separators can be payload bytes.
   const outerMarkers = texts["proposal.md"]
     .split("\n")
-    .filter((line) => line === "<!-- dotln-plan-first-diff:start -->").length;
-  if (!patch || patch[2] !== candidate.diff || outerMarkers !== 1)
+    .filter((line) => line === DIFF_START).length;
+  if (
+    proposalDiff(texts["proposal.md"]) !== candidate.diff ||
+    outerMarkers !== 1
+  )
     throw new Error("candidate diff does not match proposal.md");
   return {
     baseCommit: candidate.baseCommit,
     diffDigest: candidate.diffDigest,
     proposedAt: markers[0].proposedAt,
     documents: context.documents.map((doc) => ({
-      path: relative(context.codeRoot, doc.path),
+      path: relative(context.documentRoot, doc.path),
       sha256: planDigest(texts[doc.name]),
     })),
   };

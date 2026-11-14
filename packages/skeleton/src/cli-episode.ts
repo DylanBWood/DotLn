@@ -7,6 +7,7 @@ import {
   isMissionCheckRequest,
   type MissionSource,
 } from "./mission-check-protocol.js";
+import type { MissionDocumentsResult } from "./mission-check-source.js";
 let active: ReturnType<typeof startCliEpisode> | undefined;
 for (const [signal, code] of [
   ["SIGINT", 130],
@@ -28,6 +29,7 @@ process.on(
     spec: CliActorSpec;
     context: CliActorContext;
     missionSource?: MissionSource;
+    missionDocuments?: MissionDocumentsResult;
   }) => {
     if (message.kill) {
       active?.kill();
@@ -43,6 +45,7 @@ process.on(
       undefined,
       undefined,
       message.missionSource,
+      message.missionDocuments,
     );
     void active.completed.then((result) => {
       if (process.connected)

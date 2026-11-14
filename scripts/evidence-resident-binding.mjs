@@ -13,7 +13,7 @@ import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "@dotln/kernel";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
-import { bindOrder, RESIDENT_LANE } from "./resident-bind.mjs";
+import { bindOrder, judgeSelection, RESIDENT_LANE } from "./resident-bind.mjs";
 import {
   ResidentStore,
   replayResident,
@@ -47,8 +47,13 @@ const surfaces = process.argv.flatMap((value, index) =>
 );
 const workOrder = flag("work-order");
 const transport = flag("transport", "claude-cli-print");
-const model = flag("model", "claude-haiku-4-5-20251001");
-const effort = flag("effort", "xhigh");
+// The judge this row binds: what the caller names, and otherwise what a
+// bind takes for the transport, the launchpad's `judge` worker. The row
+// records what ran either way.
+const { model, effort } = judgeSelection(
+  { transport, model: flag("model"), effort: flag("effort") },
+  root,
+);
 if (!workOrder || !surfaces.length)
   throw new Error(
     "usage: evidence-resident-binding --work-order WO-NNN --surface <path> [--surface <path>...] [--transport <name>] [--model <model>] [--effort <level>]",

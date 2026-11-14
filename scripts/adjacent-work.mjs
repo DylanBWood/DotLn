@@ -21,7 +21,7 @@ import {
   currentFollowupTarget,
   syncFollowups,
 } from "./lib/planning-followups.mjs";
-import { checkLocalTerms } from "./lib/terms.mjs";
+import { screenLocalTerms } from "./lib/terms.mjs";
 
 // DOTLN_LAUNCHPAD names the launchpad when the session works outside it, as
 // a target order's session does in its target worktree; the queue lives in
@@ -66,7 +66,7 @@ export function main(
           ? "adjacent queue: retarget requires the selected executor, fixer or final-review phase"
           : "adjacent queue: mutation requires the selected executor/fixer phase",
       );
-    checkLocalTerms(root, [{ name: "adjacent-queue-request", text: source }]);
+    screenLocalTerms(root, [{ name: "adjacent-queue-request", text: source }]);
     command ??= JSON.parse(source);
     if (
       retarget &&

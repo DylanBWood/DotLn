@@ -530,6 +530,8 @@ test("contribution exemption follows instance data and never mutable Git identit
     );
     const refused = contributionSignoffRules(root)[0];
     assert.equal(refused.pass, false);
-    assert.match(refused.line, /already exempts its single identity/);
+    // The remedy names both declared fields since an instance may list
+    // further identities of its own (WO-276 Part M).
+    assert.match(refused.line, /already exempt their identities/);
     assert.doesNotMatch(refused.line, /or declare that identity/);
   }));

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { markdownMarkerBlocks } from "./lib/markdown-links.mjs";
 import { pathToFileURL } from "node:url";
 import {
   capturePendingReceipts,
@@ -12,6 +13,7 @@ import {
   docPath,
   findLaunchpad,
   loadConfig,
+  recordsStayInInstance,
 } from "./lib/config.mjs";
 import {
   appendFileSync,
@@ -962,7 +964,8 @@ const hostLaunchLines = (mainPath, entry, repository) => {
 // A retained start receipt owns only the exact pair it preflighted. Retrying
 // resumes preparation; it never adopts a different directory or resets a branch.
 const signoffAdvisory = (root) => {
-  if (!loadConfig(root).contributions?.operatorAuthor)
+  const { operatorAuthor, authors = [] } = loadConfig(root).contributions ?? {};
+  if (!operatorAuthor && !authors.length)
     process.stdout.write(
       "Advisory: every commit on this branch needs a Signed-off-by trailer matching its author (DCO 1.1), or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change.\n",
     );
@@ -1642,10 +1645,11 @@ const main = async () => {
         );
     }
     // The files the branch carries are screened as the document gate's terms
-    // task screens them, before anything reaches the remote.
+    // task screens them, before anything reaches the remote: a refuse-mode
+    // match refuses, and a context-mode match is listed for the stage to read.
     {
       const { branchChanges } = await import("./lib/branch-changes.mjs");
-      const { branchTermFindings, branchTermLines } =
+      const { branchTermClasses, branchTermFindings, branchTermLines } =
         await import("./lib/branch-terms.mjs");
       const changed = branchTermFindings(subject, {
         changes: branchChanges(subject, { committed: true }),
@@ -1654,10 +1658,13 @@ const main = async () => {
         process.stdout.write(
           `local-terms list: unavailable; the ${changed.files} files ${branch} changes were not screened\n`,
         );
-      if (changed.findings.length)
+      const { refused, context } = branchTermClasses(changed.findings);
+      if (refused.length)
         throw new Error(
-          `the local-terms list refuses lines ${branch} adds: ${branchTermLines(changed.findings).join("; ")}`,
+          `the local-terms list refuses lines ${branch} adds: ${branchTermLines(refused).join("; ")}`,
         );
+      for (const line of branchTermLines(context))
+        process.stdout.write(`CONTEXT ${line}\n`);
     }
     resolveGitHubPushTarget(subject);
     const surfaces = spawnSync(
@@ -1700,6 +1707,23 @@ const main = async () => {
       throw new Error(
         "PR title or body contains AI attribution or a session trailer/URL",
       );
+    // The title is the one published text no file of the branch holds, so
+    // the branch screen above never read it: it is screened here against the
+    // same list, named by its place and never by the entry.
+    {
+      const { localTermFindings, localTermLine } =
+        await import("./lib/terms.mjs");
+      const found =
+        localTermFindings(subject, [{ name: "pr-title", text: title }])
+          .findings ?? [];
+      const refused = found.filter(({ mode }) => mode === "refuse");
+      if (refused.length)
+        throw new Error(
+          `the local-terms list refuses the pull request's title: ${refused.map(localTermLine).join("; ")}`,
+        );
+      for (const finding of found)
+        process.stdout.write(`CONTEXT ${localTermLine(finding)}\n`);
+    }
     const control = readControl(subject, "HEAD");
     const state = control.orders.get(workOrderId)?.state;
     // The operator merges by hand and reads the order's waived and defective
@@ -1714,34 +1738,51 @@ const main = async () => {
       );
     let gateBlock;
     if (state?.repositoryId) {
-      if (!state.targetRecords)
+      // Where records go is the registration's, as main holds it, and a
+      // records binding the order has committed decides an order in flight:
+      // records already filed are published from the target whatever the
+      // registration now says.
+      // An order with a binding needs the registration only to say that it
+      // has changed since: a main configuration that does not load stops a
+      // publish that depends on it and no other.
+      let registration;
+      try {
+        registration = loadConfig(mainPath).repositories[state.repositoryId];
+      } catch (error) {
+        if (!state.targetRecords) throw error;
+      }
+      const inInstance = recordsStayInInstance(registration, state);
+      if (!state.targetRecords && !inInstance)
         throw new Error(
           `${workOrderId}: committed control has no TargetRecordsCommitted`,
         );
-      const { targetRecordSources } = await import("./lib/target-records.mjs");
-      const { eventsForOrder } = await import("./lib/control-store.mjs");
-      const moved = targetRecordSources(
-        subject,
-        state,
-        eventsForOrder(control, workOrderId),
-      )
-        .filter((row) => row.kind !== "order")
-        .map((row) => row.source);
-      const added = new Set(
-        runGitPathList(subject, [
-          "diff",
-          "--name-only",
-          "--diff-filter=A",
-          "-z",
-          "origin/main...HEAD",
-          "--",
-        ]),
-      );
-      const copies = moved.filter((path) => added.has(path));
-      if (copies.length)
-        throw new Error(
-          `records branch adds moved target records: ${copies.join(", ")}`,
+      if (state.targetRecords) {
+        const { targetRecordSources } =
+          await import("./lib/target-records.mjs");
+        const { eventsForOrder } = await import("./lib/control-store.mjs");
+        const moved = targetRecordSources(
+          subject,
+          state,
+          eventsForOrder(control, workOrderId),
+        )
+          .filter((row) => row.kind !== "order")
+          .map((row) => row.source);
+        const added = new Set(
+          runGitPathList(subject, [
+            "diff",
+            "--name-only",
+            "--diff-filter=A",
+            "-z",
+            "origin/main...HEAD",
+            "--",
+          ]),
         );
+        const copies = moved.filter((path) => added.has(path));
+        if (copies.length)
+          throw new Error(
+            `records branch adds moved target records: ${copies.join(", ")}`,
+          );
+      }
       // An order whose Release carries the reviewed notes has them reviewed
       // here, beside the body, before the close reads them.
       if (
@@ -1757,7 +1798,9 @@ const main = async () => {
         requireReleaseNotes(subject, workOrderId);
       gateBlock = reviewedLaunchpadIdentity(subject, workOrderId).body;
       process.stdout.write(
-        `${workOrderId}: target order records no release; records live in ${state.targetRecords.repositoryId} at ${state.targetRecords.commit}.\n`,
+        inInstance
+          ? `${workOrderId}: target order records no release; its records are in this instance (repositories.${state.repositoryId}.records is "instance") and this pull request publishes them.\n`
+          : `${workOrderId}: target order records no release; records live in ${state.targetRecords.repositoryId} at ${state.targetRecords.commit}.${registration?.records === "instance" ? ` repositories.${state.repositoryId}.records is now "instance": this order's records were already filed into the target at that commit and are published from there.` : ""}\n`,
       );
     } else {
       requireReleaseNotes(subject, workOrderId);
@@ -1787,11 +1830,13 @@ const main = async () => {
     process.stdout.write(
       `${writingGuidance("prTitle", subject)}\n${writingGuidance("prBody", subject)}\n`,
     );
-    const publicationBody = body.includes("<!-- dotln-product-gate:start -->")
-      ? body.replace(
-          /<!-- dotln-product-gate:start -->[\s\S]*?<!-- dotln-product-gate:end -->/,
-          gateBlock,
-        )
+    const [gateInBody] = markdownMarkerBlocks(
+      body,
+      "dotln-product-gate:start",
+      "dotln-product-gate:end",
+    );
+    const publicationBody = gateInBody
+      ? `${body.slice(0, gateInBody.start)}${gateBlock}${body.slice(gateInBody.end)}`
       : `${body.trimEnd()}\n\n${gateBlock}\n`;
     // The stored body links file-relative, the form the document gate
     // resolves; on the forge those resolve nowhere, so the published body

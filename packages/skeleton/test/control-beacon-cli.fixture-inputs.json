@@ -13,7 +13,9 @@
     "packages/skeleton/src/writer-teardown.mjs",
     "packages/skeleton/src/duration.mjs",
     "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/compiler/src/attribution.mjs"
+    "packages/compiler/src/attribution.mjs",
+    "packages/skeleton/src/worker-catalog.mjs",
+    "packages/skeleton/src/worker-models.mjs"
   ],
   "directories": [
     "scripts",

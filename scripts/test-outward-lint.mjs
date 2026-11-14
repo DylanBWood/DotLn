@@ -844,7 +844,7 @@ test("pure calls are deterministic, leave inputs intact, and never imply local c
   );
 });
 
-test("WO-227 criterion 3: a refuse-mode private term refuses by line and mode, an unmarked term is a review item, and neither exposes the term", (t) => {
+test("WO-227 criterion 3: a refuse-mode private term refuses by line and mode, an unmarked term is a context-mode review item, and neither exposes the term", (t) => {
   const { root, terms } = fixture(t);
   terms(
     "# Synthetic fixture only\nrefuse: SyntheticForbidden\nREFUSE: Wibble Sprocket Cloud\nZorp Quux\nreview: Blorp\n",
@@ -885,7 +885,7 @@ test("WO-227 criterion 3: a refuse-mode private term refuses by line and mode, a
         row.count,
         row.span.precision,
       ]),
-      [["vocabulary.local", "review", 1, "line"]],
+      [["vocabulary.local", "context", 1, "line"]],
     );
     assert.doesNotMatch(JSON.stringify(result), /zorp|quux|blorp/i);
   }
@@ -897,7 +897,7 @@ test("WO-227 criterion 3: a refuse-mode private term refuses by line and mode, a
   assert.deepEqual(
     mixed.findings.map((row) => [row.mode, row.span.line]),
     [
-      ["review", 1],
+      ["context", 1],
       ["refuse", 2],
     ],
   );
@@ -924,43 +924,103 @@ test("WO-227 criterion 3: a refuse-mode private term refuses by line and mode, a
     }).status,
     "refused",
   );
-  // A mode marker with no term refuses by line; any other text is the term,
-  // a colon included, so an existing list keeps every term it had.
+  // A mode word alone on a line opens a section and is no entry (WO-276): a
+  // list of section lines alone is present with no terms. A line with no
+  // letter or digit refuses by its number; any other text is the term, a
+  // colon included, so an existing list keeps every term it had.
   terms("Fine\nreview :\n");
-  assert.throws(
-    () => checkLocalTerms(root, []),
-    /line 2: a mode marker with no term/u,
-  );
+  assert.deepEqual(checkLocalTerms(root, []), {
+    status: "present",
+    terms: 1,
+    refuse: 0,
+    context: 1,
+    findings: [],
+  });
   terms("refuse:\n");
+  assert.equal(checkLocalTerms(root, []).terms, 0);
+  terms("Fine\nrefuse: ---\n");
   assert.throws(
     () => checkLocalTerms(root, []),
-    /line 1: a mode marker with no term/u,
+    /line 2: no term on the line/u,
   );
   assert.deepEqual(
     rules(checkOutwardArtifact(root, { kind: "pr-body", text: "x" })),
     ["local-terms.configuration"],
   );
+  const modes = (text) =>
+    [...parseLocalTerms(text)].map(([key, { mode }]) => [key, mode]);
+  assert.deepEqual(modes("refuse: Same Term\nsame term\n# note\n\nOther\n"), [
+    ["sameterm", "refuse"],
+    ["other", "context"],
+  ]);
   assert.deepEqual(
-    [...parseLocalTerms("refuse: Same Term\nsame term\n# note\n\nOther\n")],
+    modes(
+      "REFUSE: Acme\nreview : Beta\nhttp://internal.example\nsvc:8080\nblock: Foo\n",
+    ),
     [
-      ["sameterm", "refuse"],
-      ["other", "review"],
+      ["acme", "refuse"],
+      ["beta", "context"],
+      ["httpinternalexample", "context"],
+      ["svc8080", "context"],
+      ["blockfoo", "context"],
     ],
   );
+  // A comment after a section word or an entry is no part of either: the
+  // section opens and the entry is the words before the comment (WO-276,
+  // the attack on Part A). A `#` inside a word stays the entry's.
+  assert.deepEqual(
+    modes(
+      "refuse:   # entries that must never appear\nProject Lantern\t# the codename\nbuild.lantern.example # a host\ncontext: # read by a stage\nHarbor\nrefuse: C#sharp # kept whole\n",
+    ),
+    [
+      ["projectlantern", "refuse"],
+      ["buildlanternexample", "refuse"],
+      ["harbor", "context"],
+      ["csharp", "refuse"],
+    ],
+  );
+  assert.throws(
+    () => parseLocalTerms("refuse: --- # nothing but a comment\n"),
+    /line 1: no term on the line/u,
+  );
+  // Each entry carries the characters it has between its own runs, so its
+  // own spelling always matches.
   assert.deepEqual(
     [
       ...parseLocalTerms(
-        "REFUSE: Acme\nreview : Beta\nhttp://internal.example\nsvc:8080\nblock: Foo\n",
+        "http://internal.example\nsvc:8080\nops@svc.example\n",
       ),
-    ],
-    [
-      ["acme", "refuse"],
-      ["beta", "review"],
-      ["httpinternalexample", "review"],
-      ["svc8080", "review"],
-      ["blockfoo", "review"],
-    ],
+    ].map(([, { joins }]) => joins),
+    [":", ":", "@"],
   );
+});
+
+test("WO-276 (the attack on Part A): a term that follows an escaped line break, tab or code unit inside a string is found, in JSON text and in source text, on the line that holds it", (t) => {
+  const { root, terms } = fixture(t);
+  terms("refuse:\nLantern\nProject Atlas\ncafé\n");
+  const found = (text) =>
+    checkOutwardArtifact(root, { kind: "pr-body", text }).findings.map(
+      ({ rule }) => rule,
+    );
+  for (const text of [
+    JSON.stringify({ reason: "see the notes.\nLantern ships next week" }),
+    JSON.stringify({ reason: "ask\tLantern" }),
+    JSON.stringify({ reason: "Project\nAtlas" }),
+    'const note = "first line\\nLantern";',
+    '{"place":"caf\\u00e9"}',
+  ])
+    assert.deepEqual(found(text), ["vocabulary.local"], text);
+  // The escape's letter is still read with the word after it, as before:
+  // a path keeps its own spelling.
+  terms("refuse:\nnew\n");
+  assert.deepEqual(found("C:\\new\\table"), ["vocabulary.local"]);
+  // A second line's number is the line's own.
+  terms("refuse:\nLantern\n");
+  const [finding] = checkOutwardArtifact(root, {
+    kind: "pr-body",
+    text: 'one\n{"a":"b\\nLantern"}\nthree',
+  }).findings;
+  assert.equal(finding.rule, "vocabulary.local");
 });
 
 test("private observations retain distinct complete line ranges and reject unknown extents", (t) => {
@@ -987,7 +1047,7 @@ test("private observations retain distinct complete line ranges and reject unkno
         {
           text: ["amber amber", "quartz", "", "dawn"].join(ending),
           count: 1,
-          mode: "review",
+          mode: "context",
         },
       ],
     );
@@ -1009,7 +1069,7 @@ test("private observations retain distinct complete line ranges and reject unkno
       exempt.findings.map(({ count, mode }) => ({ count, mode })),
       [
         { count: 1, mode: "refuse" },
-        { count: 1, mode: "review" },
+        { count: 1, mode: "context" },
       ],
     );
   }
@@ -1019,7 +1079,7 @@ test("private observations retain distinct complete line ranges and reject unkno
         lint("pr-body", "header\nbody\ntail", {
           localTerms: {
             status: "review",
-            findings: [{ line: 2, endLine, count: 1, mode: "review" }],
+            findings: [{ line: 2, endLine, count: 1, mode: "context" }],
           },
         }),
       /invalid local-terms findings/u,
@@ -1049,6 +1109,9 @@ test("WO-227 criterion 3: a present list with no terms is present with a count o
   assert.deepEqual(checkLocalTerms(root, [{ name: "a", text: "anything" }]), {
     status: "present",
     terms: 0,
+    refuse: 0,
+    context: 0,
+    findings: [],
   });
   let result = checkOutwardArtifact(root, { kind: "pr-body", text: "DotLn" });
   assert.deepEqual(rules(result), ["vocabulary.review"]);
@@ -1113,6 +1176,9 @@ test("copied CLI runs with relocated documents and no default document tree", (t
   for (const path of [
     "outward-lint.mjs",
     "lib/outward-lint.mjs",
+    // The lint renders a body through the repository's one Markdown reader.
+    "lib/markdown-links.mjs",
+    "lib/vendor/prettier-markdown.mjs",
     "lib/config.mjs",
     "lib/feature-registry.mjs",
     "lib/features.mjs",
@@ -1127,16 +1193,20 @@ test("copied CLI runs with relocated documents and no default document tree", (t
       `scripts/${path}`,
       readFileSync(new URL(path, import.meta.url), "utf8"),
     );
-  write(
-    "packages/skeleton/src/temporary-root-records.mjs",
-    readFileSync(
-      new URL(
-        "../packages/skeleton/src/temporary-root-records.mjs",
-        import.meta.url,
+  // The copied configuration reader imports the temporary-root records and,
+  // to validate a `workers` section, the worker table's two modules.
+  for (const module of [
+    "temporary-root-records.mjs",
+    "worker-catalog.mjs",
+    "worker-models.mjs",
+  ])
+    write(
+      `packages/skeleton/src/${module}`,
+      readFileSync(
+        new URL(`../packages/skeleton/src/${module}`, import.meta.url),
+        "utf8",
       ),
-      "utf8",
-    ),
-  );
+    );
   terms("SyntheticForbidden\n");
   const result = run(
     root,

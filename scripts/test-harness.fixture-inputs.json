@@ -21,7 +21,9 @@
     "packages/skeleton/src/dispatch-journal.mjs",
     "packages/skeleton/src/test-selection.mjs",
     "packages/skeleton/src/gate-evidence.mjs",
-    "packages/skeleton/src/gate-deadlines.mjs"
+    "packages/skeleton/src/gate-deadlines.mjs",
+    "packages/skeleton/src/worker-catalog.mjs",
+    "packages/skeleton/src/worker-models.mjs"
   ],
   "directories": [
     "scripts/lib",

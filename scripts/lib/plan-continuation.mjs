@@ -7,12 +7,22 @@ import {
   parsePlanOrder,
   planCostDeclaration,
   goalEvidenceHash,
+  capabilityRows,
 } from "./plan-subject.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import { isCoreRoot } from "./harness-runtime.mjs";
 import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
 import { dependencyMigration } from "./plan-dependency-migration.mjs";
-import { dependencyHeader } from "./dependencies.mjs";
-import { parsers } from "prettier/plugins/markdown.mjs";
+import {
+  htmlComment,
+  htmlCommentText,
+  inlineSource,
+  markdownHeadings,
+  markdownNodes,
+  markdownTables,
+  parseMarkdown,
+} from "./markdown-links.mjs";
+import { readWorkOrder } from "./work-order-document.mjs";
 
 const capabilityTable = (root) =>
   docRelative(root, "planning", "capability-table.md");
@@ -24,36 +34,47 @@ const requireSamePlan = (condition, reason) => {
     );
 };
 
-// Parse headings rather than treating heading-like code as section boundaries.
-// Keep the existing metadata fragment spelling; unsupported forms refuse proof.
+// A work order's text is read through the work-order reader, which drops a
+// leading byte-order mark: its offsets plus `shift` are offsets into the text
+// as given, so every comparison and splice below stays on the source's bytes.
+// Matching one amendment reads the same few texts several times, so the last
+// readings are kept rather than parsed again.
+const orderReadings = new Map();
+const readOrder = (text) => {
+  let reading = orderReadings.get(text);
+  if (!reading) {
+    const order = readWorkOrder(text);
+    reading = { order, shift: text.length - order.source.length };
+    orderReadings.set(text, reading);
+    if (orderReadings.size > 8)
+      orderReadings.delete(orderReadings.keys().next().value);
+  }
+  return reading;
+};
+
+// Every heading of a cited document, in any container, in document order,
+// with the anchor its title takes: the parser's title text, spelled into the
+// existing metadata fragment form, numbered when a stem repeats.
 function citationHeadings(source) {
-  const headings = [];
   const seen = new Map();
-  const visit = (node) => {
-    if (node.type === "heading") {
-      const index = node.position.start.offset;
-      const line = source.slice(index).split("\n", 1)[0];
-      const match = /^#{1,6} (.+?)[ \t]*#*[ \t]*$/u.exec(line);
-      if (!match) throw new Error("unsupported citation heading");
-      const title = match[1];
+  return [...markdownNodes(parseMarkdown(source))]
+    .filter((node) => node.type === "heading")
+    .map((node) => {
+      const title = inlineSource(source, node).trim();
       const stem = title
         .toLowerCase()
         .replace(/[^\p{L}\p{N}_\s-]/gu, "")
         .replace(/\s/g, "-");
       const ordinal = seen.get(stem) ?? 0;
       seen.set(stem, ordinal + 1);
-      headings.push({
-        index,
+      return {
+        index: node.position.start.offset,
         level: node.depth,
         title,
         stem,
         anchor: `${stem}${ordinal ? `-${ordinal}` : ""}`,
-      });
-    }
-    for (const child of node.children ?? []) visit(child);
-  };
-  visit(parsers.markdown.parse(source));
-  return headings;
+      };
+    });
 }
 
 // A moved citation preserves the citing prose and cited content. Only proved
@@ -78,7 +99,10 @@ function citedSection(source, anchor) {
   });
   // This exact trailing directive formats the following heading, not this
   // section. Preserve every other comment and every content byte.
-  return next ? text.replace(/\n<!-- prettier-ignore -->\n$/u, "\n") : text;
+  const directive = `\n${htmlComment("prettier-ignore")}\n`;
+  return next && text.endsWith(directive)
+    ? `${text.slice(0, -directive.length)}\n`
+    : text;
 }
 
 function inlineLinks(
@@ -86,23 +110,22 @@ function inlineLinks(
   { proveContent = false, start = 0, end = source.length } = {},
 ) {
   const result = [];
-  const visit = (node) => {
+  const external = (href) => /^[a-z][a-z0-9+.-]*:|^\//iu.test(href);
+  for (const node of markdownNodes(parseMarkdown(source))) {
     const within =
       node.position?.start.offset >= start && node.position?.end.offset <= end;
-    const external = (href) => /^[a-z][a-z0-9+.-]*:|^\//iu.test(href);
     if (
       proveContent &&
       within &&
       (/Reference$/u.test(node.type) ||
         node.type === "footnoteDefinition" ||
         (["image", "definition"].includes(node.type) && !external(node.url)) ||
-        (node.type === "html" &&
-          !/^<!--(?:(?!-->)[\s\S])*-->$/u.test(node.value)))
+        (node.type === "html" && htmlCommentText(node.value) === null))
     )
       throw new Error("unsupported context-dependent citation content");
     if (node.type === "link" && within) {
-      const end = node.position.end.offset;
-      const raw = source.slice(node.position.start.offset, end);
+      const linkEnd = node.position.end.offset;
+      const raw = source.slice(node.position.start.offset, linkEnd);
       const supported = raw.endsWith(`](${node.url})`);
       if (
         proveContent &&
@@ -116,13 +139,11 @@ function inlineLinks(
       if (supported)
         result.push({
           href: node.url,
-          start: end - node.url.length - 1,
-          end: end - 1,
+          start: linkEnd - node.url.length - 1,
+          end: linkEnd - 1,
         });
     }
-    for (const child of node.children ?? []) visit(child);
-  };
-  visit(parsers.markdown.parse(source));
+  }
   return result;
 }
 
@@ -250,31 +271,78 @@ function relocatedLinks(
 }
 
 const releaseLabel = /\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)$/u;
+// A parenthesized version label ending a title, well formed or not.
+const anyReleaseLabel = /\(v[^()]*\)$/u;
+const activationPlaceholder = "(version assigned at activation)";
+
+/** An order's title heading exactly as written, from its marker to the end
+ * of its line, with its offsets in `text`; undefined when the work-order
+ * reader finds no title. */
+const writtenTitle = (text) => {
+  const { order, shift } = readOrder(text);
+  if (!order.title) return undefined;
+  const start = order.title.start + shift;
+  const end = order.title.end + shift;
+  return { start, end, text: text.slice(start, end) };
+};
+
 const releaseAssignment = (before, after) => {
-  const oldTitle = before.match(/^# [^\r\n]+/u)?.[0];
-  const newTitle = after.match(/^# [^\r\n]+/u)?.[0];
-  const placeholder = "(version assigned at activation)";
+  const oldTitle = writtenTitle(before)?.text;
+  const newTitle = writtenTitle(after);
   // A title filed without the placeholder (the 2026-09-25 pass, WO-158-D017)
   // admits the same single label, appended after one space. A judged label
   // admits one replacement: a collision retime is bookkeeping (WO-167-D013).
   const judgedLabel = oldTitle?.match(releaseLabel);
-  const stem = oldTitle?.endsWith(placeholder)
-    ? oldTitle.slice(0, -placeholder.length)
+  const stem = oldTitle?.endsWith(activationPlaceholder)
+    ? oldTitle.slice(0, -activationPlaceholder.length)
     : judgedLabel && oldTitle[judgedLabel.index - 1] === " "
       ? oldTitle.slice(0, judgedLabel.index)
-      : oldTitle && !/\(v[^()]*\)$/u.test(oldTitle)
+      : oldTitle && !anyReleaseLabel.test(oldTitle)
         ? `${oldTitle} `
         : undefined;
-  if (stem === undefined || !newTitle?.startsWith(stem))
+  if (stem === undefined || !newTitle?.text.startsWith(stem))
     return { source: after, version: null };
-  const version = newTitle.slice(stem.length);
+  const version = newTitle.text.slice(stem.length);
   if (!new RegExp(`^${releaseLabel.source}`, "u").test(version))
     return { source: after, version: null };
   return {
-    source: oldTitle + after.slice(newTitle.length),
+    source:
+      after.slice(0, newTitle.start) + oldTitle + after.slice(newTitle.end),
     version: version.slice(1, -1),
     from: judgedLabel ? judgedLabel[0].slice(1, -1) : null,
   };
+};
+
+const executionRecord = "Execution record";
+
+// After the approved bytes an order may gain only execution-record sections,
+// read in the whole document: only whitespace, then that section's heading
+// with content under it, no other section at the order's top two levels, and
+// no label of the order's own, which the work-order reader would take for
+// the order's metadata: a bold phrase that opens a line of a top-level
+// paragraph and declares a value by its colon or stands alone on its line.
+// What the reader takes for text is admitted: a label a record writes in a
+// list item, a quotation or a code block, and bold words that open a line
+// and run on into their sentence.
+const onlyExecutionRecords = (after, from) => {
+  const { order, shift } = readOrder(after);
+  const at = from - shift;
+  const blocks = order.tree.children.filter(
+    (node) => node.position.start.offset >= at,
+  );
+  const sections = markdownHeadings(order.source, order.tree).filter(
+    (heading) => heading.start >= at && heading.depth <= 2,
+  );
+  return (
+    sections.length > 0 &&
+    blocks[0].position.start.offset === sections[0].start &&
+    blocks.length > 1 &&
+    !order.source.slice(at, sections[0].start).trim() &&
+    sections.every(
+      (heading) => heading.depth === 2 && heading.title === executionRecord,
+    ) &&
+    !order.labels.some((label) => label.start >= at)
+  );
 };
 
 const executionAppendix = (before, after) => {
@@ -284,15 +352,8 @@ const executionAppendix = (before, after) => {
     after.startsWith(prefix),
     "existing work-order bytes changed",
   );
-  const appended = after.slice(prefix.length);
   requireSamePlan(
-    /^\n\n## Execution record\r?\n\r?\n\S/u.test(appended) &&
-      appended
-        .split(/\r?\n/u)
-        .every(
-          (line) => !/^#{1,2} /u.test(line) || line === "## Execution record",
-        ) &&
-      !/^\*\*[A-Z][^*]+\*\*/mu.test(appended),
+    onlyExecutionRecords(after, prefix.length),
     "only an appended execution-record section is an execution update",
   );
   return true;
@@ -302,51 +363,61 @@ const executionAppendix = (before, after) => {
 // was admitted. A label added to an unlabelled filed title normalizes back to
 // that title; a title filed with a label keeps its placeholder representation.
 const executionAmendmentReleaseSource = (source, filed) => {
-  const filedTitle = filed?.match(/^# [^\r\n]+/u)?.[0];
+  const filedTitle =
+    filed === undefined ? undefined : writtenTitle(filed)?.text;
   const unlabelled =
     filedTitle !== undefined &&
-    !filedTitle.endsWith("(version assigned at activation)") &&
-    !/\(v[^()]*\)$/u.test(filedTitle);
-  return source.replace(
-    /^(# [^\r\n]+?)( ?)\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)(?=\r?\n|$)/u,
-    (whole, title, space) =>
-      unlabelled
-        ? title === filedTitle && space === " "
-          ? title
-          : whole
-        : `${title}${space}(version assigned at activation)`,
-  );
+    !filedTitle.endsWith(activationPlaceholder) &&
+    !anyReleaseLabel.test(filedTitle);
+  const title = writtenTitle(source);
+  const label = title && releaseLabel.exec(title.text);
+  if (!label) return source;
+  // The title before its label, less the one space that may separate them.
+  const head = title.text.slice(0, label.index);
+  const space = head.endsWith(" ") ? " " : "";
+  const stem = head.slice(0, head.length - space.length);
+  const written = unlabelled
+    ? stem === filedTitle && space === " "
+      ? stem
+      : title.text
+    : `${stem}${space}${activationPlaceholder}`;
+  return source.slice(0, title.start) + written + source.slice(title.end);
 };
 
-// Grouping is independent of the release-title representation. Remove only
-// one exact leading field absent from the filed source, preserving other bytes.
+// Grouping is independent of the release-title representation. When the
+// filed order declared no Workstream, remove the one leading Workstream field
+// the current order adds, if it is exactly `WS-NNN` on a line of its own: the
+// whole line with its line ending, every other byte as written.
 const withoutAddedWorkstream = (source, filed) => {
-  if (filed !== undefined) {
-    const fields = (text) => {
-      const { first, end } = dependencyHeader(text);
-      // Retain line endings and every other byte of the binding.
-      const lines = text.split(/(?<=\n)/u);
-      const indices = lines.flatMap((line, index) =>
-        index > first && index < end && /^\*\*Workstream:\*\*/u.test(line)
-          ? [index]
-          : [],
-      );
-      return { lines, indices };
-    };
-    const before = fields(filed),
-      after = fields(source);
-    if (
-      before.indices.length === 0 &&
-      after.indices.length === 1 &&
-      /^\*\*Workstream:\*\* WS-\d{3}(?:\r?\n|$)$/u.test(
-        after.lines[after.indices[0]],
-      )
-    ) {
-      after.lines.splice(after.indices[0], 1);
-      return after.lines.join("");
-    }
-  }
-  return source;
+  if (
+    filed === undefined ||
+    readOrder(filed).order.headerFields("Workstream").length
+  )
+    return source;
+  const { order, shift } = readOrder(source);
+  const added = order.headerFields("Workstream");
+  if (added.length !== 1) return source;
+  const [field] = added;
+  const start = field.start + shift;
+  const newline = source.indexOf("\n", start);
+  const end = newline < 0 ? source.length : newline + 1;
+  return field.raw === "Workstream:" &&
+    /^WS-\d{3}$/u.test(field.value) &&
+    source[start - 1] === "\n" &&
+    /^ WS-\d{3}(?:\r?\n)?$/u.test(source.slice(field.valueStart + shift, end))
+    ? source.slice(0, start) + source.slice(end)
+    : source;
+};
+
+/** The order's Release classification header field as the work-order reader
+ * reads it: `value` is its bytes after the label as written, from offset
+ * `at` in `text`; undefined when the header declares none. */
+const releaseClassification = (text) => {
+  const { order, shift } = readOrder(text);
+  const [field] = order.headerFields("Release classification");
+  if (!field) return undefined;
+  const at = field.valueStart + shift;
+  return { at, value: text.slice(at, field.end + shift) };
 };
 
 /** Bind the entire approved order, including existing execution records;
@@ -400,44 +471,52 @@ export function matchesExecutionAmendment(before, after, row) {
   return executionAmendmentMatch(before, after, row) !== null;
 }
 
+const datedSection =
+  /^(WO-\d{3}) dated (?:addition|reassessment) \((\d{4}-\d{2}-\d{2})\)$/u;
+
 export const reassessments = (before, after, subject) => {
   const prefix = before.trimEnd();
   requireSamePlan(
     after.startsWith(prefix),
     "existing capability source changed",
   );
-  const appended = after.slice(prefix.length);
-  const headings = [
-    ...appended.matchAll(
-      /^## (WO-\d{3}) dated (?:addition|reassessment) \((\d{4}-\d{2}-\d{2})\)\r?$/gm,
-    ),
-  ];
+  // The appended bytes, read in the whole table document: every section at
+  // its top two levels must be a dated section, the first after only
+  // whitespace.
+  const tree = parseMarkdown(after);
+  const sections = markdownHeadings(after, tree).filter(
+    (heading) => heading.start >= prefix.length && heading.depth <= 2,
+  );
+  const dated = sections.map((heading) =>
+    heading.depth === 2 ? datedSection.exec(heading.title) : null,
+  );
   requireSamePlan(
-    headings.length > 0 &&
-      !appended.slice(0, headings[0].index).trim() &&
-      headings.length === (appended.match(/^#{1,2} /gm) ?? []).length,
+    sections.length > 0 &&
+      dated.every(Boolean) &&
+      !after.slice(prefix.length, sections[0].start).trim(),
     "capability additions must be appended dated reassessment sections",
   );
+  const tables = markdownTables(after, tree);
   const knownIds = new Set(subject.standard.capabilities.map(({ id }) => id));
-  return headings.map((heading, i) => {
-    const [, workOrderId, date] = heading;
+  return sections.map((heading, i) => {
+    const [, workOrderId, date] = dated[i];
     requireSamePlan(
       subject.orders.some((order) => order.workOrderId === workOrderId) &&
         Number.isFinite(Date.parse(`${date}T00:00:00.000Z`)) &&
         new Date(`${date}T00:00:00.000Z`).toISOString().slice(0, 10) === date,
       "capability reassessment needs a reviewed order and a valid date",
     );
-    const body = appended.slice(heading.index, headings[i + 1]?.index);
-    const ids = body.split(/\r?\n/u).flatMap((line) => {
-      if (!line.startsWith("|")) return [];
-      const cells = line.split("|").slice(1, -1);
-      const id = cells[0]?.match(/`([a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+)`/u)?.[1];
-      if (!id) return [];
+    const end = sections[i + 1]?.start ?? after.length;
+    const ids = capabilityRows(
+      tables.filter(
+        (table) => table.start >= heading.start && table.start < end,
+      ),
+    ).map((row) => {
       requireSamePlan(
-        Boolean(cells[1]?.trim()),
-        `missing capability observation ${id}`,
+        Boolean(row.cells[1]),
+        `missing capability observation ${row.id}`,
       );
-      return [id];
+      return row.id;
     });
     requireSamePlan(ids.length > 0, "empty capability reassessment");
     return {
@@ -451,6 +530,13 @@ export const reassessments = (before, after, subject) => {
   });
 };
 
+/** The capability id of each row of a capability table, by the row's
+ * one-based line. */
+const capabilityRowIds = (source) =>
+  new Map(
+    capabilityRows(markdownTables(source)).map((row) => [row.line, row.id]),
+  );
+
 /** Repair an inherited in-place row edit without losing either assessment.
  * Before commit, the workspace must restore all judged bytes and move every
  * changed HEAD row, byte-for-byte, into an admitted dated appendix.
@@ -460,8 +546,8 @@ export function capabilityHistoryRepair(before, committed, repaired, subject) {
   const oldLines = before.trimEnd().split(/\r?\n/u);
   const headLines = committed.trimEnd().split(/\r?\n/u);
   const appended = repaired.slice(before.trimEnd().length).split(/\r?\n/u);
-  const rowId = (line) =>
-    line.match(/^\|\s*`([a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+)`[^|]*\|/u)?.[1];
+  const oldIds = capabilityRowIds(before);
+  const headIds = capabilityRowIds(committed);
   requireSamePlan(
     oldLines.length === headLines.length,
     "capability history repair cannot hide added or removed committed lines",
@@ -469,10 +555,10 @@ export function capabilityHistoryRepair(before, committed, repaired, subject) {
   const ids = [];
   for (let i = 0; i < oldLines.length; i++) {
     if (oldLines[i] === headLines[i]) continue;
-    const id = rowId(oldLines[i]);
+    const id = oldIds.get(i + 1);
     const preserved = appended.indexOf(headLines[i]);
     requireSamePlan(
-      id && id === rowId(headLines[i]) && preserved >= 0,
+      id && id === headIds.get(i + 1) && preserved >= 0,
       "capability history repair must preserve every changed committed row in a dated appendix",
     );
     appended.splice(preserved, 1);
@@ -522,6 +608,7 @@ export function checkPlanContinuation(
   // continue an old receipt. New cost claims, criteria or sequence edits still
   // need refutation.
   const adoptsCost =
+    isCoreRoot(root) &&
     !judged.costTable &&
     Boolean(current.costTable) &&
     judged.orders.some(
@@ -725,9 +812,12 @@ export function checkPlanContinuation(
       !before.includes(LEGACY_COST_HEADER) &&
       after.includes(LEGACY_COST_HEADER)
     ) {
-      const end = after.indexOf("\n") + 1;
+      // The header follows the title's line and one blank line.
+      const title = writtenTitle(after);
+      const end = title ? after.indexOf("\n", title.end) + 1 : 0;
       requireSamePlan(
-        after.slice(end).startsWith("\n" + LEGACY_COST_HEADER),
+        title !== undefined &&
+          after.slice(end).startsWith("\n" + LEGACY_COST_HEADER),
         "legacy cost header must follow the title",
       );
       after =
@@ -793,9 +883,16 @@ export function checkPlanContinuation(
           ),
           `changed criterion has no text-bound disposition or authorized execution amendment: ${workOrderId} ${oldCriterion.id} (${path})`,
         );
-        const start = after.indexOf("**Acceptance criteria");
-        const target = after.indexOf(newCriterion.text, start);
-        requireSamePlan(target >= start, "disposed criterion text not found");
+        // The disposed text is replaced where the order's acceptance criteria
+        // field holds it, never in the prose before that field.
+        const { order: current, shift } = readOrder(after);
+        const criteria = current.labels.find((field) =>
+          field.label.startsWith("Acceptance criteria"),
+        );
+        const target = criteria
+          ? after.indexOf(newCriterion.text, criteria.start + shift)
+          : -1;
+        requireSamePlan(target >= 0, "disposed criterion text not found");
         after =
           after.slice(0, target) +
           oldCriterion.text +
@@ -812,12 +909,13 @@ export function checkPlanContinuation(
     // "patch, evidence-only." spelling. Admit only this exact presentation
     // correction, including A/An and colon/sentence presentation; the axis,
     // article identity and every following description byte stay judged.
-    const legacyClassification = before.match(
-      /^\*\*Release classification:\*\* (patch|minor|major), evidence-only\. (An?) /m,
+    const legacyClassification = releaseClassification(before)?.value.match(
+      /^ (patch|minor|major), evidence-only\. (An?) /u,
     );
     if (legacyClassification) {
-      const canonical = after.match(
-        /^\*\*Release classification:\*\* (patch|minor|major)\. Evidence-only(?:: (an?) |\. (An?) )/m,
+      const declared = releaseClassification(after);
+      const canonical = declared?.value.match(
+        /^ (patch|minor|major)\. Evidence-only(?:: (an?) |\. (An?) )/u,
       );
       if (
         canonical?.[1] === legacyClassification[1] &&
@@ -825,9 +923,9 @@ export function checkPlanContinuation(
           legacyClassification[2].toLowerCase()
       ) {
         after =
-          after.slice(0, canonical.index) +
+          after.slice(0, declared.at) +
           legacyClassification[0] +
-          after.slice(canonical.index + canonical[0].length);
+          after.slice(declared.at + canonical[0].length);
         updates.push({
           path,
           workOrderId,

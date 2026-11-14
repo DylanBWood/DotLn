@@ -3,11 +3,11 @@ import { ProjectionContext } from "./context.js";
 import { fact, id, known, optionalString } from "./values.js";
 import {
   PUBLICATION_HEADER,
-  markdownLinks,
+  cellText,
+  documentStructure,
   parseCapabilities,
   parsePendingRungs,
   parseRefutation,
-  plainText,
   tableRows,
 } from "./text-sources.js";
 
@@ -20,17 +20,17 @@ export function projectBlueprint(
     "Capability evidence",
     sources.capabilities,
     "docs/planning/capability-table.md",
-    (text, ref) =>
-      parseCapabilities(text).map((row) => {
+    (document, ref) =>
+      parseCapabilities(document).map((row) => {
         const evidence = ctx.ref(ref, `line:${row.line}`);
         return {
-          id: id("capability", `${row.line}:${row.key}`),
-          title: plainText(row.key),
+          id: id("capability", `${row.line}:${row.key.source}`),
+          title: cellText(row.key),
           cells: Object.entries(row.values).map(([key, value]) =>
-            known(key, key, plainText(value), evidence),
+            known(key, key, cellText(value), evidence),
           ),
           links: Object.values(row.values)
-            .flatMap(markdownLinks)
+            .flatMap((value) => value.links)
             .map((link) => ({
               label: `Capability evidence: ${link}`,
               target: ctx.ref(ref, `link:${link}`)[0]!,
@@ -43,9 +43,10 @@ export function projectBlueprint(
     "Publication status",
     sources.publication,
     "docs/publication/audience-status-index.md",
-    (text, ref) =>
-      tableRows(text, PUBLICATION_HEADER).map((row) => {
+    (document, ref) =>
+      tableRows(documentStructure(document), PUBLICATION_HEADER).map((row) => {
         const evidence = ctx.ref(ref, `line:${row.line}`);
+        const status = cellText(row.values["Status"]!);
         if (
           ![
             "vision",
@@ -55,28 +56,25 @@ export function projectBlueprint(
             "verified",
             "blocked",
             "deprecated",
-          ].includes(row.values["Status"]!)
+          ].includes(status)
         )
           throw new Error("unrecognized publication status");
         return {
-          id: id("publication", `${row.line}:${row.key}`),
-          title: plainText(row.key),
+          id: id("publication", `${row.line}:${row.key.source}`),
+          title: cellText(row.key),
           cells: [
-            known("audiences", "Audiences", row.values["Audiences"]!, evidence),
             known(
-              "status",
-              "Published status label",
-              row.values["Status"]!,
+              "audiences",
+              "Audiences",
+              cellText(row.values["Audiences"]!),
               evidence,
             ),
+            known("status", "Published status label", status, evidence),
           ],
           links: [
             {
               label: "Source section",
-              target: ctx.ref(
-                ref,
-                `link:${markdownLinks(row.key)[0] ?? "unknown"}`,
-              )[0]!,
+              target: ctx.ref(ref, `link:${row.key.links[0] ?? "unknown"}`)[0]!,
             },
           ],
         };
@@ -87,8 +85,8 @@ export function projectBlueprint(
     "Pending roadmap rungs",
     sources.roadmap,
     "docs/product/06-roadmap.md",
-    (text, ref) =>
-      parsePendingRungs(text).map((row) => {
+    (document, ref) =>
+      parsePendingRungs(document).map((row) => {
         const evidence = ctx.ref(ref, `line:${row.line}`);
         return {
           id: id("rung", row.key),

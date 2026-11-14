@@ -169,6 +169,22 @@ test("feedback audit invalidates every declared runtime and fixture source byte"
   }
 });
 
+test("WO-275 the comment reader the boundary delegates to is in the audit subject, so changing it alone changes the subject", () => {
+  // feedback-source-comments.ts reads comments through the shared source
+  // reader; a change there changes the comments the boundary judges.
+  const path = "packages/skeleton/src/source-reading.mjs";
+  assert.ok(FEEDBACK_SOURCE_PATHS.includes(path));
+  const f = fixture();
+  try {
+    const before = readFeedbackSource(f.root).subject;
+    const full = join(f.root, path);
+    writeFileSync(full, readFileSync(full, "utf8") + "// changed reader\n");
+    assert.notEqual(readFeedbackSource(f.root).subject, before);
+  } finally {
+    f.dispose();
+  }
+});
+
 test("feedback audit keeps execution, dependency, publication, and unknown metadata in the subject", () => {
   const f = fixture();
   try {

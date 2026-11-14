@@ -5,7 +5,7 @@ import { loadConfig } from "./config.mjs";
 // no exemption; the publishing user's mutable Git identity never decides it.
 
 export const contributionSignoffRules = (root) => {
-  const operatorAuthor = loadConfig(root).contributions?.operatorAuthor;
+  const { operatorAuthor, authors = [] } = loadConfig(root).contributions ?? {};
   const base = runGit(root, [
     "rev-parse",
     "--verify",
@@ -21,7 +21,10 @@ export const contributionSignoffRules = (root) => {
       { trim: false },
     ).split("\0");
     const author = `${name} <${email}>`;
-    const exempt = author === operatorAuthor;
+    // The operator's identity and each identity the instance lists are its
+    // own: a commit by one of them needs no trailer.
+    const listed = authors.includes(author);
+    const exempt = author === operatorAuthor || listed;
     const trailers = runGit(root, ["interpret-trailers", "--parse"], {
       input: message,
     });
@@ -38,13 +41,14 @@ export const contributionSignoffRules = (root) => {
             ) === `${name} <${email.toLowerCase()}>`,
       );
     const pass = exempt || signed;
-    const remedy = operatorAuthor
-      ? "the declared contributions.operatorAuthor already exempts its single identity; other authors need the matching trailer"
-      : "or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change";
+    const remedy =
+      operatorAuthor || authors.length
+        ? "the declared contributions.operatorAuthor and contributions.authors already exempt their identities; other authors need the matching trailer"
+        : "or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change";
     // Commit IDs identify findings without repeating contributors' identities.
     return {
       pass,
-      line: `${pass ? "PASS" : "FAIL"} contribution-signoff ${commit.slice(0, 12)}: observed ${exempt ? "operator author" : signed ? "matching author sign-off" : "outside author without matching sign-off"}; expected ${exempt ? "operator exemption (no sign-off required)" : `Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO; ${remedy}`}`,
+      line: `${pass ? "PASS" : "FAIL"} contribution-signoff ${commit.slice(0, 12)}: observed ${listed && author !== operatorAuthor ? "listed author" : exempt ? "operator author" : signed ? "matching author sign-off" : "outside author without matching sign-off"}; expected ${listed && author !== operatorAuthor ? "listed author exemption (no sign-off required)" : exempt ? "operator exemption (no sign-off required)" : `Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO; ${remedy}`}`,
     };
   });
 };

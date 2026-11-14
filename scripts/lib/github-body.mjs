@@ -7,7 +7,14 @@ import { docPath } from "./config.mjs";
 import { tmpdir } from "node:os";
 import { join, posix } from "node:path";
 import { createHash } from "node:crypto";
-import { createRequire } from "node:module";
+import {
+  htmlComment,
+  htmlCommentText,
+  markdownListItems,
+  markdownMarkerBlocks,
+  markdownNodes,
+  parseMarkdown,
+} from "./markdown-links.mjs";
 
 export const withTemporaryBody = (body, operation, filename = "PR.md") => {
   const directory = createScratchRoot(join(tmpdir(), "dotln-body-"));
@@ -22,104 +29,6 @@ export const withTemporaryBody = (body, operation, filename = "PR.md") => {
       // Cleanup must not mask whether the remote operation ran.
     }
   }
-};
-
-const quoteContent = (line) => {
-  let content = line;
-  let depth = 0;
-  while (true) {
-    const marker = /^ {0,3}>[ \t]?/.exec(content);
-    if (!marker) return { content, depth };
-    content = content.slice(marker[0].length);
-    depth += 1;
-  }
-};
-
-const fenceMarker = (line, allowListIndent = false) => {
-  const match = (
-    allowListIndent ? /^ *(`{3,}|~{3,})(.*)$/ : /^ {0,3}(`{3,}|~{3,})(.*)$/
-  ).exec(line);
-  if (!match || (match[1][0] === "`" && match[2].includes("`")))
-    return undefined;
-  return {
-    allowListIndent,
-    character: match[1][0],
-    length: match[1].length,
-  };
-};
-
-const closesFence = (line, fence) =>
-  new RegExp(
-    `^ ${fence.allowListIndent ? "*" : "{0,3}"}${fence.character}{${fence.length},}[ \\t]*$`,
-  ).test(line);
-
-const isStructuralLine = (line) =>
-  /^ {0,3}#{1,6}(?:[ \t]+|$)/.test(line) ||
-  /^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$/.test(line) ||
-  /^ {0,3}(?:=+|-+)[ \t]*$/.test(line) ||
-  /^ {0,3}\[[^\]]+\]:/.test(line) ||
-  /^ {0,3}\[\^[^\]]+\]:/.test(line) ||
-  /^ {0,3}<\/?[A-Za-z][A-Za-z0-9-]*(?:[ \t][^>]*)?\/?>[ \t]*$/.test(line);
-
-const listItem = (line) =>
-  /^ {0,}(?:(?:[-+*])|(?:\d{1,9}[.)]))[ \t]+(.*)$/.exec(line);
-
-const explicitHardBreak = (line) => {
-  if (/ {2,}$/.test(line)) return true;
-  const backslashes = /\\+$/.exec(line)?.[0].length ?? 0;
-  return backslashes % 2 === 1;
-};
-
-const tableCells = (line) => {
-  const trimmed = line.trim();
-  const cells = [];
-  let cell = "";
-  let separators = 0;
-  for (let index = 0; index < trimmed.length; index += 1) {
-    const character = trimmed[index];
-    let backslashes = 0;
-    for (let at = index - 1; at >= 0 && trimmed[at] === "\\"; at -= 1)
-      backslashes += 1;
-    if (character === "|" && backslashes % 2 === 0) {
-      cells.push(cell.trim());
-      cell = "";
-      separators += 1;
-    } else {
-      cell += character;
-    }
-  }
-  if (separators === 0) return undefined;
-  cells.push(cell.trim());
-  if (cells[0] === "") cells.shift();
-  if (cells.at(-1) === "") cells.pop();
-  return cells.length >= 2 ? cells : undefined;
-};
-
-const tableLines = (lines) => {
-  const indexes = new Set();
-  for (let index = 1; index < lines.length; index += 1) {
-    const delimiter = tableCells(lines[index].content);
-    const header = tableCells(lines[index - 1].content);
-    if (
-      !delimiter ||
-      !header ||
-      delimiter.length !== header.length ||
-      lines[index].depth !== lines[index - 1].depth ||
-      delimiter.some((cell) => !/^:?-{3,}:?$/.test(cell))
-    )
-      continue;
-    indexes.add(index - 1);
-    indexes.add(index);
-    for (let row = index + 1; row < lines.length; row += 1) {
-      if (
-        lines[row].depth !== lines[index].depth ||
-        !tableCells(lines[row].content)
-      )
-        break;
-      indexes.add(row);
-    }
-  }
-  return indexes;
 };
 
 // Links in a stored body are file-relative, the form the document gate
@@ -235,24 +144,15 @@ function* inlineLinks(masked, line, rendered) {
     };
   }
 }
-/** The installed Markdown parser is the oracle for what renders as a link and
- * for what is code or raw HTML rather than prose: nested brackets in a label,
- * balanced parentheses in a destination, a label or destination split across
- * lines, images and definitions all count as links, while code spans, code
- * blocks and raw HTML hide theirs. It is loaded on first use because most
- * callers of this module never check or rewrite links. */
-let markdownParser;
-const parsedNodes = (markdown, types) => {
-  markdownParser ??= createRequire(import.meta.url)("prettier/plugins/markdown")
-    .parsers.markdown;
-  const found = [];
-  const visit = (node) => {
-    if (types.includes(node.type)) found.push(node);
-    for (const child of node.children ?? []) visit(child);
-  };
-  visit(markdownParser.parse(markdown));
-  return found;
-};
+/** The repository's Markdown parser is the oracle for what renders as a link
+ * and for what is code or raw HTML rather than prose: nested brackets in a
+ * label, balanced parentheses in a destination, a label or destination split
+ * across lines, images and definitions all count as links, while code spans,
+ * code blocks and raw HTML hide theirs. */
+const parsedNodes = (markdown, types) =>
+  [...markdownNodes(parseMarkdown(markdown))].filter((node) =>
+    types.includes(node.type),
+  );
 const renderedLinks = (markdown) =>
   parsedNodes(markdown, ["link", "image", "definition"]).map((node) => ({
     line: node.position.start.line,
@@ -486,91 +386,31 @@ export const absoluteBodyLinks = (
   written?.push(...output.spans);
   return output.text;
 };
+/** Every accidental soft wrap in a body, as the line it wraps onto and the
+ * line before it. Each prose paragraph or list-item paragraph stays on one
+ * physical line, since GitHub renders a line ending inside prose as a visible
+ * break. The parser decides what is prose: a paragraph wherever it stands (a
+ * list item, a quotation with its lazy lines, a footnote) and a setext
+ * heading's text. Each line it runs onto is a soft wrap unless a hard break
+ * (two trailing spaces or one backslash) ends the line before; a code span,
+ * a link or raw HTML inside the paragraph does not change that. Code blocks,
+ * HTML blocks, tables and the other structures are not prose. */
 export const githubBodyProfileFailures = (markdown, { links = false } = {}) => {
   const failures = [];
-  const { lines } = sourceLines(markdown);
-  const quotedLines = lines.map((line) => quoteContent(line.text));
-  const tableLineIndexes = tableLines(quotedLines);
-  let fence;
-  let previousProse;
-
-  lines.forEach((_, index) => {
-    const lineNumber = index + 1;
-    const quoted = quotedLines[index];
-
-    if (fence) {
-      if (
-        quoted.depth === fence.quoteDepth &&
-        closesFence(quoted.content, fence)
-      )
-        fence = undefined;
-      previousProse = undefined;
-      return;
-    }
-
-    const openingFence = fenceMarker(
-      quoted.content,
-      previousProse?.listItem === true,
+  for (const node of markdownNodes(parseMarkdown(markdown))) {
+    if (node.type !== "paragraph" && node.type !== "heading") continue;
+    const { start, end } = node.position;
+    // A setext heading's last line is its underline.
+    const last = node.type === "heading" ? end.line - 1 : end.line;
+    const broken = new Set(
+      [...markdownNodes(node)]
+        .filter((child) => child.type === "break")
+        .map((child) => child.position.start.line),
     );
-    if (openingFence) {
-      fence = { ...openingFence, quoteDepth: quoted.depth };
-      previousProse = undefined;
-      return;
-    }
-
-    if (/^[ \t]*$/.test(quoted.content)) {
-      previousProse = undefined;
-      return;
-    }
-
-    if (tableLineIndexes.has(index)) {
-      previousProse = undefined;
-      return;
-    }
-
-    if (/^(?: {4}|\t)/.test(quoted.content) && !previousProse) {
-      previousProse = undefined;
-      return;
-    }
-
-    const item = listItem(quoted.content);
-    if (item) {
-      previousProse = item[1].trim()
-        ? {
-            hardBreak: explicitHardBreak(quoted.content),
-            line: lineNumber,
-            listItem: true,
-            quoteDepth: quoted.depth,
-          }
-        : undefined;
-      return;
-    }
-
-    if (isStructuralLine(quoted.content)) {
-      previousProse = undefined;
-      return;
-    }
-
-    if (
-      previousProse &&
-      (previousProse.quoteDepth === quoted.depth ||
-        (previousProse.quoteDepth > 0 && quoted.depth === 0)) &&
-      !previousProse.hardBreak
-    ) {
-      failures.push({
-        line: lineNumber,
-        previousLine: previousProse.line,
-      });
-    }
-
-    previousProse = {
-      hardBreak: explicitHardBreak(quoted.content),
-      line: lineNumber,
-      listItem: false,
-      quoteDepth: quoted.depth,
-    };
-  });
-
+    for (let line = start.line; line < last; line++)
+      if (!broken.has(line))
+        failures.push({ line: line + 1, previousLine: line });
+  }
   if (links) failures.push(...relativeLinkFailures(markdown));
   return failures;
 };
@@ -1374,22 +1214,34 @@ export const METER_MARKERS = Object.freeze({
   begin: "<!-- dotln-process-meter:start -->",
   end: "<!-- dotln-process-meter:end -->",
 });
-const METER_BLOCK = new RegExp(
-  `${METER_MARKERS.begin}[\\s\\S]*?${METER_MARKERS.end}`,
-  "u",
-);
-const GATE_BLOCK =
-  /<!-- dotln-product-gate:start -->[\s\S]*?<!-- dotln-product-gate:end -->/u;
+// A marker block of a body as the Markdown reader finds it: where it stands
+// and its text, both marker lines included; null where the body has none.
+const markerBlock = (source, { begin, end }) => {
+  const [block] = markdownMarkerBlocks(
+    source,
+    htmlCommentText(begin),
+    htmlCommentText(end),
+  );
+  return block
+    ? { index: block.start, text: source.slice(block.start, block.end) }
+    : null;
+};
+const withoutBlock = (source, markers) => {
+  const found = markerBlock(source, markers);
+  return found
+    ? `${source.slice(0, found.index)}${source.slice(found.index + found.text.length)}`
+    : source;
+};
+const GATE_MARKERS = Object.freeze({
+  begin: htmlComment("dotln-product-gate:start"),
+  end: htmlComment("dotln-product-gate:end"),
+});
 /** The marker lines around the order's waived and defective criteria, which
  * release prepare writes above the meter table (WO-249). */
 export const CRITERION_RECORD_MARKERS = Object.freeze({
   begin: "<!-- dotln-criterion-records:start -->",
   end: "<!-- dotln-criterion-records:end -->",
 });
-const RECORD_BLOCK = new RegExp(
-  `${CRITERION_RECORD_MARKERS.begin}[\\s\\S]*?${CRITERION_RECORD_MARKERS.end}`,
-  "u",
-);
 /** One line per defective or waived criterion of the order, in record order,
  * naming the criterion, the class or the waiver and the ordinal. The operator
  * merges every pull request by hand, so these lines are the operator's
@@ -1418,9 +1270,12 @@ export const criterionRecordLines = ({
  * record gives, or null. Publication refuses a body whose lines are missing,
  * stale or no longer held, so the operator never merges on an old reading. */
 export const criterionRecordProblem = (body, records) => {
-  const found = RECORD_BLOCK.exec(body);
+  const found = markerBlock(body, CRITERION_RECORD_MARKERS);
+  // Each list item of the block, as written.
   const lines = found
-    ? found[0].split(/\r?\n/u).filter((line) => line.startsWith("- "))
+    ? markdownListItems(found.text).map((item) =>
+        found.text.slice(item.start, item.end),
+      )
     : [];
   if (lines.join("\n") === records.join("\n")) return null;
   return records.length
@@ -1461,12 +1316,12 @@ export const criterionRecordRefusal = (root, body, state) => {
 };
 // The source with one block lifted from wherever it stood, the blank lines
 // around its old place collapsed to one.
-const liftBlock = (source, pattern) => {
-  const found = pattern.exec(source);
+const liftBlock = (source, markers) => {
+  const found = markerBlock(source, markers);
   if (!found) return source;
   const before = source.slice(0, found.index).replace(/\n*$/u, "");
   const after = source
-    .slice(found.index + found[0].length)
+    .slice(found.index + found.text.length)
     .replace(/^\n*/u, "");
   return before && after ? `${before}\n\n${after}` : before || after;
 };
@@ -1478,7 +1333,10 @@ const liftBlock = (source, pattern) => {
  * caller passes the order's records every time. No other byte changes. */
 export const withMeterBlockLast = (source, table, records = []) => {
   const block = `${METER_MARKERS.begin}\n${table}\n${METER_MARKERS.end}`;
-  const rest = liftBlock(liftBlock(source, METER_BLOCK), RECORD_BLOCK);
+  const rest = liftBlock(
+    liftBlock(source, METER_MARKERS),
+    CRITERION_RECORD_MARKERS,
+  );
   // Blank lines keep the list its own block: a marker line right after an
   // item would read as that item's soft-wrapped continuation.
   const recordBlock = records.length
@@ -1512,36 +1370,43 @@ export const pullRequestBodyShapeFailures = (
   { published = false } = {},
 ) => {
   const failures = [];
-  const lines = markdown.split(/\r\n|\n|\r/u);
-  const firstIndex = lines.findIndex((line) => line.trim() !== "");
-  if (!/^# \S/u.test(lines[firstIndex] ?? ""))
+  // The first block is a level-one ATX heading with a title, opening its
+  // line; a setext heading spans its underline too.
+  const [first] = parseMarkdown(markdown).children;
+  if (!(
+    first?.type === "heading" &&
+    first.depth === 1 &&
+    first.children.length &&
+    first.position.start.column === 1 &&
+    first.position.start.line === first.position.end.line
+  ))
     failures.push({
       kind: "shape",
       rule: "heading-first",
-      line: Math.max(firstIndex, 0) + 1,
+      line: first?.position.start.line ?? 1,
     });
-  const meter = METER_BLOCK.exec(markdown);
+  const meter = markerBlock(markdown, METER_MARKERS);
   if (!meter) return failures;
   const before = markdown.slice(0, meter.index);
   const beforeLines = before.split(/\r\n|\n|\r/u);
   // The criterion-record lines are release prepare's, never the reviewer's
   // prose, so they do not stand in for it.
-  const prose = parsedNodes(before.replace(RECORD_BLOCK, ""), ["root"]).some(
-    hasProseParagraph,
-  );
+  const prose = parsedNodes(withoutBlock(before, CRITERION_RECORD_MARKERS), [
+    "root",
+  ]).some(hasProseParagraph);
   if (!prose)
     failures.push({
       kind: "shape",
       rule: "prose-before-meter",
       line: beforeLines.length,
     });
-  let after = markdown.slice(meter.index + meter[0].length);
-  if (published) after = after.replace(GATE_BLOCK, "");
+  let after = markdown.slice(meter.index + meter.text.length);
+  if (published) after = withoutBlock(after, GATE_MARKERS);
   if (after.trim() !== "")
     failures.push({
       kind: "shape",
       rule: "meter-last",
-      line: beforeLines.length + meter[0].split(/\r\n|\n|\r/u).length,
+      line: beforeLines.length + meter.text.split(/\r\n|\n|\r/u).length,
     });
   return failures;
 };

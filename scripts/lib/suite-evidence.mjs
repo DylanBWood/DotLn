@@ -10,6 +10,18 @@ export function withoutDrivenContext(env) {
   return clean;
 }
 
+/** A bounded probe keeps its session's environment, but neither a driven
+ * worker's context nor the session's resident store: a probe is where a
+ * suite's cases run one at a time, and the hooks those cases run against
+ * their fixtures carry the presence heartbeat, which records wherever that
+ * binding points. The episode's identity stays, so a resident's actor is
+ * still known as one. */
+export function probeEnvironment(env) {
+  const clean = withoutDrivenContext(env);
+  delete clean.DOTLN_RESIDENT_STORE;
+  return clean;
+}
+
 export function suiteEnvironment(env = process.env, gateContext) {
   // Offline fixture execution omits proxy credentials and unrelated session
   // metadata. Scheduler context names only the current load and diagnostics.
@@ -56,6 +68,12 @@ export function suiteEnvironment(env = process.env, gateContext) {
   // Fixture commands select their own launchpad. An invoking target session's
   // override must not redirect them into that session's live checkout.
   delete child.DOTLN_LAUNCHPAD;
+  // The hooks a suite runs against its fixtures carry the presence heartbeat,
+  // which records wherever this binding points. The invoking session's
+  // resident must not receive a fixture session's heartbeats; a case of the
+  // heartbeat names a store of its own.
+  delete child.DOTLN_RESIDENT_STORE;
+  delete child.DOTLN_RESIDENT_EPISODE_ID;
   // Nested npm scripts prepend the same tool directories again. Keep the first
   // occurrence of each exact entry: below the lead, executable precedence,
   // relative entries, the current-directory entry and paths that may be created

@@ -16,6 +16,7 @@ import {
   commentFiles,
   writeCommentBaseline,
 } from "./lib/comment-labels.mjs";
+import { sourceTreeStarts } from "../packages/skeleton/src/source-reading.mjs";
 import { protocolLineage } from "../corpus/harness/profile.mjs";
 import { suites } from "./test-runner.mjs";
 
@@ -166,11 +167,176 @@ test("shell comments count, including JavaScript comments inside heredocs; gener
   f.write("generated/x.mjs", "// VER-001 F1\n");
   f.write("docs/evidence/WO-1/probe.mjs", "// F1: a record\n");
   f.write("node_modules/dep/index.js", "// VER-001 F1\n");
+  // The reserved root's code is the instance's own.
+  f.write("extensions/tools/report.mjs", "// VER-001 F1\n");
   f.write("scripts/kept.mjs", "// WO-001: lead\n");
   assert.deepEqual(commentFiles(f.root), [
     "scripts/kept.mjs",
     "scripts/run.sh",
   ]);
+});
+
+test("every code extension the selector admits is read, JSX and TSX included; JSX text is not a comment and a comment inside JSX is", (t) => {
+  const f = fixture(t);
+  const extensions = [
+    ".js",
+    ".cjs",
+    ".mjs",
+    ".ts",
+    ".cts",
+    ".mts",
+    ".jsx",
+    ".tsx",
+  ];
+  const files = extensions.map((extension) => `src/view${extension}`).sort();
+  for (const file of files)
+    f.write(file, "// WO-999: renders a view\nexport const value = 1;\n");
+  assert.deepEqual(commentFiles(f.root), files);
+  const result = f.check(files);
+  assert.deepEqual(
+    result.findings.map((row) => [row.file, row.line, row.kind]),
+    files.map((file) => [file, 1, "order-lead"]),
+  );
+  for (const file of ["src/page.jsx", "src/page.tsx"])
+    f.write(
+      file,
+      [
+        "export const Page = () => (",
+        "  <p>",
+        "    // WO-998: text the page shows, not a comment",
+        "    {/* WO-997: a comment inside the markup */}",
+        "  </p>",
+        ");",
+      ].join("\n") + "\n",
+    );
+  assert.deepEqual(
+    f
+      .check(["src/page.jsx", "src/page.tsx"])
+      .findings.map((row) => [row.file, row.line, row.kind]),
+    [
+      ["src/page.jsx", 4, "order-lead"],
+      ["src/page.tsx", 4, "order-lead"],
+    ],
+  );
+  // A path the source reader parses in no dialect is refused, never skipped.
+  f.write("src/notes.vue", "// WO-996: lead\n");
+  assert.throws(
+    () => f.check(["src/notes.vue"]),
+    /source reader parses no dialect for src\/notes\.vue/,
+  );
+});
+
+test("a regular expression after a conditional or a block is read by the grammar, not as a comment; real comments beside it are judged", (t) => {
+  const f = fixture(t);
+  const source =
+    [
+      'const ready = true; const text = "sample";',
+      "if (ready) /[/*] D123/.test(text);",
+      "while (!ready) /[/*] VER-001 F1/.test(text);",
+      "function after() {}",
+      "/[/*] D124/.test(text);",
+      "if (ready) /x/.test(text); // kept by D125, a real trailing comment",
+      "export const done = after;",
+      "/* WO-996: a real block comment after the regular expressions */",
+    ].join("\n") + "\n";
+  f.write("scripts/matcher.mjs", source);
+  // The module is valid JavaScript: an author can write every line of it.
+  const syntax = spawnSync(
+    process.execPath,
+    ["--check", join(f.root, "scripts/matcher.mjs")],
+    { encoding: "utf8" },
+  );
+  assert.equal(syntax.status, 0, syntax.stderr);
+  assert.deepEqual(
+    f
+      .check(["scripts/matcher.mjs"])
+      .findings.map((row) => [row.line, row.kind]),
+    [
+      [6, "decision-number"],
+      [8, "order-lead"],
+    ],
+  );
+  // The same text in a shell here-document is read with the same grammar.
+  f.write(
+    "scripts/matcher.sh",
+    [
+      "#!/bin/bash",
+      "node - <<'JS'",
+      'const text = "sample";',
+      "if (text) /[/*] D126/.test(text);",
+      "// D127 opens its line, a real comment",
+      "JS",
+    ].join("\n") + "\n",
+  );
+  assert.deepEqual(
+    f.check(["scripts/matcher.sh"]).findings.map((row) => [row.line, row.kind]),
+    [[5, "decision-number"]],
+  );
+});
+
+test("a comment's line is counted at line feeds alone; a line separator, a paragraph separator or a lone carriage return in the code moves no line and splits no block", (t) => {
+  const f = fixture(t);
+  f.write(
+    "scripts/separators.mjs",
+    [
+      "// Explains why the value is fixed.",
+      'const s = "a b"; // WO-123: a trailing comment after a line separator',
+      "// D123 closes the block the two lines above open.",
+      "const t = `a b`;",
+      "// D124 after a paragraph separator in a template.",
+      "const u = 1;\r// D125 after a lone carriage return.",
+    ].join("\n") + "\n",
+  );
+  assert.deepEqual(
+    f
+      .check(["scripts/separators.mjs"])
+      .findings.map((row) => [row.line, row.kind]),
+    [
+      [3, "decision-number"],
+      [5, "decision-number"],
+      [6, "decision-number"],
+    ],
+  );
+  f.write(
+    "scripts/separators.sh",
+    [
+      "#!/bin/bash",
+      "node - <<'JS'",
+      'const s = "a b";',
+      "// D126 a real comment after a line separator",
+      "JS",
+    ].join("\n") + "\n",
+  );
+  assert.deepEqual(
+    f
+      .check(["scripts/separators.sh"])
+      .findings.map((row) => [row.line, row.kind]),
+    [[4, "decision-number"]],
+  );
+});
+
+test("one check starts the compiler's interface once for all its sources and here-documents, and not at all with none to parse", (t) => {
+  const f = fixture(t);
+  f.write("scripts/a.mjs", "// Explains a.\nexport const a = 1;\n");
+  f.write("scripts/b.ts", "// Explains b.\nexport const b = 2;\n");
+  f.write("scripts/c.tsx", "// Explains c.\nexport const C = () => <p />;\n");
+  f.write(
+    "scripts/d.sh",
+    "#!/bin/bash\nnode - <<'JS'\n// Explains d.\nJS\nnode - <<'JS'\n// Explains e.\nJS\n",
+  );
+  f.write("scripts/plain.sh", "#!/bin/bash\n# Explains the plain script.\n");
+  let before = sourceTreeStarts();
+  f.check([
+    "scripts/a.mjs",
+    "scripts/b.ts",
+    "scripts/c.tsx",
+    "scripts/d.sh",
+    "scripts/plain.sh",
+  ]);
+  assert.equal(sourceTreeStarts() - before, 1);
+  before = sourceTreeStarts();
+  f.check(["scripts/plain.sh"]);
+  assert.equal(sourceTreeStarts() - before, 0);
 });
 
 test("the baseline writer shrinks, never grows, and the command prints its failures", (t) => {

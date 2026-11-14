@@ -90,8 +90,8 @@ placement violations, declared generated files with no literal-token references
 in the bounded corpus, and repeated entries in structured target repair history.
 Each WorkCandidate has relative paths, evidence references, optional proposed
 home and measured file count; none carries repair or deletion authority. Profile
-conventions are direct input, `.dotln/discovery.json`, or a selected profile's
-`dotln-discovery` block. Without them, defaults use package lint/test scripts
+conventions are direct input, `.dotln/discovery.json`, or a declared JSON
+profile. Without them, defaults use package lint/test scripts
 and optional `.dotln/repairs.jsonl`, with no guessed placement/generated rules.
 WO-073's full profile system remains future work.
 

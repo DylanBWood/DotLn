@@ -2844,3 +2844,707 @@ test("WO-252 a nested repository under declared output counts each file its remo
     { baseIgnore: "node_modules\n" },
   );
 });
+
+// Part M, step M1: whether a branch's change is in a base, read from Git
+// alone, on small repositories of the case's own (no close fixture).
+/** Five identical blocks of seven lines, with the middle line of the block
+ * at `edited` changed: the same edit in two blocks prints the same hunk. */
+const identicalBlocks = (edited) =>
+  Array.from({ length: 5 }, (_, at) =>
+    at === edited ? "a\nb\nc\nD\ne\nf\ng\n" : "a\nb\nc\nd\ne\nf\ng\n",
+  ).join("");
+const mergedChangeRepository = (t) => {
+  const root = createFixtureRoot(join(tmpdir(), "dotln-merged-change-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const git = (...args) => {
+    const result = spawnGit(
+      ["-C", root, "-c", "maintenance.auto=false", ...args],
+      { encoding: "utf8" },
+    );
+    assert.equal(result.status, 0, `${args.join(" ")}: ${result.stderr}`);
+    return result.stdout.trim();
+  };
+  const commit = (message) => {
+    git("add", "-A");
+    git("commit", "-qm", message);
+    return git("rev-parse", "HEAD");
+  };
+  assert.equal(spawnGit(["init", "-q", "-b", "main", root]).status, 0);
+  git("config", "user.email", "fixture@example.invalid");
+  git("config", "user.name", "Fixture");
+  write(root, "a.txt", "one\ntwo\nthree\n");
+  write(root, "b.txt", "alpha\nbeta\n");
+  write(root, "d.txt", "1\n2\n3\n4\n5\n6\n7\n");
+  write(root, "blocks.txt", identicalBlocks());
+  commit("base");
+  git("switch", "-qc", "wo-999");
+  write(root, "a.txt", "one\ntwo changed\nthree\n");
+  const first = commit("feat: change a");
+  write(root, "b.txt", "alpha\nbeta\ngamma\n");
+  const second = commit("feat: change b");
+  git("switch", "-q", "main");
+  return { root, git, commit, first, second };
+};
+
+test("WO-276 criterion M1 (the function): a branch's change is in the base by ancestry, by one base commit patch-equal to its whole change, or by a patch-equal base commit for each of its commits, and the commits matched are named with the count of base commits read", async (t) => {
+  const { mergedChange } = await import("./lib/merged-change.mjs");
+  // A merge commit: the branch is an ancestor of the base, and no patch is
+  // read.
+  {
+    const f = mergedChangeRepository(t);
+    f.git("merge", "-q", "--no-ff", "-m", "Merge the order", "wo-999");
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: true,
+      by: "ancestor",
+      commits: [],
+      read: 0,
+    });
+  }
+  // A squash: one new commit on a base that has moved elsewhere.
+  {
+    const f = mergedChangeRepository(t);
+    write(f.root, "c.txt", "another person's change\n");
+    f.commit("feat: unrelated");
+    f.git("merge", "-q", "--squash", "wo-999");
+    const squash = f.commit("feat: the order, squashed");
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: true,
+      by: "squash",
+      commits: [squash],
+      read: 2,
+    });
+  }
+  // A rebase: each of the branch's commits replayed onto the moved base.
+  {
+    const f = mergedChangeRepository(t);
+    write(f.root, "c.txt", "another person's change\n");
+    f.commit("feat: unrelated");
+    f.git("cherry-pick", f.first);
+    const one = f.git("rev-parse", "HEAD");
+    f.git("cherry-pick", f.second);
+    const two = f.git("rev-parse", "HEAD");
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: true,
+      by: "rebase",
+      commits: [one, two],
+      read: 3,
+    });
+  }
+  // A branch that merged the base into itself before it was replayed: its
+  // own merge is no commit to find.
+  {
+    const f = mergedChangeRepository(t);
+    write(f.root, "c.txt", "another person's change\n");
+    f.commit("feat: unrelated");
+    f.git("switch", "-q", "wo-999");
+    f.git("merge", "-q", "--no-ff", "-m", "Merge main into the order", "main");
+    f.git("switch", "-q", "main");
+    f.git("cherry-pick", f.first);
+    f.git("cherry-pick", f.second);
+    const found = mergedChange(f.root, "wo-999", "main");
+    assert.deepEqual([found.merged, found.by], [true, "rebase"]);
+  }
+});
+
+test("WO-276 criterion M2 (the function): a rebase match takes one base commit for each of the branch's, in the branch's order, so a base commit never answers for two and a base that replayed part of a branch that repeats a change is not read as merged", async (t) => {
+  const { mergedChange } = await import("./lib/merged-change.mjs");
+  // The branch changes a, changes b, reverts the change to a and makes it
+  // again: two of its commits are one change.
+  const repeating = () => {
+    const f = mergedChangeRepository(t);
+    f.git("switch", "-q", "wo-999");
+    write(f.root, "a.txt", "one\ntwo\nthree\n");
+    const third = f.commit("revert: the change to a");
+    write(f.root, "a.txt", "one\ntwo changed\nthree\n");
+    const fourth = f.commit("feat: change a again");
+    f.git("switch", "-q", "main");
+    write(f.root, "c.txt", "another person's change\n");
+    f.commit("feat: unrelated");
+    return { ...f, third, fourth };
+  };
+  // The failed review's shape: the base replayed the first three, so its tip
+  // does not hold the change the branch's tip holds, and the first replayed
+  // commit may not answer for the fourth as well.
+  {
+    const f = repeating();
+    for (const commit of [f.first, f.second, f.third])
+      f.git("cherry-pick", commit);
+    assert.equal(f.git("show", "main:a.txt"), "one\ntwo\nthree");
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: false,
+      by: null,
+      commits: [],
+      read: 4,
+    });
+  }
+  // The same branch replayed whole: four base commits, one for each.
+  {
+    const f = repeating();
+    const replayed = [f.first, f.second, f.third, f.fourth].map((commit) => {
+      f.git("cherry-pick", commit);
+      return f.git("rev-parse", "HEAD");
+    });
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: true,
+      by: "rebase",
+      commits: replayed,
+      read: 5,
+    });
+  }
+  // A base that holds the branch's two commits in the other order is no
+  // rebase of it, and is named with --merged-as by whoever knows it landed.
+  {
+    const f = mergedChangeRepository(t);
+    f.git("cherry-pick", f.second);
+    f.git("cherry-pick", f.first);
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: false,
+      by: null,
+      commits: [],
+      read: 2,
+    });
+  }
+});
+
+test("WO-276 criterion M2 (the function): a base that does not hold the change, holds half of it or holds it under an edited patch matches nothing, and a commit named for it must be in the base and touch a path the change touches", async (t) => {
+  const { mergedChange, namedMerge } = await import("./lib/merged-change.mjs");
+  // Nothing of the branch on a base that moved.
+  {
+    const f = mergedChangeRepository(t);
+    write(f.root, "c.txt", "another person's change\n");
+    const unrelated = f.commit("feat: unrelated");
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: false,
+      by: null,
+      commits: [],
+      read: 1,
+    });
+    // Named for it, that commit is in the base and touches none of the
+    // change's paths; the branch's own commit is not in the base; and a
+    // name that is no commit is said so.
+    assert.throws(
+      () => namedMerge(f.root, "wo-999", "main", unrelated),
+      new RegExp(
+        `--merged-as ${unrelated} changes none of the paths the reviewed change touches`,
+        "u",
+      ),
+    );
+    assert.throws(
+      () => namedMerge(f.root, "wo-999", "main", f.second),
+      new RegExp(`--merged-as ${f.second} is not in main`, "u"),
+    );
+    assert.throws(
+      () => namedMerge(f.root, "wo-999", "main", "0".repeat(40)),
+      /--merged-as 0{40} names no commit this clone holds/u,
+    );
+  }
+  // A base still where the two diverged has nothing to read.
+  {
+    const f = mergedChangeRepository(t);
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), {
+      merged: false,
+      by: null,
+      commits: [],
+      read: 0,
+    });
+  }
+  // One of the branch's two commits replayed: half a rebase is no merge.
+  {
+    const f = mergedChangeRepository(t);
+    f.git("cherry-pick", f.first);
+    assert.equal(mergedChange(f.root, "wo-999", "main").merged, false);
+  }
+  // A squash edited at merge matches no identity; named, it is in the base
+  // and touches the change's paths, and its subject comes back.
+  {
+    const f = mergedChangeRepository(t);
+    f.git("merge", "-q", "--squash", "wo-999");
+    write(f.root, "b.txt", "alpha\nbeta\ngamma, edited at merge\n");
+    const edited = f.commit("feat: the order, squashed and edited");
+    assert.equal(mergedChange(f.root, "wo-999", "main").merged, false);
+    assert.deepEqual(namedMerge(f.root, "wo-999", "main", edited), {
+      commit: edited,
+      subject: "feat: the order, squashed and edited",
+    });
+    assert.deepEqual(
+      namedMerge(f.root, "wo-999", "main", edited.slice(0, 12)).commit,
+      edited,
+    );
+  }
+});
+
+test("WO-276 Part M (the attack pass): an identity match counts only where the patch's own bytes are equal; a merge of the branch that carries its own change, a base that changed lines beside the change, a base rewritten since and a base too large to read match nothing and leave the named commit as the route; a named commit is one by its id, after the point the branch left the base; and a second question reads no patch again", async (t) => {
+  const { mergedChange, namedMerge } = await import("./lib/merged-change.mjs");
+  const identity = (f, patch) =>
+    spawnGit(["-C", f.root, "patch-id", "--stable"], {
+      input: `${patch}\n`,
+      encoding: "utf8",
+    }).stdout.split(" ")[0];
+  const notMerged = (read) => ({ merged: false, by: null, commits: [], read });
+  // Git's patch identity ignores whitespace: a squash that lands the change
+  // with other spacing, or other line endings, has the branch's identity and
+  // not its bytes.
+  for (const [file, landed] of [
+    ["a.txt", "one\ntwo  changed\nthree\n"],
+    ["b.txt", "alpha\nbeta\ngamma\r\n"],
+  ]) {
+    const f = mergedChangeRepository(t);
+    const fork = f.git("rev-parse", "HEAD");
+    f.git("merge", "-q", "--squash", "wo-999");
+    write(f.root, file, landed);
+    const squash = f.commit("feat: the order, squashed with other spacing");
+    assert.equal(
+      identity(f, f.git("diff-tree", "-p", squash)),
+      identity(f, f.git("diff-tree", "-p", fork, "wo-999")),
+      file,
+    );
+    assert.deepEqual(
+      mergedChange(f.root, "wo-999", "main"),
+      notMerged(1),
+      file,
+    );
+  }
+  // Where a hunk sits is part of the change (the twenty-fifth critic).
+  // Another person's commit that makes the order's edit in another of
+  // several identical blocks has its identity and is not it. The order's
+  // own commit replayed afterwards, onto the file that commit changed, is
+  // found: the base commit's result is the change merged into its parent.
+  {
+    const f = mergedChangeRepository(t);
+    f.git("switch", "-qc", "wo-998");
+    write(f.root, "blocks.txt", identicalBlocks(1));
+    const mine = f.commit("feat: the second block");
+    f.git("switch", "-q", "main");
+    write(f.root, "blocks.txt", identicalBlocks(3));
+    const elsewhere = f.commit("feat: the same edit, in the fourth block");
+    assert.equal(
+      identity(f, f.git("diff-tree", "-p", elsewhere)),
+      identity(f, f.git("diff-tree", "-p", mine)),
+    );
+    assert.deepEqual(mergedChange(f.root, "wo-998", "main"), notMerged(1));
+    f.git("cherry-pick", mine);
+    assert.deepEqual(mergedChange(f.root, "wo-998", "main"), {
+      merged: true,
+      by: "squash",
+      commits: [f.git("rev-parse", "HEAD")],
+      read: 2,
+    });
+  }
+  // A binary file: the same bytes landed are found, other bytes are not.
+  for (const [landed, merged] of [
+    [Buffer.from([0, 1, 2, 3, 250]), true],
+    [Buffer.from([0, 1, 2, 3, 251]), false],
+  ]) {
+    const f = mergedChangeRepository(t);
+    f.git("switch", "-q", "wo-999");
+    writeFileSync(join(f.root, "blob.bin"), Buffer.from([0, 1, 2, 3, 250]));
+    f.commit("feat: a binary file");
+    f.git("switch", "-q", "main");
+    f.git("merge", "-q", "--squash", "wo-999");
+    writeFileSync(join(f.root, "blob.bin"), landed);
+    f.commit("feat: the order, squashed");
+    assert.equal(mergedChange(f.root, "wo-999", "main").merged, merged);
+  }
+  // A merge of the base into the branch that adds a change of its own: each
+  // of the branch's other commits is replayed, and the merge's change is not
+  // in the base.
+  {
+    const f = mergedChangeRepository(t);
+    write(f.root, "c.txt", "another person's change\n");
+    f.commit("feat: unrelated");
+    f.git("switch", "-q", "wo-999");
+    f.git("merge", "-q", "--no-ff", "--no-commit", "main");
+    write(f.root, "c.txt", "another person's change\nand the merge's own\n");
+    f.commit("Merge main into the order, with a change of its own");
+    f.git("switch", "-q", "main");
+    f.git("cherry-pick", f.first);
+    f.git("cherry-pick", f.second);
+    // The two diverged at the base commit the branch merged.
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), notMerged(2));
+  }
+  // A base that changed a line beside the change after the branch was cut: a
+  // plain squash prints other context and matches no identity. The commit is
+  // named; the commit the branch was cut from, which created the file, is at
+  // or before that point and is refused, as is a word that names a ref.
+  {
+    const f = mergedChangeRepository(t);
+    const fork = f.git("rev-parse", "HEAD");
+    f.git("switch", "-q", "wo-999");
+    write(f.root, "d.txt", "1\n2\n3\n4 changed\n5\n6\n7\n");
+    f.commit("feat: change d");
+    f.git("switch", "-q", "main");
+    write(f.root, "d.txt", "1\n2 moved on\n3\n4\n5\n6\n7\n");
+    const beside = f.commit("feat: a line beside the change");
+    f.git("merge", "-q", "--squash", "wo-999");
+    const squash = f.commit("feat: the order, squashed");
+    assert.deepEqual(mergedChange(f.root, "wo-999", "main"), notMerged(2));
+    assert.equal(namedMerge(f.root, "wo-999", "main", squash).commit, squash);
+    assert.throws(
+      () => namedMerge(f.root, "wo-999", "main", fork),
+      new RegExp(
+        `--merged-as ${fork} is at or before the commit where wo-999 left main, so it cannot carry the change`,
+        "u",
+      ),
+    );
+    f.git("branch", "abcdef1", beside);
+    assert.throws(
+      () => namedMerge(f.root, "wo-999", "main", "abcdef1"),
+      /--merged-as abcdef1 names no commit this clone holds/u,
+    );
+  }
+  // A base rewritten after the branch was cut shares no history with it:
+  // nothing matches, no read fails, and the named commit is judged against
+  // the base commit the order recorded.
+  {
+    const f = mergedChangeRepository(t);
+    const fork = f.git("rev-parse", "HEAD");
+    const root = f.git(
+      "commit-tree",
+      "-m",
+      "base, rewritten",
+      f.git("rev-parse", "HEAD^{tree}"),
+    );
+    f.git("update-ref", "refs/heads/rewritten", root);
+    f.git("switch", "-q", "rewritten");
+    f.git("checkout", "wo-999", "--", ".");
+    const squash = f.commit(
+      "feat: the order, squashed onto the rewritten base",
+    );
+    assert.deepEqual(mergedChange(f.root, "wo-999", "rewritten"), notMerged(0));
+    assert.throws(
+      () => namedMerge(f.root, "wo-999", "rewritten", squash),
+      /wo-999 and rewritten share no history, and no recorded base says where the change began/u,
+    );
+    assert.equal(
+      namedMerge(f.root, "wo-999", "rewritten", squash, { from: fork }).commit,
+      squash,
+    );
+  }
+  // A base whose patches are more than one read takes is not compared, and
+  // says so; the same question asked twice of a base that holds the change
+  // reads its patches once.
+  {
+    const f = mergedChangeRepository(t);
+    write(f.root, "c.txt", "another person's change\n");
+    f.commit("feat: unrelated");
+    f.git("merge", "-q", "--squash", "wo-999");
+    const squash = f.commit("feat: the order, squashed");
+    assert.deepEqual(
+      mergedChange(f.root, "wo-999", "main", { readLimit: 64 }),
+      {
+        ...notMerged(2),
+        unread: true,
+      },
+    );
+    // The branch's own patches past the limit are the same answer: here
+    // the base's two small patches fit and the branch's large one does not.
+    {
+      const large = mergedChangeRepository(t);
+      large.git("switch", "-q", "wo-999");
+      write(
+        large.root,
+        "large.txt",
+        `${"a line of the order's own\n".repeat(400)}`,
+      );
+      large.commit("feat: a large file");
+      large.git("switch", "-q", "main");
+      write(large.root, "c.txt", "another person's change\n");
+      large.commit("feat: unrelated");
+      assert.deepEqual(
+        mergedChange(large.root, "wo-999", "main", { readLimit: 2048 }),
+        { ...notMerged(1), unread: true },
+      );
+    }
+    const trace = join(f.root, ".git", "trace-events");
+    const before = process.env.GIT_TRACE2_EVENT;
+    process.env.GIT_TRACE2_EVENT = trace;
+    let first, second;
+    try {
+      first = mergedChange(f.root, "wo-999", "main");
+      second = mergedChange(f.root, "wo-999", "main");
+    } finally {
+      if (before === undefined) delete process.env.GIT_TRACE2_EVENT;
+      else process.env.GIT_TRACE2_EVENT = before;
+    }
+    assert.deepEqual(first, {
+      merged: true,
+      by: "squash",
+      commits: [squash],
+      read: 2,
+    });
+    assert.deepEqual(second, first);
+    // Two runs of patch-id in all: the base's patches and the branch's whole
+    // change, at the first question.
+    assert.equal(
+      readFileSync(trace, "utf8")
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line))
+        .filter((row) => row.event === "start" && row.argv.includes("patch-id"))
+        .length,
+      2,
+    );
+  }
+});
+
+// Part M, criteria M1 and M2 in the close fixture: the order's change lands
+// on the target's base through a second clone, as a team's repository would
+// land it, and the registered clone learns of it when the close fetches.
+const landTargetChange = (f, how) => {
+  const merger = join(f.base, "merger");
+  git(
+    f.base,
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "-q",
+    join(f.base, "target.git"),
+    merger,
+  );
+  git(merger, "config", "user.email", "fixture@example.invalid");
+  git(merger, "config", "user.name", "Fixture");
+  git(merger, "fetch", "-q", f.clone, "wo-999");
+  const commit = (message) => {
+    git(merger, "add", "-A");
+    git(merger, "-c", "maintenance.auto=false", "commit", "-qm", message);
+    return git(merger, "rev-parse", "HEAD");
+  };
+  let landed = [];
+  if (how === "merge") {
+    git(
+      merger,
+      "merge",
+      "-q",
+      "--no-ff",
+      "-m",
+      "Merge target change",
+      "FETCH_HEAD",
+    );
+  } else if (how === "squash" || how === "edited") {
+    git(merger, "merge", "-q", "--squash", "FETCH_HEAD");
+    if (how === "edited")
+      write(merger, "change.txt", "changed, and edited at merge\n");
+    landed = [commit("feat: the order's change, squashed")];
+  } else if (how === "rebase") {
+    const fork = git(merger, "merge-base", "HEAD", "FETCH_HEAD");
+    for (const picked of git(
+      merger,
+      "rev-list",
+      "--reverse",
+      `${fork}..FETCH_HEAD`,
+    ).split("\n")) {
+      git(merger, "-c", "maintenance.auto=false", "cherry-pick", picked);
+      landed.push(git(merger, "rev-parse", "HEAD"));
+    }
+  } else {
+    write(merger, "elsewhere.txt", "another person's change\n");
+    landed = [commit("feat: unrelated")];
+  }
+  git(merger, "push", "-q", "origin", "main");
+  return landed;
+};
+/** The fixture with the order's change of two commits reviewed and closed,
+ * its records merged, and the target branch not yet on the base. */
+const reviewedTargetChange = (f) => {
+  f.mapClone();
+  f.start();
+  for (const [file, message] of [
+    ["change.txt", "test: target change"],
+    ["second.txt", "test: second target change"],
+  ]) {
+    write(f.target, file, "changed\n");
+    git(f.target, "add", "-A");
+    git(f.target, "-c", "maintenance.auto=false", "commit", "-qm", message);
+  }
+  mergedCloseFixture(f);
+};
+
+test("WO-276 criterion M1: a target close proceeds when the base holds the order's change as one new commit or as each of its commits replayed, the branch no ancestor of the base, and prints the base commit or commits it matched; with a merge commit it proceeds as before", () => {
+  for (const how of ["squash", "rebase", "merge"])
+    withFixture((f) => {
+      reviewedTargetChange(f);
+      const landed = landTargetChange(f, how);
+      const preview = f.ok(f.close("--dry-run"));
+      assert.match(preview, /would-remove/u, how);
+      const output = f.ok(f.close("--publish"));
+      assert.match(output, /no-release/u, how);
+      for (const text of [preview, output])
+        assert.ok(
+          text.includes(
+            how === "squash"
+              ? `Target change in the base: one commit holds the branch's whole change, ${landed[0]} (a squash); 2 base commits read.`
+              : how === "rebase"
+                ? `Target change in the base: a patch-equal commit for each of the branch's commits, ${landed.join(", ")} (a rebase); 3 base commits read.`
+                : "Target change in the base: the branch is merged (its commits are in the base's history).",
+          ),
+          `${how}: ${text}`,
+        );
+      assert.equal(existsSync(f.target), false, how);
+      assert.equal(existsSync(f.orderRoot), false, how);
+    });
+});
+
+test("WO-276 Part M (the twenty-fifth critic): a target close refuses, the source retained, when another person's commit on the base makes the order's edit at another of several identical places, and proceeds when the order's own change lands beside it", () =>
+  withFixture(
+    (f) => {
+      f.mapClone();
+      f.start();
+      write(f.target, "blocks.txt", identicalBlocks(1));
+      git(f.target, "add", "-A");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: the second block",
+      );
+      mergedCloseFixture(f);
+      // Another person's work, never the order's: the same edit, two blocks
+      // further down, pushed to the target's base.
+      const another = join(f.base, "another");
+      git(
+        f.base,
+        "-c",
+        "maintenance.auto=false",
+        "clone",
+        "-q",
+        join(f.base, "target.git"),
+        another,
+      );
+      git(another, "config", "user.email", "fixture@example.invalid");
+      git(another, "config", "user.name", "Fixture");
+      write(another, "blocks.txt", identicalBlocks(3));
+      git(another, "add", "-A");
+      git(
+        another,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "feat: the fourth block",
+      );
+      git(another, "push", "-q", "origin", "main");
+      for (const mode of ["--dry-run", "--publish"]) {
+        const refused = f.close(mode);
+        assert.notEqual(refused.status, 0, mode);
+        assert.match(
+          refused.stderr,
+          /target branch wo-999 is not merged into origin\/main; source retained/u,
+          mode,
+        );
+        assert.ok(existsSync(f.target), mode);
+        assert.ok(existsSync(f.orderRoot), mode);
+      }
+      // The order's own change, squashed onto that base: its commit's result
+      // is the change merged into the file the other commit had changed.
+      const [landed] = landTargetChange(f, "squash");
+      const output = f.ok(f.close("--publish"));
+      assert.ok(
+        output.includes(
+          `Target change in the base: one commit holds the branch's whole change, ${landed} (a squash); `,
+        ),
+        output,
+      );
+      assert.equal(existsSync(f.target), false);
+    },
+    { baseFiles: { "blocks.txt": identicalBlocks() } },
+  ));
+
+test("WO-276 criterion M2: a target close refuses, the source retained, when the base does not hold the change, and names --merged-as; with --merged-as naming a commit in the fetched base that touches the change's paths it proceeds and prints that commit and its subject; a commit that is not in the base, or touches none of those paths, is refused by name", () => {
+  // The base moved and holds nothing of the change.
+  withFixture((f) => {
+    reviewedTargetChange(f);
+    const [unrelated] = landTargetChange(f, "none");
+    for (const mode of ["--dry-run", "--publish"]) {
+      const refused = f.close(mode);
+      assert.notEqual(refused.status, 0, mode);
+      assert.match(
+        refused.stderr,
+        /target branch wo-999 is not merged into origin\/main; source retained\. Merge the reviewed branch, then rerun .* close WO-999 --(?:dry-run|publish); where origin\/main holds its change under a commit whose patch differs \(a squash edited at merge or carrying other changes, a base that changed lines beside the change since the branch was cut, or a rebase that left out a commit of the branch the base already held\), name that commit: .* close WO-999 --(?:dry-run|publish) --merged-as <commit> \(2 base commits read\)/u,
+        mode,
+      );
+      assert.ok(existsSync(f.target), mode);
+      assert.ok(existsSync(f.orderRoot), mode);
+    }
+    // A commit of the base that touches none of the change's paths, the
+    // branch's own tip, which is not in the base, and a name that is no
+    // commit are each refused by name, and a malformed value by its usage.
+    const tip = git(f.clone, "rev-parse", "wo-999");
+    for (const [named, pattern] of [
+      [unrelated, "changes none of the paths the reviewed change touches"],
+      [tip, "is not in origin/main"],
+      ["0".repeat(40), "names no commit this clone holds"],
+    ]) {
+      const refused = f.close("--publish", "--merged-as", named);
+      assert.notEqual(refused.status, 0, named);
+      assert.ok(
+        refused.stderr.includes(
+          `target branch wo-999 is not merged into origin/main: --merged-as ${named} ${pattern}; source retained.`,
+        ),
+        refused.stderr,
+      );
+      assert.ok(existsSync(f.target), named);
+      // The name was refused, so the command the record keeps to run
+      // again does not repeat it.
+      const kept = closeRecord(f);
+      for (const command of [kept.retryCommand, kept.blockers.at(-1).command])
+        assert.ok(command.endsWith(" close WO-999 --publish"), command);
+    }
+    // An order that is no target's takes no named commit, and is refused
+    // before the close fetches or moves main.
+    const fetched = join(f.main, ".git", "FETCH_HEAD");
+    const fetchedBefore = existsSync(fetched)
+      ? readFileSync(fetched, "utf8")
+      : null;
+    const launchpad = spawnSync(
+      process.execPath,
+      [
+        join(f.main, "scripts", "release.mjs"),
+        "close",
+        "WO-998",
+        "--publish",
+        "--merged-as",
+        unrelated,
+      ],
+      { cwd: f.main, env: f.env, encoding: "utf8" },
+    );
+    assert.notEqual(launchpad.status, 0);
+    assert.match(
+      launchpad.stderr,
+      /--merged-as names the commit of a target's base that carries a target order's change; a launchpad order takes none/u,
+    );
+    assert.equal(
+      existsSync(fetched) ? readFileSync(fetched, "utf8") : null,
+      fetchedBefore,
+    );
+    const malformed = f.close("--publish", "--merged-as", "HEAD");
+    assert.notEqual(malformed.status, 0);
+    assert.match(malformed.stderr, /usage: --merged-as <commit>/u);
+  });
+  // A squash edited at merge: no identity matches, and the commit is named.
+  withFixture((f) => {
+    reviewedTargetChange(f);
+    const [edited] = landTargetChange(f, "edited");
+    const refused = f.close("--publish");
+    assert.notEqual(refused.status, 0);
+    assert.match(refused.stderr, /--merged-as <commit>/u);
+    // A name the close accepts stays on the command the record keeps:
+    // without it the next run is refused as not merged.
+    f.ok(f.close("--dry-run", "--merged-as", edited));
+    assert.ok(
+      closeRecord(f).retryCommand.endsWith(
+        ` close WO-999 --publish --merged-as ${edited}`,
+      ),
+      closeRecord(f).retryCommand,
+    );
+    const output = f.ok(f.close("--publish", "--merged-as", edited));
+    assert.ok(
+      output.includes(
+        `Target change in the base: named by --merged-as, ${edited} ("feat: the order's change, squashed"); taken by name, no patch of the base compared.`,
+      ),
+      output,
+    );
+    assert.equal(existsSync(f.target), false);
+  });
+});

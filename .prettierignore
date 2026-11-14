@@ -5,11 +5,19 @@
 *.json
 *.jsonl
 
+# An instance's own tools, under the root the kit never enters.
+/extensions/
+
 # Local raw material and dependency/build output.
 docs/intake/
 node_modules/
 **/dist/
 **/*.tsbuildinfo
+
+# The carried Markdown parser is Prettier's own build, kept byte-identical
+# to the pinned package by the vendored-parser check. Only that file is named:
+# any other source placed beside it is formatted as the rest are.
+scripts/lib/vendor/prettier-markdown.mjs
 
 # Recorded fixture bytes and generated harness code keep their exact bytes.
 corpus/fixtures/

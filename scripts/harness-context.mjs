@@ -1,3 +1,4 @@
+import { markdownMarkerBlocks } from "./lib/markdown-links.mjs";
 import { json as prettyJson } from "./lib/helpers.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
@@ -78,7 +79,11 @@ export function measureHarnessContext(overrides = new Map()) {
     installation.files.map((file) => [file.path, file.contents]),
   );
   const floor = readFileSync(join(root, "CLAUDE.md"), "utf8");
-  const instruction = floor.includes("<!-- dotln-harness:start -->")
+  const instruction = markdownMarkerBlocks(
+    floor,
+    "dotln-harness:start",
+    "dotln-harness:end",
+  ).length
     ? floor.replace(
         harnessInstructionBlock(floor).trimEnd(),
         files.get("CLAUDE.md").trimEnd(),

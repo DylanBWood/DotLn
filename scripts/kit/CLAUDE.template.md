@@ -24,8 +24,10 @@ ready to file, with that provenance recorded on the committed surface.
 Never expose, copy, commit or print credentials, tokens, private hostnames,
 account identifiers or the contents of `docs/control/local/`. Environment
 variable names may be recorded; their values never. The private local-terms
-list at `docs/control/local/terms.txt` is reported by file and line on a match
-and its terms are never printed.
+list at `docs/control/local/terms.txt` has two classes: a `refuse` entry
+refuses wherever a screen finds it, and a `context` entry is listed for the
+stage at hand to read and refuses nothing. Either is reported by file, line
+and mode, and the list's entries are never printed, quoted or committed.
 
 ## Start here
 

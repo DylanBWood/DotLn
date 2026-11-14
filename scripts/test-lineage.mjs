@@ -99,12 +99,80 @@ test("newest-first dates and both old and founding boundaries are enforced", () 
   assert.deepEqual(inspectLedger(source + "\n" + section).errors, []);
 });
 
+test("WO-276 (the attack on Part B): the shared reader keeps the text of a span its parser reads as one childless node, and a fence's closure is read without its quotation marker", async () => {
+  const {
+    markdownCodeBlocks,
+    markdownNodes,
+    markdownText,
+    parseMarkdown,
+    parseMarkdownWithExtensions,
+  } = await import("./lib/markdown-links.mjs");
+  const textOf = (source, parse = parseMarkdown) => {
+    const [paragraph] = [...markdownNodes(parse(source))].filter(
+      (node) => node.type === "paragraph",
+    );
+    return markdownText(paragraph);
+  };
+  // The shared parse forms no span of the parser's extensions, so the text
+  // reads as written (WO-276-D178). In the parser's own reading, dollar
+  // signs open a math span and doubled braces or brackets a template or a
+  // wiki link, and the words inside stay readable there too.
+  assert.equal(textOf("Pay $5 and $10 now\n"), "Pay $5 and $10 now");
+  assert.equal(
+    textOf("Pay $5 and $10 now\n", parseMarkdownWithExtensions),
+    "Pay 5 and 10 now",
+  );
+  for (const parse of [parseMarkdown, parseMarkdownWithExtensions]) {
+    assert.match(textOf("Use {{ secrets.X }} here\n", parse), /secrets\.X/u);
+    assert.match(textOf("See [[ the page ]] first\n", parse), /the page/u);
+  }
+  assert.deepEqual(
+    markdownCodeBlocks(
+      '> ```json\n> {"a":1}\n> ```\n\n- item\n\n  ~~~text\n  listed\n  ~~~\n\n> ```text\n> left open\n',
+    ).map(({ closed }) => closed),
+    [true, true, false],
+  );
+});
+
 test("quoted examples in fences do not become ledger entries or headings", () => {
   assert.deepEqual(
     inspectLedger(source + "\n```md\n## Wrong\n- Untagged\n```\n").errors,
     [],
   );
   assert.match(errors(section + "\n```md\n"), /Unclosed code fence/);
+  // A fence closed inside a quotation or a list item is closed (WO-276, the
+  // attack on Part B): the quotation's marker is no part of the fence.
+  for (const quoted of [
+    "\n> ```text\n> quoted example\n> ```\n",
+    "\n> > ```text\n> > quoted twice\n> > ```\n",
+    "\n- item\n\n  ```text\n  listed example\n  ```\n",
+    // A closing fence indented as far as a fence may be, an empty block and
+    // a block of one blank line.
+    "\n~~~text\nexample\n   ~~~\n",
+    "\n```\n```\n",
+    "\n```\n\n```\n",
+  ])
+    assert.doesNotMatch(
+      errors(section + quoted),
+      /Unclosed code fence/,
+      quoted,
+    );
+  assert.match(
+    errors(section + "\n> ```text\n> never closed\n"),
+    /Unclosed code fence/,
+  );
+  // A line of the block's own text that reads as a quoted fence closes
+  // nothing: the fence opened in no quotation, or in one fewer.
+  for (const open of [
+    "\n~~~text\n> ~~~",
+    "\n~~~text\n> ~~~\n",
+    "\n> ~~~text\n> > ~~~\n",
+    // Indented as code is, or shorter than the fence that opened.
+    "\n~~~text\n    ~~~",
+    "\n~~~text\n    ~~~\n",
+    "\n~~~~text\n~~~\n",
+  ])
+    assert.match(errors(section + open), /Unclosed code fence/, open);
   assert.match(
     errors(
       "## 2026-09-19 — Example\n\n- **Unlabeled**\n```\nevidence\n```\n  `adopted`\n",

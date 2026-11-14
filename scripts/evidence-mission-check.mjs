@@ -19,6 +19,7 @@ import {
 } from "../packages/skeleton/dist/src/resident-store.js";
 import { structuralMissionFindings } from "../packages/skeleton/dist/src/mission-check-protocol.js";
 import { missionFixture } from "../packages/skeleton/dist/test/mission-check.fixture.js";
+import { residentCatalog } from "./resident.mjs";
 
 const root = findLaunchpad();
 const local = docPath(root, "control", "local/wo099-live");
@@ -61,6 +62,9 @@ if (process.argv[2] === "--child") {
     configuration: fixture.configuration,
     now: () => at,
     capabilities: () => ["adapter.fixture"],
+    // The adapters the launcher gives a bound resident, so the live row reads
+    // the check's documents the way a bound resident does.
+    catalog: residentCatalog(),
   });
   const started = Date.now();
   try {

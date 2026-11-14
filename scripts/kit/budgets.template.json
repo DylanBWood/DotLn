@@ -74,6 +74,12 @@
     "passRefutationMs": null
   },
   "acceptances": [],
+  "spend": {
+    "daily": {
+      "tokens": null,
+      "usd": null
+    }
+  },
   "unsetPolicy": "Collect observed usage first. Null is not zero and never implies an invented cap.",
   "retention": {
     "gate-fixture-passed": 0,

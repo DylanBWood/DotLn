@@ -24,6 +24,7 @@ import {
   realpathSync,
   renameSync,
   symlinkSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -72,10 +73,12 @@ import {
   checkPassReceipt,
   checkPlanGate,
   openOrderCriteriaAdvisories,
+  openOrderPreflightAdvisories,
   targetOrderPathAdvisories,
   OVERRIDES,
   overridePlanHold,
   disposePlanHold,
+  knownIssues,
   amendPlanOrder,
   withdrawPlanAmendment,
   criterionDispositions,
@@ -87,9 +90,10 @@ import {
   validateReceipt,
   writePlanReceipt,
 } from "./lib/plan-receipts.mjs";
-import { checkLocalTerms } from "./lib/terms.mjs";
+import { checkLocalTerms, localTermFindings } from "./lib/terms.mjs";
 import { fold, parseControlEvents } from "./lib/control.mjs";
 import { runGit } from "./lib/git.mjs";
+import { isCoreRoot } from "./lib/harness-runtime.mjs";
 import { installLaunchpadForge } from "./test-target-publication-fixture.mjs";
 import { isCorrection } from "./lib/meta.mjs";
 import { main as plan } from "./refute-plan.mjs";
@@ -104,6 +108,7 @@ import {
   fileDirectRefutation,
   planJudgmentScope,
   latestPlanningPass,
+  refutationSteps,
 } from "./lib/plan-direct.mjs";
 import {
   capabilityHistoryRepair,
@@ -1988,6 +1993,12 @@ export async function fixtures() {
                 read(repo, result.receipt.replace(/\.md$/u, ".json")),
               );
               assert.deepEqual(receipt.pass, second);
+              // Known issues are listed beside the holds, read from the
+              // receipt's result (WO-276 criterion R4).
+              assert.deepEqual(
+                result.knownIssues.map((row) => row.id),
+                knownIssues(receipt.result).map((row) => row.id),
+              );
             }
             for (const ledger of ledgers) {
               write(repo, PLAN_LEDGER, ledger);
@@ -2343,6 +2354,336 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-276 criterion R4: a receipt's known issue is disposed as a hold is and binds the repaired Cost line",
+      async () => {
+        const repo = makeRepo(parent, "known-issue-disposition");
+        const path = orderPath("WO-901");
+        const beforeCost = "**Cost:** Adds one check.\n\n";
+        const afterCost =
+          "**Cost:** Removes two recurring checks for one addition.\n\n";
+        write(
+          repo,
+          path,
+          order("WO-901").replace("**Model:**", `${beforeCost}**Model:**`),
+        );
+        commit(repo, "goal Cost subject");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        // The refuter names a gap in the Cost line it has not observed: the
+        // review keeps it as a known issue, and no hold is raised.
+        const input = cannedGoalReview(subject);
+        input.orders[0].verdict = "aligned-with-findings";
+        input.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "observed-failure",
+            reason: "The Cost line counts one check where two recur.",
+            evidence: null,
+            reopenWhen: "A recorded run shows the second recurring check.",
+          },
+        ];
+        const result = validatePlanResult(input, subject);
+        const receipt = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "known",
+          subject,
+          // The command stamps a disposition with the clock, which the
+          // fixture's own receipts run ahead of.
+          episode: {
+            ...directEpisode(result),
+            completedAt: "2020-01-02T12:00:00.000Z",
+          },
+        });
+        commit(repo, "immutable goal judgment");
+        assert.equal(receipt.holds.length, 0);
+        const issues = knownIssues(receipt.result);
+        assert.equal(issues.length, 1);
+        assert.match(issues[0].id, /^hold-[0-9a-f]{24}$/u);
+        assert.deepEqual(
+          [issues[0].workOrderId, issues[0].criterionId],
+          ["WO-901", "criterion:1"],
+        );
+        // What the receipt stores is as it was: no hold, and the same pages.
+        const originals = Object.fromEntries(
+          ["json", "md"].map((extension) => [
+            extension,
+            read(repo, `${RECEIPTS}/${receipt.receiptId}.${extension}`),
+          ]),
+        );
+        assert.deepEqual(JSON.parse(originals.json).holds, []);
+        assert.ok(!originals.md.includes(issues[0].id));
+        assert.equal((await checkPlanGate(repo)).passes, 1);
+
+        write(
+          repo,
+          path,
+          order("WO-901").replace("**Model:**", `${afterCost}**Model:**`),
+        );
+        commit(repo, "repair what the refuter named");
+        // Without a disposition the repair fails the check, as it did.
+        await assert.rejects(
+          checkPlanGate(repo),
+          /changed Cost declaration has no text-bound disposition/u,
+        );
+        // An identifier of neither kind is refused with the ones it has.
+        await assert.rejects(
+          plan(
+            [
+              "dispose",
+              receipt.receiptId,
+              `hold-${"0".repeat(24)}`,
+              "Accept the repaired Cost declaration.",
+            ],
+            repo,
+          ),
+          (error) =>
+            error.message.includes("recorded hold or known issue") &&
+            error.message.includes(issues[0].id),
+        );
+        // A known issue holds nothing, so an override cannot name it.
+        const capture = "docs/intake/operator.md",
+          bytes = "Operator accepts this fixture Cost repair.\n";
+        write(repo, capture, bytes);
+        await assert.rejects(
+          overridePlanHold(repo, {
+            receiptId: receipt.receiptId,
+            holdId: issues[0].id,
+            reason: "Accept the repaired Cost declaration.",
+            capture,
+            captureHash: sha256(bytes),
+            now: () => "2030-01-02T12:01:00.000Z",
+          }),
+          /override must name a recorded receipt and hold/u,
+        );
+        assert.equal(readOverrides(repo).length, 0);
+
+        const event = await plan(
+          [
+            "dispose",
+            receipt.receiptId,
+            issues[0].id,
+            "Accept the repaired Cost declaration.",
+          ],
+          repo,
+        );
+        assert.equal(event.type, "PlanHoldDisposed");
+        assert.equal(event.holdId, issues[0].id);
+        assert.equal(event.workOrderId, "WO-901");
+        assert.equal(event.criterionId, "criterion:1");
+        assert.equal(event.sourceCostHash, sha256(beforeCost));
+        assert.equal(event.costHash, sha256(afterCost));
+        const accepted = await checkPlanGate(repo);
+        assert.ok(
+          accepted.continuation.workspaceUpdates.some(
+            (row) => row.kind === "disposed-cost",
+          ),
+        );
+        assert.equal((await readReceipts(repo)).length, 1);
+        for (const extension of ["json", "md"])
+          assert.equal(
+            read(repo, `${RECEIPTS}/${receipt.receiptId}.${extension}`),
+            originals[extension],
+          );
+        commit(repo, "record the known issue's disposition");
+        assert.ok(
+          (await checkPlanGate(repo)).continuation.committedUpdates.some(
+            (row) => row.kind === "disposed-cost",
+          ),
+        );
+        // The disposition binds the repaired text alone: another Cost line
+        // is refused as any unbound change is.
+        write(
+          repo,
+          path,
+          order("WO-901").replace(
+            "**Model:**",
+            "**Cost:** An unrelated replacement.\n\n**Model:**",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /changed Cost declaration has no text-bound disposition/u,
+        );
+        // An override row that names the known issue is refused by the log's
+        // own check, whoever wrote the row.
+        write(
+          repo,
+          path,
+          order("WO-901").replace("**Model:**", `${afterCost}**Model:**`),
+        );
+        const rows = read(repo, OVERRIDES);
+        write(
+          repo,
+          OVERRIDES,
+          rows.replace(
+            '"type":"PlanHoldDisposed"',
+            '"type":"PlanHoldOverridden"',
+          ),
+        );
+        await assert.rejects(checkPlanGate(repo));
+        write(repo, OVERRIDES, rows);
+        assert.ok((await checkPlanGate(repo)).passes >= 1);
+      },
+    );
+    await check(
+      "WO-276 criterion R4: a disposition recorded after a later receipt carried its order leaves that receipt's carried verdict as it was read",
+      async () => {
+        const repo = makeRepo(parent, "disposition-after-carry");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const input = cannedGoalReview(subject);
+        input.orders[0].verdict = "misaligned";
+        input.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "vision-contradiction",
+            reason: "The criterion contradicts the supplied exclusion.",
+            evidence: subject.standard.exclusions[0].id,
+            reopenWhen: null,
+          },
+        ];
+        const held = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "held",
+          subject,
+          episode: directEpisode(validatePlanResult(input, subject)),
+        });
+        assert.equal(held.holds.length, 1);
+        commit(repo, "a held order");
+        // The next pass changes the other order alone and carries this one,
+        // with the finding as it was judged.
+        write(
+          repo,
+          PLAN_LEDGER,
+          read(repo, PLAN_LEDGER) +
+            "\n## 2030-01-03 next planning pass\n\nOne changed order.\n",
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          order("WO-902").replace("useful shape", "another useful shape"),
+        );
+        commit(repo, "next pass changes the other order");
+        await beginDirectRefutation(repo, {
+          now: () => "2030-01-03T12:00:00.000Z",
+        });
+        const next = cannedGoalReview(
+          buildPlanSubject(repo, "HEAD", { goalReview: true }),
+        );
+        next.orders = next.orders.filter((row) => row.workOrderId === "WO-902");
+        write(repo, "docs/control/local/result.json", JSON.stringify(next));
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Judged only the changed order.",
+        );
+        // The receipt is written; the gate it then runs names the hold the
+        // carried order still has.
+        await assert.rejects(
+          fileDirectRefutation(
+            repo,
+            "docs/control/local/result.json",
+            "docs/control/local/statement.txt",
+            { commit: false, now: () => "2030-01-03T12:00:01.000Z" },
+          ),
+          /unanswered hold/u,
+        );
+        const [, carrying] = await readReceipts(repo);
+        assert.equal(
+          carrying.result.orders.find((row) => row.workOrderId === "WO-901")
+            .verdict,
+          "misaligned",
+        );
+        // The hold is disposed as it stands, after that receipt. The row
+        // binds the criterion's text, which the earlier receipt's finding is
+        // on: read under it, that finding would be a known issue and the
+        // carrying receipt's stored verdict would no longer be the one it
+        // carried.
+        const event = await disposePlanHold(repo, {
+          receiptId: carrying.receiptId,
+          holdId: carrying.holds[0].id,
+          reason: "Accepted as the criterion stands.",
+          now: () => "2030-01-04T12:00:00.000Z",
+        });
+        assert.equal(event.sourceCriterionHash, event.criterionHash);
+        assert.equal((await readReceipts(repo)).length, 2);
+        assert.equal((await checkPlanGate(repo)).passes, 2);
+      },
+    );
+    await check(
+      "WO-276 criterion R4: a row dated after a receipt's episode but in the log when the receipt is written changes neither what it stores nor whether it is admitted",
+      async () => {
+        const repo = makeRepo(parent, "disposition-before-write");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const input = cannedGoalReview(subject);
+        input.orders[0].verdict = "misaligned";
+        input.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "vision-contradiction",
+            reason: "The criterion contradicts the supplied exclusion.",
+            evidence: subject.standard.exclusions[0].id,
+            reopenWhen: null,
+          },
+        ];
+        const held = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "held",
+          subject,
+          episode: directEpisode(validatePlanResult(input, subject)),
+        });
+        commit(repo, "a held order");
+        write(
+          repo,
+          PLAN_LEDGER,
+          read(repo, PLAN_LEDGER) +
+            "\n## 2030-01-03 next planning pass\n\nOne changed order.\n",
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          order("WO-902").replace("useful shape", "another useful shape"),
+        );
+        commit(repo, "next pass changes the other order");
+        await beginDirectRefutation(repo, {
+          now: () => "2030-01-03T12:00:00.000Z",
+        });
+        // The hold is disposed as it stands while the refutation is out,
+        // under a time later than the one its filing will carry.
+        await disposePlanHold(repo, {
+          receiptId: held.receiptId,
+          holdId: held.holds[0].id,
+          reason: "Accepted as the criterion stands.",
+          now: () => "2030-01-05T12:00:00.000Z",
+        });
+        const next = cannedGoalReview(
+          buildPlanSubject(repo, "HEAD", { goalReview: true }),
+        );
+        next.orders = next.orders.filter((row) => row.workOrderId === "WO-902");
+        write(repo, "docs/control/local/result.json", JSON.stringify(next));
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Judged only the changed order.",
+        );
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-03T12:00:01.000Z" },
+        );
+        assert.equal(filed.carried, 1);
+        // The carried order is stored as it was judged, under the rows up
+        // to the filing's own time; the later row answers its hold.
+        const [, carrying] = await readReceipts(repo);
+        assert.equal(
+          carrying.result.orders.find((row) => row.workOrderId === "WO-901")
+            .verdict,
+          "misaligned",
+        );
+        assert.equal(filed.gate.passes, 2);
+        assert.equal((await checkPlanGate(repo)).passes, 2);
+      },
+    );
+    await check(
       "WO-132 one judgment survives a disposed criterion repair and later findings cannot reopen its text",
       async () => {
         const repo = makeRepo(parent, "goal-disposition");
@@ -2447,6 +2788,13 @@ export async function fixtures() {
         const latest = (await readReceipts(repo)).at(-1);
         assert.equal(latest.holds.length, 0);
         assert.equal(latest.result.orders[0].findings[0].kind, "known-issue");
+        // The route prints the known issue under the identifier a
+        // disposition names (WO-276 criterion R4).
+        assert.equal(filed.knownIssues.length, 1);
+        assert.deepEqual(
+          filed.knownIssues.map((row) => row.id),
+          knownIssues(latest.result).map((row) => row.id),
+        );
       },
     );
     await check(
@@ -2542,8 +2890,11 @@ export async function fixtures() {
       async () => {
         for (const workerType of [
           "dotln-worker",
-          "dotln-worker-fable",
           "codex-spawn-agent",
+          // The two a receipt written before there was one worker for each
+          // provider may name (WO-276).
+          "dotln-worker-fable",
+          "dotln-worker-astra",
         ]) {
           const repo = makeRepo(parent, `worker-type-${workerType}`);
           await beginDirectRefutation(repo, { scope: "full" });
@@ -2723,7 +3074,11 @@ export async function fixtures() {
           writePlanReceipt(repo, input),
           /current committed and workspace subject/u,
         );
-        write(repo, "docs/control/local/terms.txt", "Synthetic Forbidden\n");
+        write(
+          repo,
+          "docs/control/local/terms.txt",
+          "refuse: Synthetic Forbidden\n",
+        );
         const current = buildPlanSubject(repo);
         await assert.rejects(
           writePlanReceipt(repo, {
@@ -3340,7 +3695,7 @@ export async function fixtures() {
         write(
           repo,
           "docs/control/local/terms.txt",
-          "# Synthetic fixture terms only\nSyntheticForbidden\nWibble Sprocket Cloud\nBig Fizzle Widget Cloud\n",
+          "# Synthetic fixture terms only\nrefuse:\nSyntheticForbidden\nWibble Sprocket Cloud\nBig Fizzle Widget Cloud\ncontext:\nQuiet Fizzle\n",
         );
         assert.deepEqual(
           checkLocalTerms(repo, [
@@ -3351,7 +3706,7 @@ export async function fixtures() {
             { name: "first", text: "Wibble" },
             { name: "second", text: "Sprocket Cloud" },
           ]),
-          { status: "present", terms: 3 },
+          { status: "present", terms: 4, refuse: 3, context: 1, findings: [] },
         );
         for (const [text, line, endLine] of [
           ["Synthetic-Forbidden", 1, 1],
@@ -3367,7 +3722,7 @@ export async function fixtures() {
           assert.throws(
             () => checkLocalTerms(repo, [{ name: "fixture", text }]),
             {
-              message: `local-terms list present; refused ${JSON.stringify([{ file: "fixture", line, endLine, count: 1, mode: "review" }])}`,
+              message: `local-terms list present; refused ${JSON.stringify([{ file: "fixture", line, endLine, count: 1, mode: "refuse" }])}`,
             },
           );
         }
@@ -3381,7 +3736,7 @@ export async function fixtures() {
             ]),
           {
             message:
-              'local-terms list present; refused [{"file":"fixture","line":2,"endLine":2,"count":2,"mode":"review"},{"file":"fixture","line":4,"endLine":4,"count":1,"mode":"review"}]',
+              'local-terms list present; refused [{"file":"fixture","line":2,"endLine":2,"count":2,"mode":"refuse"},{"file":"fixture","line":4,"endLine":4,"count":1,"mode":"refuse"}]',
           },
         );
         for (const reason of [
@@ -3400,16 +3755,214 @@ export async function fixtures() {
             }),
             {
               message:
-                'local-terms list present; refused [{"file":"validated-result","line":1,"endLine":1,"count":1,"mode":"review"}]',
+                'local-terms list present; refused [{"file":"validated-result","line":1,"endLine":1,"count":1,"mode":"refuse"}]',
             },
           );
           assert.deepEqual(await readReceipts(repo), []);
           assert.deepEqual(readdirSync(join(repo, RECEIPTS)), []);
         }
-        assert.equal(
-          (await writeReceipt(repo, passResult)).result.planVerdict,
-          "pass",
+        // A context-mode match refuses nothing: the receipt is written and
+        // the match is listed by file and line, never by the term (WO-276).
+        const listed = [];
+        const consoleError = console.error;
+        console.error = (line) => listed.push(String(line));
+        try {
+          assert.equal(
+            (
+              await writeReceipt(repo, (current) => {
+                const result = passResult(current);
+                result.orders[0].reason = "A quiet-fizzle note";
+                return result;
+              })
+            ).result.planVerdict,
+            "pass",
+          );
+        } finally {
+          console.error = consoleError;
+        }
+        assert.ok(
+          listed.includes(
+            "CONTEXT validated-result:1: a local term in context mode",
+          ),
+          listed.join("\n"),
         );
+        assert.doesNotMatch(listed.join("\n"), /quiet|fizzle/iu);
+      },
+    );
+    await check(
+      "WO-276 criteria A2 and A3: the list's two sections, a list written before them, and the runs a match joins across",
+      async () => {
+        const repo = makeRepo(parent, "term-classes");
+        const list = (text) =>
+          write(repo, "docs/control/local/terms.txt", text);
+        const read = (text) =>
+          localTermFindings(repo, [{ name: "fixture", text }]);
+        const found = (text) =>
+          read(text).findings.map(({ line, endLine, mode }) => [
+            line,
+            endLine,
+            mode,
+          ]);
+        const counts = () => {
+          const { status, terms, refuse, context } = read("");
+          return { status, terms, refuse, context };
+        };
+        // A list written before the sections existed: an unmarked line is
+        // context and a marked line keeps its mode.
+        list("Legacy Plain\nrefuse: Legacy Marked\nreview: Legacy Review\n");
+        assert.deepEqual(counts(), {
+          status: "present",
+          terms: 3,
+          refuse: 1,
+          context: 2,
+        });
+        assert.deepEqual(found("legacy plain\nlegacy marked\nlegacy review"), [
+          [1, 1, "context"],
+          [2, 2, "refuse"],
+          [3, 3, "context"],
+        ]);
+        assert.deepEqual(
+          checkLocalTerms(repo, [{ name: "fixture", text: "Legacy-Plain" }])
+            .findings,
+          [{ file: "fixture", line: 1, endLine: 1, count: 1, mode: "context" }],
+        );
+        // A mode word alone on a line opens a section and is no entry; a
+        // marked line keeps its own mode inside any section; and an entry
+        // listed in both classes refuses, whichever comes first.
+        list(
+          "Above Both\nrefuse:\nBoth Classes\nOnly Refuse\ncontext: Kept Context\ncontext:\nboth classes\nOnly Context\nrefuse: Kept Refuse\nreview:\nRead As Context\nrefuse:\nLate Both\ncontext:\n",
+        );
+        assert.deepEqual(counts(), {
+          status: "present",
+          terms: 8,
+          refuse: 4,
+          context: 4,
+        });
+        assert.deepEqual(found("refuse context review refuse: context:"), []);
+        for (const [text, mode] of [
+          ["above both", "context"],
+          ["both classes", "refuse"],
+          ["only refuse", "refuse"],
+          ["kept context", "context"],
+          ["only context", "context"],
+          ["kept refuse", "refuse"],
+          ["read as context", "context"],
+          ["late both", "refuse"],
+        ])
+          assert.deepEqual(found(text), [[1, 1, mode]], text);
+        list("context:\nLate Both\nrefuse:\nlate both\n");
+        assert.deepEqual(found("Late Both"), [[1, 1, "refuse"]]);
+        // Criterion A3: letters that stand on either side of a brace, a
+        // pipe and a backslash are never one word.
+        list(
+          "refuse:\nabc\nProject Lantern\nops@lantern.example\nbuild.lantern.example:8080\n",
+        );
+        for (const text of [
+          "x=a{b|c\\d",
+          "a}b|c\\",
+          "a\\b{c",
+          "a|b}c",
+          "[a](b)c",
+          'a"b"c',
+          "a+b=c",
+          "a,b;c",
+        ])
+          assert.deepEqual(found(text), [], text);
+        // The same letters are one word across a hyphen, a period, a space
+        // and a line break, and across what else a writer puts in a name.
+        for (const [text, endLine] of [
+          ["a-b-c", 1],
+          ["a.b.c", 1],
+          ["a b c", 1],
+          ["a\nb\nc", 3],
+          ["a_b_c", 1],
+          ["a/b/c", 1],
+          ["a'b\u2019c", 1],
+          ["**a**`b`_c_", 1],
+          ["a\u2014b\u00adc", 1],
+        ])
+          assert.deepEqual(found(text), [[1, endLine, "refuse"]], text);
+        // A name wrapped inside a quoted, commented or listed block is still
+        // one name: the next line's marker joins as the line break does.
+        for (const text of [
+          "> uses Project\n> Lantern today",
+          "// uses Project\n// Lantern today",
+          "# uses Project\n# Lantern today",
+          " * uses Project\n * Lantern today",
+          "- Project\n- Lantern",
+          "+ Project\n+ Lantern",
+          "1. Project\n2. Lantern",
+          "> 1) Project\n> 2) Lantern",
+        ])
+          assert.deepEqual(found(text), [[1, 2, "refuse"]], text);
+        for (const text of [
+          "Project}{Lantern",
+          'Project" + "Lantern',
+          "Project: Lantern",
+          "Project\n}\nLantern",
+        ])
+          assert.deepEqual(found(text), [], text);
+        // An address and a host and port each match their own spelling: an
+        // entry joins across the characters it carries between its own runs,
+        // and no other entry does.
+        assert.deepEqual(found("mail ops@lantern.example today"), [
+          [1, 1, "refuse"],
+        ]);
+        assert.deepEqual(found("at build.lantern.example:8080 today"), [
+          [1, 1, "refuse"],
+        ]);
+        assert.deepEqual(found("ops{lantern}example"), []);
+        assert.deepEqual(found("Project@Lantern and Project:Lantern"), []);
+        assert.deepEqual(found("build@lantern.example:8080"), []);
+      },
+    );
+    await check(
+      "WO-276 criterion A3: the search for an entry goes on only while the candidate begins an entry and reads each of its states once, so lines that open with a number cost what other lines do",
+      async () => {
+        const repo = makeRepo(parent, "term-search-bound");
+        const list = (text) =>
+          write(repo, "docs/control/local/terms.txt", text);
+        const timed = (text) => {
+          const started = performance.now();
+          const { findings } = localTermFindings(repo, [
+            { name: "column", text },
+          ]);
+          return { findings, milliseconds: performance.now() - started };
+        };
+        const column = (lines, line) =>
+          `${Array.from({ length: lines }, (_, index) => line(index)).join("\n")}\n`;
+        // A decimal that opens a line is read as a numbered item's marker, so
+        // the search goes on both with the number and without it. Under an
+        // entry of forty letters no such line begins the entry, and a
+        // thousand of them are passed over at their first words.
+        const host = "build-mirror.eu-west.lantern-internal.examples";
+        assert.equal(host.replace(/[^\p{L}\p{N}]/gu, "").length, 40);
+        list(`refuse: ${host}\n`);
+        const decimals = timed(
+          column(1000, (index) => `${index % 3}.${(index * 37) % 10}`),
+        );
+        assert.deepEqual(decimals.findings, []);
+        assert.ok(
+          decimals.milliseconds < 2000,
+          `a thousand number-led lines took ${Math.round(decimals.milliseconds)} ms`,
+        );
+        // An entry that every numbered line can go on beginning: each line
+        // adds its marker or sets it aside and both stay beginnings, so the
+        // paths double at every line while the states do not.
+        list(`refuse: ${"1".repeat(40)}\n`);
+        const ones = timed(column(200, () => "1. 1"));
+        assert.ok(
+          ones.milliseconds < 10000,
+          `two hundred lines of one entry's beginnings took ${Math.round(ones.milliseconds)} ms`,
+        );
+        assert.ok(ones.findings.length > 0);
+        assert.ok(ones.findings.every(({ mode }) => mode === "refuse"));
+        // The marker is still read as the number it is, and a match reached
+        // with the number is counted once.
+        list("refuse:\nProject 2 Lantern\n");
+        assert.deepEqual(timed("1. Project\n2. Lantern\n").findings, [
+          { file: "column", line: 1, endLine: 2, count: 1, mode: "refuse" },
+        ]);
       },
     );
     await check(
@@ -4031,6 +4584,24 @@ else {
         await assert.rejects(
           plan(["failures"], repo),
           /persisted correction ids are unreadable/,
+        );
+        // In a kit root a file of that name is the instance's own, under its
+        // own order of that number: it is not read as core's record, whether
+        // it parses or not (WO-276 criterion R1).
+        write(repo, "KIT-MANIFEST.json", "{}\n");
+        assert.equal(isCoreRoot(repo), false);
+        assert.equal(
+          (await plan(["failures"], repo)).counts.window.corrections,
+          windowCounts.corrections,
+        );
+        write(
+          repo,
+          "docs/evidence/WO-172/direction-agreement.json",
+          prettyJson({ correctionsNotRecorded: ["WO-804-D001"] }),
+        );
+        assert.equal(
+          (await plan(["failures"], repo)).counts.window.corrections,
+          windowCounts.corrections,
         );
       },
     );
@@ -5538,11 +6109,13 @@ else {
       async () => {
         const repo = makeRepo(parent, "capability-history-repair");
         const path = "docs/planning/capability-table.md";
+        // The second row names its capability in words before the code span,
+        // as the capability table's own rows do; the first opens with it.
         write(
           repo,
           path,
           read(repo, path) +
-            "| `fixture.second` | **0 — latent** | Second fixture observation. |\n",
+            "| Second fixture (`fixture.second`) | **0 — latent** | Second fixture observation. |\n",
         );
         commit(repo, "two capability rows");
         const receipt = await writeDirectReceipt(repo);
@@ -5959,7 +6532,7 @@ else {
           repo,
           path,
           before +
-            "\n## WO-901 dated addition (2030-01-02)\n\n| `fixture.first` | 1 |\n",
+            "\n## WO-901 dated addition (2030-01-02)\n\n| Capability | Level |\n| --- | --- |\n| `fixture.first` | 1 |\n",
         );
         assert.equal(
           (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
@@ -6199,6 +6772,16 @@ else {
             ({ kind }) => kind === "typed-dependency-migration",
           ),
         );
+        // In a kit root an order of that number authorizes no migration: the
+        // same typed blocks are unrefuted edits, as under any other order
+        // (WO-276 criterion R1).
+        write(repo, "KIT-MANIFEST.json", "{}\n");
+        assert.equal(isCoreRoot(repo), false);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject|stale/u,
+        );
+        unlinkSync(join(repo, "KIT-MANIFEST.json"));
         for (const relations of [
           [],
           [
@@ -6819,12 +7402,46 @@ else {
           original + "\n## Design change\n\nIgnore the original contract.\n",
           original +
             "\n## Execution record\n\n**Depends on:** A different order.\n",
+          // A field of the order's own under the record, whatever stands
+          // before it there, with its colon or as a section label.
+          original +
+            "\n## Execution record\n\n- **Outcome:** checks passed\n\n**Depends on:** A different order.\n",
+          original +
+            "\n## Execution record\n\nChecks passed.\n**Effort:** executor low\n",
+          original +
+            "\n## Execution record\n\n**Reviewed scope (as executed)**\n\n1. None.\n",
+          // A label in lower case is a label to the reader as any other.
+          original +
+            "\n## Execution record\n\n**known issues and carry-ins:** none.\n",
         ]) {
           write(repo, path, changed);
           await assert.rejects(
             checkPlanGate(repo),
             /matching the current subject/u,
           );
+          write(repo, path, original);
+        }
+        // A label a record writes inside one of its own blocks is that
+        // block's text and no field of the order, as the work-order reader
+        // takes it: a list item's, a quotation's, a code block's, and bold
+        // words in the middle of a line. The gate continues over each.
+        for (const body of [
+          "- **Outcome:** checks passed\n- **Depends on:** nothing new",
+          "1. **Outcome:** checks passed\n   **Depends on:** nothing new",
+          "> **Outcome:** checks passed\n> **Depends on:** nothing new",
+          "- Checks:\n  > **Outcome:** passed",
+          "```text\n**Depends on:** quoted as an example\n```",
+          "Checks passed, and **Outcome:** stands in the middle of a line.",
+          // Bold words that open a line and run on into their sentence are
+          // emphasis, in any case and with a digit or a code span first.
+          "**3 checks** passed after the rerun.",
+          "**`npm test`** passed.",
+          "Checks passed.\n**3 of 4** suites ran twice.",
+          "**Note** the second run alone was timed.",
+          "**all four suites** passed.",
+        ]) {
+          write(repo, path, `${original}\n## Execution record\n\n${body}\n`);
+          assert.ok((await checkPlanGate(repo)).continuation, body);
           write(repo, path, original);
         }
         for (const [heading, id] of [
@@ -6987,16 +7604,21 @@ else {
         const repo = makeRepo(parent, "direct-command");
         runGit(repo, ["config", "user.name", "Direct Fixture"]);
         runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
-        // The direct form names one of the operator's four options for the
-        // parent's launch; anything else is refused by name, and the
-        // external transport's own flags still need an explicit transport.
+        // The direct form names a worker or a model of the instance's table
+        // for the parent's launch; anything else is refused with what the
+        // table has, and the external transport's own flags still need an
+        // explicit transport.
         await assert.rejects(
           plan(["refute", "--model", "fixture"], repo),
-          /--model fixture is not one of the operator's four worker options/u,
+          /"fixture" is no worker or model of this instance; it has default, advanced, judge, verifier, opus, fable, sol, astra, sonnet, luna/u,
         );
         await assert.rejects(
-          plan(["refute", "--effort", "max"], repo),
-          /explicit --transport/u,
+          plan(["refute", "--slug", "label"], repo),
+          /Background refutation accepts only --direct, --scope, --model, --effort, --provider; external options require an explicit --transport/u,
+        );
+        await assert.rejects(
+          plan(["refute", "--transport", "fake", "--provider", "codex"], repo),
+          /--provider names the provider of the direct form's launch/u,
         );
         const saved = Object.fromEntries(
           [
@@ -7005,41 +7627,185 @@ else {
             "CLAUDE_SESSION_ID",
           ].map((key) => [key, process.env[key]]),
         );
+        const { KIT_MODELS } =
+          await import("../packages/skeleton/src/worker-models.mjs");
         let astra;
         try {
           for (const key of Object.keys(saved)) delete process.env[key];
+          // The launch printed for a name is what `npm run worker -- show`
+          // prints for it: what this launchpad's table gives the name, the
+          // session's own launch and the receipt's flag. A model asked for
+          // by its exact id answers to its name (WO-276 criterion J2).
+          write(
+            repo,
+            "dotln.config.json",
+            prettyJson({
+              version: 1,
+              workers: { default: { claude: "haiku" } },
+            }),
+          );
+          write(
+            repo,
+            "dotln.models.json",
+            prettyJson({
+              schemaVersion: 1,
+              models: {
+                haiku: { provider: "claude", id: "model-a", effort: "high" },
+              },
+            }),
+          );
+          const place = "dotln.models.json#models.haiku";
+          for (const named of ["haiku", "model-a"]) {
+            const { launch } = JSON.parse(
+              await plan(["refute", "--model", named], repo),
+            );
+            assert.deepEqual(
+              launch,
+              {
+                name: "haiku",
+                entry: "model",
+                provider: "claude",
+                model: { name: "haiku", id: "model-a", family: null },
+                effort: "high",
+                description: null,
+                launchable: true,
+                workerType: "dotln-worker",
+                source: { model: place, id: place, effort: place },
+                // The instance's default runs this model, so the one
+                // worker definition holds it and the launch names nothing.
+                session: {
+                  tool: "Agent",
+                  arguments: { subagent_type: "dotln-worker" },
+                  exact: true,
+                },
+                receipt: "--worker-type dotln-worker",
+              },
+              named,
+            );
+          }
+          fs.rmSync(join(repo, "dotln.config.json"));
+          fs.rmSync(join(repo, "dotln.models.json"));
           astra = JSON.parse(await plan(["refute", "--model", "astra"], repo));
-          // Without --model, and outside a session, no launch is named.
+          // An effort for the one launch, and the provider where the
+          // worker runs on several and no session says which.
+          await assert.rejects(
+            plan(["refute", "--effort", "low"], repo),
+            /the worker "default" runs on claude and codex; name the provider/u,
+          );
+          const lowered = JSON.parse(
+            await plan(
+              ["refute", "--effort", "low", "--provider", "codex"],
+              repo,
+            ),
+          ).launch;
+          assert.deepEqual(
+            [lowered.name, lowered.session.arguments.reasoning_effort],
+            ["default", "low"],
+          );
+          // Without --model no launch is named: the parent's ordinary
+          // launch runs the default worker.
           assert.equal(
             JSON.parse(await plan(["refute"], repo)).launch,
             undefined,
           );
-          // A Claude session is pointed at the external transport for it.
+          // In a Claude session another Claude model is the one worker
+          // definition launched by family, which the host resolves, and a
+          // Codex model is pointed at the external transport.
           process.env.CLAUDE_CODE_SESSION_ID = "fixture-direct-claude";
+          assert.equal(
+            JSON.parse(await plan(["refute"], repo)).launch,
+            undefined,
+          );
+          const fable = JSON.parse(
+            await plan(["refute", "--model", "fable"], repo),
+          ).launch;
+          assert.deepEqual(
+            [fable.session.tool, fable.session.arguments, fable.session.exact],
+            [
+              "Agent",
+              {
+                subagent_type: "dotln-worker",
+                model: "fable",
+                effort: KIT_MODELS.fable.effort,
+              },
+              false,
+            ],
+          );
+          assert.equal(
+            JSON.parse(await plan(["refute", "--model", "advanced"], repo))
+              .launch.model.id,
+            KIT_MODELS.fable.id,
+          );
+          const pointed = JSON.parse(
+            await plan(["refute", "--model", "astra"], repo),
+          ).launch;
+          assert.equal(pointed.session, null);
           assert.match(
-            JSON.parse(await plan(["refute", "--model", "astra"], repo)).launch
-              .note,
-            /this Claude session cannot spawn a Codex worker; npm run plan -- refute --transport codex-cli-exec --model astra/u,
+            pointed.note,
+            /this Claude session cannot launch a Codex worker itself; npm run worker -- review --host codex --model astra launches a review on it, and npm run plan -- refute --transport codex-cli-exec --model astra a refutation over the full horizon/u,
           );
         } finally {
           for (const [key, value] of Object.entries(saved))
             if (value === undefined) delete process.env[key];
             else process.env[key] = value;
         }
-        assert.deepEqual(astra.launch, {
-          option: "astra",
-          selection: "model-flag",
-          host: "codex",
-          model: "gpt-6-astra",
-          effort: "max",
-          tool: "spawn_agent",
-          forkTurns: "none",
-          agentType: "dotln-worker-astra",
-          reasoningEffort: "max",
-          receipt: "--worker-type dotln-worker-astra",
-        });
+        // Outside a session the launch is the provider's own: a Codex spawn
+        // by exact id and effort, its brief opened by the worker's standing
+        // rules, which no definition file carries for it.
+        const { preamble, ...spawn } = astra.launch.session;
+        assert.deepEqual(
+          { ...astra.launch, session: spawn },
+          {
+            name: "astra",
+            entry: "model",
+            provider: "codex",
+            model: { name: "astra", id: KIT_MODELS.astra.id, family: null },
+            effort: KIT_MODELS.astra.effort,
+            description: KIT_MODELS.astra.description,
+            launchable: true,
+            workerType: "codex-spawn-agent",
+            source: { model: "kit", id: "kit", effort: "kit" },
+            session: {
+              tool: "spawn_agent",
+              arguments: {
+                fork_turns: "none",
+                model: KIT_MODELS.astra.id,
+                reasoning_effort: KIT_MODELS.astra.effort,
+              },
+              exact: true,
+            },
+            receipt: "--worker-type codex-spawn-agent",
+          },
+        );
+        assert.match(preamble, /never start a test-runner gate in any form/u);
         assert.ok(astra.resultSchema, "the prompt and schema are unchanged");
-        const prompt = await plan(["refute"], repo);
+        // The parent's steps come with the prompt, on the error stream (WO-276
+        // criterion F5): a planning pass reads them from this command, and
+        // the worker's prompt holds none of them.
+        const printed = [];
+        const stderrWrite = process.stderr.write;
+        process.stderr.write = (chunk) => (printed.push(String(chunk)), true);
+        let prompt;
+        try {
+          prompt = await plan(["refute"], repo);
+        } finally {
+          process.stderr.write = stderrWrite;
+        }
+        const { refutationParentSteps } =
+          await import("../packages/skeleton/dist/src/loadouts/contributor.js");
+        assert.equal(printed.join(""), await refutationSteps());
+        assert.equal(refutationParentSteps.length, 3);
+        for (const [index, step] of refutationParentSteps.entries()) {
+          assert.ok(printed.join("").includes(`${index + 1}. ${step}\n`));
+          assert.ok(
+            !prompt.includes(step),
+            "the worker's prompt holds no step",
+          );
+        }
+        assert.ok(
+          printed.join("").includes("`npm run plan -- receipt <result.json>"),
+          "the steps name the receipt command",
+        );
         assert.ok(typeof prompt === "string");
         assert.ok(JSON.parse(prompt).resultSchema);
         assert.ok(!prompt.includes("PLANNER_NARRATIVE_SENTINEL"));
@@ -7951,7 +8717,8 @@ else {
           "the class breakdown would take the block past its bound",
         );
         // The plan check screens the criteria of every active and open order
-        // the pass is about to file against, and refuses nothing.
+        // the pass is about to file against; an advisory refuses nothing, and
+        // only a criteria list the reader cannot read whole is refused.
         write(
           repo,
           "docs/work-orders/WO-806-fixture.md",
@@ -8684,6 +9451,294 @@ else {
       },
     );
     await check(
+      "WO-276 criterion R1: a receipt whose subject holds an order numbered as core's own instrument carries the added sentence in core's root and the ordinary one in a kit root",
+      async () => {
+        const instrument = /Self-referential instrument: WO-041/u;
+        const ordinary = /This verdict evaluates a planning horizon/u;
+        // The same subject, one order renamed to the number, in each root.
+        const receiptIn = async (name, kit) => {
+          const repo = makeRepo(parent, name);
+          if (kit) write(repo, "KIT-MANIFEST.json", "{}\n");
+          renameSync(
+            join(repo, orderPath("WO-901")),
+            join(repo, orderPath("WO-041")),
+          );
+          write(
+            repo,
+            orderPath("WO-041"),
+            read(repo, orderPath("WO-041")).replaceAll("WO-901", "WO-041"),
+          );
+          write(
+            repo,
+            PLAN_MAP,
+            read(repo, PLAN_MAP).replaceAll("WO-901", "WO-041"),
+          );
+          commit(repo, "an order of that number");
+          assert.equal(isCoreRoot(repo), !kit);
+          const receipt = await writeDirectReceipt(repo);
+          assert.ok(
+            receipt.subject.orders.some(
+              ({ workOrderId }) => workOrderId === "WO-041",
+            ),
+          );
+          return {
+            repo,
+            receipt,
+            page: read(repo, `${RECEIPTS}/${receipt.receiptId}.md`),
+          };
+        };
+        const core = await receiptIn("r1-receipt-core", false);
+        assert.match(core.page, instrument);
+        assert.doesNotMatch(core.page, ordinary);
+        assert.equal(core.page, renderPlanReceipt(core.receipt, true));
+        assert.equal((await checkPlanGate(core.repo)).passes, 1);
+
+        const kit = await receiptIn("r1-receipt-kit", true);
+        assert.doesNotMatch(kit.page, instrument);
+        assert.match(kit.page, ordinary);
+        // A caller that does not say the root is core's renders the same.
+        assert.equal(kit.page, renderPlanReceipt(kit.receipt));
+        assert.equal((await checkPlanGate(kit.repo)).passes, 1);
+
+        // An instance's receipt of an earlier release holds the sentence the
+        // kit then wrote in every root. A receipt is never rewritten, so that
+        // page still reads in a kit root; no other page does, and core's root
+        // reads its own rendering alone.
+        const pageOf = ({ receipt }) => `${RECEIPTS}/${receipt.receiptId}.md`;
+        write(kit.repo, pageOf(kit), renderPlanReceipt(kit.receipt, true));
+        assert.equal((await checkPlanGate(kit.repo)).passes, 1);
+        write(kit.repo, pageOf(kit), `${kit.page}\nAn added line.\n`);
+        await assert.rejects(
+          checkPlanGate(kit.repo),
+          /immutable Markdown differs from its receipt/u,
+        );
+        write(core.repo, pageOf(core), renderPlanReceipt(core.receipt, false));
+        await assert.rejects(
+          checkPlanGate(core.repo),
+          /immutable Markdown differs from its receipt/u,
+        );
+      },
+    );
+    await check(
+      "WO-276 criterion R5: an open order whose execution plan names a machinery suite's declared source prints one preflight advisory for each suite its Preflight field leaves out, and the check passes as it would",
+      async () => {
+        // An order with steps and a Preflight field: the fixture's has neither.
+        const planned = (id, files, preflight) =>
+          order(id).replace(
+            "**Acceptance criteria (all required)**",
+            `**Execution plan:**\n\n1. Edit ${files.map((file) => `\`${file}\``).join(" and ")}; run \`npm test\`.\n\n**Preflight:** ${preflight}\n\nThe steps beneath name \`npm test -- --only beneath-the-paragraph\`.\n\n**Acceptance criteria (all required)**`,
+          );
+        const rowsOf = (repo) => readIndex(repo, []).rows;
+        const repo = makeRepo(parent, "preflight-advisory");
+        write(
+          repo,
+          orderPath("WO-901"),
+          planned(
+            "WO-901",
+            ["scripts/lib/shared.mjs", "scripts/lib/second.mjs", "README.md"],
+            "`npm test -- --only named-suite` and\n`npm test -- --only structural-row`.",
+          ),
+        );
+        // A table of its own: two suites the order owes, one it names, a
+        // structural row, a generated row and a suite it does not touch.
+        const table = {
+          machinerySources: {
+            "owed-suite": ["scripts/lib/second.mjs", "scripts/lib/shared.mjs"],
+            "second-owed": ["scripts/lib/shared.mjs"],
+            "named-suite": ["scripts/lib/shared.mjs"],
+            "configuration-root": ["scripts/lib/shared.mjs"],
+            "generated-row": ["scripts/lib/shared.mjs"],
+            "untouched-suite": ["scripts/elsewhere.mjs"],
+            "beneath-the-paragraph": ["scripts/lib/shared.mjs"],
+          },
+          GENERATED_SUITES: ["generated-row"],
+        };
+        assert.deepEqual(
+          openOrderPreflightAdvisories(repo, rowsOf(repo), table),
+          [
+            "preflight advisory: WO-901 names scripts/lib/shared.mjs and 1 more in its execution plan, which the owed-suite suite's declared sources hold; its Preflight field does not name that suite",
+            "preflight advisory: WO-901 names scripts/lib/shared.mjs in its execution plan, which the second-owed suite's declared sources hold; its Preflight field does not name that suite",
+            // The lifecycle reads the field's first paragraph; so does this.
+            "preflight advisory: WO-901 names scripts/lib/shared.mjs in its execution plan, which the beneath-the-paragraph suite's declared sources hold; its Preflight field does not name that suite",
+          ],
+        );
+        // An order with no steps, as the other fixture order is, prints none.
+        assert.ok(
+          rowsOf(repo).some(
+            (row) => row.id === "WO-902" && row.section === "Open",
+          ),
+        );
+        // A plan whose label runs onto a second line is a plan. A declared
+        // source may be a directory or the stem of a family of files, as the
+        // runner reads it for a changed file, and a path need carry no
+        // extension; a span that only begins like a source's stem, or holds
+        // a space, names no file of it.
+        write(
+          repo,
+          orderPath("WO-902"),
+          order("WO-902").replace(
+            "**Acceptance criteria (all required)**",
+            "**Execution plan (the executor follows these steps in order; observed at\nthe base):**\n\n1. Edit `scripts/lib/family-one.mjs`, `tools/kept/inner/file.md` and `tools/bin/run`; leave `scripts/lib/famil` and `tools/bin/run now` alone.\n\n**Preflight:** none.\n\n**Acceptance criteria (all required)**",
+          ),
+        );
+        const families = {
+          machinerySources: {
+            "stem-suite": ["scripts/lib/family-"],
+            "directory-suite": ["tools/kept/"],
+            "exact-suite": ["tools/bin/run"],
+            "longer-suite": ["scripts/lib/family-one.mjs.old"],
+          },
+          GENERATED_SUITES: [],
+        };
+        // A wrapped bold phrase that is not the order's own plan label is
+        // text: a plan quoted from another order, a list item that opens
+        // with such a phrase, and a longer label that only begins the same.
+        write(
+          repo,
+          "docs/work-orders/WO-903-fixture.md",
+          order("WO-903").replace(
+            "**Acceptance criteria (all required)**",
+            "> **Execution plan (quoted from another order; observed at\n> the base):**\n>\n> 1. Edit `scripts/lib/family-one.mjs`.\n\n- **Execution plan (a list item's; observed at\n  the base):** `tools/bin/run` was edited.\n\n**Execution plan history (kept for the record; observed at\nthe base):** `tools/kept/inner/file.md` was edited.\n\n**Preflight:** none.\n\n**Acceptance criteria (all required)**",
+          ),
+        );
+        assert.deepEqual(
+          openOrderPreflightAdvisories(
+            repo,
+            [
+              {
+                id: "WO-903",
+                section: "Open",
+                authorityLink: "WO-903-fixture.md",
+              },
+            ],
+            families,
+          ),
+          [],
+        );
+        assert.deepEqual(
+          openOrderPreflightAdvisories(repo, rowsOf(repo), families),
+          [
+            "preflight advisory: WO-902 names scripts/lib/family-one.mjs in its execution plan, which the stem-suite suite's declared sources hold; its Preflight field does not name that suite",
+            "preflight advisory: WO-902 names tools/kept/inner/file.md in its execution plan, which the directory-suite suite's declared sources hold; its Preflight field does not name that suite",
+            "preflight advisory: WO-902 names tools/bin/run in its execution plan, which the exact-suite suite's declared sources hold; its Preflight field does not name that suite",
+          ],
+        );
+
+        // Through the gate, with the table the runner selects by: an order
+        // that edits a file owes each suite that declares it. The file is
+        // found in the table, one that a structural row and at least two
+        // other suites declare, so this case names no source of its own.
+        const { machinerySources, GENERATED_SUITES } =
+          await import("./lib/machinery-sources.mjs");
+        const { CORE_STRUCTURAL_TASKS } =
+          await import("./lib/generated-artifacts.mjs");
+        const declaringOf = (file) =>
+          Object.entries(machinerySources)
+            .filter(([, sources]) => sources.includes(file))
+            .map(([suite]) => suite);
+        const owedOf = (file) =>
+          declaringOf(file).filter(
+            (suite) =>
+              !CORE_STRUCTURAL_TASKS.includes(suite) &&
+              !GENERATED_SUITES.includes(suite),
+          );
+        const shared = Object.entries(machinerySources)
+          .filter(([suite]) => CORE_STRUCTURAL_TASKS.includes(suite))
+          .flatMap(([, sources]) => sources)
+          .find((file) => owedOf(file).length >= 2);
+        assert.ok(shared, "a source of a structural row and two other suites");
+        const declaring = declaringOf(shared);
+        const owed = owedOf(shared);
+        assert.ok(owed.length >= 2 && owed.length < declaring.length);
+        const gate = async (name, preflight, options) => {
+          const fixture = makeRepo(parent, name);
+          write(
+            fixture,
+            orderPath("WO-901"),
+            planned("WO-901", [shared], preflight),
+          );
+          commit(fixture, "an order with steps");
+          await writeDirectReceipt(fixture);
+          return checkPlanGate(fixture, options);
+        };
+        const silent = await gate(
+          "preflight-named",
+          owed.map((suite) => `\`npm test -- --only ${suite}\``).join(", "),
+        );
+        assert.deepEqual(silent.preflightAdvisories, []);
+        const advised = await gate(
+          "preflight-unnamed",
+          `\`npm test -- --only ${owed[0]}\``,
+        );
+        assert.deepEqual(
+          advised.preflightAdvisories,
+          owed
+            .slice(1)
+            .map(
+              (suite) =>
+                `preflight advisory: WO-901 names ${shared} in its execution plan, which the ${suite} suite's declared sources hold; its Preflight field does not name that suite`,
+            ),
+        );
+        assert.ok(
+          advised.preflightAdvisories.every(
+            (line) =>
+              !CORE_STRUCTURAL_TASKS.some((suite) =>
+                line.includes(` ${suite} suite`),
+              ) &&
+              !GENERATED_SUITES.some((suite) =>
+                line.includes(` ${suite} suite`),
+              ),
+          ),
+        );
+        // The check passes as it does where nothing is advised.
+        assert.equal(advised.passes, silent.passes);
+        assert.equal(advised.passes, 1);
+        // So it does where the table cannot be read: the advisory says so
+        // and refuses nothing.
+        const unread = await gate("preflight-unread", "none", {
+          machinery: async () => {
+            throw new Error("no table here\nand a second line");
+          },
+        });
+        assert.deepEqual(unread.preflightAdvisories, [
+          "preflight advisory: unavailable (no table here)",
+        ]);
+        assert.equal(unread.passes, silent.passes);
+      },
+    );
+    await check(
+      "WO-276 criterion R1: the brief a direct refutation prints names core's own order in core's root alone",
+      async () => {
+        for (const kit of [false, true]) {
+          const repo = makeRepo(parent, `r1-brief-${kit ? "kit" : "core"}`);
+          if (kit) {
+            write(repo, "KIT-MANIFEST.json", "{}\n");
+            // A kit root reads its goal rules between their markers.
+            const guide = "docs/product/07-execution-guide.md";
+            const rule =
+              "Consider all eight system traps and observed operator flow.";
+            assert.ok(read(repo, guide).includes(rule));
+            write(
+              repo,
+              guide,
+              read(repo, guide).replace(
+                rule,
+                `<!-- dotln-goal-rules:start -->\n${rule}\n<!-- dotln-goal-rules:end -->`,
+              ),
+            );
+            commit(repo, "a kit root");
+          }
+          assert.equal(isCoreRoot(repo), !kit);
+          const prompt = JSON.parse(await beginDirectRefutation(repo));
+          assert.ok(prompt.workOrder.knownFacts.length > 0);
+          assert.equal(
+            prompt.workOrder.knownFacts.some((fact) => /WO-\d{3}/u.test(fact)),
+            !kit,
+          );
+        }
+      },
+    );
+    await check(
       "WO-126 legacy cost adoption preserves receipts and refuses any substantive authority edit",
       async () => {
         const repo = makeRepo(parent, "legacy-cost-adoption");
@@ -8760,6 +9815,17 @@ else {
           read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
           receiptBytes,
         );
+        // In a kit root an order of that number adopts nothing: the same
+        // header is an unrefuted edit, as it is under any other order
+        // (WO-276 criterion R1).
+        write(repo, "KIT-MANIFEST.json", "{}\n");
+        assert.equal(isCoreRoot(repo), false);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject|stale/u,
+        );
+        unlinkSync(join(repo, "KIT-MANIFEST.json"));
+        assert.equal(isCoreRoot(repo), true);
         const original = read(repo, orderPath("WO-902"));
         write(
           repo,
@@ -9856,14 +10922,22 @@ test("WO-246 plan publish lints, pushes to origin's repository only and opens th
     );
     const branch = "planning/2030-01-02-fixture";
     git("switch", "-q", "-c", branch);
-    write(repo, "docs/planning/passes/fixture-2030-01-02.md", "# Fixture\n");
+    // The branch adds one line that carries the context-mode entry.
+    write(
+      repo,
+      "docs/planning/passes/fixture-2030-01-02.md",
+      "# Fixture\n\nThe quietcanary notes.\n",
+    );
     git("add", ".");
     git("commit", "-qm", "plan the fixture");
     const head = git("rev-parse", "HEAD");
     const pushesAtStart = forge.pushes().length;
     const title = ":memo: Plan the fixture pass";
     // The launchpad's words and identifiers are what its own body is about.
-    const ownBody = "## The pass\n\nDotLn's launchpad files WO-901.\n";
+    // The body's last line carries the context-mode entry, which the
+    // publish lists and does not refuse (WO-276).
+    const ownBody =
+      "## The pass\n\nDotLn's launchpad files WO-901.\n\nThe quietcanary system.\n";
     const bodyFile = join(parent, "body.md");
     writeFileSync(bodyFile, ownBody);
     const publish = (publishTitle = title, file = bodyFile) =>
@@ -9924,12 +10998,6 @@ test("WO-246 plan publish lints, pushes to origin's repository only and opens th
       withBody("## The pass\n\nThe zephyrcanary system.\n"),
     );
     assert.doesNotMatch(refusedTerm.stderr, /zephyrcanary/u);
-    const reviewTerm = refusedBeforeAnyPush(
-      /outward lint: pr-body: vocabulary\.local: review \(line 3\)/u,
-      title,
-      withBody("## The pass\n\nThe quietcanary system.\n"),
-    );
-    assert.doesNotMatch(reviewTerm.stderr, /quietcanary/u);
     refusedBeforeAnyPush(
       /outward lint: pr-body: identifier\.runtime \(line 3\)/u,
       title,
@@ -9986,9 +11054,9 @@ test("WO-246 plan publish lints, pushes to origin's repository only and opens th
     assert.doesNotMatch(carried.stderr, /zephyrcanary/u);
     git("switch", "-q", branch);
     const listed = readFileSync(terms, "utf8");
-    writeFileSync(terms, `${listed}refuse:\n`);
+    writeFileSync(terms, `${listed}refuse: ---\n`);
     const malformed = refusedBeforeAnyPush(
-      /plan publish refused: local-terms list line 3: a mode marker with no term; npm run terms -- check <path> reads the same list/u,
+      /plan publish refused: local-terms list line 3: no term on the line; npm run terms -- check <path> reads the same list/u,
     );
     assert.doesNotMatch(malformed.stderr, /zephyrcanary|quietcanary/u);
     writeFileSync(terms, listed);
@@ -10023,6 +11091,13 @@ test("WO-246 plan publish lints, pushes to origin's repository only and opens th
     );
     const opened = publish();
     assert.equal(opened.status, 0, opened.stderr);
+    // The context-mode matches, in a line the branch adds and in the body,
+    // are listed by file and line before the push and refuse nothing.
+    assert.match(
+      opened.stdout,
+      /^CONTEXT docs\/planning\/passes\/fixture-2030-01-02\.md:3: a local term in context mode\nCONTEXT pr-body:5: a local term in context mode\nPushed /mu,
+    );
+    assert.doesNotMatch(opened.stdout + opened.stderr, /quietcanary/u);
     const pullRequest = `https://${selector}/pull/7`;
     assert.equal(opened.stdout.trim().split("\n").at(-1), pullRequest);
     assert.equal(forge.pushes().length, pushesAtStart + 1);

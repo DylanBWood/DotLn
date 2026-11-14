@@ -70,7 +70,9 @@ import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import {
   decodeBuildOverlay as decodeOverlay,
+  mergeSettingsFragment,
   readBuildOverlayFile,
+  readSettingsFragment,
   overlayError,
 } from "./build-overlay.mjs";
 import {
@@ -83,7 +85,38 @@ import {
 } from "../../packages/skeleton/src/runtime-inputs.mjs";
 
 const manifestPath = ".claude/harness-manifest.json";
+const settingsPath = ".claude/settings.json";
 export { OVERLAY_KEYS } from "./build-overlay.mjs";
+export {
+  FRAGMENT_HOOK_EVENTS,
+  SETTINGS_FRAGMENT,
+  readSettingsFragment,
+} from "./build-overlay.mjs";
+/** A bundle's files with the instance's settings fragment merged into the
+ * settings file, where the bundle has one and the instance a fragment. Emit,
+ * check and the kit's prediction all take the files from here, so each
+ * writes or compares the one merged text. */
+/** The fragment a caller names, or the root's own where it names none. A
+ * caller that read another root's and found none says so with null, so
+ * that emit and check, however each was reached, merge the same one. */
+const fragmentFor = (options, root) =>
+  options.settingsFragment === undefined
+    ? readSettingsFragment(root)
+    : options.settingsFragment;
+const withSettingsFragment = (files, fragment) =>
+  fragment
+    ? files.map((file) =>
+        file.path === settingsPath
+          ? {
+              ...file,
+              contents: mergeSettingsFragment(
+                file.contents,
+                fragment.bytes.toString("utf8"),
+              ),
+            }
+          : file,
+      )
+    : files;
 export function decodeBuildOverlay(path, text) {
   return decodeOverlay(path, text, contributorSupportIds);
 }
@@ -99,7 +132,7 @@ export function readBuildOverlay(launchpad) {
 const hash = (text) => `fnv1a64:${fnv1a64(text)}`;
 const allowed = (path) =>
   path === "CLAUDE.md" ||
-  path === ".claude/settings.json" ||
+  path === settingsPath ||
   path === ".codex/config.toml" ||
   path === ".codex/hooks.json" ||
   path === manifestPath ||
@@ -201,6 +234,10 @@ export function harnessInstallation(options = {}) {
         ...value,
         desktopControl: options.features?.["desktop-control"] === true,
         planFirst: options.features?.["plan-first"] === true,
+        // The instance's workers section: the worker definitions carry
+        // what it resolves to. A caller that passes none (a test, a tool
+        // reading the bundle as the kit ships it) gets the compiled table.
+        workers: options.workers,
       });
   } catch (error) {
     if (overlay) throw overlayError(overlay.path, error.message);
@@ -261,7 +298,28 @@ export function harnessInstallation(options = {}) {
     ? runtimePackageInventoryFromFiles(options.runtimePackageFiles)
     : runtimePackageInventory(sourceRoot);
   const runtimeSnapshot = runtimeSnapshotPath(runtimeFiles, runtimeInventory);
-  const bundles = profiles.map((profile) =>
+  // One settings file serves every selected host that reads it, so a
+  // narrowed hook's matcher takes the form each of them was observed to
+  // read: a host with no observation of the excluding form puts the list
+  // form in the file for all, and each profile's record says which host.
+  const unobserved = profiles.find(
+    (profile) =>
+      profile.settings.available &&
+      profile.events.PreToolUse.available &&
+      profile.matcherExclusion?.available !== true,
+  );
+  const sharedForm = (profile) =>
+    unobserved && profile.matcherExclusion?.available === true
+      ? {
+          ...profile,
+          matcherExclusion: {
+            available: false,
+            evidence: profile.matcherExclusion.evidence,
+            reason: `${unobserved.profileId} reads the same settings file and was not observed to read a matcher that leaves names out`,
+          },
+        }
+      : profile;
+  const bundles = profiles.map(sharedForm).map((profile) =>
     lowerToHarness(program, feedback, program.loadout.authorityEnvelope, {
       ...profile,
       runtime: {
@@ -282,7 +340,10 @@ export function harnessInstallation(options = {}) {
         );
       if (!previous) shared.set(file.path, file);
     }
-  const files = [...shared.values()];
+  const files = withSettingsFragment(
+    [...shared.values()],
+    options.settingsFragment,
+  );
   const block = mergeHarnessFragments(bundles);
   const origin = {
     ids: [
@@ -366,6 +427,8 @@ export function emitHarness(
     ...options,
     features: options.features ?? readFeatures(root),
     declaredFeatures: loadConfig(root).features,
+    workers: options.workers ?? loadConfig(root).workers,
+    settingsFragment: fragmentFor(options, root),
   }),
 ) {
   root = realpathSync(root);
@@ -957,6 +1020,11 @@ export function checkHarness(root, options = {}) {
     ...options,
     features: options.features ?? readFeatures(root),
     declaredFeatures: loadConfig(root).features,
+    // Compared with what this root's own configuration resolves to, so a
+    // definition emitted from it is no drift; its settings fragment
+    // likewise, so the merged settings are none.
+    workers: options.workers ?? loadConfig(root).workers,
+    settingsFragment: fragmentFor(options, root),
   });
   if (isKitRoot(root)) {
     const instruction = readFileSync(contained(root, "CLAUDE.md"), "utf8");
@@ -1072,6 +1140,10 @@ function targetIgnore(context, path, installed = false) {
   if (installed && (!pattern || pattern.startsWith("!")))
     throw new Error(`target bundle is Git-visible: ${path}`);
 }
+// No bundle installs the presence hook any longer (the permission hook carries
+// the heartbeat), and its path stays admitted: a target installed while one
+// did still names it in its manifest, and has to verify, be replaced and be
+// removed through that manifest.
 const targetPaths = new Set([
   "CLAUDE.local.md",
   targetManifest,
@@ -1218,20 +1290,23 @@ function manifestFiles(context, receipt) {
     throw new Error("target manifest self entry differs");
   return files;
 }
+// A launchpad's managed block in a target's git exclude file opens and
+// closes with a comment line in git's own ignore syntax: this prefix, the
+// exclude file's key, then begin or end. Every reader and writer of the block
+// names it here.
+const EXCLUDE_MARKER = "# target-worker ";
+const excludeMarker = (context) => `${EXCLUDE_MARKER}${context.excludeKey}`;
 function excludeRegistry(context) {
   const contents = existsSync(context.exclude)
     ? readFileSync(context.exclude, "utf8")
     : "";
-  if (
-    !existsSync(context.registryPath) &&
-    contents.includes("# target-worker ")
-  )
+  if (!existsSync(context.registryPath) && contents.includes(EXCLUDE_MARKER))
     throw new Error("target exclude is managed by another launchpad");
   let registry = existsSync(context.registryPath)
     ? JSON.parse(readFileSync(context.registryPath, "utf8"))
     : null;
   if (!registry || (!registry.block && !Object.keys(registry.members).length)) {
-    if (contents.includes("# target-worker "))
+    if (contents.includes(EXCLUDE_MARKER))
       throw new Error("target exclude block drift");
     registry = {
       originalLines: contents
@@ -1247,7 +1322,7 @@ function excludeRegistry(context) {
       block: "",
     };
   }
-  const marker = `# target-worker ${context.excludeKey}`;
+  const marker = excludeMarker(context);
   const begins = [...contents.matchAll(new RegExp(`^${marker} begin$`, "gm"))];
   const ends = [...contents.matchAll(new RegExp(`^${marker} end$`, "gm"))];
   let blockStart = null;
@@ -1280,7 +1355,7 @@ function updateTargetExclude(context, files, remove = false) {
   const lines = [...new Set(Object.values(registry.members).flat())]
     .filter((line) => !baseLines.has(line))
     .sort();
-  const marker = `# target-worker ${context.excludeKey}`;
+  const marker = excludeMarker(context);
   const nextBlock = lines.length
     ? `${marker} begin\n${lines.join("\n")}\n${marker} end\n`
     : "";
@@ -1346,7 +1421,13 @@ function emitTargetUnlocked(context, options) {
       },
     },
   );
-  const payload = bundle.files.map(({ path, contents }) => ({
+  // The launchpad's fragment joins a target worktree's settings as it joins
+  // the launchpad's own: most of an instance's tool calls run here.
+  const files = withSettingsFragment(
+    bundle.files,
+    fragmentFor(options, context.launchpad),
+  );
+  const payload = files.map(({ path, contents }) => ({
     path,
     hash: hash(contents),
   }));
@@ -1390,7 +1471,7 @@ function emitTargetUnlocked(context, options) {
   // Validate all paths/ownership before first mutation. Preserve immutable runtime first.
   preserveHarnessRuntime(context.launchpad, runtime);
   writeTargetExclude(context, nextExclude);
-  for (const file of bundle.files) {
+  for (const file of files) {
     const path = targetFile(context.root, file.path);
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, file.contents);

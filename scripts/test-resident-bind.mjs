@@ -35,6 +35,7 @@ import {
   parseArguments,
 } from "./resident-bind.mjs";
 import { missionPinFromSource } from "../packages/skeleton/dist/src/mission-check-source.js";
+import { missionDocumentReader } from "./lib/mission-documents.mjs";
 import { missionPin } from "../packages/skeleton/dist/src/mission-check-protocol.js";
 import { decodeResidentConfiguration } from "../packages/skeleton/dist/src/resident-state.js";
 import {
@@ -47,6 +48,7 @@ const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const sourceRoot = join(scriptRoot, "..");
 const command = join(scriptRoot, "resident-bind.mjs");
 const dotln = join(sourceRoot, "packages/skeleton/dist/src/dotln.js");
+const residentLauncher = join(sourceRoot, "scripts/resident.mjs");
 
 const CONTRACT = `# WO-999 — Fixture order
 
@@ -241,8 +243,8 @@ test("bind writes a store the runtime accepts and aims at the bound worktree", (
     );
     // Every printed line an operator acts on names this store.
     for (const line of [
-      `resident --store '${store}' --policy contributor.mission-check --once`,
-      `resident --store '${store}' --policy contributor.mission-check --tick 60000`,
+      `resident.mjs' --store '${store}' --policy contributor.mission-check --once`,
+      `resident.mjs' --store '${store}' --policy contributor.mission-check --tick 60000`,
       `presence away --store '${store}'`,
       `presence back --store '${store}'`,
       `status --store '${store}'`,
@@ -287,18 +289,25 @@ test("bind writes a store the runtime accepts and aims at the bound worktree", (
       "ignored inventory is empty",
     );
     assert.deepEqual(
-      comparable(missionPinFromSource(actor.missionSource, "WO-999")),
+      comparable(
+        missionPinFromSource(
+          actor.missionSource,
+          "WO-999",
+          missionDocumentReader,
+        ),
+      ),
       comparable(pinned),
     );
     // Two pins over the same inventory carry different salts and different
     // ids, which is what keeps a private ignored path out of the capsule.
     assert.notEqual(
-      missionPinFromSource(actor.missionSource, "WO-999").ignoredSalt,
+      missionPinFromSource(actor.missionSource, "WO-999", missionDocumentReader)
+        .ignoredSalt,
       pinned.ignoredSalt,
     );
     assert.notEqual(
-      missionPinFromSource(actor.missionSource, "WO-999").ignoredBaseline[0]
-        .evidence,
+      missionPinFromSource(actor.missionSource, "WO-999", missionDocumentReader)
+        .ignoredBaseline[0].evidence,
       pinned.ignoredBaseline[0].evidence,
     );
 
@@ -333,8 +342,9 @@ test("bind writes a store the runtime accepts and aims at the bound worktree", (
     assert.equal(binding.canonical.recordedAt, ACTIVATED.recordedAt);
     assert.ok(Date.parse(binding.boundAt) >= started);
 
-    // The shipped CLI reads the store, and one cycle with the operator present
-    // configures the resident without dispatching anything.
+    // The shipped CLI reads the store, and one cycle of the printed launcher
+    // with the operator present configures the resident without dispatching
+    // anything.
     const status = spawnSync(
       process.execPath,
       [dotln, "status", "--store", store],
@@ -346,8 +356,7 @@ test("bind writes a store the runtime accepts and aims at the bound worktree", (
     const once = spawnSync(
       process.execPath,
       [
-        dotln,
-        "resident",
+        residentLauncher,
         "--store",
         store,
         "--policy",
@@ -994,8 +1003,8 @@ test("a moved store keeps its binding, and a directory without one refuses", () 
     // Accepting the relocation means every command printed has to open the
     // directory that was checked; the original path is only provenance.
     for (const line of [
-      `resident --store '${elsewhere}' --policy contributor.mission-check --once`,
-      `resident --store '${elsewhere}' --policy contributor.mission-check --tick 60000`,
+      `resident.mjs' --store '${elsewhere}' --policy contributor.mission-check --once`,
+      `resident.mjs' --store '${elsewhere}' --policy contributor.mission-check --tick 60000`,
       `presence away --store '${elsewhere}'`,
       `presence back --store '${elsewhere}'`,
       `status --store '${elsewhere}'`,
@@ -1705,3 +1714,146 @@ test("--check names a binding record whose profile identifier differs from the r
     );
     noLaunchLine(checked);
   }));
+
+test("WO-276 (rolling review 6, F4): a mission contract's clauses are introduced by the order's own labels, so a quoted or a listed example of a label introduces nothing", () => {
+  const order = [
+    "# WO-001 — fixture",
+    "",
+    "**Model:** fixture.",
+    "**Effort:** executor any; verifier any; reviewer any.",
+    "**Objective:** the real objective.",
+    "",
+    "**Design**",
+    "",
+    "An order states its criteria as this example does:",
+    "",
+    "> **Acceptance criteria:** an example.",
+    "",
+    "- **Non-goals:** an example in a list.",
+    "",
+    "**Acceptance criteria (all required)**",
+    "",
+    "1. The first real criterion.",
+    "2. The second real criterion.",
+    "",
+    "**Non-goals:** the real non-goals.",
+    "",
+  ].join("\n");
+  const contract = missionDocumentReader.contract(order);
+  assert.equal(contract.objective, "the real objective.");
+  assert.deepEqual(contract.criteria, [
+    { number: 1, text: "The first real criterion." },
+    { number: 2, text: "The second real criterion." },
+  ]);
+  assert.equal(contract.nonGoals, "the real non-goals.");
+  // A criterion changed below the quoted example is a changed contract.
+  assert.notDeepEqual(
+    missionDocumentReader.contract(
+      order.replace("second real", "second, changed"),
+    ).criteria,
+    contract.criteria,
+  );
+});
+
+test("WO-276 (rolling review 12, F3): the mission's decisions are the file's top-level records, so a quoted or a listed example of one takes no decision's place in the window", () => {
+  const record = (id, decision) =>
+    `\`\`\`json\n${JSON.stringify({ id, decision }, null, 2)}\n\`\`\`\n`;
+  const real = [
+    record("WO-001-D001", "The first."),
+    record("WO-001-D002", "The second."),
+  ];
+  const example = JSON.stringify({
+    id: "WO-001-D999",
+    decision: "Example only.",
+  });
+  const file = [
+    "# WO-001 decisions\n",
+    `## WO-001-D001 — First\n\n${real[0]}`,
+    `## WO-001-D002 — Second\n\n${real[1]}`,
+    // Prose about a decision, after the real ones: a quoted fenced example,
+    // which the base's reader could not parse, and a listed one.
+    `A later note quotes the shape:\n\n> \`\`\`json\n> ${example}\n> \`\`\`\n`,
+    `- or lists it:\n\n  \`\`\`json\n  ${example}\n  \`\`\`\n`,
+  ].join("\n");
+  const read = missionDocumentReader
+    .decisions(file)
+    .map((text) => JSON.parse(text).id);
+  assert.deepEqual(read, ["WO-001-D001", "WO-001-D002"]);
+  // The window's last decision is the last real one.
+  assert.equal(read.at(-1), "WO-001-D002");
+  // A file of examples alone records nothing.
+  assert.deepEqual(
+    missionDocumentReader.decisions(
+      `# Notes\n\n> \`\`\`json\n> ${example}\n> \`\`\`\n`,
+    ),
+    [],
+  );
+});
+
+test("WO-276 criterion B11: the launcher's card source reads the cards again only after an order's file, a control log or an observation record changes", async (t) => {
+  const { workOrderCardSource } = await import("./lib/work-order-cards.mjs");
+  const root = createFixtureRoot(join(tmpdir(), "dotln-card-source-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const order = "docs/work-orders/WO-001-fixture.md";
+  write(root, order, "# WO-001 — fixture\n");
+  write(root, "docs/control/orders/WO-001.jsonl", "");
+  let reads = 0;
+  let fail = false;
+  const source = workOrderCardSource(root, () => {
+    if (fail) throw new Error("the index command failed");
+    return `cards ${++reads}`;
+  });
+  assert.equal(source(), "cards 1");
+  assert.equal(source(), "cards 1", "nothing changed, nothing is read");
+  // The order's file changes: its card is read again.
+  write(root, order, "# WO-001 — fixture\n\n**Objective:** changed.\n");
+  assert.equal(source(), "cards 2");
+  assert.equal(source(), "cards 2");
+  // So do a transition in its control log and a first observation record.
+  write(root, "docs/control/orders/WO-001.jsonl", "{}\n");
+  assert.equal(source(), "cards 3");
+  write(root, "docs/control/workstream-observations.json", "{}\n");
+  assert.equal(source(), "cards 4");
+  // So does the instance's configuration, which names its historical orders
+  // and its document roots, and the map an instance keeps for its sequence.
+  write(
+    root,
+    "dotln.config.json",
+    readFileSync(new URL("../dotln.config.json", import.meta.url), "utf8"),
+  );
+  assert.equal(source(), "cards 5");
+  write(root, "docs/planning/work-order-map.md", "# Map\n");
+  assert.equal(source(), "cards 6");
+  assert.equal(source(), "cards 6");
+  // A failed read throws for the resident to report, and the next call reads.
+  write(root, order, "# WO-001 — fixture\n");
+  fail = true;
+  assert.throws(() => source(), /the index command failed/u);
+  fail = false;
+  assert.equal(source(), "cards 7");
+  // An order in the derived root is an order the index reads (rolling
+  // review 9): its first writing and a later edit each read the cards again.
+  const derived = "docs/work-orders/derived/WO-002-derived.md";
+  write(root, derived, "# WO-002 — derived\n");
+  assert.equal(source(), "cards 8");
+  write(root, derived, "# WO-002 — derived\n\n**Depends on:** WO-001.\n");
+  assert.equal(source(), "cards 9");
+  assert.equal(source(), "cards 9");
+  // Where the configuration keeps the control logs elsewhere, the logs
+  // watched are the ones in that root and no longer the default's.
+  const configuration = JSON.parse(
+    readFileSync(join(root, "dotln.config.json"), "utf8"),
+  );
+  write(
+    root,
+    "dotln.config.json",
+    `${JSON.stringify({ ...configuration, roots: { ...configuration.roots, orders: "logs/orders" } }, null, 2)}\n`,
+  );
+  assert.equal(source(), "cards 10");
+  write(root, "logs/orders/WO-001.jsonl", "{}\n");
+  assert.equal(source(), "cards 11");
+  write(root, "logs/orders/WO-001.jsonl", "{}\n{}\n");
+  assert.equal(source(), "cards 12");
+  write(root, "docs/control/orders/WO-001.jsonl", "{}\n{}\n{}\n");
+  assert.equal(source(), "cards 12", "the default root is no longer read");
+});

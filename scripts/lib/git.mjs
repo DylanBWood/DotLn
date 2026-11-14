@@ -218,6 +218,24 @@ export const readGitObjects = (root, objectIds, type) => {
   return result;
 };
 
+/** `readGitObjects` for a set whose sum may pass the capture's bound, as
+ * the export's kit files and a planning subject's sources can: a batch that
+ * fails is read as two halves, down to one object, whose own failure
+ * propagates. Each object still has to fit the bound by itself. */
+export const readGitObjectsInBatches = (root, objectIds, type) => {
+  const objects = [...new Set(objectIds)];
+  try {
+    return readGitObjects(root, objects, type);
+  } catch (error) {
+    if (objects.length <= 1) throw error;
+    const middle = Math.ceil(objects.length / 2);
+    return new Map([
+      ...readGitObjectsInBatches(root, objects.slice(0, middle), type),
+      ...readGitObjectsInBatches(root, objects.slice(middle), type),
+    ]);
+  }
+};
+
 export const runGitPathList = (cwd, args, options = {}) => {
   const result = spawnGit(["-C", cwd, ...args], {
     encoding: "utf8",
@@ -347,13 +365,22 @@ export const removeMergedBranch = (root, branch) => {
 };
 
 /** The sole script printer for the byte-exact, lifecycle-admitted helper. */
-export const releaseCloseCommand = (main, workOrder, mode = "--publish") => {
+/** A commit a close is told carries a target's merged change: its id, whole
+ * or shortened, as `--merged-as` takes it. */
+export const MERGED_AS = /^[0-9a-f]{7,64}$/u;
+export const releaseCloseCommand = (
+  main,
+  workOrder,
+  mode = "--publish",
+  { mergedAs } = {},
+) => {
   if (
     !/^WO-\d{3}$/.test(workOrder) ||
-    !["--publish", "--dry-run"].includes(mode)
+    !["--publish", "--dry-run"].includes(mode) ||
+    (mergedAs !== undefined && !MERGED_AS.test(mergedAs))
   )
     throw new Error("Invalid release-close command");
-  return `${shellQuote(process.execPath)} ${shellQuote(join(main, "scripts/release.mjs"))} close ${workOrder} ${mode}`;
+  return `${shellQuote(process.execPath)} ${shellQuote(join(main, "scripts/release.mjs"))} close ${workOrder} ${mode}${mergedAs === undefined ? "" : ` --merged-as ${mergedAs}`}`;
 };
 
 /** Stream a large tree's NUL-framed names and retain only the selected paths.

@@ -966,6 +966,28 @@ test("WO-227 criterion 7: the reviewed header refuses an absent or invalid notes
     assert.equal(r.releases()["v0.1.0"].body, body);
   }));
 
+test("WO-276 Part N: where the repository keeps its orders' records in the instance no record was moved into the target, so every link of the reviewed notes becomes its text in the Release body", () =>
+  withFixture((f) => {
+    f.config.repositories.target.records = "instance";
+    const r = releaseFixture(f, {
+      header: "**Target release notes:** reviewed\n",
+    });
+    r.amendMain(
+      "records/final-reviews/WO-999/RELEASE-NOTES.md",
+      notesText("The fixture product gains a board."),
+      "docs: reviewed notes",
+    );
+    const merged = git(r.remote, "rev-parse", "main");
+    assert.match(
+      f.ok(r.close("--publish")),
+      /Target release target: published; tag v0\.1\.0; GitHub Release created/u,
+    );
+    assert.equal(
+      r.releases()["v0.1.0"].body,
+      `## Release overview\n\n**WO-999 — target lifecycle fixture**\n\nThe fixture product gains a board.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nOne change, see D001.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nSee the order and the plan.\n\nClosed by WO-999; merged main at ${merged}.\n`,
+    );
+  }));
+
 test("WO-227 criterion 7: only the bytes the renderer writes for a moved record are the Release's kit frame; a target URL or a link fragment the notes' author wrote is judged like the rest of the notes, whatever its commit or bytes", () =>
   withFixture((f) => {
     const r = releaseFixture(f, {

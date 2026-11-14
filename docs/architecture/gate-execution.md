@@ -106,9 +106,12 @@ capacity. The structural check screens this against the largest recorded task
 RSS in the selected baseline. RSS and the guard's owned footprint are different
 observations; this screen does not establish a worst-case footprint bound.
 
-Harness fixtures, process-debt and worktree-integration hold the full host
-capacity and lend nested leases to the exclusive task and up to two local
-light peers. The parent reservation remains until every child releases it.
+Harness fixtures and process-debt hold the full host capacity and lend nested
+leases to the exclusive task and up to two local light peers; sync-fixtures
+and worktree-integration hold it alone, the second since WO-276's comparison
+found no light peer beside it in either row
+([D050](../evidence/WO-276/decisions.md#wo-276-d050--part-ds-comparison-54-minutes-before-and-42-after-what-the-pair-shows-worktree-integration-declares-no-overlap-and-the-part-closed)).
+The parent reservation remains until every child releases it.
 A qualifying light task is shared and every held baseline observation is
 below 60 seconds and 512 MiB RSS. The critical-path summary splits `waitMs`
 into host admission `laneWaitMs` and scheduling `gapMs`; their sum preserves
@@ -117,8 +120,17 @@ across all task wait intervals, so parallel waiting is counted once.
 Relation-specific unions can overlap when different holders block together.
 Compact relation changes retain attribution independently of the 32-entry
 detailed holder history, including interrupted admissions.
-The exclusive task's declared peer concurrency is at most three; the deadline
-factor is twice that declaration. Target-worktree is four file tasks, at most two
+The exclusive task's declared peer concurrency is the light peers its row's
+overlap admits, never more than the lanes beside its own, and the shards
+admitted together with it; the deadline factor is twice that declaration. The hook suite's cases run as three shard
+tasks inside its reservation, each a process of the row's command that
+registers the cases whose title's hash falls in it: two lanes each at eight,
+admitted together, light peers beside them kept to the row's overlap, and a
+declared peer concurrency that counts the other shards. The exclusive rows
+share the highest priority any of them holds and stand together in the
+queue, so heavy work drains for them once
+([D047](../evidence/WO-276/decisions.md#wo-276-d047--part-d-as-built-the-control-and-what-it-can-show-the-convoy-the-shards-the-file-order-the-conditions-reading-and-the-cases-that-follow)).
+Target-worktree is four file tasks, the close file first, at most two
 concurrent, each with a 900-second task bound. The base actually registered 60
 case names from 39 declarations; [D002](../evidence/WO-222/decisions.md) records the
 order's stale count and the preserved inventory.
@@ -149,6 +161,7 @@ conditions; rows from different orders are not a benchmark series.
 | [WO-216 D004, D006–D007, D019, D034](../evidence/WO-216/decisions.md) | Added structural phases and file lanes; focused handoffs omitted changed suites that later failed. Its close-window baseline was 11 complete runs and 545 gate task minutes per order. | A cheaper handoff can export work and failure to another role. Judge the closed order, not only the executor. |
 | [WO-221 D016–D020](../evidence/WO-221/decisions.md) | Restored complete-first handoff, failure/change lead ordering and reuse across roles at unchanged identity. The first observed close window had 15 complete runs and 691 task minutes amid operator scope changes. D019 identified lane underuse and long reservations. | Avoid duplicate complete runs, but retain the full selection when source changes. Capacity work begins with the recorded timeline, not with a larger arbitrary job count. |
 | [WO-222 evidence and decisions](../evidence/WO-222/README.md) | Three fresh complete runs retained host-derived capacity, two light overlap lanes and four target-worktree files. Median wall time fell from 2,538.373 to 1,668.518 seconds (34.2682%); summed task duration increased. Target-worktree group span fell 9.24%, and real exclusive overlap occurred only for harness-fixtures. D014–D016 record retention and reversal. | The combined after series decides retention. It does not isolate the causal contribution of each lever or demonstrate cross-gate fairness. |
+| [WO-276 D047, D050](../evidence/WO-276/decisions.md#wo-276-d050--part-ds-comparison-54-minutes-before-and-42-after-what-the-pair-shows-worktree-integration-declares-no-overlap-and-the-part-closed) | The exclusive rows share one priority and stand together; the hook suite runs as three shards inside its reservation; target-worktree's close file starts first; worktree-integration gave up an overlap no light peer used. One fresh complete review run before and one after, on one idle host with the same leads, fell from 3,256 to 2,517 seconds: hook-suite span 660 to 243, target-worktree group 971 to 723. Another run on the after tree took 2,904 seconds. | One pair shows a direction and no exact figure. Both runs already took the exclusive suites back to back, so the shared priority's saving is unmeasured; it protects a run whose leads interleave. |
 
 WO-132's under-six-minute target applies to its historical product selection. It
 is not a current complete-review service level: selection and task inventories

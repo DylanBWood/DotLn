@@ -404,6 +404,7 @@ await test("configuration root", async (t) => {
         assert.deepEqual(loadConfig(root).repositories.target, {
           id: "target",
           documentationRoot: "docs",
+          records: "target",
           ...registeredRepository(),
         });
         assert.equal(
@@ -947,6 +948,341 @@ await test("configuration root", async (t) => {
         );
         assert.deepEqual(loadConfig(root).drive, { sandbox: expected });
       }
+      // The workers section and the models file (WO-276 criterion J3). The
+      // configuration names workers, each a name bound, for a provider, to
+      // a model; the models file beside it holds the instance's own models
+      // and prices. An unknown key, a model that is not listed, a name that
+      // would mean two things, an effort a provider does not take and a
+      // negative price are each refused naming the file and the key.
+      const modelsPath = join(root, "dotln.models.json");
+      const modelsRefuse = (declared, expected, body = { version: 1 }) => {
+        writeFileSync(
+          path,
+          `${JSON.stringify({ classes: { "fixture-class": { checks: [], supports: [] } }, ...body })}\n`,
+        );
+        writeFileSync(
+          modelsPath,
+          typeof declared === "string"
+            ? declared
+            : `${JSON.stringify(declared)}\n`,
+        );
+        try {
+          assert.throws(() => loadConfig(root), expected);
+        } finally {
+          rmSync(modelsPath, { force: true });
+        }
+      };
+      refuses({ version: 1, workers: [] }, /workers must be an object/);
+      refuses(
+        { version: 1, workers: { night: "fable" } },
+        /dotln\.config\.json#workers\.night must be an object/,
+      );
+      for (const name of ["Night Shift", "and", "9lives", "x".repeat(41)])
+        refuses(
+          { version: 1, workers: { [name]: { claude: "fable" } } },
+          /dotln\.config\.json#workers\..* is no name a launch can take/,
+        );
+      refuses(
+        { version: 1, workers: { night: { description: "Runs late." } } },
+        /dotln\.config\.json#workers\.night binds no provider to a model/,
+      );
+      refuses(
+        {
+          version: 1,
+          workers: { night: { claude: { model: "fable", temperature: 1 } } },
+        },
+        /unknown key dotln\.config\.json#workers\.night\.claude\.temperature; known keys: model, effort/,
+      );
+      refuses(
+        { version: 1, workers: { night: { claude: "haiku" } } },
+        /dotln\.config\.json#workers\.night\.claude names the model "haiku", which is not in the model list \(opus, fable, sol, astra, sonnet, luna\)/,
+      );
+      refuses(
+        { version: 1, workers: { night: { claude: "sol" } } },
+        /dotln\.config\.json#workers\.night\.claude names the model "sol", which is a codex model, not a claude one/,
+      );
+      refuses(
+        { version: 1, workers: { fable: { claude: "opus" } } },
+        /the worker "fable" \(dotln\.config\.json#workers\.fable\) has the name of a model \(the kit's model list\); a name means one thing/,
+      );
+      refuses(
+        {
+          version: 1,
+          workers: { night: { claude: { model: "fable", effort: "extreme" } } },
+        },
+        /dotln\.config\.json#workers\.night\.claude\.effort must be one of "low", "medium", "high", "xhigh", "max", the efforts a claude launch takes; found "extreme"/,
+      );
+      // The models file: closed keys, a version, whole rows, and each
+      // refusal names the file, which is not the configuration.
+      const row = { provider: "claude", id: "model-a", effort: "high" };
+      for (const [declared, expected] of [
+        ["{", /dotln\.models\.json: the file must be JSON/],
+        [[], /dotln\.models\.json: the file must be an object/],
+        [
+          { schemaVersion: 1, workers: {} },
+          /dotln\.models\.json: unknown the file's key "workers"/,
+        ],
+        [
+          { models: {} },
+          /dotln\.models\.json: schemaVersion must be 1; found null/,
+        ],
+        [
+          { schemaVersion: 1, models: [] },
+          /dotln\.models\.json#models must be an object/,
+        ],
+        [
+          { schemaVersion: 1, models: { haiku: { ...row, temperature: 1 } } },
+          /unknown key dotln\.models\.json#models\.haiku\.temperature; known keys: provider, id, effort, description, family/,
+        ],
+        [
+          { schemaVersion: 1, models: { haiku: { ...row, id: "Model A" } } },
+          /dotln\.models\.json#models\.haiku\.id must be a model id of at most 100 lower-case letters, digits, dots and hyphens that begins with a letter; found "Model A"/,
+        ],
+        [
+          { schemaVersion: 1, models: { haiku: { ...row, id: "inherit" } } },
+          /dotln\.models\.json#models\.haiku\.id is a word a worker definition reads as something else; found "inherit"/,
+        ],
+        [
+          {
+            schemaVersion: 1,
+            models: { haiku: { ...row, effort: "extreme" } },
+          },
+          /dotln\.models\.json#models\.haiku\.effort must be one of "low", "medium", "high", "xhigh", "max", the efforts a claude launch takes; found "extreme"/,
+        ],
+        [
+          {
+            schemaVersion: 1,
+            models: { haiku: { id: "model-a", effort: "high" } },
+          },
+          /dotln\.models\.json#models\.haiku\.provider must name a provider/,
+        ],
+        // A family is the Claude launcher's own key; a Codex row has none.
+        [
+          {
+            schemaVersion: 1,
+            models: {
+              mini: { provider: "codex", id: "m", effort: "low", family: "x" },
+            },
+          },
+          /unknown key dotln\.models\.json#models\.mini\.family; known keys: provider, id, effort, description$/,
+        ],
+        // One name, one meaning; one id, one model of a provider.
+        [
+          { schemaVersion: 1, models: { default: row } },
+          /dotln\.models\.json: the model "default" \(dotln\.models\.json#models\.default\) has the name of a worker the kit ships; a name means one thing/,
+        ],
+        [
+          { schemaVersion: 1, models: { haiku: { ...row, id: "fable" } } },
+          /dotln\.models\.json: dotln\.models\.json#models\.haiku\.id is "fable", which is also the name of a model \(the kit's\); an id and a name must differ/,
+        ],
+        [
+          {
+            schemaVersion: 1,
+            models: { haiku: { ...row, id: "claude-opus-5-5" } },
+          },
+          /dotln\.models\.json: dotln\.models\.json#models\.haiku\.id gives "haiku" the id claude-opus-5-5, which is the claude model "opus" already; a second effort of a model is a worker, not a model/,
+        ],
+        // The kit's own row replaced by another provider's: the row is
+        // the entry at fault, in the file it stands in.
+        [
+          {
+            schemaVersion: 1,
+            models: { opus: { provider: "codex", id: "m-1", effort: "max" } },
+          },
+          /dotln\.models\.json: dotln\.models\.json#models\.opus\.provider makes "opus" a codex model, and the kit's worker "default" runs it on claude/,
+        ],
+        // A provider the kit has no launcher for is the instance's to
+        // list, with an id of the common form and an effort of one word.
+        [
+          {
+            schemaVersion: 1,
+            models: {
+              gem: { provider: "gemini", id: "Gem 3!", effort: "high" },
+            },
+          },
+          /dotln\.models\.json#models\.gem\.id must be a model id of at most 100 lower-case letters/,
+        ],
+        [
+          {
+            schemaVersion: 1,
+            models: {
+              gem: { provider: "gemini", id: "gem-3", effort: "any level" },
+            },
+          },
+          /dotln\.models\.json#models\.gem\.effort must be an effort, one lower-case word; found "any level"/,
+        ],
+      ])
+        modelsRefuse(declared, expected);
+      // A model whose id is the name of a worker the instance wrote, and a
+      // worker the instance named for a model of its own: each refusal
+      // names the entry at fault.
+      modelsRefuse(
+        { schemaVersion: 1, models: { haiku: { ...row, id: "night" } } },
+        /dotln\.models\.json#models\.haiku\.id is "night", which is also the name of a worker \(dotln\.config\.json#workers\.night\)/,
+        { version: 1, workers: { night: { claude: "fable" } } },
+      );
+      modelsRefuse(
+        { schemaVersion: 1, models: { haiku: row } },
+        /dotln\.config\.json: the worker "haiku" \(dotln\.config\.json#workers\.haiku\) has the name of a model \(dotln\.models\.json#models\.haiku\)/,
+        { version: 1, workers: { haiku: { claude: "fable" } } },
+      );
+      const priced = {
+        uncachedInput: 3,
+        cacheRead: 0.3,
+        cacheWrite: 3.75,
+        output: 15,
+      };
+      for (const [prices, expected] of [
+        [
+          { "model-a": { ...priced, output: -1 } },
+          /dotln\.models\.json#prices\["model-a"\]\.output must be a number that is not negative, in US dollars for a million tokens; found -1/,
+        ],
+        [
+          { constructor: priced },
+          /dotln\.models\.json#prices names a model by its id; found "constructor"/,
+        ],
+        [
+          { "model-a": { uncachedInput: 3, output: 15 } },
+          /dotln\.models\.json#prices\["model-a"\]\.cacheRead must be a number/,
+        ],
+        [
+          { "model-a": { ...priced, reasoning: 1 } },
+          /unknown key dotln\.models\.json#prices\["model-a"\]\.reasoning/,
+        ],
+      ])
+        modelsRefuse({ schemaVersion: 1, prices }, expected);
+      modelsRefuse(
+        `{"schemaVersion":1,"prices":{"__proto__":${JSON.stringify(priced)}}}\n`,
+        /dotln\.models\.json#prices names a model by its id; found "__proto__"/,
+      );
+      // The configuration holds no model and no price: those keys are the
+      // models file's, and a section that states them is read as naming
+      // workers of those names.
+      refuses(
+        { version: 1, workers: { prices: { "model-a": priced } } },
+        /unknown key dotln\.config\.json#workers\.prices\.model-a\.uncachedInput; known keys: model, effort/,
+      );
+      // What loads: nothing stated is three empty parts, with or without
+      // the section and the file; what is stated is returned as judged.
+      // An entry of a kit worker's name may restate its description alone,
+      // and a listed model of a provider with no launcher loads.
+      writeFileSync(
+        path,
+        `${JSON.stringify({ version: 1, classes: { "fixture-class": { checks: [], supports: [] } }, workers: { default: { description: "Ours." } } })}\n`,
+      );
+      writeFileSync(
+        modelsPath,
+        `${JSON.stringify({ schemaVersion: 1, models: { gem: { provider: "gemini", id: "gem-3", effort: "high" } } })}\n`,
+      );
+      assert.deepEqual(loadConfig(root).workers.named, {
+        default: { description: "Ours.", bindings: {} },
+      });
+      assert.equal(loadConfig(root).workers.models.gem.provider, "gemini");
+      rmSync(modelsPath, { force: true });
+      const empty = { named: {}, models: {}, prices: {} };
+      const night = {
+        description: "Reviews that run overnight.",
+        claude: "fable",
+        codex: { model: "astra", effort: "high" },
+      };
+      for (const [declared, file, expected] of [
+        [{}, null, empty],
+        [{ workers: {} }, null, empty],
+        [{}, { schemaVersion: 1 }, empty],
+        [
+          { workers: { night, default: { claude: "haiku" } } },
+          {
+            schemaVersion: 1,
+            models: {
+              haiku: { ...row, family: "haiku", description: "Small." },
+            },
+            prices: { "model-a": priced },
+          },
+          {
+            named: {
+              night: {
+                description: "Reviews that run overnight.",
+                bindings: {
+                  claude: { model: "fable", effort: null },
+                  codex: { model: "astra", effort: "high" },
+                },
+              },
+              default: {
+                description: null,
+                bindings: { claude: { model: "haiku", effort: null } },
+              },
+            },
+            models: {
+              haiku: { ...row, family: "haiku", description: "Small." },
+            },
+            prices: { "model-a": priced },
+          },
+        ],
+      ]) {
+        writeFileSync(
+          join(root, CONFIG_FILENAME),
+          `${JSON.stringify({ version: 1, classes: { "fixture-class": { checks: [], supports: [] } }, ...declared })}\n`,
+        );
+        if (file) writeFileSync(modelsPath, `${JSON.stringify(file)}\n`);
+        else rmSync(modelsPath, { force: true });
+        assert.deepEqual(loadConfig(root).workers, expected);
+      }
+      // A change to the models file alone is a change to the answer.
+      writeFileSync(
+        modelsPath,
+        `${JSON.stringify({ schemaVersion: 1, models: { haiku: { ...row, id: "model-b" } } })}\n`,
+      );
+      assert.equal(loadConfig(root).workers.models.haiku.id, "model-b");
+      rmSync(modelsPath, { force: true });
+      // The extensions section (WO-276 criterion K4): an object, returned
+      // as written and otherwise unread; anything else is refused by the
+      // section's name.
+      for (const notAnObject of [[], "tools", 3, null, true])
+        refuses(
+          { version: 1, extensions: notAnObject },
+          /extensions must be an object/,
+        );
+      const own = {
+        report: { since: "2026-01-01", lanes: ["a", "b"] },
+        "any key": [1, { nested: null }],
+      };
+      for (const [declared, expected] of [
+        [{}, {}],
+        [{ extensions: {} }, {}],
+        [{ extensions: own }, own],
+      ]) {
+        writeFileSync(
+          join(root, CONFIG_FILENAME),
+          `${JSON.stringify({ version: 1, classes: { "fixture-class": { checks: [], supports: [] } }, ...declared })}\n`,
+        );
+        assert.deepEqual(loadConfig(root).extensions, expected);
+      }
+      // No document root lies under the reserved root, whose every file is
+      // the instance's: the kit writes its records under its roots, and a
+      // file system that ignores case holds the other spellings as that
+      // one directory.
+      for (const [key, value] of [
+        ["docs", "extensions/docs"],
+        ["docs", "extensions"],
+        ["control", "Extensions/control"],
+        ["evidence", "EXTENSIONS/evidence"],
+        ["control", "exten\u017fions/control"],
+      ])
+        refuses(
+          { version: 1, roots: { [key]: value } },
+          new RegExp(
+            `roots\\.${key} must lie outside extensions/, the instance's own root, where the kit writes nothing: ${value}`,
+            "u",
+          ),
+        );
+      writeFileSync(
+        join(root, CONFIG_FILENAME),
+        `${JSON.stringify({ version: 1, classes: { "fixture-class": { checks: [], supports: [] } }, roots: { evidence: "extensions-of-mine/evidence" } })}\n`,
+      );
+      assert.equal(
+        loadConfig(root).roots.evidence,
+        "extensions-of-mine/evidence",
+      );
       refuses({ version: 1, release: { corpus: "yes" } }, /release\.corpus/);
       refuses({ version: 1, release: { other: true } }, /unknown release key/);
       for (const displayName of [
@@ -1945,3 +2281,727 @@ test(
     });
   },
 );
+
+test("WO-275: a work order's metadata is read from its top-level paragraphs, so a quoted or listed example neither declares a field nor ends the header", async () => {
+  const { parseRepositoryDeclaration } =
+    await import("./lib/work-order-repository.mjs");
+  const { parseWorkstreamDeclaration } =
+    await import("./lib/work-order-workstream.mjs");
+  const commit = "a".repeat(40);
+  const head = "# WO-999 — metadata fixture\n\n**Model:** any.\n";
+  const order = (lines) => `${head}${lines}\n\n**Objective:** fixture.\n`;
+  // An example inside a quotation or a list item is not a declaration.
+  for (const example of [
+    `\n> **Repository:** target @ ${commit}`,
+    `\n- **Repository:** target @ ${commit}`,
+  ])
+    assert.equal(parseRepositoryDeclaration(order(example), "p"), undefined);
+  assert.equal(
+    parseWorkstreamDeclaration(order("\n> **Workstream:** WS-001"), "p"),
+    undefined,
+  );
+  // A quoted Objective does not end the header before a real declaration.
+  assert.deepEqual(
+    parseRepositoryDeclaration(
+      order(`\n> **Objective:** early\n\n**Repository:** target @ ${commit}`),
+      "p",
+    ),
+    { id: "target", baseCommit: commit },
+  );
+  // Nor does an Objective line that lazily continues a quotation or a list
+  // item, with no marker of its own.
+  for (const container of ["> an example", "- an example"])
+    assert.deepEqual(
+      parseRepositoryDeclaration(
+        `${head}\n${container}\n**Objective:** quoted\n\n**Repository:** target @ ${commit}\n\n**Objective:** real.\n`,
+        "p",
+      ),
+      { id: "target", baseCommit: commit },
+      container,
+    );
+  // The column-one declaration is read as before.
+  assert.deepEqual(
+    parseRepositoryDeclaration(
+      order(`**Repository:** target @ ${commit}`),
+      "p",
+    ),
+    { id: "target", baseCommit: commit },
+  );
+  assert.equal(
+    parseWorkstreamDeclaration(order("**Workstream:** WS-001"), "p"),
+    "WS-001",
+  );
+  // Several fields read from one order parse it once, and a field after the
+  // Objective or inside the body is no header field (WO-276 criterion B4).
+  const { markdownParseCount } = await import("./lib/markdown-links.mjs");
+  const { readWorkOrder, readWorkOrderHeader, headerField } =
+    await import("./lib/work-order-document.mjs");
+  const several = order(
+    `**Repository:** target @ ${commit}\n**Workstream:** WS-002\n**Depends on:** WO-001`,
+  ).concat(
+    `\n## Design\n\n**Workstream:** WS-009\n\n\`\`\`text\n**Repository:** other @ ${commit}\n\`\`\`\n`,
+  );
+  const before = markdownParseCount();
+  assert.deepEqual(parseRepositoryDeclaration(several, "p"), {
+    id: "target",
+    baseCommit: commit,
+  });
+  assert.equal(parseWorkstreamDeclaration(several, "p"), "WS-002");
+  const header = readWorkOrderHeader(several);
+  assert.match(
+    headerField(header, "Depends on", "duplicate").lineValue,
+    /WO-001/u,
+  );
+  assert.match(headerField(header, "Model", "duplicate").lineValue, /any/u);
+  assert.equal(markdownParseCount(), before + 1, "one parse of the header");
+  // The whole order is one more parse however many readers take it.
+  readWorkOrder(several);
+  readWorkOrder(several);
+  assert.equal(markdownParseCount(), before + 2, "one parse of the document");
+  // The header alone and the whole document give one header where a cut by
+  // line could be read differently (WO-276, the attack on Part B): a comment
+  // or another HTML block that holds a heading line or the Objective's, a
+  // line under the Objective's paragraph that makes it a heading, and a
+  // carriage return before each line's end.
+  const repository = `**Repository:** target @ ${commit}`;
+  for (const [name, written] of [
+    [
+      "a comment that holds a heading line",
+      `# WO-1 Title\n\n<!--\n# a draft heading kept for later\n-->\n\n${repository}\n\n**Objective:** x\n`,
+    ],
+    [
+      "an HTML block that holds a heading line",
+      `# WO-1 Title\n\n<details>\n# inside the block\n</details>\n\n${repository}\n\n**Objective:** x\n`,
+    ],
+    [
+      "a comment that holds the Objective's line",
+      `# WO-1 Title\n\n<!--\n\n**Objective:** not this one\n-->\n\n${repository}\n\n**Objective:** x\n`,
+    ],
+    [
+      "a line of hyphens under the Objective's paragraph",
+      `# WO-1 Title\n\n${repository}\n**Objective:** x\n---\n\nBody.\n`,
+    ],
+    [
+      "carriage returns",
+      `# WO-1 Title\r\n\r\n${repository}\r\n**Objective:** x\r\n\r\nBody.\r\n`,
+    ],
+  ]) {
+    const whole = readWorkOrder(written);
+    assert.deepEqual(readWorkOrderHeader(written).header, whole.header, name);
+    assert.deepEqual(
+      parseRepositoryDeclaration(written, "p"),
+      whole.header.some(({ label }) => label === "Repository")
+        ? { id: "target", baseCommit: commit }
+        : undefined,
+      name,
+    );
+  }
+  // The first three keep their Repository field; the hyphens make the whole
+  // paragraph a heading, which holds no field.
+  assert.deepEqual(
+    parseRepositoryDeclaration(
+      `# WO-1 Title\n\n<!--\n# a draft heading kept for later\n-->\n\n${repository}\n\n**Objective:** x\n`,
+      "p",
+    ),
+    { id: "target", baseCommit: commit },
+  );
+});
+
+test("WO-276 criterion B4: the header read from an order's lead is the header the whole document gives, whatever the line that looks like the header's end stands in; an ordinary order's body is still not parsed for it", async () => {
+  const { markdownParseCount } = await import("./lib/markdown-links.mjs");
+  const { readWorkOrder, readWorkOrderHeader } =
+    await import("./lib/work-order-document.mjs");
+  const title = "# WO-999 — Fixture\n\n";
+  // What follows a lead that did not end where it seemed to: the fields the
+  // header really holds, then the Objective that ends it.
+  const rest =
+    "\n**Track:** machinery\n\n**Objective:** real\n\nBody text.\n\n## Design\n\nMore.\n";
+  const fence = "```";
+  // [name, document, whether the lead alone is enough to read the header]
+  const cases = [
+    [
+      "an ordinary order",
+      `${title}**Model:** capable\n**Track:** machinery\n\n**Objective:** real\n\nBody.\n`,
+      true,
+    ],
+    // The parser's extensions read inline and display math and a Liquid tag
+    // as one span across lines, and none is CommonMark: the shared parse
+    // hands the parser no opener of one, a label that opens a line inside one
+    // is a label, so the header ends there and the lead alone reads it.
+    [
+      "inline math",
+      `${title}**Model:** a $x\n**Objective:** in\ny$${rest}`,
+      true,
+    ],
+    [
+      "a Liquid tag",
+      `${title}**Model:** a {{ x\n**Objective:** in\ny }}${rest}`,
+      true,
+    ],
+    [
+      "a math block",
+      `${title}**Model:** a\n\n$$\nx\n\n**Objective:** in\n$$\n${rest}`,
+      true,
+    ],
+    // A line that opens with the Objective's label inside a construct that
+    // began before it and ends after it.
+    [
+      "a code span that holds the label, in a paragraph of its own",
+      `${title}\`Example\n**Objective:** quoted inside code\nend\`\n${rest}`,
+      false,
+    ],
+    [
+      "a code span opened in a field's value",
+      `${title}**Model:** capable \`example\n**Objective:** quoted inside code\nend\`${rest}`,
+      false,
+    ],
+    [
+      "a span of two backticks",
+      `${title}**Model:** a \`\`x \` y\n**Objective:** in\nz\`\`${rest}`,
+      false,
+    ],
+    [
+      "emphasis",
+      `${title}**Model:** a *start\n**Objective:** in\nend*${rest}`,
+      false,
+    ],
+    [
+      "a link's text",
+      `${title}**Model:** a [start\n**Objective:** in\nend](https://example.invalid)${rest}`,
+      false,
+    ],
+    [
+      "inline HTML",
+      `${title}**Model:** a <span title="\n**Objective:** in\n">x</span>${rest}`,
+      false,
+    ],
+    [
+      "a comment inside a paragraph",
+      `${title}**Model:** a <!-- c\n**Objective:** in\n-->${rest}`,
+      false,
+    ],
+    [
+      "a quotation's lazy line",
+      `${title}**Model:** a\n\n> quoted\n**Objective:** lazy\n${rest}`,
+      false,
+    ],
+    [
+      "a list item's lazy line",
+      `${title}**Model:** a\n\n- item\n**Objective:** lazy\n${rest}`,
+      false,
+    ],
+    // A block left open across a blank line.
+    [
+      "a fence",
+      `${title}**Model:** a\n\n${fence}text\nx\n\n**Objective:** in\n${fence}\n${rest}`,
+      false,
+    ],
+    [
+      "a fence of tildes",
+      `${title}**Model:** a\n\n~~~\nx\n\n**Objective:** in\n~~~\n${rest}`,
+      false,
+    ],
+    [
+      "a comment block",
+      `${title}**Model:** a\n\n<!--\nx\n\n**Objective:** in\n-->\n${rest}`,
+      false,
+    ],
+    [
+      "a script block",
+      `${title}**Model:** a\n\n<script>\nx\n\n**Objective:** in\n</script>\n${rest}`,
+      false,
+    ],
+    // What only the text below the lead decides.
+    [
+      "front matter that holds the label",
+      `---\ntitle: x\n\n**Objective:** in\n---\n\n${title}**Model:** a${rest}`,
+      false,
+    ],
+    [
+      "TOML front matter that holds a heading line",
+      `+++\ntitle = 1\n\n# not a heading\n+++\n\n${title}**Model:** a${rest}`,
+      false,
+    ],
+    [
+      "a reference link whose definition stands in the body",
+      `${title}**Model:** a [start\n**Objective:** in\nend][ref]${rest}\n[ref]: https://example.invalid\n`,
+      false,
+    ],
+    [
+      "a shortcut reference whose definition stands in the body",
+      `${title}**Model:** a [start\n**Objective:** in\nend]${rest}\n[start\n**Objective:** in\nend]: https://example.invalid\n`,
+      false,
+    ],
+    [
+      "a footnote whose definition stands in the body",
+      `${title}**Model:** a[^n]\n**Track:** t\n\n**Objective:** real\n\nBody.\n\n[^n]: note\n`,
+      false,
+    ],
+    // Ends of the header the line scan does not see, which the parser
+    // finds in the lead.
+    [
+      "a line of hyphens under the Objective's paragraph",
+      `${title}**Model:** a\n**Objective:** x\n---\n\nBody.\n`,
+      true,
+    ],
+    [
+      "a heading written by the line under it",
+      `${title}**Model:** a\n\nA heading\n---------\n\n**Track:** t\n\n**Objective:** x\n\nBody.\n`,
+      true,
+    ],
+    [
+      "an indented heading",
+      `${title}**Model:** a\n\n  ## Indented\n\n**Track:** t\n\n**Objective:** x\n\nBody.\n`,
+      true,
+    ],
+    [
+      "an empty heading",
+      `${title}**Model:** a\n\n#\n\n**Track:** t\n\n**Objective:** x\n\nBody.\n`,
+      true,
+    ],
+    [
+      "an indented Objective",
+      `${title}**Model:** a\n\n  **Objective:** x\n\n**Track:** t\n\n**Objective:** y\n\nBody.\n`,
+      true,
+    ],
+    // Line ends and the lead's own blocks.
+    [
+      "an Objective that continues the last field's paragraph",
+      `${title}**Model:** a\n**Objective:** x\nmore\n\nBody.\n`,
+      true,
+    ],
+    [
+      "carriage returns",
+      `${title}**Model:** a\n**Objective:** x\n\nBody.\n`.replaceAll(
+        "\n",
+        "\r\n",
+      ),
+      true,
+    ],
+    [
+      "carriage returns around a code span",
+      `${title}**Model:** a \`e\n**Objective:** in\nz\`${rest}`.replaceAll(
+        "\n",
+        "\r\n",
+      ),
+      false,
+    ],
+    [
+      "a line of a no-break space after the Objective",
+      `${title}**Model:** a\n**Objective:** x\n \n**Track:** late\n\nBody.\n`,
+      true,
+    ],
+    [
+      "a definition inside the lead",
+      `${title}**Model:** a [ref]\n\n[ref]: https://example.invalid\n\n**Objective:** x\n\nBody.\n`,
+      true,
+    ],
+    [
+      "a byte-order mark before a code span",
+      `﻿${title}**Model:** a \`e\n**Objective:** in\nz\`${rest}`,
+      false,
+    ],
+  ];
+  const reading = (order) => ({
+    title: order.title,
+    leadStart: order.leadStart,
+    headerEnd: order.headerEnd,
+    header: order.header,
+  });
+  for (const [name, written, leadAlone] of cases) {
+    const before = markdownParseCount();
+    const header = readWorkOrderHeader(written);
+    const parses = markdownParseCount() - before;
+    const whole = readWorkOrder(written);
+    assert.deepEqual(reading(header), reading(whole), name);
+    // The lead alone is one parse of less than the document; a lead that
+    // could not be trusted is never returned.
+    assert.equal(
+      header.lead.source.length < whole.source.length,
+      leadAlone,
+      name,
+    );
+    if (leadAlone) assert.equal(parses, 1, name);
+  }
+  // The two inputs the header lost a field on: Track is a header field of
+  // each, by either reader.
+  for (const name of [
+    "a code span that holds the label, in a paragraph of its own",
+    "a code span opened in a field's value",
+  ])
+    assert.ok(
+      readWorkOrderHeader(
+        cases.find(([named]) => named === name)[1],
+      ).headerFields("Track").length === 1,
+      name,
+    );
+});
+
+test("WO-276 F3: a label that opens a line inside a span the parser's extensions read as one node still opens its field, so a dollar figure in each of two header fields loses neither field nor the label between them", async () => {
+  const { parseHeader } = await import("./work-orders.mjs");
+  const { readWorkOrder, readWorkOrderHeader } =
+    await import("./lib/work-order-document.mjs");
+  const { criterionJudgments } = await import("./lib/off-ramps.mjs");
+  const path = "docs/work-orders/WO-999-fixture.md";
+  const order = (fields) =>
+    `# WO-999 — Fixture (v1.0.0)\n\n**Model:** any.\n**Effort:** executor any.\n${fields}\n\n**Objective:** The objective.\n`;
+  // The failed review's shape: between the two dollar signs the parser reads
+  // inline math across the line break, over the Release classification label.
+  const twoFigures = order(
+    "**Cost:** about $5 of tokens.\n**Release classification:** minor. A run costs $6 more.\n**Track:** machinery",
+  );
+  const header = parseHeader(twoFigures, path);
+  assert.equal(header.cost, "about $5 of tokens.");
+  assert.equal(header.track, "machinery");
+  for (const read of [readWorkOrder, readWorkOrderHeader])
+    assert.deepEqual(
+      read(twoFigures)
+        .headerFields("Release classification")
+        .map((field) => [field.line, field.lineValue.trim()]),
+      [[6, "minor. A run costs $6 more."]],
+    );
+  // Shapes the review did not try: the review ladder between two figures,
+  // which sizes the ladder an order runs; a Liquid tag that runs across a
+  // label; and a label inside a span written with no space before its value,
+  // which the reader names to its caller as it does outside a span.
+  const ladder = order(
+    "**Cost:** $40 a day.\n**Review ladder:** combined\n**Track:** machinery, about $3 a run",
+  );
+  assert.deepEqual(parseHeader(ladder, path).reviewLadderLines, [
+    { value: "combined", line: 6 },
+  ]);
+  const liquid = order(
+    "**Cost:** one session {{ the figure\n**Track:** machinery }} of tokens.",
+  );
+  assert.equal(parseHeader(liquid, path).cost, "one session {{ the figure");
+  assert.deepEqual(
+    readWorkOrder(liquid)
+      .headerFields("Track")
+      .map((field) => field.line),
+    [6],
+  );
+  const unspaced = order(
+    "**Cost:** about $5 of tokens.\n**Track:**machinery, $6 a run.",
+  );
+  assert.deepEqual(
+    readWorkOrder(unspaced)
+      .headerFields("Track")
+      .map((field) => field.lineValue),
+    ["machinery, $6 a run."],
+  );
+  // A handoff's or a report's judgment lines are read through the same
+  // fields: a criterion judged between two lines that each hold a figure is
+  // still judged.
+  assert.deepEqual(
+    criterionJudgments(
+      "**Criterion 5:** met. The run cost $12.\n**Criterion 6:** met. The case passed.\n**Criterion 7:** met. It saved $3 a day.\n",
+    ).map((judgment) => judgment.criterionId),
+    ["5", "6", "7"],
+  );
+  // A strikethrough the parser reads between two tildes holds the lines
+  // inside it as its children: a label that opens one of them still opens
+  // its field, in a header and on a judgment line.
+  const tildes = order(
+    "**Cost:** about ~2 hours of tokens.\n**Release classification:** minor.\n**Track:** machinery, 5~6 runs.",
+  );
+  assert.equal(parseHeader(tildes, path).cost, "about ~2 hours of tokens.");
+  assert.equal(
+    readWorkOrder(tildes).headerFields("Release classification").length,
+    1,
+  );
+  assert.deepEqual(
+    criterionJudgments(
+      "**Criterion 5:** met. The case took ~40 s.\n**Criterion 6:** met. The case passed.\n**Criterion 7:** met, at 5~6 s a run.\n",
+    ).map((judgment) => judgment.criterionId),
+    ["5", "6", "7"],
+  );
+  // The shared parse hands the parser no opener of a span its extensions
+  // read: a link and a code span between two dollar figures are read, as a
+  // reader of the text read them, and an escaped dollar sign stays escaped.
+  const {
+    markdownLinks,
+    markdownCodeSpans,
+    parseMarkdown,
+    parseMarkdownWithExtensions,
+  } = await import("./lib/markdown-links.mjs");
+  const costs =
+    "A run costs about $5 in tokens, and the [cost guide](../product/07-execution-guide.md#costs) runs `node x.mjs $HOME`; a review adds about $2 more, {{ and }} [[a page]] stay text, and \\$3 is escaped.\n";
+  assert.deepEqual(
+    markdownLinks(costs).map(({ href }) => href),
+    ["../product/07-execution-guide.md#costs"],
+  );
+  assert.deepEqual(
+    markdownCodeSpans(costs).map(({ value }) => value),
+    ["node x.mjs $HOME"],
+  );
+  const kindsOf = (tree) => {
+    const kinds = new Set();
+    const walk = (node) => {
+      kinds.add(node.type);
+      for (const child of node.children ?? []) walk(child);
+    };
+    walk(tree);
+    return kinds;
+  };
+  const kinds = kindsOf(parseMarkdown(costs));
+  for (const kind of ["inlineMath", "math", "liquidNode", "wikiLink"])
+    assert.equal(kinds.has(kind), false, kind);
+  assert.match(
+    parseMarkdown(costs).children[0].children.at(-1).value,
+    /\[\[a page\]\] stay text, and \$3 is escaped\.$/u,
+  );
+  // A bracket means something to CommonMark, so a wiki link is taken apart
+  // only where the extension would read one, and then by its inner brackets:
+  // a link or an image whose text opens with a bracketed word, or is one, is
+  // read as written, and a wiki link alone stays text.
+  const bracketed = [
+    [
+      "See [[WO-123] the fix](missing.md) here.",
+      "link",
+      "missing.md",
+      "[WO-123] the fix",
+    ],
+    [
+      "See [[draft]](../product/07-execution-guide.md#gone) here.",
+      "link",
+      "../product/07-execution-guide.md#gone",
+      "[draft]",
+    ],
+    [
+      "An image ![[fig] overview](missing.png) here.",
+      "image",
+      "missing.png",
+      "[fig] overview",
+    ],
+    ["An image ![[fig]](img.png) here.", "image", "img.png", "[fig]"],
+  ];
+  for (const [text, type, url, label] of bracketed) {
+    const node = parseMarkdown(`${text}\n`).children[0].children[1];
+    assert.equal(node.type, type, text);
+    assert.equal(node.url, url, text);
+    assert.equal(
+      type === "image"
+        ? node.alt
+        : node.children.map((child) => child.value).join(""),
+      label,
+      text,
+    );
+  }
+  assert.deepEqual(
+    markdownLinks("A wiki link [[a page]], [[x] and [[ y ]] stay text.\n"),
+    [],
+  );
+  // The characters the copy uses are ones the source does not hold, so a
+  // source that holds a private-use character is read the same way.
+  assert.deepEqual(
+    markdownLinks(
+      "Holds \uE000 and \uE001, then $5, the [guide](g.md#z) and $2.\n",
+    ).map(({ href }) => href),
+    ["g.md#z"],
+  );
+  // A numeric character reference to a private-use character, which the
+  // parser decodes into the tree, holds that character as the character
+  // itself does: the tree keeps it, and the dollar figure beside it is read
+  // as written.
+  for (const [reference, code] of [
+    ["&#xE000;", 0xe000],
+    ["&#57344;", 0xe000],
+    ["&#xe003;", 0xe003],
+  ]) {
+    const paragraph = parseMarkdown(`Price $5 and glyph ${reference} here.\n`)
+      .children[0];
+    assert.equal(
+      paragraph.children.map((child) => child.value).join(""),
+      `Price $5 and glyph ${String.fromCharCode(code)} here.`,
+      reference,
+    );
+  }
+  // A check of where the parser's own reading and another renderer's differ
+  // asks for that reading, the extensions' spans included; where no opener
+  // stands, it is the shared tree itself.
+  const spans =
+    "Inline math $x$ here, a tag {{ name }} there, and [[a page]].\n\n$$\ny\n$$\n";
+  const extended = kindsOf(parseMarkdownWithExtensions(spans));
+  const shared = kindsOf(parseMarkdown(spans));
+  for (const kind of ["inlineMath", "math", "liquidNode", "wikiLink"]) {
+    assert.equal(extended.has(kind), true, kind);
+    assert.equal(shared.has(kind), false, kind);
+  }
+  assert.equal(
+    parseMarkdownWithExtensions("No dollar figure here.\n"),
+    parseMarkdown("No dollar figure here.\n"),
+  );
+});
+
+test("WO-276 criterion N1: a registration with records set to instance or target loads, any other value is refused naming the key, and one without the key behaves as target", async () => {
+  const { recordsStayInInstance, planFirstDirectory } =
+    await import("./lib/config.mjs");
+  temporary("config-records", (root) => {
+    const registered = (records) => {
+      declared({
+        root,
+        body: {
+          version: 1,
+          repositories: {
+            target: registeredRepository(
+              records === undefined ? {} : { records },
+            ),
+          },
+        },
+      });
+      return loadConfig(root).repositories.target;
+    };
+    for (const [declaredValue, read] of [
+      ["instance", "instance"],
+      ["target", "target"],
+      [undefined, "target"],
+    ])
+      assert.equal(registered(declaredValue).records, read);
+    for (const refusedValue of ["Instance", "launchpad", "", null, true, []])
+      assert.throws(
+        () => registered(refusedValue),
+        /repositories\.target\.records must be "target" or "instance"/u,
+        JSON.stringify(refusedValue),
+      );
+    // An order's records stay in the instance where the registration says
+    // so and none was filed; a committed binding keeps them in the target.
+    const instance = registered("instance");
+    assert.equal(recordsStayInInstance(instance, {}), true);
+    assert.equal(
+      recordsStayInInstance(instance, { targetRecords: { commit: "0" } }),
+      false,
+    );
+    assert.equal(recordsStayInInstance(registered("target"), {}), false);
+    assert.equal(recordsStayInInstance(undefined, {}), false);
+    // Criterion N5's rule: the plan-first directory follows the value.
+    const target = { repositoryId: "target", target: join(root, "checkout") };
+    registered("instance");
+    assert.equal(
+      planFirstDirectory(root, "WO-099", target),
+      planFirstDirectory(root, "WO-099"),
+    );
+    registered(undefined);
+    assert.equal(
+      planFirstDirectory(root, "WO-099", target),
+      join(root, "checkout", "docs/evidence/WO-099/plan-first"),
+    );
+  });
+});
+
+test("WO-276 criterion M3: with contributions.authors listing two identities a commit by either passes the sign-off rule without a trailer, a third author's fails without one and passes with one, and a malformed or repeated entry is refused when the configuration loads, naming its index", async () => {
+  const { contributionSignoffRules } = await import("./lib/contributions.mjs");
+  const one = "Planner One <one@example.invalid>";
+  const two = "Teammate Two <two@example.invalid>";
+  const three = "Visitor Three <three@example.invalid>";
+  temporary("contribution-authors", (root) => {
+    const git = (args, author = one) => {
+      const [, name, email] = /^(.*) <(.*)>$/u.exec(author);
+      return runGit(root, [
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        `user.name=${name}`,
+        "-c",
+        `user.email=${email}`,
+        ...args,
+      ]);
+    };
+    const commit = (message, author) =>
+      git(
+        [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "--allow-empty",
+          "-qm",
+          message,
+        ],
+        author,
+      );
+    git(["init", "-q", "-b", "main"]);
+    excludeFixtureOwnership(root);
+    commit("test: base", one);
+    git(["update-ref", "refs/remotes/origin/main", git(["rev-parse", "HEAD"])]);
+    write(
+      root,
+      CONFIG_FILENAME,
+      prettyJson({ version: 1, contributions: { authors: [one, two] } }),
+    );
+    assert.deepEqual(loadConfig(root).contributions, { authors: [one, two] });
+    commit("test: by the first listed author", one);
+    commit("test: by the second listed author", two);
+    commit("test: by an author outside the list", three);
+    commit(
+      `test: by that author, signed off\n\nSigned-off-by: ${three}\n`,
+      three,
+    );
+    const rules = contributionSignoffRules(root);
+    assert.deepEqual(
+      rules.map((rule) => rule.pass),
+      [true, true, false, true],
+    );
+    assert.match(
+      rules[0].line,
+      /observed listed author; expected listed author exemption \(no sign-off required\)/u,
+    );
+    assert.match(rules[1].line, /observed listed author/u);
+    assert.match(
+      rules[2].line,
+      /observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author .*the declared contributions\.operatorAuthor and contributions\.authors already exempt their identities; other authors need the matching trailer/u,
+    );
+    assert.match(rules[3].line, /observed matching author sign-off/u);
+    // The operator's identity beside the list is its own too, and an empty
+    // list exempts nobody.
+    write(
+      root,
+      CONFIG_FILENAME,
+      prettyJson({
+        version: 1,
+        contributions: { operatorAuthor: three, authors: [one] },
+      }),
+    );
+    assert.deepEqual(
+      contributionSignoffRules(root).map((rule) => rule.pass),
+      [true, false, true, true],
+    );
+    write(
+      root,
+      CONFIG_FILENAME,
+      prettyJson({ version: 1, contributions: { authors: [] } }),
+    );
+    assert.deepEqual(loadConfig(root).contributions, { authors: [] });
+    assert.deepEqual(
+      contributionSignoffRules(root).map((rule) => rule.pass),
+      [false, false, false, true],
+    );
+    // A malformed entry, a repeated one and a value that is no list are
+    // refused when the configuration loads, the entry named by its index.
+    for (const [authors, refusal] of [
+      [
+        [one, "no identity"],
+        /contributions\.authors\[1\] must be a single author identity: Name <email>/u,
+      ],
+      [
+        [one, two, 7],
+        /contributions\.authors\[2\] must be a single author identity: Name <email>/u,
+      ],
+      [
+        [one, two, one],
+        /contributions\.authors\[2\] repeats an identity the list already holds/u,
+      ],
+      [
+        one,
+        /contributions\.authors must be a list of author identities, each Name <email>/u,
+      ],
+    ]) {
+      write(
+        root,
+        CONFIG_FILENAME,
+        prettyJson({ version: 1, contributions: { authors } }),
+      );
+      assert.throws(() => loadConfig(root), refusal, JSON.stringify(authors));
+    }
+  });
+});

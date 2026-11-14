@@ -11,14 +11,35 @@ import type { ActorSpec } from "../src/actor-contract.js";
 import { buildMissionCheckRequest } from "../src/mission-check-host.js";
 import {
   type MissionCheckObserved,
+  type MissionCheckPin,
   type MissionSource,
 } from "../src/mission-check-protocol.js";
 import {
   missionPinFromSource,
+  observeMissionDocuments,
   observeMissionSubject,
+  type MissionDocumentReader,
 } from "../src/mission-check-source.js";
 import { decodeResidentConfiguration } from "../src/resident-state.js";
 import type { ProcessRunner } from "../src/worker-transport.js";
+
+/** The repository's reader of the documents a mission check judges, which
+ * the resident's launcher and bind command hand the package; the package
+ * itself reads no Markdown. */
+export const missionDocumentReader = (
+  (await import(
+    new URL("../../../../scripts/lib/mission-documents.mjs", import.meta.url)
+      .href
+  )) as { missionDocumentReader: MissionDocumentReader }
+).missionDocumentReader;
+/** The capsule a dispatch observes now, its documents read through that
+ * reader. */
+export const observeSubject = (source: MissionSource, pin: MissionCheckPin) =>
+  observeMissionSubject(
+    source,
+    pin,
+    observeMissionDocuments(source, missionDocumentReader),
+  );
 
 export const MISSION_SURFACE = "fixture.mission";
 const CONTRACT = `# WO-999 — Fixture order
@@ -163,8 +184,8 @@ export function missionFixture(
     visionPath: "docs/product/00-vision.md",
     thesisHeadings: [["the-core-bet", "The core bet"]],
   };
-  const pin = missionPinFromSource(source, "WO-999");
-  const subject = observeMissionSubject(source, pin);
+  const pin = missionPinFromSource(source, "WO-999", missionDocumentReader);
+  const subject = observeSubject(source, pin);
   const request = buildMissionCheckRequest({
     subject,
     model: options.model ?? "fixture-model",

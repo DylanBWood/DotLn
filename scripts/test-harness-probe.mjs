@@ -31,6 +31,10 @@ import {
 } from "./lib/writing-worker-probe.mjs";
 import { subagentProbe } from "./lib/subagent-probe.mjs";
 import {
+  readSubagentStops,
+  subagentStopProbe,
+} from "./lib/subagent-stop-probe.mjs";
+import {
   agentIdentityProbe,
   identityRows,
 } from "./lib/agent-identity-probe.mjs";
@@ -1000,6 +1004,291 @@ else {
     assert.equal(record.exitCode, 0);
     assert.equal(record.rawTranscriptRetained, false);
     assert.equal(record.userSettingsWritten, false);
+  } finally {
+    if (inheritedPath === undefined) delete process.env.PATH;
+    else process.env.PATH = inheritedPath;
+    if (inheritedLive === undefined) delete process.env.DOTLN_LIVE_HARNESS;
+    else process.env.DOTLN_LIVE_HARNESS = inheritedLive;
+  }
+});
+
+test("the probe hook refuses one worker stop as it refuses one session stop, admits only each actor's named background shell and keeps no task identifier", (t) => {
+  const root = createFixtureRoot(join(tmpdir(), "dotln-stop-probe-hook-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const hook = join(repository, "scripts/fixtures/harness-probe-hook.mjs");
+  const invoke = (input) => {
+    const run = spawnSync(process.execPath, [hook], {
+      cwd: root,
+      input: JSON.stringify({ cwd: root, session_id: "synthetic", ...input }),
+      encoding: "utf8",
+    });
+    assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout);
+  };
+  const rows = () =>
+    readFileSync(join(root, "probe-events.jsonl"), "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+  // Without the mode's file the hook is the phase-zero instrument: one
+  // session stop is refused, and no shell command but the fixture's is.
+  assert.equal(
+    invoke({
+      hook_event_name: "PreToolUse",
+      tool_name: "Bash",
+      tool_input: { command: "ls" },
+    }).hookSpecificOutput,
+    undefined,
+  );
+  assert.equal(invoke({ hook_event_name: "Stop" }).decision, "block");
+  assert.equal(invoke({ hook_event_name: "Stop" }).decision, undefined);
+  assert.ok(rows().every((row) => !("backgroundTasks" in row)));
+  write(root, "identity-key.txt", "synthetic-key");
+  write(
+    root,
+    "stop-probe.json",
+    JSON.stringify({ parent: "sleep 297", worker: "sleep 311" }),
+  );
+  const shell = (command, agent, background = true) =>
+    invoke({
+      hook_event_name: "PreToolUse",
+      tool_name: "Bash",
+      tool_input: { command, run_in_background: background },
+      ...(agent ? { agent_id: "worker-1" } : {}),
+    }).hookSpecificOutput?.permissionDecision;
+  assert.equal(shell("sleep 297", false), undefined);
+  assert.equal(shell("sleep 311", true), undefined);
+  assert.equal(shell("sleep 311", false), "deny");
+  assert.equal(shell("sleep 297", true), "deny");
+  assert.equal(shell("sleep 297", false, false), "deny");
+  assert.equal(shell("rm -rf .", false), "deny");
+  // A start's response carries the identifier the list later names the task
+  // by; the hook keeps which field carried it and a keyed digest of it.
+  const started = (command, id, agent) =>
+    invoke({
+      hook_event_name: "PostToolUse",
+      tool_name: "Bash",
+      tool_input: { command, run_in_background: true },
+      tool_response: { backgroundTaskId: id },
+      ...(agent ? { agent_id: "worker-1" } : {}),
+    });
+  started("sleep 297", "host-task-2", false);
+  started("sleep 311", "host-task-1", true);
+  invoke({
+    hook_event_name: "PostToolUse",
+    tool_name: "Bash",
+    tool_input: { command: "sleep 297", run_in_background: true },
+    tool_response: { stdout: "" },
+  });
+  invoke({
+    hook_event_name: "PostToolUse",
+    tool_name: "Agent",
+    tool_input: { prompt: "synthetic", run_in_background: true },
+    tool_response: { isAsync: true, agentId: "worker-1" },
+  });
+  const stop = (stop_hook_active) =>
+    invoke({
+      hook_event_name: "SubagentStop",
+      agent_id: "worker-1",
+      stop_hook_active,
+      background_tasks: [
+        {
+          id: "host-task-1",
+          type: "shell",
+          status: "running",
+          description: "sleep 311",
+          name: "worker shell",
+        },
+        {
+          id: "host-task-2",
+          type: "shell",
+          status: "running",
+          description: "sleep 297",
+        },
+        { id: "host-task-3", type: "agent", status: "running" },
+        { id: "worker-1", type: "subagent", status: "running" },
+      ],
+    });
+  const refused = stop(false);
+  assert.equal(refused.decision, "block");
+  assert.match(refused.reason, /TaskStop/u);
+  assert.deepEqual(stop(true), {});
+  const [first, second] = rows().filter((row) => row.event === "SubagentStop");
+  assert.equal(first.decision, "block");
+  assert.equal(second.decision, "observe");
+  assert.equal(second.stopHookActive, true);
+  assert.deepEqual(
+    first.backgroundTasks.map(({ type, status, startedBy }) => ({
+      type,
+      status,
+      startedBy,
+    })),
+    [
+      { type: "shell", status: "running", startedBy: "worker" },
+      { type: "shell", status: "running", startedBy: "parent" },
+      { type: "agent", status: "running", startedBy: null },
+      { type: "subagent", status: "running", startedBy: null },
+    ],
+  );
+  // The entry whose identifier is the stopping worker's is marked as itself.
+  assert.deepEqual(
+    first.backgroundTasks.map((task) => task.self === true),
+    [false, false, false, true],
+  );
+  const starts = rows().filter(
+    (row) => row.event === "PostToolUse" && row.tool === "Bash",
+  );
+  assert.deepEqual(
+    starts.map((row) => [row.started, row.responseField]),
+    [
+      ["parent", "backgroundTaskId"],
+      ["worker", "backgroundTaskId"],
+      ["parent", null],
+    ],
+  );
+  assert.equal(starts[1].response, first.backgroundTasks[0].id);
+  assert.equal(starts[0].response, first.backgroundTasks[1].id);
+  assert.equal("response" in starts[2], false);
+  // A task is named by a keyed digest: the same digest wherever it is
+  // listed, and no host identifier or description in the retained rows.
+  assert.deepEqual(
+    first.backgroundTasks.map((task) => task.id),
+    second.backgroundTasks.map((task) => task.id),
+  );
+  assert.ok(
+    first.backgroundTasks.every((task) => /^[0-9a-f]{64}$/u.test(task.id)),
+  );
+  assert.doesNotMatch(
+    readFileSync(join(root, "probe-events.jsonl"), "utf8"),
+    /host-task|worker shell|sleep 3|worker-1/u,
+  );
+  const read = readSubagentStops(rows());
+  assert.equal(read.listScope, "session");
+  assert.equal(read.listHoldsStoppingWorker, true);
+  assert.deepEqual(read.startIdentifierNamesListedTask, {
+    worker: true,
+    parent: true,
+  });
+  assert.deepEqual(read.startIdentifierFields, ["backgroundTaskId", null]);
+  assert.equal(read.agentStartIdentifierField, "agentId");
+  assert.equal(read.agentStartIdentifierNamesWorkerEntry, true);
+  assert.equal(read.refusedStopHeldWorker, true);
+  assert.equal(read.reentryStopHookActive, true);
+  assert.ok(read.stopInputFields.includes("background_tasks"));
+});
+
+test("a worker's stops are read into the list's scope, whether a refused stop held the worker and whether the parent was prompted after it", () => {
+  const stop = (tasks, extra = {}) => ({
+    event: "SubagentStop",
+    agent: true,
+    decision: "observe",
+    stopHookActive: false,
+    fields: { hook_event_name: "<string>", background_tasks: [] },
+    ...(tasks ? { backgroundTasks: tasks } : {}),
+    ...extra,
+  });
+  const task = (startedBy) => ({ type: "shell", status: "running", startedBy });
+  const scope = (tasks) => readSubagentStops([stop(tasks)]).listScope;
+  assert.equal(scope([task("worker")]), "worker");
+  assert.equal(scope([task("worker"), task("parent")]), "session");
+  assert.equal(scope([task("parent")]), "session");
+  assert.equal(scope([task("worker"), task(null)]), "unattributed");
+  // The parent's task in the list settles the scope whatever else is there.
+  assert.equal(scope([task("parent"), task(null)]), "session");
+  assert.equal(scope([]), "empty");
+  assert.equal(scope(undefined), "the input carried no background_tasks");
+  assert.equal(readSubagentStops([]).listScope, "no subagent stop observed");
+  assert.equal(readSubagentStops([]).stopInputFields, null);
+  // A refused stop held the worker when the worker acted again.
+  const refused = stop([task("worker")], { decision: "block" });
+  const held = readSubagentStops([
+    refused,
+    { event: "PreToolUse", tool: "TaskStop", agent: true, decision: "observe" },
+    stop([], { stopHookActive: true }),
+    { event: "UserPromptSubmit", agent: false, decision: "observe" },
+    { event: "Stop", agent: false, decision: "observe", backgroundTasks: [] },
+  ]);
+  assert.equal(held.refusedStopHeldWorker, true);
+  // Without a start row or a listed identifier nothing is claimed of whether
+  // a start's identifier names the listed task, or of the worker's own entry.
+  assert.deepEqual(held.startIdentifierNamesListedTask, {
+    worker: null,
+    parent: null,
+  });
+  assert.equal(held.listHoldsStoppingWorker, false);
+  assert.equal(held.agentStartIdentifierField, null);
+  assert.equal(held.agentStartIdentifierNamesWorkerEntry, null);
+  assert.equal(readSubagentStops([]).listHoldsStoppingWorker, null);
+  assert.deepEqual(held.workerCallsAfterRefusal, ["TaskStop"]);
+  assert.equal(held.reentryStopHookActive, true);
+  assert.equal(held.parentPromptAfterWorkerStop, true);
+  assert.deepEqual(held.parentStops, [
+    { stopHookActive: null, backgroundTasks: [] },
+  ]);
+  const released = readSubagentStops([
+    refused,
+    { event: "Stop", agent: false, decision: "observe" },
+  ]);
+  assert.equal(released.refusedStopHeldWorker, false);
+  assert.equal(released.parentPromptAfterWorkerStop, false);
+  assert.equal(
+    readSubagentStops([stop([task("worker")])]).refusedStopHeldWorker,
+    "no stop was refused",
+  );
+});
+
+test("the subagent-stop probe refuses unrequested live work, launches the pinned default with the tools it needs and records what it could not observe", async (t) => {
+  const root = createFixtureRoot(join(tmpdir(), "dotln-subagent-stop-test-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const inheritedPath = process.env.PATH;
+  const inheritedLive = process.env.DOTLN_LIVE_HARNESS;
+  const launchPath = join(root, "launch.json");
+  writeFileSync(
+    join(root, "claude"),
+    `#!/usr/bin/env node
+const fs = require("node:fs");
+const args = process.argv.slice(2);
+if (args[0] === "--version") console.log("9.9.9 (Claude Code fixture)");
+else {
+  fs.writeFileSync(${JSON.stringify(launchPath)}, JSON.stringify({args, cwd: process.cwd()}));
+  console.log(JSON.stringify({type: "result", is_error: false}));
+}
+`,
+    { mode: 0o755 },
+  );
+  try {
+    delete process.env.DOTLN_LIVE_HARNESS;
+    await assert.rejects(
+      subagentStopProbe([join(root, "record.json")]),
+      /explicit live harness probe required/u,
+    );
+    process.env.PATH = `${root}:${inheritedPath}`;
+    process.env.DOTLN_LIVE_HARNESS = "1";
+    const target = join(root, "record.json");
+    await subagentStopProbe([target]);
+    const launch = JSON.parse(readFileSync(launchPath, "utf8"));
+    t.after(() => rmSync(launch.cwd, { recursive: true, force: true }));
+    const flag = (name) => launch.args[launch.args.indexOf(name) + 1];
+    assert.equal(flag("--model"), "claude-opus-5-5");
+    assert.equal(flag("--effort"), "xhigh");
+    assert.equal(flag("--tools"), "Bash,Agent,TaskStop,TaskOutput");
+    assert.equal(flag("--setting-sources"), "project");
+    const settings = JSON.parse(
+      readFileSync(join(launch.cwd, ".claude/settings.json"), "utf8"),
+    );
+    assert.ok(settings.hooks.SubagentStop);
+    assert.equal(existsSync(join(launch.cwd, "identity-key.txt")), false);
+    const record = JSON.parse(readFileSync(target, "utf8"));
+    assert.equal(record.exitCode, 0);
+    assert.equal(record.listScope, "no subagent stop observed");
+    assert.equal(record.refusedStopHeldWorker, "no stop was refused");
+    assert.equal(record.stopInputFields, null);
+    assert.equal(record.rawTranscriptRetained, false);
+    // An existing observation is retained.
+    await assert.rejects(
+      subagentStopProbe([target]),
+      /retain existing observations/u,
+    );
   } finally {
     if (inheritedPath === undefined) delete process.env.PATH;
     else process.env.PATH = inheritedPath;

@@ -17,8 +17,10 @@ import {
   checkPlanGate,
   requireChangedPlanEvidence,
   planningPassScope,
+  knownIssues,
 } from "./plan-receipts.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import { isCoreRoot } from "./harness-runtime.mjs";
 import { receiptWorkerTypes } from "./worker-launch.mjs";
 
 const localPlan = (root) => docRelative(root, "control", "local/plan");
@@ -185,6 +187,14 @@ export async function carryPlanResult(root, subject, review, value) {
     holdReasons: [...(value.holdReasons ?? []), ...carriedHolds],
   };
 }
+/** The parent's steps of a refutation, as `npm run plan -- refute` prints
+ * them beside the prompt: the refuter root's own paragraphs, numbered, from
+ * the loadout that emits that root, so the two cannot differ. */
+export async function refutationSteps() {
+  const { refutationParentSteps } =
+    await import("../../packages/skeleton/dist/src/loadouts/contributor.js");
+  return `The parent's steps for this refutation. The worker is given the JSON on standard output and none of this.\n${refutationParentSteps.map((step, index) => `${index + 1}. ${step}`).join("\n")}\n`;
+}
 export async function beginDirectRefutation(
   root,
   { scope = "pass", launch = null, now = () => new Date().toISOString() } = {},
@@ -242,6 +252,7 @@ export async function beginDirectRefutation(
   const compiled = compilePlanRefuter(
     subject.revision,
     Date.parse(pending.dispatchedAt),
+    isCoreRoot(root),
   );
   return JSON.stringify({
     ...JSON.parse(
@@ -277,7 +288,8 @@ export async function fileDirectRefutation(
     commit = true,
   } = {},
 ) {
-  // The launchers of the operator's four worker options.
+  // The worker types a receipt may name: a fixed set, read whatever the
+  // worker table now holds.
   const workerTypes = await receiptWorkerTypes();
   if (!workerTypes.includes(workerType))
     throw new Error(
@@ -373,6 +385,9 @@ export async function fileDirectRefutation(
     durationMs,
     verdict: receipt.result.planVerdict,
     carried: pending.review.carried.length,
+    knownIssues: knownIssues(receipt.result).map(
+      ({ id, workOrderId, criterionId }) => ({ id, workOrderId, criterionId }),
+    ),
     gate,
   };
 }

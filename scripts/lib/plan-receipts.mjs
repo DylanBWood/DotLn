@@ -28,7 +28,7 @@ import {
   planCostDeclaration,
   sha256,
 } from "./plan-subject.mjs";
-import { checkLocalTerms } from "./terms.mjs";
+import { checkLocalTerms, screenLocalTerms } from "./terms.mjs";
 import { checkRulesRecorded } from "./planning-document.mjs";
 import {
   matchLaunchpadIdentifiers,
@@ -36,16 +36,21 @@ import {
   validateOutwardVocabulary,
 } from "./outward-lint.mjs";
 import { parseRepositoryDeclaration } from "./work-order-repository.mjs";
+import { markdownNodes } from "./markdown-links.mjs";
+import { readWorkOrder } from "./work-order-document.mjs";
 import { privatePathLines } from "./private-paths.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { runGit } from "./git.mjs";
+import { isCoreRoot } from "./harness-runtime.mjs";
+import { CORE_STRUCTURAL_TASKS } from "./generated-artifacts.mjs";
+import { readPreflightSuites } from "./handoff-ledger.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
 import {
   checkPlanContinuation,
   executionAmendmentSource,
   matchesExecutionAmendment,
 } from "./plan-continuation.mjs";
-import { markdownHeadings, readDecisions } from "./meta.mjs";
+import { decisionBlocks, readDecisions } from "./meta.mjs";
 import {
   checkSequenceTopology,
   criteriaAdvisories,
@@ -127,8 +132,29 @@ export const addressedHolds = (result) =>
     id: `hold-${hashParts([hold.workOrderId, hold.criterionId, hold.reason]).slice(7, 31)}`,
     ...hold,
   }));
+/** A goal review's known issues under identifiers built as a hold's is. A
+ * receipt stores none of them; they are read from its result. */
+export const knownIssues = (result) =>
+  (result.orders ?? []).flatMap((order) =>
+    (order.findings ?? [])
+      .filter((finding) => finding.kind === "known-issue")
+      .map((finding) => ({
+        id: `hold-${hashParts([order.workOrderId, finding.criterionId, finding.reason]).slice(7, 31)}`,
+        workOrderId: order.workOrderId,
+        criterionId: finding.criterionId,
+        reason: finding.reason,
+      })),
+  );
+// A disposition names a hold or a known issue of its receipt; an override
+// names a hold alone, because a known issue holds nothing to override.
+const disposable = (receipt) => [
+  ...receipt.holds,
+  ...knownIssues(receipt.result),
+];
 
-export const renderPlanReceipt = (receipt) =>
+/** A receipt as its page. `core` is whether the root is core's own, where
+ * one order builds the host that judges it; said by no caller, it is not. */
+export const renderPlanReceipt = (receipt, core = false) =>
   [
     `# Plan refutation — ${receipt.receiptId}`,
     "",
@@ -154,6 +180,7 @@ export const renderPlanReceipt = (receipt) =>
       ? `Judgment basis: canonical subject and ${receipt.subject.goalReview ? "plan-goal-review-v1" : "plan-refutation-v1"} protocol. Independence is session-attested; context isolation was not enforced and model tools were available. Session statement: ${receipt.episode.statement}`
       : "The subject was compiled from committed vision sections, the roles table, capability rows, and order title/objective/criteria/non-goals. Planner narrative, ledger, earlier verdicts, and model tools were excluded. The host created an empty scratch working directory for this one-shot episode.",
     "",
+    core &&
     receipt.subject.orders.some(({ workOrderId }) => workOrderId === "WO-041")
       ? "Self-referential instrument: WO-041 builds this host and is also in its subject. Its order verdict is advisory, never evidence of this mechanism's correctness. Independent executable fixtures and a separate verifier judge the instrument."
       : "This verdict evaluates a planning horizon; it does not verify implementation or confer operator decision authority.",
@@ -214,7 +241,8 @@ const subjectPrefetch = (root, subject) => ({
 });
 
 export async function validateReceipt(root, receipt) {
-  // The launchers of the operator's four worker options.
+  // The worker types a receipt may name: a fixed set, read whatever the
+  // worker table now holds.
   const workerTypes = await receiptWorkerTypes();
   check(
     exact(receipt, [
@@ -541,6 +569,13 @@ const isDisposed = (hold, subject, bindings) =>
       binding.criterionHash === criterionHash(criterion(subject, hold)),
   );
 
+/** The control-log rows a receipt is read under: those recorded by the time
+ * its episode completed. The writer stores a result under the same rows, so
+ * a row recorded later changes neither what a receipt stored nor how it is
+ * read back. */
+const rowsUpTo = (rows, completedAt) =>
+  rows.filter((row) => !(row.recordedAt > completedAt));
+
 export function applyPlanDispositions(result, subject, receipts, events) {
   if (result.schemaVersion !== "plan-goal-review-v1") return result;
   const bindings = criterionDispositions(receipts, events);
@@ -617,7 +652,10 @@ export function admitReceipt(receipt, history, overrides = []) {
                 prior.result,
                 receipt.subject,
                 history,
-                overrides,
+                // A row recorded after this receipt's episode cannot
+                // change what the receipt carried: its stored verdict was
+                // made under the rows up to then.
+                rowsUpTo(overrides, receipt.episode.completedAt),
               )
             : prior.result
           ).orders.find((row) => row.workOrderId === carried.workOrderId),
@@ -766,13 +804,18 @@ export async function readReceipts(root) {
     }),
   );
   const receipts = [];
+  const core = isCoreRoot(root);
   for (const { name, path, source, receipt: input } of inputs) {
     const receipt = await validateReceipt(root, input);
     check(name === `${receipt.receiptId}.json`, "receipt filename mismatch");
     const mdPath = `${receiptsRoot(root)}/${receipt.receiptId}.md`;
     const markdown = read(root, mdPath);
     check(
-      markdown === renderPlanReceipt(receipt),
+      markdown === renderPlanReceipt(receipt, core) ||
+        // An instance's page of an earlier release reads too: the kit then
+        // wrote core's sentence in every root, and a receipt is never
+        // rewritten (WO-276).
+        (!core && markdown === renderPlanReceipt(receipt, true)),
       "immutable Markdown differs from its receipt",
     );
     for (const [file, bytes] of [
@@ -824,12 +867,17 @@ export async function writePlanReceipt(
     const { result: rawResult, ...provenance } = episode;
     const { validatePlanResult } = await protocol();
     const result = validatePlanResult(
-      applyPlanDispositions(rawResult, subject, history, readOverrides(root)),
+      applyPlanDispositions(
+        rawResult,
+        subject,
+        history,
+        rowsUpTo(readOverrides(root), episode.completedAt),
+      ),
       subject,
     );
     if (provenance.kind === "direct-session" && subject.goalReview)
       provenance.resultHash = sha256(prettyJson(result));
-    const localTerms = checkLocalTerms(root, [
+    const localTerms = screenLocalTerms(root, [
       { name: "validated-result", text: JSON.stringify(result) },
       {
         name: "receipt-metadata",
@@ -857,9 +905,9 @@ export async function writePlanReceipt(
     };
     await validateReceipt(root, receipt);
     admitReceipt(receipt, history, readOverrides(root));
-    const md = renderPlanReceipt(receipt);
+    const md = renderPlanReceipt(receipt, isCoreRoot(root));
     // Includes copied standard/order prose as well as validated model text.
-    checkLocalTerms(root, [
+    screenLocalTerms(root, [
       { name: "receipt.json", text: JSON.stringify(receipt) },
       { name: "receipt.md", text: md },
     ]);
@@ -1198,7 +1246,7 @@ export async function overridePlanHold(
         ),
       ),
     };
-    checkLocalTerms(root, [
+    screenLocalTerms(root, [
       { name: "override-event", text: JSON.stringify(event) },
     ]);
     checkPrivatePaths(
@@ -1226,10 +1274,13 @@ export async function disposePlanHold(
   return locked(root, async () => {
     const receipts = await readReceipts(root);
     const receipt = receipts.find((row) => row.receiptId === receiptId);
-    const hold = receipt?.holds.find((row) => row.id === holdId);
+    const named = receipt ? disposable(receipt) : [];
+    const hold = named.find((row) => row.id === holdId);
     check(
       hold && text(reason),
-      "disposition requires a recorded hold and reason",
+      receipt && text(reason)
+        ? `disposition requires a recorded hold or known issue of ${receiptId} (${named.map((row) => row.id).join(", ") || "it has none"})`
+        : "disposition requires a recorded hold and reason",
     );
     const current = buildPlanSubject(root, "HEAD", {
       workspace: true,
@@ -1258,7 +1309,7 @@ export async function disposePlanHold(
         event.recordedAt >= receipt.episode.completedAt,
       "disposition timestamp precedes its receipt",
     );
-    checkLocalTerms(root, [
+    screenLocalTerms(root, [
       { name: "disposition-event", text: JSON.stringify(event) },
     ]);
     checkPrivatePaths(
@@ -1287,10 +1338,10 @@ const amendmentDecision = (root, decisionId, reader) => {
   let selected = decision;
   if (reader?.paths.includes(decision.path)) {
     const source = reader.read(decision.path);
-    const found = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)]
-      .map((match) => ({
-        entry: json(match[1], "committed execution decision"),
-        index: match.index,
+    const found = decisionBlocks(source)
+      .map((block) => ({
+        entry: json(block.text, "committed execution decision"),
+        anchor: block.anchor,
       }))
       .find(({ entry }) => entry?.id === decisionId);
     check(found, `execution amendment needs recorded decision ${decisionId}`);
@@ -1301,11 +1352,7 @@ const amendmentDecision = (root, decisionId, reader) => {
       workOrder: decision.workOrder,
       path: decision.path,
     };
-    Object.defineProperty(selected, "anchor", {
-      value: markdownHeadings(source).findLast(
-        (heading) => heading.index < found.index,
-      )?.anchor,
-    });
+    Object.defineProperty(selected, "anchor", { value: found.anchor });
     Object.defineProperty(selected, "recordSource", { value: source });
   }
   const { path: decisionPath, workOrder, ...entry } = selected;
@@ -1414,7 +1461,7 @@ export async function withdrawPlanAmendment(
       timestamp(event.recordedAt) && event.recordedAt >= target.recordedAt,
       "invalid withdrawal timestamp",
     );
-    checkLocalTerms(root, [
+    screenLocalTerms(root, [
       { name: "execution-amendment-withdrawal", text: JSON.stringify(event) },
     ]);
     checkPrivatePaths(
@@ -1545,7 +1592,7 @@ export async function amendPlanOrder(
         row.decisionHash === decision.hash,
     );
     if (prior) return prior;
-    checkLocalTerms(root, [
+    screenLocalTerms(root, [
       { name: "execution-amendment-event", text: JSON.stringify(event) },
     ]);
     checkPrivatePaths(
@@ -1631,22 +1678,54 @@ export function planningPassScope(root) {
   return { passes, enforcement: at.slice(0, 10) };
 }
 
-// The backticked paths an order's Execution plan names: a token with a
-// directory or a file extension and no space; a function or command in
-// backticks is not a path.
-const executionPlanPaths = (markdown) => {
-  const field =
-    /(?:^|\n)\*\*Execution plan[^*\n]*:\*\*([^]*?)(?=\n\*\*[A-Z][^*\n]*:\*\*|\n#|$)/u.exec(
-      markdown,
-    )?.[1] ?? "";
+// The code spans of an order's Execution plan: the text its label leads, up
+// to the next label or heading. The order reader takes a label only where it
+// is written on one line; with `wrapped`, a plan whose label runs onto a
+// second line is read too, by the bold phrase that opens it.
+const executionPlanSpans = (markdown, { wrapped = false } = {}) => {
+  const order = readWorkOrder(markdown);
+  const opens = (field) =>
+    field.colon &&
+    field.label.replace(/\s+/gu, " ").startsWith("Execution plan");
+  // A wrapped label is the order's own where it opens one of the document's
+  // top-level paragraphs and is the plan's label with or without a
+  // parenthesis: a plan quoted from another order, a list item's bold
+  // phrase and a longer label are text.
+  const paragraphs = order.tree.children.filter(
+    (node) => node.type === "paragraph",
+  );
+  const ownWrapped = (field) =>
+    field.colon &&
+    field.raw.includes("\n") &&
+    /^Execution plan(?: \(.*\))?$/su.test(field.label.replace(/\s+/gu, " ")) &&
+    paragraphs.some(
+      (paragraph) => paragraph.position.start.offset === field.start,
+    );
+  const label =
+    order.labels.find(opens) ??
+    (wrapped ? order.fields.find(ownWrapped) : undefined);
+  if (!label) return [];
+  const { start, end } = order.block(label);
   return [
     ...new Set(
-      [...field.matchAll(/`([^`\n]+)`/gu)]
-        .map((match) => match[1])
-        .filter((token) => /^(?:[\w.@-]+\/)*[\w.@-]+\.[\w-]+$/u.test(token)),
+      [...markdownNodes(order.tree)]
+        .filter(
+          (node) =>
+            node.type === "inlineCode" &&
+            node.position.start.offset >= start &&
+            node.position.end.offset <= end,
+        )
+        .map((node) => node.value),
     ),
   ];
 };
+// The backticked paths an order's Execution plan names: a code span with a
+// directory or a file extension and no space; a function or command in
+// backticks is not a path.
+const executionPlanPaths = (markdown) =>
+  executionPlanSpans(markdown).filter((token) =>
+    /^(?:[\w.@-]+\/)*[\w.@-]+\.[\w-]+$/u.test(token),
+  );
 /** One advisory per path an open target order's Execution plan names that
  * carries a review word or a launchpad identifier, so the author renames the
  * file or lists the word deliberately before a draft publish meets it in the
@@ -1727,7 +1806,8 @@ export function targetOrderPathAdvisories(root, rows) {
 }
 
 /** The criteria screen over every open order, which the pass reads before it
- * files (WO-249); it refuses nothing. */
+ * files (WO-249): its advisories refuse nothing, and an order whose criteria
+ * list cannot be read whole is refused by name. */
 export const openOrderCriteriaAdvisories = (root, rows) =>
   rows
     .filter((row) => ["Active", "Open"].includes(row.section))
@@ -1741,7 +1821,61 @@ export const openOrderCriteriaAdvisories = (root, rows) =>
       ),
     );
 
-export async function checkPlanGate(root, { timing = false } = {}) {
+/** The suites an open order's steps owe and its Preflight field does not
+ * name, one advisory each: a machinery suite one of whose declared sources
+ * the order's Execution plan names, by the runner's own rule for a changed
+ * file (the file is the source or begins with it, since a source may be a
+ * directory or the stem of a family of files). The structural rows are left out, since
+ * every run makes them, and the generated ones, since no run selects them.
+ * The Preflight paragraph is read as the lifecycle reads it. `table` is the
+ * declared-sources module, which the gate loads when it asks; nothing is
+ * refused. */
+export const openOrderPreflightAdvisories = (
+  root,
+  rows,
+  { machinerySources, GENERATED_SUITES },
+) => {
+  const suites = Object.entries(machinerySources).filter(
+    ([suite]) =>
+      !CORE_STRUCTURAL_TASKS.includes(suite) &&
+      !GENERATED_SUITES.includes(suite),
+  );
+  return rows
+    .filter((row) => ["Active", "Open"].includes(row.section))
+    .flatMap((row) => {
+      const markdown = readFileSync(
+        join(root, `${docRelative(root, "workOrders")}/${row.authorityLink}`),
+        "utf8",
+      );
+      // Any code span without a space can name a file: one that begins
+      // with no declared source matches nothing. A plan under a wrapped
+      // label is a plan too.
+      const named = executionPlanSpans(markdown, { wrapped: true }).filter(
+        (token) => !/\s/u.test(token),
+      );
+      const carried = readPreflightSuites(markdown);
+      return suites.flatMap(([suite, sources]) => {
+        if (carried.includes(suite)) return [];
+        const files = named.filter((file) =>
+          sources.some((source) => file === source || file.startsWith(source)),
+        );
+        return files.length
+          ? [
+              `preflight advisory: ${row.id} names ${files[0]}${files.length > 1 ? ` and ${files.length - 1} more` : ""} in its execution plan, which the ${suite} suite's declared sources hold; its Preflight field does not name that suite`,
+            ]
+          : [];
+      });
+    });
+};
+
+export async function checkPlanGate(
+  root,
+  {
+    timing = false,
+    // The declared sources, loaded when the gate asks for them.
+    machinery = () => import("./machinery-sources.mjs"),
+  } = {},
+) {
   // Where a check spends its time, by step, when asked (`plan check
   // --timing`): the documents and index, the receipt reads and rebuilds, the
   // current subject builds and the continuation comparison. It measures; it
@@ -1787,6 +1921,18 @@ export async function checkPlanGate(root, { timing = false } = {}) {
       };
     },
   );
+  // The declared sources are loaded here and not with this module: they
+  // read the recorded evidence lists, which no other caller of it needs.
+  const preflight = await timedAsync("preflight", async () => {
+    try {
+      return openOrderPreflightAdvisories(root, index.rows, await machinery());
+    } catch (error) {
+      // An advisory refuses nothing: where it cannot be made, it says so.
+      return [
+        `preflight advisory: unavailable (${String(error?.message ?? error).split("\n")[0]})`,
+      ];
+    }
+  });
   const receipts = await timedAsync("receipts", () => readReceipts(root));
   const overrides = readOverrides(root);
   for (const [index, event] of overrides.entries()) {
@@ -1811,7 +1957,10 @@ export async function checkPlanGate(root, { timing = false } = {}) {
         (receipt) =>
           receipt.receiptId === event.receiptId &&
           receipt.receiptHash === event.receiptHash &&
-          receipt.holds.some(
+          (event.type === "PlanHoldDisposed"
+            ? disposable(receipt)
+            : receipt.holds
+          ).some(
             (hold) =>
               hold.id === event.holdId &&
               (event.schemaVersion !== 2 ||
@@ -1879,6 +2028,7 @@ export async function checkPlanGate(root, { timing = false } = {}) {
       rulesRecorded,
       advisories,
       criteriaAdvisories: criteria,
+      preflightAdvisories: preflight,
     });
   let continuation = null;
   if (passes.length) {
@@ -1963,5 +2113,6 @@ export async function checkPlanGate(root, { timing = false } = {}) {
     continuation,
     advisories,
     criteriaAdvisories: criteria,
+    preflightAdvisories: preflight,
   });
 }

@@ -38,6 +38,16 @@ const hash = (value: string | Buffer) =>
 function fail(message: string): never {
   throw new Error(`discovery: ${message}`);
 }
+/** A profile is the conventions record itself, as JSON. A repository's
+ * profile document may show the same conventions to the people who read it,
+ * but discovery reads only the record and parses no Markdown. */
+function profileRecord(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return fail("profile must be a JSON conventions record");
+  }
+}
 const array = (value: unknown): unknown[] => {
   if (!Array.isArray(value) || value.length > 64)
     fail("invalid convention list");
@@ -224,14 +234,8 @@ function observe(
     const bytes = files.get(profile);
     if (bytes) {
       discoveryPath(profile);
-      const text = bytes.toString("utf8");
-      const blocks = [
-        ...text.matchAll(/```dotln-discovery\s*\n([\s\S]*?)\n```/gu),
-      ];
-      if (profile.endsWith(".md") && blocks.length !== 1)
-        fail("profile needs one dotln-discovery block");
       config = decodeDiscoveryConventions(
-        JSON.parse(profile.endsWith(".md") ? blocks[0]![1]! : text),
+        profileRecord(bytes.toString("utf8")),
       );
       source = profile;
       profilePath = profile;

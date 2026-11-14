@@ -23,9 +23,11 @@ import {
   checkTargetHarness,
   removeTargetHarness,
   readBuildOverlay,
+  readSettingsFragment,
   harnessInstallation,
 } from "./lib/harness.mjs";
-import { docPath, findLaunchpad } from "./lib/config.mjs";
+import { docPath, findLaunchpad, loadConfig } from "./lib/config.mjs";
+import { localTermContextLines } from "./lib/terms.mjs";
 import { readFeatures } from "./lib/features.mjs";
 import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
 import {
@@ -430,6 +432,10 @@ try {
         options.termsRoot = root;
         options.overlay = readBuildOverlay(findLaunchpad());
         options.features = readFeatures(findLaunchpad());
+        options.workers = loadConfig(findLaunchpad()).workers;
+        // The launchpad's fragment, or none: never the output root's own.
+        options.settingsFragment =
+          readSettingsFragment(findLaunchpad()) ?? null;
         options.instructionFloor = readFileSync(
           resolve(root, "CLAUDE.md"),
           "utf8",
@@ -445,6 +451,10 @@ try {
         console.log(
           `harness ${action}: ${result.files} generated surfaces; local-terms list: ${result.localTerms.status}`,
         );
+        // A context-mode match refuses nothing: it is listed for the stage
+        // to read beside the entry it matched.
+        for (const line of localTermContextLines(result.localTerms))
+          console.log(line);
         // The literal-rule fallback's sidecars live in the main checkout and
         // name an order's rules; one whose order no longer has a registered
         // target worktree is drift the operator sees here, with the remedy.

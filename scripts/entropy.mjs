@@ -16,9 +16,9 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage = [
-  "entropy review [--repository <id> [<commit>] | --workstream WS-NNN | <commit>] [--transport claude-cli-print|codex-cli-exec|fake] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>] [--concern '<hypothesis>']",
+  "entropy review [--repository <id> [<commit>] | --workstream WS-NNN | <commit>] [--transport claude-cli-print|codex-cli-exec|fake] [--model <worker or model>] [--effort <level>] [--source <source>] [--account-label <label>] [--concern '<hypothesis>']",
   "entropy receipt <result.json> --statement <statement.txt>",
-  "entropy refute <REVIEW-NNN> [--transport <name>] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>]",
+  "entropy refute <REVIEW-NNN> [--transport <name>] [--model <worker or model>] [--effort <level>] [--source <source>] [--account-label <label>]",
   "entropy refutation-receipt <attempts.json> [--statement <statement.txt> (accepted, not recorded)]",
   "entropy dispose <REVIEW-NNN> <id> accept|defer|dismiss '<reason>' | dispose <REVIEW-NNN> <packet-id> route '<reason>' --order WO-NNN",
   "entropy subject [--repository <id> [<commit>] | --workstream WS-NNN | <commit>]",

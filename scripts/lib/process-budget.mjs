@@ -2,7 +2,7 @@ import { formatDuration } from "./duration.mjs";
 import { docPath, docRelative } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { coldStartHistory } from "./harness-context.mjs";
+import { coldStartHistory, fixedReads } from "./harness-context.mjs";
 import { validateRetention } from "./temporary-roots.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
 import { completedPhaseAttempts } from "./control-time.mjs";
@@ -38,6 +38,37 @@ export function pruneStartBudgetKey(budgets) {
   )
     throw new Error("Invalid budget: prune.startBudgetMs");
   return value;
+}
+
+/** What a day may use, as a budgets document declares it: the instance's
+ * own figure, advisory, in tokens, dollars or both, each a positive number
+ * or null for none. Returns the figure, or undefined where the document
+ * declares none; any other shape is refused by its field. The loader and
+ * the prompt hook both judge the shape here.
+ * @param {any} value the parsed budgets document
+ * @returns {{tokens?: number|null, usd?: number|null} | undefined} */
+export function dailySpend(value) {
+  if (value?.spend === undefined) return undefined;
+  if (
+    !value.spend ||
+    typeof value.spend !== "object" ||
+    Array.isArray(value.spend)
+  )
+    throw new Error("Invalid budget: spend");
+  // Only a day's figure is read: another key would be a cap nothing applies.
+  for (const field of Object.keys(value.spend))
+    if (field !== "daily") throw new Error(`Invalid budget: spend.${field}`);
+  const daily = value.spend.daily;
+  if (daily === undefined) return undefined;
+  if (!daily || typeof daily !== "object" || Array.isArray(daily))
+    throw new Error("Invalid budget: spend.daily");
+  for (const [field, figure] of Object.entries(daily))
+    if (
+      !["tokens", "usd"].includes(field) ||
+      !(figure === null || (Number.isFinite(figure) && figure > 0))
+    )
+      throw new Error(`Invalid budget: spend.daily.${field}`);
+  return daily;
 }
 
 export function readBudgets(root, { cutoff } = {}) {
@@ -113,6 +144,7 @@ export function readBudgets(root, { cutoff } = {}) {
       value.drivenPhaseTimeoutMs > 2147483647)
   )
     throw new Error("Invalid budget: drivenPhaseTimeoutMs");
+  dailySpend(value);
   // The routine prune's wall budget at plan start and release close; unset is
   // its 1,800,000 ms (30 minute) default and null removes the bound. Plan start and the close
   // judge the key by the same rule and fall back to the default.
@@ -250,6 +282,20 @@ export function measureColdStarts(root, previous) {
       const path = `${skillsRoot}/dotln-${role}/SKILL.md`;
       const skillBytes = bytes(path),
         previousSkillBytes = oldBytes(path);
+      // The second number: what the root tells the role to read outright.
+      // It is reported beside the installed bytes and judged by no ceiling.
+      let reads = null,
+        fixedReadCause = skillBytes === null ? "skill-unavailable" : null;
+      if (skillBytes !== null)
+        try {
+          reads = fixedReads(
+            readFileSync(join(root, path), "utf8"),
+            role,
+            (name) => readFileSync(join(root, name), "utf8"),
+          );
+        } catch (error) {
+          fixedReadCause = error instanceof Error ? error.message : "unread";
+        }
       const value =
         skillBytes === null || instruction.bytes === null
           ? null
@@ -273,6 +319,12 @@ export function measureColdStarts(root, previous) {
         path,
         skillBytes,
         bytes: value,
+        fixedReadBytes:
+          reads === null
+            ? null
+            : reads.reduce((total, row) => total + row.bytes, 0),
+        fixedReads: reads,
+        fixedReadCause,
         previousBytes,
         previousCause:
           previousBytes === null ? "edition-snapshot-unavailable" : null,
@@ -312,7 +364,7 @@ export function measureColdStarts(root, previous) {
     schemaVersion: 3,
     comparisonEdition: history.edition,
     method:
-      "Installed CLAUDE.md plus the installed role skill only; UTF-8 source bytes, no task documents or estimated tokens. Previous edition is the highest reachable local vX.Y.Z release tag (or explicit comparison). Last acceptance uses the first committed snapshot on HEAD's first-parent history containing the role's latest global acceptance (date, then record order); it does not infer a measurement from the ceiling or reason prose. Missing history or files are null with a cause.",
+      "Installed CLAUDE.md plus the installed role skill only; UTF-8 source bytes, no task documents or estimated tokens. Beside them, and judged by no ceiling, fixedReadBytes is the bytes of the files and sections the skill's explicit Read: lines name outright, a selector that begins with @ left out; a read that does not resolve leaves the figure null with its cause. Previous edition is the highest reachable local vX.Y.Z release tag (or explicit comparison). Last acceptance uses the first committed snapshot on HEAD's first-parent history containing the role's latest global acceptance (date, then record order); it does not infer a measurement from the ceiling or reason prose. Missing history or files are null with a cause.",
     instruction,
     profiles,
   };

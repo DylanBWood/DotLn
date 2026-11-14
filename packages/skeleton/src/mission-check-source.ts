@@ -25,6 +25,62 @@ import { WorkerFailure } from "./worker-protocol.js";
 
 export type { MissionSource };
 
+/** A contract's clauses as its caller read them with the repository's
+ * work-order reader: the text each field introduces (`null` when the field
+ * is absent or empty) and each acceptance criterion with the number written
+ * before it. */
+export interface MissionContractDocument {
+  readonly objective: string | null;
+  readonly criteria: readonly {
+    readonly number: number;
+    readonly text: string;
+  }[];
+  readonly nonGoals: string | null;
+  readonly evidenceGate: string | null;
+}
+/** The vision document's structure as its caller read it with the
+ * repository's Markdown reader: each section's heading depth and title with
+ * the text under it, and the text of each item of the list naming what DotLn
+ * is not. */
+export interface MissionVision {
+  readonly sections: readonly {
+    readonly depth: number;
+    readonly title: string;
+    readonly body: string;
+  }[];
+  readonly exclusions: readonly string[];
+}
+/** Reads the three documents a mission check judges into their structure.
+ * This package reads no Markdown: it reads each document's bytes inside the
+ * worktree's bounds and hands the text to the reader its script-side caller
+ * supplies. `decisions` returns the text of each fenced JSON block, in
+ * order. */
+export interface MissionDocumentReader {
+  readonly contract: (markdown: string) => MissionContractDocument;
+  readonly decisions: (markdown: string) => readonly string[];
+  readonly vision: (markdown: string) => MissionVision;
+}
+/** What a dispatch-time observation reads from the documents, already
+ * structured: the contract and story as they read now, the decision
+ * history's JSON blocks, and why that history was not carried when it was
+ * not. */
+export interface MissionDocuments {
+  readonly contract: MissionContractDocument;
+  readonly story: MissionContractDocument | null;
+  readonly decisions: readonly string[];
+  readonly omittedDecisions: string | null;
+}
+/** The documents as the resident read them before starting the episode, or
+ * the refusal that read met. It crosses to the episode's process as data. */
+export type MissionDocumentsResult =
+  | { readonly documents: MissionDocuments }
+  | {
+      readonly failure: {
+        readonly code: WorkerFailure["code"];
+        readonly detail: string | null;
+      };
+    };
+
 const refuse = (detail: string): never => {
   throw new WorkerFailure("profile-refused", detail);
 };
@@ -174,7 +230,7 @@ const ignoredInventory = (
 /** Bounded projection of the documented work-order shape. Prose that is not
  * one of these clauses never becomes a contract clause. */
 export function missionClauses(
-  markdown: string,
+  contract: MissionContractDocument,
   declaredSurfaces: readonly string[],
 ): readonly MissionClause[] {
   const surfaces = `Declared surfaces: ${[...declaredSurfaces].join(", ")}`;
@@ -186,7 +242,13 @@ export function missionClauses(
   // A clause longer than the bound is carried in parts, never cut: the pinned
   // and observed projections must still differ when the operator edits a
   // contract past that bound, which is the whole mid-episode change rule.
-  const push = (id: string, kind: MissionClause["kind"], text: string) => {
+  const push = (
+    id: string,
+    kind: MissionClause["kind"],
+    value: string | null,
+  ) => {
+    const text = value === null ? "" : collapse(value);
+    if (!text) return;
     const limit = MISSION_CAPSULE_BOUNDS.clauseChars;
     if (text.length <= limit) {
       clauses.push({ id, kind, text });
@@ -199,54 +261,34 @@ export function missionClauses(
         text: text.slice(at, at + limit),
       });
   };
-  // `$` means end of line under the m flag, which would truncate every block
-  // at its first newline. End of input is the explicit alternative here.
-  const END = "(?![\\s\\S])";
-  const block = (label: string): string | undefined => {
-    const match = markdown.match(
-      new RegExp(
-        `^\\*\\*${label}:?\\*\\*([\\s\\S]*?)(?=\\n\\n\\*\\*|\\n\\n#|${END})`,
-        "mu",
-      ),
-    );
-    const text = match?.[1] && collapse(match[1]);
-    return text || undefined;
-  };
-  const objective = block("Objective");
-  if (objective) push("contract:objective", "objective", objective);
-  const criteria = markdown.match(
-    new RegExp(
-      `^\\*\\*Acceptance criteria[^*]*\\*\\*\\r?\\n([\\s\\S]*?)(?=\\n\\*\\*|\\n## |${END})`,
-      "mu",
-    ),
-  )?.[1];
-  for (const [, index, text] of (criteria ?? "").matchAll(
-    new RegExp(`^(\\d+)\\.\\s([\\s\\S]*?)(?=\\n\\d+\\.\\s|${END})`, "gmu"),
-  ))
-    push(`contract:criterion:${index}`, "criterion", collapse(text!));
-  const nonGoals = block("Non-goals");
-  if (nonGoals) push("contract:non-goals", "non-goal", nonGoals);
-  const evidence = block("Evidence gate");
-  if (evidence) push("contract:evidence-gate", "constraint", evidence);
+  push("contract:objective", "objective", contract.objective);
+  // A criterion's id is the number written before it, so renumbering a
+  // criterion is a change the pinned contract does not carry.
+  for (const criterion of contract.criteria)
+    push(`contract:criterion:${criterion.number}`, "criterion", criterion.text);
+  push("contract:non-goals", "non-goal", contract.nonGoals);
+  push("contract:evidence-gate", "constraint", contract.evidenceGate);
   if (clauses.length < 2)
     refuse("mission contract projection found no objective or criterion");
   return clauses;
 }
-/** Structured decision receipts, newest last, bounded to the declared window. */
+/** Structured decision receipts, newest last, bounded to the declared
+ * window: each JSON block that parses to an object with a string `id` and
+ * `decision`. */
 export function missionDecisions(
-  markdown: string,
+  blocks: readonly string[],
   limit: number,
 ): readonly MissionDecision[] {
   const rows: MissionDecision[] = [];
-  for (const [, block] of markdown.matchAll(/```json\r?\n([\s\S]*?)```/gu)) {
-    let decision: { id?: unknown; decision?: unknown };
+  for (const block of blocks) {
+    let decision: { id?: unknown; decision?: unknown } | null;
     try {
-      decision = JSON.parse(block!) as typeof decision;
+      decision = JSON.parse(block) as typeof decision;
     } catch {
       continue;
     }
     if (
-      typeof decision.id === "string" &&
+      typeof decision?.id === "string" &&
       typeof decision.decision === "string"
     )
       rows.push({
@@ -261,12 +303,21 @@ export function missionDecisions(
   const window = Math.min(limit, MISSION_CAPSULE_BOUNDS.decisions);
   return window > 0 ? rows.slice(-window) : [];
 }
+/** The declared theses, each the text under the vision's level-two or
+ * level-three heading of that title; a heading the vision does not carry is
+ * skipped. */
 export function missionTheses(
-  markdown: string,
+  vision: MissionVision,
   headings: readonly (readonly [string, string])[],
 ): readonly MissionThesis[] {
   const theses = headings.flatMap(([id, title]) => {
-    const text = section(markdown, title);
+    const text = vision.sections
+      .find(
+        (section) =>
+          section.title === title &&
+          (section.depth === 2 || section.depth === 3),
+      )
+      ?.body.trim();
     return text
       ? [
           {
@@ -280,48 +331,35 @@ export function missionTheses(
   if (!theses.length) refuse("mission capsule found no vision thesis");
   return theses;
 }
+/** What DotLn is not, one exclusion per item of the vision's list. */
 export function missionExclusions(
-  markdown: string,
+  vision: MissionVision,
 ): readonly MissionExclusion[] {
-  const source = section(markdown, "What DotLn is not");
-  const exclusions = [
-    ...(source ?? "").matchAll(/^- ([\s\S]*?)(?=^- |\n\n|(?![\s\S]))/gmu),
-  ].map((match, index) => ({
+  const exclusions = vision.exclusions.map((item, index) => ({
     id: `what-dotln-is-not:${index + 1}`,
-    text: contextText(collapse(match[1]!), MISSION_CAPSULE_BOUNDS.clauseChars),
+    text: contextText(collapse(item), MISSION_CAPSULE_BOUNDS.clauseChars),
   }));
   if (!exclusions.length) refuse("mission capsule found no vision exclusion");
   return exclusions.slice(0, 50);
 }
-function section(markdown: string, title: string): string | undefined {
-  const escaped = title.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
-  return markdown.match(
-    new RegExp(
-      `^#{2,3} ${escaped}\\s*\\n([\\s\\S]*?)(?=\\n#{2,3} |(?![\\s\\S]))`,
-      "mu",
-    ),
-  )?.[1];
-}
 
 const contractOf = (
+  contract: MissionContractDocument,
   source: MissionSource,
   workOrderId: string,
 ): MissionContract => ({
   workOrderId,
-  clauses: missionClauses(
-    read(source.root, source.contractPath),
-    source.declaredSurfaces,
-  ),
+  clauses: missionClauses(contract, source.declaredSurfaces),
   declaredSurfaces: [...source.declaredSurfaces],
 });
-const storyOf = (source: MissionSource): MissionStoryContract | null =>
-  source.storyPath
+const storyOf = (
+  story: MissionContractDocument | null,
+  source: MissionSource,
+): MissionStoryContract | null =>
+  source.storyPath && story
     ? {
         storyId: source.storyPath,
-        clauses: missionClauses(
-          read(source.root, source.storyPath),
-          source.declaredSurfaces,
-        ),
+        clauses: missionClauses(story, source.declaredSurfaces),
       }
     : null;
 
@@ -329,13 +367,18 @@ const storyOf = (source: MissionSource): MissionStoryContract | null =>
 export function missionPinFromSource(
   source: MissionSource,
   workOrderId: string,
+  reader: MissionDocumentReader,
 ): MissionCheckPin {
-  const vision = read(source.root, source.visionPath);
+  const contract = reader.contract(read(source.root, source.contractPath));
+  const story = source.storyPath
+    ? reader.contract(read(source.root, source.storyPath))
+    : null;
+  const vision = reader.vision(read(source.root, source.visionPath));
   const ignoredSalt = randomBytes(32).toString("hex");
   return {
     schemaVersion: "mission-check-v1",
-    contract: contractOf(source, workOrderId),
-    storyContract: storyOf(source),
+    contract: contractOf(contract, source, workOrderId),
+    storyContract: storyOf(story, source),
     theses: missionTheses(vision, source.thesisHeadings),
     exclusions: missionExclusions(vision),
     ignoredSalt,
@@ -347,11 +390,103 @@ export function missionPinFromSource(
     ),
   };
 }
+/** The documents a dispatch-time observation judges, read now inside the
+ * worktree's bounds and structured by the caller's reader. A zero decision
+ * window declares that no decision is required, so none is read. */
+export function observeMissionDocuments(
+  source: MissionSource,
+  reader: MissionDocumentReader,
+): MissionDocuments {
+  const contract = reader.contract(read(source.root, source.contractPath));
+  const story = source.storyPath
+    ? reader.contract(read(source.root, source.storyPath))
+    : null;
+  const history =
+    source.decisionsPath && source.decisionLimit > 0
+      ? readDecisions(source)
+      : { text: "", omitted: null };
+  return {
+    contract,
+    story,
+    decisions: history.text ? reader.decisions(history.text) : [],
+    omittedDecisions: history.omitted,
+  };
+}
+/** The documents for the episode's process: read and structured by the
+ * resident, which holds the reader, or the refusal that met them. A resident
+ * started without a reader cannot judge a mission and says so. */
+export function settleMissionDocuments(
+  source: MissionSource,
+  reader: MissionDocumentReader | undefined,
+): MissionDocumentsResult {
+  try {
+    if (!reader)
+      throw new WorkerFailure(
+        "documents-unread",
+        "mission documents unread: this resident was started without a document reader; start it with scripts/resident.mjs",
+      );
+    return { documents: observeMissionDocuments(source, reader) };
+  } catch (error) {
+    return {
+      failure:
+        error instanceof WorkerFailure
+          ? { code: error.code, detail: error.detail ?? null }
+          : // The repository's reader refuses a criteria list it cannot
+            // read whole (scripts/lib/work-order-document.mjs, the code
+            // LIST_UNREAD); the check then has no contract to judge.
+            (error as { code?: unknown } | null)?.code ===
+              "DOTLN_ORDER_LIST_UNREAD"
+            ? { code: "contract-unreadable", detail: null }
+            : { code: "transport-failed", detail: null },
+    };
+  }
+}
+const isText = (value: unknown): value is string => typeof value === "string";
+const isContract = (value: unknown): value is MissionContractDocument => {
+  const contract = value as MissionContractDocument | null;
+  return (
+    typeof contract === "object" &&
+    contract !== null &&
+    [contract.objective, contract.nonGoals, contract.evidenceGate].every(
+      (field) => field === null || isText(field),
+    ) &&
+    Array.isArray(contract.criteria) &&
+    contract.criteria.every(
+      (row) => Number.isSafeInteger(row?.number) && isText(row?.text),
+    )
+  );
+};
+/** The documents a resident sent with the episode, or the refusal it met,
+ * raised here as the failure the episode records. */
+export function missionDocumentsOf(result: unknown): MissionDocuments {
+  const value = result as Partial<
+    { documents: MissionDocuments } & {
+      failure: { code: WorkerFailure["code"]; detail: string | null };
+    }
+  > | null;
+  if (value?.failure)
+    throw new WorkerFailure(
+      value.failure.code,
+      value.failure.detail ?? undefined,
+    );
+  const documents = value?.documents;
+  if (
+    !documents ||
+    !isContract(documents.contract) ||
+    !(documents.story === null || isContract(documents.story)) ||
+    !Array.isArray(documents.decisions) ||
+    !documents.decisions.every(isText) ||
+    !(documents.omittedDecisions === null || isText(documents.omittedDecisions))
+  )
+    throw new WorkerFailure("profile-refused", "mission documents absent");
+  return documents;
+}
 /** Observed at dispatch: the contract as it reads now, the current diff and
  * the last N decisions. Nothing here is a model claim. */
 export function observeMission(
   source: MissionSource,
   pin: MissionCheckPin,
+  documents: MissionDocuments,
 ): MissionObservation {
   const tracked = zero(
     missionGit(
@@ -464,13 +599,8 @@ export function observeMission(
     .map((path) => sections.get(path)!)
     .join("");
   const omittedPaths = changedPaths.filter((path) => !carried.has(path));
-  // A zero window declares that no decision is required, so none is read.
-  const history =
-    source.decisionsPath && source.decisionLimit > 0
-      ? readDecisions(source)
-      : { text: "", omitted: null };
   return {
-    contract: contractOf(source, pin.contract.workOrderId),
+    contract: contractOf(documents.contract, source, pin.contract.workOrderId),
     diff: {
       baseCommit: missionGit(source, "rev-parse", source.baseCommit).trim(),
       revision: missionGit(source, "rev-parse", "--short", "HEAD").trim(),
@@ -479,8 +609,8 @@ export function observeMission(
       omittedPaths,
       ignoredEntries,
     },
-    decisions: missionDecisions(history.text, source.decisionLimit),
-    omittedDecisions: history.omitted,
+    decisions: missionDecisions(documents.decisions, source.decisionLimit),
+    omittedDecisions: documents.omittedDecisions,
   };
 }
 /** Untracked work rendered as the new file Git would record. `null` when the
@@ -582,4 +712,6 @@ const readDecisions = (
 export const observeMissionSubject = (
   source: MissionSource,
   pin: MissionCheckPin,
-): MissionCheckSubject => missionSubject(pin, observeMission(source, pin));
+  documents: MissionDocuments,
+): MissionCheckSubject =>
+  missionSubject(pin, observeMission(source, pin, documents));

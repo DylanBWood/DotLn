@@ -16,6 +16,15 @@ import {
 } from "./lib/generated-artifacts.mjs";
 import { TOOL_ROOT } from "./lib/config.mjs";
 import { runGit } from "./lib/git.mjs";
+import {
+  THIRD_PARTY_NOTICES,
+  VENDORED,
+  VENDORED_RECORD,
+  provenVendoredBytes,
+  provenVendoredFile,
+  vendorParser,
+  vendoredProof,
+} from "./lib/vendored-parser.mjs";
 
 function fixture(t) {
   const root = createFixtureRoot(join(tmpdir(), "dotln-sync-"));
@@ -67,38 +76,239 @@ if (mode === 'write') {
   return { root, names, artifacts, snapshot };
 }
 
-test("role oracle requires the named case to execute and pass", (t) => {
-  const { root } = fixture(t);
-  const oracle = generatedArtifacts(TOOL_ROOT).find(
-    (row) => row.name === "role-oracle",
-  );
-  const selected = {
-    ...oracle,
-    check: [oracle.check[0], join(TOOL_ROOT, oracle.check[1])],
-  };
-  const name =
-    "WO-145 optional economy support preserves historical snapshots through the current release-close role and changes only executor instructions on";
-  const define = (options = {}, body = "", title = name) =>
-    `test(${JSON.stringify(title)}, ${JSON.stringify(options)}, () => {${body}});`;
-  for (const [label, source, expected] of [
-    ["passing", define(), 0],
-    ["renamed", define({}, "", "renamed oracle"), 1],
-    ["removed", "", 1],
-    ["skipped", define({ skip: true }), 1],
-    ["TODO", define({ todo: true }), 1],
-    ["failing", define({}, "throw new Error('stale oracle')"), 1],
-    ["duplicate", define() + define(), 1],
-    ["empty suite", `describe(${JSON.stringify(name)}, () => {});`, 1],
-  ]) {
-    writeFileSync(
-      join(root, "scripts/test-process-debt.mjs"),
-      `import test, { describe } from 'node:test';\n${source}\n`,
+test("WO-275 criterion 3: the operator commands page holds the kit guide's marked blocks in the cycle's order, goes stale naming itself when a marked block changes, and an unmarked shell block fails naming its line", async (t) => {
+  const {
+    OPERATOR_STEPS,
+    readMarkedBlocks,
+    renderOperatorPage,
+    writeOperatorPage,
+  } = await import("./lib/operator-commands.mjs");
+  const read = (root, path) => readFileSync(join(root, path), "utf8");
+  // This repository's page is the rendering of its own guide, and it holds
+  // every marked block byte for byte, step by step in the cycle's order.
+  const page = read(TOOL_ROOT, "docs/OPERATOR.md");
+  assert.equal(renderOperatorPage(TOOL_ROOT).page, page);
+  const { blocks, faults } = readMarkedBlocks(read(TOOL_ROOT, "docs/KIT.md"));
+  assert.deepEqual(faults, []);
+  const order = OPERATOR_STEPS.map(([id]) => id);
+  let at = 0;
+  for (const block of [...blocks].sort(
+    (a, b) => order.indexOf(a.step) - order.indexOf(b.step) || a.line - b.line,
+  )) {
+    const bytes = `${block.fence}${block.info}\n${block.content.join("\n")}\n${block.fence}\n`;
+    const found = page.indexOf(bytes, at);
+    assert.ok(
+      found >= at,
+      `block of ${block.step} at guide line ${block.line}`,
     );
-    const result = checkArtifact(selected, root);
-    assert.equal(result.exitCode, expected, `${label}: ${result.output}`);
-    if (expected)
-      assert.match(result.output, /requires exactly one executed passing case/);
+    at = found + bytes.length;
   }
+  assert.deepEqual(
+    [...page.matchAll(/^## \d+\. (.+)$/gmu)].map((match) => match[1]),
+    OPERATOR_STEPS.map(([, heading]) => heading),
+  );
+  const version = /`(v\d+\.\d+\.\d+)`/u.exec(
+    read(TOOL_ROOT, "README.md").split("<!-- DOTLN-RELEASE-BEGIN -->")[1],
+  )[1];
+  assert.match(
+    page,
+    new RegExp(`the DotLn kit at \`${version.replaceAll(".", "\\.")}\``, "u"),
+  );
+  // A scratch copy: a changed marked block leaves the page stale, named,
+  // until the writer regenerates it.
+  const root = createFixtureRoot(join(tmpdir(), "dotln-operator-commands-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, "docs"));
+  for (const path of ["README.md", "docs/KIT.md", "docs/OPERATOR.md"])
+    writeFileSync(join(root, path), read(TOOL_ROOT, path));
+  assert.equal(writeOperatorPage(root, { check: true }).exitCode, 0);
+  const guide = read(root, "docs/KIT.md");
+  const changed = guide.replace(
+    "git push -u origin main\nnode scripts/bootstrap.mjs\n",
+    "git push -u origin main\ngit status\nnode scripts/bootstrap.mjs\n",
+  );
+  assert.notEqual(changed, guide);
+  writeFileSync(join(root, "docs/KIT.md"), changed);
+  const stale = writeOperatorPage(root, { check: true });
+  assert.equal(stale.exitCode, 1);
+  assert.match(stale.output.join("\n"), /^stale docs\/OPERATOR\.md: /mu);
+  assert.ok(stale.output.includes("DOTLN_ARTIFACT_STALE operator-commands"));
+  assert.equal(writeOperatorPage(root).exitCode, 0);
+  assert.equal(writeOperatorPage(root, { check: true }).exitCode, 0);
+  assert.match(read(root, "docs/OPERATOR.md"), /\ngit status\n/u);
+  // A fenced shell block with neither a step's marker nor the aside marker
+  // fails the check naming its line, and the page is not written over it.
+  const unmarked = `${changed}\nMore prose.\n\n\`\`\`sh\nnpm run unseen\n\`\`\`\n`;
+  writeFileSync(join(root, "docs/KIT.md"), unmarked);
+  const line =
+    unmarked.split("\n").indexOf("```sh", changed.split("\n").length) + 1;
+  const refused = writeOperatorPage(root, { check: true });
+  assert.equal(refused.exitCode, 1);
+  assert.deepEqual(refused.output, [
+    `FAIL docs/KIT.md:${line}: a fenced shell block carries no operator-commands marker; mark it with its step (<!-- operator-commands <step> -->) or set it aside (<!-- operator-commands aside -->)`,
+  ]);
+  assert.ok(!refused.output.includes("DOTLN_ARTIFACT_STALE operator-commands"));
+  // The attack on Part G (WO-276). A comment that opens as a marker and is
+  // none is a fault naming its line, whatever its block's language: read as
+  // an ordinary comment it dropped a text block from the page in silence.
+  const runOrder = "<!-- operator-commands run-order -->";
+  assert.ok(guide.includes(runOrder));
+  for (const written of [
+    "<!-- operator-commands run-order (each phase) -->",
+    "<!-- operator-commands run-order:each phase -->",
+    "<!-- operator-commands  run-order -->",
+    "<!-- operator-commands Run-Order -->",
+    "<!-- operator-command run-order -->",
+    "<!-- operator-commands: run-order -->",
+    "<!-- operator-commands run_order -->",
+  ])
+    assert.ok(
+      readMarkedBlocks(guide.replace(runOrder, written)).faults.some((fault) =>
+        fault.includes(
+          ": a comment opens as an operator-commands marker and is not one the page reads; ",
+        ),
+      ),
+      written,
+    );
+  // An unmarked block under any shell's or session's info string is
+  // faulted, attributes and braces aside; a block of data is not.
+  const unmarkedUnder = (info) =>
+    readMarkedBlocks(
+      ["# Guide", "", `\`\`\`${info}`, "run this", "```", ""].join("\n"),
+    ).faults.filter((fault) =>
+      fault.includes(
+        "a fenced shell block carries no operator-commands marker",
+      ),
+    ).length;
+  for (const info of [
+    "sh-session",
+    "shellsession",
+    "fish",
+    "powershell",
+    "ps1",
+    "{.bash}",
+    "bash{1,2}",
+    'bash title="x"',
+    "Console",
+    "",
+  ])
+    assert.equal(unmarkedUnder(info), 1, info);
+  for (const info of ["json", "text", "js", "diff"])
+    assert.equal(unmarkedUnder(info), 0, info);
+  const before = read(root, "docs/OPERATOR.md");
+  assert.equal(writeOperatorPage(root).exitCode, 1);
+  assert.equal(read(root, "docs/OPERATOR.md"), before);
+  // A longer fence keeps its length on the page, so a block that holds a
+  // three-backtick line (a here-document writing a fence) keeps its bytes.
+  const longer = changed.replace(
+    "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md\n```\n",
+    "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md\n```\n\n<!-- operator-commands run-order -->\n````sh\ncat <<'EOF' > fence.md\n```\nEOF\n````\n",
+  );
+  assert.notEqual(longer, changed);
+  const { page: rendered, faults: longerFaults } = renderOperatorPage(root, {
+    guide: longer,
+  });
+  assert.equal(longerFaults, undefined, String(longerFaults));
+  assert.ok(
+    rendered.includes("\n````sh\ncat <<'EOF' > fence.md\n```\nEOF\n````\n"),
+    rendered,
+  );
+  // A fenced shell block inside a block quote is read as one too.
+  const quoted = `${changed}\nMore prose.\n\n> \`\`\`sh\n> npm run unseen\n> \`\`\`\n`;
+  const quotedLine =
+    quoted.split("\n").indexOf("> ```sh", changed.split("\n").length) + 1;
+  assert.deepEqual(readMarkedBlocks(quoted, "docs/KIT.md").faults, [
+    `docs/KIT.md:${quotedLine}: a fenced shell block carries no operator-commands marker; mark it with its step (<!-- operator-commands <step> -->) or set it aside (<!-- operator-commands aside -->)`,
+  ]);
+  // The aside marker admits it; a marker over no block, an unknown step and a
+  // step with a second sentence are each named.
+  writeFileSync(
+    join(root, "docs/KIT.md"),
+    unmarked.replace(
+      "\n```sh\nnpm run unseen",
+      "\n<!-- operator-commands aside -->\n```sh\nnpm run unseen",
+    ),
+  );
+  assert.equal(writeOperatorPage(root, { check: true }).exitCode, 0);
+  const faulty = readMarkedBlocks(
+    `${changed}\n<!-- operator-commands first-pass: A second sentence. -->\n\`\`\`text\nplanning: again\n\`\`\`\n\n<!-- operator-commands later -->\n\nprose\n`,
+    "docs/KIT.md",
+  ).faults.join("\n");
+  assert.match(faulty, /step first-pass carries 2 sentences/u);
+  assert.match(faulty, /marker names an unknown step "later"/u);
+  assert.match(faulty, /marker stands over no fenced block/u);
+});
+
+test("WO-276 criterion B5: the carried parser, its license and its notices equal the installed package's files, the check names the one a byte changed, and only the recorded bytes are the proven copy", (t) => {
+  const root = createFixtureRoot(join(tmpdir(), "dotln-vendored-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const installed = {
+    "node_modules/prettier/package.json": '{"version":"9.9.9"}\n',
+    "node_modules/prettier/plugins/markdown.mjs": "export const parse = 1;\n",
+    "node_modules/prettier/LICENSE": "A license.\n",
+    "node_modules/prettier/THIRD-PARTY-NOTICES.md": "# Notices\n",
+  };
+  for (const [path, text] of Object.entries(installed)) {
+    mkdirSync(join(root, path, ".."), { recursive: true });
+    writeFileSync(join(root, path), text);
+  }
+  mkdirSync(join(root, "scripts/lib/vendor"), { recursive: true });
+  const copies = VENDORED.map(([copy]) => copy);
+  // Nothing is proven before the copies and their record exist.
+  assert.deepEqual(
+    vendorParser(root, { check: true }).sort(),
+    [...copies, VENDORED_RECORD, THIRD_PARTY_NOTICES].sort(),
+  );
+  assert.equal(
+    copies.some((copy) => provenVendoredFile(root, copy)),
+    false,
+  );
+  vendorParser(root);
+  assert.deepEqual(vendorParser(root, { check: true }), []);
+  for (const [copy, source] of VENDORED) {
+    assert.deepEqual(
+      readFileSync(join(root, copy)),
+      readFileSync(join(root, source)),
+      copy,
+    );
+    assert.equal(provenVendoredFile(root, copy), true, copy);
+  }
+  assert.match(
+    readFileSync(join(root, THIRD_PARTY_NOTICES), "utf8"),
+    /9\.9\.9/u,
+  );
+  // One byte more in any of the three: the check names that file alone, and
+  // the file is no longer the proven copy, by the record a kit carries too.
+  const proof = vendoredProof(
+    readFileSync(join(root, VENDORED_RECORD), "utf8"),
+  );
+  for (const copy of copies) {
+    const held = readFileSync(join(root, copy));
+    const changed = Buffer.concat([held, Buffer.from("\n")]);
+    writeFileSync(join(root, copy), changed);
+    assert.deepEqual(vendorParser(root, { check: true }), [copy]);
+    assert.equal(provenVendoredFile(root, copy), false, copy);
+    assert.equal(provenVendoredBytes(root, copy, changed), false, copy);
+    assert.equal(proof(copy, changed), false, copy);
+    assert.equal(proof(copy, held), true, copy);
+    writeFileSync(join(root, copy), held);
+  }
+  // No other path is ever the proven copy, whatever its bytes.
+  const beside = "scripts/lib/vendor/other.mjs";
+  writeFileSync(join(root, beside), readFileSync(join(root, copies[0])));
+  assert.equal(provenVendoredFile(root, beside), false);
+  // The record and the notices file are checked as the copies are.
+  for (const path of [VENDORED_RECORD, THIRD_PARTY_NOTICES]) {
+    const held = readFileSync(join(root, path), "utf8");
+    writeFileSync(join(root, path), `${held} `);
+    assert.deepEqual(vendorParser(root, { check: true }), [path]);
+    writeFileSync(join(root, path), held);
+  }
+  // Without an installed package the check says what to run.
+  rmSync(join(root, "node_modules"), { recursive: true, force: true });
+  assert.throws(() => vendorParser(root, { check: true }), /run npm ci/u);
+  // The record still proves the copies there.
+  assert.equal(provenVendoredFile(root, copies[0]), true);
 });
 
 test("generated freshness names every stale artifact and leaves all bytes unchanged", (t) => {
@@ -247,7 +457,11 @@ test("sync classifies real stale reports for every regenerable artifact and refu
     ],
     index: [
       "docs/work-orders/README.md is stale at line 3; run npm run work-orders -- index",
-      "docs/work-orders/HISTORY.md: missing or malformed tag snapshot; run npm run work-orders -- index",
+      "docs/work-orders/README.md: the work-order index needs its tag record docs/control/release-history.json; run npm run work-orders -- index",
+      "docs/control/release-history.json: invalid release tag record; run npm run work-orders -- index",
+      "docs/control/workstream-observations.json: the workstream observations are missing; run npm run work-orders -- index",
+      "docs/control/workstream-observations.json: invalid workstream observations; run npm run work-orders -- index",
+      "docs/control/workstream-observations.json: missing or malformed workstream snapshot; run npm run work-orders -- index",
     ],
     "release-surfaces": [
       "FAIL release-block: observed no strict version; expected v1.0.0",
@@ -275,11 +489,16 @@ test("sync classifies real stale reports for every regenerable artifact and refu
       "feedback evidence is stale: a compiler release moved the policy hash since the selected edition",
       "StaleFeedbackEdition [Error]: feedback evidence is stale: unresolvable edition reference: verification.json",
     ],
-    "console-fixtures": [
-      "console selfhost fixture must follow the selected feedback edition; run npm run sync",
-      "console fixture changed: selfhost.html",
-    ],
+    "console-fixtures": ["console fixture changed: selfhost.html"],
     publication: ["FAIL 2 edition(s) are stale"],
+    "operator-commands": [
+      "stale docs/OPERATOR.md: it differs from the kit guide's marked command blocks; run npm run sync or node scripts/lib/operator-commands.mjs\nDOTLN_ARTIFACT_STALE operator-commands",
+    ],
+    "vendored-parser": [
+      "stale scripts/lib/vendor/prettier-markdown.mjs: it differs from the pinned Prettier's file or its recorded hash; run npm run sync\nDOTLN_ARTIFACT_STALE vendored-parser",
+      "stale scripts/lib/vendored-parser.json: it differs from the pinned Prettier's file or its recorded hash; run npm run sync\nDOTLN_ARTIFACT_STALE vendored-parser",
+      "stale THIRD_PARTY_NOTICES: it differs from the pinned Prettier's file or its recorded hash; run npm run sync\nDOTLN_ARTIFACT_STALE vendored-parser",
+    ],
   };
   const inventory = generatedArtifacts(TOOL_ROOT);
   assert.deepEqual(
@@ -357,6 +576,12 @@ test("sync classifies real stale reports for every regenerable artifact and refu
       "error: docs/siblings/siblings.json: no sibling declaration, but docs/siblings/README.md exists; restore the declaration or remove the page",
     ],
     ["siblings", "error: docs/evidence/siblings/receipt.json: invalid receipt"],
+    // A fault in the kit guide's markers is no stale page: sync never writes
+    // over it, and the check names the guide's line instead.
+    [
+      "operator-commands",
+      "FAIL docs/KIT.md:118: a fenced shell block carries no operator-commands marker; mark it with its step (<!-- operator-commands <step> -->) or set it aside (<!-- operator-commands aside -->)",
+    ],
   ])
     assert.equal(
       checkArtifact({ name }, TOOL_ROOT, () => ({ exitCode: 1, output })).stale,
@@ -433,22 +658,17 @@ test("sync names the unselected orphan when an evidence writer or recheck fails"
   }
 });
 
-test("sync refuses manual role oracles, changed feedback judgments and baseline fingerprints without overwriting them", async (t) => {
+test("sync refuses changed feedback judgments and baseline fingerprints without overwriting them", async (t) => {
   const { root, artifacts } = fixture(t);
   writeFileSync(join(root, "format"), "current\n");
   const selected = artifacts
     .filter((row) =>
-      ["role-oracle", "feedback-evidence", "baseline-fingerprints"].includes(
-        row.name,
-      ),
+      ["feedback-evidence", "baseline-fingerprints"].includes(row.name),
     )
     .map(({ write, ...row }) => ({
       ...row,
       ...(row.name === "feedback-evidence" ? { kind: "feedback" } : {}),
-      route:
-        row.name === "role-oracle"
-          ? "authorizing decision and a new linked role oracle"
-          : "authorized baseline-review route",
+      route: "authorized baseline-review route",
     }));
   for (const row of selected)
     writeFileSync(join(root, row.name), "historical\n");
@@ -463,11 +683,7 @@ test("sync refuses manual role oracles, changed feedback judgments and baseline 
   assert.equal(result.exitCode, 1);
   assert.deepEqual(
     result.rows.slice(1).map((row) => row.action),
-    ["refused", "refused", "refused"],
-  );
-  assert.match(
-    result.rows.find((row) => row.artifact === "role-oracle").reason,
-    /authorizing decision/,
+    ["refused", "refused"],
   );
   assert.match(
     result.rows.find((row) => row.artifact === "feedback-evidence").reason,
@@ -538,10 +754,13 @@ test(
           () => null,
         ],
       ],
+      // The index's two observation records: a damaged or missing one is
+      // stale, and the refresh writes it again.
+      ["index", "docs/control/release-history.json", [() => "{\n", () => null]],
       [
         "index",
-        "docs/work-orders/HISTORY.md",
-        [(s) => s.replace(/^<!-- dotln-work-order-tags:.*$/m, "")],
+        "docs/control/workstream-observations.json",
+        [() => "{\n", () => null],
       ],
     ]) {
       const expected = bytes(file);
@@ -584,19 +803,21 @@ test(
         "README.md",
         (s) => s.replace(/v\d+\.\d+\.\d+/u, "v9999.0.0"),
       ],
+      // A changed marked block of the kit guide leaves the operator commands
+      // page stale until it is regenerated (WO-275 criterion 3).
+      [
+        "operator-commands",
+        "docs/KIT.md",
+        (s) =>
+          s.replace(
+            "git push -u origin main\nnode scripts/bootstrap.mjs\n",
+            "git push -u origin main\ngit status\nnode scripts/bootstrap.mjs\n",
+          ),
+      ],
       [
         "harness",
         ".agents/skills/dotln-executor/SKILL.md",
         (s) => s + "\nstale fixture\n",
-      ],
-      [
-        "role-oracle",
-        "packages/skeleton/fixtures/wo216-role-baseline.json",
-        (s) =>
-          s.replace(
-            /"historicalSha256": "[a-f0-9]{64}"/u,
-            '"historicalSha256": "' + "0".repeat(64) + '"',
-          ),
       ],
       [
         "publication",
@@ -621,8 +842,7 @@ test(
       put(file, changed);
       const stale = checked(name);
       assert.equal(stale.exitCode, 1, `${name}: ${stale.output}`);
-      if (name !== "role-oracle")
-        assert.equal(stale.stale, true, `${name}: ${stale.output}`);
+      assert.equal(stale.stale, true, `${name}: ${stale.output}`);
     }
     const all = checkGenerated(copy);
     for (const [name] of damage) assert.ok(all.stale.includes(name), name);
@@ -672,12 +892,6 @@ test(
     for (const [name] of damage) assert.ok(failed.stale.includes(name), name);
     assert.ok(failed.unrunSuites.includes("fixture-suite"));
     assert.match(messages.join("\n"), /npm run sync/u);
-    const manualOracle = await syncOne("role-oracle");
-    assert.equal(manualOracle.rows.at(-1).action, "refused");
-    assert.match(manualOracle.rows.at(-1).reason, /authorizing.*decision/u);
-    const oracle = damage.find(([name]) => name === "role-oracle")[1];
-    assert.notDeepEqual(bytes(oracle), originals.get(oracle));
-    put(oracle, originals.get(oracle));
 
     // A real judged-source edit must use the actual feedback carry refusal.
     const judged = "scripts/lib/host-resources.mjs";
@@ -705,9 +919,7 @@ test(
 
     const regenerated = await syncArtifacts(copy);
     assert.equal(regenerated.exitCode, 0, JSON.stringify(regenerated.rows));
-    for (const [name] of damage.filter(
-      ([name]) => !["role-oracle", "index"].includes(name),
-    ))
+    for (const [name] of damage.filter(([name]) => name !== "index"))
       assert.equal(
         regenerated.rows.find((row) => row.artifact === name).action,
         "regenerated",

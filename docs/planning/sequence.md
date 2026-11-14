@@ -40,7 +40,8 @@ pointers and continuation command. Untouched items persist across passes.
   fifteen cycles were the cost the operator would not pay. The complete
   review run was 24.9 minutes when this rule was written on 2026-10-13 and
   46.7 and 52.1 minutes in the committed rows of 2026-11-06 and
-  2026-11-09; Parts D and E of WO-276 are what shorten it. Reopen when its
+  2026-11-09, and 42.0 minutes on 2026-11-11 after Part D of WO-276
+  (54.3 before it on the same host). Reopen when its
   median falls to half the figure of 2026-10-13, or when merged orders
   fail first verification more often than five of eight.
 - **Placement.** The operator places an order by one sequence edit; the
@@ -66,8 +67,10 @@ pointers and continuation command. Untouched items persist across passes.
   operator direction, 2026-11-09, ignored capture SHA-256
   `e1c8d0ae73fb667fbfa8aa82a58b9c6d054eaa53a521fd82a84bc8612e573237`: the
   number of reviewers follows the evidence).
-- **Early access.** The period below `v1.0.0` is early access (operator
-  direction, 2026-09-30).
+- **Early access.** The period below `v2.0.0`, the roadmap's Teammate-ready
+  rung, is early access (operator direction, 2026-09-30; the rung was
+  numbered `v1.0.0` until 2026-11-11,
+  [decision](../evidence/WO-276/decisions.md#wo-276-d073--this-orders-release-is-v100-and-the-roadmaps-teammate-ready-rung-is-v200-on-the-operators-word)).
 
 ## Focus
 

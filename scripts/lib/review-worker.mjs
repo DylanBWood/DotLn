@@ -31,14 +31,20 @@ import {
 import { readGateChecks } from "./gate-evidence.mjs";
 import { formatDuration } from "./duration.mjs";
 import { sha256Hex as sha256 } from "./helpers.mjs";
-import { parseMarkdown } from "./markdown-links.mjs";
+import {
+  markdownCodeBlocks,
+  markdownHeadings,
+  markdownTables,
+  parseMarkdown,
+} from "./markdown-links.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import { boundTargetWorktree } from "./target-worktrees.mjs";
 import {
   launchWorker,
   readWire,
-  resolveWorkerOption,
-  workerOptionNamed,
+  loadWorkers,
+  resolveLaunch,
+  resolveWorker,
 } from "./worker-launch.mjs";
 import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
 
@@ -57,7 +63,7 @@ const refuse = (message) => {
 };
 
 export const REVIEW_USAGE =
-  "usage: npm run worker -- review --kind criteria|design|consistency|combined --host codex|claude [--model opus|fable|sol|astra] [--order WO-NNN [--target <repository-id>] | --subject planning [--capture <file>]...] [--since <tree>] [--round N] [--recheck <report>]... [--dry-run]";
+  "usage: npm run worker -- review --kind criteria|design|consistency|combined --host codex|claude [--model <worker or model>] [--effort <level>] [--order WO-NNN [--target <repository-id>] [--part <letter>|<letter>-<letter>] | --subject planning [--capture <file>]...] [--since <tree>] [--round N] [--recheck <report>]... [--dry-run]";
 
 /** @param {readonly string[]} args @param {string} [usage] */
 export function parseReviewArgs(args, usage = REVIEW_USAGE) {
@@ -73,8 +79,10 @@ export function parseReviewArgs(args, usage = REVIEW_USAGE) {
     if (arg === "--kind") options.kind = value();
     else if (arg === "--host") options.host = value();
     else if (arg === "--model") options.model = value();
+    else if (arg === "--effort") options.effort = value();
     else if (arg === "--order") options.order = value();
     else if (arg === "--target") options.target = value();
+    else if (arg === "--part") options.part = value();
     else if (arg === "--subject") options.subject = value();
     else if (arg === "--capture") options.capture.push(value());
     else if (arg === "--since") options.since = value();
@@ -103,6 +111,19 @@ export function parseReviewArgs(args, usage = REVIEW_USAGE) {
       !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u.test(options.target)
     )
       refuse(`--target names a registered repository id; ${usage}`);
+  }
+  // An order whose execution plan is divided into parts is reviewed a part
+  // at a time; the launch names the part whose criteria are due.
+  if (options.part !== undefined) {
+    if (options.subject)
+      refuse(
+        `--part names a part of an order, never of a planning subject; ${usage}`,
+      );
+    const range = /^([A-Z])(?:-([A-Z]))?$/u.exec(options.part);
+    if (!range || (range[2] !== undefined && range[2] <= range[1]))
+      refuse(
+        `--part names a part by its capital letter, or the parts done so far as a range such as A-C; ${usage}`,
+      );
   }
   if (
     options.capture.length &&
@@ -517,6 +538,7 @@ async function planRoundBriefs(
             )
         : documents,
       captures,
+      part: options.part ?? null,
       ...(batch?.brief
         ? { batch: batch.brief, ceiling: CHANGE_REVIEW_BRIEF_CEILING }
         : {}),
@@ -569,7 +591,12 @@ function requireRoundInputs(options, round, priors, usage) {
     refuse(
       `round ${round} rechecks an earlier report: name it with --recheck <report>; ${usage}`,
     );
-  if (options.kind === "combined" && !priors.length && !options.since)
+  if (
+    options.kind === "combined" &&
+    round !== 1 &&
+    !priors.length &&
+    !options.since
+  )
     refuse(
       `the combined round reads the change since the tree an earlier round reviewed: name that round's report with --recheck or the tree with --since; ${usage}`,
     );
@@ -617,18 +644,34 @@ function roundPlan(root, checkout, options, resolved, priors, usage) {
       cycle: resolved.workOrder ? reviewCycle(root, resolved.workOrder) : 0,
     }),
   );
-  // Only a round 1 that names its base starts a ladder of its own; the
-  // combined round with --since stays the last round of the ladder it ends.
+  // Only a round 1 that names its base starts a ladder of its own, whatever
+  // its kind: a combined round 1 is round one of a combined or a paired
+  // ladder. A later combined round with --since stays the last round of the
+  // ladder it ends.
   let ladder = latest?.record.ladder ?? null;
-  const opensLadder =
-    round === 1 && options.kind !== "combined" && Boolean(options.since);
+  const opensLadder = round === 1 && Boolean(options.since);
   if (opensLadder) {
     const tree = treeOf(checkout, options.since, "--since");
     ladder = { base: tree, lane: `since-${tree.slice(0, 12)}` };
   }
+  // The combined worker's own recheck: round 2 of a ladder whose round 1
+  // was the combined review it names, in a combined ladder or as the
+  // combined arm of a paired one. It reads the whole change again, as every
+  // recheck does; only a later combined round is the ladder's last, over
+  // what round 2's fixes changed.
+  const combinedRecheck =
+    options.kind === "combined" &&
+    round === 2 &&
+    !options.since &&
+    priors.length > 0 &&
+    priors.every(
+      (report) =>
+        report.record.review.kind === "combined" &&
+        report.record.review.round === 1,
+    );
   const base = options.since
     ? { since: options.since, sinceSource: "named with --since" }
-    : options.kind === "combined" && latest
+    : options.kind === "combined" && latest && !combinedRecheck
       ? {
           since: latest.record.reviewedTree,
           sinceSource: `the tree ${latest.path} reviewed`,
@@ -652,11 +695,23 @@ function roundPlan(root, checkout, options, resolved, priors, usage) {
     // A recheck names the tree its earlier round reviewed, so the worker can
     // read what the fixes changed inside the whole change it reviews again.
     priorTree:
-      options.kind !== "combined" && latest ? latest.record.reviewedTree : null,
+      (options.kind !== "combined" || combinedRecheck) && latest
+        ? latest.record.reviewedTree
+        : null,
     documentsBase: changeBase.since,
     // A fresh ladder over the very tree the lane last reviewed is a re-roll,
     // which the launch and the record name in an advisory.
-    lastReview: opensLadder ? lastReview(subjectLane) : null,
+    // Another kind's round 1 in this same ladder is the paired round's own
+    // design, four blind launches over one tree, and no re-roll.
+    lastReview: opensLadder
+      ? ((last) =>
+          last &&
+          last.record.ladder?.lane === ladder.lane &&
+          last.record.review.round === 1 &&
+          last.record.review.kind !== options.kind
+            ? null
+            : last)(lastReview(subjectLane))
+      : null,
     lane: ladder ? join(subjectLane, ladder.lane) : subjectLane,
   };
 }
@@ -672,14 +727,31 @@ const rerollAdvisory = (root, plan, reviewedTree) =>
  * recheck names its earlier findings and reads the whole change again, and
  * the combined round names its base and lists earlier findings only when a
  * report was given. */
-const ladderRule = ({ kind, round, priors, sinceSource }, admission) => {
-  const rule = `${admission[0].toUpperCase()}${admission.slice(1)}.`;
-  if (kind === "combined")
-    return `This is the last round: one combined review carrying all three briefs over the change since the base below (${sinceSource}). ${rule}${priors.length ? " Recheck the earlier findings listed below where they bear on that change." : ""}`;
+const ladderRule = (
+  { kind, round, priors, sinceSource, recheck = kind !== "combined" },
+  admission,
+  blocking,
+) => {
+  const sentence = (text) => `${text[0].toUpperCase()}${text.slice(1)}.`;
+  const rule = sentence(admission);
+  // What blocks is one standard, told to every reviewer from round one.
+  const blocks = sentence(blocking);
   if (round === 1)
-    return "This is round 1: review the whole change against its base under your brief.";
-  return `This is round ${round}, a recheck: first confirm or refute the fixes of the earlier findings listed below on the current tree, then review the whole current change against the base below again under your brief. ${rule}`;
+    return `This is round 1: ${kind === "combined" ? `one combined review carrying all three briefs over the whole change against the base below (${sinceSource})` : "review the whole change against its base under your brief"}. ${blocks} For each finding, say which writer produces the input it names, or that you found none.`;
+  if (!recheck)
+    return `This is the last round: one combined review carrying all three briefs over the change since the base below (${sinceSource}). ${rule}${priors.length ? " Recheck the earlier findings listed below where they bear on that change." : ""} ${blocks}`;
+  return `This is round ${round}, a recheck: first confirm or refute the fixes of the earlier findings listed below on the current tree, then review the whole current change against the base below again under ${kind === "combined" ? "the three briefs you carry" : "your brief"}. ${rule} ${blocks}`;
 };
+
+/** What a launch that names a part tells its worker: which part's text
+ * judges the change, and that the other parts' criteria are not due. The
+ * order travels whole, or as a pointer when it is past the brief's bound, so
+ * without this a reviewer cannot tell a part not yet begun from a part done
+ * badly. */
+const partRule = (part) =>
+  part.length === 1
+    ? `This launch reviews Part ${part} of an order whose execution plan is divided into parts. Judge the change against the order's design frame (the Design items before its first part) and Part ${part}'s own design, steps, acceptance criteria, Preflight line, known issues and non-goals. The other parts' criteria are not due: a criterion of another part that the change does not meet is no finding.`
+    : `This launch reviews Parts ${part[0]} to ${part.at(-1)} of an order whose execution plan is divided into parts and is still being executed, part by part. Judge the change against the order's design frame (the Design items before its first part) and the design, steps, acceptance criteria, Preflight lines, known issues and non-goals of Parts ${part[0]} to ${part.at(-1)}. The later parts are not built yet and their criteria are not due: a criterion of a later part that the change does not meet is no finding. Part ${part.at(-1)} may be in progress while you read: say so where a finding may be work not yet finished.`;
 
 /** One finding as a Markdown list item, in the brief and in the report. */
 const findingLine = (finding) =>
@@ -735,17 +807,26 @@ export async function renderReviewBrief(
     priors,
     documents,
     captures = [],
+    part = null,
     batch = null,
     ceiling = null,
   },
 ) {
-  const { reviewerBriefs, reviewAdmissionRule, contributorConfiguredProgram } =
-    await skeleton("loadouts/contributor");
+  const {
+    reviewerBriefs,
+    reviewAdmissionRule,
+    reviewBlockingRule,
+    contributorConfiguredProgram,
+  } = await skeleton("loadouts/contributor");
   const { workerSpecification } = await compiler("harness");
   const worker = contributorConfiguredProgram().workers.find(
     (entry) => entry.name === "dotln-worker",
   );
   if (!worker) refuse("the generated dotln-worker definition is missing");
+  if (part && !resolved.workOrder)
+    refuse(
+      "--part names a part of an order; this subject is a planning branch",
+    );
   const briefs =
     kind === "combined"
       ? ["criteria", "design", "consistency"].map(
@@ -770,7 +851,18 @@ export async function renderReviewBrief(
     "",
     "## Round",
     "",
-    ladderRule({ kind, round, priors, sinceSource }, reviewAdmissionRule),
+    ladderRule(
+      {
+        kind,
+        round,
+        priors,
+        sinceSource,
+        recheck: kind !== "combined" || Boolean(priorTree),
+      },
+      reviewAdmissionRule,
+      reviewBlockingRule,
+    ),
+    ...(part ? ["", partRule(part)] : []),
     "",
     "## Change",
     "",
@@ -780,7 +872,7 @@ export async function renderReviewBrief(
           "",
         ]
       : []),
-    `The checkout is ${checkout}. The reviewed tree is ${reviewedTree}: this checkout's working tree, untracked files included and ignored files left out, written as a Git tree. The base is ${since} (${sinceSource}). Read the change with \`git diff ${since} ${reviewedTree} -- <path>\` and the files themselves, and open your report with the line \`Reviewed tree: ${reviewedTree}\`.${priorTree ? ` The earlier round reviewed tree ${priorTree}; \`git diff ${priorTree} ${reviewedTree}\` shows what its fixes changed.` : ""} The stat is:`,
+    `The checkout is ${checkout}. The reviewed tree is ${reviewedTree}: this checkout's working tree, untracked files included and ignored files left out, written as a Git tree. The base is ${since} (${sinceSource}). Read the change with \`git diff ${since} ${reviewedTree} -- <path>\` and a file as that tree holds it with \`git --no-pager show ${reviewedTree}:<path>\`, since another writer may change the checkout while you read, and open your report with the line \`Reviewed tree: ${reviewedTree}\`.${priorTree ? ` The earlier round reviewed tree ${priorTree}; \`git diff ${priorTree} ${reviewedTree}\` shows what its fixes changed.` : ""} The stat is:`,
     "",
     fence(stat.trim() || "(no change)"),
     ...(prior.length
@@ -922,18 +1014,23 @@ async function planBatches(render, documents, measured, ceiling) {
   }));
 }
 
-/** A report's headings one level deeper, outside fenced code, so a batch's
- * own `## Items` never stands where the merged table must. */
-const demoteHeadings = (text) => {
-  let fenced = false;
-  return text
-    .split("\n")
-    .map((line) => {
-      if (/^ {0,3}(?:`{3,}|~{3,})/u.test(line)) fenced = !fenced;
-      return !fenced && /^#{1,5}\s/u.test(line) ? `#${line}` : line;
-    })
-    .join("\n");
-};
+/** A report's headings one level deeper, so a batch's own `## Items` never
+ * stands where the merged table must: each top-level heading the parser
+ * reads at levels one to five that is written on one line, with its
+ * opening marker, gains one more. Fenced code holds no heading, a level-six
+ * heading has no deeper level, and an underlined heading has no marker. */
+const demoteHeadings = (text) =>
+  markdownHeadings(text)
+    .filter(
+      ({ depth, start, end }) =>
+        depth <= 5 && !text.slice(start, end).includes("\n"),
+    )
+    .reverse()
+    .reduce(
+      (demoted, { start }) =>
+        `${demoted.slice(0, start)}#${demoted.slice(start)}`,
+      text,
+    );
 
 /** Reserve every short prefixed id before assigning fallbacks for long ids,
  * so a fallback cannot take another finding's name in either input order.
@@ -1052,9 +1149,9 @@ async function mergeBatchResults(parts, kind, priors = []) {
       return [
         `## ${title}`,
         "",
-        `| ${header.join(" | ")} |`,
+        `| ${header.map(tableCell).join(" | ")} |`,
         `| ${header.map(() => "---").join(" | ")} |`,
-        ...rows.map((row) => `| ${row.join(" | ")} |`),
+        ...rows.map((row) => `| ${row.map(tableCell).join(" | ")} |`),
         "",
       ];
     })
@@ -1086,43 +1183,33 @@ async function mergeBatchResults(parts, kind, priors = []) {
   );
 }
 
-/** One Markdown pipe table under a heading named `title`: its header cells
- * and its rows' cells, or null when no such table follows the heading. */
+/** One Markdown table under a heading named `title`: its header cells and
+ * its rows' cells, an escaped pipe read as a pipe, or null when no table
+ * directly follows the first heading that names it. */
 function tableUnder(text, title) {
-  // Only an actual report section can supply its table. Code, quotations and
-  // HTML examples have different block nodes even when their text matches.
-  const blocks = parseMarkdown(text).children;
-  const heading = blocks.findIndex(
-    (node) =>
-      node.type === "heading" &&
-      new RegExp(`^ {0,3}#{1,6}[ \\t]+${title}\\b`, "iu").test(
-        text.slice(node.position.start.offset, node.position.end.offset),
-      ),
+  // Only an actual report section can supply its table: a top-level heading
+  // and the block after it. Code, quotations and HTML examples are other
+  // blocks even when their text matches.
+  const tree = parseMarkdown(text);
+  const named = new RegExp(`^${title}\\b`, "iu");
+  const heading = markdownHeadings(text, tree).find((found) =>
+    named.test(found.title),
   );
-  if (heading < 0) return null;
-  const table = blocks[heading + 1];
-  if (table?.type !== "table") return null;
-  const lines = text
-    .slice(table.position.start.offset, table.position.end.offset)
-    .split(/\r?\n/u);
-  const cells = (line) =>
-    line
-      .trim()
-      .replace(/^\|/u, "")
-      .replace(/(?<!\\)\|$/u, "")
-      .split(/(?<!\\)\|/u)
-      .map((cell) => cell.trim());
-  let index = 0;
-  const rows = [];
-  while (index < lines.length && lines[index].trim().startsWith("|"))
-    rows.push(lines[index++]);
-  if (
-    rows.length < 2 ||
-    !cells(rows[1]).every((cell) => /^:?-+:?$/u.test(cell))
-  )
-    return null;
-  return { header: cells(rows[0]), rows: rows.slice(2).map(cells) };
+  if (!heading) return null;
+  const blocks = tree.children;
+  const next =
+    blocks[
+      blocks.findIndex((node) => node.position.start.offset === heading.start) +
+        1
+    ];
+  if (next?.type !== "table") return null;
+  const [header, ...rows] = markdownTables(text, tree)
+    .find((table) => table.start === next.position.start.offset)
+    .rows.map((row) => row.cells);
+  return { header, rows };
 }
+/** A cell as a table row writes it: a pipe in its text escaped. */
+const tableCell = (cell) => cell.replaceAll("|", "\\|");
 /** A cell's words without Markdown emphasis or code marks; a cell still
  * holding the brief's `<placeholder>` says nothing. */
 const plain = (cell) => {
@@ -1415,6 +1502,58 @@ function recordedReportRefusal(kind, captured, returned, written) {
   return kept ? `with the operator's quoted words omitted, ${kept}` : null;
 }
 
+/** A report the round does not record is kept for the executor to read: the
+ * worker's text with the operator's quoted words left out, in the round's
+ * lane under a name that says what it is and never under the round's own, so
+ * the round still has no report. `mark` is `refused` for the report that was
+ * refused and `unrecorded` for a batch's report that passed before another
+ * was. Returns the path written, relative to the launchpad. */
+function keepUnrecorded(root, lane, name, mark, text, why) {
+  mkdirSync(lane, { recursive: true, mode: 0o700 });
+  let path = join(lane, `${name}.${mark}.md`);
+  for (let again = 2; existsSync(path); again++)
+    path = join(lane, `${name}.${mark}-${again}.md`);
+  writeFileSync(path, `${why}\n\n${text.trim()}\n`, {
+    flag: "wx",
+    mode: 0o600,
+  });
+  return relative(root, path);
+}
+const REFUSED_NOTE = (refusal) =>
+  `Not this round's record. The helper refused this report, since ${refusal}.`;
+const UNRECORDED_NOTE =
+  "Not this round's record. This batch's report passed; the round ended at another batch (a refused report, no report, or a launch that was refused) and records none.";
+/** What a kept report holds: the worker's findings, rechecks and files read
+ * as a recorded report lists them, then its text, the operator's quoted
+ * words already left out. On the helper's route the worker's result lives
+ * only in this process, so the kept file is its one copy. */
+const keptBody = (result) =>
+  [
+    "## Findings",
+    "",
+    ...(result.findings?.length ? result.findings.map(findingLine) : ["None."]),
+    ...(result.rechecks?.length
+      ? [
+          "",
+          "## Rechecks",
+          "",
+          ...result.rechecks.map(
+            (row) => `- ${row.id}: ${row.outcome}. ${row.note}`,
+          ),
+        ]
+      : []),
+    "",
+    "## Files read",
+    "",
+    ...(result.filesRead?.length
+      ? result.filesRead.map((path) => `- \`${path}\``)
+      : ["None reported."]),
+    "",
+    "## The worker's report",
+    "",
+    (result.report ?? "").trim() || "(empty)",
+  ].join("\n");
+
 /** The numbered items of the operator's captures that an `## Items` table
  * names no row for: a reading aid for the executor, never a refusal, since a
  * capture's numbering is the operator's own and may count other things. */
@@ -1513,7 +1652,7 @@ export function renderReport(record) {
   return [
     `# Change review: ${record.review.kind}, round ${record.review.round}, ${record.workOrder ?? `planning branch ${record.branch}`}`,
     "",
-    `- Host: ${record.host} (\`${record.transport}\` ${record.harnessVersion}); model \`${record.model.value}\` at effort \`${record.effort.value}\`, ${SOURCE_TEXT[record.model.source] ?? record.model.source}${record.option ? `; option ${record.option.name}, ${SELECTION_TEXT[record.option.selection] ?? record.option.selection}` : ""}; host readback: ${record.readback ? record.readback.models.join(", ") : "none printed"}; effective effort unknown.`,
+    `- Host: ${record.host} (\`${record.transport}\` ${record.harnessVersion}); model \`${record.model.value}\` at effort \`${record.effort.value}\`, ${SOURCE_TEXT[record.model.source] ?? record.model.source}${record.option ? `; name \`${record.option.name}\`, ${SELECTION_TEXT[record.option.selection] ?? record.option.selection}` : ""}; host readback: ${record.readback ? record.readback.models.join(", ") : "none printed"}; effective effort unknown.`,
     ...(record.target
       ? [
           `- Target: ${record.target.repositoryId}, worktree \`${record.target.worktree}\`, activation base \`${record.target.baseCommit}\`.`,
@@ -1620,7 +1759,12 @@ export async function runChangeReview(
     REVIEW_USAGE,
   );
   const { round, since, sinceSource, lane } = plan;
-  const option = await resolveWorkerOption(root, options.host, options.model);
+  // What the launch runs: the worker or model --model names, else the
+  // default worker, on the provider --host names.
+  const option = resolveLaunch(root, options.model, {
+    provider: options.host,
+    effort: options.effort,
+  });
   const captures = readCaptures(root, options.capture);
   const reviewedTree = snapshot(resolved, checkout);
   const { CHANGE_REVIEW_TOOLS, CHANGE_REVIEW_EFFECT } = await skeleton(
@@ -1800,10 +1944,30 @@ export async function runChangeReview(
     // own; a batch that returns no report, or a refused one, ends the round
     // with nothing written, naming the batch.
     const results = [];
+    // The reports of the batches that passed before the round ended early,
+    // each kept beside the lane's records, and the clause that names them.
+    const keepPassed = () => {
+      const kept = results.map((row) =>
+        keepUnrecorded(
+          root,
+          lane,
+          `${name}.batch-${row.batch.number}`,
+          "unrecorded",
+          keptBody(row.omitted),
+          UNRECORDED_NOTE,
+        ),
+      );
+      return kept.length
+        ? `; the round records no report, and the earlier batches' reports are kept at ${kept.join(", ")}`
+        : "";
+    };
     for (const batch of batches) {
       const admission = await admitCodexLaunch(root, options.host);
       if (admission?.refusal) {
-        write(`${admission.refusal}\n${journalCompleted(admission.refusal)}`);
+        const kept = keepPassed();
+        write(
+          `${admission.refusal}${kept}\n${journalCompleted(admission.refusal)}`,
+        );
         return { refused: admission.refusal };
       }
       if (admission?.advisory) write(`${admission.advisory}\n`);
@@ -1819,6 +1983,7 @@ export async function runChangeReview(
           dispatch: batchRequest.episodeId,
           workOrder: resolved.workOrder,
           label: "review worker",
+          modelKey: option.modelKey,
           fake: async () => {
             const { fakeReviewTransport } =
               await import("./review-worker-fake.mjs");
@@ -1861,7 +2026,7 @@ export async function runChangeReview(
           : {}),
       };
       if (!launched) {
-        const line = `review: ${options.kind} round ${round}: ${batchLabel(batch) || "the worker "}returned no report (${failure}); ${formatDuration(observed.durationMs)}; nothing written to ${relative(root, lane)}`;
+        const line = `review: ${options.kind} round ${round}: ${batchLabel(batch) || "the worker "}returned no report (${failure}); ${formatDuration(observed.durationMs)}; nothing written to ${relative(root, lane)}${keepPassed()}`;
         const advisory = journal({
           ...observed,
           outcome: "no-report",
@@ -1881,14 +2046,37 @@ export async function runChangeReview(
       });
       const refusal = recordedReportRefusal(
         options.kind,
-        captures.length > 0,
+        captures.length > 0 && batch.count === 1,
         result.report,
         omitted.report,
       );
       if (refusal) {
         // A report that lacks what its brief required is not a review: the
         // round is run again, and the findings it returned are only counted.
-        const line = `review: ${options.kind} round ${round}: ${batchLabel(batch)}the worker's report is refused, since ${refusal}; it returned ${result.findings.length} findings; ${formatDuration(launched.durationMs)}; nothing written to ${relative(root, lane)}`;
+        // The refused text is kept beside the lane's records, with the
+        // reports of the batches that passed before it.
+        const part = batch.count > 1 ? `.batch-${batch.number}` : "";
+        const kept = [
+          ...results.map((row) =>
+            keepUnrecorded(
+              root,
+              lane,
+              `${name}.batch-${row.batch.number}`,
+              "unrecorded",
+              keptBody(row.omitted),
+              UNRECORDED_NOTE,
+            ),
+          ),
+          keepUnrecorded(
+            root,
+            lane,
+            `${name}${part}`,
+            "refused",
+            keptBody(omitted),
+            REFUSED_NOTE(refusal),
+          ),
+        ];
+        const line = `review: ${options.kind} round ${round}: ${batchLabel(batch)}the worker's report is refused, since ${refusal}; it returned ${result.findings.length} findings; ${formatDuration(launched.durationMs)}; the round records no report, and the refused report is kept at ${kept.at(-1)}${kept.length > 1 ? ` with the earlier batches' reports at ${kept.slice(0, -1).join(", ")}` : ""}`;
         const advisory = journal({
           ...observed,
           outcome: "refused-report",
@@ -1947,7 +2135,27 @@ export async function runChangeReview(
           written.report,
         );
     if (mergedRefusal) {
-      const line = `review: ${options.kind} round ${round}: the merged report is refused, since ${mergedRefusal}; nothing written to ${relative(root, lane)}`;
+      const kept = [
+        ...results.map((row) =>
+          keepUnrecorded(
+            root,
+            lane,
+            `${name}.batch-${row.batch.number}`,
+            "unrecorded",
+            keptBody(row.omitted),
+            UNRECORDED_NOTE,
+          ),
+        ),
+        keepUnrecorded(
+          root,
+          lane,
+          `${name}.merged`,
+          "refused",
+          keptBody(written),
+          REFUSED_NOTE(mergedRefusal),
+        ),
+      ];
+      const line = `review: ${options.kind} round ${round}: the merged report is refused, since ${mergedRefusal}; the round records no report, and the refused report is kept at ${kept.at(-1)} with the batches' reports at ${kept.slice(0, -1).join(", ")}`;
       write(`${line}\n${journalCompleted(mergedRefusal)}`);
       return { line, report: null, failure: mergedRefusal };
     }
@@ -2056,14 +2264,12 @@ export async function runChangeReview(
 }
 
 export const RECORD_USAGE =
-  "usage: npm run worker -- record --kind criteria|design|consistency|combined --from <returned-text file> [--format prose|json] [--host claude|codex] [--model <model>] [--effort <level>] [--tree <object>] [--order WO-NNN [--target <repository-id>] | --subject planning [--capture <file>]...] [--round N] [--recheck <report>]... [--since <tree>] [--batch N] [--brief-sha256 <digest>] [--tokens N] [--duration-ms N]";
+  "usage: npm run worker -- record --kind criteria|design|consistency|combined --from <returned-text file> [--format prose|json] [--host claude|codex] [--model <model>] [--effort <level>] [--tree <object>] [--order WO-NNN [--target <repository-id>] [--part <letter>|<letter>-<letter>] | --subject planning [--capture <file>]...] [--round N] [--recheck <report>]... [--since <tree>] [--batch N] [--brief-sha256 <digest>] [--tokens N] [--duration-ms N]";
 const isPlainObject = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 /** Whether an object carries a key that only the result itself carries. */
 const namesResult = (value) =>
   Object.hasOwn(value, "schemaVersion") || Object.hasOwn(value, "findings");
-const FENCE_OPENING = /^ {0,3}(`{3,}|~{3,})(.*)$/u;
-const FENCE_CLOSING = /^ {0,3}(`{3,}|~{3,})[ \t]*$/u;
 
 /** The JSON object that opens at `start` in the text and the index just past
  * its closing brace, or null when none parses there; braces inside strings
@@ -2090,47 +2296,27 @@ function objectAt(text, start) {
   return null;
 }
 
-/** Each line of a text: the offset it starts at, the offset of the line
- * after it and its words without a closing carriage return. */
-function* linesOf(text) {
-  for (let start = 0; ;) {
-    const newline = text.indexOf("\n", start);
-    const end = newline < 0 ? text.length : newline;
-    yield {
-      start,
-      next: newline < 0 ? text.length : newline + 1,
-      line: text.slice(start, end).replace(/\r$/u, ""),
-    };
-    if (newline < 0) return;
-    start = newline + 1;
-  }
-}
-
-/** Root-level fences that can carry a complete JSON return. Container and
- * inline context are supplied by the shared Markdown parser. */
+/** Root-level fenced blocks, which can carry a complete JSON return, with
+ * where each one's contents start and end. Container and inline context are
+ * the shared Markdown parser's. */
 function fencedBlocks(text, ast) {
-  return ast.children.flatMap((node) => {
-    if (node.type !== "code") return [];
-    const start = node.position.start.offset;
-    const end = node.position.end.offset;
-    const lines = [...linesOf(text.slice(start, end))];
-    const opening = FENCE_OPENING.exec(lines[0].line);
-    if (!opening) return [];
-    const last = lines.at(-1);
-    const closing = lines.length > 1 && FENCE_CLOSING.exec(last.line);
-    const closed =
-      closing &&
-      closing[1][0] === opening[1][0] &&
-      closing[1].length >= opening[1].length;
-    return [
-      {
+  const roots = new Set(
+    ast.children
+      .filter((node) => node.type === "code")
+      .map((node) => node.position.start.offset),
+  );
+  return markdownCodeBlocks(text, ast)
+    .filter((block) => roots.has(block.start))
+    .map(({ start, end, closed }) => {
+      const written = text.slice(start, end);
+      const opening = written.indexOf("\n");
+      return {
         start,
         end,
-        bodyStart: start + lines[0].next,
-        bodyEnd: closed ? start + last.start : end,
-      },
-    ];
-  });
+        bodyStart: opening < 0 ? end : start + opening + 1,
+        bodyEnd: closed ? start + written.lastIndexOf("\n") + 1 : end,
+      };
+    });
 }
 
 /** The recorder supplies the intent of mixed prose and JSON: prose keeps
@@ -2285,7 +2471,7 @@ export async function recordAgentReview(
       refuse(`${name} is a whole number; ${RECORD_USAGE}`);
   if (
     extra.model !== undefined &&
-    !/^[a-z][a-z0-9.-]{0,63}$/u.test(extra.model)
+    !/^[a-z][a-z0-9.-]{0,99}$/u.test(extra.model)
   )
     refuse(`--model names the model that ran; ${RECORD_USAGE}`);
   if (
@@ -2297,21 +2483,36 @@ export async function recordAgentReview(
     );
   if (extra.tree !== undefined && !/^[0-9a-f]{7,64}$/u.test(extra.tree))
     refuse(`--tree names the reviewed tree by its object id; ${RECORD_USAGE}`);
-  const { contributorWorkerOptions, contributorWorkerDefaults } =
-    await skeleton("loadouts/contributor");
-  // A model named by one of the four options' words or ids carries its host
-  // and effort; any other model id is recorded as the recorder states it.
-  const named =
-    extra.model === undefined
-      ? undefined
-      : await workerOptionNamed(extra.model);
-  const hostName = extra.host ?? named?.[1].host ?? "claude";
+  if (extra.host !== undefined && !Object.hasOwn(REVIEW_HOSTS, extra.host))
+    refuse(`--host must be claude or codex; ${RECORD_USAGE}`);
+  // What each name runs here, from the one table. A model named by a
+  // worker's name, a model's or an id the table holds carries its host and
+  // effort; any other model id is recorded as the recorder states it. A
+  // worker bound to several providers is read, with no --host, as Claude's.
+  const table = loadWorkers(root);
+  const known =
+    extra.model !== undefined &&
+    (Object.hasOwn(table.workers, extra.model) ||
+      Object.hasOwn(table.models, extra.model) ||
+      Object.values(table.models).some((row) => row.id === extra.model));
+  let named;
+  if (known) {
+    const bound = Object.keys(table.workers[extra.model]?.bindings ?? {});
+    try {
+      named = resolveWorker(table, extra.model, {
+        provider:
+          extra.host ??
+          (bound.length > 1 && bound.includes("claude") ? "claude" : null),
+      });
+    } catch (error) {
+      refuse(
+        `--model ${extra.model}: ${error instanceof Error ? error.message : error}; ${RECORD_USAGE}`,
+      );
+    }
+  }
+  const hostName = extra.host ?? named?.provider ?? "claude";
   if (!Object.hasOwn(REVIEW_HOSTS, hostName))
     refuse(`--host must be claude or codex; ${RECORD_USAGE}`);
-  if (named && named[1].host !== hostName)
-    refuse(
-      `--model ${extra.model} is a ${named[1].host === "claude" ? "Claude" : "Codex"} option, and --host names ${hostName}; ${RECORD_USAGE}`,
-    );
   const options = parseReviewArgs(
     [...reviewArgs, "--host", hostName],
     RECORD_USAGE,
@@ -2354,22 +2555,37 @@ export async function recordAgentReview(
   const judged = (structured ? [result.report, prose] : [prose]).map(
     (body) => ({
       body,
-      refusal: recordedReportRefusal(
-        options.kind,
-        captures.length > 0,
-        body,
-        omitDispatch(captures, options.kind, {
-          report: body,
-          findings: [],
-          rechecks: [],
-          filesRead: [],
-        }).report,
-      ),
+      // A batch of a split round owes no Items table: the merged report
+      // owes it once.
+      written: omitDispatch(captures, options.kind, {
+        report: body,
+        findings: [],
+        rechecks: [],
+        filesRead: [],
+      }).report,
     }),
   );
+  for (const row of judged)
+    row.refusal = recordedReportRefusal(
+      options.kind,
+      captures.length > 0 && extra.batch === undefined,
+      row.body,
+      row.written,
+    );
   const passing = judged.find((row) => !row.refusal);
-  if (!passing)
-    refuse(`the returned report is not recorded: ${judged[0].refusal}`);
+  if (!passing) {
+    const kept = keepUnrecorded(
+      root,
+      lane,
+      `round-${round}-${options.kind}${extra.batch === undefined ? "" : `.batch-${extra.batch}`}`,
+      "refused",
+      judged[0].written,
+      REFUSED_NOTE(judged[0].refusal),
+    );
+    refuse(
+      `the returned report is not recorded: ${judged[0].refusal}; the round records no report, and the refused report is kept at ${kept}`,
+    );
+  }
   // The tree the worker judged: named with --tree, or the working tree now,
   // which a report that names another tree, in its opening line or its
   // result's report field, cannot be recorded against.
@@ -2539,10 +2755,31 @@ export async function recordAgentReview(
       merged.report,
       omitted.report,
     );
-    if (mergedRefusal)
+    if (mergedRefusal) {
+      const kept = [
+        ...parts.map((part) =>
+          keepUnrecorded(
+            root,
+            lane,
+            `${name}.batch-${part.batch.number}`,
+            "unrecorded",
+            part.omitted.report,
+            UNRECORDED_NOTE,
+          ),
+        ),
+        keepUnrecorded(
+          root,
+          lane,
+          `${name}.merged`,
+          "refused",
+          omitted.report,
+          REFUSED_NOTE(mergedRefusal),
+        ),
+      ];
       refuse(
-        `the merged report is not recorded: ${mergedRefusal}; the parts ${present.map((at) => relative(root, partPath(at))).join(", ")} stay and are removed by hand before the round is recorded again`,
+        `the merged report is not recorded: ${mergedRefusal}; the refused report is kept at ${kept.at(-1)} with the batches' reports at ${kept.slice(0, -1).join(", ")}; the parts ${present.map((at) => relative(root, partPath(at))).join(", ")} stay and are removed by hand before the round is recorded again`,
       );
+    }
     recordedBatches = parts.map((part) => ({
       number: part.batch.number,
       count,
@@ -2561,13 +2798,12 @@ export async function recordAgentReview(
       costUsd: null,
     }));
   }
-  const fallback =
-    contributorWorkerOptions[contributorWorkerDefaults[hostName]];
+  const fallback = resolveWorker(table, "default", { provider: hostName });
   const attested = extra.model !== undefined || extra.effort !== undefined;
-  const model = named?.[1].model ?? extra.model ?? fallback.model;
+  const model = named?.model.id ?? extra.model ?? fallback.model.id;
   const effort =
     extra.effort ??
-    (named ? named[1].effort : extra.model ? "unknown" : fallback.effort);
+    (named ? named.effort : extra.model ? "unknown" : fallback.effort);
   const defaultSource =
     hostName === "claude" ? "generated-definition" : "host-default";
   const record = {
@@ -2585,19 +2821,16 @@ export async function recordAgentReview(
       source: extra.model !== undefined ? "recorder-attested" : defaultSource,
     },
     // An effort the recorder states, or the one its named model implies
-    // (unknown for a model outside the four options), is the recorder's.
+    // (unknown for a model the table does not hold), is the recorder's.
     effort: {
       value: effort,
       source: attested ? "recorder-attested" : defaultSource,
     },
     option: named
-      ? { name: named[0], selection: "recorder-attested" }
+      ? { name: named.name, selection: "recorder-attested" }
       : attested
         ? null
-        : {
-            name: contributorWorkerDefaults[hostName],
-            selection: "host-default",
-          },
+        : { name: fallback.name, selection: "host-default" },
     readback: null,
     ...roundFields(plan, resolved, priors, captures),
     reviewedTree,

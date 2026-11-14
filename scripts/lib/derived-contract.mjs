@@ -1,5 +1,10 @@
 import { createHash } from "node:crypto";
-import { dependencyHeader, parseDependencies } from "./dependencies.mjs";
+import { parseDependencies } from "./dependencies.mjs";
+import {
+  headerField,
+  readWorkOrder,
+  readWorkOrderHeader,
+} from "./work-order-document.mjs";
 
 const refuse = (detail) => {
   throw new Error(`derived order: ${detail}`);
@@ -69,16 +74,19 @@ export function validateCompiled(value) {
   return structuredClone(value);
 }
 export function parseDerivedProvenance(markdown, path) {
-  const { lines, first, end } = dependencyHeader(markdown);
-  const fields = lines
-    .slice(first + 1, end)
-    .filter((line) => line.startsWith("**Derived provenance:**"));
-  if (!fields.length) return undefined;
+  // A header field: the index reads it for every order without its body.
+  return derivedProvenance(readWorkOrderHeader(markdown), path);
+}
+// The provenance a read order's header declares: one field whose line holds
+// the JSON record. A duplicate or an invalid record is malformed.
+function derivedProvenance(order, path) {
   try {
-    if (fields.length !== 1) throw new Error("duplicate provenance");
-    return validateProvenance(
-      JSON.parse(fields[0].slice("**Derived provenance:**".length)),
+    const field = headerField(
+      order,
+      "Derived provenance",
+      "duplicate provenance",
     );
+    return field && validateProvenance(JSON.parse(field.lineValue));
   } catch {
     throw new Error(`${path}: malformed derived provenance`);
   }
@@ -114,22 +122,27 @@ export function allocationSections(event) {
   if (!set) refuse(`unknown generated section set ${event.sectionsHash}`);
   return set;
 }
-/** Global migration belongs to WO-113; only generated authorities opt in here. */
+// A date in a bold label marks a hand-written addition, such as a dated
+// receipt or amendment; a generated authority carries none.
+const DATED = /\b\d{4}-\d{2}-\d{2}/u;
+/** Global migration belongs to WO-113; only generated authorities opt in here.
+ * The shape is the title, then exactly the expected sections as second-level
+ * headings in order, and no dated bold label anywhere. */
 export function checkGeneratedSections(
   markdown,
   path,
   expected = sections,
   { historicalIds = new Set() } = {},
 ) {
-  if (!parseDerivedProvenance(markdown, path))
+  const order = readWorkOrder(markdown);
+  if (!derivedProvenance(order, path))
     throw new Error(`${path}: missing derived provenance`);
-  const visibleHeadings = [...markdown.matchAll(/^(#{1,6}) (.+)$/gm)];
-  const bodyHeadings = visibleHeadings.slice(1);
-  const headings = bodyHeadings.map((match) => match[2]);
+  const body = order.sections().slice(1);
   if (
-    bodyHeadings.some((match) => match[1] !== "##") ||
-    canonical(headings) !== canonical(expected) ||
-    /^\*\*[^*\n]*\b\d{4}-\d{2}-\d{2}[^*\n]*\*\*/m.test(markdown)
+    !order.title ||
+    body.some((section) => section.depth !== 2) ||
+    canonical(body.map((section) => section.title)) !== canonical(expected) ||
+    order.fields.some((field) => DATED.test(field.raw))
   )
     throw new Error(
       `${path}: generated authority requires stable sections: ${expected.join(", ")}`,
@@ -169,12 +182,13 @@ export function validateAllocation(event, { historicalIds = new Set() } = {}) {
     allocationSections(event),
     { historicalIds },
   );
+  const authority = readWorkOrder(event.authority);
   if (
-    canonical(parseDerivedProvenance(event.authority, event.workOrderPath)) !==
+    canonical(derivedProvenance(authority, event.workOrderPath)) !==
     canonical(event.provenance)
   )
     refuse("authority provenance differs from allocation");
-  if (!event.authority.startsWith(`# ${event.workOrderId} — `))
+  if (!authority.title?.title.startsWith(`${event.workOrderId} — `))
     refuse("authority title differs from allocation");
   return event;
 }

@@ -62,65 +62,143 @@ export interface RuntimeStatusV1 {
   };
 }
 
-/** The generated index is the only work-order status input. Derived and
- * hand-written orders use the same WO-NNN heading and fields. */
+/** The two generated work-order pages whose cards the index record holds. */
+export type WorkOrderPage = "index" | "history";
+
+/** The sections each page holds: the work ahead on the index page, the
+ * settled orders on the history page. */
+const PAGE_SECTIONS: Record<WorkOrderPage, readonly string[]> = {
+  index: ["Active", "Open"],
+  history: ["Closed", "Withdrawn", "Superseded", "Historical"],
+};
+
+/** One order's card on a generated page. The index command writes each
+ * card's Markdown and this record from the same fields: each field's text as
+ * a reader sees it, by label in the page's order, and the destinations of the
+ * card's links as the page writes them. `line` is the line of the card's
+ * heading on its page. */
+export interface WorkOrderCard {
+  readonly id: string;
+  readonly line: number;
+  readonly section: string;
+  readonly title: string;
+  readonly phase: string;
+  readonly dependency: "ready" | "blocked" | "unknown";
+  readonly verdict: "pass" | "fail" | null;
+  readonly fields: Readonly<Record<string, string>>;
+  readonly links: readonly string[];
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+const hasKeys = (value: Record<string, unknown>, keys: readonly string[]) =>
+  Object.keys(value).sort().join(",") === [...keys].sort().join(",");
+const CARD_KEYS = [
+  "id",
+  "line",
+  "section",
+  "title",
+  "phase",
+  "dependency",
+  "verdict",
+  "fields",
+  "links",
+] as const;
+
+/** What the index command prints with `--json`: each page's cards, the
+ * workstream observation and the release tags the pages were rendered from.
+ * The pages' Markdown is for people and is never read back, and no file
+ * records the cards: a script-side caller hands this text in. Text that is
+ * not that output refuses; each part is checked by the reader that takes it. */
+export interface WorkOrderIndexRecord {
+  readonly schemaVersion: 1;
+  readonly index: Readonly<Record<string, unknown>>;
+  readonly history: Readonly<Record<string, unknown>>;
+  readonly workstreams: readonly unknown[];
+  readonly releaseTags: readonly unknown[];
+}
+export function readWorkOrderIndexRecord(text: string): WorkOrderIndexRecord {
+  const record: unknown = JSON.parse(text);
+  if (
+    !isRecord(record) ||
+    !hasKeys(record, [
+      "schemaVersion",
+      "index",
+      "history",
+      "workstreams",
+      "releaseTags",
+    ]) ||
+    record["schemaVersion"] !== 1 ||
+    !isRecord(record["index"]) ||
+    !isRecord(record["history"]) ||
+    !Array.isArray(record["workstreams"]) ||
+    !Array.isArray(record["releaseTags"])
+  )
+    throw new Error("expected the generated work-order index record");
+  return record as unknown as WorkOrderIndexRecord;
+}
+
+/** One page's cards from the index record. A card outside its page's
+ * sections, a repeated card or a malformed field refuses. */
+export function readWorkOrderCards(
+  text: string,
+  page: WorkOrderPage,
+): readonly WorkOrderCard[] {
+  const recorded = readWorkOrderIndexRecord(text)[page];
+  if (!hasKeys(recorded, ["cards"]) || !Array.isArray(recorded["cards"]))
+    throw new Error(`expected the ${page} page's cards`);
+  const seen = new Set<string>();
+  return recorded["cards"].map((card: unknown): WorkOrderCard => {
+    if (
+      !isRecord(card) ||
+      !hasKeys(card, CARD_KEYS) ||
+      typeof card["id"] !== "string" ||
+      !/^WO-\d{3}$/u.test(card["id"]) ||
+      seen.has(card["id"]) ||
+      !Number.isSafeInteger(card["line"]) ||
+      (card["line"] as number) < 1 ||
+      typeof card["section"] !== "string" ||
+      !PAGE_SECTIONS[page].includes(card["section"]) ||
+      typeof card["title"] !== "string" ||
+      typeof card["phase"] !== "string" ||
+      !card["phase"] ||
+      !["ready", "blocked", "unknown"].includes(card["dependency"] as string) ||
+      ![null, "pass", "fail"].includes(card["verdict"] as string | null) ||
+      !isRecord(card["fields"]) ||
+      !Object.entries(card["fields"]).every(
+        ([label, text]) => label !== "" && typeof text === "string",
+      ) ||
+      !Array.isArray(card["links"]) ||
+      !card["links"].every((link) => typeof link === "string")
+    )
+      throw new Error("invalid work-order card");
+    seen.add(card["id"]);
+    return card as unknown as WorkOrderCard;
+  });
+}
+
+/** The index page's cards are the only work-order status input: the active
+ * and queued orders with their phase, dependency state and latest
+ * verification verdict, as the index command recorded them in the index
+ * record. */
 export function runtimeOrdersFromIndex(
   text: string | null,
 ): RuntimeStatusV1["workOrders"] {
   if (text === null) return { status: "unavailable", items: [] };
-  if (
-    !text.startsWith("# Work orders\n") ||
-    !text.includes("This file is generated by")
-  )
+  let cards: readonly WorkOrderCard[];
+  try {
+    cards = readWorkOrderCards(text, "index");
+  } catch {
     throw new Error("invalid generated work-order index");
-  const items: RuntimeStatusV1["workOrders"]["items"] = [];
-  let section = "";
-  let current: Record<string, string> | null = null;
-  const flush = () => {
-    if (!current) return;
-    const order = current["order"]!;
-    const phase = current["State"]?.replace(/\.$/u, "");
-    if (!phase || !/^[a-z][a-z-]*$/u.test(phase))
-      throw new Error(`invalid index status for ${order}`);
-    const dependencyText = current["Dependencies"] ?? "";
-    const verification = current["Verification"] ?? "";
-    const verdict = verification.match(/\((pass|fail)\)/u)?.[1] as
-      "pass" | "fail" | undefined;
-    items.push({
-      order,
-      phase,
-      dependency: /\bdependency-ready\b/u.test(dependencyText)
-        ? "ready"
-        : /\bblocked\b/u.test(dependencyText)
-          ? "blocked"
-          : "unknown",
-      verdict: verdict ?? null,
-    });
-  };
-  for (const line of text.split("\n")) {
-    const heading = line.match(/^## (Active|Open|Closed|Historical)$/u);
-    if (heading) {
-      flush();
-      current = null;
-      section = heading[1]!;
-      continue;
-    }
-    const order = line.match(/^### (WO-\d{3})$/u);
-    if (order) {
-      flush();
-      current =
-        section === "Active" || section === "Open"
-          ? { order: order[1]! }
-          : null;
-      continue;
-    }
-    const field = line.match(/^- ([^:]+): (.*)$/u);
-    if (current && field) current[field[1]!] = field[2]!;
   }
-  flush();
-  if (new Set(items.map((item) => item.order)).size !== items.length)
-    throw new Error("duplicate work-order identity in index");
-  return { status: "available", items };
+  return {
+    status: "available",
+    items: cards.map(({ id, phase, dependency, verdict }) => {
+      if (!/^[a-z][a-z-]*$/u.test(phase))
+        throw new Error(`invalid index status for ${id}`);
+      return { order: id, phase, dependency, verdict };
+    }),
+  };
 }
 
 /** Reject a different version and malformed local files before rendering. */

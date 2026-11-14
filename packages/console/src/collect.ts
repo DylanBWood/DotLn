@@ -16,6 +16,7 @@ import { feedbackEditionLog } from "@dotln/skeleton/dist/src/feedback-edition-lo
 import type {
   BoardSources,
   DocumentSource,
+  DocumentStructure,
   LoadoutSource,
   Source,
   StoreSource,
@@ -26,6 +27,7 @@ import {
   at,
   available,
   object,
+  optionalObject,
   readFailureReason,
   string,
   unavailable,
@@ -137,6 +139,26 @@ export async function collectSources(
       env: { ...process.env, GIT_OPTIONAL_LOCKS: "0" },
     });
   const text = (ref: string) => attempt(ref, () => readFile(join(root, ref)));
+  // The authored documents the board shows arrive already parsed: one run of
+  // the repository's Markdown reader reports each document's structure or the
+  // error code that kept it unread.
+  const authored = [
+    "docs/planning/capability-table.md",
+    "docs/publication/audience-status-index.md",
+    "docs/product/06-roadmap.md",
+  ] as const;
+  const structures = attempt("markdown-structure", () =>
+    object(JSON.parse(command("markdown-structure.mjs", authored)) as unknown),
+  );
+  const structure = (ref: string): Source<DocumentStructure> => {
+    if (structures.status === "unavailable")
+      return unavailable(ref, structures.reason);
+    const entry = structures.value[ref];
+    const code = optionalObject(entry)["error"];
+    return code === undefined
+      ? attempt(ref, () => object(entry) as unknown as DocumentStructure)
+      : unavailable(ref, readFailureReason({ code }));
+  };
   const controlLog = attempt(
     "control:canonical-segments",
     (): readonly DocumentSource[] => {
@@ -329,11 +351,14 @@ export async function collectSources(
                 readFile(join(root, feedback.value.directory, "feedback.json")),
               ) as unknown,
           ),
-    workOrderIndex: text("docs/work-orders/README.md"),
-    workOrderHistory: text("docs/work-orders/HISTORY.md"),
-    capabilities: text("docs/planning/capability-table.md"),
-    publication: text("docs/publication/audience-status-index.md"),
-    roadmap: text("docs/product/06-roadmap.md"),
+    // The cards and the workstream observation are the index command's own
+    // output; no page is read and no file records them.
+    workOrderIndex: attempt("work-orders:index--json", () =>
+      command("work-orders.mjs", ["index", "--json"], 64_000_000),
+    ),
+    capabilities: structure("docs/planning/capability-table.md"),
+    publication: structure("docs/publication/audience-status-index.md"),
+    roadmap: structure("docs/product/06-roadmap.md"),
     refutations: attempt("docs/planning/refutations/", () =>
       readdirSync(join(root, "docs/planning/refutations"))
         .filter((name) => name.endsWith(".json"))

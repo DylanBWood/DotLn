@@ -10,6 +10,7 @@ import {
 } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import {
+  HOME_DIRECTORY,
   isMarkdownName,
   isRecordName,
   privatePathLines,
@@ -20,6 +21,8 @@ import {
   configuredRoots,
   docPath,
   docRelative,
+  EXTENSIONS_ROOT,
+  extensionPath,
   findLaunchpad,
   loadConfig,
 } from "./lib/config.mjs";
@@ -49,11 +52,22 @@ import {
 } from "./lib/release-history.mjs";
 import {
   decodeCharacterReferences as decodeReferences,
+  inlineSource,
+  isCommentLine,
+  keepParsedDocuments,
+  markdownCodeBlocks,
+  markdownHeadings,
   markdownLinks,
   markdownNodes as nodes,
+  markdownText as renderedText,
   parseMarkdown,
+  parseMarkdownWithExtensions,
+  withoutHtmlComments,
 } from "./lib/markdown-links.mjs";
 import { documentReport } from "./lib/document-kinds.mjs";
+import { markdownScreen } from "./lib/markdown-screen.mjs";
+import { roundFindingFailures } from "./lib/round-findings.mjs";
+import { areaNoteFailures } from "./lib/area-notes.mjs";
 import {
   moveIndex,
   referencePath,
@@ -68,23 +82,6 @@ const inside = (root, path) =>
 
 const start = (node) => node.position.start.offset;
 const end = (node) => node.position.end.offset;
-// The optional `code` and `image` mappers rewrite an inline code span's text
-// and an image's alt text, so a caller can judge prose apart from the code it
-// quotes and the pictures it shows.
-function renderedText(
-  node,
-  breakText = " ",
-  { code = (value) => value, image = (alt) => alt } = {},
-) {
-  if (node.type === "text") return node.value;
-  if (node.type === "inlineCode") return code(node.value);
-  if (["image", "imageReference"].includes(node.type))
-    return image(node.alt ?? "");
-  if (node.type === "break") return breakText;
-  return (node.children ?? [])
-    .map((child) => renderedText(child, breakText, { code, image }))
-    .join("");
-}
 function headingRecords(ast) {
   const seen = new Set();
   return [...nodes(ast)]
@@ -147,25 +144,23 @@ export function productContent(file, source) {
     merged.some(([left, right]) => start(node) >= left && start(node) < right);
   const shapes = [];
   for (const title of titles) {
-    const raw = source.slice(start(title.node), end(title.node));
-    const candidate =
-      /^#{2,3}[ \t]+(Candidate —(?:\s|$)[\s\S]*?)(?:[ \t]+#+[ \t]*)?$/.exec(
-        raw,
-      );
-    if (!exempt(title.node) && candidate)
+    const text = inlineSource(source, title.node).trim();
+    if (
+      !exempt(title.node) &&
+      [2, 3].includes(title.node.depth) &&
+      /^Candidate —(?:\s|$)/u.test(text)
+    )
       shapes.push({
         kind: "candidate",
         heading: title.anchor,
-        label: normalized(candidate[1]),
+        label: normalized(text),
       });
   }
   for (const node of nodes(ast)) {
     if (node.type !== "paragraph" || exempt(node)) continue;
     const strong = node.children[0];
     if (strong?.type !== "strong") continue;
-    const raw = source.slice(start(strong), end(strong));
-    if (!raw.startsWith("**")) continue;
-    const label = normalized(raw.slice(2, -2));
+    const label = normalized(inlineSource(source, strong));
     if (
       /\([^)]*\d{4}-\d{2}-\d{2}[^)]*\)\s*:/.test(label) ||
       /operator direction/i.test(label)
@@ -194,7 +189,7 @@ function anchors(source) {
   const result = new Set(headingRecords(ast).map((row) => row.anchor));
   for (const node of nodes(ast)) {
     if (node.type !== "html") continue;
-    const html = node.value.replace(/<!--[\s\S]*?-->/g, "");
+    const html = withoutHtmlComments(node.value, "", false);
     for (const match of html.matchAll(
       /<[a-z][\w:-]*\b[^>]*?\s(?:id|name)\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s"'=<>`]+))[^>]*>/gi,
     ))
@@ -239,6 +234,33 @@ export function markdownFiles(root) {
 
 export function recordFiles(root) {
   return documentFiles(root, isRecordName);
+}
+
+/** Every regular file under the reserved root that is committed or would
+ * be. The document checks leave that root to the instance, save the screens
+ * for what must not leave a repository: the private-path screen reads each
+ * file there, whatever its kind, Markdown by the rule for a document and
+ * anything else by the rule for a record. */
+export function extensionFiles(root) {
+  return [
+    ...new Set(
+      runGitPathList(root, [
+        "ls-files",
+        "-z",
+        "--cached",
+        "--others",
+        "--exclude-standard",
+        "--",
+        EXTENSIONS_ROOT,
+      ]),
+    ),
+  ]
+    .filter(
+      (file) =>
+        extensionPath(file) &&
+        lstatSync(join(root, file), { throwIfNoEntry: false })?.isFile(),
+    )
+    .sort();
 }
 
 // A listed entry may be a link to a directory or unreadable; every reader of
@@ -501,16 +523,20 @@ function decisionSections(root, rows) {
   const sections = new Map();
   for (const row of rows) {
     if (sections.has(row.path)) continue;
-    let line = 1;
+    const source = row.targetRecord
+      ? row.recordSource
+      : readListed(root, row.path);
+    const headings = markdownHeadings(source).filter(
+      (heading) => heading.depth === 2,
+    );
+    const starts = [0, ...headings.map((heading) => heading.start)];
     sections.set(
       row.path,
-      (row.targetRecord ? row.recordSource : readListed(root, row.path))
-        .split(/(?=^##\s)/mu)
-        .map((text) => {
-          const part = { text, line };
-          line += text.split("\n").length - 1;
-          return part;
-        }),
+      starts.map((from, index) => ({
+        text: source.slice(from, starts[index + 1] ?? source.length),
+        line: index ? headings[index - 1].line : 1,
+        title: index ? headings[index - 1].title : null,
+      })),
     );
   }
   return sections;
@@ -521,7 +547,10 @@ function decisionSections(root, rows) {
 function decisionSection(sections, row) {
   const part = sections
     .get(row.path)
-    ?.find(({ text }) => new RegExp(`^##\\s+${row.id}\\b`, "u").test(text));
+    ?.find(
+      ({ title }) =>
+        title !== null && new RegExp(`^${row.id}\\b`, "u").test(title),
+    );
   return {
     section: part?.text ?? "",
     lines:
@@ -605,11 +634,11 @@ export function operatorWordFindings(root, files) {
   const sections = decisionSections(root, decisionRows);
   for (const row of decisionRows) {
     const { section, lines } = decisionSection(sections, row);
-    // A JSON block is removed whole from its fence line, so a backquote run
-    // inside one of its strings cannot open a fence that swallows the rest.
-    const prose = section
-      .replace(/^```json\n[\s\S]*?^```[^\n]*/gmu, "")
-      .replace(/```[\s\S]*?```/gu, "");
+    // Every fenced block, the JSON record among them, is removed whole as the
+    // parser bounds it, so a backquote run inside a string opens nothing.
+    let prose = section;
+    for (const block of markdownCodeBlocks(section).reverse())
+      prose = prose.slice(0, block.start) + prose.slice(block.end);
     const captureText = JSON.stringify(row) + prose;
     check(
       row.path,
@@ -741,22 +770,36 @@ export function requestedQuotes(rows, sections) {
     // The record's text values after its operatorQuote key, in source order,
     // each read through its own JSON escapes; the quotations claim them in
     // array order, so two equal quotations claim two values.
-    const from = section.indexOf('"operatorQuote"');
-    if (from < 0) continue;
+    const block = markdownCodeBlocks(section).find(
+      (candidate) => candidate.lang === "json",
+    );
+    if (!block) continue;
+    const contentStart =
+      block.start + section.slice(block.start).indexOf("\n") + 1;
+    // The text values under operatorQuote, in source order, each with the
+    // source JSON.parse read it from (its escapes as written).
+    const sources = [];
+    try {
+      JSON.parse(block.value, function (key, value, context) {
+        if (key === "text" && context?.source !== undefined)
+          sources.push({ value, source: context.source });
+        return value;
+      });
+    } catch {
+      continue;
+    }
+    const quoteFrom = section.indexOf("operatorQuote", contentStart);
+    if (quoteFrom < 0) continue;
     const values = [];
-    for (const match of section
-      .slice(from)
-      .matchAll(/"text"\s*:\s*("(?:[^"\\\n]|\\.)*")/gu)) {
-      let value;
-      try {
-        value = JSON.parse(match[1]);
-      } catch {
-        continue;
-      }
+    let cursor = quoteFrom;
+    for (const { value, source } of sources) {
+      const at = section.indexOf(source, cursor);
+      if (at < 0) continue;
+      cursor = at + source.length;
       values.push({
         value,
-        offset: from + match.index + match[0].length - match[1].length,
-        length: match[1].length,
+        offset: at,
+        length: source.length,
       });
     }
     let next = 0;
@@ -808,7 +851,12 @@ export function homePathFindings(root, files = markdownFiles(root)) {
   const findings = [];
   for (const file of files) {
     const source = readListed(root, file);
-    const matches = privatePathLines(file, source);
+    // A file under the reserved root is read whatever its name: Markdown
+    // by its own rule, anything else by the rule for a record.
+    const matches =
+      extensionPath(file) && !isMarkdownName(file)
+        ? privatePathLines(file, source, HOME_DIRECTORY)
+        : privatePathLines(file, source);
     if (!matches.length) continue;
     const lines = source.split("\n");
     for (const line of matches)
@@ -836,6 +884,7 @@ export function shrinkHomePathBaseline(root) {
   for (const row of homePathFindings(root, [
     ...markdownFiles(root),
     ...recordFiles(root),
+    ...extensionFiles(root),
   ])) {
     const available = remaining.get(row.file) ?? [];
     const at = available.indexOf(row.fingerprint);
@@ -895,7 +944,7 @@ export function operatorWordAdvisories(root, baseline = {}, files) {
 export const FRONT_PAGE_CONTROL = "front-page.json";
 const FRONT_PAGE_BASE = "main";
 const exactMarker = (text) =>
-  typeof text === "string" && /^<!--.*-->$/.test(text) && text === text.trim();
+  isCommentLine(text) && !text.includes("\n") && text === text.trim();
 function parseFrontPageControl(text, label) {
   let control;
   try {
@@ -1196,7 +1245,7 @@ function pageConstructs(rows, ast, page, markerLine) {
       if (opener) {
         html.add(index);
         failures.push(
-          /^\s*<!--[\s\S]*-->\s*$/.test(line)
+          isCommentLine(line)
             ? `${page}:${number}: an HTML comment line; a generated block's marker lines are listed in the control record's generatedBlocks by the front-page order that adds the block, and a note for maintainers belongs in the order's evidence: ${quote(line.trim())}`
             : `${page}:${number}: ${nodeFix("html")}; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: ${quote(withoutCodeSpans(line).slice(opener.index))}`,
         );
@@ -1482,9 +1531,7 @@ const receiptReadings = (line) =>
   [
     line,
     unescape(
-      decodeReferences(
-        line.replace(/<!--[\s\S]*?(?:-->|$)/g, "").replace(HTML_TAG, ""),
-      ),
+      decodeReferences(withoutHtmlComments(line).replace(HTML_TAG, "")),
     ).replace(/[*_~]/g, ""),
   ].map((text) => text.normalize("NFKC").replace(/[\p{Pd}−]/gu, "-"));
 // The page's shape, judged from its text and the record alone: what a reader
@@ -1545,7 +1592,11 @@ export function frontPageShapeFindings(
     control.generatedBlocks.some(
       (block) => block.start === line || block.end === line,
     );
-  const ast = parseMarkdown(outside.map((row) => row.line).join("\n"));
+  // The guard closes what the pinned parser and GitHub read differently, so
+  // it reads the parser's own reading, with the spans of its extensions.
+  const ast = parseMarkdownWithExtensions(
+    outside.map((row) => row.line).join("\n"),
+  );
   failures.push(...pageConstructs(outside, ast, page, markerLine));
   const section = whatRunsSection(outside, ast, control, page);
   failures.push(...section.failures);
@@ -1757,6 +1808,96 @@ export function frontPageFindings(root, amendment = null) {
   return { failures, notices };
 }
 
+/** The three typed fields of a `FOR-CORE.md` entry's JSON block and each
+ * one's set. */
+const releaseVersion = (value) =>
+  typeof value === "string" && /^v\d+\.\d+\.\d+$/u.test(value);
+export const FOR_CORE_FIELDS = Object.freeze({
+  kit: { admits: releaseVersion, set: 'a kit version, "vX.Y.Z"' },
+  stopsNextOrder: {
+    admits: (value) => typeof value === "boolean",
+    set: "true or false",
+  },
+  answered: {
+    admits: (value) => value === null || releaseVersion(value),
+    set: 'null, or the answering release\'s version "vX.Y.Z"',
+  },
+});
+export const FOR_CORE = "FOR-CORE.md";
+
+/** What the screen asks of a source it refused. */
+export const screenRemedy = (form) =>
+  form === "JSON text"
+    ? "reads JSON text by pattern; parse it with JSON.parse"
+    : form === "a source the parser cannot read"
+      ? "the JavaScript parser cannot read this source, so the Markdown screen cannot judge it"
+      : `reads ${form} by pattern; read Markdown through the shared readers of scripts/lib/markdown-links.mjs (a runtime package takes the structure its caller parsed)`;
+
+/** Each failure of the entries an instance's `FOR-CORE.md` holds, as the
+ * pinned Markdown parser reads the file and JSON.parse reads each entry's
+ * block: every second-level heading at its top level is an entry, which opens
+ * with its date and has a `json` block directly under it holding one object
+ * with each field inside its set and no other. A failure names the entry and
+ * the field. */
+export function forCoreFailures(text, path = FOR_CORE) {
+  const failures = [];
+  const children = parseMarkdown(text).children;
+  const names = Object.keys(FOR_CORE_FIELDS).join(", ");
+  children.forEach((node, index) => {
+    if (node.type !== "heading" || node.depth !== 2) return;
+    const heading = inlineSource(text, node).trim();
+    const at = node.position.start.line;
+    const entry = `entry "${heading}"`;
+    if (!/^\d{4}-\d{2}-\d{2}\b/u.test(heading))
+      failures.push(
+        `${path}:${at}: ${entry}: its heading opens with no date (YYYY-MM-DD, then the order or pass it came from and one line)`,
+      );
+    const block = children[index + 1];
+    if (block?.type !== "code" || block.lang !== "json") {
+      failures.push(
+        `${path}:${at}: ${entry}: no json block directly under its heading, so each field (${names}) is missing`,
+      );
+      return;
+    }
+    const open = block.position.start.line;
+    let fields;
+    try {
+      fields = JSON.parse(block.value);
+    } catch {
+      // The parser's message may quote the entry's text, so it is not
+      // printed.
+      failures.push(`${path}:${open}: ${entry}: its json block is not JSON`);
+      return;
+    }
+    if (
+      fields === null ||
+      typeof fields !== "object" ||
+      Array.isArray(fields)
+    ) {
+      failures.push(
+        `${path}:${open}: ${entry}: its json block holds no object of ${names}`,
+      );
+      return;
+    }
+    for (const name of Object.keys(fields))
+      if (!Object.hasOwn(FOR_CORE_FIELDS, name))
+        failures.push(
+          `${path}:${open}: ${entry}: field ${name} is not one of ${names}`,
+        );
+    for (const [name, rule] of Object.entries(FOR_CORE_FIELDS)) {
+      if (!Object.hasOwn(fields, name))
+        failures.push(
+          `${path}:${open}: ${entry}: field ${name} is missing; it holds ${rule.set}`,
+        );
+      else if (!rule.admits(fields[name]))
+        failures.push(
+          `${path}:${open}: ${entry}: field ${name} holds ${JSON.stringify(fields[name])}, outside its set (${rule.set})`,
+        );
+    }
+  });
+  return failures;
+}
+
 export function checkDocs(
   root,
   {
@@ -1767,6 +1908,7 @@ export function checkDocs(
     changes,
     features,
     captures,
+    screen = true,
   } = {},
 ) {
   // Carried operating documents retain upstream history and links. This
@@ -1890,6 +2032,24 @@ export function checkDocs(
         `${dispatchKey(row)}: dispatch needs a control prefix and at most 240 characters of paraphrase on one line`,
       );
   }
+  // An instance's file for core: each entry's typed fields, wherever the
+  // root holds the file (core holds none).
+  if (documentEntry(root, FOR_CORE))
+    failures.push(...forCoreFailures(readDocumentInput(root, FOR_CORE)));
+  // An area note beside a registered repository's profile: its block names
+  // the target paths it covers and the commit it was written at. The block's
+  // shape is judged and nothing of the prose, which the verifier of the
+  // order that wrote the note judges. A profile with no directory beside it
+  // has no note.
+  for (const repository of Object.values(loadConfig(root).repositories))
+    failures.push(...areaNoteFailures(root, repository.profile));
+  // Each format has one reader: a source that reads Markdown syntax or JSON
+  // text with its own pattern is refused by file and line.
+  if (screen)
+    for (const finding of markdownScreen(root))
+      failures.push(
+        `${finding.file}:${finding.line}: ${screenRemedy(finding.form)}`,
+      );
   // What the branch adds or changes against its merge base with main: the
   // forward-only checks below judge only those records and lines, so a record
   // written before the branch keeps its bytes (WO-259).
@@ -1904,6 +2064,9 @@ export function checkDocs(
     );
   };
   failures.push(...operatorQuoteFailures(decisions, changedRecord));
+  // A round's recorded findings, where a current decision holds them: the
+  // shape only, by decision and field.
+  failures.push(...roundFindingFailures(decisions, changedRecord));
   const exceptions = new Map();
   for (const entry of baseline.links)
     exceptions.set(
@@ -1932,7 +2095,11 @@ export function checkDocs(
     Object.entries(homePaths).map(([file, list]) => [file, [...list]]),
   );
   let historicalHomePaths = 0;
-  for (const row of homePathFindings(root, [...files, ...records])) {
+  for (const row of homePathFindings(root, [
+    ...files,
+    ...records,
+    ...extensionFiles(root),
+  ])) {
     const list = remainingHomePaths.get(row.file) ?? [];
     const at = list.indexOf(row.fingerprint);
     if (at >= 0) {
@@ -1942,7 +2109,7 @@ export function checkDocs(
       failures.push(
         isMarkdownName(row.file)
           ? `${row.file}:${row.line}: absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/`
-          : `${row.file}:${row.line}: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/`,
+          : `${row.file}:${row.line}: absolute home path in a ${extensionPath(row.file) ? `committed file under ${EXTENSIONS_ROOT}/` : "record"}; write a repository-relative path or a placeholder such as <home>/ or <worktree>/`,
       );
   }
   for (const [file, list] of remainingHomePaths)
@@ -2020,6 +2187,9 @@ if (isMainModule(import.meta.url)) {
         "usage: node scripts/docs-check.mjs [--write-home-path-baseline]",
       );
     const root = findLaunchpad();
+    // This command reads every document in several passes and exits: it
+    // keeps each tree for its own life, so no pass parses a document again.
+    keepParsedDocuments(1024 * 1024 * 1024);
     if (args[0] === "--write-home-path-baseline") {
       const result = shrinkHomePathBaseline(root);
       console.log(

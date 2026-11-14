@@ -928,11 +928,13 @@ for (const [n, text, printed] of [
     `${KI} Investigate **critical failure**`,
     [section("5", "Investigate **critical failure**")],
   ],
-  // A stray backtick on the line before the label hides nothing.
+  // A stray backtick on the line before the label pairs with the one after
+  // it into a code span, so the label is that span's text: its line advises
+  // and nothing is hidden.
   [
     "908",
     `**Write-back duty:** a stray \` opener\n${KI} hidden whole line\nA stray \` closer`,
-    [section("6-7", "hidden whole line\nA stray ` closer")],
+    [UNREAD(908, "6")],
   ],
   // A paragraph that starts with a bold field word stays.
   [
@@ -1032,13 +1034,18 @@ for (const [n, text, printed] of [
       ),
     ],
   ],
-  // The stated boundary: an indented fence is text, so a field label at the
-  // start of a line inside it, after a blank line, ends the section. So does
-  // any heading under a bold label. The header names the line that ended it.
+  // A fence indented up to three spaces is a fence, so a field label at the
+  // start of a line inside it is its text and the section runs on. Any
+  // heading under a bold label ends it, and the header names that line.
   [
     "918",
-    `${KI}\n\n- carry-in:\n\n \`\`\`md\n\n**Design:** at the start of a line.\n \`\`\`\n\n- not printed.`,
-    [section("5-9", "- carry-in:\n\n ```md", "before line 11, **Design:**")],
+    `${KI}\n\n- carry-in:\n\n \`\`\`md\n\n**Design:** at the start of a line.\n \`\`\`\n\n- printed too.`,
+    [
+      section(
+        "5-14",
+        "- carry-in:\n\n ```md\n\n**Design:** at the start of a line.\n ```\n\n- printed too.",
+      ),
+    ],
   ],
   [
     "936",
@@ -1088,17 +1095,29 @@ for (const [n, text, printed] of [
     `${KI} kept.\n\n# Later\n\nafter.`,
     [section("5", "kept.", "before line 7, # Later")],
   ],
-  // No field: an unlisted label, underscores, indentation, a word after the
-  // bold name, and a colon after a space.
+  // No field: an unlisted label, a word after the bold name, and a colon
+  // after a space.
   [
     "924",
-    `${KI}\n\n**Design note:** unlisted.\n\n__Cost:__ underscores.\n\n  **Cost:** indented.\n\n**Cost** continues.\n\n**Cost :** spaced.`,
+    `${KI}\n\n**Design note:** unlisted.\n\n**Cost** continues.\n\n**Cost :** spaced.`,
     [
       section(
-        "5-15",
-        "**Design note:** unlisted.\n\n__Cost:__ underscores.\n\n  **Cost:** indented.\n\n**Cost** continues.\n\n**Cost :** spaced.",
+        "5-11",
+        "**Design note:** unlisted.\n\n**Cost** continues.\n\n**Cost :** spaced.",
       ),
     ],
+  ],
+  // A field label in underscores, or indented up to three spaces, is the
+  // field label the order format's reader reads, and ends the section.
+  [
+    "941",
+    `${KI} kept.\n\n__Cost:__ underscores.`,
+    [section("5", "kept.", "before line 7, __Cost:__")],
+  ],
+  [
+    "942",
+    `${KI} kept.\n\n  **Cost:** indented.`,
+    [section("5", "kept.", "before line 7, **Cost:**")],
   ],
   // The label's other exact forms.
   [
@@ -1140,8 +1159,17 @@ for (const [n, text, printed] of [
   // with its line, behind any marker and however the words are joined.
   [
     "931",
-    `- ${KI} bulleted.\n\n> - > 1. ${KI} nested.\n\n__Known issues and carry-ins:__ underscores.\n\n**Known issues and carry-ins: none**\n\n**Known issue and carry-in:** singular.\n\nKnown issue, operator override: prose.\n\n  ${KI} indented.\n\n## Known issues and carry-ins for this order\n\n**Known issues and carry-ins** follow.`,
-    [UNREAD(931, "5, 7, 9, 11, 13, 15, 17, 19, 21")],
+    `- ${KI} bulleted.\n\n> - > 1. ${KI} nested.\n\n**Known issues and carry-ins: none**\n\n**Known issue and carry-in:** singular.\n\nKnown issue, operator override: prose.\n\n## Known issues and carry-ins for this order\n\n**Known issues and carry-ins** follow.`,
+    [UNREAD(931, "5, 7, 9, 11, 13, 15, 17")],
+  ],
+  // A label in underscores, or indented up to three spaces, is a label.
+  [
+    "943",
+    `__Known issues and carry-ins:__ underscores.\n\n  ${KI} indented.`,
+    [
+      section("5", "underscores.", `before line 7, ${KI}`),
+      section("7", "indented."),
+    ],
   ],
   [
     "937",

@@ -1,0 +1,1502 @@
+{
+  "schemaVersion": 1,
+  "index": {
+    "cards": [
+      {
+        "id": "WO-032",
+        "line": 39,
+        "section": "Active",
+        "title": "WO-032 — UIFA v0: a read-only actor board over episodes, builds, mechanisms, evidence, and work (v0.14.0)",
+        "phase": "active",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "active.",
+          "Application target": "v0.14.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-007: satisfied (closed); WO-008: satisfied (closed); WO-009: satisfied (closed); WO-010: satisfied (closed); WO-011: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed); WO-031: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-032-uifa-actor-board.md"
+        },
+        "links": [
+          "WO-032-uifa-actor-board.md"
+        ]
+      },
+      {
+        "id": "WO-014",
+        "line": 56,
+        "section": "Open",
+        "title": "WO-014 — Approval-burden baseline, remediation, and fresh-session acceptance (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-006: satisfied (closed); WO-013: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model per harness for the executor; the independent verifier must reproduce in genuinely fresh sessions; the operator must witness at least one final interactive run. State the model and effort actually run for every session that produces evidence (07-execution-guide.md §Model-specific notes). Harness authority stays with the operator: this order authorizes no change to personal settings, and any setting change it finds necessary returns to the operator as a decision packet.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-014-approval-burden-contract.md"
+        },
+        "links": [
+          "WO-014-approval-burden-contract.md"
+        ]
+      },
+      {
+        "id": "WO-033",
+        "line": 71,
+        "section": "Open",
+        "title": "WO-033 — The starter is a compiled export: one configuration root, registered target repositories, a launchpad export that carries the saved build, and a lane-sync helper (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "blocked on WO-039.",
+          "References": "WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed); WO-038: satisfied (closed); WO-039: not control-closed.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-033-compiled-starter-export.md"
+        },
+        "links": [
+          "WO-033-compiled-starter-export.md"
+        ]
+      },
+      {
+        "id": "WO-034",
+        "line": 86,
+        "section": "Open",
+        "title": "WO-034 — Cross-repository workstream pilot: one outcome, several target repositories, driven from a launchpad fork that runs the compiled build (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "blocked on WO-032, WO-033.",
+          "References": "WO-032: not control-closed; WO-033: not control-closed.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model for the implementation and fixtures. The real run's executor, verifier, and reviewer sessions are dispatched from the launchpad under its own work orders' declarations and its emitted harness bundle; the operator must witness the real run. State the model and effort actually run for every session that produces evidence (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-034-cross-repository-workstream-pilot.md"
+        },
+        "links": [
+          "WO-034-cross-repository-workstream-pilot.md"
+        ]
+      },
+      {
+        "id": "WO-035",
+        "line": 101,
+        "section": "Open",
+        "title": "WO-035 — Documentation structure reset: one ledger order, a spec/receipt boundary, generated release history, and a shorter cold start (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "blocked on WO-033.",
+          "References": "WO-033: not control-closed.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-035-documentation-structure-reset.md"
+        },
+        "links": [
+          "WO-035-documentation-structure-reset.md"
+        ]
+      },
+      {
+        "id": "WO-036",
+        "line": 116,
+        "section": "Open",
+        "title": "WO-036 — Evidence runner: build first, run suites concurrently, report per case (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-013: satisfied (closed); WO-018: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-036-evidence-runner.md"
+        },
+        "links": [
+          "WO-036-evidence-runner.md"
+        ]
+      },
+      {
+        "id": "WO-037",
+        "line": 131,
+        "section": "Open",
+        "title": "WO-037 — Pattern workshop, compiler side: the 5S equipment set compiles as a multi-active link group with set bonuses (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-008: satisfied (closed); WO-011: satisfied (closed); WO-016: satisfied (closed); WO-023: satisfied (closed); WO-029: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-037-five-s-equipment-set.md"
+        },
+        "links": [
+          "WO-037-five-s-equipment-set.md"
+        ]
+      },
+      {
+        "id": "WO-039",
+        "line": 146,
+        "section": "Open",
+        "title": "WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "blocked on WO-001.",
+          "References": "WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed); WO-029: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model for the compiler and fixtures. The live smoke and the self-host step need the actual local harnesses (Claude Code; Codex where installed) and must state the harness version, model, and effort actually run (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-039-harness-lowering.md"
+        },
+        "links": [
+          "WO-039-harness-lowering.md"
+        ]
+      },
+      {
+        "id": "WO-040",
+        "line": 161,
+        "section": "Open",
+        "title": "WO-040 — Rule migration, batch one: the migration ledger and the first batch of feedback shapes compiled through the harness target (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "blocked on WO-039.",
+          "References": "WO-011: satisfied (closed); WO-039: not control-closed.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-040-rule-migration-batch-one.md"
+        },
+        "links": [
+          "WO-040-rule-migration-batch-one.md"
+        ]
+      },
+      {
+        "id": "WO-102",
+        "line": 176,
+        "section": "Open",
+        "title": "WO-102 — Cadence virtual-time grid sweep and golden vector corpus (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-101: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-102-cadence-corpus.md"
+        },
+        "links": [
+          "WO-102-cadence-corpus.md"
+        ]
+      },
+      {
+        "id": "WO-103",
+        "line": 191,
+        "section": "Open",
+        "title": "WO-103 — Authorization guard and outbox factorial decision-table corpus (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-017: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-103-authority-outbox-corpus.md"
+        },
+        "links": [
+          "WO-103-authority-outbox-corpus.md"
+        ]
+      },
+      {
+        "id": "WO-105",
+        "line": 206,
+        "section": "Open",
+        "title": "WO-105 — Crash-shape corpus: store truncation sweep, skeleton recovery sweep, golden traces, and fixture-tree families (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-017: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-105-crash-shape-corpus.md"
+        },
+        "links": [
+          "WO-105-crash-shape-corpus.md"
+        ]
+      },
+      {
+        "id": "WO-107",
+        "line": 221,
+        "section": "Open",
+        "title": "WO-107 — Deterministic profiling harness and first baseline observation corpus (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-005: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-107-profiling-baseline.md"
+        },
+        "links": [
+          "WO-107-profiling-baseline.md"
+        ]
+      },
+      {
+        "id": "WO-109",
+        "line": 236,
+        "section": "Open",
+        "title": "WO-109 — Re-mining Well: source census and first pilot draw (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Application target": "unassigned.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-007: satisfied (closed).",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model for the census, source register, OCR-as-observation, and first-contact capsules. The lineage encounter, tension classification, supersession proposals, and atlas weaving are planning-role work under &#96;docs/PLAYBOOK.md&#96; §Who does what and are performed by the planning model or the operator, never by the mechanical tier. Image passes require a harness observed to inspect original-resolution images; that capability is unrecorded in &#96;docs/discovery/&#96; and is an activation preflight. Every run receipt states model, harness, attested effort, lens, prior-context visibility, and source batch.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any. Mechanical census, register, and capsule side routines may run at &#96;high+&#96;; the lifecycle executor and all planning-role judgments remain &#96;xhigh+&#96;.",
+          "Authority": "docs/work-orders/WO-109-shape-first-source-remine.md"
+        },
+        "links": [
+          "WO-109-shape-first-source-remine.md"
+        ]
+      }
+    ]
+  },
+  "history": {
+    "cards": [
+      {
+        "id": "WO-003",
+        "line": 9,
+        "section": "Closed",
+        "title": "WO-003 — Walking skeleton (fake executor), v0.2.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.2.0.",
+          "Dependency reference check (conservative)": "blocked on WO-002.",
+          "References": "WO-002: not control-closed.",
+          "Verification": "VER-002 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.2.0 (historical record).",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-003-walking-skeleton.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-003/VER-002.md",
+          "../../docs/final-reviews/WO-003/FINAL-001.md",
+          "WO-003-walking-skeleton.md"
+        ]
+      },
+      {
+        "id": "WO-004",
+        "line": 24,
+        "section": "Closed",
+        "title": "WO-004 — Environment truth addendum and lifecycle corrections, v0.2.1",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.2.1.",
+          "Dependency reference check (conservative)": "blocked on WO-001.",
+          "References": "WO-001: not control-closed; WO-003: satisfied (closed).",
+          "Verification": "VER-002 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.2.1 (manifest changedFiles).",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-004-environment-truth-addendum.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-004/VER-002.md",
+          "../../docs/final-reviews/WO-004/FINAL-001.md",
+          "WO-004-environment-truth-addendum.md"
+        ]
+      },
+      {
+        "id": "WO-005",
+        "line": 39,
+        "section": "Closed",
+        "title": "WO-005 — Capability table v1, v0.2.2",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.2.2.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.2.2 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-005-capability-table.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-005/VER-001.md",
+          "../../docs/final-reviews/WO-005/FINAL-001.md",
+          "WO-005-capability-table.md"
+        ]
+      },
+      {
+        "id": "WO-006",
+        "line": 54,
+        "section": "Closed",
+        "title": "WO-006 — Publication bootstrap (two contents, one staleness loop), v0.2.3",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.2.3.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "none named.",
+          "Verification": "VER-003 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.2.3 (manifest changedFiles).",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-006-publication-bootstrap.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-006/VER-003.md",
+          "../../docs/final-reviews/WO-006/FINAL-001.md",
+          "WO-006-publication-bootstrap.md"
+        ]
+      },
+      {
+        "id": "WO-007",
+        "line": 69,
+        "section": "Closed",
+        "title": "WO-007 — Audit-record baseline (three projections), v0.3.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-003: satisfied (closed).",
+          "Verification": "VER-002 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-007-audit-record-baseline.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-007/VER-002.md",
+          "../../docs/final-reviews/WO-007/FINAL-001.md",
+          "WO-007-audit-record-baseline.md"
+        ]
+      },
+      {
+        "id": "WO-008",
+        "line": 84,
+        "section": "Closed",
+        "title": "WO-008 — Composition compiler v1, v0.4.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.4.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-003: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.4.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.260; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-008-composition-compiler.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-008/VER-001.md",
+          "../../docs/final-reviews/WO-008/FINAL-001.md",
+          "WO-008-composition-compiler.md"
+        ]
+      },
+      {
+        "id": "WO-009",
+        "line": 100,
+        "section": "Closed",
+        "title": "WO-009 — Real disposable worker, v0.10.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.10.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-008: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.10.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-009-real-disposable-worker.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-009/VER-001.md",
+          "../../docs/final-reviews/WO-009/FINAL-001.md",
+          "WO-009-real-disposable-worker.md"
+        ]
+      },
+      {
+        "id": "WO-010",
+        "line": 116,
+        "section": "Closed",
+        "title": "WO-010 — Independent verification (v0.12.0)",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.12.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-009: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.12.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-010-independent-verification.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-010/VER-001.md",
+          "../../docs/final-reviews/WO-010/FINAL-001.md",
+          "WO-010-independent-verification.md"
+        ]
+      },
+      {
+        "id": "WO-011",
+        "line": 132,
+        "section": "Closed",
+        "title": "WO-011 — Feedback compiler v1 (v0.13.0)",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.13.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-009: satisfied (closed); WO-010: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.13.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-011-feedback-compiler.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-011/VER-001.md",
+          "../../docs/final-reviews/WO-011/FINAL-001.md",
+          "WO-011-feedback-compiler.md"
+        ]
+      },
+      {
+        "id": "WO-012",
+        "line": 148,
+        "section": "Closed",
+        "title": "WO-012 — Release-gate path quoting fix, v0.2.1",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.2.1.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.2.1 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-012-release-gate-path-quoting.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-012/VER-001.md",
+          "../../docs/final-reviews/WO-012/FINAL-001.md",
+          "WO-012-release-gate-path-quoting.md"
+        ]
+      },
+      {
+        "id": "WO-013",
+        "line": 163,
+        "section": "Closed",
+        "title": "WO-013 — Portable temporary roots for shell test fixtures, v0.3.1",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.1.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-006: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.1 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes). The target environment is a sandboxed harness that permits only its own session temporary root; the executor should work inside one so the acceptance evidence is first-hand.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-013-portable-fixture-temp-roots.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-013/VER-001.md",
+          "../../docs/final-reviews/WO-013/FINAL-001.md",
+          "WO-013-portable-fixture-temp-roots.md"
+        ]
+      },
+      {
+        "id": "WO-015",
+        "line": 178,
+        "section": "Closed",
+        "title": "WO-015 — Release-manifest cadence parser repair, v0.2.3",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.2.3.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-006: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.2.3 (manifest workOrder.id).",
+          "Model": "any capable model. The executor and independent verifier must record the model, effort, and harness they actually use (07-execution-guide.md §Model-specific notes).",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-015-release-cadence-parser.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-015/VER-001.md",
+          "../../docs/final-reviews/WO-015/FINAL-001.md",
+          "WO-015-release-cadence-parser.md"
+        ]
+      },
+      {
+        "id": "WO-016",
+        "line": 193,
+        "section": "Closed",
+        "title": "WO-016 — Skeleton reactor: one decider, driven live and by replay, v0.3.6",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.6.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-007: satisfied (closed); WO-008: satisfied (closed); WO-017: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.6 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-016-skeleton-reactor.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-016/VER-001.md",
+          "../../docs/final-reviews/WO-016/FINAL-001.md",
+          "WO-016-skeleton-reactor.md"
+        ]
+      },
+      {
+        "id": "WO-017",
+        "line": 209,
+        "section": "Closed",
+        "title": "WO-017 — Kernel truthfulness: store codec, outbox ordering, authority guard, evidence hardening, v0.3.5",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.5.",
+          "Dependency reference check (conservative)": "blocked on WO-105.",
+          "References": "WO-016: satisfied (closed); WO-105: not control-closed.",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.5 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-017-kernel-truthfulness.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-017/VER-001.md",
+          "../../docs/final-reviews/WO-017/FINAL-001.md",
+          "WO-017-kernel-truthfulness.md"
+        ]
+      },
+      {
+        "id": "WO-018",
+        "line": 225,
+        "section": "Closed",
+        "title": "WO-018 — Control-plane consolidation: shared helpers, machine-readable state, manifest from the built kernel, v0.4.1",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.4.1.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-013: satisfied (closed); WO-017: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.4.1 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.260; model claude-fable-5-1; effort xhigh; source operator-attested; account not-applicable.",
+          "Authority": "docs/work-orders/WO-018-control-plane-consolidation.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-018/VER-001.md",
+          "../../docs/final-reviews/WO-018/FINAL-001.md",
+          "WO-018-control-plane-consolidation.md"
+        ]
+      },
+      {
+        "id": "WO-019",
+        "line": 241,
+        "section": "Closed",
+        "title": "WO-019 — Effort truth: declared in the work order, attested in the control log, v0.3.4",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.4.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-013: satisfied (closed); WO-018: satisfied (closed).",
+          "Verification": "VER-002 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.4 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any. Until this order lands, these values are self-reported in the result. The final reviewer must confirm the order's own attestations were recorded through the mechanism it ships, and disclose that as a self-referential instrument per 07-execution-guide.md §Discipline.",
+          "Latest attestation": "harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-019-effort-truth.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-019/VER-002.md",
+          "../../docs/final-reviews/WO-019/FINAL-001.md",
+          "WO-019-effort-truth.md"
+        ]
+      },
+      {
+        "id": "WO-020",
+        "line": 257,
+        "section": "Closed",
+        "title": "WO-020 — Beacons: metadata-level projection of episode state with an exact codebook (v0.6.0)",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.6.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-007: satisfied (closed); WO-016: satisfied (closed); WO-017: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.6.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-020-beacon-codebook.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-020/VER-001.md",
+          "../../docs/final-reviews/WO-020/FINAL-001.md",
+          "WO-020-beacon-codebook.md"
+        ]
+      },
+      {
+        "id": "WO-021",
+        "line": 273,
+        "section": "Closed",
+        "title": "WO-021 — Beacons for the control plane: dogfood, sweep events, staleness, group composites (v0.8.0)",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.8.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-009: satisfied (closed); WO-018: satisfied (closed); WO-019: satisfied (closed); WO-020: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.8.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-021-control-plane-beacons.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-021/VER-001.md",
+          "../../docs/final-reviews/WO-021/FINAL-001.md",
+          "WO-021-control-plane-beacons.md"
+        ]
+      },
+      {
+        "id": "WO-022",
+        "line": 289,
+        "section": "Closed",
+        "title": "WO-022 — Senses: perception as a compiled, authorized, mounted capability (v0.11.0)",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.11.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-008: satisfied (closed); WO-009: satisfied (closed); WO-021: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.11.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-022-senses.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-022/VER-001.md",
+          "../../docs/final-reviews/WO-022/FINAL-001.md",
+          "WO-022-senses.md"
+        ]
+      },
+      {
+        "id": "WO-023",
+        "line": 305,
+        "section": "Closed",
+        "title": "WO-023 — Compile the Entropy Reducer: identity, role, loadout, envelope, Program, and generated residue, v0.5.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.5.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-008: satisfied (closed); WO-019: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.5.0 (manifest workOrder.id).",
+          "Model": "any capable model for the implementation. The loadout it compiles pins its own actor: Claude Fable 5.1 at &#96;max&#96; effort for review episodes (Principle 8; a substitute is a different reviewer and must be attested as one).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.260; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-023-compile-entropy-reducer.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-023/VER-001.md",
+          "../../docs/final-reviews/WO-023/FINAL-001.md",
+          "WO-023-compile-entropy-reducer.md"
+        ]
+      },
+      {
+        "id": "WO-024",
+        "line": 321,
+        "section": "Closed",
+        "title": "WO-024 — Release notes surfaced: reviewed layered notes in the tag and a GitHub Release from the validated tag, v0.3.2",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.2.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-013: satisfied (closed); WO-018: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.2 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-024-release-notes-surfaced.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-024/VER-001.md",
+          "../../docs/final-reviews/WO-024/FINAL-001.md",
+          "WO-024-release-notes-surfaced.md"
+        ]
+      },
+      {
+        "id": "WO-025",
+        "line": 336,
+        "section": "Closed",
+        "title": "WO-025 — Version-bearing surfaces: the front door names the release of the source it is in, checked before merge and at close, v0.3.3",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.3.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-013: satisfied (closed); WO-018: satisfied (closed); WO-024: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.3 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Authority": "docs/work-orders/WO-025-version-bearing-surfaces.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-025/VER-001.md",
+          "../../docs/final-reviews/WO-025/FINAL-001.md",
+          "WO-025-version-bearing-surfaces.md"
+        ]
+      },
+      {
+        "id": "WO-026",
+        "line": 351,
+        "section": "Closed",
+        "title": "WO-026 — Work-order index: open and closed orders as a generated view over control evidence; files never move, v0.5.2",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.5.2.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-018: satisfied (closed); WO-019: satisfied (closed); WO-024: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.5.2 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-026-work-order-index.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-026/VER-001.md",
+          "../../docs/final-reviews/WO-026/FINAL-001.md",
+          "WO-026-work-order-index.md"
+        ]
+      },
+      {
+        "id": "WO-027",
+        "line": 367,
+        "section": "Closed",
+        "title": "WO-027 — Local inference probe: runner inventory, pinned artifact, no-egress evidence, and the calibration decision, v0.3.3",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.3.3.",
+          "Dependency reference check (conservative)": "blocked on WO-001.",
+          "References": "WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-009: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.3.5 (manifest changedFiles).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-027-local-inference-probe.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-027/VER-001.md",
+          "../../docs/final-reviews/WO-027/FINAL-001.md",
+          "WO-027-local-inference-probe.md"
+        ]
+      },
+      {
+        "id": "WO-028",
+        "line": 383,
+        "section": "Closed",
+        "title": "WO-028 — Control-event time: &#96;recordedAt&#96; on every appended control event, an elapsed-phase projection, and labeled recovery of historical times from local checkpoint refs, v0.5.1",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.5.1.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-018: satisfied (closed); WO-019: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.5.1 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-028-control-event-time.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-028/VER-001.md",
+          "../../docs/final-reviews/WO-028/FINAL-001.md",
+          "WO-028-control-event-time.md"
+        ]
+      },
+      {
+        "id": "WO-029",
+        "line": 399,
+        "section": "Closed",
+        "title": "WO-029 — Pinned artifact identity: bind an equipped compilation to its consuming decisions, v0.9.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.9.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-008: satisfied (closed); WO-009: satisfied (closed); WO-016: satisfied (closed); WO-023: satisfied (closed); WO-101: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.9.0 (manifest workOrder.id).",
+          "Model": "any capable model.",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-029-pinned-artifact-identity.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-029/VER-001.md",
+          "../../docs/final-reviews/WO-029/FINAL-001.md",
+          "WO-029-pinned-artifact-identity.md"
+        ]
+      },
+      {
+        "id": "WO-030",
+        "line": 415,
+        "section": "Closed",
+        "title": "WO-030 — Concurrent control state: one append-only segment per work order, lifecycle legality scoped to the named order, a selected-order status projection over every in-flight order, and a proven serial integration of two concurrent orders, v0.7.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.7.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-018: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.7.0 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-030-concurrent-control-state.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-030/VER-001.md",
+          "../../docs/final-reviews/WO-030/FINAL-001.md",
+          "WO-030-concurrent-control-state.md"
+        ]
+      },
+      {
+        "id": "WO-031",
+        "line": 431,
+        "section": "Closed",
+        "title": "WO-031 — Actor usage projection (v0.10.1)",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.10.1.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-019: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.10.1 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-031-actor-usage-projection.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-031/VER-001.md",
+          "../../docs/final-reviews/WO-031/FINAL-001.md",
+          "WO-031-actor-usage-projection.md"
+        ]
+      },
+      {
+        "id": "WO-038",
+        "line": 447,
+        "section": "Closed",
+        "title": "WO-038 — License posture lands in package metadata, publication guards, and the contribution rule, v0.13.2",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.13.2.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-018: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.13.2 (manifest workOrder.id).",
+          "Model": "any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-038-license-posture-lands.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-038/VER-001.md",
+          "../../docs/final-reviews/WO-038/FINAL-001.md",
+          "WO-038-license-posture-lands.md"
+        ]
+      },
+      {
+        "id": "WO-041",
+        "line": 463,
+        "section": "Closed",
+        "title": "WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (v0.13.3)",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.13.3.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-009: satisfied (closed); WO-010: satisfied (closed); WO-023: satisfied (closed).",
+          "Verification": "VER-003 (pass).",
+          "Final review": "FINAL-002 (pass).",
+          "Release": "v0.13.3 (manifest workOrder.id).",
+          "Model": "any capable model for the script and fixtures. The refuter episode runs on the actual local transports and must state harness version, model, and effort (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-041-plan-refutation-mechanism.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-041/VER-003.md",
+          "../../docs/final-reviews/WO-041/FINAL-002.md",
+          "WO-041-plan-refutation-mechanism.md"
+        ]
+      },
+      {
+        "id": "WO-101",
+        "line": 479,
+        "section": "Closed",
+        "title": "WO-101 — Program stepper enumeration, continuation round-trip, and hash-identity corpus, v0.2.0",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.2.0.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-005: satisfied (closed); WO-011: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.2.2 (manifest changedFiles).",
+          "Model": "Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-101-program-and-hash-corpus.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-101/VER-001.md",
+          "../../docs/final-reviews/WO-101/FINAL-001.md",
+          "WO-101-program-and-hash-corpus.md"
+        ]
+      },
+      {
+        "id": "WO-108",
+        "line": 494,
+        "section": "Closed",
+        "title": "WO-108 — Mutation evidence campaign for the current kernel, compiler, and skeleton — v0.13.1",
+        "phase": "closed",
+        "dependency": "unknown",
+        "verdict": "pass",
+        "fields": {
+          "State": "closed.",
+          "Application target": "v0.13.1.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed).",
+          "Verification": "VER-001 (pass).",
+          "Final review": "FINAL-001 (pass).",
+          "Release": "v0.13.1 (manifest workOrder.id).",
+          "Model": "Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Latest attestation": "harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.",
+          "Authority": "docs/work-orders/WO-108-mutation-probe.md"
+        },
+        "links": [
+          "../../docs/verifications/WO-108/VER-001.md",
+          "../../docs/final-reviews/WO-108/FINAL-001.md",
+          "WO-108-mutation-probe.md"
+        ]
+      },
+      {
+        "id": "WO-001",
+        "line": 512,
+        "section": "Historical",
+        "title": "WO-001 — Environment truth (bounded), v0.0.1",
+        "phase": "historical (time-indexed)",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "historical (time-indexed).",
+          "Application target": "v0.0.1.",
+          "Dependency reference check (conservative)": "dependency-ready.",
+          "References": "none named.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-001-environment-truth.md"
+        },
+        "links": [
+          "WO-001-environment-truth.md"
+        ]
+      },
+      {
+        "id": "WO-002",
+        "line": 527,
+        "section": "Historical",
+        "title": "WO-002 — Pure kernel package, v0.1.0",
+        "phase": "historical (time-indexed)",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "historical (time-indexed).",
+          "Application target": "v0.1.0.",
+          "Dependency reference check (conservative)": "blocked on WO-001.",
+          "References": "WO-001: not control-closed.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "any capable model.",
+          "Effort": "unknown",
+          "Authority": "docs/work-orders/WO-002-pure-kernel.md"
+        },
+        "links": [
+          "WO-002-pure-kernel.md"
+        ]
+      }
+    ]
+  },
+  "workstreams": [],
+  "releaseTags": [
+    {
+      "name": "v0.2.0",
+      "object": "aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.2.1",
+      "object": "a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.2.2",
+      "object": "760c01d017f38845f3baaf4581749079af77ea5a",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.2.3",
+      "object": "10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.3.0",
+      "object": "8afdcef3337eec475e96edf05903503b42905fc4",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.3.1",
+      "object": "4a4f0e0502d5a857bff934698b623176ebd7de03",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.3.2",
+      "object": "456f12046e3b527e19c6c30b1219c0be944f9773",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.3.3",
+      "object": "afa04750cde3e6dfd67b5abb8dc093fe20465db7",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.3.4",
+      "object": "b466fb1e3233d157a10ac13dbae445fbd55745d6",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.3.5",
+      "object": "80669d87cfc306b1516cf810ca039bf1181f731a",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.3.6",
+      "object": "3aef7f45b3d563f944b48d60e7e955bb3b66a442",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.4.0",
+      "object": "49089ba4e3ea01d3592ea144a84c768b3a5216f7",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.4.1",
+      "object": "7dd65da91a0869ffb4756d56cb9b1378761cedc8",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.5.0",
+      "object": "9b13a3467f5a208650f01be796128c549975a205",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.5.1",
+      "object": "8a079ab8ef07634e88bff1a742427d443f999fdc",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.5.2",
+      "object": "b54a8bfe3d3fdde96320fef1f30c3d83a983994c",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.6.0",
+      "object": "762620fe6ce3048e26f8e20de980b1ac0ab20c20",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.7.0",
+      "object": "064d304f0a49d3ba397173420e815b44807934d8",
+      "controlSegments": [
+        "docs/control/resume.jsonl"
+      ]
+    },
+    {
+      "name": "v0.8.0",
+      "object": "7b494beaac507b3369c4092598edc33d64242b67",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-021.jsonl"
+      ]
+    },
+    {
+      "name": "v0.9.0",
+      "object": "b2720f4bb0574ca2929658e2bf7056bf40c8e5c1",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-029.jsonl"
+      ]
+    },
+    {
+      "name": "v0.10.0",
+      "object": "2cb12ddbd670e74639411cd77a98277d6b6110a6",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-029.jsonl"
+      ]
+    },
+    {
+      "name": "v0.10.1",
+      "object": "ca5d3fab28ecfa00cb7d0738d8e6a0be3018569d",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-029.jsonl",
+        "docs/control/orders/WO-031.jsonl"
+      ]
+    },
+    {
+      "name": "v0.11.0",
+      "object": "539021143175b03184fc8f3ea580a1b6491ab4ea",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-022.jsonl",
+        "docs/control/orders/WO-029.jsonl",
+        "docs/control/orders/WO-031.jsonl"
+      ]
+    },
+    {
+      "name": "v0.12.0",
+      "object": "3eb0fc50aaff394ccd80bbf042948ef7c2e7a015",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-010.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-022.jsonl",
+        "docs/control/orders/WO-029.jsonl",
+        "docs/control/orders/WO-031.jsonl"
+      ]
+    },
+    {
+      "name": "v0.13.0",
+      "object": "12fb52e64ea8915833cf29dac6d61412073c64db",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-010.jsonl",
+        "docs/control/orders/WO-011.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-022.jsonl",
+        "docs/control/orders/WO-029.jsonl",
+        "docs/control/orders/WO-031.jsonl"
+      ]
+    },
+    {
+      "name": "v0.13.1",
+      "object": "d5a0f5708ac5e13bc0d1ca2bd06d913bbc1b29b9",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-010.jsonl",
+        "docs/control/orders/WO-011.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-022.jsonl",
+        "docs/control/orders/WO-029.jsonl",
+        "docs/control/orders/WO-031.jsonl",
+        "docs/control/orders/WO-108.jsonl"
+      ]
+    },
+    {
+      "name": "v0.13.2",
+      "object": "0ff7063c042cede0cef863097334eb43c6da8937",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-010.jsonl",
+        "docs/control/orders/WO-011.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-022.jsonl",
+        "docs/control/orders/WO-029.jsonl",
+        "docs/control/orders/WO-031.jsonl",
+        "docs/control/orders/WO-038.jsonl",
+        "docs/control/orders/WO-108.jsonl"
+      ]
+    },
+    {
+      "name": "v0.13.3",
+      "object": "69f54e72c9b670280747d16dbf8bf9b30f0dcd63",
+      "controlSegments": [
+        "docs/control/resume.jsonl",
+        "docs/control/orders/WO-009.jsonl",
+        "docs/control/orders/WO-010.jsonl",
+        "docs/control/orders/WO-011.jsonl",
+        "docs/control/orders/WO-021.jsonl",
+        "docs/control/orders/WO-022.jsonl",
+        "docs/control/orders/WO-029.jsonl",
+        "docs/control/orders/WO-031.jsonl",
+        "docs/control/orders/WO-038.jsonl",
+        "docs/control/orders/WO-041.jsonl",
+        "docs/control/orders/WO-108.jsonl"
+      ]
+    }
+  ]
+}

@@ -29,7 +29,7 @@ import {
   recordTargetOperation,
   forgetTargetOperation,
 } from "./target-worktrees.mjs";
-import { checkLocalTerms } from "./terms.mjs";
+import { screenLocalTerms } from "./terms.mjs";
 import { privatePathLines } from "./private-paths.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
 import {
@@ -37,6 +37,7 @@ import {
   markdownLinks,
   markdownNodes,
   parseMarkdown,
+  withoutHtmlComments,
 } from "./markdown-links.mjs";
 
 // Publication reads the record sources through this module.
@@ -51,11 +52,9 @@ const refuse = (reason) => new Error(`target records refused: ${reason}`);
  * the link, through the document check's own decoder. */
 const htmlLinkTargets = (html) =>
   [
-    ...html
-      .replace(/<!--[\s\S]*?(?:-->|$)/gu, " ")
-      .matchAll(
-        /<[A-Za-z][\w:-]*((?:\s+[^\s"'>/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'>]+))?)*)\s*\/?>/gu,
-      ),
+    ...withoutHtmlComments(html, " ").matchAll(
+      /<[A-Za-z][\w:-]*((?:\s+[^\s"'>/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'>]+))?)*)\s*\/?>/gu,
+    ),
   ].flatMap(([, attributes]) =>
     [
       ...attributes.matchAll(
@@ -433,7 +432,7 @@ export function commitTargetRecords(root, state, control) {
   // the record's own path and the commit are the kit's frame.
   const footerSurface = "release.displayName (the provenance footer)";
   if (
-    checkLocalTerms(main, [
+    screenLocalTerms(main, [
       ...rows.map((row) => ({
         name: row.source,
         text: row.sourceBytes.toString("utf8"),

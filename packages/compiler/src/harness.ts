@@ -182,57 +182,55 @@ export const OPERATOR_QUESTION_CONTEXT =
   "Operator question: read it as a smell. Your next message answers it one of two ways, with the evidence: why the current course is right, or what the question changes in your reading and what you will now do differently. Keep working either way; if the message also asks for an action, including to pause, stop or wait, do that, since a request is explicit whatever its grammar; it records no rule.";
 
 /** A dispatch may lead following direction after a semicolon or newline.
- * The worker opt-ins are a selection, not part of the lifecycle action. */
-export function harnessPromptIntent(prompt: string | undefined): string {
-  const text = harnessPromptLine(prompt).text;
-  return (
-    /^((?:resume: (?:next|fix|verify|final review|release close|status|times)|planning: refute(?: full)?))(?:[ \t]+(?:fable(?:[ \t]+5\.1)?|astra)){0,2}(?=$|[ \t]*;)/u.exec(
-      text,
-    )?.[1] ?? text
-  );
-}
-
-/**
- * The worker options a dispatch line names, by the host whose launches they
- * select: `fable` picks Claude's opt-in worker and `astra` Codex's. Only the
- * words that close a `resume:` or `planning:` line select, the way a pass's
- * label names its worker, and those that close the dispatch phrase before
- * the line's first semicolon, where a lifecycle phrase carries its suffix
- * ahead of direction; a model named mid-line as a topic selects nothing. A
- * version after the word and a joining "and" belong to a closing run. A line
- * that names neither selects both hosts' defaults, so each dispatch states
- * its own choice; any other message returns null and changes nothing. The
- * function is self-contained so the generated Codex hook embeds it with the
- * line reader it is given.
- */
-export function harnessWorkerWords(
+ * Between the lifecycle phrase and that direction the operator may name the
+ * workers the session is to launch: a closing run of words that opens with
+ * one of `names`, the instance's workers and models, and holds nothing but
+ * such names, a version number after one and a joining "and". The run marks
+ * where the phrase ends and selects nothing: which worker a launch takes is
+ * the session's judgment over the same words. With no names given, or any
+ * other word after the phrase, the line is prose. The function is
+ * self-contained, since the generated hooks embed it. */
+export function harnessPromptIntent(
   prompt: string | undefined,
-  promptLine: typeof harnessPromptLine = harnessPromptLine,
-): { claude?: "fable"; codex?: "astra" } | null {
-  const text = promptLine(prompt).text;
-  if (!/^(?:resume|planning):/u.test(text)) return null;
-  const selected: { claude?: "fable"; codex?: "astra" } = {};
-  const semicolon = text.indexOf(";");
-  for (const part of semicolon < 0
-    ? [text]
-    : [text, text.slice(0, semicolon)]) {
-    const words = part.toLowerCase().match(/[a-z0-9]+(?:\.[0-9]+)*/gu) ?? [];
-    for (let index = words.length - 1; index >= 0; index--) {
-      const word = words[index];
-      if (word === "fable") selected.claude = "fable";
-      else if (word === "astra") selected.codex = "astra";
-      else if (word !== "and" && word !== "5.1" && word !== "6") break;
-    }
-  }
-  return selected;
+  names: readonly string[] = [],
+): string {
+  const text = harnessPromptLine(prompt).text;
+  const phrase =
+    /^(?:resume: (?:next|fix|verify|final review|release close|status|times)|planning: refute(?: full)?)(?=$|[ \t;])/u.exec(
+      text,
+    )?.[0];
+  if (phrase === undefined) return text;
+  const end = text.indexOf(";", phrase.length);
+  const words = text
+    .slice(phrase.length, end < 0 ? text.length : end)
+    .trim()
+    .split(/[ \t]+/u)
+    .filter(Boolean)
+    .map((word) => word.toLowerCase());
+  if (!words.length) return phrase;
+  const named = (word: string | undefined) =>
+    word !== undefined && names.includes(word);
+  return named(words[0]) &&
+    words.at(-1) !== "and" &&
+    words.every(
+      (word) =>
+        named(word) || word === "and" || /^[0-9]+(?:\.[0-9]+)*$/u.test(word),
+    )
+    ? phrase
+    : text;
 }
 
 /** Source for the emitted stale-main recovery hook. Generated hook text is
- * data; the compiler never loads Node built-ins or executes this recovery. */
-const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, input, event) {
+ * data; the compiler never loads Node built-ins or executes this recovery.
+ * It reads the dispatch phrase with the names a line may close with, as the
+ * session path does, so that a release-close line that names a worker is
+ * recovered too; a program with no names emits the text it always did. */
+const releaseCloseRecovery = (
+  names: readonly string[],
+) => `async function recoverReleaseClose(root, hook, input, event) {
     const harnessPromptLine = (${harnessPromptLine.toString()});
     if (event !== "UserPromptSubmit" ||
-        (${harnessPromptIntent.toString()})(input?.prompt) !== "resume: release close" ||
+        (${harnessPromptIntent.toString()})(input?.prompt${names.length ? `, ${JSON.stringify(names)}` : ""}) !== "resume: release close" ||
         process.env.COPILOT_PROJECT_DIR ||
         process.env.COPILOT_AGENT_SESSION_ID)
         return null;
@@ -339,6 +337,17 @@ export interface HarnessProfile {
   readonly profileId: string;
   readonly harness: "claude-code" | "codex-cli" | "copilot-cli";
   readonly observedVersion: string;
+  /** The kinds of tool each feedback unit's facts read, by unit: a unit
+   * named here is registered for the tools of those kinds and for any name
+   * the table below does not hold; a unit not named is registered for every
+   * tool. */
+  readonly unitToolKinds?: Readonly<Record<string, readonly string[]>>;
+  /** Whether this host was observed to read a matcher that leaves names out.
+   * Where it was, a narrowed hook's matcher is that exclusion, and a name the
+   * tool table does not hold still starts the hook; where it was not, or no
+   * observation is given, the matcher lists the names of the kinds the unit
+   * judges, the form every host documents. */
+  readonly matcherExclusion?: HarnessObservation;
   readonly tools?: Readonly<
     Record<
       string,
@@ -454,10 +463,6 @@ export interface HarnessWorker {
   readonly host?: "claude" | "codex";
   readonly model: string;
   readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
-  readonly optIn?: boolean;
-  /** How an opt-in worker's definition names the dispatch word that selects
-   * it; every opt-in worker carries one. */
-  readonly optInLabel?: string;
   readonly description?: string;
   readonly skills?: readonly string[];
   readonly body?: string;
@@ -485,7 +490,7 @@ export function workerSpecification(worker: HarnessWorker) {
     skills: worker.skills ?? [],
     prompt:
       worker.body ??
-      `Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. ${workerNoPrintRules} ${operatorWordsRule} What a worker returns may be filed in a committed record, so it paraphrases the operator too. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence. Probe with single tests under the bounded wrapper, node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>; never start a test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs): a gate run holds the worktree's live-gate refusal against the parent's writes for its whole duration, and the parent owns the gate.`,
+      `Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. ${workerNoPrintRules} ${operatorWordsRule} What a worker returns may be filed in a committed record, so it paraphrases the operator too. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence. Probe with single tests under the bounded wrapper, node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>; never start a test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs): a gate run holds the worktree's live-gate refusal against the parent's writes for its whole duration, and the parent owns the gate. Await a background task you start through the host's completion signal, never through a loop over the process table, and stop what you started before you hand back: your stop is refused once while a task of your own is live.`,
   };
 }
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
@@ -500,6 +505,10 @@ export interface HarnessProgram {
   /** Compatibility for programs declaring one default worker. */
   readonly worker?: HarnessWorker;
   readonly workers?: readonly HarnessWorker[];
+  /** The names an operator may close a dispatch line with: the instance's
+   * workers and models, supplied by the emitter. The session hook reads them
+   * to tell where the lifecycle phrase ends. */
+  readonly workerNames?: readonly string[];
 }
 
 /** Host tool namespaces that act in the operator's desktop or signed-in browser.
@@ -685,17 +694,87 @@ function outsideWriteGrantsFor(
     }),
   }));
 }
+/** The matcher every tool matches. */
+export const EVERY_TOOL = ".*";
+/** The rest of a name, whatever characters it holds. */
+const ANY_REST = "[\\s\\S]*";
+/** The matcher of a unit's hook. A unit that states no kinds is registered
+ * for every tool, and so is one whose kinds cover every name of the table.
+ *
+ * With `exclusion`, for a host observed to read one, a unit that states its
+ * kinds is registered for every name but those the profile's table maps to
+ * another kind, as one anchored pattern: a name the table does not hold
+ * still starts the hook and is judged as before, and a table name that ends
+ * in `*` leaves out every name with that prefix. The anchors are what make
+ * the exclusion hold on a host that reads a pattern as a search, and "any
+ * character" is written `[\s\S]`, which a line break in a name does not
+ * stop as it stops a dot.
+ *
+ * Without it the matcher lists the names the table maps to the unit's kinds,
+ * joined by `|`: the form the hosts document, which needs no lookahead and
+ * so compiles wherever a pattern does. A name the table does not hold then
+ * starts no narrowed hook. Each name is written as it is, which a host that
+ * compares names and a host that reads a pattern both take, so a listed name
+ * holds only letters, digits, `_`, `.` and `-`; a dot read as a pattern
+ * admits more names and loses none. */
+export function unitMatcher(
+  tools: HarnessProfile["tools"],
+  kinds: readonly string[] | undefined,
+  exclusion = false,
+): string {
+  if (!kinds) return EVERY_TOOL;
+  const entries = Object.entries(tools ?? {});
+  const others = entries.filter(([, kind]) => !kinds.includes(kind));
+  if (!others.length) return EVERY_TOOL;
+  if (!exclusion) {
+    const listed = entries
+      .filter(([, kind]) => kinds.includes(kind))
+      .map(([name]) => {
+        ensure(/^[A-Za-z0-9_.-]+\*?$/u.test(name), "listed tool name");
+        return name.endsWith("*") ? `${name.slice(0, -1)}.*` : name;
+      })
+      .sort();
+    // An empty matcher is no list: a host reads it as every tool or as none.
+    ensure(listed.length > 0, "unit tool kinds");
+    return listed.join("|");
+  }
+  const literal = (name: string) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const left = others
+    .map(([name]) =>
+      name.endsWith("*")
+        ? `${literal(name.slice(0, -1))}${ANY_REST}`
+        : literal(name),
+    )
+    .sort();
+  return `^(?!(?:${left.join("|")})$)${ANY_REST}$`;
+}
+/** The kinds a profile states for a unit: the declaration's own member, never
+ * one every object inherits. */
+const unitKinds = (
+  profile: HarnessProfile,
+  unitId: string,
+): readonly string[] | undefined =>
+  profile.unitToolKinds && Object.hasOwn(profile.unitToolKinds, unitId)
+    ? profile.unitToolKinds[unitId]
+    : undefined;
+/** An event's hook paths as the groups a settings file holds: one group for
+ * each matcher, in the order the matchers first appear, each with its hooks
+ * in the order they were registered. */
+function matcherGroups<T>(
+  paths: readonly string[],
+  matchers: ReadonlyMap<string, string>,
+  entry: (path: string) => T,
+): { matcher: string; hooks: T[] }[] {
+  const groups = new Map<string, T[]>();
+  for (const path of paths) {
+    const matcher = matchers.get(path) ?? EVERY_TOOL;
+    groups.set(matcher, [...(groups.get(matcher) ?? []), entry(path)]);
+  }
+  return [...groups].map(([matcher, hooks]) => ({ matcher, hooks }));
+}
 const id = (value: string) => /^[a-z][a-z0-9.-]{0,99}$/.test(value);
 const hash = (text: string) => `fnv1a64:${fnv1a64(text)}`;
 const json = (value: unknown) => JSON.stringify(value, null, 2) + "\n";
-const heartbeatHook = (event: HarnessEvent, runtimeURL: string) => `try {
-const { text } = await import("node:stream/consumers");
-const input = JSON.parse(await text(process.stdin));
-const { recordHarnessHeartbeat } = await import(${JSON.stringify(runtimeURL)});
-await recordHarnessHeartbeat(${JSON.stringify(event)}, input);
-} catch { process.stderr.write("DotLn advisory: presence heartbeat unavailable\\n"); }
-process.stdout.write("{}");
-`;
 const events: readonly HarnessEvent[] = [
   "PreToolUse",
   "PostToolUse",
@@ -717,6 +796,28 @@ export const HARNESS_END = "<!-- dotln-harness:end -->";
 export function assertHarnessProfile(profile: HarnessProfile): void {
   ensure(profile && id(profile.profileId), "profile identity");
   ensure(
+    profile.unitToolKinds === undefined ||
+      (profile.unitToolKinds !== null &&
+        typeof profile.unitToolKinds === "object" &&
+        !Array.isArray(profile.unitToolKinds) &&
+        Object.entries(profile.unitToolKinds).every(
+          ([unit, kinds]) =>
+            id(unit) &&
+            Array.isArray(kinds) &&
+            kinds.length > 0 &&
+            // A kind no tool of the table has would register the unit's hook
+            // for none of the table's tools.
+            kinds.every(
+              (kind) =>
+                typeof kind === "string" &&
+                kind.length > 0 &&
+                (profile.tools === undefined ||
+                  Object.values(profile.tools).includes(kind as never)),
+            ),
+        )),
+    "unit tool kinds",
+  );
+  ensure(
     ["claude-code", "codex-cli", "copilot-cli"].includes(profile.harness) &&
       verificationLine(profile.observedVersion),
     "observed harness version",
@@ -727,6 +828,7 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
     profile.settings,
     profile.instruction,
     ...(profile.codexContinuation ? [profile.codexContinuation] : []),
+    ...(profile.matcherExclusion ? [profile.matcherExclusion] : []),
   ]) {
     ensure(
       capability &&
@@ -1000,6 +1102,8 @@ export function lowerToHarness(
     | "SubagentStop",
     string[]
   >();
+  // A hook registered for fewer than every tool, by its path.
+  const hookMatchers = new Map<string, string>();
   const hookRoot = ".claude/hooks";
   const emit = (
     path: string,
@@ -1020,8 +1124,10 @@ export function lowerToHarness(
     config: unknown,
     names: readonly string[],
     rung: number,
+    matcher?: string,
   ) => {
     const path = `${hookRoot}/${name}.mjs`;
+    if (matcher) hookMatchers.set(path, matcher);
     const origins = [
       ...names,
       ...outsideWriteGrants.flatMap((row) =>
@@ -1034,10 +1140,34 @@ export function lowerToHarness(
       name === "session"
         ? `(input?.hook_event_name === "SessionStart" ? "SessionStart" : "UserPromptSubmit")`
         : JSON.stringify(event);
+    // The presence heartbeat has no hook of its own: the file of a hook that
+    // already runs for one of its four events records it, after the hook has
+    // answered on every path (operator control, the runtime, the unavailable
+    // adapter), so a heartbeat that fails or is slow changes no answer.
+    // Without a resident's store named it loads nothing.
+    const kind = (config as { kind?: string }).kind ?? "";
+    const heartbeatEvent =
+      name === "session"
+        ? ` && ${eventExpression} === "UserPromptSubmit"`
+        : ["observe", "finish"].includes(kind) &&
+            ["PreToolUse", "PostToolUse", "Stop"].includes(event)
+          ? ""
+          : null;
+    const heartbeat =
+      heartbeatEvent === null
+        ? ""
+        : `if (process.env.DOTLN_RESIDENT_STORE${heartbeatEvent}) {
+try {
+await new Promise((resolve) => process.stdout.write("", resolve));
+const { recordHarnessHeartbeat } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/presence-heartbeat.js");
+await recordHarnessHeartbeat(${eventExpression}, input);
+} catch { process.stderr.write("DotLn advisory: presence heartbeat unavailable\\n"); }
+}
+`;
     // WO-144: the fallback's root is this hook's own project, two levels above
     // its file. The session's directory may be a subdirectory or another
     // repository, and a marker or journal row must never land there.
-    const fallback = `const recovered = await (${releaseCloseRecovery})((await import("node:url")).fileURLToPath(new URL("../../", import.meta.url)), (await import("node:url")).fileURLToPath(import.meta.url), input, ${eventExpression});
+    const fallback = `const recovered = await (${releaseCloseRecovery(program.workerNames ?? [])})((await import("node:url")).fileURLToPath(new URL("../../", import.meta.url)), (await import("node:url")).fileURLToPath(import.meta.url), input, ${eventExpression});
 if (recovered?.response) { process.stdout.write(recovered.response); } else {
 const fs = await import("node:fs");
 const { join } = await import("node:path");
@@ -1087,7 +1217,7 @@ process.stdout.write(JSON.stringify(response)); }`;
 
     emit(
       path,
-      `${header}let input, control;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\ncontrol = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control && !control.overrideExit) { ${name === "session" ? `try { const { recordOperatorMessage } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} ` : ""}process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput, control);\n}\n} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { ${fallback} } }\n`,
+      `${header}let input, control;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\ncontrol = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control && !control.overrideExit) { ${name === "session" ? `try { const { recordOperatorMessage } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} ` : ""}process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput, control);\n}\n} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { ${fallback} } }\n${heartbeat}`,
       origins,
       rung,
     );
@@ -1122,6 +1252,14 @@ process.stdout.write(JSON.stringify(response)); }`;
             : event === "UserPromptSubmit"
               ? 3
               : 2,
+        // A unit's hook starts for the tools it judges.
+        event === "PreToolUse" || event === "PostToolUse"
+          ? unitMatcher(
+              profile.tools,
+              unitKinds(profile, unit.unitId),
+              profile.matcherExclusion?.available === true,
+            )
+          : undefined,
       );
       if (unit.trigger === "attribution") {
         emit(
@@ -1267,6 +1405,11 @@ process.stdout.write(JSON.stringify(response)); }`;
           intents,
         })),
         instructionFile,
+        // The names that may close a dispatch line, where the program has
+        // any; a program without them emits the bytes it always did.
+        ...(program.workerNames?.length
+          ? { workerNames: program.workerNames }
+          : {}),
       },
       program.roles.map((role) => role.facetId),
       1,
@@ -1284,22 +1427,16 @@ process.stdout.write(JSON.stringify(response)); }`;
       ],
       6,
     );
-  for (const event of events) {
-    if (!profile.events[event].available) continue;
-    const path = `${hookRoot}/presence-${event.toLowerCase()}.mjs`;
-    emit(
-      path,
-      `// Origin: ${canonicalStringify(origin([]))}\n` +
-        heartbeatHook(
-          event,
-          `../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/presence-heartbeat.js`,
-        ),
-      [],
-      1,
-    );
-    hookPaths.set(event, [...(hookPaths.get(event) ?? []), path]);
-  }
+  // No presence hook is emitted: the files of the two observers, the session
+  // hook and the finish hook record the heartbeat (see `hook` above).
   const workers = program.workers ?? (program.worker ? [program.worker] : []);
+  ensure(
+    (program.workerNames ?? []).every(
+      (name) =>
+        typeof name === "string" && /^[a-z][a-z0-9-]{0,39}$/u.test(name),
+    ),
+    "worker names",
+  );
   ensure(
     new Set(workers.map((worker) => worker.name)).size === workers.length,
     "unique worker names",
@@ -1324,21 +1461,12 @@ process.stdout.write(JSON.stringify(response)); }`;
       "worker body",
     );
     ensure(
-      worker.optIn === true
-        ? typeof worker.optInLabel === "string" &&
-            verificationLine(worker.optInLabel)
-        : worker.optInLabel === undefined,
-      "worker opt-in label",
-    );
-    ensure(
       (worker.skills ?? []).every((skill) =>
         program.roles.some((role) => skill === `dotln-${role.name}`),
       ),
       "worker skills name generated roles",
     );
   }
-  const optInLine = (worker: HarnessWorker) =>
-    `Use this worker only when the operator's planning: or resume: dispatch line names ${worker.optInLabel}. Record the worker type in the receipt and response.`;
   const workerOrigin = program.roles.map((role) => role.facetId);
   // Each host reads its own definition format: a Claude agent type is
   // Markdown with front matter, and a Codex custom agent is a TOML file whose
@@ -1363,7 +1491,6 @@ process.stdout.write(JSON.stringify(response)); }`;
         `<!-- Origin: ${canonicalStringify(origin(workerOrigin))} -->`,
         "",
         specification.prompt,
-        ...(worker.optIn ? ["", optInLine(worker)] : []),
         "",
       ].join("\n"),
       workerOrigin,
@@ -1384,12 +1511,7 @@ process.stdout.write(JSON.stringify(response)); }`;
         `description = ${JSON.stringify(specification.description)}`,
         `model = ${JSON.stringify(worker.model)}`,
         `model_reasoning_effort = ${JSON.stringify(worker.effort)}`,
-        `developer_instructions = ${JSON.stringify(
-          [
-            specification.prompt,
-            ...(worker.optIn ? [optInLine(worker)] : []),
-          ].join("\n\n"),
-        )}`,
+        `developer_instructions = ${JSON.stringify(specification.prompt)}`,
         "",
       ].join("\n"),
       workerOrigin,
@@ -1487,27 +1609,27 @@ process.stdout.write(JSON.stringify(response)); }`;
         deny: [...new Set(deny)].sort(),
       },
       hooks: Object.fromEntries(
-        [...hookPaths].map(([event, paths]) => [
-          event,
-          [
-            {
-              ...(event.includes("Tool") || event === "PermissionDenied"
-                ? { matcher: ".*" }
-                : {}),
-              hooks: paths.map((path) => ({
-                type: "command",
-                command: `node \"$CLAUDE_PROJECT_DIR/${path}\"`,
-                // Stale-main recovery has four 120 s child bounds and one
-                // 30 s replay. Leave room for guards and normal dispatch.
-                timeout:
-                  event === "UserPromptSubmit" &&
-                  path === ".claude/hooks/session.mjs"
-                    ? 600
-                    : 15,
-              })),
-            },
-          ],
-        ]),
+        [...hookPaths].map(([event, paths]) => {
+          const entry = (path: string) => ({
+            type: "command",
+            command: `node \"$CLAUDE_PROJECT_DIR/${path}\"`,
+            // Stale-main recovery has four 120 s child bounds and one
+            // 30 s replay. Leave room for guards and normal dispatch.
+            timeout:
+              event === "UserPromptSubmit" &&
+              path === ".claude/hooks/session.mjs"
+                ? 600
+                : 15,
+          });
+          // A tool event's hooks stand in one group for each matcher; any
+          // other event's stand in one group, as before.
+          return [
+            event,
+            event.includes("Tool") || event === "PermissionDenied"
+              ? matcherGroups(paths, hookMatchers, entry)
+              : [{ hooks: paths.map(entry) }],
+          ];
+        }),
       ),
     };
     emit(profile.settings.path, json(settings), ids, 2);
@@ -1521,7 +1643,7 @@ process.stdout.write(JSON.stringify(response)); }`;
         `const { text } = await import("node:stream/consumers");\n` +
         `try {\nconst source = await text(process.stdin);\n` +
         `if (Buffer.byteLength(source) > 1048576) throw new Error("oversized hook input");\n` +
-        `const output = await (${codexContinuation.toString()})(JSON.parse(source), ${operatorControl.toString()}, (prompt) => (${operatorMessageClass.toString()})(prompt, ${harnessPromptLine.toString()}), undefined, ${harnessSessionPhase.toString()}, (prompt) => (${harnessWorkerWords.toString()})(prompt, ${harnessPromptLine.toString()}));\n` +
+        `const output = await (${codexContinuation.toString()})(JSON.parse(source), ${operatorControl.toString()}, (prompt) => (${operatorMessageClass.toString()})(prompt, ${harnessPromptLine.toString()}), undefined, ${harnessSessionPhase.toString()});\n` +
         `process.stdout.write(JSON.stringify(output));\n` +
         `} catch { process.stdout.write(JSON.stringify({systemMessage:"DotLn Codex continuation input unavailable; native stopping remains available."})); }\n`,
       names,
@@ -1659,7 +1781,7 @@ export const HARNESS_REFUSALS = [
     id: "subagents",
     source: "WO-139",
     clause:
-      "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables)",
+      "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables) or the cap the operator's accept-overrun records for the dispatch",
   },
   {
     id: "outside-write",
@@ -1773,18 +1895,10 @@ function lowerTargetWorker(
       .map(encodeURIComponent)
       .join("/");
   const hooks: string[] = [];
+  // A hook registered for fewer than every tool, by its path.
+  const matchers = new Map<string, string>();
   if (profile.events.PreToolUse.available) {
-    const heartbeatPath = ".claude/hooks/presence-pretooluse.mjs";
-    hooks.push(heartbeatPath);
-    emit(
-      heartbeatPath,
-      `// Origin: ${canonicalStringify(origin)}\n` +
-        heartbeatHook(
-          "PreToolUse",
-          importURL("packages/skeleton/dist/src/presence-heartbeat.js"),
-        ),
-      1,
-    );
+    // No presence hook: the permission hook carries the heartbeat here.
     const configs = [
       { name: "permissions", kind: "permission", envelope, outsideWriteGrants },
       ...units.map((unit) => ({
@@ -1793,6 +1907,16 @@ function lowerTargetWorker(
         policy: compileFeedbackUnits([unit]),
       })),
     ];
+    // A unit's hook starts for the tools it judges, here as in the launchpad.
+    for (const unit of units)
+      matchers.set(
+        `.claude/hooks/${unit.unitId}.mjs`,
+        unitMatcher(
+          profile.tools,
+          unitKinds(profile, unit.unitId),
+          profile.matcherExclusion?.available === true,
+        ),
+      );
     for (const { name, ...guard } of configs) {
       const path = `.claude/hooks/${name}.mjs`;
       hooks.push(path);
@@ -1838,16 +1962,11 @@ process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "PreT
           ].sort(),
         },
         hooks: {
-          PreToolUse: [
-            {
-              matcher: ".*",
-              hooks: hooks.map((path) => ({
-                type: "command",
-                command: `node "$CLAUDE_PROJECT_DIR/${path}"`,
-                timeout: 15,
-              })),
-            },
-          ],
+          PreToolUse: matcherGroups(hooks, matchers, (path) => ({
+            type: "command",
+            command: `node "$CLAUDE_PROJECT_DIR/${path}"`,
+            timeout: 15,
+          })),
         },
       }),
       2,

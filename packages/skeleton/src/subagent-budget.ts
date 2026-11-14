@@ -7,6 +7,7 @@ import {
   rmdirSync,
   writeFileSync,
 } from "node:fs";
+import { createRequire } from "node:module";
 import { join } from "node:path";
 import { configuredControlDirectory } from "./temporary-root-records.mjs";
 
@@ -111,6 +112,40 @@ export function readSubagentCap(root: string): number | null {
       "invalid subagentCap (expected a nonnegative safe integer or null)",
     );
   return cap;
+}
+// The lifecycle's own fold of an order's acceptances, loaded from the root
+// that carries it. A root with no scripts tree (a target worktree, a bare
+// fixture) has no acceptance to read, and the budgets file's value stands.
+const requireModule = createRequire(import.meta.url);
+function acceptedCap(
+  root: string,
+  base: number | null,
+  sessionKey: string,
+): number | null {
+  const module = join(root, "scripts/lib/dispatch-bound.mjs");
+  if (!lstatSync(module, { throwIfNoEntry: false })?.isFile()) return base;
+  try {
+    return requireModule(module).dispatchSubagentCap(root, base, {
+      sessionKey,
+    });
+  } catch {
+    // A control record that cannot be read grants nothing: the budgets
+    // file's value stays the cap, and the lifecycle's own commands name the
+    // unreadable record.
+    return base;
+  }
+}
+/** The cap a session's dispatch runs under: the budgets file's value, or the
+ * ceiling the operator's acceptance recorded for that dispatch since its
+ * phase began (`npm run resume -- accept-overrun subagentCap`). Every reader
+ * of the cap (the hook's admission, the usage readback, the review helper's
+ * own count) takes it here, so no session edits the budgets file for one
+ * order. `sessionKey` is the digest the session's journal is filed under. */
+export function dispatchSubagentCap(
+  root: string,
+  sessionKey: string,
+): number | null {
+  return acceptedCap(root, readSubagentCap(root), sessionKey);
 }
 function readCounter(path: string): Counter {
   let value;
@@ -327,7 +362,7 @@ export function subagentUsage(
 ): SubagentObservation {
   let cap: number | null = null;
   try {
-    cap = readSubagentCap(root);
+    cap = dispatchSubagentCap(root, hashed ? session : hash(session));
     return observation(
       readCounter(
         hashed
@@ -364,13 +399,16 @@ export function admitSubagentTool(
 ): { refusal?: string; advisory?: string; usage: SubagentObservation } {
   let cap: number | null = null;
   try {
-    cap = options.cap === undefined ? readSubagentCap(root) : options.cap;
+    cap =
+      options.cap === undefined
+        ? dispatchSubagentCap(root, hash(input.session_id))
+        : options.cap;
     return transaction(directory, input.session_id, (p) => {
       const counter = readCounter(p.counter);
       const refuse = () => {
         save(p.counter, counter);
         return {
-          refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; ${budgetsLabel(root)} subagentCap would be exceeded. Every launch, re-task and kit launch counts one use; batch the remaining work into fewer uses.`,
+          refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; ${budgetsLabel(root)} subagentCap, or the cap accepted for this dispatch, would be exceeded. Every launch, re-task and kit launch counts one use; batch the remaining work into fewer uses. The operator can state a larger cap for this dispatch in ordinary language; record it with npm run resume -- accept-overrun subagentCap --ceiling <n|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>, and never by editing the budgets file.`,
           usage: observation(counter, cap),
         };
       };
@@ -526,7 +564,55 @@ export function drivenWorkerContext(): DrivenWorkerContext | null {
     !limit(value.ceiling)
   )
     throw new Error("invalid driven-worker context");
-  return value;
+  return { ...value, ...currentDrivenLimits(value) };
+}
+/** The drive's two limits as they stand now. The context file holds them as
+ * the drive read them when it launched this worker; an acceptance recorded
+ * since then is read from the order's control log through the lifecycle's own
+ * fold, so a cap the operator accepts while a worker runs reaches that
+ * worker's next launch. A root without that module, or a log that cannot be
+ * read, leaves the file's values. */
+function currentDrivenLimits(context: DrivenWorkerContext): {
+  cap: number | null;
+  ceiling: number | null;
+} {
+  const held = { cap: context.cap, ceiling: context.ceiling };
+  const module = join(context.root, "scripts/lib/dispatch-bound.mjs");
+  if (!lstatSync(module, { throwIfNoEntry: false })?.isFile()) return held;
+  try {
+    // The two values a drive's limits start from, read as this module reads
+    // the cap: the file's cap, and its descendant ceiling where it states
+    // one. A root with no budgets file states neither.
+    let file: { drivenSessionCeiling?: unknown } = {};
+    try {
+      file = JSON.parse(
+        readFileSync(
+          join(context.root, subagentBudgetsPath(context.root)),
+          "utf8",
+        ),
+      );
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+    const limits = requireModule(module).currentDrivenLimits(
+      context.root,
+      context.workOrder,
+      {
+        subagentCap: readSubagentCap(context.root),
+        ...(file?.drivenSessionCeiling === undefined
+          ? {}
+          : { drivenSessionCeiling: file.drivenSessionCeiling }),
+      },
+    );
+    const valid = (number: unknown) =>
+      number === null ||
+      (Number.isSafeInteger(number) && (number as number) >= 0);
+    return valid(limits?.cap) && valid(limits?.ceiling)
+      ? { cap: limits.cap, ceiling: limits.ceiling }
+      : held;
+  } catch {
+    return held;
+  }
 }
 
 export function drivenSubagentUsage(worker?: string) {

@@ -44,8 +44,9 @@ import {
 import {
   missionClauses,
   missionDecisions,
+  missionDocumentsOf,
   missionPinFromSource,
-  observeMissionSubject,
+  settleMissionDocuments,
 } from "../src/mission-check-source.js";
 import { ResidentHost } from "../src/resident-host.js";
 import {
@@ -67,7 +68,9 @@ import type {
 import type { MissionCheckRequest } from "../src/mission-check-protocol.js";
 import {
   missionFixture,
+  missionDocumentReader,
   missionRunner,
+  observeSubject,
   unavailableRunner,
 } from "./mission-check.fixture.js";
 
@@ -160,7 +163,7 @@ test("WO-099 the four verdicts: out-of-surface drift, mid-episode clause change,
 
   // A contract edited after the capsule was pinned is drift naming the clause.
   inside.editContract();
-  const changed = observeMissionSubject(inside.source, inside.pin);
+  const changed = observeSubject(inside.source, inside.pin);
   const midEpisode = await runMissionCheck(
     changed,
     fakeTransport(pass),
@@ -250,6 +253,7 @@ test("WO-099 a drift holds unattended dispatch, records the correction, and a hu
       ...actorCatalog,
       ...scriptDouble(),
       "cli-worker": cliWorkerAdapter({
+        missionDocuments: missionDocumentReader,
         version: "0.154.0",
         runner: missionRunner(() => ({
           schemaVersion: "mission-check-v1",
@@ -357,6 +361,7 @@ test("WO-099 an unavailable verifier holds, and only a passing judgment over cha
       ...actorCatalog,
       ...scriptDouble(),
       "cli-worker": cliWorkerAdapter({
+        missionDocuments: missionDocumentReader,
         version: "0.154.0",
         runner: unavailableRunner,
       }),
@@ -401,7 +406,7 @@ test("WO-099 an unavailable verifier holds, and only a passing judgment over cha
   );
   // Neither can a fresh capsule that still drifts, whatever it claims.
   fixture.editContract();
-  const drifting = observeMissionSubject(fixture.source, fixture.pin);
+  const drifting = observeSubject(fixture.source, fixture.pin);
   assert.notEqual(drifting.hash, held!.subjectHash);
   await assert.rejects(
     clearMissionHold(
@@ -430,7 +435,7 @@ test("WO-099 an unavailable verifier holds, and only a passing judgment over cha
   );
   fixture.git("add", "-A");
   fixture.git("-c", "maintenance.auto=false", "commit", "-m", "fixture repair");
-  const repaired = observeMissionSubject(fixture.source, fixture.pin);
+  const repaired = observeSubject(fixture.source, fixture.pin);
   assert.notEqual(repaired.hash, held!.subjectHash);
   const passing = validateMissionCheckResult(
     { schemaVersion: "mission-check-v1", verdict: "on-mission", findings: [] },
@@ -524,7 +529,11 @@ test("WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass cle
     capabilities: () => ["adapter.fixture"],
     catalog: {
       ...actorCatalog,
-      "cli-worker": cliWorkerAdapter({ version: "0.154.0", runner }),
+      "cli-worker": cliWorkerAdapter({
+        missionDocuments: missionDocumentReader,
+        version: "0.154.0",
+        runner,
+      }),
     },
   });
   await host.start();
@@ -554,7 +563,7 @@ test("WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass cle
   assert.equal(judged.length, 2, "the held cadence judged the repair");
   assert.notEqual(judged[1], judged[0]);
   assert.notEqual(judged[1], fixture.subject.hash);
-  const repaired = observeMissionSubject(fixture.source, fixture.pin);
+  const repaired = observeSubject(fixture.source, fixture.pin);
   assert.equal(judged[1], repaired.hash, "it judged the work as it now reads");
 
   // The negative control that keeps the rebuild load-bearing: the declared
@@ -611,7 +620,7 @@ test("WO-099 VER-001 F2: the capsule carries untracked work, names what it canno
   // evidence of drift: a diff that cannot see it certifies the drift as a pass.
   const outside = "docs/product/03-architecture.md";
   writeFileSync(join(fixture.work, outside), "Outside, and never committed.\n");
-  const untracked = observeMissionSubject(fixture.source, fixture.pin);
+  const untracked = observeSubject(fixture.source, fixture.pin);
   assert.ok(untracked.observation.diff.changedPaths.includes(outside));
   assert.match(
     untracked.observation.diff.text,
@@ -632,7 +641,7 @@ test("WO-099 VER-001 F2: the capsule carries untracked work, names what it canno
       join(fixture.work, `packages/fixture/src/part-${index}.ts`),
       "export const b = 1;\n",
     );
-  const full = observeMissionSubject(fixture.source, fixture.pin);
+  const full = observeSubject(fixture.source, fixture.pin);
   assert.equal(
     full.observation.diff.changedPaths.length,
     MISSION_CAPSULE_BOUNDS.paths,
@@ -644,7 +653,7 @@ test("WO-099 VER-001 F2: the capsule carries untracked work, names what it canno
     "export const b = 1;\n",
   );
   assert.throws(
-    () => observeMissionSubject(fixture.source, fixture.pin),
+    () => observeSubject(fixture.source, fixture.pin),
     (error: unknown) =>
       error instanceof WorkerFailure &&
       error.code === "profile-refused" &&
@@ -656,7 +665,7 @@ test("WO-099 VER-001 F2: the capsule carries untracked work, names what it canno
     join(oversized.work, "packages/fixture/src/big.ts"),
     `// ${"x".repeat(MISSION_CAPSULE_BOUNDS.diffChars)}\n`,
   );
-  const partial = observeMissionSubject(oversized.source, oversized.pin);
+  const partial = observeSubject(oversized.source, oversized.pin);
   assert.deepEqual(partial.observation.diff.omittedPaths, [
     "packages/fixture/src/big.ts",
   ]);
@@ -671,7 +680,9 @@ test("WO-099 VER-001 F2: the capsule carries untracked work, names what it canno
   const long = "A".repeat(MISSION_CAPSULE_BOUNDS.clauseChars + 100);
   const contract = (tail: string) =>
     missionClauses(
-      `**Objective:** ${long}${tail}\n\n**Acceptance criteria (all required)**\n\n1. One.\n`,
+      missionDocumentReader.contract(
+        `**Objective:** ${long}${tail}\n\n**Acceptance criteria (all required)**\n\n1. One.\n`,
+      ),
       ["packages/fixture"],
     );
   const before = contract("X");
@@ -732,7 +743,11 @@ test("WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an 
     ...hidden.source,
     baseCommit: hidden.git("rev-parse", "HEAD"),
   };
-  const hiddenPin = missionPinFromSource(hiddenSource, "WO-999");
+  const hiddenPin = missionPinFromSource(
+    hiddenSource,
+    "WO-999",
+    missionDocumentReader,
+  );
 
   mkdirSync(join(hidden.work, "docs/intake"), { recursive: true });
   writeFileSync(
@@ -740,7 +755,7 @@ test("WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an 
     "PRIVATE-IGNORED-CONTENTS\n",
   );
   writeFileSync(join(hidden.work, ".env"), "PRIVATE_IGNORED_VALUE=secret\n");
-  const subject = observeMissionSubject(hiddenSource, hiddenPin);
+  const subject = observeSubject(hiddenSource, hiddenPin);
   assert.deepEqual(subject.observation.diff.changedPaths, []);
   assert.equal(subject.observation.diff.ignoredEntries.length, 2);
   assert.ok(
@@ -770,11 +785,15 @@ test("WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an 
     ...control.source,
     baseCommit: controlBase,
   };
-  const controlPin = missionPinFromSource(controlSource, "WO-999");
+  const controlPin = missionPinFromSource(
+    controlSource,
+    "WO-999",
+    missionDocumentReader,
+  );
   mkdirSync(join(control.work, "docs/intake"), { recursive: true });
   writeFileSync(join(control.work, "docs/intake/employer-notes.md"), "plain\n");
   writeFileSync(join(control.work, ".env"), "plain\n");
-  const visible = observeMissionSubject(controlSource, controlPin);
+  const visible = observeSubject(controlSource, controlPin);
   assert.deepEqual([...visible.observation.diff.changedPaths].sort(), [
     ".env",
     "docs/intake/employer-notes.md",
@@ -834,7 +853,7 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
     ...fixture.source,
     baseCommit: fixture.git("rev-parse", "HEAD"),
   };
-  const pin = missionPinFromSource(source, "WO-999");
+  const pin = missionPinFromSource(source, "WO-999", missionDocumentReader);
   assert.equal(pin.ignoredBaseline.length, 4);
 
   const runtime = join(fixture.work, ".runtime");
@@ -854,12 +873,12 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
     beforeBuild,
     "the build moves the collapsed root's own metadata, so this reaches the defect",
   );
-  const built = observeMissionSubject(source, pin);
+  const built = observeSubject(source, pin);
   assert.deepEqual(built.observation.diff.changedPaths, []);
   assert.deepEqual(built.observation.diff.ignoredEntries, []);
   assert.equal(validateMissionCheckResult(pass, built).verdict, "on-mission");
   assert.deepEqual(
-    observeMissionSubject(source, pin).observation.diff.ignoredEntries,
+    observeSubject(source, pin).observation.diff.ignoredEntries,
     [],
     "and the next pulse over no new work does not re-raise it either",
   );
@@ -867,7 +886,7 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
   // New ignored out-of-surface work still drifts: work the repository's own
   // ignore rules exclude stays visible to the capsule.
   writeFileSync(join(fixture.work, ".env.private"), "TOKEN=planted\n");
-  const planted = observeMissionSubject(source, pin);
+  const planted = observeSubject(source, pin);
   assert.equal(planted.observation.diff.ignoredEntries.length, 1);
   assert.ok(
     planted.observation.diff.ignoredEntries.every(
@@ -888,7 +907,7 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
   // added directly inside a baselined collapsed root is now as invisible as a
   // nested rewrite already was.
   writeFileSync(join(fixture.work, ".runtime/added-after-the-pin.txt"), "x\n");
-  const inside = observeMissionSubject(source, pin);
+  const inside = observeSubject(source, pin);
   assert.deepEqual(inside.observation.diff.ignoredEntries, []);
   assert.equal(validateMissionCheckResult(pass, inside).verdict, "on-mission");
 
@@ -896,7 +915,7 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
   // still work, and a baselined root that disappears is still work.
   writeFileSync(join(fixture.work, ".env"), "TOKEN=rotated-after-the-pin\n");
   rmSync(join(fixture.work, "local"), { recursive: true, force: true });
-  const moved = observeMissionSubject(source, pin);
+  const moved = observeSubject(source, pin);
   assert.equal(moved.observation.diff.ignoredEntries.length, 2);
   assert.equal(validateMissionCheckResult(pass, moved).verdict, "drift");
   t.diagnostic(
@@ -930,6 +949,7 @@ test("WO-099 VER-005 F1: an ordinary build during the cadence raises no hold", a
     catalog: {
       ...actorCatalog,
       "cli-worker": cliWorkerAdapter({
+        missionDocuments: missionDocumentReader,
         version: "0.154.0",
         runner: missionRunner(() => ({
           schemaVersion: "mission-check-v1",
@@ -1003,7 +1023,11 @@ test("WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule al
       capabilities: () => ["adapter.fixture"],
       catalog: {
         ...actorCatalog,
-        "cli-worker": cliWorkerAdapter({ version: "0.154.0", runner }),
+        "cli-worker": cliWorkerAdapter({
+          missionDocuments: missionDocumentReader,
+          version: "0.154.0",
+          runner,
+        }),
       },
     });
     await host.start();
@@ -1043,7 +1067,7 @@ test("WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule al
     );
     assert.equal(
       held!.subjectHash,
-      observeMissionSubject(fixture.source, fixture.pin).hash,
+      observeSubject(fixture.source, fixture.pin).hash,
       "the hold names the capsule the episode observed",
     );
   }
@@ -1068,7 +1092,7 @@ test("WO-099 VER-002 F2: the capsule carries links as links and reads nothing ou
 
   const link = "packages/fixture/src/linked.ts";
   symlinkSync(outside, join(fixture.work, link));
-  const linked = observeMissionSubject(fixture.source, fixture.pin);
+  const linked = observeSubject(fixture.source, fixture.pin);
   assert.ok(linked.observation.diff.changedPaths.includes(link));
   assert.ok(
     !linked.observation.diff.text.includes(marker),
@@ -1084,7 +1108,7 @@ test("WO-099 VER-002 F2: the capsule carries links as links and reads nothing ou
   // A link outside the declared surfaces is still judged as the path it is.
   const outsideSurface = "docs/product/linked.md";
   symlinkSync(outside, join(fixture.work, outsideSurface));
-  const drifted = observeMissionSubject(fixture.source, fixture.pin);
+  const drifted = observeSubject(fixture.source, fixture.pin);
   const judged = validateMissionCheckResult(pass, drifted);
   assert.equal(judged.verdict, "drift");
   assert.ok(
@@ -1101,6 +1125,7 @@ test("WO-099 VER-002 F2: the capsule carries links as links and reads nothing ou
       missionPinFromSource(
         { ...fixture.source, contractPath: linkedContract },
         "WO-999",
+        missionDocumentReader,
       ),
     (error: unknown) =>
       error instanceof WorkerFailure &&
@@ -1115,7 +1140,7 @@ test("WO-099 VER-002 F2: the capsule carries links as links and reads nothing ou
     join(fixture.work, "packages/fixture/src/huge.ts"),
     `// ${"y".repeat(MISSION_CAPSULE_BOUNDS.diffChars)}\n`,
   );
-  const bounded = observeMissionSubject(fixture.source, fixture.pin);
+  const bounded = observeSubject(fixture.source, fixture.pin);
   assert.ok(
     bounded.observation.diff.omittedPaths.includes(
       "packages/fixture/src/huge.ts",
@@ -1150,7 +1175,7 @@ test("WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds
     ...fixture.source,
     declaredSurfaces: surfaces,
   };
-  const pin = missionPinFromSource(source, "WO-999");
+  const pin = missionPinFromSource(source, "WO-999", missionDocumentReader);
   const long = `docs/product/${"o".repeat(240 - "docs/product/".length - 3)}.md`;
   assert.equal(long.length, 240);
   writeFileSync(join(fixture.work, long), "Outside, at the path bound.\n");
@@ -1160,7 +1185,7 @@ test("WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds
       "Outside.\n",
     );
   fixture.editContract();
-  const subject = observeMissionSubject(source, pin);
+  const subject = observeSubject(source, pin);
   // The judged file, the edited contract, the long path and 200 more.
   assert.equal(subject.observation.diff.changedPaths.length, 203);
 
@@ -1263,7 +1288,11 @@ test("WO-099 VER-003 F1: the resident records the hold for every host finding at
       capabilities: () => ["adapter.fixture"],
       catalog: {
         ...actorCatalog,
-        "cli-worker": cliWorkerAdapter({ version: "0.154.0", runner }),
+        "cli-worker": cliWorkerAdapter({
+          missionDocuments: missionDocumentReader,
+          version: "0.154.0",
+          runner,
+        }),
       },
     });
     await host.start();
@@ -1276,7 +1305,7 @@ test("WO-099 VER-003 F1: the resident records the hold for every host finding at
     await host.tick();
 
     const label = failure ?? "answered";
-    const observed = observeMissionSubject(fixture.source, fixture.pin);
+    const observed = observeSubject(fixture.source, fixture.pin);
     assert.equal(
       observed.observation.diff.changedPaths.length,
       MISSION_CAPSULE_BOUNDS.paths,
@@ -1349,7 +1378,7 @@ test("WO-099 VER-003 F1: a judgment the actor contract refuses is recorded as th
               },
             ],
           },
-          subject: observeMissionSubject(
+          subject: observeSubject(
             spec.missionSource!,
             missionPin((spec.worker!.request as MissionCheckRequest).subject),
           ),
@@ -1412,19 +1441,26 @@ test("WO-099 VER-003 F2: a decision history that exists but cannot be carried is
       )
       .join("\n");
   const three = history(["WO-999-D001", "WO-999-D002", "WO-999-D003"]);
-  assert.deepEqual(missionDecisions(three, 0), []);
   assert.deepEqual(
-    missionDecisions(three, 1).map((decision) => decision.id),
+    missionDecisions(missionDocumentReader.decisions(three), 0),
+    [],
+  );
+  assert.deepEqual(
+    missionDecisions(missionDocumentReader.decisions(three), 1).map(
+      (decision) => decision.id,
+    ),
     ["WO-999-D003"],
   );
   assert.deepEqual(
-    missionDecisions(three, 5).map((decision) => decision.id),
+    missionDecisions(missionDocumentReader.decisions(three), 5).map(
+      (decision) => decision.id,
+    ),
     ["WO-999-D001", "WO-999-D002", "WO-999-D003"],
   );
 
   // An optional history that does not exist yet, or was never declared, is a
   // whole, empty window: nothing is missing and a pass stands.
-  const absent = observeMissionSubject(
+  const absent = observeSubject(
     { ...fixture.source, decisionsPath: "docs/evidence/WO-999/not-yet.md" },
     fixture.pin,
   );
@@ -1450,7 +1486,7 @@ test("WO-099 VER-003 F2: a decision history that exists but cannot be carried is
     thesisHeadings,
   };
   assert.equal(
-    observeMissionSubject(undeclared, fixture.pin).observation.omittedDecisions,
+    observeSubject(undeclared, fixture.pin).observation.omittedDecisions,
     null,
   );
 
@@ -1474,7 +1510,7 @@ test("WO-099 VER-003 F2: a decision history that exists but cannot be carried is
     ...fixture.source,
     baseCommit: fixture.git("rev-parse", "HEAD"),
   };
-  const oversized = observeMissionSubject(committed, fixture.pin);
+  const oversized = observeSubject(committed, fixture.pin);
   assert.deepEqual(oversized.observation.diff.changedPaths, []);
   assert.deepEqual(oversized.observation.decisions, []);
   assert.match(
@@ -1516,10 +1552,7 @@ test("WO-099 VER-003 F2: a decision history that exists but cannot be carried is
   assert.match(prompt.outputInstructions, /omittedDecisions/u);
 
   // A zero window reads nothing, so the same file holds nothing back.
-  const zero = observeMissionSubject(
-    { ...committed, decisionLimit: 0 },
-    fixture.pin,
-  );
+  const zero = observeSubject({ ...committed, decisionLimit: 0 }, fixture.pin);
   assert.deepEqual(zero.observation.decisions, []);
   assert.equal(zero.observation.omittedDecisions, null);
   assert.equal(validateMissionCheckResult(pass, zero).verdict, "on-mission");
@@ -1535,7 +1568,7 @@ test("WO-099 VER-003 F2: a decision history that exists but cannot be carried is
   symlinkSync(outside, decisionsPath);
   fixture.git("add", "-A");
   fixture.git("-c", "maintenance.auto=false", "commit", "-m", "linked history");
-  const linked = observeMissionSubject(
+  const linked = observeSubject(
     { ...committed, baseCommit: fixture.git("rev-parse", "HEAD") },
     fixture.pin,
   );
@@ -1571,6 +1604,7 @@ test("WO-099 VER-003 F2: the resident holds a claimed pass over a history it cou
     catalog: {
       ...actorCatalog,
       "cli-worker": cliWorkerAdapter({
+        missionDocuments: missionDocumentReader,
         version: "0.154.0",
         runner: missionRunner(() => ({
           schemaVersion: "mission-check-v1",
@@ -1617,6 +1651,7 @@ test("WO-184 R10: an answered unknown over a complete capsule is not an absent j
     catalog: {
       ...actorCatalog,
       "cli-worker": cliWorkerAdapter({
+        missionDocuments: missionDocumentReader,
         version: "0.154.0",
         runner: missionRunner(() => ({
           schemaVersion: "mission-check-v1",
@@ -1710,7 +1745,7 @@ test("WO-152 the emitted schema carries no duplicate enum item, and a mid-episod
   // contract drops `contract:criterion:2` and adds `contract:criterion:3`.
   // Both must stay nameable, each once, the pinned ids first.
   fixture.renumberContract();
-  const changed = observeMissionSubject(fixture.source, fixture.pin);
+  const changed = observeSubject(fixture.source, fixture.pin);
   assert.deepEqual(
     changed.observation.contract.clauses.map((clause) => clause.id),
     [
@@ -1797,5 +1832,159 @@ test("WO-152 the emitted schema carries no duplicate enum item, and a mid-episod
 
   t.diagnostic(
     `no duplicate item across ${enumPaths.length} emitted enums, unchanged, renumbered and story contracts`,
+  );
+});
+
+test("WO-275 the resident reads a mission check's documents for its episode: the structure survives the episode's IPC, and a resident without the reader refuses the check", async (t) => {
+  const fixture = missionFixture();
+  t.after(() => fixture.dispose());
+  // What the resident sends crosses a process boundary as JSON and comes
+  // back as the documents the observation judges.
+  const settled = settleMissionDocuments(fixture.source, missionDocumentReader);
+  assert.ok("documents" in settled);
+  assert.deepEqual(
+    missionDocumentsOf(JSON.parse(JSON.stringify(settled))),
+    settled.documents,
+  );
+  assert.deepEqual(
+    settled.documents.contract.criteria.map((criterion) => criterion.number),
+    [1, 2],
+  );
+  assert.equal(settled.documents.decisions.length, 1);
+  // Malformed structure is refused, never read as an empty contract.
+  assert.throws(
+    () => missionDocumentsOf({ documents: { contract: {} } }),
+    (error: unknown) =>
+      error instanceof WorkerFailure && error.code === "profile-refused",
+  );
+  // A resident started without the reader, as `dotln resident` is, names
+  // the refusal; the episode records it as the check's failure.
+  const unread = settleMissionDocuments(fixture.source, undefined);
+  assert.ok("failure" in unread);
+  assert.equal(unread.failure.code, "documents-unread");
+  assert.match(String(unread.failure.detail), /scripts\/resident\.mjs/u);
+  const adapter = cliWorkerAdapter({
+    version: "0.154.0",
+    runner: missionRunner(() => ({
+      schemaVersion: "mission-check-v1",
+      verdict: "on-mission",
+      findings: [],
+    })),
+  });
+  const result = await adapter.run(
+    fixture.configuration.actors["mission-check"]!,
+    { residentStore: fixture.directory, episodeId: "wo275_unread" },
+  ).completed;
+  assert.equal(result.verified, false);
+  assert.equal(
+    (result as { worker?: { failure?: string } }).worker?.failure,
+    "documents-unread",
+  );
+});
+
+test("WO-276 F4: a resident whose adapter holds no reader of mission documents, as the package's own entry builds it, holds the check with no judgment, and the hold its log records names the launcher", async (t) => {
+  const fixture = missionFixture();
+  mkdirSync(fixture.directory, { recursive: true });
+  let at = 0;
+  const host = new ResidentHost({
+    directory: fixture.directory,
+    policyId: fixture.configuration.policyId,
+    configuration: fixture.configuration,
+    now: () => at,
+    capabilities: () => ["adapter.fixture"],
+    catalog: {
+      ...actorCatalog,
+      ...scriptDouble(),
+      // No reader of mission documents, so whatever the worker would answer
+      // is never asked for.
+      "cli-worker": cliWorkerAdapter({
+        version: "0.154.0",
+        runner: missionRunner(() => ({
+          schemaVersion: "mission-check-v1",
+          verdict: "on-mission",
+          findings: [],
+        })),
+      }),
+    },
+  });
+  await host.start();
+  t.after(() => {
+    host.close();
+    fixture.dispose();
+  });
+  await recordPresence(fixture.directory, "away", () => at);
+  for (at of [10, 20, 30]) await host.tick();
+  // The log records the observation by its failure's code.
+  const observed = events(host, "CliWorkerObserved").map(
+    (event) =>
+      (event.payload as { worker?: { failure?: string } }).worker?.failure,
+  );
+  assert.ok(observed.includes("documents-unread"), JSON.stringify(observed));
+  // The hold, as a replay of that log gives it: no judgment, the work held,
+  // and the reason naming what starts a resident that can judge.
+  const held = state(host).dispatchHeld;
+  assert.ok(held, "the check is held");
+  assert.equal(held!.verdict, "unknown");
+  assert.equal(state(host).missionChecks[held!.episodeId]?.verdict, "unknown");
+  assert.equal(
+    held!.reason,
+    `mission check ${held!.episodeId} returned no judgment (documents-unread): this resident holds no reader of the documents a mission check judges; start it with scripts/resident.mjs`,
+  );
+});
+
+test("WO-276 (round 1 of the repair's review): an order whose criteria list the repository's reader cannot read whole is held with no judgment as contract-unreadable, and the hold names the check that shows the line", async (t) => {
+  const fixture = missionFixture();
+  mkdirSync(fixture.directory, { recursive: true });
+  let at = 0;
+  // The real reader, over the order as it reads after an edit that opens a
+  // wrapped line of its first criterion with a tag's name.
+  const reader = {
+    ...missionDocumentReader,
+    contract: (markdown: string) =>
+      missionDocumentReader.contract(
+        markdown.replace(
+          "1. The judge reads its capsule and returns a typed verdict.",
+          "1. The judge reads its capsule and returns a\n<section> typed verdict.",
+        ),
+      ),
+  };
+  const host = new ResidentHost({
+    directory: fixture.directory,
+    policyId: fixture.configuration.policyId,
+    configuration: fixture.configuration,
+    now: () => at,
+    capabilities: () => ["adapter.fixture"],
+    catalog: {
+      ...actorCatalog,
+      ...scriptDouble(),
+      "cli-worker": cliWorkerAdapter({
+        missionDocuments: reader,
+        version: "0.154.0",
+        runner: missionRunner(() => ({
+          schemaVersion: "mission-check-v1",
+          verdict: "on-mission",
+          findings: [],
+        })),
+      }),
+    },
+  });
+  await host.start();
+  t.after(() => {
+    host.close();
+    fixture.dispose();
+  });
+  await recordPresence(fixture.directory, "away", () => at);
+  for (at of [10, 20, 30]) await host.tick();
+  const observed = events(host, "CliWorkerObserved").map(
+    (event) =>
+      (event.payload as { worker?: { failure?: string } }).worker?.failure,
+  );
+  assert.ok(observed.includes("contract-unreadable"), JSON.stringify(observed));
+  const held = state(host).dispatchHeld;
+  assert.ok(held, "the check is held");
+  assert.equal(held!.verdict, "unknown");
+  assert.equal(
+    held!.reason,
+    `mission check ${held!.episodeId} returned no judgment (contract-unreadable): the order's criteria list cannot be read whole as it is written; npm run work-orders -- index --check names the line and the remedy`,
   );
 });

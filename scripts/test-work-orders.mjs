@@ -1,12 +1,17 @@
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { write } from "./lib/helpers.mjs";
+import { parseWorkstreamDocument } from "./lib/work-order-workstream.mjs";
 import test from "node:test";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import {
   cpSync,
   existsSync,
+  rmSync,
   mkdirSync,
   readFileSync,
   realpathSync,
@@ -27,8 +32,18 @@ import {
   readDependencies,
 } from "./lib/dependencies.mjs";
 import { fold, foldWorkOrders } from "./lib/control.mjs";
-import { runGit, failureOf, readGitObjects } from "./lib/git.mjs";
+import {
+  runGit,
+  failureOf,
+  readGitObjects,
+  readGitObjectsInBatches,
+} from "./lib/git.mjs";
 import { linkFailures } from "./docs-check.mjs";
+import {
+  checkReleaseHistory,
+  historyEnd,
+  historyStart,
+} from "./lib/release-history.mjs";
 import {
   localReleaseRecords,
   manifestWorkOrders,
@@ -41,6 +56,7 @@ import {
   checkPreflightSuites,
   criteriaAdvisories,
   parseHeader,
+  pageCards,
   parseSequence,
   readIndex,
   renderHistory,
@@ -232,6 +248,20 @@ writeLog(repo, events);
 commit(repo, "closed and active orders");
 const indexFile = join(repo, "docs/work-orders/README.md");
 const historyFile = join(repo, "docs/work-orders/HISTORY.md");
+// The cards are data only in the index command's own output; what the pages
+// were rendered from outside this repository's files is in two records.
+const indexJson = (root = repo) =>
+  JSON.parse(
+    spawnSync(
+      process.execPath,
+      [join(root, "scripts/work-orders.mjs"), "index", "--json"],
+      { encoding: "utf8", cwd: root, maxBuffer: 64_000_000 },
+    ).stdout,
+  );
+const tagRecord = (root = repo) =>
+  join(root, "docs/control/release-history.json");
+const observationRecord = (root = repo) =>
+  join(root, "docs/control/workstream-observations.json");
 const rows = () => new Map(readIndex(repo).rows.map((row) => [row.id, row]));
 const cardIds = (page) =>
   [...page.matchAll(/^### (WO-\d{3})$/gm)].map((match) => match[1]);
@@ -390,10 +420,21 @@ await check(
     assert.doesNotMatch(history, /`v[89]\.0\.0`/);
     assert.ok(history.startsWith("# Work-order history\n"));
     assert.match(history, /^## Sources and limits$/m);
-    assert.match(history, /dotln-work-order-tags/);
+    // The pages carry no data for a reader to recover; the command's own
+    // output holds the release tags and the workstream observation, and no
+    // file records the cards.
+    for (const page of [first, history])
+      assert.doesNotMatch(page, /<!-- dotln-/);
+    assert.ok(!existsSync(join(repo, "docs/work-orders/index.json")));
+    const record = indexJson();
+    assert.deepEqual(
+      record.releaseTags.map(({ name }) => name),
+      ["v1.0.0"],
+    );
+    assert.deepEqual(record.workstreams, []);
     checkPartition(readIndex(repo), {
-      "docs/work-orders/README.md": first,
-      "docs/work-orders/HISTORY.md": history,
+      "docs/work-orders/README.md": cardIds(first),
+      "docs/work-orders/HISTORY.md": cardIds(history),
     });
     commit(repo, "generated index");
   },
@@ -550,7 +591,13 @@ await check(
     assert.equal(readFileSync(historyFile, "utf8"), settledOriginal);
     cli(repo, ["index"]);
     assert.notEqual(readFileSync(indexFile, "utf8"), original);
-    // The refreshed tag observation lives on the history page.
+    // The refreshed tags are listed on the history page and recorded in the
+    // tag record.
+    assert.ok(
+      JSON.parse(readFileSync(tagRecord(), "utf8")).tags.some(
+        ({ name }) => name === "v2.0.0",
+      ),
+    );
     assert.match(
       readFileSync(historyFile, "utf8"),
       /Local annotated release tags used: .*`v2\.0\.0`/,
@@ -564,6 +611,187 @@ await check(
     assert.match(byId.get("WO-032").disposition, /below v1\.0\.0/);
     assert.match(byId.get("WO-040").disposition, /v2\.0\.0/);
     cli(repo, ["index", "--check"]);
+  },
+);
+
+await check(
+  "WO-276 (rolling review 1, F1): one tag record serves the index and the roadmap's release table: the index's refresh extends it and leaves the table valid for its rows, and the table's writer renders the index with it",
+  () => {
+    const roadmapPath = "docs/product/06-roadmap.md";
+    const roadmap = () => readFileSync(join(repo, roadmapPath), "utf8");
+    const table = () => checkReleaseHistory(repo, roadmap(), roadmapPath);
+    const writeTable = () => {
+      const result = spawnSync(
+        process.execPath,
+        [join(scriptRoot, "release.mjs"), "list", "--markdown", "--write"],
+        {
+          encoding: "utf8",
+          cwd: repo,
+          env: { ...process.env, DOTLN_LAUNCHPAD: repo },
+        },
+      );
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+    };
+    const pages = [indexFile, historyFile, tagRecord()].map((file) =>
+      readFileSync(file, "utf8"),
+    );
+    write(repo, roadmapPath, `# Roadmap\n\n${historyStart}\n${historyEnd}\n`);
+    writeTable();
+    assert.deepEqual(table(), { present: true, failures: [], newer: [] });
+    cli(repo, ["index", "--check"]);
+    // The index's refresh extends the record and writes no product
+    // document: the table stays valid for the rows it holds, and the tag
+    // recorded since is reported as a newer one, as a local tag is.
+    const written = roadmap();
+    tag(repo, "v2.1.0", "WO-040");
+    assert.deepEqual(table().newer, ["v2.1.0"]);
+    assert.doesNotMatch(cli(repo, ["index"]), /06-roadmap/u);
+    assert.equal(roadmap(), written);
+    assert.ok(
+      JSON.parse(readFileSync(tagRecord(), "utf8")).tags.some(
+        ({ name }) => name === "v2.1.0",
+      ),
+    );
+    assert.deepEqual(table(), {
+      present: true,
+      failures: [],
+      newer: ["v2.1.0"],
+    });
+    // A row that is not its recorded tag's row still refuses, whatever the
+    // record gained since.
+    assert.match(written, /^\| `v2\.0\.0` \|/mu);
+    write(repo, roadmapPath, written.replace("| `v2.0.0` |", "| `v2.0.9` |"));
+    assert.match(
+      table().failures.join("\n"),
+      /generated release history differs from the rows of its recorded tags/u,
+    );
+    // So does a table that lost the row of a tag it was rendered through:
+    // the record names that tag, whatever was recorded after it.
+    const rows = written.split("\n");
+    write(
+      repo,
+      roadmapPath,
+      rows.filter((line) => !line.startsWith("| `v2.0.0` |")).join("\n"),
+    );
+    assert.match(
+      table().failures.join("\n"),
+      /generated release history differs from the rows of its recorded tags/u,
+    );
+    write(repo, roadmapPath, written);
+    assert.equal(JSON.parse(readFileSync(tagRecord(), "utf8")).table, "v2.0.0");
+    // The table's writer extends the record: the index is rendered with it.
+    tag(repo, "v2.2.0", "WO-040");
+    writeTable();
+    assert.match(roadmap(), /^\| `v2\.1\.0` \|/mu);
+    assert.match(roadmap(), /^\| `v2\.2\.0` \|/mu);
+    assert.deepEqual(table(), { present: true, failures: [], newer: [] });
+    assert.equal(JSON.parse(readFileSync(tagRecord(), "utf8")).table, "v2.2.0");
+    assert.doesNotMatch(
+      cli(repo, ["index", "--check"]),
+      /NEWER local release evidence/u,
+    );
+    // A render that failed after the record was written leaves the record
+    // current and a page stale. Running the writer again finds the record
+    // unchanged and renders the stale page all the same (rolling reviews
+    // 15, 20, 21 and 22).
+    const current = readFileSync(indexFile, "utf8");
+    writeFileSync(indexFile, `${current}\nA line no render wrote.\n`);
+    assert.throws(() => cli(repo, ["index", "--check"]));
+    writeTable();
+    assert.equal(readFileSync(indexFile, "utf8"), current);
+    cli(repo, ["index", "--check"]);
+    // A tag replaced after the table was rendered, by one whose row is the
+    // same: the index's refresh takes the new object for its own pages and
+    // keeps, for the table, the object the table was rendered from, so the
+    // table's check names the replaced tag until its writer renders again.
+    runGit(repo, ["tag", "-d", "v2.2.0"]);
+    // The same manifest a second later the same day: another object, the
+    // same row.
+    tag(repo, "v2.2.0", "WO-040", [], "HEAD", "2020-01-02T00:00:01Z");
+    const rendered = roadmap();
+    cli(repo, ["index"]);
+    assert.equal(roadmap(), rendered);
+    assert.deepEqual(
+      Object.keys(JSON.parse(readFileSync(tagRecord(), "utf8")).tableObjects),
+      ["v2.2.0"],
+    );
+    assert.match(
+      table().failures.join("\n"),
+      /missing or changed recorded release tag: v2\.2\.0/u,
+    );
+    cli(repo, ["index", "--check"]);
+    writeTable();
+    assert.deepEqual(table(), { present: true, failures: [], newer: [] });
+    assert.equal(
+      JSON.parse(readFileSync(tagRecord(), "utf8")).tableObjects,
+      undefined,
+    );
+    runGit(repo, ["tag", "-d", "v2.1.0", "v2.2.0"]);
+    unlinkSync(join(repo, roadmapPath));
+    cli(repo, ["index"]);
+    assert.deepEqual(
+      [indexFile, historyFile, tagRecord()].map((file) =>
+        readFileSync(file, "utf8"),
+      ),
+      pages,
+    );
+  },
+);
+
+await check(
+  "WO-276 (rolling review 3, F1): every document and configuration file the index reads is one the resident's card cache watches",
+  async () => {
+    const { cardInputFiles } = await import("./lib/work-order-cards.mjs");
+    const seen = new Set();
+    const originals = Object.fromEntries(
+      ["readFileSync", "readdirSync", "openSync"].map((name) => [
+        name,
+        fs[name],
+      ]),
+    );
+    // The derived root stands so that the index lists it (rolling review 9:
+    // the cache had left it out while the index's enumeration read it).
+    const derivedRoot = join(repo, "docs/work-orders/derived");
+    const derivedStood = existsSync(derivedRoot);
+    if (!derivedStood) mkdirSync(derivedRoot);
+    try {
+      for (const [name, original] of Object.entries(originals))
+        fs[name] = function (path, ...rest) {
+          if (typeof path === "string") seen.add(path);
+          return original.call(this, path, ...rest);
+        };
+      syncBuiltinESMExports();
+      readIndex(repo);
+    } finally {
+      Object.assign(fs, originals);
+      syncBuiltinESMExports();
+      if (!derivedStood) rmSync(derivedRoot, { recursive: true });
+    }
+    assert.ok(seen.has(derivedRoot), "the index lists the derived root");
+    const { files, directories } = cardInputFiles(repo);
+    const watched = (path) =>
+      files.includes(path) ||
+      directories.some(
+        ([directory, extension]) =>
+          path === directory ||
+          (dirname(path) === directory && path.endsWith(extension)),
+      );
+    // What the index reads of the repository itself, Git's store and the
+    // scripts aside: its documents, its control logs and its configuration.
+    const read = [...seen].filter(
+      (path) =>
+        isAbsolute(path) &&
+        path.startsWith(`${repo}/`) &&
+        ![".git", "scripts", "node_modules"].some((part) =>
+          path.startsWith(`${join(repo, part)}/`),
+        ),
+    );
+    assert.ok(read.length > 3, `the index read ${read.length} files`);
+    assert.deepEqual(
+      read.filter((path) => !watched(path)),
+      [],
+      "a file the index reads and the card cache does not watch",
+    );
   },
 );
 
@@ -623,15 +851,15 @@ await check(
     const settledOriginal = readFileSync(historyFile, "utf8");
     const object = runGit(repo, ["rev-parse", "refs/tags/v1.0.0"]);
     runGit(repo, ["tag", "-d", "v1.0.0"]);
-    // The tag record is on the history page, which the refusal names.
+    // The tags are in their own record, which the refusal names.
     assert.match(
       cli(repo, ["index", "--check"], false),
-      /HISTORY\.md: missing or changed recorded release tag: v1\.0\.0/,
+      /release-history\.json: missing or changed recorded release tag: v1\.0\.0/,
     );
     tag(repo, "v1.0.0", "WO-033");
     assert.match(
       cli(repo, ["index", "--check"], false),
-      /HISTORY\.md: missing or changed recorded release tag: v1\.0\.0/,
+      /release-history\.json: missing or changed recorded release tag: v1\.0\.0/,
     );
     runGit(repo, ["update-ref", "refs/tags/v1.0.0", object]);
     assert.equal(readFileSync(indexFile, "utf8"), original);
@@ -852,6 +1080,50 @@ await check(
         sha256: "0".repeat(64),
       },
     ];
+    // Before any records are filed, the card says where they are only for
+    // a repository registered to keep them in the instance (WO-276
+    // criterion N6); under the default it says nothing, as before.
+    const registered = (records) => {
+      const config = JSON.parse(
+        readFileSync(join(fixture, "dotln.config.json"), "utf8"),
+      );
+      config.classes = { "fixture-class": { checks: [], supports: [] } };
+      config.repositories = {
+        target: {
+          automationLogins: [],
+          linkHosts: [],
+          baseBranch: "main",
+          worktreeParent: "../target-worktrees",
+          repositoryClass: "fixture-class",
+          authorityProfile: {
+            authorityEnvelopeId: "fixture.registered",
+            allowedEffects: ["repo.read"],
+            deniedEffects: ["repo.delete"],
+            resourceLimits: {},
+            requiredEvidence: ["registered-target"],
+            expiresAt: Number.MAX_SAFE_INTEGER,
+            revocationEventTypes: [],
+          },
+          ...(records ? { records } : {}),
+        },
+      };
+      write(fixture, "dotln.config.json", JSON.stringify(config));
+    };
+    writeLog(fixture, events);
+    registered("instance");
+    commit(fixture, "a closed target order, records in the instance");
+    assert.ok(
+      renderHistory(readIndex(fixture)).includes(
+        "- Records: in this instance (`repositories.target.records` is `instance`).",
+      ),
+      renderHistory(readIndex(fixture)),
+    );
+    registered(undefined);
+    commit(fixture, "the same order, records to the target and none filed");
+    assert.doesNotMatch(renderHistory(readIndex(fixture)), /^- Records: /mu);
+    // Records already filed are read from the binding whatever the
+    // registration now says.
+    registered("instance");
     events.push({
       type: "TargetRecordsCommitted",
       workOrderId: "WO-901",
@@ -865,6 +1137,7 @@ await check(
     writeLog(fixture, events);
     commit(fixture, "target records fixture");
     const rendered = renderHistory(readIndex(fixture));
+    assert.doesNotMatch(rendered, /Records: in this instance/u);
     assert.ok(rendered.includes(`Records: target at commit ${commitId}`));
     for (const record of records) {
       assert.ok(rendered.includes(record.path));
@@ -1356,6 +1629,39 @@ await check(
     const parse = (value) =>
       parseDependencies(typedHeader("WO-099", value), path);
     assert.deepEqual(parse(entries), { source: "typed", entries });
+    // The block's markers are comments of the order's own text. The same
+    // lines inside a fenced example below the header are code: beside a real
+    // block they are no second block, and alone they declare nothing
+    // (WO-276 criterion B1; rolling review 6, F3).
+    const example = [
+      "",
+      "An order declares its dependencies as this example does:",
+      "",
+      "```markdown",
+      "<!-- dotln-dependencies:start -->",
+      JSON.stringify([dependency("WO-018", "hard")]),
+      "<!-- dotln-dependencies:end -->",
+      "```",
+      "",
+    ].join("\n");
+    assert.deepEqual(
+      parseDependencies(`${typedHeader("WO-099", entries)}${example}`, path),
+      { source: "typed", entries },
+    );
+    assert.deepEqual(
+      parseDependencies(`${header("WO-099", "unassigned")}${example}`, path)
+        .source,
+      "conservative-tokens",
+    );
+    // A second real block, or one below the header, still refuses.
+    assert.throws(
+      () =>
+        parseDependencies(
+          `${typedHeader("WO-099", entries)}${example.replaceAll("```markdown", "").replaceAll("```", "")}`,
+          path,
+        ),
+      /require one ordered block in leading metadata/u,
+    );
     const instanceEntries = [
       dependency("WO-001", "hard"),
       dependency("WO-002", "satisfied-by-close"),
@@ -1811,10 +2117,14 @@ await check(
     const historyPath = join(target, "docs/work-orders/HISTORY.md");
     assert.match(
       cli(target, ["index"]),
-      /Generated docs\/work-orders\/README\.md\nGenerated docs\/work-orders\/HISTORY\.md/,
+      /Generated docs\/control\/release-history\.json\nGenerated docs\/control\/workstream-observations\.json\nGenerated docs\/work-orders\/README\.md\nGenerated docs\/work-orders\/HISTORY\.md/,
     );
     const readme = readFileSync(readmePath, "utf8");
     const history = readFileSync(historyPath, "utf8");
+    // No file records the cards: `index --json` prints the ones the pages
+    // show.
+    assert.ok(!existsSync(join(target, "docs/work-orders/index.json")));
+    const record = indexJson(target);
     // Criterion 1 and 2: the index page holds the active line, the sequence,
     // and one card per active or sequenced order, the Open cards in
     // sequence order; nothing settled and no tag record.
@@ -1912,7 +2222,7 @@ await check(
       section(history, "Historical"),
       /### WO-001[\s\S]*- State: historical \(time-indexed\)\./,
     );
-    assert.match(history, /dotln-work-order-tags: \[\] -->/);
+    assert.deepEqual(record.releaseTags, []);
     assert.ok(history.includes("[WO-907]: WO-907-fixture.md\n"));
     assert.ok(!history.includes("[WO-905]: "));
     const index = readIndex(target);
@@ -1933,25 +2243,57 @@ await check(
     assert.deepEqual(index.rows.find((row) => row.id === "WO-907").umbrella, {
       successors: ["WO-902", "WO-903"],
     });
+    // The partition is judged on the cards each page holds, which the index
+    // record holds with the line of each card's heading on its page.
+    const indexCards = pageCards(index.rows, "index").map((row) => row.id);
+    const historyCards = pageCards(index.rows, "history").map((row) => row.id);
+    assert.deepEqual(indexCards, cardIds(readme));
+    assert.deepEqual(historyCards, cardIds(history));
+    assert.deepEqual(Object.keys(record), [
+      "schemaVersion",
+      "index",
+      "history",
+      "workstreams",
+      "releaseTags",
+    ]);
+    for (const [page, text, ids] of [
+      ["index", readme, indexCards],
+      ["history", history, historyCards],
+    ]) {
+      assert.deepEqual(
+        record[page].cards.map((card) => card.id),
+        ids,
+      );
+      for (const card of record[page].cards)
+        assert.equal(text.split("\n")[card.line - 1], `### ${card.id}`);
+    }
     checkPartition(index, {
-      "docs/work-orders/README.md": readme,
-      "docs/work-orders/HISTORY.md": history,
+      "docs/work-orders/README.md": indexCards,
+      "docs/work-orders/HISTORY.md": historyCards,
     });
     assert.throws(
-      () => checkPartition(index, { a: readme, b: `${history}\n### WO-901\n` }),
+      () =>
+        checkPartition(index, {
+          a: indexCards,
+          b: [...historyCards, "WO-901"],
+        }),
       /WO-901 has cards on a and b/,
     );
     assert.throws(
-      () => checkPartition(index, { a: readme }),
+      () => checkPartition(index, { a: indexCards }),
       /WO-905 has no card on either page/,
     );
     assert.throws(
-      () => checkPartition(index, { a: readme, b: `${history}\n### WO-999\n` }),
+      () =>
+        checkPartition(index, {
+          a: indexCards,
+          b: [...historyCards, "WO-999"],
+        }),
       /WO-999 has a card on b but no authority/,
     );
     assert.match(
       cli(target, ["index", "--check"]),
-      /PASS docs\/work-orders\/README\.md is current\nPASS docs\/work-orders\/HISTORY\.md is current/,
+      /PASS docs\/work-orders\/README\.md is current\nPASS docs\/work-orders\/HISTORY\.md is current\n$/,
     );
     // Criterion 3: a changed header, control state, sequence or page names
     // the stale page.
@@ -2035,6 +2377,30 @@ await check(
         ),
       /README\.md is stale at line \d+/,
     );
+    // The check reads the release tags and the workstream facts from the two
+    // observation records: without one it refuses naming the command that
+    // writes it, even while both pages are current, and a damaged one refuses
+    // by its path.
+    for (const [path, missing] of [
+      [
+        tagRecord(target),
+        /the work-order index needs its tag record docs\/control\/release-history\.json; run npm run work-orders -- index/,
+      ],
+      [
+        observationRecord(target),
+        /workstream-observations\.json: the workstream observations are missing; run npm run work-orders -- index/,
+      ],
+    ]) {
+      const recorded = readFileSync(path, "utf8");
+      rmSync(path);
+      assert.match(cli(target, ["index", "--check"], false), missing);
+      writeFileSync(path, "{\n");
+      assert.match(
+        cli(target, ["index", "--check"], false),
+        new RegExp(`${path.split("/").at(-1).replace(".", "\\.")}`, "u"),
+      );
+      writeFileSync(path, recorded);
+    }
     assert.match(cli(target, ["index", "--check"]), /is current/);
     // Criterion 5: an open order that is neither an umbrella record nor a
     // derived draft must have a place; the write path still writes.
@@ -2129,7 +2495,8 @@ cli(repo, ["index", "--check"]);
 process.stdout.write("PASS work-order index fixtures\n");
 
 // The criteria screen (WO-249): index --check prints one advisory per open
-// order criterion whose wording often marks a defect, and refuses nothing.
+// order criterion whose wording often marks a defect; an advisory refuses
+// nothing, and only a criteria list the reader cannot read whole is refused.
 await check(
   "WO-249 index --check advises once per matched criterion of an open order, none for a clean order, and exits 0",
   () => {
@@ -2296,6 +2663,72 @@ await check(
   },
 );
 
+await check(
+  "WO-276 criterion C4: an open order's Review ladder line is one of the three sizes and shows on its card, any other value refuses naming the order and the line, an open order without the line passes, and a closed order keeps whatever its line holds",
+  () => {
+    const instance = makeRepo("review-ladder");
+    write(instance, "dotln.config.json", JSON.stringify({ version: 1 }));
+    const sized = (id, value) =>
+      header(id, "unassigned").replace(
+        "**Depends on:**",
+        `${value === undefined ? "" : `**Review ladder:** ${value}\n`}**Depends on:**`,
+      );
+    const orders = [
+      ["WO-040", "full"],
+      ["WO-041", "combined"],
+      ["WO-042", "paired"],
+      ["WO-043", undefined],
+    ];
+    for (const [id, value] of orders)
+      write(instance, authorityPath(id), sized(id, value));
+    // A closed order's line is not judged.
+    write(instance, authorityPath("WO-039"), sized("WO-039", "sideways"));
+    writeLog(instance, completed("WO-039"));
+    write(
+      instance,
+      planningPath,
+      sequenceSource(orders.map(([id]) => [id, "fixture"])),
+    );
+    const index = readIndex(instance);
+    const byId = new Map(index.rows.map((row) => [row.id, row]));
+    assert.deepEqual(
+      orders.map(([id]) => byId.get(id).reviewLadder),
+      ["full", "combined", "paired", undefined],
+    );
+    assert.equal(byId.get("WO-039").section, "Closed");
+    assert.equal(byId.get("WO-039").reviewLadder, undefined);
+    const page = renderIndex(index);
+    const card = (id) =>
+      page.slice(page.indexOf(`### ${id}\n`)).split("\n### ")[0];
+    for (const [id, value] of orders)
+      if (value)
+        assert.match(
+          card(id),
+          new RegExp(`Review ladder:\\W+${value}\\b`, "u"),
+          id,
+        );
+      else assert.doesNotMatch(card(id), /Review ladder/u, id);
+    // Any other value on an open order refuses, naming the order and line.
+    write(instance, authorityPath("WO-043"), sized("WO-043", "sideways"));
+    assert.throws(
+      () => readIndex(instance),
+      /docs\/work-orders\/WO-043-fixture\.md:\d+: WO-043 declares \*\*Review ladder:\*\* sideways; an open order declares one of full, combined, paired, or no line for the full ladder/u,
+    );
+    write(
+      instance,
+      authorityPath("WO-043"),
+      sized("WO-043", "paired").replace(
+        "**Depends on:**",
+        "**Review ladder:** full\n**Depends on:**",
+      ),
+    );
+    assert.throws(
+      () => readIndex(instance),
+      /WO-043-fixture\.md:\d+: WO-043 repeats its \*\*Review ladder:\*\* line/u,
+    );
+  },
+);
+
 test("WO-142 binary Git failures retain diagnostics and identify missing batch objects", () => {
   assert.equal(
     failureOf(
@@ -2328,6 +2761,24 @@ test("WO-142 binary Git failures retain diagnostics and identify missing batch o
     () => readGitObjects(process.cwd(), [missing], "blob"),
     new RegExp(`invalid framing for requested object ${missing}`),
   );
+  // One capture holds 16 MB. A set that sums past it is read in halves:
+  // the export reads its kit files that way, and refused once they summed
+  // past the bound. An object past the bound by itself still refuses.
+  const large = makeRepo("large-batch");
+  const sizes = [9, 9, 17].map((megabytes) => megabytes * 1024 * 1024 + 1);
+  const ids = sizes.map((size, at) => {
+    writeFileSync(join(large, `blob-${at}`), Buffer.alloc(size, 97 + at));
+    return runGit(large, ["hash-object", "-w", `blob-${at}`]);
+  });
+  const pair = ids.slice(0, 2);
+  assert.throws(() => readGitObjects(large, pair, "blob"), /ENOBUFS/u);
+  const read = readGitObjectsInBatches(large, pair, "blob");
+  assert.deepEqual(
+    pair.map((id) => read.get(id).length),
+    sizes.slice(0, 2),
+  );
+  assert.equal(read.get(ids[1])[sizes[1] - 1], 98);
+  assert.throws(() => readGitObjectsInBatches(large, ids, "blob"), /ENOBUFS/u);
 });
 
 await check(
@@ -2512,7 +2963,7 @@ await check(
       join(root, "workstream-columns"),
     );
     const page = fixture.readme();
-    const [stream] = streamSnapshot(page).workstreams;
+    const [stream] = streamSnapshot(fixture.record()).workstreams;
     assert.deepEqual(stream.members, [
       {
         workOrderId: "WO-301",
@@ -2580,7 +3031,7 @@ await check(
     events[0] = activated;
     writeLog(fixture.launchpad, events);
     cli(fixture.launchpad, ["index"]);
-    let members = streamSnapshot(fixture.readme()).workstreams[0].members;
+    let members = streamSnapshot(fixture.record()).workstreams[0].members;
     assert.equal(members[0].stale, "yes");
     assert.equal(members[1].verdict, "pass");
     assert.equal(members[1].phase, "closed");
@@ -2592,13 +3043,111 @@ await check(
     renameSync(fixture.service, `${fixture.service}-absent`);
     cli(fixture.launchpad, ["index", "--check"]);
     cli(fixture.launchpad, ["index"]);
-    members = streamSnapshot(fixture.readme()).workstreams[0].members;
+    members = streamSnapshot(fixture.record()).workstreams[0].members;
     for (const member of members) {
       assert.equal(member.integration, "unknown");
       assert.equal(member.stale, "unknown");
       assert.equal(member.targetCommit, "unknown");
     }
     cli(fixture.launchpad, ["index", "--check"]);
+  },
+);
+
+await check(
+  "WO-276 criterion O2: a workstream document that carries a layout whose planned items have no order file passes the index and its check, and a member added to the marked block without an order file is refused as before",
+  () => {
+    const fixture = makeRepo("workstream-layout");
+    runGit(fixture, ["symbolic-ref", "HEAD", "refs/heads/main"]);
+    const id = "WO-301";
+    write(fixture, authorityPath(id), streamAuthority(id, "WS-002"));
+    write(fixture, planningPath, streamSequence([]));
+    const block = {
+      id: "WS-002",
+      track: "separate",
+      members: [{ workOrderId: id, repositoryId: "self" }],
+      edges: [],
+    };
+    // The layout as the seeded page describes it: four parts in prose and a
+    // plain table, its planned items lines of the document and nothing more.
+    const layout = [
+      "## Layout",
+      "",
+      "### What exists",
+      "",
+      "Prices are stored as integer cents with no currency.",
+      "",
+      "### What the initiative asks",
+      "",
+      "A customer can pay in euros or dollars.",
+      "",
+      "### The way there",
+      "",
+      "| Phase | Planned item | Depends on | Side by side with |",
+      "| ----- | ------------ | ---------- | ----------------- |",
+      "| 1 | Store a currency beside every stored amount | nothing | the rate source |",
+      "| 1 | Choose one source of exchange rates | the unknown below | the stored column |",
+      "| 2 | Invoices and refunds in the paid currency | both items of phase 1 | nothing |",
+      "",
+      "### What is unknown",
+      "",
+      "- Which rate source finance accepts: a research order would settle it.",
+      "",
+    ].join("\n");
+    const withLayout = (members) =>
+      streamDocument({ ...block, members }).replace(
+        "<!-- dotln-workstream:start -->",
+        `${layout}\n<!-- dotln-workstream:start -->`,
+      );
+    assert.notEqual(withLayout(block.members), streamDocument(block));
+    // A workstream document that opens with a byte-order mark is the same
+    // document: its marked block is read as it is without the mark.
+    {
+      const path = "docs/workstreams/WS-002-fixture.md";
+      assert.deepEqual(
+        parseWorkstreamDocument(
+          `\uFEFF${streamDocument(block)}`,
+          path,
+          block.id,
+        ),
+        parseWorkstreamDocument(streamDocument(block), path, block.id),
+      );
+    }
+    write(
+      fixture,
+      "docs/workstreams/WS-002-fixture.md",
+      withLayout(block.members),
+    );
+    commit(fixture, "A workstream with a layout");
+    cli(fixture, ["index"]);
+    cli(fixture, ["index", "--check"]);
+    // The three planned items are no orders: the index holds the one member.
+    const page = readFileSync(
+      join(fixture, "docs/work-orders/README.md"),
+      "utf8",
+    );
+    assert.equal((page.match(/^### WO-/gm) ?? []).length, 1);
+    assert.deepEqual(
+      streamSnapshot(
+        JSON.stringify(indexJson(fixture)),
+      ).workstreams[0].members.map((member) => member.workOrderId),
+      [id],
+    );
+    // A member of the marked block is an order: one with no order file is
+    // refused, in the same words with a layout as without one.
+    const stray = [
+      ...block.members,
+      { workOrderId: "WO-302", repositoryId: "self" },
+    ];
+    const refusal = (document) => {
+      write(fixture, "docs/workstreams/WS-002-fixture.md", document);
+      return cli(fixture, ["index"], false);
+    };
+    const refused = refusal(withLayout(stray));
+    assert.match(refused, /WO-302/);
+    assert.equal(
+      refused,
+      refusal(streamDocument({ ...block, members: stray })),
+    );
   },
 );
 
@@ -2628,16 +3177,20 @@ await check(
       join(fixture, "docs/work-orders/README.md"),
       "utf8",
     );
-    assert.deepEqual(streamSnapshot(page).workstreams[0].members[0], {
-      workOrderId: id,
-      repository: "self",
-      base,
-      phase: "draft",
-      verdict: "unknown",
-      integration: "current",
-      stale: "no",
-      targetCommit: base,
-    });
+    assert.deepEqual(
+      streamSnapshot(JSON.stringify(indexJson(fixture))).workstreams[0]
+        .members[0],
+      {
+        workOrderId: id,
+        repository: "self",
+        base,
+        phase: "draft",
+        verdict: "unknown",
+        integration: "current",
+        stale: "no",
+        targetCommit: base,
+      },
+    );
     assert.match(page, /### WS-002/);
     assert.doesNotMatch(
       page.split("## Proposed order")[1].split("## Workstreams")[0],
@@ -2652,9 +3205,8 @@ await check(
     );
     commit(fixture, "Unrelated branch commit");
     cli(fixture, ["index"]);
-    const refreshed = streamSnapshot(
-      readFileSync(join(fixture, "docs/work-orders/README.md"), "utf8"),
-    ).workstreams[0].members[0];
+    const refreshed = streamSnapshot(JSON.stringify(indexJson(fixture)))
+      .workstreams[0].members[0];
     assert.equal(refreshed.base, base);
     assert.equal(refreshed.targetCommit, base);
     assert.equal(refreshed.integration, "current");
@@ -2723,9 +3275,8 @@ await check(
       ).length,
       1,
     );
-    const member = streamSnapshot(
-      readFileSync(join(fixture, "docs/work-orders/README.md"), "utf8"),
-    ).workstreams[0].members[0];
+    const member = streamSnapshot(JSON.stringify(indexJson(fixture)))
+      .workstreams[0].members[0];
     assert.equal(member.phase, "closed");
     assert.equal(member.integration, "current");
     assert.equal(member.stale, "no");
@@ -2931,5 +3482,343 @@ check(
       renderIndex(readIndex(repo)),
       /Criteria: 1 met by VER-002 \(executor: unmet at handoff, ordinal 10\)/u,
     );
+  },
+);
+
+await check(
+  "WO-276 criterion R1: in a kit root the cards of orders numbered as core's delivery-gated ones carry no delivery line and an order titled as core's ledger exemption owes the ledger like any other; in core's own root each is as before",
+  () => {
+    const withLedger = (id) =>
+      `${header(id, "unassigned")}\n**Acceptance criteria**\n\n1. Add a ledger entry.\n\n**Non-goals:** Elsewhere.\n`;
+    // The same five orders in a root that is core's own and in a kit root.
+    const indexed = (name, kit) => {
+      const fixture = makeRepo(name);
+      if (kit) write(fixture, "KIT-MANIFEST.json", "{}\n");
+      for (const id of ["WO-112", "WO-118", "WO-120"])
+        write(fixture, authorityPath(id), header(id, "unassigned"));
+      for (const id of ["WO-126", "WO-127"])
+        write(fixture, authorityPath(id), withLedger(id));
+      write(
+        fixture,
+        planningPath,
+        sequenceSource([
+          ["WO-112", "Numbered as a gated order"],
+          ["WO-118", "Numbered as the other"],
+          ["WO-120", "Any other order"],
+          ["WO-126", "Titled as the exemption"],
+          ["WO-127", "Any other order with the duty"],
+        ]),
+      );
+      const index = readIndex(fixture);
+      return {
+        rows: new Map(index.rows.map((row) => [row.id, row])),
+        page: renderIndex(index),
+      };
+    };
+    const delivery = /require-deliverable-ready/gu;
+
+    const core = indexed("r1-core-root", false);
+    assert.deepEqual(
+      ["WO-112", "WO-118", "WO-120"].map(
+        (id) => core.rows.get(id).deliveryGated,
+      ),
+      [true, true, false],
+    );
+    assert.equal(core.page.match(delivery)?.length, 2);
+    assert.equal(core.rows.get("WO-126").ledgerSubstitution, false);
+    assert.equal(core.rows.get("WO-127").ledgerSubstitution, true);
+
+    const kit = indexed("r1-kit-root", true);
+    assert.deepEqual(
+      ["WO-112", "WO-118", "WO-120"].map(
+        (id) => kit.rows.get(id).deliveryGated,
+      ),
+      [false, false, false],
+    );
+    assert.equal(kit.page.match(delivery), null);
+    assert.equal(kit.rows.get("WO-126").ledgerSubstitution, true);
+    assert.equal(kit.rows.get("WO-127").ledgerSubstitution, true);
+    // A reader that is not told which root it reads compares no number.
+    assert.equal(
+      parseHeader(withLedger("WO-126"), authorityPath("WO-126"))
+        .ledgerSubstitution,
+      true,
+    );
+    assert.equal(
+      parseHeader(withLedger("WO-126"), authorityPath("WO-126"), {
+        core: true,
+      }).ledgerSubstitution,
+      false,
+    );
+  },
+);
+
+await check(
+  "WO-276 criterion R2: withdrawing a never-activated order of a registered repository records the repository its file declares, so the index reads it as it reads a launchpad order's withdrawal; a first-event withdrawal that carries no repository or a malformed one is refused by name",
+  () => {
+    const target = makeRepo("withdrawn-unactivated-target");
+    cpSync(join(scriptRoot, "resume.mjs"), join(target, "scripts/resume.mjs"));
+    const baseCommit = "c".repeat(40);
+    const ofTarget = header("WO-041", "unassigned").replace(
+      "**Depends on:** nothing",
+      `**Repository:** target @ ${baseCommit}\n**Depends on:** nothing`,
+    );
+    write(target, authorityPath("WO-040"), header("WO-040", "unassigned"));
+    write(target, authorityPath("WO-041"), ofTarget);
+    write(target, authorityPath("WO-042"), header("WO-042", "unassigned"));
+    write(target, planningPath, sequenceSource([["WO-042", "Still open"]]));
+    // The operator's capture is ignored intake, as the command requires.
+    const words = "Operator: set both orders aside before they begin.\n";
+    write(target, ".gitignore", "/docs/intake/\n");
+    write(target, "docs/intake/notes/abandon.md", words);
+    commit(target, "two filed orders, neither activated");
+    const before = readIndex(target, []);
+    assert.deepEqual(
+      ["WO-040", "WO-041"].map(
+        (id) => before.rows.find((row) => row.id === id).phase,
+      ),
+      ["draft", "draft"],
+    );
+    const withdraw = (id) => {
+      const result = spawnSync(
+        process.execPath,
+        [
+          join(target, "scripts/resume.mjs"),
+          "withdraw",
+          "--work-order",
+          id,
+          "--disposition",
+          "abandoned",
+          "--reason",
+          "set aside before it began",
+          "--capture",
+          "docs/intake/notes/abandon.md",
+          "--capture-hash",
+          `sha256:${createHash("sha256").update(words).digest("hex")}`,
+          "--harness",
+          "human",
+          "--harness-version",
+          "not-applicable",
+          "--model",
+          "human",
+          "--effort",
+          "unknown",
+          "--source",
+          "operator-attested",
+        ],
+        { cwd: target, encoding: "utf8" },
+      );
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      const rows = readFileSync(
+        join(target, `docs/control/orders/${id}.jsonl`),
+        "utf8",
+      )
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line));
+      assert.equal(rows.length, 1, id);
+      assert.equal(rows[0].type, "WorkOrderWithdrawn", id);
+      return rows[0];
+    };
+    // The launchpad order's event names no repository; the target order's
+    // names the one its file declares, id and base commit.
+    const launchpad = withdraw("WO-040");
+    assert.deepEqual(
+      [launchpad.repositoryId, launchpad.baseCommit],
+      [undefined, undefined],
+    );
+    const registered = withdraw("WO-041");
+    assert.deepEqual(
+      [registered.repositoryId, registered.baseCommit],
+      ["target", baseCommit],
+    );
+    const projection = readIndex(target, []);
+    const byId = new Map(projection.rows.map((row) => [row.id, row]));
+    for (const id of ["WO-040", "WO-041"]) {
+      assert.equal(byId.get(id).section, "Withdrawn", id);
+      assert.equal(byId.get(id).phase, "withdrawn", id);
+    }
+    assert.deepEqual(byId.get("WO-041").repository, {
+      id: "target",
+      baseCommit,
+    });
+    cli(target, ["index"]);
+    assert.match(cli(target, ["index", "--check"]), /is current/u);
+    // The identity is held as an activation's is: a file whose declaration
+    // moves away from the recorded one is refused by the index.
+    write(
+      target,
+      authorityPath("WO-041"),
+      ofTarget.replace(baseCommit, "d".repeat(40)),
+    );
+    assert.throws(
+      () => readIndex(target, []),
+      /WO-041: control repository identity differs/u,
+    );
+    write(target, authorityPath("WO-041"), ofTarget);
+    // A first-event withdrawal written without the repository its file
+    // declares, and one that carries half of an identity or the reserved
+    // id, are each refused by name.
+    const segment = "docs/control/orders/WO-041.jsonl";
+    const { repositoryId: _id, baseCommit: _base, ...bare } = registered;
+    write(target, segment, `${JSON.stringify(bare)}\n`);
+    assert.throws(
+      () => readIndex(target, []),
+      /WO-041: control repository identity differs/u,
+    );
+    for (const identity of [
+      { repositoryId: "target" },
+      { baseCommit },
+      { repositoryId: "self", baseCommit },
+      { repositoryId: "target", baseCommit: "main" },
+    ]) {
+      write(target, segment, `${JSON.stringify({ ...bare, ...identity })}\n`);
+      assert.throws(
+        () => readIndex(target, []),
+        /invalid registered repository identity at line 1/u,
+        JSON.stringify(identity),
+      );
+    }
+    write(target, segment, `${JSON.stringify(registered)}\n`);
+    assert.equal(
+      readIndex(target, []).rows.find((row) => row.id === "WO-041").phase,
+      "withdrawn",
+    );
+  },
+);
+
+await check(
+  "WO-276 criterion R2: an order whose first event is its withdrawal is listed as withdrawn, the sequence lets it go, and the index check passes with it absent from the sequence",
+  () => {
+    const target = makeRepo("withdrawn-unactivated");
+    const human = {
+      harness: "human",
+      harnessVersion: "not-applicable",
+      model: "human",
+      effort: "unknown",
+      source: "operator-attested",
+    };
+    const withdrawal = (id) => ({
+      schemaVersion: 1,
+      type: "WorkOrderWithdrawn",
+      workOrderId: id,
+      workOrderPath: authorityPath(id),
+      disposition: "abandoned",
+      reason: "set aside before it began",
+      orderHash: `sha256:${"c".repeat(64)}`,
+      capture: "docs/intake/notes/operator.md",
+      captureHash: `sha256:${"a".repeat(64)}`,
+      actor: human,
+    });
+    for (const id of ["WO-030", "WO-031", "WO-032"])
+      write(target, authorityPath(id), header(id, "unassigned"));
+    // One open order in the sequence; the two withdrawn before any
+    // activation are absent from it, one in the legacy log and one in a
+    // segment of its own.
+    write(target, planningPath, sequenceSource([["WO-032", "Still open"]]));
+    write(
+      target,
+      "docs/control/resume.jsonl",
+      `${JSON.stringify(withdrawal("WO-030"))}\n`,
+    );
+    write(
+      target,
+      "docs/control/orders/WO-031.jsonl",
+      `${JSON.stringify(withdrawal("WO-031"))}\n`,
+    );
+    const projection = readIndex(target, []);
+    const byId = new Map(projection.rows.map((row) => [row.id, row]));
+    for (const id of ["WO-030", "WO-031"]) {
+      assert.equal(byId.get(id).section, "Withdrawn", id);
+      assert.equal(byId.get(id).phase, "withdrawn", id);
+    }
+    assert.equal(byId.get("WO-032").section, "Open");
+    const history = renderHistory(projection);
+    const withdrawn = history.split("## Withdrawn\n")[1].split(/\n## /)[0];
+    for (const id of ["WO-030", "WO-031"]) {
+      assert.match(withdrawn, new RegExp(`### ${id}`, "u"));
+      assert.doesNotMatch(
+        renderIndex(projection),
+        new RegExp(`### ${id}`, "u"),
+      );
+    }
+    assert.match(
+      withdrawn,
+      /- Withdrawal: abandoned at ordinal 1 — set aside before it began\./u,
+    );
+    // The pages are written and the check passes with neither in the
+    // sequence.
+    cli(target, ["index"]);
+    assert.match(cli(target, ["index", "--check"]), /is current/u);
+    // An order filed and neither activated nor withdrawn still owes a place.
+    write(target, authorityPath("WO-033"), header("WO-033", "unassigned"));
+    assert.notEqual(
+      spawnSync(
+        process.execPath,
+        [join(target, "scripts/work-orders.mjs"), "index", "--check"],
+        { cwd: target, encoding: "utf8" },
+      ).status,
+      0,
+    );
+    // A segment that opens with any other event is still refused.
+    write(
+      target,
+      "docs/control/orders/WO-033.jsonl",
+      `${JSON.stringify({ schemaVersion: 1, type: "ImplementationReady", workOrderId: "WO-033" })}\n`,
+    );
+    assert.throws(
+      () => readIndex(target, []),
+      /WO-033\.jsonl: expected activation at ordinal 1/u,
+    );
+    // So is one that opens with a withdrawal naming no file, in the same
+    // words, and one whose file is not a plain path under the root.
+    const { workOrderPath: _file, ...unnamed } = withdrawal("WO-033");
+    const segment = "docs/control/orders/WO-033.jsonl";
+    write(target, segment, `${JSON.stringify(unnamed)}\n`);
+    assert.throws(
+      () => readIndex(target, []),
+      /WO-033\.jsonl: expected activation at ordinal 1/u,
+    );
+    for (const outside of ["/outside.md", "docs/../outside.md", "", null]) {
+      write(
+        target,
+        segment,
+        `${JSON.stringify({ ...unnamed, workOrderPath: outside })}\n`,
+      );
+      assert.throws(
+        () => readIndex(target, []),
+        /WO-033\.jsonl: invalid WorkOrderWithdrawn workOrderPath at ordinal 1/u,
+        String(outside),
+      );
+    }
+    rmSync(join(target, segment));
+    // Rows written by hand into the legacy log before such a withdrawal
+    // existed fold as they did: a first-event withdrawal that names no file,
+    // or none that is a plain path, leaves its order unknown to the log, and
+    // the path on a withdrawal that follows an activation is not read.
+    write(
+      target,
+      "docs/control/resume.jsonl",
+      [
+        withdrawal("WO-030"),
+        unnamed,
+        ...["/outside.md", "../outside.md", null].map((workOrderPath, at) => ({
+          ...withdrawal(`WO-03${at + 4}`),
+          workOrderPath,
+        })),
+        activation("WO-032"),
+        { ...withdrawal("WO-032"), workOrderPath: "/outside.md" },
+      ]
+        .map((event) => JSON.stringify(event))
+        .join("\n") + "\n",
+    );
+    const folded = new Map(
+      readIndex(target, []).rows.map((row) => [row.id, row]),
+    );
+    assert.equal(folded.get("WO-030").phase, "withdrawn");
+    assert.equal(folded.get("WO-032").phase, "withdrawn");
+    assert.notEqual(folded.get("WO-033").phase, "withdrawn");
+    for (const id of ["WO-034", "WO-035", "WO-036"])
+      assert.equal(folded.has(id), false, id);
   },
 );

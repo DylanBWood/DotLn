@@ -19,7 +19,13 @@ import {
   buildMissionCheckRequest,
   missionCheckScratch,
 } from "./mission-check-host.js";
-import { observeMissionSubject } from "./mission-check-source.js";
+import {
+  missionDocumentsOf,
+  observeMissionSubject,
+  settleMissionDocuments,
+  type MissionDocumentReader,
+  type MissionDocumentsResult,
+} from "./mission-check-source.js";
 import { WorkerFailure } from "./worker-protocol.js";
 import {
   ClaudeCliPrintWorkOrderTransport,
@@ -66,6 +72,7 @@ export function startCliEpisode(
   runner: ProcessRunner = runWorkerProcess,
   version?: string,
   missionSource?: MissionSource,
+  missionDocuments?: MissionDocumentsResult,
 ) {
   const stamped: ProcessRunner = (launch) =>
     runner({
@@ -110,6 +117,7 @@ export function startCliEpisode(
       subject = observeMissionSubject(
         missionSource,
         missionPin(spec.request.subject),
+        missionDocumentsOf(missionDocuments),
       );
       scratch = missionCheckScratch();
       // The authorization is bound to the capsule it judges, so the whole
@@ -162,6 +170,9 @@ export function cliWorkerAdapter(
     >;
     runner?: ProcessRunner;
     version?: string;
+    /** The repository's reader of the documents a mission check judges,
+     * which the script-side resident launcher supplies. */
+    missionDocuments?: MissionDocumentReader;
   } = {},
 ): ActorAdapter {
   const rows = options.rows ?? DETACHED_LAUNCH_ROWS;
@@ -180,6 +191,13 @@ export function cliWorkerAdapter(
         throw new Error("CLI actor requires resident context");
       const unavailable = this.available(spec);
       if (unavailable) throw new Error(unavailable);
+      // The episode's process holds no Markdown reader, so the resident reads
+      // and structures the documents a mission check judges and hands the
+      // structure over with the source.
+      const missionDocuments =
+        spec.missionSource && isMissionCheckRequest(spec.worker.request)
+          ? settleMissionDocuments(spec.missionSource, options.missionDocuments)
+          : undefined;
       if (options.runner)
         return startCliEpisode(
           spec.worker,
@@ -187,6 +205,7 @@ export function cliWorkerAdapter(
           options.runner,
           options.version,
           spec.missionSource,
+          missionDocuments,
         );
       const child = fork(
         fileURLToPath(new URL("./cli-episode.js", import.meta.url)),
@@ -218,6 +237,7 @@ export function cliWorkerAdapter(
         spec: spec.worker,
         context,
         ...(spec.missionSource ? { missionSource: spec.missionSource } : {}),
+        ...(missionDocuments ? { missionDocuments } : {}),
       });
       return {
         completed,

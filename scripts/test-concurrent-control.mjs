@@ -211,6 +211,8 @@ await test("test-concurrent-control", async (t) => {
                 "docs/control/current.md",
                 "docs/work-orders/README.md",
                 "docs/work-orders/HISTORY.md",
+                "docs/control/release-history.json",
+                "docs/control/workstream-observations.json",
               ].includes(path),
             ),
             `${result.stderr}\n${conflicts.join(", ")}`,

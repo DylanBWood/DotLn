@@ -25,6 +25,7 @@ if [[ "$selection" == --documents-only ]]; then
 fi
 node "$script_dir/test-dependency-resume.mjs" "$test_root"
 node --test "$script_dir/test-retained-records.mjs"
+node --test "$script_dir/test-codex-background.mjs"
 node "$script_dir/test-off-ramps.mjs" "$test_root"
 node "$script_dir/test-verifier-gate-claims.mjs" "$test_root"
 node "$script_dir/test-verification-review.mjs" "$test_root"
@@ -74,6 +75,7 @@ assert_status_read_only() {
 const fs = require("node:fs");
 const status = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
 const expected = [
+  "schemaVersion",
   "workOrder",
   "workOrderPath",
   "phase",
@@ -109,6 +111,11 @@ if (JSON.stringify(observed) !== JSON.stringify(expected)) {
 if (!Array.isArray(status.effortDrift) || !Array.isArray(status.legalNextActions)) {
   throw new Error("status array fields are malformed");
 }
+// The output says its version first, for a tool that reads it (WO-276
+// criterion K5).
+if (status.schemaVersion !== 1 || Object.keys(status)[0] !== "schemaVersion") {
+  throw new Error(`status schemaVersion is ${JSON.stringify(status.schemaVersion)}`);
+}
 NODE
 }
 assert_status_json() {
@@ -119,7 +126,8 @@ assert_status_json() {
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const [actualPath, expectedSource] = process.argv.slice(2);
-const { recordedAt, elapsed, orders, dependencies, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
+const { schemaVersion, recordedAt, elapsed, orders, dependencies, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
+assert.equal(schemaVersion, 1);
 assert.equal(typeof recordedAt, "string");
 assert.equal(typeof elapsed, "object");
 assert.deepStrictEqual(
@@ -228,6 +236,35 @@ printf '%s\n' \
   '**Objective:** fixture draft.' >"$umbrella_repo/docs/work-orders/WO-903-labelled.md"
 node "$umbrella_repo/scripts/resume.mjs" activate WO-903 docs/work-orders/WO-903-labelled.md >/dev/null 2>&1
 test -s "$umbrella_repo/docs/control/orders/WO-903.jsonl"
+# A field a quotation or a list item shows below the Objective is an example
+# with no authority: the order activates on its own header, and its status
+# reads the declaration again (WO-276 criterion B4). The same words in a code
+# block stay a duplicate, as the two cases above hold.
+quoted_repo="$test_root/quoted"
+mkdir -p -- "$quoted_repo/scripts" "$quoted_repo/docs/work-orders"
+cp -- "$script_dir/resume.mjs" "$quoted_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$quoted_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$quoted_repo"
+printf '%s\n' \
+  '# WO-904 — Quoted examples (version assigned at activation)' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor high; verifier high; reviewer any.' \
+  '**Objective:** fixture draft.' \
+  '' \
+  '> **Model:** quoted-example.' \
+  '' \
+  '- **Effort:** executor any; verifier any; reviewer any.' >"$quoted_repo/docs/work-orders/WO-904-quoted.md"
+git init "$quoted_repo" >/dev/null 2>&1
+cp -- "$script_dir/../.gitignore" "$quoted_repo/.gitignore"
+if ! quoted_output="$(node "$quoted_repo/scripts/resume.mjs" activate WO-904 docs/work-orders/WO-904-quoted.md 2>&1)"; then
+  printf 'error: an order with quoted and listed examples did not activate: %s\n' "$quoted_output" >&2
+  exit 1
+fi
+test -s "$quoted_repo/docs/control/orders/WO-904.jsonl"
+quoted_status="$(node "$quoted_repo/scripts/resume.mjs" status --json)"
+grep -Eq '"workOrder": ?"WO-904"' <<<"$quoted_status"
+grep -Eq '"effortDrift": ?\[\]' <<<"$quoted_status"
 activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
 assert_status_read_only
 assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","route":{"action":null,"role":null,"phrase":null,"stop":{"reason":"dispatch-refused","next":"The selected order has no registered worktree; restore its worktree before driving. Main cannot select its phase implicitly."},"eventCount":1},"latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["accept-overrun","withdraw","correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[],"defectiveCriteria":[],"retractedOffRamps":[],"reopenedHandoffs":[]}'
@@ -576,6 +613,7 @@ const { recordedAt, elapsed, orders, dependencies, ...status } = JSON.parse(fs.r
 assert.equal(typeof recordedAt, "string");
 assert.deepStrictEqual(Object.keys(elapsed).sort(), ["finalReview", "implementation", "repair", "verification"]);
 assert.deepStrictEqual(status, {
+  schemaVersion: 1,
   workOrder: "WO-099",
   workOrderPath: "docs/work-orders/WO-099-fixture.md",
   phase: "closed",
@@ -698,6 +736,24 @@ if boundary_output="$(node "$boundary_repo/scripts/resume.mjs" next 2>&1)"; then
 fi
 grep -Fq 'missing **Effort:** line' <<<"$boundary_output"
 test "$(wc -l <"$boundary_repo/docs/control/resume.jsonl" | tr -d ' ')" = "1"
+
+# In a kit root an order of that number is an order like any other: activated
+# with no Effort line, it is admitted as the legacy order above is (WO-276
+# criterion R1). The same files, and a kit manifest.
+kit_boundary_repo="$test_root/wo019-kit-root"
+mkdir -p "$kit_boundary_repo/scripts" "$kit_boundary_repo/docs/work-orders" "$kit_boundary_repo/docs/control"
+cp -- "$script_dir/resume.mjs" "$kit_boundary_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$kit_boundary_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$kit_boundary_repo"
+printf '{}\n' >"$kit_boundary_repo/KIT-MANIFEST.json"
+cp -- "$boundary_repo/docs/work-orders/WO-019-boundary.md" "$kit_boundary_repo/docs/work-orders/WO-019-boundary.md"
+cp -- "$boundary_repo/docs/control/resume.jsonl" "$kit_boundary_repo/docs/control/resume.jsonl"
+if ! kit_boundary_next="$(node "$kit_boundary_repo/scripts/resume.mjs" next 2>&1)"; then
+  printf 'error: in a kit root an order numbered WO-019 was refused for a missing Effort declaration\n%s\n' "$kit_boundary_next" >&2
+  exit 1
+fi
+grep -Fq '**Effort:** unavailable for this pre-WO-019 activation; executor any; verifier any; reviewer any.' <<<"$kit_boundary_next"
+test "$(wc -l <"$kit_boundary_repo/docs/control/resume.jsonl" | tr -d ' ')" = "1"
 
 invalid_events_repo="$test_root/invalid-events"
 mkdir -p "$invalid_events_repo/scripts" "$invalid_events_repo/docs/control"

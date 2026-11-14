@@ -314,6 +314,9 @@ if (process.argv[2] === "--agent-identity") {
 } else if (process.argv[2] === "--subagents") {
   const { subagentProbe } = await import("./lib/subagent-probe.mjs");
   await subagentProbe(process.argv.slice(3));
+} else if (process.argv[2] === "--subagent-stop") {
+  const { subagentStopProbe } = await import("./lib/subagent-stop-probe.mjs");
+  await subagentStopProbe(process.argv.slice(3));
 } else if (process.argv[2] === "--authority") {
   const { authorityCli } = await import("./lib/authority-probe.mjs");
   await authorityCli(process.argv.slice(3));

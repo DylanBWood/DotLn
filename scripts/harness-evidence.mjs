@@ -18,6 +18,7 @@ import {
   roles,
 } from "./harness-context.mjs";
 import { termsCheck } from "./terms.mjs";
+import { localTermContextLines } from "./lib/terms.mjs";
 import { measureColdStarts, requireBudgets } from "./lib/process-budget.mjs";
 
 export const writerScenarios = ["foreign-dead", "foreign-live"];
@@ -252,4 +253,6 @@ if (isMainModule(import.meta.url)) {
   console.log(
     `Harness evidence: ${result.roles.length} historical live role smokes and ${result.writers.length} historical writer smokes at ${result.liveEdition}; ${result.installedSurfaces} current generated surfaces; local-terms list: ${result.localTerms.status} (${result.checkedSurfaces} surfaces checked).`,
   );
+  for (const line of localTermContextLines(result.localTerms))
+    console.log(line);
 }

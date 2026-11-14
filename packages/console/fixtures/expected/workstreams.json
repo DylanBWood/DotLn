@@ -538,8 +538,8 @@
         {
           "id": "work-order-history",
           "title": "Work-order history index",
-          "status": "unavailable",
-          "explanation": "Source not supplied",
+          "status": "available",
+          "explanation": "The source records no entries",
           "rows": []
         },
         {
@@ -929,14 +929,9 @@
       "explanation": "Source not supplied"
     },
     {
-      "ref": "docs/work-orders/README.md",
+      "ref": "work-orders:index--json",
       "status": "available",
       "explanation": null
-    },
-    {
-      "ref": "docs/work-orders/HISTORY.md",
-      "status": "unavailable",
-      "explanation": "Source not supplied"
     },
     {
       "ref": "resume:status--json",
@@ -983,7 +978,7 @@
     {
       "id": "evidence-1",
       "source": "docs/work-orders/README.md",
-      "record": "line:37 (WO-301)"
+      "record": "line:35 (WO-301)"
     },
     {
       "id": "evidence-2",
@@ -993,7 +988,7 @@
     {
       "id": "evidence-3",
       "source": "docs/work-orders/README.md",
-      "record": "line:54 (WO-302)"
+      "record": "line:52 (WO-302)"
     },
     {
       "id": "evidence-4",
@@ -1003,7 +998,7 @@
     {
       "id": "evidence-5",
       "source": "docs/work-orders/README.md",
-      "record": "line:71 (WO-303)"
+      "record": "line:69 (WO-303)"
     },
     {
       "id": "evidence-6",
@@ -1012,17 +1007,17 @@
     },
     {
       "id": "evidence-7",
-      "source": "docs/work-orders/README.md",
+      "source": "work-orders:index--json",
       "record": "workstreams:WS-001/WO-301"
     },
     {
       "id": "evidence-8",
-      "source": "docs/work-orders/README.md",
+      "source": "work-orders:index--json",
       "record": "workstreams:WS-001/WO-302"
     },
     {
       "id": "evidence-9",
-      "source": "docs/work-orders/README.md",
+      "source": "work-orders:index--json",
       "record": "workstreams:WS-001/WO-303"
     }
   ]

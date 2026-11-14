@@ -1,5 +1,6 @@
 import { posix } from "node:path";
 import { CRITERION_ID } from "./control.mjs";
+import { markdownCodeBlocks, parseMarkdown } from "./markdown-links.mjs";
 // A verification or final-review report declares its findings once, as a JSON
 // array between two marker lines (the pattern of dependencies.mjs). The result
 // commands read only that block: no prose line is ever counted. A fail's
@@ -19,10 +20,18 @@ const MARKER = /^[^\p{L}]*dotln-findings:(start|end)[^\p{L}]*$/iu;
 /** Whether a line is one of the block's marker lines, by the rule above. */
 export const isFindingsMarker = (line) => MARKER.test(line);
 const ID = /^F[1-9]\d*$/u;
-// A writer may fence the array. No line of a JSON array is a fence line, so
-// dropping one never changes what a valid array says; a fence line that also
-// holds an entry is not one, and stays invalid JSON.
-const FENCE_LINE = /^\s*(?:`{3,}|~{3,})[\w-]*\s*$/u;
+/** The JSON text between the marker lines. A writer may fence the array:
+ * when the block holds one fenced code block and nothing else, its contents
+ * are the text; otherwise the block's own text is, so a fence beside an
+ * entry stays invalid JSON. */
+const blockJson = (body) => {
+  const tree = parseMarkdown(body);
+  const [only] = markdownCodeBlocks(body, tree);
+  return tree.children.length === 1 &&
+    only?.start === tree.children[0].position.start.offset
+    ? only.value
+    : body;
+};
 const oneLine = (value) =>
   typeof value === "string" &&
   value.trim().length > 0 &&
@@ -64,10 +73,7 @@ export function readFindingsBlock(text) {
   let entries;
   try {
     entries = JSON.parse(
-      lines
-        .slice(starts[0], ends[0] - 1)
-        .filter((line) => !FENCE_LINE.test(line))
-        .join("\n"),
+      blockJson(lines.slice(starts[0], ends[0] - 1).join("\n")),
     );
   } catch {
     return unreadable("the findings block is not valid JSON");

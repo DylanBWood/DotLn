@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { dependencyHeader } from "./dependencies.mjs";
+import { readWorkOrderHeader } from "./work-order-document.mjs";
 import { workOrderAuthorityFiles } from "./paths.mjs";
 import { runGit } from "./git.mjs";
 
@@ -9,18 +9,17 @@ import { runGit } from "./git.mjs";
 // document check reads this field and nothing in the criteria's prose. The
 // value is one or more repository-relative paths separated by commas or
 // spaces; absence means the order does not touch the page.
-const LABEL = "**Front page:**";
+const NAME = "Front page";
+const LABEL = `**${NAME}:**`;
 export function frontPageDeclaration(markdown, path) {
-  const { lines, first, end } = dependencyHeader(markdown);
-  const header = lines.slice(first + 1, end);
-  const fields = header.filter((line) => line.startsWith(LABEL));
+  // The field of the order's own leading header, as the work-order reader
+  // finds it: an example a quotation, a list item or a fence shows declares
+  // nothing.
+  const fields = readWorkOrderHeader(markdown).headerFields(NAME);
   if (!fields.length) return null;
   if (fields.length !== 1)
     throw new Error(`work order has duplicate ${LABEL} lines: ${path}`);
-  const files = fields[0]
-    .slice(LABEL.length)
-    .split(/[\s,]+/u)
-    .filter(Boolean);
+  const files = fields[0].lineValue.split(/[\s,]+/u).filter(Boolean);
   if (
     !files.length ||
     files.some((file) => !/^[A-Za-z0-9][A-Za-z0-9._/-]*\.md$/u.test(file))

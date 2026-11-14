@@ -1,5 +1,5 @@
 {
-  "source": "docs/evidence/WO-222/before.json; latest task samples and maximum task RSS of each of its three passing complete rows",
+  "source": "docs/evidence/WO-222/before.json; latest task samples and maximum task RSS of each of its three passing complete rows; kitTaskPeak is the largest of those samples among the tasks a kit root's gate carries (the suites scripts/test-runner.mjs does not mark core-only), which a case of the runner's tests holds equal to that reading",
   "taskPeaks": [
     {
       "recordedAt": "2026-10-19T03:15:23.923Z",
@@ -20,6 +20,10 @@
       "peakRssBytes": 1497989120
     }
   ],
+  "kitTaskPeak": {
+    "name": "format",
+    "peakRssBytes": 602734592
+  },
   "taskSamples": [
     {
       "name": "adjacent-queue",

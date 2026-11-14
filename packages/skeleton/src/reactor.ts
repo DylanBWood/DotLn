@@ -1609,7 +1609,7 @@ const walkingDecision = (
   env: KernelEnv,
 ): Decision<WalkingSkeletonSlice> => {
   if (event.type === "ArtifactIdentityEnforcementStarted") {
-    if (canonicalStringify(event.payload) !== '{"payloadVersion":1}')
+    if (!same(event.payload, { payloadVersion: 1 }))
       return artifactRefused(
         state,
         event,

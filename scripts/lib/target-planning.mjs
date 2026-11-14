@@ -52,7 +52,7 @@ import {
 } from "./target-publish.mjs";
 import { assertGitHubBodyProfile } from "./github-body.mjs";
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
-import { checkLocalTerms } from "./terms.mjs";
+import { screenLocalTerms } from "./terms.mjs";
 import {
   PRIVATE_PATH,
   linesMatching,
@@ -195,7 +195,7 @@ export function publishTargetPlanning({
   if (hasAiAttribution(title) || hasAiAttribution(body))
     refuse("planning publication contains AI attribution");
   if (
-    checkLocalTerms(
+    screenLocalTerms(
       main,
       files.map((file) => ({
         name: file.path,

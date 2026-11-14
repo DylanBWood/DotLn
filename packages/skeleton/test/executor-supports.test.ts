@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import {
   compileEditableView,
   compileLoadout,
@@ -21,6 +24,8 @@ import {
   contributorProgram,
   contributorRolesFor,
   contributorWithSupports,
+  SHARED_RULE_ROLES,
+  sharedRules,
 } from "../src/loadouts/contributor.js";
 import {
   adjacentRepair,
@@ -42,7 +47,17 @@ const environment = {
   baseCommit: "0".repeat(40),
 };
 
-test("generated phase roles preserve actor values and publication checks while the router only routes", () => {
+/** A shared rule's text, by its record's identifier. */
+const ruleText = (id: string) => {
+  const rule = sharedRules.find((row) => row.id === id);
+  assert.ok(rule, `no shared rule ${id}`);
+  return rule.text;
+};
+/** How many lines of a root, or of a procedure, are exactly this text. */
+const holds = (lines: readonly string[], text: string) =>
+  lines.filter((line) => line === text).length;
+
+test("the generated roles are seven, and the router's root holds no subject read, completion flags or publication check", () => {
   const program = contributorProgram();
   for (const profile of contributorProfiles) {
     const target = {
@@ -71,46 +86,38 @@ test("generated phase roles preserve actor values and publication checks while t
     const router = roles.find((role) =>
       role.path.endsWith("dotln-router/SKILL.md"),
     )!;
-    assert.match(router.contents, /Read only canonical status/);
-    assert.match(
-      router.contents,
-      /Read no order, diff, report or worker transcript/,
-    );
-    assert.match(router.contents, /edit no project file/);
-    assert.match(router.contents, /A router holds no writer reservation/);
     assert.doesNotMatch(
       router.contents,
       /Read: `@work-order`|Completion flags:|npm run publication:check/,
     );
-    const phaseRoles = roles.filter((role) => role !== router);
-    assert.equal(phaseRoles.length, 6);
-    for (const role of phaseRoles) {
-      assert.match(
-        role.contents,
-        /Without a session readback, keep the operator-selected model and effort with `--source operator-attested`; Claude Code roles read `CLAUDE_EFFORT` first/,
-      );
-      assert.match(role.contents, /unknown` only for a value nobody supplied/);
-      assert.match(
-        role.contents,
-        /authorized product-document edit, run `npm run publication:check`/,
-      );
-    }
+    assert.equal(roles.filter((role) => role !== router).length, 6);
   }
 });
 
-test("WO-179 and WO-195 emitted roles carry their assigned corrections across support settings", () => {
-  const sharedRules = [
-    "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. An executor records an unmet criterion of the five defect classes unmet with its class named for the verifier and asks the operator nothing. Every phase owns decisions, including no-op or deferred outcomes and blockers: record evidence, tradeoffs and reopening conditions in the ADR or decision record; do not ask the operator to arbitrate implementation or change criteria. Preserve scope and authority, and record the safe default for any expressly permitted operator-only packet without demanding a response.",
-    "Before acting on an operator message, state its aim in one line and act on the evidence-backed reading; record any consequential assumption and its reopening condition.",
-    "Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.",
-    "Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.",
-    "Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.",
-    "For stale gate rows, run the gate at the current identity; never restore bytes to match a row or remove a reviewed fix to pass a check.",
-    "Stop the background monitors you started before recording your result.",
-    "After two consecutive provider safeguard refusals, stop retrying, record a decision naming the stop, phase and model, and resume in a fresh session.",
-    "Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.",
-    "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; name the readable source tried before writing `unknown`, and correct an unfiled report in place instead of appending a correction.",
-  ];
+test("WO-276 criteria F1 and F2: with the economy support on and off and in both skill roots, a role's emitted root holds once each shared rule whose record names the role and none whose record does not, and no record is without a role", () => {
+  // The records themselves: an identifier each, a role at least, and no role
+  // the composition does not know. A record that names no role would reach
+  // no root and be lost without a word.
+  assert.equal(
+    new Set(sharedRules.map((rule) => rule.id)).size,
+    sharedRules.length,
+    "a shared rule's identifier is its own",
+  );
+  assert.equal(
+    new Set(sharedRules.map((rule) => rule.text)).size,
+    sharedRules.length,
+    "a shared rule's text is held by one record",
+  );
+  for (const rule of sharedRules) {
+    assert.ok(rule.roles.length > 0, `${rule.id} names no role`);
+    assert.equal(new Set(rule.roles).size, rule.roles.length, rule.id);
+    for (const role of rule.roles)
+      assert.ok(
+        (SHARED_RULE_ROLES as readonly string[]).includes(role),
+        `${rule.id} names ${role}`,
+      );
+  }
+  const skillRoots = new Set<string>();
   for (const economy of [true, false]) {
     const program = contributorConfiguredProgram({
       "tinkerer-economy": economy,
@@ -135,182 +142,211 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
         program.loadout.authorityEnvelope,
         target,
       );
-      const roles = bundle.files.filter(
-        (file) =>
-          file.path.endsWith("/SKILL.md") &&
-          !file.path.endsWith("dotln-router/SKILL.md"),
-      );
-      assert.equal(roles.length, 6);
-      for (const role of roles) {
-        const subject = `${profile.profileId} ${role.path} economy=${economy}`;
-        assert.match(role.contents, /`quality pass: <target>`/);
-        assert.match(
-          role.contents,
-          /file, file list, folder, described set of files, or a paragraph\/location within a file/,
+      for (const role of SHARED_RULE_ROLES) {
+        const roots = bundle.files.filter((file) =>
+          file.path.endsWith(`/dotln-${role}/SKILL.md`),
         );
-        assert.match(role.contents, /state the edit scope/);
-        assert.match(
-          role.contents,
-          /An omitted target does not mean every document/,
-        );
-        assert.match(role.contents, /leave sound passages unchanged/);
-        assert.match(role.contents, /preserve immutable records/);
-        assert.match(role.contents, /Continue the original task afterward/);
-        assert.match(
-          role.contents,
-          /creates no lifecycle event or new gate, and preserves writer isolation, live-gate protection, host permissions and publication controls/,
-        );
-        assert.match(
-          role.contents,
-          /judge usefulness by what the intended reader can understand, answer, decide, do, verify or recover/,
-        );
-        assert.match(
-          role.contents,
-          /Byte counts and structural passes do not establish usefulness or justify removing useful context/,
-        );
-        assert.match(
-          role.contents,
-          /Integrate each change into the affected paragraph or section/,
-        );
-        assert.match(
-          role.contents,
-          /Read the resulting passage as a whole; a one-line edit is sufficient when it remains coherent/,
-        );
-        assert.match(
-          role.contents,
-          /Rewrite or split accumulated prose when needed, preserving useful information and established structure/,
-        );
-        assert.match(
-          role.contents,
-          /Broader restructuring needs a concrete defect or changed reader need and must stay within authorized scope/,
-        );
-        assert.doesNotMatch(
-          role.contents,
-          /smallest comparable|changed conditions or shorten/,
-        );
-        for (const rule of sharedRules)
-          assert.equal(
-            role.contents.split(rule).length - 1,
-            1,
-            `${subject}: assigned rule ${rule}`,
-          );
-        assert.doesNotMatch(
-          role.contents,
-          /ask if an answer changes scope or authority|ask one focused question if that reading is doubtful/,
-          `${subject}: replaced arbitration wording stays absent`,
-        );
-        if (role.path.endsWith("dotln-release-close/SKILL.md")) {
-          assert.match(
-            role.contents,
-            /Run the printed --publish helper command once,/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /exactly as printed, with no redirect, prefix, cd or pipe/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /use --dry-run only when a prerequisite such as egress or a foreign tag is in doubt/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown/,
-            subject,
-          );
-          assert.doesNotMatch(
-            role.contents,
-            /A comment says what the code does/,
-            subject,
-          );
-          assert.doesNotMatch(
-            role.contents,
-            /repeat transitions|without repeating publication/,
-            subject,
-          );
-          assert.doesNotMatch(role.contents, /Report refusals;/, subject);
-        } else if (role.path.endsWith("dotln-planner/SKILL.md")) {
-          assert.match(
-            role.contents,
-            /After the refutation receipt is filed with its holds answered and npm run test:docs is green, a planning or ideation pass on a planning branch pushes that branch and opens its :memo: pull request/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /the dispatch phrase is the operator's authorization for those two effects, and the pass never merges/,
-            subject,
-          );
-        } else if (role.path.endsWith("dotln-executor/SKILL.md")) {
-          assert.match(
-            role.contents,
-            /Remove scratch repositories, nested repositories outside intake that the tracked tree does not declare as submodules; never declare one\. The close removes any left and records its head commit\./,
-            subject,
-          );
-          // Each executor rule is stated once: the numbered step carries it
-          // and no later sentence restates it.
-          assert.doesNotMatch(
-            role.contents,
-            /Remove each scratch repository|Implement the complete bounded deliverable|For resume: status or resume: times|Finish all authored output/,
-            subject,
-          );
-          assert.doesNotMatch(
-            role.contents,
-            /npm run worktree -- material/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /A comment says what the code does or why, in words a reader who has not seen the order understands; an order, report, finding or decision identifier never leads or replaces that explanation/,
-            subject,
-          );
-        } else if (role.path.endsWith("dotln-reviewer/SKILL.md")) {
-          assert.match(
-            role.contents,
-            /remove any scratch repository still in the worktree; prepare release surfaces/,
-            subject,
-          );
-          assert.doesNotMatch(
-            role.contents,
-            /A comment says what the code does/,
-            subject,
-          );
-        } else if (role.path.endsWith("dotln-verifier/SKILL.md")) {
-          assert.match(
-            role.contents,
-            /Consume the executor's structural and Preflight rows at the subject's code identity, and its document row for the exact candidate tree/,
-            subject,
-          );
-          assert.doesNotMatch(
-            role.contents,
-            /Run the product gate with `npm test`|Consume the executor's recorded passing `npm test` row/,
-            subject,
-          );
-          assert.match(
-            role.contents,
-            /probe with `npm test -- --only <suite>`/,
-            subject,
-          );
+        assert.ok(roots.length > 0, `${profile.profileId} emits ${role}`);
+        for (const root of roots) {
+          skillRoots.add(root.path.split("/dotln-")[0]!);
+          const lines = root.contents.split("\n");
+          for (const rule of sharedRules)
+            assert.equal(
+              holds(lines, rule.text),
+              rule.roles.includes(role) ? 1 : 0,
+              `${profile.profileId} ${root.path} economy=${economy}: ${rule.id}`,
+            );
         }
       }
     }
   }
+  assert.deepEqual([...skillRoots].sort(), [
+    ".agents/skills",
+    ".claude/skills",
+  ]);
+  // The router's root is written whole and this composition leaves it as it
+  // was: of the shared rules it holds these, once each, and no other.
+  const routerHolds = [
+    "operator-controls",
+    "browser-verification",
+    "session-commands",
+    "question-pathways",
+    "blocked-turn",
+    "operator-words",
+    "worker-no-print",
+  ];
+  const router = contributorProgram().roles.find(
+    (role) => role.name === "router",
+  )!;
+  for (const rule of sharedRules)
+    assert.equal(
+      holds(router.procedure, rule.text),
+      routerHolds.includes(rule.id) ? 1 : 0,
+      `router: ${rule.id}`,
+    );
+  // The program's own roles, which the emission takes: the same holds
+  // before a root is written.
+  for (const role of contributorProgram().roles.filter(
+    (row) => row.name !== "router",
+  ))
+    for (const rule of sharedRules)
+      assert.equal(
+        holds(role.procedure, rule.text),
+        (rule.roles as readonly string[]).includes(role.name) ? 1 : 0,
+        `${role.name}: ${rule.id}`,
+      );
+});
+
+// The re-task rule's record states what a re-task may continue and what it
+// may not, and the planner is among its roles; the case above holds each
+// named role's emitted root to the record's text. The planner's own
+// procedure holds the capture rule and the sentence on the preflight
+// advisory, once each.
+test("WO-276 criterion R6: the re-task rule says what a worker may continue, and the planner's procedure holds the capture rule and the preflight advisory", () => {
+  const rule = sharedRules.find((row) => row.id === "fan-out");
+  assert.ok(rule);
+  assert.ok((rule.roles as readonly string[]).includes("planner"));
+  for (const clause of [
+    "A worker may continue work it holds",
+    "to recheck what it found",
+    "to carry on the research it was given from what it has already read",
+    "to restate in the required form a report that was refused for its form, changing no finding",
+    "A re-task is still one use",
+    "writes only to session scratch and the parent stays the sole repository writer",
+    "A review or a refutation is never continued into a second judgment",
+  ])
+    assert.ok(rule.text.includes(clause), clause);
+  assert.ok(!rule.text.includes("where it holds the diff and its findings"));
+  const planner = contributorProgram().roles.find(
+    (role) => role.name === "planner",
+  );
+  assert.ok(planner);
+  const lines = (needle: string) =>
+    planner.procedure.filter((line) => line.includes(needle));
+  assert.equal(lines("A capture holds the operator's own words.").length, 1);
+  assert.match(
+    lines("A capture holds the operator's own words.")[0]!,
+    /a block the operator pasted that a command or another session wrote whole in the ignored local planning lane.*name it and its SHA-256 in the capture/iu,
+  );
+  assert.equal(lines("prints a `preflight advisory` line").length, 1);
+  assert.match(
+    lines("prints a `preflight advisory` line")[0]!,
+    /`npm run plan -- check` prints a `preflight advisory` line.*read each before filing too/u,
+  );
+});
+
+/** Every role's emitted skill root, in both skill directories, as the
+ * harness lowering writes them for the contributor loadout. */
+const emittedSkillRoots = (planFirst: boolean) => {
+  {
+    const program = contributorConfiguredProgram({}, { planFirst });
+    return contributorProfiles.flatMap((profile) => {
+      const target = {
+        ...profile,
+        runtime: {
+          ...profile.runtime,
+          files: [
+            "packages/compiler/dist/src/feedback.js",
+            "packages/skeleton/dist/src/feedback-boundary.js",
+            "packages/skeleton/dist/src/feedback-source-comments.js",
+            "packages/skeleton/dist/src/harness-host.js",
+            "packages/skeleton/dist/src/reactor.js",
+          ].map((file) => ({ path: file, hash: "fnv1a64:0000000000000000" })),
+        },
+      };
+      return lowerToHarness(
+        program,
+        personalFeedback(),
+        program.loadout.authorityEnvelope,
+        target,
+      ).files.filter((file) => file.path.endsWith("/SKILL.md"));
+    });
+  }
+};
+test("WO-276 criterion N7: the reviewer's emitted root states the records step as the registration's, and the executor's root carries the plan-first sentence, naming the registration's value, only where plan-first is elected", () => {
+  const roots = emittedSkillRoots;
+  const records =
+    "Where the registration files records into the target (repositories.<id>.records is target, the value when the key is absent), run npm run resume -- target-records with the actor flags, which files them naming that commit, and commit the moved records' removal; where it keeps them in the instance (records is instance) no records step is owed and the briefing says so.";
+  const planFirstSentence =
+    "The order's plan-first directory is <evidence root>/WO-NNN/plan-first/: for a target order, under the registered target's documentationRoot where repositories.<id>.records is target (the value when the key is absent) and under this instance's evidence root where it is instance.";
+  for (const planFirst of [true, false]) {
+    const emitted = roots(planFirst);
+    const reviewers = emitted.filter((file) =>
+      file.path.endsWith("dotln-reviewer/SKILL.md"),
+    );
+    const executors = emitted.filter((file) =>
+      file.path.endsWith("dotln-executor/SKILL.md"),
+    );
+    assert.ok(reviewers.length >= 2 && executors.length >= 2);
+    for (const root of reviewers) assert.ok(root.contents.includes(records));
+    for (const root of executors)
+      assert.equal(root.contents.includes(planFirstSentence), planFirst);
+    // No other role is told of the records step, and none carries the
+    // plan-first sentence.
+    for (const root of emitted) {
+      if (!reviewers.includes(root))
+        assert.ok(!root.contents.includes(records), root.path);
+      if (!executors.includes(root))
+        assert.ok(!root.contents.includes(planFirstSentence), root.path);
+    }
+  }
+});
+
+test("WO-276 criterion O3: the planner's emitted root, and no other role's, says that a dispatch describing an initiative gets its layout written or revised first and only its next wave filed", () => {
+  const sentence =
+    "For a dispatch that describes an initiative, write or revise the workstream document's Layout section first (what exists, what is asked, the way there in phases of planned items, and what is unknown) and file only the orders the next wave needs, the ones whose inputs are known; a planned item is a line of the layout, with no identifier and no order file, until a pass files it.";
+  const emitted = emittedSkillRoots(false);
+  const planners = emitted.filter((file) =>
+    file.path.endsWith("dotln-planner/SKILL.md"),
+  );
+  assert.ok(planners.length >= 2, "both skill directories hold the root");
+  for (const root of planners)
+    assert.ok(root.contents.includes(sentence), root.path);
+  for (const root of emitted)
+    if (!planners.includes(root))
+      assert.ok(!root.contents.includes("Layout section"), root.path);
+});
+
+test("WO-276 criterion P4: the executor's emitted root, and no other role's, carries the stopping rule and the standing file's four parts", () => {
+  const sentence =
+    "When a prompt's facts say the day's figure is reached, or you stop with the order unfinished, finish the step in hand, write `docs/evidence/WO-NNN/standing.md` and end the turn: the steps of the execution plan done, the step in hand and its state, what comes next, and what is undecided.";
+  const emitted = emittedSkillRoots(false);
+  const executors = emitted.filter((file) =>
+    file.path.endsWith("dotln-executor/SKILL.md"),
+  );
+  assert.ok(executors.length >= 2, "both skill directories hold the root");
+  for (const root of executors) {
+    assert.ok(root.contents.includes(sentence), root.path);
+    assert.ok(
+      root.contents.includes(
+        "the phase's completion (`implementation-ready`, or `repair-complete` in a repair) removes it, so it is never committed and never part of the handoff.",
+      ),
+      root.path,
+    );
+  }
+  for (const root of emitted)
+    if (!executors.includes(root))
+      assert.ok(!root.contents.includes("standing.md"), root.path);
+});
+
+// The records equal the committed rule-by-role table. The table's own script
+// derives it from these records and its reason for every cell, and its check
+// fails where a record and the committed table differ. The table is an
+// order's evidence, which a product case may not read, so this is a document
+// case: the document gate runs it and the product suite skips it. Core holds
+// the table; a kit carries no evidence and none to check.
+test("[document] WO-276 criterion F2: the shared rule records equal the committed rule-by-role table", () => {
+  const table = fileURLToPath(
+    new URL(
+      "../../../../docs/evidence/WO-276/part-f/rule-table.mjs",
+      import.meta.url,
+    ),
+  );
+  if (!existsSync(table)) return;
+  const checked = spawnSync(process.execPath, [table, "--check"], {
+    encoding: "utf8",
+  });
+  assert.equal(checked.status, 0, `${checked.stdout}${checked.stderr}`);
 });
 
 const text = (id: string) =>
@@ -407,23 +443,24 @@ test("WO-042 atomic support switches compose independently and removal restores 
         procedure.includes(text(support.supportFacetId)),
         ids.includes(support.supportFacetId),
       );
-    assert.equal(
-      procedure.some((line) => line.includes("Repair only those obligations.")),
-      !ids.includes(adjacentRepair.supportFacetId),
-    );
-    assert.ok(
-      procedure.some((line) =>
-        line.includes("Operator controls precede workflow"),
-      ),
-    );
-    assert.match(procedure[0]!, /^1\. .*honor operator controls/);
-    const readOnlyEntry = procedure.findIndex((line) =>
-      line.includes("read-only command"),
-    );
-    assert.ok(readOnlyEntry >= 0);
-    assert.ok(procedure[readOnlyEntry]!.includes("stop"));
+    // A support that rewrites a sentence of the executor's does so only
+    // while it is equipped, by the texts its own record names.
+    for (const { from, to } of adjacentRepair.semanticsModified) {
+      const equipped = ids.includes(adjacentRepair.supportFacetId);
+      assert.equal(
+        procedure.some((line) => line.includes(from)),
+        !equipped,
+      );
+      assert.equal(
+        procedure.some((line) => line.includes(to)),
+        equipped,
+      );
+    }
+    assert.equal(holds(procedure, ruleText("operator-controls")), 1);
+    // The numbered handoff leads, ahead of the first read of the subject.
+    assert.match(procedure[0]!, /^1\. /);
     const firstSubjectRead = procedure.indexOf("Read: `@work-order`");
-    assert.ok(readOnlyEntry < firstSubjectRead);
+    assert.ok(firstSubjectRead > 0);
     for (const id of ids)
       assert.ok(
         procedure.indexOf(text(id)) < firstSubjectRead,
@@ -549,14 +586,12 @@ test("Process Cost is one compiled support projected once into every Contributor
   )[0]!;
   const withoutGoal = contributorConfiguredProgram({ "goal-alignment": false });
   for (const target of [program, off, withoutGoal, contributorProgram([])])
-    for (const role of target.roles) {
-      assert.ok(
-        role.procedure.some((line) => line.includes("`scope expand:`")),
+    for (const role of target.roles)
+      assert.equal(
+        holds(role.procedure, ruleText("session-commands")),
+        1,
+        role.name,
       );
-      assert.ok(
-        role.procedure.some((line) => line.includes("`conversation only:`")),
-      );
-    }
   for (const role of program.roles) {
     assert.equal(
       role.procedure.filter((line) => line === fragment).length,
@@ -612,25 +647,12 @@ test("Process Cost is one compiled support projected once into every Contributor
         file.origin.ids.includes("correctness-over-sycophancy"),
         role.name,
       );
-      assert.ok(
-        file.contents.includes(
-          "preserve disagreement as a failed or unsupported claim",
-        ),
-        role.name,
-      );
       assert.equal(file.contents.split(fragment).length - 1, 1, role.name);
       assert.equal(
-        file.contents.split("`scope expand:`").length - 1,
+        holds(file.contents.split("\n"), ruleText("session-commands")),
         1,
         role.name,
       );
-      assert.equal(
-        file.contents.split("`conversation only:`").length - 1,
-        1,
-        role.name,
-      );
-      assert.ok(file.contents.includes("only explicit pause/stop interrupts"));
-      assert.ok(file.contents.includes("Neither appends an event"));
     }
     assert.ok(
       !bundle.residue.items.some((item) => item.originId === "process-cost"),
@@ -801,224 +823,37 @@ test("WO-042 installed role projection takes each support from compiled equipmen
   );
 });
 
-test("execution roles open with an ordered handoff and keep shared rules below it", () => {
+test("execution roles open with a numbered handoff and keep their shared rules below it", () => {
   const roles = contributorProgram().roles;
   for (const name of ["executor", "verifier", "reviewer"]) {
     const role = roles.find((row) => row.name === name)!;
     const rules = role.procedure.indexOf("Rules:");
     assert.ok(rules > 0, name);
-    assert.equal(role.procedure.filter((line) => line === "Rules:").length, 1);
-    const steps = role.procedure.slice(0, rules);
-    steps.forEach((step, index) =>
-      assert.ok(step.startsWith(`${index + 1}. `), name),
-    );
-    const format = steps.findIndex((step) => step.includes("npm run format"));
-    assert.ok(format >= 0);
-    if (name === "verifier") {
-      assert.match(steps[format]!, /`npm run format:check`/);
-      assert.doesNotMatch(steps[format]!, /`npm run format`/);
-      assert.match(steps[format]!, /target only its allocated path/);
-    }
-    // The validation follows formatting; the report follows its evidence;
-    // the single document run follows the last document edit; the record
-    // comes last and consumes rows, running no gate of its own.
-    const run = format + 1;
-    assert.ok(steps[run]!.includes("npm test"), name);
-    assert.ok(
-      steps[run]!.includes(
-        "write nothing under the repository and start no agent",
-      ),
-      name,
-    );
-    assert.match(
-      steps[run + 1]!,
-      /(?:handoff\.md|VER report|FINAL report)/,
-      name,
-    );
-    assert.match(
-      steps[run + 2]!,
-      /npm run test:docs.*once after the last document edit/,
-      name,
-    );
-    assert.ok(steps[run + 3]!.includes("npm run resume --"), name);
-    assert.equal(steps.length, run + 4, name);
-    assert.match(steps.slice(run + 2).join("\n"), /runs no gate/, name);
-    if (name === "executor") {
-      assert.match(
-        steps[run]!,
-        /Synthetic lifecycle fixtures are a product preflight/,
+    assert.equal(holds(role.procedure, "Rules:"), 1);
+    role.procedure
+      .slice(0, rules)
+      .forEach((step, index) =>
+        assert.ok(step.startsWith(`${index + 1}. `), name),
       );
-      assert.match(
-        steps[run]!,
-        /Historical record comparisons stay in the separate document gate/,
+    for (const rule of sharedRules.filter((row) =>
+      (row.roles as readonly string[]).includes(name),
+    ))
+      assert.ok(
+        role.procedure.indexOf(rule.text) > rules,
+        `${name}: ${rule.id} stands below the handoff`,
       );
-      assert.match(steps[format]!, /npm run sync/);
-      assert.match(steps[run]!, /`npm test -- --review`/);
-      assert.match(steps[run]!, /failed and newly changed suites first/);
-      assert.match(
-        steps[run]!,
-        /older branch changes may follow exclusive work/,
-      );
-      assert.match(steps[run]!, /composes nothing from `--only` rows/);
-      assert.doesNotMatch(steps.join("\n"), /--only format/);
-      // The run reads the closeout selection; a launchpad order's is the
-      // complete run, and a target order's clause names its own.
-      assert.match(
-        steps[run]!,
-        /^\d+\. Run the checks the closeout selection names, which `npm run resume -- briefing` and `worktree integrate` print: a launchpad order's one complete run, `npm test -- --review`/,
-      );
-      assert.match(steps[run + 1]!, /After the selected runs pass/);
-      assert.match(
-        steps[run + 1]!,
-        /Post-pass handoff write-backs are executor-owned/,
-      );
-      assert.doesNotMatch(
-        steps[run + 1]!,
-        /same consistency reviewer check the final write-backs/,
-      );
-      assert.match(
-        steps[format - 1]!,
-        /Finish implementation or repair,.*authored outputs before the review ladder's first round; never use early scouting reviews/,
-      );
-      assert.match(
-        steps[run]!,
-        /on failure finish.*repair and its write-backs.*format.*review ladder and finish it before starting a fresh complete run/,
-      );
-    } else if (name === "verifier") {
-      assert.match(steps[run]!, /npm test -- --only <suite>/);
-      assert.match(steps[run]!, /passing complete row/);
-    } else {
-      // The reviewer reproduces blocking claims first, reuses a passing
-      // complete row at an unchanged identity and starts the complete run
-      // only when none exists, never wrapped.
-      assert.match(
-        steps[run - 2]!,
-        /Reject a known-bad candidate before the expensive validation/,
-      );
-      assert.match(
-        steps[run]!,
-        /reuse the passing complete review row at the integrated code identity when one exists; only when none exists start `npm test -- --review` in the background, never under the bounded probe wrapper/,
-      );
-      assert.match(steps[run]!, /harness\.mjs evidence --wait/);
-      assert.match(
-        steps[run]!,
-        /run the checks the closeout selection names; where it names the complete run, reuse/,
-      );
-      assert.match(steps[run + 1]!, /After the selected runs pass/);
-    }
-    assert.ok(
-      role.procedure
-        .slice(rules + 1)
-        .some((line) => line.startsWith("Completion flags:")),
-    );
   }
-  const executor = roles
-    .find((row) => row.name === "executor")!
-    .procedure.join("\n");
-  assert.match(
-    executor,
-    /Every execution and fix runs its independent reviews as a ladder with an end/,
-  );
-  assert.match(
-    executor,
-    /Round 1: three fresh independent `dotln-worker` reviewers over the whole diff/,
-  );
-  assert.match(executor, /nonoverlapping briefs/);
-  assert.match(
-    executor,
-    /only after implementation or repair and its write-backs are complete, never as early scouts/,
-  );
-  assert.match(
-    executor,
-    /criteria adversary seeks concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup/,
-  );
-  assert.match(
-    executor,
-    /design improver seeks simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design/,
-  );
-  assert.match(
-    executor,
-    /consistency reviewer solely verifies write-backs, dependencies and versions/,
-  );
-  assert.match(
-    executor,
-    /test dependencies, fixture inputs\/manifests\/pins, generated test baselines and evidence-source declarations/,
-  );
-  const consistencyBrief = executor.match(
-    /The consistency reviewer[\s\S]+?(?=Fix or record every finding)/,
-  )?.[0];
-  assert.ok(consistencyBrief);
-  assert.match(
-    consistencyBrief,
-    /changed document, emitted output and helper.*every consuming test/,
-  );
-  assert.match(consistencyBrief, /old\/new text and byte\/count pins/);
-  assert.match(
-    consistencyBrief,
-    /transitive imports and fixture copy\/export manifests/,
-  );
-  assert.match(consistencyBrief, /retained gate failures.*same failure shapes/);
-  assert.match(
-    consistencyBrief,
-    /Preserve intentional contract pins.*expectations from requirements/,
-  );
-  assert.match(
-    consistencyBrief,
-    /producer\/consumer pairs.*unsearched boundaries/,
-  );
-  assert.doesNotMatch(
-    executor,
-    /Before `implementation-ready` only|separate-pass fallback|900 s|all eight system traps/,
-  );
-  const verifier = roles
-    .find((row) => row.name === "verifier")!
-    .procedure.join("\n");
-  assert.match(
-    verifier,
-    /your own probes and the executor's review reports, every round's in `docs\/control\/local\/reviews\/WO-NNN\/`/,
-  );
-  assert.match(verifier, /Spawn a worker only to reproduce one named claim/);
-  assert.match(
-    verifier,
-    /breaks no criterion and no behavior `main` had is a follow-up, never blocking/,
-  );
 });
 
-test("review roles carry their repair authority, defensive judgment and durable output duties", () => {
+test("the verifier and the reviewer are directed to the guide's review section", () => {
   const roles = contributorProgram().roles;
-  const verifier = roles
-    .find((role) => role.name === "verifier")!
-    .procedure.join("\n");
-  const reviewer = roles
-    .find((role) => role.name === "reviewer")!
-    .procedure.join("\n");
-  assert.match(
-    verifier,
-    /Route a blocking design defect.*repair rule.*without asking the operator/,
-  );
-  assert.match(
-    reviewer,
-    /Read: `docs\/product\/07-execution-guide\.md#Verification review and attack`/,
-  );
-  for (const text of [verifier, reviewer]) {
-    assert.match(
-      text,
-      /Judge confinement and security-boundary findings against the recorded rule/,
+  for (const name of ["verifier", "reviewer"])
+    assert.equal(
+      holds(
+        roles.find((role) => role.name === name)!.procedure,
+        "Read: `docs/product/07-execution-guide.md#Verification review and attack`",
+      ),
+      1,
+      name,
     );
-    assert.match(text, /After one provider safeguard refusal, change approach/);
-    assert.match(
-      text,
-      /After two consecutive provider safeguard refusals, stop retrying/,
-    );
-    assert.match(text, /Every phase owns decisions.*ADR or decision record/);
-  }
-  assert.match(
-    verifier,
-    /Before emitting audit or repository output, select verdict-relevant fields and budget the aggregate read/,
-  );
-  assert.match(verifier, /nested gate logs and truncated batches/);
-  assert.match(
-    verifier,
-    /acknowledging a process failure, name its durable record and disposition in the same response/,
-  );
 });

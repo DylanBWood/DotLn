@@ -6,6 +6,14 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 import { runGit } from "./lib/git.mjs";
+import {
+  inlineSource,
+  markdownHeadings,
+  markdownLinks,
+  markdownNodes,
+  markdownSection,
+  parseMarkdown,
+} from "./lib/markdown-links.mjs";
 
 const root = findLaunchpad();
 const { checkPublicPlanConversations } =
@@ -211,73 +219,43 @@ function slugBase(value) {
     .replace(/ /g, "-");
 }
 
-function fenceOpener(line) {
-  const match = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
-  if (!match || (match[1][0] === "`" && match[2].includes("`"))) return null;
-  return { character: match[1][0], length: match[1].length };
-}
-
-function closesFence(line, fence) {
-  const match = line.match(/^ {0,3}(`+|~+)[ \t]*$/);
-  return (
-    match !== null &&
-    match[1][0] === fence.character &&
-    match[1].length >= fence.length
-  );
-}
-
+// Every ATX heading of the document's top level, as the index covers them:
+// its anchor (deduplicated in document order, as the forge numbers repeats),
+// level, title and section, the text from the heading up to the next ATX
+// heading at its level or shallower. The parser reads the headings, so a
+// heading-shaped line in code, raw HTML, a list or a quotation is none; a
+// setext heading spans its underline and is not one of them either.
 function headings(markdown) {
+  const source = markdown.replace(/^\uFEFF/u, "");
   const matches = [];
   const seen = new Set();
-  const lines = markdown.match(/.*(?:\n|$)/g) ?? [];
-  let offset = 0;
-  let fence = null;
-
-  for (const lineWithEnding of lines) {
-    const line = lineWithEnding.replace(/\r?\n$/, "");
-    if (fence !== null) {
-      if (closesFence(line, fence)) fence = null;
-      offset += lineWithEnding.length;
-      continue;
+  for (const heading of markdownHeadings(source)) {
+    if (/[\r\n]/u.test(source.slice(heading.start, heading.end))) continue;
+    const base = slugBase(heading.title);
+    let anchor = base;
+    let suffix = 1;
+    while (seen.has(anchor)) {
+      anchor = `${base}-${suffix}`;
+      suffix += 1;
     }
-
-    const opener = fenceOpener(line);
-    if (opener !== null) {
-      fence = opener;
-      offset += lineWithEnding.length;
-      continue;
-    }
-
-    const match = line.match(/^ {0,3}(#{1,6})(?:[ \t]+(.*)|[ \t]*)$/);
-    if (match) {
-      const raw = (match[2] ?? "").replace(/[ \t]+#+[ \t]*$/, "").trimEnd();
-      const base = slugBase(raw);
-      let anchor = base;
-      let suffix = 1;
-      while (seen.has(anchor)) {
-        anchor = `${base}-${suffix}`;
-        suffix += 1;
-      }
-      seen.add(anchor);
-      matches.push({
-        anchor,
-        level: match[1].length,
-        raw,
-        start: offset,
-      });
-    }
-    offset += lineWithEnding.length;
+    seen.add(anchor);
+    matches.push({
+      anchor,
+      level: heading.depth,
+      raw: heading.title,
+      start: heading.start,
+    });
   }
 
   return matches.map((heading, index) => {
-    let end = markdown.length;
+    let end = source.length;
     for (let next = index + 1; next < matches.length; next += 1) {
       if (matches[next].level <= heading.level) {
         end = matches[next].start;
         break;
       }
     }
-    return { ...heading, text: markdown.slice(heading.start, end).trimEnd() };
+    return { ...heading, text: source.slice(heading.start, end).trimEnd() };
   });
 }
 
@@ -299,11 +277,8 @@ function checkCoverage(failures) {
   const index = readFileSync(indexPath, "utf8");
   const entries = new Map();
   const duplicateKeys = [];
-  const rowPattern =
-    /^\|\s+\[([^\]]+)\]\(\.\.\/product\/([^#)]+)#([^)]+)\)\s+\|\s+([^|]+?)\s+\|\s+([^|]+?)\s+\|$/gm;
-  let row;
-  while ((row = rowPattern.exec(index)) !== null) {
-    const [, label, file, anchor, audienceCell, status] = row;
+  for (const row of indexRows(index)) {
+    const { label, file, anchor, audienceCell, status } = row;
     const key = `${file}#${anchor}`;
     const audienceValues = audienceCell.split(",").map((value) => value.trim());
     if (entries.has(key)) duplicateKeys.push(key);
@@ -355,23 +330,44 @@ function checkCoverage(failures) {
   return entries;
 }
 
-function productLinks(markdown) {
-  const links = [];
-  const pattern = /\]\(\.\.\/product\/([^#)]+)#([^)]+)\)/g;
-  let match;
-  while ((match = pattern.exec(markdown)) !== null) {
-    links.push({ anchor: match[2], file: match[1] });
+// A product claim link's destination: a numbered product file and a
+// section anchor, beside the citing page.
+const PRODUCT_DESTINATION = /^\.\.\/product\/([^#)]+)#([^)]+)$/u;
+
+// The index's rows: a table row of three cells whose first cell is one link
+// to a product section, then its audience tags and its status.
+function indexRows(markdown) {
+  const rows = [];
+  for (const row of markdownNodes(parseMarkdown(markdown))) {
+    if (row.type !== "tableRow" || row.children.length !== 3) continue;
+    const [section, audiences, status] = row.children;
+    const [link] = section.children;
+    const target =
+      section.children.length === 1 && link.type === "link"
+        ? PRODUCT_DESTINATION.exec(link.url)
+        : null;
+    if (!target) continue;
+    rows.push({
+      label: inlineSource(markdown, link),
+      file: target[1],
+      anchor: target[2],
+      audienceCell: inlineSource(markdown, audiences).trim(),
+      status: inlineSource(markdown, status).trim(),
+    });
   }
-  return links;
+  return rows;
+}
+
+// Every link the parser reads to a product section, in document order.
+function productLinks(markdown) {
+  return markdownLinks(markdown).flatMap(({ href }) => {
+    const target = PRODUCT_DESTINATION.exec(href);
+    return target ? [{ anchor: target[2], file: target[1] }] : [];
+  });
 }
 
 function voiceSection(markdown, title) {
-  const marker = `## ${title}`;
-  const start = markdown.indexOf(marker);
-  if (start === -1) return null;
-  const bodyStart = start + marker.length;
-  const next = markdown.indexOf("\n## ", bodyStart);
-  return markdown.slice(bodyStart, next === -1 ? markdown.length : next);
+  return markdownSection(markdown, title, { depths: [2] })?.body ?? null;
 }
 
 function checkDualVoice(failures) {

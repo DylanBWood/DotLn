@@ -16,13 +16,14 @@ import {
   outsideWriteEffect,
   harnessPromptIntent,
   harnessPromptLine,
-  harnessWorkerWords,
   operatorMessageClass,
   projectAuthorityInspection,
   type FeedbackHandler,
   type FeedbackUnit,
   type HarnessProfile,
   type HarnessProgram,
+  EVERY_TOOL,
+  unitMatcher,
 } from "../src/index.js";
 
 test("leading resume dispatch keeps following direction without matching quoted or continued phrases", () => {
@@ -56,6 +57,40 @@ test("leading resume dispatch keeps following direction without matching quoted 
     assert.equal(harnessPromptIntent(prompt), prompt);
 });
 
+test("WO-276 a dispatch phrase ends where the instance's worker names begin, and the names select nothing", () => {
+  // The names an emit writes into the session hook: the instance's workers
+  // and models, one of its own among them.
+  const names = ["default", "advanced", "fable", "astra", "night-shift"];
+  for (const [prompt, expected] of [
+    ["resume: next astra; then part two", "resume: next"],
+    ["resume: verify fable 5.2", "resume: verify"],
+    ["planning: refute full advanced", "planning: refute full"],
+    ["resume: next fable and astra", "resume: next"],
+    ["resume: next Fable 5.2 and night-shift; go", "resume: next"],
+    ["resume: release close", "resume: release close"],
+    ["resume: final review \t astra", "resume: final review"],
+    // Any other word after the phrase leaves the line prose, as does a run
+    // that opens with a number or closes on the joining word.
+    ["resume: next generation", "resume: next generation"],
+    ["resume: release close later", "resume: release close later"],
+    ["resume: next astra later", "resume: next astra later"],
+    ["resume: next 5.2", "resume: next 5.2"],
+    ["resume: next fable and", "resume: next fable and"],
+    ["resume: next gemini", "resume: next gemini"],
+  ] as const)
+    assert.equal(harnessPromptIntent(prompt, names), expected, prompt);
+  // A name the hook was not given closes nothing: the recovery embedded in
+  // every hook reads the phrase with none.
+  assert.equal(harnessPromptIntent("resume: next astra"), "resume: next astra");
+  assert.equal(harnessPromptIntent("resume: next; astra"), "resume: next");
+  // The function is embedded by its source and reads only the line reader.
+  const embedded = new Function(
+    "harnessPromptLine",
+    `return (${harnessPromptIntent.toString()});`,
+  )(harnessPromptLine) as typeof harnessPromptIntent;
+  assert.equal(embedded("resume: verify fable 5.2", names), "resume: verify");
+});
+
 test("a pasted dispatch uses the first content line and keeps its original index", () => {
   for (const [prompt, expected, index] of [
     ["planning: fixture", "planning: fixture", 0],
@@ -74,7 +109,7 @@ test("a pasted dispatch uses the first content line and keeps its original index
     ["> resume: next", "> resume: next", 0],
     ["```\n```\nresume: next", "```", 1],
   ] as const) {
-    assert.equal(harnessPromptIntent(prompt), expected);
+    assert.equal(harnessPromptIntent(prompt, ["fable"]), expected);
     assert.equal(harnessPromptLine(prompt).index, index);
   }
 });
@@ -128,10 +163,10 @@ test("WO-257 the host's command block and its pasted-content wrapper are skipped
       prefixLine: null,
       class: "unclassified",
     });
-  // The worker words still close the line after the block.
-  assert.deepEqual(
-    harnessWorkerWords(`${block}planning: standard planning pass fable`),
-    { claude: "fable" },
+  // A worker's name still closes a dispatch phrase after the block.
+  assert.equal(
+    harnessPromptIntent(`${block}planning: refute fable`, ["fable"]),
+    "planning: refute",
   );
   // A known element whose closing tag never comes is reported by its name
   // at its own line instead of swallowing the dispatch below it; text after
@@ -331,6 +366,228 @@ test("desktop control host denials follow the supplied instance election", () =>
     assert.ok(!off.some((rule) => rule.includes("playwright")));
   }
   for (const rule of expected) assert.ok(!on.includes(rule), rule);
+});
+
+test("WO-276 criterion Q1: a unit that states the kinds it judges is registered for every tool but the names the table maps to another kind, a name the table does not hold among them, and a unit that states none is registered for every tool", () => {
+  const tools = {
+    Read: "read",
+    Glob: "read",
+    Bash: "shell",
+    exec_command: "shell",
+    "functions.exec": "shell",
+    Edit: "write",
+    Write: "write",
+    Agent: "spawn",
+    "mcp__desk__*": "desktop",
+  } as const;
+  // The excluding form, for a host observed to read one: one anchored
+  // pattern that leaves the other kinds' names out, each name written
+  // literally and a name that ends in a star as a prefix.
+  assert.equal(unitMatcher(tools, undefined), EVERY_TOOL);
+  assert.equal(unitMatcher(tools, undefined, true), EVERY_TOOL);
+  const shell = unitMatcher(tools, ["shell"], true);
+  assert.equal(
+    shell,
+    "^(?!(?:Agent|Edit|Glob|Read|Write|mcp__desk__[\\s\\S]*)$)[\\s\\S]*$",
+  );
+  // A host reads a pattern as the whole name or as a search: the anchors
+  // give one answer under both.
+  for (const admits of [
+    (name: string) => new RegExp("^(?:" + shell + ")$", "u").test(name),
+    (name: string) => new RegExp(shell, "u").test(name),
+  ]) {
+    for (const name of ["Bash", "exec_command", "functions.exec"])
+      assert.ok(admits(name), name);
+    // A name the table does not hold starts the hook, as before.
+    for (const name of ["SomethingNew", "mcp__other__tool", "Reader", "ARead"])
+      assert.ok(admits(name), name);
+    for (const name of ["Read", "Glob", "Edit", "Agent", "mcp__desk__click"])
+      assert.ok(!admits(name), name);
+    // A line break in a name stops neither: a name the table does not hold
+    // still starts the hook, and a prefix still leaves its names out.
+    for (const name of [
+      "Some\nTool",
+      "Some\rTool",
+      "Some\u2028Tool",
+      "Some\u2029Tool",
+      "Bash\n",
+      "Read\n",
+      "\nRead",
+    ])
+      assert.ok(admits(name), JSON.stringify(name));
+    assert.ok(!admits("mcp__desk__a\nb"));
+  }
+  // A dot in a table name leaves out that name alone.
+  const dotted = unitMatcher({ "a.b": "read" }, ["shell"], true);
+  assert.ok(!new RegExp(dotted, "u").test("a.b"));
+  assert.ok(new RegExp(dotted, "u").test("aXb"));
+  // Every kind judged leaves nothing out, in either form.
+  assert.equal(unitMatcher({ Bash: "shell" }, ["shell"], true), EVERY_TOOL);
+  assert.equal(unitMatcher({ Bash: "shell" }, ["shell"]), EVERY_TOOL);
+
+  // The list form, where no observation of the excluding form is given: the
+  // names of the unit's kinds, as they are written, joined by a bar. It holds
+  // no lookahead, so it compiles wherever a pattern does.
+  const listed = unitMatcher(tools, ["shell"]);
+  assert.equal(listed, "Bash|exec_command|functions.exec");
+  assert.equal(unitMatcher(tools, ["shell", "write"]).split("|").length, 5);
+  assert.doesNotMatch(listed, /[(?!\\^$[\]]/u);
+  // A host that compares each listed name with the tool's, one that reads
+  // the whole name as a pattern and one that searches for it all start the
+  // hook for the unit's names and for no other name of the table.
+  for (const admits of [
+    (name: string) => listed.split("|").includes(name),
+    (name: string) => new RegExp("^(?:" + listed + ")$", "u").test(name),
+    (name: string) => new RegExp(listed, "u").test(name),
+  ]) {
+    for (const name of ["Bash", "exec_command", "functions.exec"])
+      assert.ok(admits(name), name);
+    for (const name of ["Read", "Glob", "Edit", "Write", "Agent"])
+      assert.ok(!admits(name), name);
+    assert.ok(!admits("mcp__desk__click"));
+    // A name the table does not hold starts no narrowed hook in this form.
+    assert.ok(!admits("SomethingNew"));
+  }
+  // A prefix of the table is listed as one, and a kind with no name to list
+  // or a name a list cannot hold as written is refused.
+  assert.equal(
+    unitMatcher({ ...tools, "pre__*": "shell" }, ["shell"]),
+    "Bash|exec_command|functions.exec|pre__.*",
+  );
+  assert.throws(() => unitMatcher(tools, ["absent"]), /unit tool kinds/u);
+  assert.throws(
+    () => unitMatcher({ ...tools, "a|b": "shell" }, ["shell"]),
+    /listed tool name/u,
+  );
+  // The emitted settings: each unit's hook in a group of its own matcher,
+  // every other hook in the group for every tool.
+  const narrowed: HarnessProfile = {
+    ...profile,
+    tools,
+    unitToolKinds: {
+      "fixture-attribution": ["shell"],
+      "fixture-suppression-diff": ["write"],
+    },
+    matcherExclusion: {
+      available: true,
+      evidence: "docs/discovery/harness-smoke-2026-09-07.md#C1",
+    },
+  };
+  type Group = { matcher?: string; hooks: { command: string }[] };
+  const groups = (runtime: HarnessProfile, policy = feedback) =>
+    JSON.parse(
+      lower(program, policy, runtime).files.find(
+        (file) => file.path === ".claude/settings.json",
+      )!.contents,
+    ).hooks as Record<string, Group[]>;
+  const named = (group: Group) =>
+    group.hooks.map((hook) => /hooks\/([a-z-]+)\.mjs/u.exec(hook.command)![1]);
+  const emitted = groups(narrowed);
+  const attribution = emitted.PreToolUse!.find((group) =>
+    named(group).includes("fixture-attribution"),
+  )!;
+  assert.deepEqual(named(attribution), ["fixture-attribution"]);
+  assert.equal(attribution.matcher, shell);
+  const lint = emitted.PostToolUse!.find((group) =>
+    named(group).includes("fixture-suppression-diff"),
+  )!;
+  assert.deepEqual(named(lint), ["fixture-suppression-diff"]);
+  assert.equal(lint.matcher, unitMatcher(tools, ["write"], true));
+  // The same profile with no observation of the excluding form, or with one
+  // that says the host was not observed, emits the list form.
+  const { matcherExclusion: _observed, ...unstated } = narrowed;
+  for (const runtime of [
+    unstated,
+    {
+      ...unstated,
+      matcherExclusion: {
+        available: false,
+        evidence: "docs/discovery/harness-smoke-2026-09-07.md#C1",
+        reason: "No run has shown how this host reads an excluding matcher",
+      },
+    },
+  ]) {
+    const plainly = groups(runtime);
+    assert.equal(
+      plainly.PreToolUse!.find((group) =>
+        named(group).includes("fixture-attribution"),
+      )!.matcher,
+      "Bash|exec_command|functions.exec",
+    );
+    assert.equal(
+      plainly.PostToolUse!.find((group) =>
+        named(group).includes("fixture-suppression-diff"),
+      )!.matcher,
+      "Edit|Write",
+    );
+  }
+  // An observation is a capability like any other: unavailable, it says why.
+  assert.throws(
+    () =>
+      lower(program, feedback, {
+        ...unstated,
+        matcherExclusion: {
+          available: false,
+          evidence: "docs/discovery/harness-smoke-2026-09-07.md#C1",
+        },
+      }),
+    /unavailable capability must explain why/u,
+  );
+  for (const event of ["PreToolUse", "PostToolUse"])
+    for (const group of emitted[event]!)
+      if (group !== attribution && group !== lint)
+        assert.equal(group.matcher, EVERY_TOOL, named(group).join(","));
+  // The same program with no kinds stated: one group for every tool at each
+  // tool event, and the hook files the same bytes.
+  const plain = groups({ ...profile, tools });
+  for (const event of ["PreToolUse", "PostToolUse"]) {
+    assert.equal(plain[event]!.length, 1);
+    assert.equal(plain[event]![0]!.matcher, EVERY_TOOL);
+    assert.deepEqual(
+      named(plain[event]![0]!).sort(),
+      emitted[event]!.flatMap(named).sort(),
+    );
+  }
+  const hookFiles = (runtime: HarnessProfile) =>
+    lower(program, feedback, runtime).files.filter((file) =>
+      file.path.startsWith(".claude/hooks/"),
+    );
+  assert.deepEqual(hookFiles(narrowed), hookFiles({ ...profile, tools }));
+  // A unit named with no kinds is refused when the profile loads, and so is
+  // a kind no tool of the table has, which would register the unit's hook
+  // for none of the table's tools.
+  for (const kinds of [[], ["Shell"], ["shell", "writes"]])
+    assert.throws(
+      () =>
+        lower(program, feedback, {
+          ...profile,
+          tools,
+          unitToolKinds: { "fixture-attribution": kinds },
+        }),
+      /unit tool kinds/u,
+      JSON.stringify(kinds),
+    );
+  // A unit's kinds are the declaration's own member: a unit the profile does
+  // not name is registered for every tool, whatever it is called.
+  const inherited = groups(
+    {
+      ...profile,
+      tools,
+      unitToolKinds: { "fixture-suppression-diff": ["write"] },
+    },
+    compileFeedbackUnits(
+      feedback.units.map((item) =>
+        item.unitId === "fixture-attribution"
+          ? { ...item, unitId: "constructor" }
+          : item,
+      ),
+    ),
+  );
+  assert.equal(
+    inherited.PreToolUse!.find((group) => named(group).includes("constructor"))!
+      .matcher,
+    EVERY_TOOL,
+  );
 });
 
 test("WO-146 Copilot shares the observed Claude hook bytes, not a second registration", () => {
@@ -776,21 +1033,19 @@ test("WO-187 a worker definition pins model and effort independently of its root
   );
 });
 
-test("multiple workers retain the default definition and bind each opt-in definition", () => {
+test("multiple workers retain the default definition and bind each further definition", () => {
   const pinned = {
     name: "dotln-worker",
     model: "claude-opus-5-5",
     effort: "xhigh" as const,
   };
-  const fable = {
-    name: "dotln-worker-fable",
-    model: "claude-fable-5-1",
-    effort: "xhigh" as const,
-    optIn: true,
-    optInLabel: "Fable (fable or fable 5.1)",
+  const second = {
+    name: "fixture-second",
+    model: "fixture-model-b",
+    effort: "high" as const,
   };
   const single = lower({ ...program, worker: pinned });
-  const bundle = lower({ ...program, workers: [pinned, fable] });
+  const bundle = lower({ ...program, workers: [pinned, second] });
   assert.equal(
     bundle.files.find((file) => file.path === ".claude/agents/dotln-worker.md")
       ?.contents,
@@ -798,15 +1053,11 @@ test("multiple workers retain the default definition and bind each opt-in defini
       ?.contents,
   );
   const added = bundle.files.find(
-    (file) => file.path === ".claude/agents/dotln-worker-fable.md",
+    (file) => file.path === ".claude/agents/fixture-second.md",
   );
   assert.ok(added);
-  assert.match(added.contents, /^model: claude-fable-5-1$/m);
-  assert.match(added.contents, /^effort: xhigh$/m);
-  assert.match(
-    added.contents,
-    /only when the operator's planning: or resume: dispatch line names Fable/,
-  );
+  assert.match(added.contents, /^model: fixture-model-b$/m);
+  assert.match(added.contents, /^effort: high$/m);
   assert.equal(
     verifyHarnessBundle({
       ...bundle,
@@ -815,7 +1066,7 @@ test("multiple workers retain the default definition and bind each opt-in defini
           ? {
               ...file,
               contents: file.contents.replace(
-                "model: claude-fable-5-1",
+                "model: fixture-model-b",
                 "model: inherit",
               ),
             }
@@ -836,13 +1087,11 @@ test("a Codex worker is a generated Codex custom agent and never a Claude agent 
     model: "claude-opus-5-5",
     effort: "xhigh" as const,
   };
-  const astra = {
-    name: "dotln-worker-astra",
+  const spawned = {
+    name: "fixture-codex",
     host: "codex" as const,
-    model: "gpt-6-astra",
+    model: "fixture-model-c",
     effort: "max" as const,
-    optIn: true,
-    optInLabel: "Astra (astra)",
   };
   const unavailable = {
     available: false,
@@ -869,16 +1118,16 @@ test("a Codex worker is a generated Codex custom agent and never a Claude agent 
       UserPromptSubmit: unavailable,
     },
   };
-  const claude = lower({ ...program, workers: [pinned, astra] });
+  const claude = lower({ ...program, workers: [pinned, spawned] });
   assert.ok(
     claude.files.some((file) => file.path === ".claude/agents/dotln-worker.md"),
   );
   assert.ok(
-    !claude.files.some((file) => /dotln-worker-astra/u.test(file.path)),
+    !claude.files.some((file) => /fixture-codex/u.test(file.path)),
     "a Claude bundle carries no Codex agent",
   );
   const codex = lower(
-    { ...program, workers: [pinned, astra] },
+    { ...program, workers: [pinned, spawned] },
     feedback,
     codexProfile,
   );
@@ -886,41 +1135,56 @@ test("a Codex worker is a generated Codex custom agent and never a Claude agent 
     !codex.files.some((file) => file.path.startsWith(".claude/agents/")),
   );
   const added = codex.files.find(
-    (file) => file.path === ".codex/agents/dotln-worker-astra.toml",
+    (file) => file.path === ".codex/agents/fixture-codex.toml",
   );
   assert.ok(added);
   for (const line of [
-    'name = "dotln-worker-astra"',
-    'model = "gpt-6-astra"',
+    'name = "fixture-codex"',
+    'model = "fixture-model-c"',
     'model_reasoning_effort = "max"',
   ])
     assert.ok(added.contents.split("\n").includes(line), line);
-  assert.match(
-    added.contents,
-    /^developer_instructions = ".*dispatch line names Astra \(astra\)\. Record the worker type in the receipt and response\."$/mu,
-  );
+  // The definition's instructions are one quoted field; what they say is the
+  // generated text, which regeneration checks and no case retypes.
+  assert.match(added.contents, /^developer_instructions = ".+"$/mu);
   assert.throws(
     () =>
       lower({
         ...program,
-        workers: [pinned, { ...astra, host: "copilot" as never }],
+        workers: [pinned, { ...spawned, host: "copilot" as never }],
       }),
     /worker host/,
   );
-  // An opt-in label belongs to an opt-in worker, and every opt-in worker
-  // names its dispatch word.
-  assert.throws(
-    () =>
-      lower({
-        ...program,
-        workers: [{ ...pinned, optInLabel: "Opus (opus)" }],
-      }),
-    /worker opt-in label/,
+  // The names that may close a dispatch line reach the session hook's
+  // configuration, and a program without them emits what it always did.
+  const sessionHook = (bundle: ReturnType<typeof lower>) =>
+    bundle.files.find((file) => file.path.endsWith("/session.mjs"))?.contents;
+  const withNames = lower({ ...program, workerNames: ["default", "fixture"] });
+  assert.match(
+    sessionHook(withNames) ?? "",
+    /"workerNames":\s*\[\s*"default",\s*"fixture"\s*\]/u,
   );
-  const { optInLabel: _label, ...unlabelled } = astra;
+  assert.equal(
+    sessionHook(lower({ ...program, workerNames: [] })),
+    sessionHook(lower()),
+  );
+  assert.doesNotMatch(sessionHook(lower()) ?? "", /workerNames/u);
+  // The recovery embedded in a hook reads the phrase with the same names,
+  // so a release-close line that closes on a worker's name is recovered as
+  // it is on the session path; with no names its text is what it was.
+  assert.ok(
+    (sessionHook(withNames) ?? "").includes(
+      '(input?.prompt, ["default","fixture"]) !== "resume: release close"',
+    ),
+  );
+  assert.ok(
+    (sessionHook(lower()) ?? "").includes(
+      '(input?.prompt) !== "resume: release close"',
+    ),
+  );
   assert.throws(
-    () => lower({ ...program, workers: [pinned, unlabelled] }),
-    /worker opt-in label/,
+    () => lower({ ...program, workerNames: ["Not A Name"] }),
+    /worker names/,
   );
 });
 
@@ -1005,15 +1269,11 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
     (file) =>
       file.path.endsWith(".mjs") && !file.path.endsWith("commit-msg.mjs"),
   )) {
-    if (file.path.includes("/presence-"))
-      assert.match(
-        file.contents,
-        /DotLn advisory: presence heartbeat unavailable/,
-      );
-    else {
-      assert.match(file.contents, /built adapter unavailable/);
-      assert.match(file.contents, /delegated: true/);
-    }
+    // The heartbeat rides the hooks that already run, so the bundle holds no
+    // presence hook of its own (WO-276 criterion Q1).
+    assert.ok(!file.path.includes("/presence-"), file.path);
+    assert.match(file.contents, /built adapter unavailable/);
+    assert.match(file.contents, /delegated: true/);
     assert.doesNotMatch(file.contents, /permissionDecision: "deny"/);
   }
 });
@@ -1078,24 +1338,14 @@ test("WO-049 target lowering is explicit, omits importRoot from metadata and emi
   for (const file of bundle.files.filter((file) =>
     file.path.endsWith(".mjs"),
   )) {
-    if (file.path.includes("/presence-")) {
-      assert.equal(file.path, ".claude/hooks/presence-pretooluse.mjs");
-      assert.match(
-        file.contents,
-        /import\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
-      );
-      assert.match(
-        file.contents,
-        /recordHarnessHeartbeat\("PreToolUse", input\)/,
-      );
-      assert.doesNotMatch(file.contents, /permissionDecision/);
-    } else {
-      assert.match(
-        file.contents,
-        /new URL\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
-      );
-      assert.match(file.contents, /permissionDecision: "deny"/);
-    }
+    // A target's bundle holds no presence hook; its permission hook carries
+    // the heartbeat (WO-276 criterion Q1).
+    assert.ok(!file.path.includes("/presence-"), file.path);
+    assert.match(
+      file.contents,
+      /new URL\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
+    );
+    assert.match(file.contents, /permissionDecision: "deny"/);
     assert.ok(!file.contents.includes("operatorControl"));
     assert.ok(!file.contents.includes('"importRoot"'));
   }

@@ -2075,7 +2075,10 @@ scope/budget and effect allocation, cancels pending dispatch and enters
 repeated absence observations cannot silently replenish an expired allocation.
 The foreground task retains its own authority. `dotln resident --store <dir>
 --policy <id>` runs the local loop; `--once` performs one complete cycle for an
-outside scheduler. `dotln presence away|back --store <dir>` appends explicit
+outside scheduler. A store with a `mission-check` actor runs through
+`node scripts/resident.mjs` with the same options, which supplies the reader of
+the documents the check judges
+([decision](../evidence/WO-276/decisions.md#wo-276-d031--part-b-begins-on-part-as-checkpoint-and-is-ported-from-the-earlier-worktree-whose-choices-are-restated-here)). `dotln presence away|back --store <dir>` appends explicit
 presence. WO-068 adds no automatic stage launch, work selection, presence sensor
 or installed system service.
 

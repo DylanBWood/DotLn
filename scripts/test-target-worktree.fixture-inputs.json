@@ -32,7 +32,8 @@
     "scripts/meta.mjs",
     "packages/skeleton/src/evidence-editions.mjs",
     "packages/skeleton/src/temporary-root-records.mjs",
-    "scripts/temporary-root.mjs"
+    "scripts/temporary-root.mjs",
+    "packages/skeleton/src/source-reading.mjs"
   ],
   "directories": [
     "scripts/lib",

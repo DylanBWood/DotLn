@@ -1,11 +1,16 @@
 # AI harness security baseline
 
 A sanitized template, seeded once by the kit export and owned by this
-instance. Record here the operator's dated posture for each AI coding harness
-used with this launchpad. The repository does not install or enforce these
-settings; the record is what a session and a reviewer check against. Re-check
-vendor documentation and local behavior after upgrades, because names,
-defaults, precedence and sandbox boundaries change.
+instance. Record here the operator's dated posture for each host this
+launchpad runs: Claude Code, and any other host this instance's
+`dotln.config.json` elects under `features` (a `host-` row of
+`npm run features -- list` that reads `true`); a fresh instance elects none. A
+host it does not elect is not recorded here, looked for on this machine or
+called.
+The repository does not install or enforce these settings; the record is what
+a session and a reviewer check against. Re-check vendor documentation and
+local behavior after upgrades, because names, defaults, precedence and
+sandbox boundaries change.
 
 **Current operating note:** `<date>`; `<harness> <version>` checked locally.
 
@@ -39,8 +44,9 @@ shell sandbox nor this record governs automatically.
 | -------- | ------------- | ---------------- | ----------------------- |
 | `<name>` | `<path>`      | `<path>`         | `<path>`                |
 
-Record which layer each harness actually loaded, as observed, and which wins
-when two disagree.
+Record which layer each of those hosts actually loaded, read from its
+settings files or documented, and which wins when two disagree; no call to a
+host tests it.
 
 ## What stays out of this file
 

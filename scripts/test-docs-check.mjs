@@ -9,6 +9,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   chmodSync,
+  existsSync,
   mkdirSync,
   readFileSync,
   realpathSync,
@@ -21,6 +22,14 @@ import { pathToFileURL } from "node:url";
 import { frontPageDeclaration } from "./lib/front-page-scope.mjs";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { branchChanges } from "./lib/branch-changes.mjs";
+import {
+  markdownScreen,
+  screenSource,
+  screenedSources,
+} from "./lib/markdown-screen.mjs";
+import { sourceTrees } from "../packages/skeleton/src/source-reading.mjs";
+import { verbatimScope, verbatimScreen } from "./lib/verbatim-screen.mjs";
 import { format } from "prettier";
 import {
   disposeFollowup,
@@ -38,6 +47,8 @@ import {
   operatorWordFindings,
   homePathFindings,
   shrinkHomePathBaseline,
+  extensionFiles,
+  markdownFiles,
   recordFiles,
   frontPageFindings,
   frontPageShapeFindings,
@@ -64,17 +75,17 @@ import {
 import { documentCensus } from "./lib/document-census.mjs";
 import { createWorkstreamIndexFixture } from "./test-workstream-index-fixture.mjs";
 
-test("the console workstream document matches the current generated index", () => {
+test("the console workstream record matches the current generated index record", () => {
   const root = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-workstream-document-")),
   );
   try {
     const fixture = createWorkstreamIndexFixture(root);
     assert.equal(
-      fixture.readme(),
+      fixture.record(),
       readFileSync(
         new URL(
-          "../packages/console/fixtures/inputs/workOrderIndex-workstreams.md",
+          "../packages/console/fixtures/inputs/workOrderRecord-workstreams.json",
           import.meta.url,
         ),
         "utf8",
@@ -423,13 +434,25 @@ test("a deletion that joins a capture's words is the branch's, and an unreadable
       `${name}: ${run.stderr}`,
     );
   // A changed file the screen cannot open is an error, never a pass.
+  f.write("scripts/locked.txt", "text\n");
+  chmodSync(join(f.root, "scripts/locked.txt"), 0o000);
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  assert.match(
+    run.stderr,
+    /^FAIL docs check: scripts\/locked\.txt cannot be read \(EACCES\); the screens read every file a branch changes$/mu,
+  );
+  chmodSync(join(f.root, "scripts/locked.txt"), 0o644);
+  rmSync(join(f.root, "scripts/locked.txt"));
+  // A source is read first by the screen of pattern readers, which names an
+  // unreadable one in the same form.
   f.write("scripts/locked.mjs", "export {};\n");
   chmodSync(join(f.root, "scripts/locked.mjs"), 0o000);
   run = f.cli();
   assert.equal(run.status, 1, run.stdout + run.stderr);
   assert.match(
     run.stderr,
-    /^FAIL docs check: scripts\/locked\.mjs cannot be read \(EACCES\); the screens read every file a branch changes$/mu,
+    /^FAIL docs check: scripts\/locked\.mjs cannot be read \(EACCES\); the pattern-reader screen reads every source under scripts\/ and packages\/\*\/src\/$/mu,
   );
   chmodSync(join(f.root, "scripts/locked.mjs"), 0o644);
   // A capture its owner closed is private material: the check names it in an
@@ -482,6 +505,148 @@ test("the verbatim screen reads only what the branch adds: an unchanged file and
   });
   assert.deepEqual(detached.failures, []);
   assert.equal(detached.verbatim.status, "no merge base");
+});
+
+test("WO-276 the verbatim screen compares words, not addresses: a linked document's path that a capture also names is no finding, twelve of a capture's own words beside the link are one, and a kit root leaves out a changed file that still equals the incoming manifest's entry", (t) => {
+  const f = branchFixture(t);
+  // A path fourteen words long, which a capture names as the operator's
+  // dispatch would: alone it fills the window.
+  const path =
+    "docs/planning/passes/one-order-for-the-whole-work-queue-2026-11-10.md";
+  assert.equal(path.match(/[\p{L}\p{N}]+/gu).length, 14);
+  const capture = `Read ${path} first.\n\n${CAPTURED}.\n`;
+  f.write("docs/intake/chats/dispatch.md", capture);
+  // The linked pages exist on main, so the link check has nothing to say.
+  f.write(path, "# The plan\n");
+  f.write("docs/planning/passes/a-b.md", "# A page\n");
+  f.git("add", "-A");
+  f.git("commit", "-qm", "linked pages");
+  f.git("checkout", "-q", "main");
+  f.git("merge", "-q", "--ff-only", "wo-999");
+  f.git("checkout", "-q", "wo-999");
+  const linked = (rest = "") =>
+    f.write(
+      "docs/planning/notes.md",
+      `# Notes\n\nThe pass is [the plan](passes/one-order-for-the-whole-work-queue-2026-11-10.md), also written ${path} and \`${path}\`. ${rest}\n\n[plan]: passes/one-order-for-the-whole-work-queue-2026-11-10.md "The plan"\n`,
+    );
+  linked();
+  // The same path in a source comment, where no Markdown reading applies.
+  f.write("scripts/note.mjs", `// See ${path} for the plan.\nexport {};\n`);
+  let run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(
+    run.stdout,
+    /against 1 captures, a 12-word window; 0 shared runs$/mu,
+  );
+  // Twelve of the capture's own words beside the link are a finding.
+  linked(`${CAPTURED}.`);
+  run = f.cli();
+  assert.equal(run.status, 1, run.stdout + run.stderr);
+  assert.ok(
+    run.stderr.includes(
+      `FAIL docs/planning/notes.md:3: 12 or more consecutive words shared with the ignored capture ${digest(capture)}`,
+    ),
+    run.stderr,
+  );
+  // An address keeps its place in the line: the words on either side of it
+  // are not neighbours, so a capture's words parted by a link's destination,
+  // a code span or a path are no run of twelve.
+  const [head, tail] = [
+    CAPTURED.split(" ").slice(0, 7).join(" "),
+    CAPTURED.split(" ").slice(7).join(" "),
+  ];
+  for (const address of [
+    `[${head}](passes/a-b.md) ${tail}`,
+    `${head} \`code span\` ${tail}`,
+    `${head} https://example.invalid/a/b ${tail}`,
+    `${head} scripts/lib/a.mjs ${tail}`,
+  ]) {
+    linked(address);
+    run = f.cli();
+    assert.equal(run.status, 0, `${address}: ${run.stdout}${run.stderr}`);
+  }
+  // A link's text is prose and is still compared.
+  linked(`[${CAPTURED}](passes/a-b.md)`);
+  assert.equal(f.cli().status, 1);
+  // So is a title: words copied into the title of a link, of an image or
+  // of a definition are compared, with the destination before them one
+  // address as it was.
+  for (const titled of [
+    `[the plan](passes/a-b.md "${CAPTURED}")`,
+    `[the plan](<passes/a-b.md> '${CAPTURED}')`,
+    `![the plan](passes/a-b.md "${CAPTURED}")`,
+    `[the plan][plan]\n\n[plan]: passes/a-b.md "${CAPTURED}"`,
+  ]) {
+    linked(titled);
+    assert.equal(f.cli().status, 1, titled);
+  }
+  // A short title beside a destination is no run, and the destination is
+  // still no neighbour of the words around it.
+  linked(`${head} [the plan](passes/a-b.md "a page") ${tail}`);
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  // What only resembles an address is still words: an abbreviation, a
+  // version and a hyphenated phrase do not part a run.
+  f.write(
+    "docs/intake/chats/prose.md",
+    "Keep the well-known rule, e.g. the first one, for v1.2.3 and every later release of the kit today.\n",
+  );
+  linked(
+    "Keep the well-known rule, e.g. the first one, for v1.2.3 and every later release of the kit today.",
+  );
+  assert.equal(f.cli().status, 1);
+  // Nor do two plain words with a slash between them, a date written with
+  // one, or an abbreviation of single letters and periods (WO-276, the
+  // attack on Part A): each of these sentences is copied whole.
+  for (const [name, sentence] of [
+    [
+      "slash",
+      "when the operator asks for a summary the agent reads and/or writes the notes file and reports what changed today",
+    ],
+    [
+      "letters",
+      "the agent should never copy text from the U.S.A. office notes into any committed record or receipt or export",
+    ],
+    [
+      "date",
+      "from 11/10 the agent stops each background shell it started before it hands",
+    ],
+  ]) {
+    f.write(`docs/intake/chats/${name}.md`, `${sentence}\n`);
+    linked(sentence);
+    const copied = f.cli();
+    assert.equal(copied.status, 1, `${name}: ${copied.stdout}`);
+    assert.match(copied.stderr, /12 or more consecutive words shared/u, name);
+  }
+  linked();
+
+  // In a kit root a changed file whose bytes equal the incoming manifest's
+  // entry is the kit's text and is not screened; with one line changed it is.
+  const kitFile = "docs/planning/kit-page.md";
+  const kitBytes = `# Kit page\n\n${CAPTURED}.\n`;
+  f.write(kitFile, kitBytes);
+  const screen = () =>
+    verbatimScreen(f.root, {
+      changes: branchChanges(f.root, { lastMergeOnMain: true }),
+    });
+  const flagged = () => screen().findings.map(({ file }) => file);
+  assert.deepEqual(flagged(), [kitFile], "outside a kit root it is screened");
+  const filesOutside = screen().files;
+  f.write(
+    "KIT-MANIFEST.json",
+    JSON.stringify({
+      files: [
+        {
+          path: kitFile,
+          sha256: createHash("sha256").update(kitBytes).digest("hex"),
+        },
+      ],
+    }),
+  );
+  assert.deepEqual(flagged(), []);
+  assert.equal(screen().files, filesOutside - 1, "the kit's file is left out");
+  f.write(kitFile, `${kitBytes}One line of this instance's own.\n`);
+  assert.deepEqual(flagged(), [kitFile]);
 });
 
 test("a current record's attributed speech without a capture citation fails where the branch adds it; a historical record keeps its note and a carried one its advisory (WO-259)", (t) => {
@@ -726,7 +891,9 @@ import {
   historyEnd,
   historyStart,
   markerLine,
+  releaseHistoryRecord,
   renderReleaseHistory,
+  renderReleaseRecord,
 } from "./lib/release-history.mjs";
 
 test("WO-190 the roadmap leads with the work ahead: the index is the list of orders, pending rungs precede the closed ones, no pending rung heading names an order, and the generated release history is last", async (t) => {
@@ -755,10 +922,12 @@ test("WO-190 the roadmap leads with the work ahead: the index is the list of ord
     Math.max(...pending.map((row) => row.index)) < firstReleased,
     "a released rung precedes a pending one",
   );
-  const ahead = rungs.find((row) => row.line.startsWith("## v1.0.0 "));
+  // The rung ahead: the Teammate-ready rung, numbered v2.0.0 since the
+  // release that took v1.0.0.
+  const ahead = rungs.find((row) => row.line.startsWith("## v2.0.0 "));
   assert.ok(
     ahead && ahead.index < firstReleased,
-    "v1.0.0 precedes the closed rungs",
+    "v2.0.0 precedes the closed rungs",
   );
   // No pending heading names an order as its carrier, so none names an
   // umbrella record: the index is the one list of orders.
@@ -909,6 +1078,1005 @@ function fixture(t, roots = {}) {
     controls,
   };
 }
+
+test("WO-275 criterion 4: an instance's FOR-CORE.md passes an entry of the stated form and fails naming the entry and the field on a missing field or a value outside its set", (t) => {
+  const f = fixture(t);
+  const template = readFileSync(
+    resolve("scripts/kit/for-core.template.md"),
+    "utf8",
+  );
+  // An entry as the template states it: a heading, a json block, prose.
+  const entry = (heading, fields, block = JSON.stringify(fields)) =>
+    `\n## ${heading}\n\n\`\`\`json\n${block}\n\`\`\`\n\nWhat the kit did, what was expected, the command and its message, and the route used meanwhile.\n`;
+  const good = entry("2026-11-09 — WO-002 — the preview refused a path", {
+    kit: "v0.123.0",
+    stopsNextOrder: false,
+    answered: null,
+  });
+  const cli = () =>
+    spawnSync(process.execPath, [script], {
+      cwd: f.root,
+      env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+      encoding: "utf8",
+    });
+  const named = () =>
+    f.check().failures.map((failure) => failure.replace(/:\d+:/u, ":N:"));
+  f.controls();
+  // The seeded file, with its form and its example, holds no entry to fail.
+  f.write("FOR-CORE.md", template);
+  assert.deepEqual(f.check().failures, []);
+  f.write(
+    "FOR-CORE.md",
+    template +
+      good +
+      entry("2026-11-10 — first-pass — a release answered this one", {
+        kit: "v0.122.1",
+        stopsNextOrder: true,
+        answered: "v0.123.0",
+      }),
+  );
+  assert.deepEqual(f.check().failures, []);
+  const passed = cli();
+  assert.equal(passed.status, 0, passed.stdout + passed.stderr);
+  // A missing field and values outside their sets: each named by entry and
+  // field, through the command as through the function.
+  const heading = "2026-11-10 — WO-003 — a field is wrong";
+  f.write(
+    "FOR-CORE.md",
+    template + good + entry(heading, { kit: "0.123", stopsNextOrder: "maybe" }),
+  );
+  assert.deepEqual(named(), [
+    `FOR-CORE.md:N: entry "${heading}": field kit holds "0.123", outside its set (a kit version, "vX.Y.Z")`,
+    `FOR-CORE.md:N: entry "${heading}": field stopsNextOrder holds "maybe", outside its set (true or false)`,
+    `FOR-CORE.md:N: entry "${heading}": field answered is missing; it holds null, or the answering release's version "vX.Y.Z"`,
+  ]);
+  const failed = cli();
+  assert.equal(failed.status, 1);
+  assert.match(
+    failed.stderr,
+    new RegExp(
+      `FAIL FOR-CORE\\.md:\\d+: entry "${heading}": field answered is missing`,
+      "u",
+    ),
+  );
+  // An unknown field, a block that is not JSON and one that holds no object
+  // are named too.
+  const odd = "2026-11-10 — WO-004 — odd";
+  for (const [block, failure] of [
+    [
+      JSON.stringify({
+        kit: "v0.123.0",
+        stopsNextOrder: false,
+        answered: null,
+        blocks: true,
+      }),
+      `FOR-CORE.md:N: entry "${odd}": field blocks is not one of kit, stopsNextOrder, answered`,
+    ],
+    [
+      "kit: v0.123.0",
+      `FOR-CORE.md:N: entry "${odd}": its json block is not JSON`,
+    ],
+    [
+      "[]",
+      `FOR-CORE.md:N: entry "${odd}": its json block holds no object of kit, stopsNextOrder, answered`,
+    ],
+  ]) {
+    f.write("FOR-CORE.md", template + good + entry(odd, null, block));
+    assert.deepEqual(named(), [failure], block);
+  }
+  // Every heading Markdown reads at level two is an entry: one indented by
+  // up to three spaces, one separated by a tab, and one after an indented
+  // code line that looks like a fence. Each invalid field is named.
+  const invalid = { kit: "v0.123.0", stopsNextOrder: "maybe", answered: null };
+  for (const [label, text] of [
+    [
+      "indented",
+      entry("2026-11-10 — WO-005 — indented", invalid).replace(
+        "\n## 2026",
+        "\n   ## 2026",
+      ),
+    ],
+    [
+      "tab",
+      entry("2026-11-10 — WO-005 — tab", invalid).replace(
+        "\n## 2026",
+        "\n##\t2026",
+      ),
+    ],
+    [
+      "after indented code",
+      "\n    ```text\n" +
+        entry("2026-11-10 — WO-005 — after indented code", invalid),
+    ],
+  ]) {
+    f.write("FOR-CORE.md", template + good + text);
+    assert.deepEqual(
+      named(),
+      [
+        `FOR-CORE.md:N: entry "2026-11-10 — WO-005 — ${label}": field stopsNextOrder holds "maybe", outside its set (true or false)`,
+      ],
+      label,
+    );
+  }
+  // An entry with no block at all names every field it lacks; a root
+  // without the file is not judged.
+  f.write(
+    "FOR-CORE.md",
+    template + "\n## 2026-11-10 — WO-006 — no block\n\nProse only.\n",
+  );
+  assert.deepEqual(named(), [
+    'FOR-CORE.md:N: entry "2026-11-10 — WO-006 — no block": no json block directly under its heading, so each field (kit, stopsNextOrder, answered) is missing',
+  ]);
+  rmSync(join(f.root, "FOR-CORE.md"));
+  assert.deepEqual(f.check().failures, []);
+});
+
+test("WO-276 criteria B1 and B5: the document gate refuses a source that reads Markdown syntax or JSON text by pattern, naming its file and line, and passes tests, the proven copy of the carried parser and patterns that are not Markdown", (t) => {
+  const f = fixture(t);
+  f.controls();
+  const lines = [
+    "export const title = (line) => /^## (.+)$/mu.exec(line);",
+    'export const fence = (line) => line.startsWith("```");',
+    "export const field = (line) => /^\\*\\*Model:\\*\\*/u.test(line);",
+    "export const row = (line) => /^\\|\\s*[a-z]/u.test(line);",
+    "export const item = (line) => /^- (.+)$/u.exec(line);",
+    'export const version = (text) => /"version":\\s*"([^"]+)"/u.exec(text);',
+    'export const section = (title) => new RegExp(`^#{2,3} ${title}`, "mu");',
+    // Not Markdown: a link fragment, a shebang, a patch envelope's line.
+    'export const fragment = (href) => href.startsWith("#") || /^#!/u.test(href);',
+    "export const patch = (line) => /^\\*\\*\\* Begin Patch$/u.test(line);",
+    // A pattern that follows a condition, where a scanner alone reads a
+    // division.
+    "export const after = (on, line) => { if (on) /^# /u.test(line); };",
+    // A marker comment, by a pattern and by a string test.
+    "export const block = (text) => /<!-- sample:start -->[\\s\\S]*?<!-- sample:end -->/u.exec(text);",
+    'export const opens = (line) => line.startsWith("<!-- sample:start -->");',
+    // A line compared with a constant is tested against the constant's
+    // text; a name the source declares twice is left unresolved.
+    'const START = "<!-- sample:start -->";',
+    "export const exact = (line) => line === START;",
+    'const LABEL = "**Sample:**";',
+    "export const shadowed = (LABEL, line) => line.startsWith(LABEL);",
+    // A table row by a string test (rolling review 12): its opening, and a
+    // delimiter row's dashes. A shell pipe, a version range and a bare pipe
+    // are no table's.
+    'export const rows = (markdown) => markdown.split("\\n").filter((line) => line.startsWith("| "));',
+    'export const delimiter = (line) => line.includes("| ---");',
+    'export const piped = (command) => command.includes(" | ") || command.split("||").length > 1 || command.split("|").length > 2;',
+    // A heading written by the line under it, of either level (the
+    // ladder's first round, criteria); a rule's row of hyphens and an
+    // assignment's equals sign are neither.
+    "export const underlined = (text) => /^(.+)\\n=+[ \\t]*$/mu.exec(text);",
+    "export const second = (text) => /^(.+)\\n-{3,}\\s*$/mu.exec(text);",
+    "export const rule = (line) => /^-{3,}$/u.test(line) || /^[^=]+=[^=]+$/u.test(line);",
+    // The underline as a class of the two characters (the ladder's recheck
+    // round, criteria); a rule's class of its three characters is none.
+    "export const either = (text) => /^(.+)\\n[=-]+[ \\t]*$/mu.exec(text);",
+    "export const thematic = (line) => /^[-*_]{3,}$/u.test(line);",
+    // The underline with the indentation Markdown allows it (the ladder's
+    // recheck round, combined).
+    "export const indented = (text) => /^(.+)\\n {0,3}-{3,}[ \\t]*$/mu.exec(text);",
+    // The underline captured in a group (the ladder's last round).
+    "export const grouped = (text) => /^(.+)\\n {0,3}(-{3,})[ \\t]*$/mu.exec(text);",
+  ];
+  f.write("scripts/lib/reader.mjs", `${lines.join("\n")}\n`);
+  // A reader the screen names, with the reason its exact line is the
+  // contract, passes in its own file.
+  f.write(
+    "scripts/lib/plan-first.mjs",
+    'const DIFF_START = "<!-- dotln-plan-first-diff:start -->";\nexport const opened = (lines) => lines.filter((line) => line === DIFF_START).length;\n',
+  );
+  // Tests and fixtures are not the repository's readers, and neither is the
+  // carried parser where its bytes are the recorded ones. Another file
+  // beside it is a source like any other.
+  f.write("scripts/test-reader.mjs", `${lines[0]}\n`);
+  f.write("scripts/reader.test.mjs", `${lines[0]}\n`);
+  f.write("scripts/fixtures/reader.mjs", `${lines[0]}\n`);
+  // A module that only has a name opening with "test-" is a reader like
+  // any other (the ladder's first round, criteria): the runner at the
+  // scripts root, whose own reading of a TAP comment is named and passes,
+  // the shard helper and the selection reader.
+  f.write(
+    "scripts/test-runner.mjs",
+    `${lines[1]}\nexport const marker = (raw) => raw.replace(/^\\s*# (?=PROGRESS )/, "");\n`,
+  );
+  f.write("scripts/lib/test-shards.mjs", `${lines[4]}\n`);
+  f.write("packages/skeleton/src/test-selection.mjs", `${lines[0]}\n`);
+  const carried = "scripts/lib/vendor/prettier-markdown.mjs";
+  f.write(carried, `${lines[0]}\n`);
+  f.write(
+    "scripts/lib/vendored-parser.json",
+    `${JSON.stringify({
+      schemaVersion: 1,
+      package: "prettier",
+      version: "0.0.0",
+      files: {
+        [carried]: createHash("sha256").update(`${lines[0]}\n`).digest("hex"),
+      },
+    })}\n`,
+  );
+  f.write("scripts/lib/vendor/parser.mjs", `${lines[4]}\n`);
+  // A runtime package is screened too, and a named non-Markdown pattern in
+  // its own file passes.
+  f.write(
+    "packages/skeleton/src/feedback-audit.ts",
+    "export const passed = (output: string) => output.match(/^# pass (\\d+)$/mu);\n",
+  );
+  f.write(
+    "packages/console/src/text.ts",
+    "export const item = (line: string) => /^- (.+)$/u.test(line);\n",
+  );
+  const refused = f
+    .check()
+    .failures.filter((failure) => /^(?:scripts|packages)\//u.test(failure));
+  assert.deepEqual(
+    refused,
+    [
+      "packages/console/src/text.ts:1: reads a list item by pattern; read Markdown through the shared readers of scripts/lib/markdown-links.mjs (a runtime package takes the structure its caller parsed)",
+      ...[
+        [1, "a heading"],
+        [2, "a fence"],
+        [3, "a bold field label"],
+        [4, "a table row"],
+        [5, "a list item"],
+        [7, "a heading"],
+        [10, "a heading"],
+        [11, "a marker comment"],
+        [12, "a marker comment"],
+        [14, "a marker comment"],
+        [17, "a table row"],
+        [18, "a table row"],
+        [20, "a heading"],
+        [21, "a heading"],
+        [23, "a heading"],
+        [25, "a heading"],
+        [26, "a heading"],
+      ].map(
+        ([line, form]) =>
+          `scripts/lib/reader.mjs:${line}: reads ${form} by pattern; read Markdown through the shared readers of scripts/lib/markdown-links.mjs (a runtime package takes the structure its caller parsed)`,
+      ),
+      "scripts/lib/reader.mjs:6: reads JSON text by pattern; parse it with JSON.parse",
+      "scripts/lib/vendor/parser.mjs:1: reads a list item by pattern; read Markdown through the shared readers of scripts/lib/markdown-links.mjs (a runtime package takes the structure its caller parsed)",
+      ...[
+        ["packages/skeleton/src/test-selection.mjs", "a heading"],
+        ["scripts/lib/test-shards.mjs", "a list item"],
+        ["scripts/test-runner.mjs", "a fence"],
+      ].map(
+        ([file, form]) =>
+          `${file}:1: reads ${form} by pattern; read Markdown through the shared readers of scripts/lib/markdown-links.mjs (a runtime package takes the structure its caller parsed)`,
+      ),
+    ].sort((a, b) => {
+      const at = (text) => [text.split(":")[0], Number(text.split(":")[1])];
+      const [fa, la] = at(a),
+        [fb, lb] = at(b);
+      return fa === fb ? la - lb : fa < fb ? -1 : 1;
+    }),
+  );
+  // The command refuses too, naming the file and line.
+  const cli = spawnSync(process.execPath, [script], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.equal(cli.status, 1);
+  assert.match(
+    cli.stderr,
+    /FAIL scripts\/lib\/reader\.mjs:1: reads a heading by pattern/u,
+  );
+  // The forms the attack on Part B wrote past the screen (WO-276): a
+  // pattern built from a constant or a raw template, a string a method
+  // reads as a pattern, a label or a marker's shape with no line anchor, a
+  // class of a fence's two characters. Each is one source line here.
+  const formOf = (source) =>
+    screenSource("scripts/lib/forms.mjs", `${source}\n`).map(
+      ({ form, line }) => [line, form],
+    );
+  for (const [source, expected] of [
+    [
+      'const H = "^## (.*)$";\nexport const read = (text) => new RegExp(H, "m").exec(text);',
+      [[2, "a heading"]],
+    ],
+    [
+      "const MARKS = String.raw`^[ \\t]*(?:(?:>|[-*+]|\\d{1,9}[.)])[ \\t]*)*`;\nexport const ATX = new RegExp(`${MARKS}#{1,6}(?:[ \\\\t]|$)`);",
+      [[2, "a list item"]],
+    ],
+    [
+      'export const read = (line) => line.match("^## (.*)$");',
+      [[1, "a heading"]],
+    ],
+    ['export const at = (text) => text.search("\\n## ");', [[1, "a heading"]]],
+    [
+      'export const strip = (text) => text.replaceAll("**Status:**", "");',
+      [[1, "a bold field label"]],
+    ],
+    [
+      "export const field = (text) => /\\*\\*Repository:\\*\\*\\s*(.+)/u.exec(text);",
+      [[1, "a bold field label"]],
+    ],
+    [
+      "export const fence = (line) => /^ {0,3}([`~]{3,})/u.test(line);",
+      [[1, "a fence"]],
+    ],
+    [
+      "export const item = (line) => /^(\\d+)\\.\\s+(.*)$/u.exec(line);",
+      [[1, "a list item"]],
+    ],
+    [
+      "export const marker = (line) => /^\\s*\\d+[.)]\\s/u.test(line);",
+      [[1, "a list item"]],
+    ],
+    [
+      "export const head = (line) => /^(?:#|##) (.*)$/u.exec(line);",
+      [[1, "a heading"]],
+    ],
+    [
+      "export const parts = (text) => text.split(/(?:^|\\n)## /u);",
+      [[1, "a heading"]],
+    ],
+    [
+      "export const two = (line) => /^[#]{2} /u.test(line);",
+      [[1, "a heading"]],
+    ],
+    // A string's own forms (rolling review 18): a tab after the marks, a
+    // line break before them, an indented or parenthesized list marker.
+    [
+      'export const isHeading = (line) => line.startsWith("##\\t");',
+      [[1, "a heading"]],
+    ],
+    [
+      'export const parts = (text) => text.split("\\n## ");',
+      [[1, "a heading"]],
+    ],
+    [
+      'export const windows = (text) => text.split("\\r\\n## ");',
+      [[1, "a heading"]],
+    ],
+    [
+      'export const indented = (line) => line.startsWith("  ## ");',
+      [[1, "a heading"]],
+    ],
+    [
+      'export const has = (text) => text.includes("\\n- ");',
+      [[1, "a list item"]],
+    ],
+    [
+      'export const item = (line) => line.startsWith("-\\t");',
+      [[1, "a list item"]],
+    ],
+    [
+      'export const numbered = (line) => line.startsWith("1) ");',
+      [[1, "a list item"]],
+    ],
+    [
+      'export const nested = (line) => line.startsWith("  - ");',
+      [[1, "a list item"]],
+    ],
+    // A table row, at the line's start or indented (rolling review 27).
+    [
+      'export const isRow = (line) => line.startsWith("| Name | Value |");',
+      [[1, "a table row"]],
+    ],
+    [
+      'export const isIndentedRow = (line) => line.startsWith("  | Name | Value |");',
+      [[1, "a table row"]],
+    ],
+    // A compact header, which holds no space, and the same indented
+    // (rolling review 29).
+    [
+      "export const isHeader = (line) => line.startsWith('|Name|Value|');",
+      [[1, "a table row"]],
+    ],
+    [
+      'export const isCompact = (line) => line.startsWith("  |Name|Value|");',
+      [[1, "a table row"]],
+    ],
+    // The same header written without its closing pipe, which Markdown
+    // lets a row omit (rolling review 32).
+    [
+      "export const isOpen = (line) => line.startsWith('|Name|Value');",
+      [[1, "a table row"]],
+    ],
+    [
+      'export const isOpenIndented = (line) => line.startsWith("  |Name|Value");',
+      [[1, "a table row"]],
+    ],
+    // A separator with spaces about it is no row: other formats split on
+    // it. Neither is a pair of pipes, with or without text after it, an
+    // alternation that opens with none, or a compact row of one cell: the
+    // form ends at a line that opens with a pipe and holds two cells.
+    ['export const orElse = (text) => text.startsWith("||fallback");', []],
+    ['export const cells = (line) => line.split(" | ");', []],
+    ['export const either = (text) => text.includes("||");', []],
+    ['export const tools = (name) => "Edit|Write|Read".includes(name);', []],
+    ['export const one = (line) => line.startsWith("|x|");', []],
+    // A bold field's label, at the line's start or indented (rolling
+    // review 25).
+    [
+      'export const isField = (line) => line.startsWith("**Model:**");',
+      [[1, "a bold field label"]],
+    ],
+    [
+      'export const isIndented = (line) => line.startsWith("  **Model:**");',
+      [[1, "a bold field label"]],
+    ],
+    // The same label written with underscores, by a pattern and by a
+    // string (rolling review 35); a name that opens with two underscores
+    // is none.
+    [
+      "export const underscored = (line) => /^__([^_]+):__\\s*(.*)$/u.exec(line);",
+      [[1, "a bold field label"]],
+    ],
+    [
+      'export const isUnderscored = (line) => line.startsWith("__Model:__");',
+      [[1, "a bold field label"]],
+    ],
+    // A pattern that names its field (rolling review 39).
+    [
+      "export const model = (line) => /^__Model:__\\s*(.*)$/u.exec(line);",
+      [[1, "a bold field label"]],
+    ],
+    [
+      "export const base = (line) => /__Base\\sbranch:__ (\\S+)/u.exec(line);",
+      [[1, "a bold field label"]],
+    ],
+    // A group of alternative labels, between either marker and with no
+    // anchor (rolling review 40).
+    [
+      "export const fields = (line) => /^__(Model|Effort):__\\s*(.*)$/u.exec(line);",
+      [[1, "a bold field label"]],
+    ],
+    [
+      "export const starred = (line) => /\\*\\*(Model|Effort):\\*\\*/u.exec(line);",
+      [[1, "a bold field label"]],
+    ],
+    ["export const dunder = (name) => /^__[a-z]+__$/u.test(name);", []],
+    ['export const isDunder = (name) => name.startsWith("__");', []],
+    // What only resembles one of them: a version, a number and its unit.
+    [
+      "export const version = (text) => /^\\d+\\.\\d+\\.\\d+$/u.test(text);",
+      [],
+    ],
+    [
+      "export const parts3 = (text) => /^v?(\\d+)\\.(\\d+)\\.(\\d+)$/u.exec(text);",
+      [],
+    ],
+  ])
+    assert.deepEqual(formOf(source), expected, source);
+  // A copy changed by one byte is no longer the proven one.
+  f.write(carried, `${lines[0]}\n\n`);
+  assert.ok(
+    f
+      .check()
+      .failures.some((failure) =>
+        failure.startsWith(`${carried}:1: reads a heading by pattern`),
+      ),
+  );
+});
+
+// The screen's matrix (the mid-order ladder's last round and the
+// twenty-first critic, WO-276-D082): for each form of Markdown syntax, the
+// sources of regular expressions made by crossing a line's start, an
+// indentation, a spelling of the marker and what follows it. A source is
+// kept only where it compiles and matches one of the form's sample lines,
+// so each is a reader of that form however it is spelled.
+const MATRIX_START = ["^", "\\n", "(?:^|\\n)"];
+const MATRIX_INDENT = ["", " *", "\\s*", "[ \\t]*", " {0,3}"];
+const MATRIX_GAP = [" ", "\\s", "\\s+", "[ \\t]+", " +", "[ \\t]", "(?= )"];
+const SCREEN_MATRIX = [
+  {
+    name: "heading (marked)",
+    probes: ["## Title", "   ## Title", "x\n## Title", "# T"],
+    parts: [
+      MATRIX_START,
+      MATRIX_INDENT,
+      [
+        "#",
+        "##",
+        "#+",
+        "#{1,6}",
+        "#{2}",
+        "#{2,}",
+        "[#]+",
+        "[#]{1,6}",
+        "(#+)",
+        "(#{1,6})",
+        "(?<marks>#+)",
+        "(?:#)+",
+        "(?:#{1,6})",
+      ],
+      [...MATRIX_GAP, "(?:\\s|$)", "\\s*(.+)$"],
+    ],
+  },
+  {
+    name: "heading (underlined, with its text line)",
+    probes: [
+      "Title\n===",
+      "Title\n---",
+      "Title\n  ---",
+      "Title\n=== ",
+      "Title\n  ===",
+    ],
+    parts: [
+      ["^(.+)\\n", "\\n", "(.+)\\r?\\n", "^.+\\n", "(?:^|\\n)(.+)\\n"],
+      ["", " {0,3}", "[ \\t]*", "\\s*", " *"],
+      [
+        "=+",
+        "-+",
+        "={3,}",
+        "-{3,}",
+        "={2,}",
+        "[=-]+",
+        "[-=]+",
+        "[=-]{3,}",
+        "[-=]{2,}",
+        "(?:=+|-+)",
+        "(=+|-+)",
+        "(?:-+|=+)",
+        "(?:={3,}|-{3,})",
+        "[=]+",
+        "[-]+",
+        "(?:=|-)+",
+        "(=|-)\\1+",
+        "(?<mark>=+|-+)",
+      ],
+      ["", "[ \\t]*$", "\\s*$", "$", " *$"],
+    ],
+  },
+  {
+    name: "heading (underline as a line of its own)",
+    probes: ["===", "  ===", "=== "],
+    parts: [
+      ["^"],
+      MATRIX_INDENT,
+      [
+        "=+",
+        "={3,}",
+        "[=-]+",
+        "[-=]+",
+        "(?:=+|-+)",
+        "(?:-+|=+)",
+        "[=]+",
+        "(=+|-+)",
+        "[-=]{3,}",
+        "(?:=|-)+",
+      ],
+      ["$", "\\s*$", "[ \\t]*$"],
+    ],
+  },
+  {
+    name: "fence",
+    probes: ["```js", "~~~", "   ```", "````", "x\n```"],
+    parts: [
+      ["^", "^\\s*", "^ {0,3}", "", "\\n", "^[ \\t]*", "(?:^|\\n)"],
+      [
+        "```",
+        "`{3}",
+        "`{3,}",
+        "(`{3,}|~{3,})",
+        "(?:`{3,}|~{3,})",
+        "[`~]{3,}",
+        "~~~",
+        "~{3,}",
+        "(?:`|~){3}",
+        "(```+|~~~+)",
+        "([`~])\\1{2,}",
+        "(?<fence>`{3,}|~{3,})",
+        "`{3,4}",
+        "[~`]{3}",
+        "(`|~){3,}",
+        "``+`",
+        "(?:```|~~~)",
+        "(`{3,})",
+        "(~{3,})",
+        "[`]{3,}",
+        "[~]{3,}",
+      ],
+      [""],
+    ],
+  },
+  {
+    name: "marker comment",
+    probes: ["<!-- dotln:start -->", "  <!-- x -->"],
+    parts: [
+      ["", "^", "^\\s*"],
+      [
+        "<!--",
+        "<!-- ?",
+        "<!--\\s*",
+        "<!--(.*?)-->",
+        "<!--\\s*([a-z:-]+)\\s*-->",
+        "<!-{2}",
+        "<!--[^>]*-->",
+        "<!(?:--)",
+      ],
+      [""],
+    ],
+  },
+  {
+    name: "table row",
+    probes: [
+      "| a | b |",
+      "|a|b|",
+      "  | a | b |",
+      "| --- | --- |",
+      "x\n| a | b |",
+    ],
+    parts: [
+      MATRIX_START,
+      MATRIX_INDENT,
+      [
+        "\\|",
+        "[|]",
+        "\\|.*\\|",
+        "\\|(.+)\\|",
+        "(\\|[^|]+)+\\|",
+        "\\|?[-: |]+\\|?",
+        "\\| ",
+        "(?:\\|[^|\\n]*)+\\|",
+        "(?:\\|)",
+        "(\\|)",
+        "\\|{1}",
+      ],
+      ["", "$", "\\s*$"],
+    ],
+  },
+  {
+    name: "list item",
+    probes: [
+      "- item",
+      "* item",
+      "+ item",
+      "1. item",
+      "2) item",
+      "  - item",
+      "x\n- item",
+      "x\n1. item",
+      "- [ ] item",
+    ],
+    parts: [
+      MATRIX_START,
+      MATRIX_INDENT,
+      [
+        "-",
+        "\\*",
+        "\\+",
+        "[-*+]",
+        "[*+-]",
+        "[-+*]",
+        "(?:-|\\*|\\+)",
+        "(-|\\*|\\+)",
+        "[-*]",
+        "[*-]",
+        "\\d+\\.",
+        "\\d+[.)]",
+        "\\d{1,9}[.)]",
+        "(?:[-*+]|\\d+[.)])",
+        "(?:\\d+[.)]|[-*+])",
+        "[0-9]+\\.",
+        "[0-9]+[.)]",
+        "(\\d+)\\.",
+        "([-*+])",
+        "(?<marker>[-*+]|\\d+[.)])",
+        "\\d\\.",
+        "(?:\\d+)\\.",
+        "(?:[-*+])",
+        "[-]",
+        "(\\d+)[.)]",
+      ],
+      [...MATRIX_GAP, " \\[[ xX]\\] ", "\\s+(.*)$"],
+    ],
+  },
+  {
+    name: "bold field label (anywhere, by its label)",
+    probes: [
+      "**Class:** core",
+      "  **Class:** core",
+      "x\n**Base branch:** main",
+    ],
+    parts: [
+      [""],
+      ["", "\\s*", "[ \\t]*"],
+      [
+        "\\*\\*([^*]+):\\*\\*",
+        "\\*\\*(.+?):\\*\\*",
+        "\\*\\*Class:\\*\\*",
+        "\\*\\*([A-Za-z ]+):\\*\\*\\s*(.+)",
+        "\\*{2}Class:\\*{2}",
+        "\\*\\*Class:",
+        "[*]{2}Class:[*]{2}",
+      ],
+      ["", "\\s*(.*)$"],
+    ],
+  },
+  {
+    name: "bold field label written with underscores",
+    probes: [
+      "__Class:__ core",
+      "  __Class:__ core",
+      "x\n__Base branch:__ main",
+      "__Model:__ core",
+      "__Effort:__ high",
+    ],
+    parts: [
+      ["", ...MATRIX_START],
+      ["", "\\s*", "[ \\t]*"],
+      [
+        "__([^_]+):__",
+        "__(.+?):__",
+        "__Class:__",
+        "__Model:__",
+        // The label as a group of alternatives, plain, non-capturing and
+        // named, and the marker quantified or as a class around it.
+        "__(Model|Effort):__",
+        "__(?:Model|Effort):__",
+        "__(?<field>Model|Effort):__",
+        "_{2}(Model|Effort):_{2}",
+        "[_]{2}Model:[_]{2}",
+        "[_][_](?:Model|Effort):[_][_]",
+        "__([A-Za-z ]+):__\\s*(.+)",
+        "_{2}Class:_{2}",
+        "__Class:",
+        "[_]{2}Class:[_]{2}",
+      ],
+      ["", "\\s*(.*)$"],
+    ],
+  },
+  // The same field read with no anchor: named by its shape, a label and
+  // its colon between the two markers, however the label is spelled and
+  // whichever marker a pattern admits.
+  {
+    name: "bold field label with no anchor",
+    probes: ["**Model:** core", "see **Effort:** high", "__Model:__ core"],
+    parts: [
+      [""],
+      [
+        "\\*\\*Model:\\*\\*",
+        "\\*\\*(Model|Effort):\\*\\*",
+        "\\*\\*(?:Model|Effort):\\*\\*",
+        "\\*\\*(?<field>Model|Effort):\\*\\*",
+        "\\*\\*([^*]+):\\*\\*",
+        "\\*\\*(.+?):\\*\\*",
+        "\\*{2}(Model|Effort):\\*{2}",
+        "[*]{2}Model:[*]{2}",
+        "(?:\\*\\*|__)([^:*_]+):(?:\\*\\*|__)",
+      ],
+      ["", "\\s*(.*)$"],
+    ],
+  },
+  {
+    name: "bold field label",
+    probes: [
+      "**Class:** core",
+      "  **Class:** core",
+      "x\n**Base branch:** main",
+    ],
+    parts: [
+      MATRIX_START,
+      ["", "\\s*", "[ \\t]*"],
+      [
+        "\\*\\*",
+        "\\*{2}",
+        "[*]{2}",
+        "\\*\\*([^*]+):\\*\\*",
+        "\\*\\*(.+?):\\*\\*",
+        "(?:\\*\\*)",
+        "\\*\\*Class:\\*\\*",
+        "[*][*]",
+        "\\*\\*([A-Za-z ]+):\\*\\*\\s*(.+)",
+        "\\*{2}Class:\\*{2}",
+        "\\*\\*Class:",
+        "(\\*\\*)",
+      ],
+      ["", "\\s*(.*)$"],
+    ],
+  },
+];
+// Patterns that read something else: a rule or a front matter's fence, a
+// flag, an alternation, a shebang, a fragment, a patch's line, a version,
+// an operator, bold text anywhere, a line break, a code span.
+const SCREEN_MATRIX_OTHERS = [
+  "^-{3,}$",
+  "^---$",
+  "^[-*_]{3,}$",
+  "^-+$",
+  "^--",
+  "^-[a-z]",
+  "a|b",
+  "^\\s*$",
+  "^#!",
+  "#[a-z]+$",
+  "^\\*{3} ",
+  "\\|\\|",
+  "^\\d+$",
+  "^v\\d+\\.\\d+",
+  "^[a-z]+: ",
+  "\\s-\\s",
+  "^\\+\\+\\+ ",
+  "^--- a/",
+  "^=$",
+  "a=+b",
+  "=>",
+  "===",
+  "\\*\\*",
+  "\\*{2}",
+  "\\*\\*(.+?)\\*\\*",
+  "\\r?\\n",
+  "[ \\t]+",
+  "`[^`]+`",
+  "(`+)(.+?)\\1(?!`)",
+  "^\\d+\\.\\d+\\.\\d+$",
+  "^-$",
+  // Bold text and emphasis, which hold no colon before their closing
+  // marker, a name between underscores with a colon after it, and a
+  // pattern that admits either marker around text with no label.
+  "\\*\\*([^*]+)\\*\\*",
+  "\\*{2}(.+?)\\*{2}",
+  "__([^_]+)__",
+  "__proto__:",
+  "(?:\\*\\*|__)(.+?)(?:\\*\\*|__)",
+  // A name that opens with two underscores, and underscores as emphasis.
+  "^__",
+  "^__[a-z]+__$",
+  "__dirname",
+  "^_+",
+  "__(.+?)__",
+];
+
+test("WO-276 criterion B1: the document gate screens a source of every dialect the source reader parses under scripts/ and under a package's src/, leaves the same dialects' tests and fixtures out, and never passes a selected source unread", (t) => {
+  const f = fixture(t);
+  f.controls();
+  const reader = "export const title = (line) => /^## (.+)$/mu.exec(line);\n";
+  // Each suffix the reader's own dialect rule admits: a module, a CommonJS
+  // file and a plain file, of JavaScript and of TypeScript, with JSX or not.
+  const suffixes = ["", "c", "m"].flatMap((kind) =>
+    ["js", "ts", "jsx", "tsx"].map((dialect) => `${kind}${dialect}`),
+  );
+  const sources = suffixes.flatMap((suffix) => [
+    `packages/console/src/dialect.${suffix}`,
+    `scripts/dialect.${suffix}`,
+    `scripts/lib/nested/dialect.${suffix}`,
+    // A file named by its suffix and nothing more is a source like any
+    // other, directly under each root and below a directory there.
+    `packages/console/src/.${suffix}`,
+    `packages/console/src/nested/.${suffix}`,
+    `scripts/.${suffix}`,
+    `scripts/lib/nested/.${suffix}`,
+  ]);
+  // Names of other shapes: several dots, a leading dot, a space, a leading
+  // hyphen, and a name that only opens as a suite's does.
+  sources.push(
+    "packages/console/src/a name.ts",
+    "scripts/-leading.mjs",
+    "scripts/.hidden.cjs",
+    "scripts/lib/test-named.mjs",
+    "scripts/several.dots.in.name.mjs",
+  );
+  for (const path of sources) f.write(path, reader);
+  // The same dialects as a suite, a named test and a fixture, and files
+  // that are no source in any dialect.
+  const outside = [
+    ...suffixes.flatMap((suffix) => [
+      `scripts/test-dialect.${suffix}`,
+      `scripts/lib/dialect.test.${suffix}`,
+      `scripts/lib/.test.${suffix}`,
+      `scripts/fixtures/dialect.${suffix}`,
+      `scripts/fixtures/.${suffix}`,
+      `packages/console/src/fixtures/dialect.${suffix}`,
+      `packages/console/test/dialect.${suffix}`,
+      `packages/console/test/.${suffix}`,
+    ]),
+    "scripts/dialect.json",
+    "scripts/dialect.sh",
+    "scripts/dialect.md",
+    "packages/console/src/dialect.css",
+    // A suffix with no dot before it, and a source outside both roots.
+    "scripts/mjs",
+    "packages/console/.mjs",
+    "packages/.ts",
+    "tools/dialect.mjs",
+  ];
+  for (const path of outside) f.write(path, reader);
+  assert.deepEqual(screenedSources(f.root), [...sources].sort());
+  // The selection and the reader agree, each way: every selected source has
+  // a tree, and of what stands under the two roots the reader has a tree for
+  // nothing the selection leaves out but a test or a fixture.
+  assert.ok(
+    sourceTrees(sources.map((path) => ({ path, source: reader }))).every(
+      (tree) => tree !== null,
+    ),
+  );
+  const unselected = outside.filter((path) =>
+    /^(?:scripts|packages\/[^/]+\/src)\//u.test(path),
+  );
+  const parsed = sourceTrees(
+    unselected.map((path) => ({ path, source: reader })),
+  );
+  assert.deepEqual(
+    unselected.filter(
+      (path, index) =>
+        parsed[index] !== null &&
+        !/^scripts\/test-|\.test\.|\/fixtures\//u.test(path),
+    ),
+    [],
+  );
+  // A name with a line break in it is one path, selected and read like the
+  // rest.
+  const broken = "scripts/lib/two\nlines.mjs";
+  f.write(broken, reader);
+  assert.ok(screenedSources(f.root).includes(broken));
+  assert.deepEqual(
+    markdownScreen(f.root, [broken]).map(({ file, line }) => [file, line]),
+    [[broken, 1]],
+  );
+  unlinkSync(join(f.root, broken));
+  const finding = (path) =>
+    `${path}:1: reads a heading by pattern; read Markdown through the shared readers of scripts/lib/markdown-links.mjs (a runtime package takes the structure its caller parsed)`;
+  assert.deepEqual(
+    f
+      .check()
+      .failures.filter((failure) => /^(?:scripts|packages)\//u.test(failure))
+      .sort(),
+    sources.map(finding).sort(),
+  );
+  // A path handed to the screen that the reader parses in no dialect is
+  // refused by name: it is never counted as a source that passed.
+  assert.throws(
+    () => markdownScreen(f.root, ["scripts/dialect.json"]),
+    /scripts\/dialect\.json is selected by the pattern-reader screen, and the source reader parses it in no dialect/u,
+  );
+});
+
+test("WO-276 criterion B1: the screen names every reader of a matrix that crosses each Markdown form's spellings, and none of the patterns that read something else", () => {
+  const readers = [];
+  for (const { name, probes, parts } of SCREEN_MATRIX) {
+    const sources = parts.reduce(
+      (heads, list) => heads.flatMap((head) => list.map((item) => head + item)),
+      [""],
+    );
+    for (const source of sources) {
+      let pattern;
+      try {
+        pattern = new RegExp(source, "mu");
+      } catch {
+        continue;
+      }
+      if (probes.some((probe) => pattern.test(probe)))
+        readers.push({ name, source });
+    }
+  }
+  // Several thousand readers, and every family among them.
+  assert.ok(readers.length > 7000, `${readers.length} readers`);
+  assert.deepEqual(
+    [...new Set(readers.map(({ name }) => name))],
+    SCREEN_MATRIX.map(({ name }) => name),
+  );
+  const lines = [
+    ...readers.map(
+      ({ source }, index) =>
+        `export const reader${index} = /${source.replace(/\//gu, "\\/")}/mu;`,
+    ),
+    ...SCREEN_MATRIX_OTHERS.map(
+      (source, index) => `export const other${index} = /${source}/u;`,
+    ),
+  ];
+  const named = new Set(
+    screenSource("scripts/lib/matrix.mjs", `${lines.join("\n")}\n`).map(
+      ({ line }) => line,
+    ),
+  );
+  assert.deepEqual(
+    readers.filter((reader, index) => !named.has(index + 1)),
+    [],
+    "readers the screen does not name",
+  );
+  assert.deepEqual(
+    SCREEN_MATRIX_OTHERS.filter((source, index) =>
+      named.has(readers.length + index + 1),
+    ),
+    [],
+    "patterns that read something else and are named",
+  );
+});
 
 test("a product document's bytes are reported and judge nothing: no ceiling, no overage advisory, and a ceiling file left behind is not read", (t) => {
   const f = fixture(t);
@@ -1068,7 +2236,19 @@ test("a reader binding is an entry point, a link from a reachable standing or ge
     'export const input = "docs/read-by-code.md";\n',
   );
   f.write("scripts/test-reader.mjs", 'const fixture = "docs/orphan.md";\n');
+  // The runner and a module that plans its work are programs, whatever
+  // their names begin with (the ladder's recheck round, consistency).
+  const named = {
+    "scripts/test-runner.mjs": "docs/read-by-runner.md",
+    "scripts/lib/test-shards.mjs": "docs/read-by-plan.md",
+  };
+  for (const [program, document] of Object.entries(named)) {
+    f.write(document, "# Data\n");
+    f.write(program, `export const input = ${JSON.stringify(document)};\n`);
+  }
   const bindings = readerBindings(f.root);
+  for (const document of Object.values(named))
+    assert.equal(bindings.get(document).readByProgram, true, document);
   assert.deepEqual(bindings.get("docs/guide.md").entryPoints, [
     "instruction-start-here",
   ]);
@@ -1638,6 +2818,12 @@ test("the Release boundary heading exempts nothing; only the registered release-
   );
   assert.deepEqual(measured.failures, []);
   f.write(`${f.product}/${file}`, source);
+  // The block's tags are read from their own record, never from the page.
+  assert.match(
+    f.check().failures.join("\n"),
+    /needs its tag record docs\/control\/release-history\.json/,
+  );
+  f.write(releaseHistoryRecord(f.root), renderReleaseRecord([]));
   assert.deepEqual(f.check().failures, []);
   // A dated note under the heading is counted and reported as anywhere else.
   const note =
@@ -1811,6 +2997,25 @@ test("link extraction ignores remote navigation and escaped examples through res
       '\\[example](absent.md)\n`[code](absent.md)`\n[valid](target.md "title")',
     ),
     [{ href: "target.md", line: 3 }],
+  );
+});
+
+test("WO-276 a link the parser's extensions would read another way is checked: text that opens with a bracketed word, text that is one, an image's, and a link between two dollar figures", (t) => {
+  const f = fixture(t);
+  f.write(
+    "docs/index.md",
+    "See [[DRAFT] the plan](missing-plan.md), ![[shot] one](missing-shot.png) and [[notes]](missing-notes.md).\n\nA run costs about $5, and the [guide](missing-guide.md) says why a review adds $2.\n",
+  );
+  assert.deepEqual(
+    linkFailures(f.root)
+      .map((row) => row.href)
+      .sort(),
+    [
+      "missing-guide.md",
+      "missing-notes.md",
+      "missing-plan.md",
+      "missing-shot.png",
+    ],
   );
 });
 
@@ -2239,10 +3444,22 @@ test("release list --markdown joins each recorded tag to the orders its manifest
     }),
     listed,
   );
-  assert.match(
-    markdown,
-    /<!-- dotln-release-tags: \[\{"name":"v0\.2\.0","object":"[0-9a-f]{40}"\},\{"name":"v1\.0\.0",/,
+  // The tags the block was rendered from are recorded beside it, in the
+  // generated record the docs check reads, never in the page itself. The
+  // printing form writes nothing; the form that writes the page writes the
+  // record with it.
+  assert.doesNotMatch(markdown, /dotln-release-tags/u);
+  assert.ok(!existsSync(`${f.root}/docs/control/release-history.json`));
+  f.cli("list", "--markdown", "--write");
+  const record = JSON.parse(
+    readFileSync(`${f.root}/docs/control/release-history.json`, "utf8"),
   );
+  assert.equal(record.schemaVersion, 1);
+  assert.deepEqual(
+    record.tags.slice(0, 2).map(({ name }) => name),
+    ["v0.2.0", "v1.0.0"],
+  );
+  assert.ok(record.tags.every(({ object }) => /^[0-9a-f]{40}$/u.test(object)));
 });
 
 test("the docs check holds the table to its recorded tags: it refuses a changed row, reports a newer tag and names a missing one", (t) => {
@@ -4155,4 +5372,377 @@ test("WO-257 the front page is a default entry point that may link a record, and
     "# Contract\n\n## Start here\n\nHow to start: README.md.\n",
   );
   assert.deepEqual(documentReport(f.root).recordsNamed, []);
+});
+
+test("WO-276 criterion B1: the shared readers give a document's comments and marker blocks as the parser reads them, never from a code block or a code span", async () => {
+  const {
+    htmlCommentText,
+    markdownComments,
+    markdownMarkerBlocks,
+    replaceMarkerBlocks,
+  } = await import("./lib/markdown-links.mjs");
+  const source = [
+    "# Page",
+    "",
+    "<!-- sample:start -->",
+    "| a |",
+    "| - |",
+    "<!-- sample:end -->",
+    "",
+    "```md",
+    "<!-- sample:start -->",
+    "fenced",
+    "<!-- sample:end -->",
+    "```",
+    "",
+    "Prose with `<!-- sample:start -->` in a code span and a note <!-- note: kept -->.",
+    "",
+    "<!-- sample:start -->",
+    "second",
+    "<!-- sample:end -->",
+    "",
+  ].join("\n");
+  assert.deepEqual(
+    markdownComments(source).map(({ text, line }) => [text, line]),
+    [
+      ["sample:start", 3],
+      ["sample:end", 6],
+      ["note: kept", 14],
+      ["sample:start", 16],
+      ["sample:end", 18],
+    ],
+  );
+  // A document that opens with a byte-order mark reads as it does without
+  // one, and each comment's offsets are those of the text handed in.
+  const marked = `\uFEFF${source}`;
+  assert.deepEqual(
+    markdownComments(marked).map(({ text, line }) => [text, line]),
+    markdownComments(source).map(({ text, line }) => [text, line]),
+  );
+  for (const { start, end, text } of markdownComments(marked))
+    assert.equal(marked.slice(start, end), `<!-- ${text} -->`);
+  assert.deepEqual(
+    markdownMarkerBlocks(marked, "sample:start", "sample:end").map(
+      ({ inner }) => inner,
+    ),
+    markdownMarkerBlocks(source, "sample:start", "sample:end").map(
+      ({ inner }) => inner,
+    ),
+  );
+  const blocks = markdownMarkerBlocks(source, "sample:start", "sample:end");
+  assert.equal(blocks.unbalanced, 0);
+  assert.deepEqual(
+    blocks.map(({ inner, line, endLine }) => [inner, line, endLine]),
+    [
+      ["| a |\n| - |\n", 3, 6],
+      ["second\n", 16, 18],
+    ],
+  );
+  for (const block of blocks) {
+    assert.equal(
+      source.slice(block.start, block.openEnd),
+      "<!-- sample:start -->",
+    );
+    assert.equal(
+      source.slice(block.closeStart, block.end),
+      "<!-- sample:end -->",
+    );
+  }
+  // A replacement touches the blocks and no other byte.
+  const replaced = replaceMarkerBlocks(
+    source,
+    "sample:start",
+    "sample:end",
+    () => "<!-- sample:start -->\n<!-- sample:end -->",
+  );
+  assert.equal(
+    replaced,
+    source
+      .replace("| a |\n| - |\n", "")
+      .replace("<!-- sample:start -->\nsecond\n", "<!-- sample:start -->\n"),
+  );
+  // A marker left open, and a closing one with none open, form no block.
+  const broken = markdownMarkerBlocks(
+    "<!-- sample:end -->\n\ntext\n\n<!-- sample:start -->\n",
+    "sample:start",
+    "sample:end",
+  );
+  assert.equal(broken.length, 0);
+  assert.equal(broken.unbalanced, 2);
+  assert.equal(htmlCommentText("  <!-- one comment -->\n"), "one comment");
+  assert.equal(htmlCommentText("<!-- a --> text <!-- b -->"), null);
+});
+
+test("WO-276 criterion C5: a current decision's roundFindings passes with one entry of each class, fails naming the decision and the field on a class or a finder outside the admitted values, and a decision without the array passes", (t) => {
+  // A decision the branch adds is a current one: the fixture's branch.
+  const f = branchFixture(t);
+  const entry = (id, klass, finders = ["criteria"], disposition = "fixed") => ({
+    id,
+    finders,
+    class: klass,
+    disposition,
+  });
+  const named = () =>
+    f
+      .cli()
+      .stderr.split("\n")
+      .filter((line) => line.includes("roundFindings"));
+  f.record("resume: next", {
+    roundFindings: [
+      entry("F1", "criterion", ["criteria", "combined"]),
+      entry("F2", "lesser", ["combined"]),
+      entry("F3", "improvement", ["design"], "recorded"),
+      entry("F4", "none", ["consistency"], "recorded"),
+    ],
+  });
+  let run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  const { path } = f.record("resume: next", {
+    roundFindings: [
+      entry("F1", "severe"),
+      entry("F2", "lesser", ["verifier"]),
+      entry("F3", "none", ["design"], "dropped"),
+    ],
+  });
+  assert.deepEqual(named(), [
+    `FAIL ${path}#WO-999-D001/roundFindings[0]/class: expected one of criterion, lesser, improvement, none`,
+    `FAIL ${path}#WO-999-D001/roundFindings[1]/finders: expected one or more of criteria, design, consistency, combined, each once`,
+    `FAIL ${path}#WO-999-D001/roundFindings[2]/disposition: expected fixed or recorded`,
+  ]);
+  f.record("resume: next");
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+});
+
+test("WO-276 criterion K2 (the screens): the document checks leave the reserved root to the instance, a broken link there failing nothing, save the private-path screen, which reads every file under it by the rule for its kind and never prints what it found, and the verbatim screen, whose scope holds every path there", (t) => {
+  const f = fixture(t);
+  f.write("extensions/notes.md", "# Notes\n\nSee [the plan](missing.md).\n");
+  f.write("extensions/tools/report.mjs", "export const local = 1;\n");
+  f.write("extensions/data/rows.jsonl", '{"row":1}\n');
+  f.controls();
+  assert.deepEqual(f.check().failures, []);
+  assert.deepEqual(extensionFiles(f.root), [
+    "extensions/data/rows.jsonl",
+    "extensions/notes.md",
+    "extensions/tools/report.mjs",
+  ]);
+  // No document or record of the kit's is found there.
+  for (const listed of [markdownFiles(f.root), recordFiles(f.root)])
+    assert.deepEqual(
+      listed.filter((path) => path.startsWith("extensions/")),
+      [],
+    );
+  f.write(
+    "extensions/tools/report.mjs",
+    'export const home = "/Users/fixture-user/work";\n',
+  );
+  f.write(
+    "extensions/notes.md",
+    "# Notes\n\nRan in /Users/fixture-user/work/repo.\n",
+  );
+  f.write("extensions/data/rows.jsonl", '{"row":"/Users/fixture-user/x"}\n');
+  const { failures } = f.check();
+  assert.deepEqual(
+    failures.filter((line) => line.startsWith("extensions/")),
+    [
+      "extensions/data/rows.jsonl:1: absolute home path in a committed file under extensions/; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+      "extensions/notes.md:3: absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/",
+      "extensions/tools/report.mjs:1: absolute home path in a committed file under extensions/; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+    ],
+  );
+  assert.doesNotMatch(failures.join("\n"), /fixture-user/u);
+  const scope = verbatimScope(f.root);
+  for (const path of [
+    "extensions/tools/report.mjs",
+    "extensions/notes.md",
+    "extensions/data/rows.jsonl",
+    "extensions/bin/tool",
+  ])
+    assert.equal(scope(path), true, path);
+  // A like-named place elsewhere is read as it was before.
+  for (const path of ["tools/report.mjs", "extensions-of-mine/a.mjs"])
+    assert.equal(scope(path), false, path);
+});
+
+test("WO-276 criterion L2: the document check passes an area note whose block lists paths and a commit, fails naming the file and the field on a note whose block lacks either, and passes a profile that has no directory", (t) => {
+  const f = fixture(t);
+  const registration = (profile) => ({
+    baseBranch: "main",
+    worktreeParent: "../Targets",
+    repositoryClass: "fixture",
+    authorityProfile: {
+      authorityEnvelopeId: "fixture.target",
+      allowedEffects: ["repo.read"],
+      deniedEffects: [],
+      resourceLimits: {},
+      requiredEvidence: [],
+      expiresAt: Number.MAX_SAFE_INTEGER,
+      revocationEventTypes: [],
+    },
+    profile,
+  });
+  f.write(
+    "dotln.config.json",
+    JSON.stringify({
+      version: 1,
+      roots: {},
+      classes: { fixture: { checks: [], supports: [] } },
+      repositories: {
+        noted: registration("docs/repositories/noted.md"),
+        plain: registration("docs/repositories/plain.md"),
+      },
+    }),
+  );
+  f.controls();
+  const commit = "a".repeat(40);
+  const note = (block) =>
+    `# Billing\n\n<!-- dotln-area-note:start -->\n${block}\n<!-- dotln-area-note:end -->\n\nInvoices are immutable once issued: \`billing/invoice.ts\`.\n`;
+  const file = "docs/repositories/noted/billing.md";
+  f.write("docs/repositories/noted.md", "# noted — profile\n");
+  f.write("docs/repositories/plain.md", "# plain — profile\n");
+  const cli = () =>
+    spawnSync(process.execPath, [script], {
+      cwd: f.root,
+      env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+      encoding: "utf8",
+    });
+  const named = () =>
+    f.check().failures.map((failure) => failure.replace(/:\d+:/u, ":N:"));
+  // A profile with no directory beside it, and one whose directory holds no
+  // note yet, are judged no further.
+  assert.deepEqual(f.check().failures, []);
+  // A note whose block lists paths and a commit passes, through the command
+  // as through the function, in a subdirectory too.
+  f.write(file, note(JSON.stringify({ paths: ["billing/"], commit })));
+  f.write(
+    "docs/repositories/noted/web/forms.md",
+    note(
+      JSON.stringify({
+        paths: ["web/forms/", "web/shared/validators.ts"],
+        commit: "b".repeat(64),
+      }),
+    ),
+  );
+  assert.deepEqual(f.check().failures, []);
+  const passed = cli();
+  assert.equal(passed.status, 0, passed.stdout + passed.stderr);
+  // A block that lacks either field is named by file and field.
+  const paths =
+    "a non-empty list of the target paths the note covers, each relative with forward slashes, no . or .. segment and no control character";
+  const written =
+    "the target commit the note was written at, as its full hexadecimal id";
+  for (const [block, failures] of [
+    [
+      JSON.stringify({ paths: ["billing/"] }),
+      [`${file}:N: area note: field commit is missing; it holds ${written}`],
+    ],
+    [
+      JSON.stringify({ commit }),
+      [`${file}:N: area note: field paths is missing; it holds ${paths}`],
+    ],
+    [
+      "{}",
+      [
+        `${file}:N: area note: field paths is missing; it holds ${paths}`,
+        `${file}:N: area note: field commit is missing; it holds ${written}`,
+      ],
+    ],
+    // A value outside a field's set: an empty list, a path that leaves the
+    // target, is a pattern to Git or holds a character a briefing could
+    // not print as written, a shortened or symbolic commit.
+    ...[
+      [],
+      ["../other"],
+      ["/abs"],
+      [":(glob)**"],
+      ["a//b"],
+      ["a\tb"],
+      ["a\u001b[2Jb"],
+      "billing/",
+    ].map((value) => [
+      JSON.stringify({ paths: value, commit }),
+      [`${file}:N: area note: field paths is outside its set (${paths})`],
+    ]),
+    ...["abc1234", "HEAD", 7].map((value) => [
+      JSON.stringify({ paths: ["billing/"], commit: value }),
+      [`${file}:N: area note: field commit is outside its set (${written})`],
+    ]),
+    [
+      JSON.stringify({ paths: ["billing/"], commit, owner: "team" }),
+      [`${file}:N: area note: field owner is not one of paths, commit`],
+    ],
+    [
+      "paths: billing/",
+      [
+        `${file}:N: area note: its block is not JSON, so no field (paths, commit) is read`,
+      ],
+    ],
+    [
+      "[]",
+      [`${file}:N: area note: its block holds no object of paths, commit`],
+    ],
+  ]) {
+    f.write(file, note(block));
+    assert.deepEqual(named(), failures, block);
+  }
+  const failed = cli();
+  assert.equal(failed.status, 1);
+  assert.match(
+    failed.stderr,
+    /FAIL docs\/repositories\/noted\/billing\.md:\d+: area note: its block holds no object of paths, commit/u,
+  );
+  // A note with no block, with two, and with a block only a code fence shows.
+  const good = JSON.stringify({ paths: ["billing/"], commit });
+  f.write(file, "# Billing\n\nProse only.\n");
+  assert.deepEqual(named(), [
+    `${file}:N: area note: no dotln-area-note:start block, so each field (paths, commit) is missing`,
+  ]);
+  f.write(file, note(good) + note(good));
+  assert.deepEqual(named(), [
+    `${file}:N: area note: expected one block between a dotln-area-note:start and a dotln-area-note:end comment line, so no field (paths, commit) is read`,
+  ]);
+  f.write(file, `# Billing\n\n~~~markdown\n${note(good)}~~~\n`);
+  assert.deepEqual(named(), [
+    `${file}:N: area note: no dotln-area-note:start block, so each field (paths, commit) is missing`,
+  ]);
+  // A byte order mark before the block is no part of the note.
+  f.write(
+    file,
+    `\uFEFF<!-- dotln-area-note:start -->\n${good}\n<!-- dotln-area-note:end -->\n`,
+  );
+  assert.deepEqual(f.check().failures, []);
+  // A directory under the notes that cannot be listed is named and never
+  // passed over as if it held none.
+  const locked = join(f.root, "docs/repositories/noted/locked");
+  mkdirSync(locked);
+  chmodSync(locked, 0o000);
+  try {
+    assert.deepEqual(named(), [
+      "docs/repositories/noted/locked:N: area note: the directory cannot be listed, so its notes are not read",
+    ]);
+  } finally {
+    chmodSync(locked, 0o755);
+  }
+  rmSync(locked, { recursive: true });
+  // The notes of a profile are those under the directory of exactly its
+  // name: a directory that differs only in case is none, on a volume that
+  // folds case as on one that does not.
+  f.write(
+    "dotln.config.json",
+    JSON.stringify({
+      version: 1,
+      roots: {},
+      classes: { fixture: { checks: [], supports: [] } },
+      repositories: {
+        noted: registration("docs/repositories/noted.md"),
+        cased: registration("docs/repositories/Cased.md"),
+      },
+    }),
+  );
+  f.write("docs/repositories/cased/unjudged.md", "# No block\n");
+  assert.deepEqual(f.check().failures, []);
+  // The profile itself and the page beside it are no notes.
+  f.write(file, note(good));
+  f.write("docs/repositories/README.md", "# Repository profiles\n");
+  assert.deepEqual(f.check().failures, []);
 });

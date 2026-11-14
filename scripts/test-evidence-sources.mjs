@@ -549,3 +549,99 @@ test("WO-154 a rebuilt compiler release needs only the deterministic carry; the 
     );
   }
 });
+
+test("WO-276 criterion B6: one module imports TypeScript's reading interfaces, importing it loads no TypeScript, a token read starts no process and a syntax tree for a batch of three sources starts one", async () => {
+  const reader = "packages/skeleton/src/source-reading.mjs";
+  const { sourceImports, sourceLiterals, sourceTreeStarts, sourceTrees } =
+    await import("../packages/skeleton/src/source-reading.mjs");
+  // Every non-test source under scripts/ and packages/*/src/ is read for its
+  // import specifiers with the reader itself. A test is a suite file beside
+  // the runner, a `.test.` file, or a file under a test or fixtures
+  // directory: the runner and the modules that plan its work are named
+  // `test-` and are sources (the ladder's recheck round, consistency).
+  const sources = execGit(
+    [
+      "-C",
+      TOOL_ROOT,
+      "ls-files",
+      "-z",
+      "--cached",
+      "--others",
+      "--exclude-standard",
+      "--",
+      "scripts",
+      "packages",
+    ],
+    { encoding: "utf8" },
+  )
+    .split("\0")
+    .filter(
+      (path) =>
+        /^(?:scripts\/.+\.mjs|packages\/[^/]+\/src\/.+\.(?:ts|mts|mjs|js))$/u.test(
+          path,
+        ) &&
+        !/^scripts\/test-(?!runner\.mjs$)[^/]*$|(?:^|\/)[^/]*\.test\.[a-z]+$|^scripts\/(?:fixtures|lib\/vendor)\/|\/(?:test|fixtures)\//u.test(
+          path,
+        ) &&
+        existsSync(join(TOOL_ROOT, path)),
+    );
+  assert.ok(sources.length > 300, `${sources.length} sources`);
+  // The sources named `test-` are read: the runner, and a planning module
+  // under scripts/lib/ and under a package's src/. This suite's own file is
+  // a test and is not.
+  const named = sources.filter((path) => /(?:^|\/)test-[^/]*$/u.test(path));
+  for (const place of [/^scripts\/[^/]+$/u, /^scripts\/lib\//u, /^packages\//u])
+    assert.ok(
+      named.some((path) => place.test(path)),
+      `no source named test- under ${place.source}: ${named.join(", ")}`,
+    );
+  assert.ok(!sources.includes("scripts/test-evidence-sources.mjs"));
+  const starts = sourceTreeStarts();
+  // TypeScript's reading interfaces are loaded by name, in an import or in
+  // a call that takes the name as a string.
+  const importers = sources.filter((path) => {
+    const text = readFileSync(join(TOOL_ROOT, path), "utf8");
+    return (
+      sourceImports(text).some((specifier) =>
+        /^typescript(?:\/|$)/u.test(specifier),
+      ) ||
+      sourceLiterals(text).some(
+        (literal) =>
+          literal.kind === "string" &&
+          /^typescript\/unstable\//u.test(literal.text),
+      )
+    );
+  });
+  for (const path of sources.slice(0, 40))
+    sourceLiterals(readFileSync(join(TOOL_ROOT, path), "utf8"));
+  assert.deepEqual(importers, [reader]);
+  assert.equal(sourceTreeStarts(), starts, "token reads start no process");
+  // One start for a batch, however many sources it holds.
+  const trees = sourceTrees(
+    ["a", "b", "c"].map((name) => ({
+      path: `${name}.ts`,
+      source: `export const ${name} = /^x/u; // ${name}\n`,
+    })),
+  );
+  assert.equal(trees.filter(Boolean).length, 3);
+  assert.equal(sourceTreeStarts(), starts + 1);
+  // A fresh process that only imports the module has loaded no TypeScript;
+  // its first read loads it.
+  const probe = spawnSync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      `import { createRequire } from "node:module";
+const require = createRequire(${JSON.stringify(join(TOOL_ROOT, reader))});
+const loaded = () => Object.keys(require.cache).filter((file) => file.includes("/node_modules/typescript/")).length;
+const reading = await import(${JSON.stringify(join(TOOL_ROOT, reader))});
+const before = loaded();
+[...reading.sourceTokens("const a = 1;")];
+console.log(JSON.stringify({ before, after: loaded() > 0 }));`,
+    ],
+    { encoding: "utf8" },
+  );
+  assert.equal(probe.status, 0, probe.stderr);
+  assert.deepEqual(JSON.parse(probe.stdout), { before: 0, after: true });
+});

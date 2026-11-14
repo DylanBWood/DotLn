@@ -38,6 +38,9 @@ import {
   KIT_FILES,
   TEST_FIXTURE_TREES,
   TEST_SUPPORT_FILES,
+  planUpdate,
+  unmetIncomingFloors,
+  verifyKit,
 } from "./launchpad.mjs";
 import { licenseHashes } from "./license-surfaces.mjs";
 import { gateCodeIdentity, readGateChecks } from "./lib/gate-evidence.mjs";
@@ -71,6 +74,7 @@ import {
   configureRepository,
   initRepository,
   commitExport,
+  updateMergeFixture,
   runExport,
   files,
   treeSnapshot,
@@ -592,6 +596,19 @@ test("WO-246 update --publish opens the update branch's pull request on origin's
   );
   rewrite("KIT-MANIFEST.json", provenance);
   commitAll("merge the previewed revision");
+  // The revision is one a fetch of the starter left a ref for: the publish
+  // judges an update's merge against it (WO-276), and a revision no ref
+  // names is refused.
+  const unfetched = publish();
+  assert.equal(unfetched.status, 1, unfetched.stdout);
+  assert.match(
+    unfetched.stderr,
+    /update --publish refused: the starter's incoming revision is not known here: no ref of the starter's /u,
+  );
+  assert.equal(forge.pushes().length, pushesAtStart);
+  const fetchedAt = (revision) =>
+    git(destination, ["update-ref", "refs/remotes/upstream/main", revision]);
+  fetchedAt("HEAD");
   // The re-emit and the lineage index, each committed.
   const settings = readFileSync(
     join(destination, ".claude/settings.json"),
@@ -647,11 +664,21 @@ test("WO-246 update --publish opens the update branch's pull request on origin's
   assert.doesNotMatch(carried.stderr, /zephyrcanary/u);
   assert.equal(forge.pushes().length, pushesAtStart);
   assert.deepEqual(forge.calls(), []);
-  rmSync(join(destination, "docs/carried-term.md"));
-  commitAll("drop the carried term");
+  // Under a context entry the same line refuses nothing: the publish lists
+  // it, and a match in the pull request's body, by its place before the push,
+  // and proceeds (WO-276).
+  writeFileSync(
+    join(destination, "docs/control/local/terms.txt"),
+    "context:\nzephyrcanary\n",
+  );
 
   const head = git(destination, ["rev-parse", "HEAD"]).stdout.trim();
-  const opened = ok(publish(), "publish the update branch");
+  const opened = ok(publish(refusedBody), "publish the update branch");
+  assert.match(
+    opened.stdout,
+    /^CONTEXT docs\/carried-term\.md:3: a local term in context mode\nCONTEXT pr-body:3: a local term in context mode$/mu,
+  );
+  assert.doesNotMatch(opened.stdout + opened.stderr, /zephyrcanary/u);
   const pullRequest = `https://${selector}/pull/7`;
   assert.equal(opened.stdout.trim().split("\n").at(-1), pullRequest);
   assert.equal(forge.pushes().length, pushesAtStart + 1);
@@ -712,6 +739,7 @@ test("WO-246 update --publish opens the update branch's pull request on origin's
   rewrite("UPSTREAM.md", movedTo("c".repeat(40)));
   rewrite("KIT-MANIFEST.json", movedTo("c".repeat(40)));
   commitAll("merge another previewed revision");
+  fetchedAt("HEAD");
   forge.script({});
   ok(publish(), "publish an update cut before main moved");
   assert.equal(forge.pushes().length, pushesAtStart + 2);
@@ -730,6 +758,1031 @@ test("WO-246 update --publish opens the update branch's pull request on origin's
   assert.match(noMain.stderr, /has no merge base with a local main/u);
   git(destination, ["branch", "-m", "moved-main", "main"]);
   assert.equal(forge.pushes().length, pushesAtStart + 2);
+});
+
+test("WO-276 criteria I1 and I2: update --publish refuses a merge that changed a file both the instance and the starter had changed, naming each path, the restore and --take; it judges the update's own merge after main is merged in, and proceeds once the instance's bytes are kept or a path is taken; the preview lists the same paths before the merge; and a merge base that cannot be read refuses before any push", () => {
+  const fixture = updateMergeFixture(
+    "wo276-update-merge",
+    installLaunchpadForge,
+  );
+  const { destination, forge, paths, commits, head, commitAll, publish } =
+    fixture;
+  let pushes = forge.pushes().length;
+  const short = (commit) => commit.slice(0, 12);
+  const both = [paths.budgets, paths.order];
+  const neverNamed = [paths.onlyStarter, paths.added, paths.kitFile];
+
+  // Before the merge: the preview lists the two files, under a line that
+  // says to keep the instance's bytes, above the kit's rows, and none of the
+  // files only the starter changed or added, nor the kit file.
+  const preview = ok(fixture.preview("starter"), "preview the revision");
+  assert.match(
+    preview.stdout,
+    new RegExp(
+      `^instance files both sides changed since their merge base ${short(commits.exported)}, outside the kit's manifest: keep this instance's bytes for each when merging\\. `,
+      "mu",
+    ),
+  );
+  assert.deepEqual(
+    [...preview.stdout.matchAll(/^both changed: (.+)$/gmu)].map(
+      (row) => row[1],
+    ),
+    both,
+  );
+  assert.ok(
+    preview.stdout.indexOf("both changed: ") <
+      preview.stdout.search(/^(?:replace|unchanged|refused|remove|add): /mu),
+    "the section stands above the kit's rows",
+  );
+
+  // The merge as Git makes it: the budgets merged in silence and the first
+  // order settled with the starter's bytes.
+  const branch = "chore/starter-update-wo276";
+  const merge = fixture.mergeStarter(branch);
+  const refusedNaming = (result, named, label) => {
+    assert.equal(result.status, 1, `${label}: ${result.stdout}`);
+    assert.ok(
+      result.stderr.includes(
+        `update --publish refused: the update's merge ${short(merge)} changed ${named.length === 1 ? "a file" : `${named.length} files`} this instance had changed since ${short(commits.exported)}, the base it shares with the starter's revision ${short(commits.starter)}: ${named.join(", ")}. An update keeps the instance's bytes for a file both sides changed.`,
+      ),
+      `${label}: ${result.stderr}`,
+    );
+    // The restore names the instance's side of that merge, whole.
+    assert.ok(
+      result.stderr.includes(
+        `git checkout ${commits.instance} -- ${named.join(" ")}`,
+      ),
+      `${label}: ${result.stderr}`,
+    );
+    assert.match(result.stderr, /pass --take <path> instead/u);
+    for (const path of neverNamed)
+      assert.ok(!result.stderr.includes(path), `${label}: ${path}`);
+    assert.equal(forge.pushes().length, pushes, label);
+    assert.deepEqual(forge.calls(), [], label);
+  };
+  refusedNaming(publish(), both, "the merge as Git made it");
+  // The revision stated, as the guide's command states it, is judged the
+  // same; one this branch does not name is refused as that.
+  refusedNaming(
+    fixture.publishFrom("upstream/main"),
+    both,
+    "the revision stated",
+  );
+  const misstated = fixture.publishFrom("main");
+  assert.equal(misstated.status, 1, misstated.stdout);
+  assert.match(
+    misstated.stderr,
+    /update --publish refused: --from names [0-9a-f]{12}, which main already holds: it is no incoming revision of the starter's/u,
+  );
+
+  // main merged into the branch after the update's own merge: the same
+  // commit is judged, the same paths are named, and the restore still names
+  // the instance's side of the update's merge, never main's new tip.
+  git(destination, ["switch", "-q", "main"]);
+  writeFileSync(
+    join(destination, "docs/instance-note.md"),
+    "# A later note of the instance\n",
+  );
+  const later = commitAll("later work on main");
+  git(destination, ["switch", "-q", branch]);
+  git(destination, ["merge", "-q", "--no-edit", "main"]);
+  const afterMain = publish();
+  refusedNaming(afterMain, both, "after main is merged in");
+  assert.ok(!afterMain.stderr.includes(later));
+  assert.ok(!afterMain.stderr.includes(short(later)));
+
+  // --take admits a named file of that merge and no other.
+  const stray = publish(paths.onlyStarter);
+  assert.equal(stray.status, 1, stray.stdout);
+  assert.ok(
+    stray.stderr.includes(
+      `--take names ${paths.onlyStarter}, which the update's merge ${short(merge)} did not change against this instance's bytes; it changed ${both.join(", ")}`,
+    ),
+    stray.stderr,
+  );
+  // One taken, named behind ./ as a shell completes it, and the other still
+  // the starter's: the other alone is named.
+  refusedNaming(publish(`./${paths.budgets}`), [paths.order], "one path taken");
+  assert.equal(forge.pushes().length, pushes);
+  // The other restored by the printed command and committed: it proceeds
+  // and prints the taken path.
+  git(destination, ["checkout", commits.instance, "--", paths.order]);
+  commitAll("keep the instance's first order");
+  const taken = ok(
+    publish(paths.budgets),
+    "publish with one path taken and the other restored",
+  );
+  assert.match(
+    taken.stdout,
+    /^taken: docs\/control\/budgets\.json \(the merge's bytes are kept at the operator's word\)$/mu,
+  );
+  assert.match(taken.stdout.trim().split("\n").at(-1), /\/pull\/\d+$/u);
+  assert.equal(forge.pushes().length, ++pushes);
+
+  // A merge commit that holds the instance's bytes for both files: the same
+  // command proceeds, with nothing to take.
+  fixture.mergeStarter("chore/starter-update-kept", { keep: true });
+  forge.script({});
+  const kept = ok(publish(), "publish a merge that kept the instance's bytes");
+  assert.doesNotMatch(kept.stdout, /^taken: /mu);
+  assert.equal(forge.pushes().length, ++pushes);
+  const none = publish(paths.budgets);
+  assert.equal(none.status, 1, none.stdout);
+  assert.match(
+    none.stderr,
+    /--take names docs\/control\/budgets\.json, which the update's merge [0-9a-f]{12} did not change against this instance's bytes; it changed none/u,
+  );
+
+  // A shallow clone: the commits both sides descend from are cut away, the
+  // merge base cannot be read, and the publish refuses before any push,
+  // naming the cause and the remedy. The cut is written as a fetch of
+  // limited depth writes it.
+  const shallowFile = join(destination, ".git/shallow");
+  writeFileSync(shallowFile, `${commits.instance}\n${commits.starter}\n`);
+  const cut = publish();
+  rmSync(shallowFile);
+  assert.equal(cut.status, 1, cut.stdout);
+  assert.ok(
+    cut.stderr.includes(
+      `update --publish refused: the update's merge base cannot be read: this clone holds no commit that ${short(later)} and the starter's revision ${short(commits.starter)} share (a shallow or grafted clone). Fetch the history the clone lacks`,
+    ),
+    cut.stderr,
+  );
+  assert.equal(forge.pushes().length, pushes);
+  // A starter revision that shares no commit with a whole clone is another
+  // cause, and the refusal says so and does not send the operator to fetch.
+  const rootless = git(destination, [
+    "commit-tree",
+    head("starter^{tree}"),
+    "-m",
+    "a starter revision with no history here",
+  ]).stdout.trim();
+  git(destination, ["update-ref", "refs/upstream-releases/rootless", rootless]);
+  const unrelated = git(destination, [
+    "commit-tree",
+    head(`${merge}^{tree}`),
+    "-p",
+    commits.instance,
+    "-p",
+    rootless,
+    "-m",
+    "merge a starter revision with no shared history",
+  ]).stdout.trim();
+  git(destination, [
+    "switch",
+    "-q",
+    "-c",
+    "chore/starter-update-shallow",
+    unrelated,
+  ]);
+  const shallow = publish();
+  assert.equal(shallow.status, 1, shallow.stdout);
+  assert.ok(
+    shallow.stderr.includes(
+      `update --publish refused: the update's merge base cannot be read: this clone holds no commit that ${short(commits.instance)} and the starter's revision ${short(rootless)} share (the clone is whole, so the two histories share nothing`,
+    ),
+    shallow.stderr,
+  );
+  assert.equal(forge.pushes().length, pushes);
+  // The preview says the same and still prints its plan.
+  git(destination, ["switch", "-q", "main"]);
+  const blind = ok(fixture.preview(rootless), "preview with no shared history");
+  assert.match(
+    blind.stdout,
+    /^instance files both sides changed: unknown \(the update's merge base cannot be read: /mu,
+  );
+  assert.match(blind.stdout, /^kit files: \d+ replaced; /mu);
+});
+
+test("WO-276 criterion I1, by history: the update's merge is the commit on the branch's own line that brought in the starter's incoming revision, which a fetched ref names, so no merge of the starter's own and no later merge is taken for it; a revision no ref names, a merge of three lines and a second update are refused; a restore that was undone is not kept; a file main changed again is restored from main; a printed path is literal; and the instruction file is judged outside its generated blocks", async () => {
+  const { judgeUpdateMerge } = await import("./launchpad.mjs");
+  // Small histories: a repository whose provenance files name a kit commit,
+  // as an instance's and a starter's do.
+  const kitCommit = (digit) => String(digit).repeat(40);
+  const lines = (count) =>
+    `${Array.from({ length: count }, (_, index) => `line ${index}`).join("\n")}\n`;
+  const history = (name) => {
+    const root = join(scratch, `wo276-history-${name}`);
+    mkdirSync(root);
+    initRepository(root);
+    const at = (revision = "HEAD") =>
+      git(root, ["rev-parse", revision]).stdout.trim();
+    const commitAll = (message) => {
+      git(root, ["add", "-A"]);
+      git(root, ["commit", "-qm", message]);
+      return at();
+    };
+    const names = (digit) => {
+      writeFileSync(
+        join(root, "UPSTREAM.md"),
+        `# Upstream\n\n**Commit:** \`${kitCommit(digit)}\`\n`,
+      );
+      writeFileSync(
+        join(root, "KIT-MANIFEST.json"),
+        `${JSON.stringify({ commit: kitCommit(digit), files: [] })}\n`,
+      );
+    };
+    const edit = (path, index, value) => {
+      const all = readFileSync(join(root, path), "utf8").split("\n");
+      all[index] = value;
+      writeFileSync(join(root, path), all.join("\n"));
+    };
+    const merge = (...args) =>
+      run("git", ["merge", "-q", "--no-edit", ...args], { cwd: root });
+    const judge = (takes = [], from = null) => {
+      const named = JSON.parse(
+        git(root, ["show", "HEAD:KIT-MANIFEST.json"]).stdout,
+      ).commit;
+      try {
+        return { taken: judgeUpdateMerge(root, named, takes, from) };
+      } catch (error) {
+        return { refused: error.message };
+      }
+    };
+    names(0);
+    for (const path of ["f.txt", "g.txt", "h.txt"])
+      writeFileSync(join(root, path), lines(40));
+    const base = commitAll("base");
+    const on = (branch, from) =>
+      git(root, ["switch", "-q", ...(from ? ["-c", branch, from] : [branch])]);
+    // A fetch of the starter leaves its revision under a remote-tracking
+    // ref: that ref is how a clone knows a commit for the starter's.
+    const fetched = (revision, ref = "refs/remotes/upstream/main") =>
+      git(root, ["update-ref", ref, revision]);
+    // The starter's next revision on a line of its own: its provenance
+    // moves and it changes one line of f.txt far from the instance's.
+    const starterRevision = (from = base, digit = 1) => {
+      on(`starter-${digit}`, from);
+      names(digit);
+      edit("f.txt", 35, `the starter's line 35, kit ${digit}`);
+      const revision = commitAll(`the starter's revision, kit ${digit}`);
+      fetched(revision);
+      return revision;
+    };
+    const instanceChange = (path = "f.txt") => {
+      on("main");
+      edit(path, 2, "the instance's line 2");
+      return commitAll("the instance's change");
+    };
+    return {
+      root,
+      at,
+      commitAll,
+      names,
+      edit,
+      merge,
+      judge,
+      base,
+      on,
+      fetched,
+      starterRevision,
+      instanceChange,
+    };
+  };
+  // The command a refusal prints, run as a session would run it.
+  const restore = ({ root }, refusal) => {
+    const command = /and commit: (git .+?)\. (?:Then run|For a file)/u.exec(
+      refusal,
+    )[1];
+    assert.equal(run("sh", ["-c", command], { cwd: root }).status, 0, command);
+    return command;
+  };
+  const short = (commit) => commit.slice(0, 12);
+  const refusesFile = (refused, merge, revision, instance, file = "f.txt") => {
+    assert.ok(
+      refused?.includes(
+        `the update's merge ${short(merge)} changed a file this instance had changed`,
+      ) &&
+        refused.includes(
+          `the starter's revision ${short(revision)}: ${file}.`,
+        ) &&
+        refused.includes(`git checkout ${instance} -- ${file}`),
+      refused,
+    );
+  };
+
+  // The guide's route: a branch cut from main, the revision merged into it.
+  {
+    const repo = history("guide-route");
+    const revision = repo.starterRevision();
+    const instance = repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    refusesFile(repo.judge().refused, repo.at(), revision, instance);
+  }
+  // The revision is itself the starter's merge of two lines that both
+  // moved: the update's merge above it is the one judged.
+  {
+    const repo = history("starter-merge");
+    repo.on("starter", repo.base);
+    repo.edit("h.txt", 1, "the starter's other line");
+    repo.commitAll("the starter's main moves");
+    repo.on("refresh", repo.base);
+    repo.names(1);
+    repo.edit("f.txt", 35, "the starter's line 35");
+    repo.commitAll("the starter's refresh");
+    repo.on("starter");
+    ok(repo.merge("--no-ff", "refresh"), "the starter's own merge");
+    const revision = repo.at();
+    repo.fetched(revision);
+    const instance = repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    refusesFile(repo.judge().refused, repo.at(), revision, instance);
+  }
+  // The starter merged a line cut before its refresh, both lines changing
+  // one file. Three routes over that one starter: the guide's with an
+  // instance that changed another file (nothing of its own was changed), a
+  // fast-forward by an instance with no commit of its own (nothing to judge,
+  // and the starter's own merge is not judged in its place), and a branch
+  // cut at the revision with main merged in (that merge is the update's).
+  for (const route of ["guide", "fast-forward", "cut-at-revision"]) {
+    const repo = history(`starter-side-line-${route}`);
+    repo.on("side", repo.base);
+    repo.edit("f.txt", 10, "the starter's side line");
+    repo.commitAll("a line cut before the refresh");
+    repo.on("starter", repo.base);
+    repo.names(1);
+    repo.edit("f.txt", 35, "the starter's line 35");
+    repo.commitAll("the starter's refresh");
+    ok(repo.merge("--no-ff", "side"), "the starter's own merge");
+    const revision = repo.at();
+    repo.fetched(revision);
+    if (route === "guide") {
+      repo.instanceChange("g.txt");
+      repo.on("chore/update", "main");
+      ok(repo.merge(revision), "the update's merge");
+      assert.deepEqual(repo.judge(), { taken: [] });
+    } else if (route === "fast-forward") {
+      repo.on("chore/update", "main");
+      ok(repo.merge(revision), "a fast-forward");
+      assert.equal(repo.at(), revision);
+      assert.deepEqual(repo.judge(), { taken: [] });
+    } else {
+      const instance = repo.instanceChange();
+      repo.on("chore/update", revision);
+      ok(repo.merge("main"), "main merged into the revision");
+      refusesFile(repo.judge().refused, repo.at(), revision, instance);
+    }
+  }
+  // The instance's side is a commit made on the branch before the merge;
+  // main then moves and is merged in. The same merge is judged, and its
+  // restore names the branch's commit.
+  {
+    const repo = history("branch-commit-first");
+    const revision = repo.starterRevision();
+    repo.instanceChange("g.txt");
+    repo.on("chore/update", "main");
+    repo.edit("f.txt", 2, "the branch's line 2");
+    const instance = repo.commitAll("a commit of the branch's own");
+    ok(repo.merge(revision), "the update's merge");
+    const merged = repo.at();
+    refusesFile(repo.judge().refused, merged, revision, instance);
+    repo.on("main");
+    repo.edit("h.txt", 3, "main moves");
+    repo.commitAll("main moves");
+    repo.on("chore/update");
+    ok(repo.merge("main"), "main merged into the branch");
+    refusesFile(repo.judge().refused, merged, revision, instance);
+  }
+  // Local main behind the instance's line: the sides are not told by what
+  // local main holds. The branch is cut at the revision and the instance's
+  // line, on a ref local main lacks, merged into it.
+  {
+    const repo = history("main-behind");
+    const revision = repo.starterRevision();
+    repo.on("instance-line", repo.base);
+    repo.edit("f.txt", 2, "the instance's line 2");
+    const instance = repo.commitAll("the instance's change, not in local main");
+    repo.on("chore/update", revision);
+    ok(repo.merge("instance-line"), "the instance's line merged in");
+    const refused = repo.judge().refused;
+    refusesFile(refused, repo.at(), revision, instance);
+    restore(repo, refused);
+    repo.commitAll("keep the instance's file");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    assert.ok(
+      readFileSync(join(repo.root, "f.txt"), "utf8").includes(
+        "the instance's line 2",
+      ),
+    );
+  }
+  // A revision taken by fast-forward, then a branch of the instance's own
+  // merged in, with the emit's commit between: the instance's side is that
+  // branch.
+  {
+    const repo = history("feature-after-fast-forward");
+    const revision = repo.starterRevision();
+    repo.on("feature", "main");
+    repo.edit("f.txt", 2, "the feature's line 2");
+    const feature = repo.commitAll("the instance's feature");
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "a fast-forward");
+    repo.edit("h.txt", 9, "the emit's line");
+    repo.commitAll("the emit");
+    ok(repo.merge("feature"), "the feature merged in");
+    refusesFile(repo.judge().refused, repo.at(), revision, feature);
+  }
+  // The guide's route, then other lines of the instance's merged in (main
+  // moved on a ref local main does not hold; a feature branch; a stale
+  // branch merged before the revision): the update's merge is the one
+  // judged, and nothing reads as a second update.
+  {
+    const repo = history("other-lines");
+    const revision = repo.starterRevision();
+    repo.on("stale", repo.base);
+    repo.edit("g.txt", 30, "a stale branch");
+    repo.commitAll("a stale branch");
+    const instance = repo.instanceChange();
+    repo.on("ahead", "main");
+    repo.edit("h.txt", 4, "main moves on a ref local main lacks");
+    repo.commitAll("main moves");
+    repo.on("feature", "main");
+    repo.edit("g.txt", 4, "a feature");
+    repo.commitAll("a feature");
+    repo.on("chore/update", "main");
+    ok(repo.merge("stale"), "a stale branch merged first");
+    const before = repo.at();
+    ok(repo.merge(revision), "the update's merge");
+    const merged = repo.at();
+    ok(repo.merge("ahead"), "the moved line merged in");
+    ok(repo.merge("feature"), "the feature merged in");
+    const refused = repo.judge().refused;
+    refusesFile(refused, merged, revision, before);
+    assert.notEqual(before, instance);
+  }
+  // The merge commit's own provenance was settled wrongly and put right by
+  // a later commit: the merge is still the one that brought the revision.
+  {
+    const repo = history("provenance-settled-late");
+    const revision = repo.starterRevision();
+    const instance = repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    repo.names(0);
+    git(repo.root, ["add", "-A"]);
+    git(repo.root, ["commit", "-q", "--amend", "--no-edit"]);
+    const merged = repo.at();
+    repo.names(1);
+    repo.commitAll("the provenance put right");
+    refusesFile(repo.judge().refused, merged, revision, instance);
+    // That merge commit, stated as the revision, names another kit commit.
+    assert.match(
+      repo.judge([], merged).refused,
+      /^--from names [0-9a-f]{12}, which names the kit commit 0{12}, and this branch names 1{12}: name the revision this branch merged$/u,
+    );
+  }
+  // No ref names the revision: a merge of a commit no fetch left a ref for,
+  // and a copy of the revision's files with no merge at all.
+  {
+    const repo = history("no-ref");
+    const revision = repo.starterRevision();
+    repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    git(repo.root, ["update-ref", "-d", "refs/remotes/upstream/main"]);
+    const unknown =
+      /^the starter's incoming revision is not known here: no ref of the starter's \(the main of a remote other than origin, or a ref under refs\/upstream-releases\/\) shares with this branch a commit that names the kit commit 1{12}\. A revision is taken by a merge of a fetched ref, never by a squash or a copy of its files\. Where this branch did merge the revision, say which commit it is and run this again with --from <the ref or the commit it merged>; a branch rebased since no longer holds it, and is merged again from the starter's ref$/u;
+    assert.match(repo.judge().refused, unknown);
+    // The refusal's remedy: the revision stated is judged with no ref at
+    // all, and a statement that cannot be the revision is refused as that.
+    // A commit no fetched ref holds was made here, whatever it holds.
+    assert.match(
+      repo.judge([], revision).refused,
+      /^--from names [0-9a-f]{12}, which no ref fetched from a remote other than origin holds: a commit made here, by a rebase or a copy of the revision, is not the starter's\./u,
+    );
+    assert.match(
+      repo.judge([], "no-such-ref").refused,
+      /^--from names no-such-ref, which is no commit this clone holds/u,
+    );
+    assert.match(
+      repo.judge([], "main").refused,
+      /^--from names [0-9a-f]{12}, which main already holds/u,
+    );
+    // Another branch of another remote is no statement of the starter's
+    // revision: a mirror or a colleague's fork holds this branch's own
+    // commits under such a name.
+    repo.fetched(revision, "refs/remotes/upstream/topic");
+    repo.fetched(repo.at(), "refs/remotes/backup/chore/update");
+    assert.match(repo.judge().refused, unknown);
+    // Stated, that branch of the starter's remote is the revision.
+    assert.match(
+      repo.judge([], "upstream/topic").refused,
+      /changed a file this instance had changed/u,
+    );
+    // A ref under the release namespace says which commit the revision is.
+    repo.fetched(revision, "refs/upstream-releases/taken");
+    assert.match(
+      repo.judge().refused,
+      /changed a file this instance had changed/u,
+    );
+    git(repo.root, ["update-ref", "-d", "refs/upstream-releases/taken"]);
+    repo.fetched(revision);
+    assert.match(
+      repo.judge().refused,
+      /changed a file this instance had changed/u,
+    );
+    repo.on("chore/copied", "main");
+    git(repo.root, [
+      "checkout",
+      revision,
+      "--",
+      "UPSTREAM.md",
+      "KIT-MANIFEST.json",
+      "f.txt",
+    ]);
+    repo.commitAll("the revision's files, copied");
+    assert.match(
+      repo.judge().refused,
+      /^the starter's incoming revision is not known here: /u,
+    );
+    // The copy itself, stated as the revision, is a commit made here.
+    assert.match(
+      repo.judge([], "HEAD").refused,
+      /^--from names [0-9a-f]{12}, which no ref fetched from a remote other than origin holds/u,
+    );
+  }
+  // The update's merge made on another branch and merged in, by a merge
+  // of its own or after a commit of the branch's: the merge that met the
+  // revision is the one judged, wherever on the branch it stands.
+  for (const route of ["merged in", "after a commit"]) {
+    const repo = history(`merge-of-a-merge-${route.replaceAll(" ", "-")}`);
+    const revision = repo.starterRevision();
+    const instance = repo.instanceChange();
+    repo.on("tmp", "main");
+    ok(repo.merge(revision), "the update's merge, on another branch");
+    const merged = repo.at();
+    repo.on("chore/update", "main");
+    if (route === "after a commit") {
+      repo.edit("g.txt", 7, "the branch's own line");
+      repo.commitAll("a commit of the branch's own");
+    }
+    ok(repo.merge("--no-ff", "tmp"), "the other branch merged in");
+    const refused = repo.judge().refused;
+    refusesFile(refused, merged, revision, instance);
+    restore(repo, refused);
+    repo.commitAll("keep the instance's file");
+    assert.deepEqual(repo.judge(), { taken: [] });
+  }
+  // This branch pushed to a second remote leaves a ref that holds the
+  // update's merge, and then the emit above it: the merge is judged all the
+  // same.
+  {
+    const repo = history("second-remote");
+    const revision = repo.starterRevision();
+    const instance = repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    const merged = repo.at();
+    repo.fetched(merged, "refs/remotes/backup/chore/update");
+    refusesFile(repo.judge().refused, merged, revision, instance);
+    repo.edit("h.txt", 9, "the emit's line");
+    repo.fetched(
+      repo.commitAll("the emit"),
+      "refs/remotes/backup/chore/update",
+    );
+    refusesFile(repo.judge().refused, merged, revision, instance);
+  }
+  // A restore that a later merge undid is not kept, whatever bytes the file
+  // ended at: a branch cut at the update's merge takes the starter's file,
+  // the update branch restores the instance's, and the two merge cleanly
+  // into a file that holds neither side's change.
+  {
+    const repo = history("restore-undone-by-a-merge");
+    const revision = repo.starterRevision();
+    const instance = repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    const merged = repo.at();
+    repo.on("x", merged);
+    git(repo.root, ["checkout", revision, "--", "f.txt"]);
+    repo.commitAll("the starter's file, on a branch of its own");
+    repo.on("chore/update");
+    restore(repo, repo.judge().refused);
+    repo.commitAll("keep the instance's file");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    ok(repo.merge("x"), "the other branch merged in");
+    const held = readFileSync(join(repo.root, "f.txt"), "utf8");
+    assert.ok(!held.includes("the instance's line 2"));
+    assert.ok(!held.includes("the starter's line 35"));
+    refusesFile(repo.judge().refused, merged, revision, instance);
+  }
+  // An older revision of the starter's merged on a branch that joins this
+  // one after the update's merge is another revision taken, and is refused
+  // as that, not passed because its merge is no meeting with the newer.
+  {
+    const repo = history("older-revision-on-a-side-branch");
+    const older = repo.starterRevision();
+    const newer = repo.starterRevision(older, 2);
+    repo.instanceChange();
+    repo.on("side", "main");
+    ok(repo.merge(older), "the older revision merged on a side branch");
+    const side = repo.at();
+    repo.on("chore/update", "main");
+    ok(repo.merge(newer), "the update's merge");
+    restore(repo, repo.judge().refused);
+    repo.commitAll("keep the instance's file");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    // Git merges the two cleanly: the older revision is under both.
+    ok(repo.merge("side"), "the side branch merged in");
+    const refused = repo.judge().refused;
+    assert.ok(
+      refused?.startsWith(
+        `the commit ${short(side)} on this branch has the parent ${short(older)}, a commit of the starter's below the revision ${short(newer)} that main does not hold: this branch took another revision of the starter's beside the one it merged.`,
+      ),
+      refused,
+    );
+  }
+  // The remote's main has moved on from local main and changed the file
+  // again, and the branch took it in: the instance's bytes are that line's,
+  // and a restore from the older side, which would take the later change
+  // back out, is neither printed nor kept.
+  {
+    const repo = history("origin-ahead");
+    const revision = repo.starterRevision();
+    const instance = repo.instanceChange();
+    repo.on("ahead", "main");
+    repo.edit("f.txt", 20, "the instance's later line 20");
+    const ahead = repo.commitAll("the instance's later change, on the remote");
+    repo.fetched(ahead, "refs/remotes/origin/main");
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    git(repo.root, ["checkout", revision, "--", "f.txt"]);
+    repo.commitAll("settled with the starter's file");
+    ok(repo.merge("origin/main"), "the remote's main merged in");
+    const refused = repo.judge().refused;
+    assert.ok(refused?.includes(`git checkout ${ahead} -- f.txt`), refused);
+    git(repo.root, ["checkout", instance, "--", "f.txt"]);
+    repo.commitAll("the older side's file");
+    assert.ok(repo.judge().refused?.includes(`git checkout ${ahead} -- f.txt`));
+    restore(repo, refused);
+    repo.commitAll("keep the instance's file as the remote holds it");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    const held = readFileSync(join(repo.root, "f.txt"), "utf8");
+    assert.ok(held.includes("the instance's later line 20"));
+    assert.ok(held.includes("the instance's line 2"));
+  }
+  // Another remote's main that holds this branch's update merge gives the
+  // merge itself as the revision. The shape is refused, since it is also
+  // the shape of the starter's own merge over a commit this instance has,
+  // and the revision stated is judged. A statement this branch does not
+  // hold, or one that names another kit commit, is refused as that.
+  {
+    const repo = history("another-remotes-main");
+    const revision = repo.starterRevision();
+    const instance = repo.instanceChange();
+    repo.on("unmerged", repo.base);
+    repo.edit("h.txt", 30, "a line this branch never took");
+    const unmerged = repo.commitAll("a commit this branch does not hold");
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    const merged = repo.at();
+    repo.fetched(merged, "refs/remotes/other/main");
+    const asked = repo.judge().refused;
+    assert.ok(
+      asked?.startsWith(
+        `the commit ${short(merged)} that the fetched refs give as the starter's revision holds the merge ${short(merged)}, one side of which main holds:`,
+      ) && asked.endsWith("with --from <the ref or the commit>"),
+      asked,
+    );
+    refusesFile(
+      repo.judge([], "upstream/main").refused,
+      merged,
+      revision,
+      instance,
+    );
+    assert.match(
+      repo.judge([], unmerged).refused,
+      /^--from names [0-9a-f]{12}, which this branch does not hold: merge it first/u,
+    );
+    // The same shape from the starter's side: its revision is a merge of
+    // its own over the commit this instance already has.
+    repo.on("starter-merge", repo.base);
+    repo.names(1);
+    repo.edit("f.txt", 35, "the starter's line 35, on a branch of its own");
+    repo.commitAll("the starter's work on a branch");
+    repo.on("starter-over-base", repo.base);
+    ok(repo.merge("--no-ff", "starter-merge"), "the starter's own merge");
+    const starterMerge = repo.at();
+    repo.fetched(starterMerge);
+    git(repo.root, ["update-ref", "-d", "refs/remotes/other/main"]);
+    repo.on("chore/second", "main");
+    ok(repo.merge(starterMerge), "the update's merge");
+    assert.match(
+      repo.judge().refused,
+      /^the commit [0-9a-f]{12} that the fetched refs give as the starter's revision holds the merge [0-9a-f]{12}, one side of which main holds:/u,
+    );
+    refusesFile(
+      repo.judge([], starterMerge).refused,
+      repo.at(),
+      starterMerge,
+      instance,
+    );
+  }
+  // The instance's side is a commit of the branch's own, and main then
+  // changes the same file and is merged in: no one commit holds this
+  // instance's bytes for it, the refusal says so and prints no restore that
+  // would take main's change back out, and the file is taken.
+  {
+    const repo = history("branch-commit-then-main-changes-the-file");
+    const revision = repo.starterRevision();
+    repo.instanceChange("g.txt");
+    repo.on("chore/update", "main");
+    repo.edit("f.txt", 2, "the branch's line 2");
+    repo.commitAll("a commit of the branch's own");
+    ok(repo.merge(revision), "the update's merge");
+    restore(repo, repo.judge().refused);
+    repo.commitAll("keep the branch's file");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    repo.on("main");
+    repo.edit("f.txt", 20, "main's later line 20");
+    repo.commitAll("main changes the file");
+    repo.on("chore/update");
+    ok(repo.merge("main"), "main merged into the branch");
+    const refused = repo.judge().refused;
+    assert.ok(
+      refused?.includes(
+        "f.txt changed on the instance's side of the merge and again on main since the two parted, so no one commit holds this instance's bytes for it: set it by hand and pass --take.",
+      ) && !refused.includes("git checkout"),
+      refused,
+    );
+    assert.deepEqual(repo.judge(["f.txt"]), { taken: ["f.txt"] });
+  }
+  // An earlier update reached main by a squash: main holds its files and
+  // none of the starter's commits, so the base is older than that update
+  // and its changes read as this instance's. The refusal says so, and the
+  // file is taken.
+  {
+    const repo = history("an-earlier-update-squashed");
+    repo.on("starter-1", repo.base);
+    repo.names(1);
+    repo.edit("g.txt", 20, "the starter's line 20, kit 1");
+    const earlier = repo.commitAll("the starter's earlier revision");
+    repo.on("main");
+    git(repo.root, [
+      "checkout",
+      earlier,
+      "--",
+      "UPSTREAM.md",
+      "KIT-MANIFEST.json",
+      "g.txt",
+    ]);
+    repo.commitAll("the earlier update, squashed onto main");
+    repo.on("starter-2", earlier);
+    repo.names(2);
+    repo.edit("g.txt", 25, "the starter's line 25, kit 2");
+    const revision = repo.commitAll("the starter's revision");
+    repo.fetched(revision);
+    repo.on("chore/update", "main");
+    // The two sides name different kit commits; the session settles that.
+    repo.merge(revision);
+    repo.names(2);
+    repo.commitAll("the update's merge");
+    const refused = repo.judge().refused;
+    assert.ok(
+      // This small history lists no kit file, so the provenance file is
+      // judged beside the seed.
+      refused?.includes(": UPSTREAM.md, g.txt.") &&
+        refused.includes(
+          `The base names the kit commit ${"0".repeat(12)} and the instance's side names ${"1".repeat(12)}: an earlier update reached main without the starter's own commits (a squash merge, or a copy of its files), so a file named here may hold that update's change and no change of this instance's. Where it does, keep the merged bytes with --take.`,
+        ),
+      refused,
+    );
+    assert.deepEqual(repo.judge(["UPSTREAM.md", "g.txt"]), {
+      taken: ["UPSTREAM.md", "g.txt"],
+    });
+  }
+  // The revision merged on two branches that are then merged together: no
+  // one merge is the update's.
+  {
+    const repo = history("two-meetings");
+    const revision = repo.starterRevision();
+    repo.instanceChange();
+    repo.on("one", "main");
+    ok(repo.merge(revision), "the revision merged on one branch");
+    repo.on("other", "main");
+    repo.edit("g.txt", 7, "the other branch's line");
+    repo.commitAll("a commit of the other branch's");
+    ok(repo.merge(revision), "the revision merged on another branch");
+    repo.on("chore/update", "one");
+    ok(repo.merge("other"), "the two merged together");
+    assert.match(
+      repo.judge().refused,
+      /^the starter's revision [0-9a-f]{12} meets this instance's own lines in 2 merges, none of which holds another \([0-9a-f]{12}, [0-9a-f]{12}\), so no one merge is the update's\. Merge the revision once, on a branch cut from main$/u,
+    );
+  }
+  // A starter that changed a file's executable bit alone changed none of
+  // its bytes: the merge keeps the instance's bytes and the starter's bit,
+  // and nothing is refused.
+  {
+    const repo = history("mode-only");
+    repo.on("starter-1", repo.base);
+    repo.names(1);
+    chmodSync(join(repo.root, "f.txt"), 0o755);
+    const revision = repo.commitAll("the starter's revision sets a bit");
+    repo.fetched(revision);
+    repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    assert.match(
+      git(repo.root, ["ls-tree", "HEAD", "--", "f.txt"]).stdout,
+      /^100755 /u,
+    );
+  }
+  // Three lines in one merge, and a second update on one branch.
+  {
+    const repo = history("octopus");
+    const revision = repo.starterRevision();
+    repo.on("side", repo.base);
+    repo.edit("h.txt", 3, "a side line");
+    repo.commitAll("a side line");
+    repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision, "side"), "a merge of three lines");
+    assert.match(
+      repo.judge().refused,
+      /^the merge [0-9a-f]{12} joins 3 lines where it meets the starter's revision [0-9a-f]{12}, so it has no one instance side to judge\. Take the starter's revision in a merge of its own/u,
+    );
+  }
+  {
+    const repo = history("two-updates");
+    const first = repo.starterRevision();
+    repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(first), "the first update merge");
+    assert.match(
+      repo.judge().refused,
+      /changed a file this instance had changed/u,
+    );
+    const second = repo.starterRevision(first, 2);
+    repo.on("chore/update");
+    ok(repo.merge(second), "a second update merge");
+    assert.match(
+      repo.judge().refused,
+      /^the instance's side of the update's merge [0-9a-f]{12} is [0-9a-f]{12}, which names the kit commit 1{12}, and main does not: this branch already held another update when [0-9a-f]{12} was merged, local main is behind the remote's, or the branch was cut before main's last update\./u,
+    );
+  }
+  // A restore that is later undone is not kept, by the merge's bytes or the
+  // starter's; a path Git would read as a pattern is printed literal, and
+  // its restore touches that file alone.
+  {
+    const repo = history("restore");
+    for (const path of ["n[1].md", "n1.md", "it's a.md"])
+      writeFileSync(join(repo.root, path), lines(40));
+    const base = repo.commitAll("more of the base");
+    repo.on("starter", base);
+    repo.names(1);
+    for (const path of ["f.txt", "n[1].md", "n1.md", "it's a.md"])
+      repo.edit(path, 35, "the starter's line 35");
+    const revision = repo.commitAll("the starter's revision");
+    repo.fetched(revision);
+    repo.on("main");
+    for (const path of ["f.txt", "n[1].md", "it's a.md"])
+      repo.edit(path, 2, "the instance's line 2");
+    const instance = repo.commitAll("the instance's change");
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    const merged = repo.at();
+    const refused = repo.judge().refused;
+    assert.ok(
+      refused?.includes(
+        `git checkout ${instance} -- f.txt 'it'\\''s a.md' ':(literal)n[1].md'`,
+      ),
+      refused,
+    );
+    restore(repo, refused);
+    repo.commitAll("keep the instance's files");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    // The file only the starter changed still holds the starter's change.
+    assert.ok(
+      readFileSync(join(repo.root, "n1.md"), "utf8").includes(
+        "the starter's line 35",
+      ),
+    );
+    git(repo.root, ["checkout", merged, "--", "f.txt", "n[1].md", "it's a.md"]);
+    repo.commitAll("the merge's bytes again");
+    assert.match(
+      repo.judge().refused,
+      /changed 3 files this instance had changed/u,
+    );
+    restore(repo, repo.judge().refused);
+    repo.commitAll("keep the instance's files again");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    git(repo.root, ["checkout", revision, "--", "f.txt"]);
+    repo.commitAll("the starter's file over the instance's");
+    assert.match(
+      repo.judge().refused,
+      /changed a file this instance had changed .*: f\.txt\./u,
+    );
+    // A file taken at the operator's word is not asked for again.
+    assert.deepEqual(repo.judge(["f.txt"]), { taken: ["f.txt"] });
+  }
+  // main changes the file again after the update's merge and is merged in:
+  // the instance's bytes are main's now, and the restore names main.
+  {
+    const repo = history("main-moved");
+    const revision = repo.starterRevision();
+    repo.instanceChange();
+    repo.on("chore/update", "main");
+    ok(repo.merge(revision), "the update's merge");
+    repo.on("main");
+    repo.edit("f.txt", 20, "the instance's later line 20");
+    const moved = repo.commitAll("the instance's later change");
+    repo.on("chore/update");
+    ok(repo.merge("main"), "main merged into the branch");
+    const refused = repo.judge().refused;
+    // The commit is printed by its id: a branch or a tag named as the line
+    // is cannot stand in for it.
+    assert.ok(refused?.includes(`git checkout ${moved} -- f.txt`), refused);
+    restore(repo, refused);
+    repo.commitAll("keep the instance's file as main holds it");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    // main moves again, in another file, and the branch does not take it
+    // in: the instance's bytes are still those of the commit of main the
+    // branch holds, not of the older side, and nothing is refused.
+    repo.on("main");
+    repo.edit("h.txt", 12, "main moves again");
+    repo.commitAll("main moves again");
+    repo.on("chore/update");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    // A file that already holds the instance's bytes has nothing to take.
+    assert.match(
+      repo.judge(["f.txt"]).refused,
+      /^--take names f\.txt, which holds this instance's bytes already/u,
+    );
+    assert.ok(
+      readFileSync(join(repo.root, "f.txt"), "utf8").includes(
+        "the instance's later line 20",
+      ),
+    );
+  }
+  // The instruction file: a change inside a generated block is no change of
+  // the instance's; a change of its floor on both sides is, and after the
+  // restore the block may be written again.
+  {
+    const repo = history("instruction");
+    const instruction = (floor, block) =>
+      `# Launchpad\n\n${floor}\n\n<!-- dotln-kit:start -->\nkit block\n<!-- dotln-kit:end -->\n\n<!-- dotln-harness:start -->\n${block}\n<!-- dotln-harness:end -->\n`;
+    const write = (floor, block) =>
+      writeFileSync(join(repo.root, "CLAUDE.md"), instruction(floor, block));
+    write("the floor", "block of release 0");
+    const base = repo.commitAll("an instruction file");
+    repo.on("starter", base);
+    repo.names(1);
+    write("the floor", "block of release 1");
+    const blockOnly = repo.commitAll("the starter's revision moves the block");
+    write("the starter's floor", "block of release 1");
+    const floorToo = repo.commitAll("the starter's revision moves the floor");
+    repo.fetched(floorToo);
+    repo.on("main");
+    write("the floor", "block of release 0, as this instance emits it");
+    repo.commitAll("the instance's own emit");
+    repo.on("chore/block", "main");
+    // Git stops on the block; the session settles it either way.
+    repo.merge(blockOnly);
+    write("the floor", "block of release 1, as this instance emits it");
+    repo.commitAll("the update's merge and its emit");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    repo.on("main");
+    write(
+      "the instance's floor",
+      "block of release 0, as this instance emits it",
+    );
+    const instance = repo.commitAll("the instance's own floor");
+    repo.on("chore/floor", "main");
+    repo.merge(floorToo);
+    write("the starter's floor", "block of release 1");
+    repo.commitAll("the update's merge, settled with the starter's file");
+    const refused = repo.judge().refused;
+    assert.ok(
+      refused?.includes(`git checkout ${instance} -- CLAUDE.md`) &&
+        refused.includes(
+          "Then run node scripts/harness.mjs emit, which writes CLAUDE.md's generated block again, and commit that.",
+        ),
+      refused,
+    );
+    restore(repo, refused);
+    repo.commitAll("keep the instance's floor");
+    write(
+      "the instance's floor",
+      "block of release 1, as this instance emits it",
+    );
+    repo.commitAll("the emit");
+    assert.deepEqual(repo.judge(), { taken: [] });
+  }
+  // A revision taken by fast-forward alone met no commit of the instance's.
+  {
+    const repo = history("no-merge");
+    const revision = repo.starterRevision();
+    repo.on("chore/fast-forward", "main");
+    ok(repo.merge(revision), "a fast-forward");
+    assert.deepEqual(repo.judge(), { taken: [] });
+    assert.match(
+      repo.judge(["f.txt"]).refused,
+      /^--take names f\.txt, and this branch holds no update merge to take it from$/u,
+    );
+  }
 });
 
 test("WO-078 criterion 1: an export to a declared sibling writes its receipt inside the manifest step and regenerates the entry, and an update records the sibling by its repository name", (t) => {
@@ -1311,6 +2364,10 @@ test("export update preserves ownership, validates actions and keeps the exporte
       );
       assert.doesNotMatch(noOp.stdout, /^(?:replace|add|remove|refused):/mu);
       assert.ok(noOp.stdout.includes(`unchanged: ${unchanged}`));
+      // Both of that revision's floors are met here: no floor line.
+      assert.doesNotMatch(noOp.stdout, /incoming floor not met/u);
+      // A revision the instance already holds meets no file both changed.
+      assert.match(noOp.stdout, /^instance files both sides changed: none$/mu);
       assert.deepEqual(treeSnapshot(fork), noOpBefore);
       ok(runUpdate(starter), "update starter to revision B");
       const starterActions = [
@@ -1326,6 +2383,21 @@ test("export update preserves ownership, validates actions and keeps the exporte
       writeFileSync(
         join(starter, kitActions),
         JSON.stringify({ schemaVersion: 1, actions: starterActions }) + "\n",
+      );
+      // Revision B also declares floors above any host: the preview names
+      // each with what this host runs, above its file sections, and still
+      // prints its plan (WO-276 criterion H5).
+      const starterPackage = JSON.parse(
+        readFileSync(join(starter, "package.json"), "utf8"),
+      );
+      starterPackage.engines = {
+        ...starterPackage.engines,
+        node: "^99.0.0",
+        git: ">=99.0.0",
+      };
+      writeFileSync(
+        join(starter, "package.json"),
+        `${JSON.stringify(starterPackage, null, 2)}\n`,
       );
       // A valid starter edit/re-emit can retain the original manifest hashes.
       const metadata = join(starter, HARNESS_MANIFEST);
@@ -1359,6 +2431,39 @@ test("export update preserves ownership, validates actions and keeps the exporte
         "preview fetched revision inside the instance",
       );
       assert.deepEqual(treeSnapshot(fork), before);
+      assert.match(
+        preview.stdout,
+        /^incoming floor not met on this host: engines\.node \^99\.0\.0; this host runs Node v\d+\.\d+\.\d+\. /mu,
+      );
+      assert.match(
+        preview.stdout,
+        /^incoming floor not met on this host: engines\.git >=99\.0\.0; this host runs Git \d+\.\d+\.\d+/mu,
+      );
+      assert.ok(
+        preview.stdout.lastIndexOf("incoming floor not met") <
+          preview.stdout.search(
+            /^(?:replace|unchanged|refused|remove|add): /mu,
+          ),
+        "the floor lines stand above the file sections",
+      );
+      // The floors are read past a byte-order mark, as the kit's own
+      // readers of that file read it, and an incoming file that is no JSON
+      // is said in one line (WO-276, the attack on Part H).
+      const declared = JSON.stringify({
+        engines: { node: "^99.0.0", git: ">=99.0.0" },
+      });
+      const running = {
+        nodeVersion: "v24.15.0",
+        gitVersion: "git version 2.50.0",
+      };
+      assert.equal(unmetIncomingFloors(declared, running).length, 2);
+      assert.deepEqual(
+        unmetIncomingFloors(`\uFEFF${declared}`, running),
+        unmetIncomingFloors(declared, running),
+      );
+      const unread = unmetIncomingFloors("{ no JSON", running);
+      assert.equal(unread.length, 1);
+      assert.match(unread[0], /^incoming floors not read: /u);
       assert.ok(preview.stdout.includes(`replace: ${changed}`));
       assert.ok(preview.stdout.includes(`unchanged: ${unchanged}`));
       assert.ok(!preview.stdout.includes(`replace: ${unchanged}\n`));
@@ -2389,6 +3494,294 @@ test("export update preserves ownership, validates actions and keeps the exporte
         "candidate preparation comparison",
       );
       t.diagnostic(result.stdout.trim());
+    },
+  );
+
+  await t.test(
+    "WO-276 criterion J1: an instance that emitted with a model of its own and a default worker bound to it is shown no worker definition as locally modified by the update plan or by the preview, and launchpad verify reports none as differing",
+    () => {
+      const configured = instance("workers-configured");
+      configureRepository(configured);
+      const config = JSON.parse(
+        readFileSync(join(configured, "dotln.config.json"), "utf8"),
+      );
+      // The models file is the instance's own and no kit path; the binding
+      // is the configuration's.
+      writeFileSync(
+        join(configured, "dotln.models.json"),
+        `${JSON.stringify({ schemaVersion: 1, models: { haiku: { provider: "claude", id: "model-a", effort: "high" } } }, null, 2)}\n`,
+      );
+      writeFileSync(
+        join(configured, "dotln.config.json"),
+        `${JSON.stringify({ ...config, workers: { default: { claude: "haiku" } } }, null, 2)}\n`,
+      );
+      ok(harness(configured, "emit"), "the instance's own emit");
+      ok(harness(configured, "check"), "the instance's own check");
+      git(configured, ["add", "."]);
+      git(configured, [
+        "commit",
+        "-qm",
+        "the instance, configured and emitted",
+      ]);
+      const definition = ".claude/agents/dotln-worker.md";
+      assert.ok(
+        readFileSync(join(configured, definition), "utf8")
+          .split("\n")
+          .includes("model: model-a"),
+      );
+      // The kit's manifest lists that definition at the bytes the kit's own
+      // table gives, which this instance no longer holds.
+      assert.notEqual(
+        sha256(readFileSync(join(configured, definition))),
+        manifestOf(configured).files.find(({ path }) => path === definition)
+          .sha256,
+      );
+      for (const [label, result] of [
+        ["the update plan", runUpdate(configured, ["--preview"])],
+        [
+          "the preview",
+          run(
+            process.execPath,
+            [
+              join(configured, "scripts/launchpad.mjs"),
+              "preview",
+              "--from",
+              "HEAD",
+            ],
+            { cwd: configured },
+          ),
+        ],
+      ]) {
+        ok(result, label);
+        assert.doesNotMatch(result.stdout, /^refused: /mu, label);
+        assert.match(
+          result.stdout,
+          /^kit files: \d+ replaced; \d+ added; \d+ removed; 0 refused/mu,
+          label,
+        );
+      }
+      // The verifier counts the surfaces this instance's own emit wrote,
+      // which its harness check accepts, and none as differing.
+      const verified = ok(
+        run(
+          process.execPath,
+          [join(configured, "scripts/launchpad.mjs"), "verify"],
+          { cwd: configured },
+        ),
+        "launchpad verify",
+      );
+      assert.doesNotMatch(verified.stdout, /differ/u);
+      assert.match(
+        verified.stdout,
+        /^kit: \d+ harness surfaces written by this instance's own emit, which its harness check accepts$/mu,
+      );
+      // A definition edited by hand fails that check, and differs.
+      writeFileSync(
+        join(configured, definition),
+        readFileSync(join(configured, definition), "utf8").replace(
+          "model: model-a",
+          "model: model-b",
+        ),
+      );
+      const edited = ok(
+        run(
+          process.execPath,
+          [join(configured, "scripts/launchpad.mjs"), "verify"],
+          { cwd: configured },
+        ),
+        "launchpad verify after a hand edit",
+      );
+      assert.match(
+        edited.stdout,
+        /^kit: \d+ kit files differ from the manifest$/mu,
+      );
+    },
+  );
+
+  await t.test(
+    "WO-276 criterion K3: an instance that emitted with a settings fragment is shown the merged settings as locally modified by neither the update plan nor the preview, and launchpad verify reports them as written by its own emit and none as differing",
+    () => {
+      const merged = instance("settings-fragment");
+      configureRepository(merged);
+      const settings = ".claude/settings.json";
+      const rule = "Bash(extensions/tools/deploy *)";
+      writeFileSync(
+        join(merged, ".claude/settings.instance.json"),
+        `${JSON.stringify(
+          {
+            hooks: {
+              PostToolUse: [
+                {
+                  matcher: "Edit|Write",
+                  hooks: [{ type: "command", command: "true", timeout: 30 }],
+                },
+              ],
+            },
+            permissions: { deny: [rule] },
+          },
+          null,
+          2,
+        )}\n`,
+      );
+      ok(harness(merged, "emit"), "the instance's own emit");
+      ok(harness(merged, "check"), "the instance's own check");
+      git(merged, ["add", "."]);
+      git(merged, ["commit", "-qm", "the instance, with its fragment merged"]);
+      const held = JSON.parse(readFileSync(join(merged, settings), "utf8"));
+      assert.ok(held.permissions.deny.includes(rule));
+      assert.equal(held.hooks.PostToolUse.at(-1).matcher, "Edit|Write");
+      // The kit's manifest lists the settings at the bytes emitted with no
+      // fragment, which this instance no longer holds.
+      assert.notEqual(
+        sha256(readFileSync(join(merged, settings))),
+        manifestOf(merged).files.find(({ path }) => path === settings).sha256,
+      );
+      for (const [label, result] of [
+        ["the update plan", runUpdate(merged, ["--preview"])],
+        [
+          "the preview",
+          run(
+            process.execPath,
+            [
+              join(merged, "scripts/launchpad.mjs"),
+              "preview",
+              "--from",
+              "HEAD",
+            ],
+            { cwd: merged },
+          ),
+        ],
+      ]) {
+        ok(result, label);
+        assert.doesNotMatch(result.stdout, /^refused: /mu, label);
+        assert.match(
+          result.stdout,
+          /^kit files: \d+ replaced; \d+ added; \d+ removed; 0 refused/mu,
+          label,
+        );
+      }
+      const verified = ok(
+        run(
+          process.execPath,
+          [join(merged, "scripts/launchpad.mjs"), "verify"],
+          { cwd: merged },
+        ),
+        "launchpad verify",
+      );
+      assert.doesNotMatch(verified.stdout, /differ/u);
+      assert.match(
+        verified.stdout,
+        /^kit: \d+ harness surfaces written by this instance's own emit, which its harness check accepts$/mu,
+      );
+      // An emitted entry removed by hand fails that check, and differs.
+      held.permissions.deny = held.permissions.deny.slice(1);
+      writeFileSync(
+        join(merged, settings),
+        `${JSON.stringify(held, null, 2)}\n`,
+      );
+      const edited = ok(
+        run(
+          process.execPath,
+          [join(merged, "scripts/launchpad.mjs"), "verify"],
+          { cwd: merged },
+        ),
+        "launchpad verify after a hand edit",
+      );
+      assert.match(
+        edited.stdout,
+        /^kit: \d+ kit files differ from the manifest$/mu,
+      );
+    },
+  );
+
+  await t.test(
+    "WO-276 criterion I6: a generated surface the instance's own emit wrote is planned as re-emitted where its harness check passes, by the update plan and by the preview; edited by hand it is refused as locally modified; and a preview that meets none runs with nothing installed",
+    () => {
+      const emitted = instance("re-emitted");
+      configureRepository(emitted);
+      git(emitted, ["add", "."]);
+      git(emitted, ["commit", "-qm", "the instance as exported"]);
+      const previewIn = (target) =>
+        run(
+          process.execPath,
+          [join(target, "scripts/launchpad.mjs"), "preview", "--from", "HEAD"],
+          { cwd: target },
+        );
+      const plans = () => [
+        ["the update plan", runUpdate(emitted, ["--preview"])],
+        ["the preview", previewIn(emitted)],
+      ];
+      const manifestPath = join(emitted, HARNESS_MANIFEST);
+      const recorded = prior.files.find(
+        ({ path }) => path === HARNESS_MANIFEST,
+      ).sha256;
+      // The instance's own build overlay: its emit writes a harness manifest
+      // the kit's prediction does not hold, and its own check passes.
+      const config = JSON.parse(
+        readFileSync(join(emitted, "dotln.config.json"), "utf8"),
+      );
+      writeFileSync(
+        join(emitted, "dotln.config.json"),
+        `${JSON.stringify({ ...config, build: { ...config.build, overlay: "instance/build.json" } }, null, 2)}\n`,
+      );
+      mkdirSync(join(emitted, "instance"));
+      writeFileSync(
+        join(emitted, "instance/build.json"),
+        `${JSON.stringify({ version: 1, narrow: { requiredEvidence: ["instance-check"] } })}\n`,
+      );
+      ok(harness(emitted, "emit"), "the instance's own emit");
+      ok(harness(emitted, "check"), "the instance's own check");
+      const own = readFileSync(manifestPath);
+      assert.notEqual(sha256(own), recorded);
+      for (const [label, result] of plans()) {
+        ok(result, label);
+        assert.match(
+          result.stdout,
+          /^re-emitted: \.claude\/harness-manifest\.json$/mu,
+          label,
+        );
+        assert.doesNotMatch(result.stdout, /^refused: /mu, label);
+        assert.match(
+          result.stdout,
+          /^kit files: \d+ replaced; \d+ added; \d+ removed; 0 refused/mu,
+          label,
+        );
+      }
+      // The same file edited by hand: the check fails, and the file is
+      // refused as locally modified, the row saying which check result.
+      const edited = JSON.parse(own.toString("utf8"));
+      edited.installed[0].hash = "fnv1a64:0000000000000000";
+      writeFileSync(manifestPath, `${JSON.stringify(edited, null, 2)}\n`);
+      assert.notEqual(harness(emitted, "check").status, 0);
+      for (const [label, result] of plans()) {
+        ok(result, label);
+        assert.ok(
+          result.stdout.includes(
+            `refused: ${HARNESS_MANIFEST} (locally modified; the instance's harness check fails, so these bytes are not taken for its own emit; prior hash retained: ${recorded}`,
+          ),
+          `${label}: ${result.stdout.split("\n").find((line) => line.includes(HARNESS_MANIFEST))}`,
+        );
+        assert.doesNotMatch(result.stdout, /^re-emitted: /mu, label);
+      }
+      // A clone has nothing installed. A preview that meets no such surface
+      // runs there; one that meets one cannot ask the check, and refuses the
+      // file saying so.
+      const bare = join(scratch, "update-re-emitted-bare");
+      git(scratch, ["clone", "-q", emitted, bare]);
+      assert.equal(existsSync(join(bare, "node_modules")), false);
+      const plain = ok(previewIn(bare), "a preview with nothing installed");
+      assert.doesNotMatch(plain.stdout, /^(?:re-emitted|refused): /mu);
+      assert.match(plain.stdout, /^kit files: 0 replaced; /mu);
+      writeFileSync(join(bare, HARNESS_MANIFEST), own);
+      const unasked = ok(previewIn(bare), "a surface with nothing installed");
+      assert.ok(
+        unasked.stdout.includes(
+          `refused: ${HARNESS_MANIFEST} (locally modified; the instance's harness check could not run, nothing being installed, so these bytes are not taken for its own emit; prior hash retained: ${recorded}`,
+        ),
+        unasked.stdout
+          .split("\n")
+          .find((line) => line.includes(HARNESS_MANIFEST)),
+      );
     },
   );
 });
@@ -3697,7 +5090,17 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   // Reproduce a kit-only refresh: the manifest already names this release,
   // but its seed still matches an older export reachable in starter history.
   writeFileSync(join(checkout, "README.md"), seedReadme);
-  git(checkout, ["add", "README.md"]);
+  // The starter's own file for core, with an entry: the refresh that
+  // rewrites a seed leaves it byte-identical (WO-275 criterion 4).
+  const forCore = "FOR-CORE.md";
+  const ownForCore = `${readFileSync(join(checkout, forCore), "utf8")}\n## 2026-11-09 — WO-002 — the starter's own entry\n\n\`\`\`json\n{ "kit": "v0.123.0", "stopsNextOrder": false, "answered": null }\n\`\`\`\n\nWhat the kit did.\n`;
+  writeFileSync(join(checkout, forCore), ownForCore);
+  // The starter's own attributes, with a line of its own under the seed's:
+  // a refresh leaves them byte-identical too (WO-276 criterion H7).
+  const attributes = ".gitattributes";
+  const ownAttributes = `${readFileSync(join(checkout, attributes), "utf8")}*.png binary\n`;
+  writeFileSync(join(checkout, attributes), ownAttributes);
+  git(checkout, ["add", "README.md", forCore, attributes]);
   git(checkout, [
     "-c",
     "maintenance.auto=false",
@@ -3717,6 +5120,8 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   const seedOnly = refresh(tag, head)[0];
   assert.equal(seedOnly.outcome, "refreshed", JSON.stringify(seedOnly));
   assert.deepEqual(seedOnly.rewrittenSeeds, ["README.md"]);
+  assert.equal(readFileSync(join(checkout, forCore), "utf8"), ownForCore);
+  assert.equal(readFileSync(join(checkout, attributes), "utf8"), ownAttributes);
   assert.match(
     printed(seedOnly),
     new RegExp(`-> ${seedOnly.after}; seeds published: README\\.md; tag `, "u"),
@@ -3731,6 +5136,10 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   const ceilings = "docs/control/doc-ceilings.json";
   const lineageIndex = "docs/lineage/README.md";
   rmSync(join(checkout, lineageIndex));
+  // A starter exported before the file for core was a seed lacks it, and
+  // one exported before the attributes seed lacks that.
+  rmSync(join(checkout, forCore));
+  rmSync(join(checkout, attributes));
   writeFileSync(
     join(checkout, ceilings),
     `${JSON.stringify({ schemaVersion: 1, documents: {} }, null, 2)}\n`,
@@ -3750,15 +5159,29 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     "preview",
     JSON.stringify(seedEditPreview),
   );
-  assert.deepEqual(seedEditPreview.addedSeeds, [lineageIndex]);
+  assert.deepEqual(seedEditPreview.addedSeeds, [
+    attributes,
+    forCore,
+    lineageIndex,
+  ]);
   assert.deepEqual(seedEditPreview.removedSeeds, [ceilings]);
   const seedEdits = refresh(tag, head)[0];
   assert.equal(seedEdits.outcome, "refreshed", JSON.stringify(seedEdits));
-  assert.deepEqual(seedEdits.addedSeeds, [lineageIndex]);
+  assert.deepEqual(seedEdits.addedSeeds, [attributes, forCore, lineageIndex]);
   assert.deepEqual(seedEdits.removedSeeds, [ceilings]);
   assert.match(
     printed(seedEdits),
-    /; seeds added: docs\/lineage\/README\.md; seeds removed: docs\/control\/doc-ceilings\.json; tag /u,
+    /; seeds added: \.gitattributes, FOR-CORE\.md, docs\/lineage\/README\.md; seeds removed: docs\/control\/doc-ceilings\.json; tag /u,
+  );
+  // The added file for core is the export's bytes: its template. So are
+  // the added attributes.
+  assert.equal(
+    readFileSync(join(checkout, forCore), "utf8"),
+    readFileSync(join(checkout, "scripts/kit/for-core.template.md"), "utf8"),
+  );
+  assert.equal(
+    readFileSync(join(checkout, attributes), "utf8"),
+    readFileSync(join(checkout, "scripts/kit/gitattributes.template"), "utf8"),
   );
   assert.equal(existsSync(join(checkout, ceilings)), false);
   ok(
@@ -4234,4 +5657,121 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     /^100755 /u,
   );
   assert.equal(manifestOf(checkout).commit, head);
+});
+
+test("WO-276 F8: every carried compiled runtime file is compared before any of the instance's code runs, in kit verification and in an update's plan", () => {
+  const root = join(scratch, "runtime-first");
+  rmSync(root, { recursive: true, force: true });
+  mkdirSync(root, { recursive: true });
+  const inherited = process.env.DOTLN_INSTANCE_HARNESS_CHECK;
+  delete process.env.DOTLN_INSTANCE_HARNESS_CHECK;
+  try {
+    const put = (path, text) => {
+      mkdirSync(dirname(join(root, path)), { recursive: true });
+      writeFileSync(join(root, path), text);
+    };
+    const surface = ".claude/settings.json";
+    const runtime = "packages/skeleton/dist/src/a.js";
+    const kitRuntime = "// the runtime file a kit wrote\n";
+    // A surface the instance's emit lists, which differs from the manifest,
+    // and a stand-in harness script that records each time it runs. The
+    // surface's path sorts before the runtime's.
+    put(
+      "KIT-MANIFEST.json",
+      JSON.stringify({
+        schemaVersion: 1,
+        commit: "a".repeat(40),
+        tag: null,
+        files: [
+          { path: surface, sha256: "0".repeat(64) },
+          { path: runtime, sha256: sha256(kitRuntime) },
+        ],
+      }),
+    );
+    put(surface, "{}\n");
+    put(HARNESS_MANIFEST, JSON.stringify({ installed: [{ path: surface }] }));
+    const marker = join(root, "runs.log");
+    put(
+      "scripts/harness.mjs",
+      `import { appendFileSync } from "node:fs";\nappendFileSync(${JSON.stringify(marker)}, "ran\\n");\n`,
+    );
+    mkdirSync(join(root, "node_modules"));
+    const runs = () =>
+      existsSync(marker)
+        ? readFileSync(marker, "utf8").split("\n").length - 1
+        : 0;
+    // Kit verification: a changed runtime file is refused and the instance's
+    // check never runs.
+    put(runtime, "// a changed runtime file\n");
+    assert.throws(
+      () => verifyKit(root),
+      new RegExp(
+        `^Error: kit runtime differs from the manifest: ${runtime}$`,
+        "u",
+      ),
+    );
+    assert.equal(runs(), 0);
+    // With the runtime as the kit wrote it the check is asked about the
+    // surface, and passes.
+    put(runtime, kitRuntime);
+    assert.deepEqual(verifyKit(root).differing, 0);
+    assert.equal(runs(), 1);
+    // The update plan: the same order, with the check given in, so whether it
+    // is asked is counted here and nothing runs.
+    let asked = 0;
+    const plan = () =>
+      planUpdate(
+        {
+          files: [
+            { path: surface, sha256: "0".repeat(64) },
+            { path: runtime, sha256: sha256(kitRuntime) },
+          ],
+        },
+        {
+          files: [
+            { path: surface, sha256: "1".repeat(64) },
+            { path: runtime, sha256: sha256("// the incoming runtime\n") },
+          ],
+        },
+        root,
+        null,
+        {
+          generated: new Set([surface]),
+          harnessCheck: () => {
+            asked++;
+            return "passes";
+          },
+        },
+      );
+    put(runtime, "// a changed runtime file\n");
+    const refused = plan();
+    assert.equal(asked, 0);
+    assert.deepEqual(
+      refused.map(({ path, kind, reason, harnessCheck }) => [
+        path,
+        kind,
+        reason,
+        harnessCheck,
+      ]),
+      [
+        [surface, "refuse", "locally modified", "runtime-differs"],
+        [runtime, "refuse", "locally modified", undefined],
+      ],
+    );
+    put(runtime, kitRuntime);
+    const taken = plan();
+    assert.equal(asked, 1);
+    assert.deepEqual(
+      taken.map(({ path, kind, reEmitted }) => [path, kind, reEmitted]),
+      [
+        [surface, "replace", true],
+        [runtime, "replace", undefined],
+      ],
+    );
+  } finally {
+    if (inherited === undefined)
+      delete process.env.DOTLN_INSTANCE_HARNESS_CHECK;
+    else process.env.DOTLN_INSTANCE_HARNESS_CHECK = inherited;
+    rmSync(root, { recursive: true, force: true });
+  }
 });

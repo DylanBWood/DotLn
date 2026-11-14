@@ -17,7 +17,7 @@ no skill carries phase state or grants authority.
 | Verifier (`verify`)                                  | `@skills/dotln-verifier/SKILL.md`      | §Goal-aligned decisions; selected order and cited sections; subject source, tests and current outputs; `package.json`; prior verification reports needed for the findings                                                                      |
 | Reviewer (`final review`)                            | `@skills/dotln-reviewer/SKILL.md`      | §Goal-aligned decisions; selected order and cited sections; complete subject and numbered verification sequence; `package.json`; 08 §PRs and commits; current review/PR/release-note outputs                                                   |
 | Release close                                        | `@skills/dotln-release-close/SKILL.md` | §Goal-aligned decisions; selected order and cited sections; canonical final review, PR body and release notes                                                                                                                                  |
-| Planner                                              | `@skills/dotln-planner/SKILL.md`       | §Goal-aligned decisions; sequence file; this guide's planning and ideation sections; addressed candidates and source lookups                                                                                                                   |
+| Planner                                              | `@skills/dotln-planner/SKILL.md`       | §Goal-aligned decisions; sequence file; this guide's planning section, and its ideation section for an `ideation:` entry; addressed candidates and source lookups                                                                                                                   |
 | Router (`drive: WO-NNN`)                             | `@skills/dotln-router/SKILL.md`        | Canonical status through `node scripts/drive.mjs status WO-NNN` and nothing else: no order, diff, report or worker transcript |
 | Refuter                                              | `@skills/dotln-refuter/SKILL.md`       | §Goal-aligned decisions supplies purpose; the canonical prompt from `npm run plan -- refute --direct` is the sole subject evidence. No map, ledger or prior receipt is a subject preread.                                                      |
 
@@ -151,7 +151,8 @@ operator is deliberately not repeating themselves.
 
 With `features.plan-first` elected, an active order's `resume: next` first
 produces a plan, persistent conversation and complete candidate diff in its
-plan-first directory. The executor drafts in owned scratch, records
+plan-first directory, which for a target order is the registration's to
+place (§Where the control plane finds its documents). The executor drafts in owned scratch, records
 `PlanProposed`, prints the paths and stops. It reads and answers every new
 operator entry on return, paraphrases terminal replies with capture provenance,
 and announces transformations before carrying text onto screened surfaces.
@@ -405,7 +406,7 @@ includes the shared goal card and the refuter's separate subject boundary.
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
-   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, refresh each declared export sibling through its recorded checkout with one fast-forward commit to that sibling's main carrying core's tag name and the sibling's Release, and write `docs/control/local/retained/WO-NNN/release-close.json`; for a registered target order, fetch and fast-forward the clone's base, delete declared disposable output, remove the order's literal host rules, and tag and release the target only under `release.policy: declared`; rerun from updated main if Release creation fails or a starter refresh refuses |
+   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, refresh each declared export sibling through its recorded checkout with one fast-forward commit to that sibling's main carrying core's tag name and the sibling's Release, and write `docs/control/local/retained/WO-NNN/release-close.json`; for a registered target order, fetch and fast-forward the clone's base, delete declared disposable output, remove the order's literal host rules, and tag and release the target only under `release.policy: declared`; rerun from updated main if Release creation fails or a starter refresh refuses. A target order is settled, and status reports it released, when a close of this activation that was no dry run recorded `no-release`, or, for a target that declares a release policy, recorded that target `published` or `current`, in both cases with its cleanup clean and its target removed, read over the attempts the close record keeps, so a later dry run or stopped attempt undoes nothing; a close that deleted the branch and left the target's release `prepared` routes to the release close again, never to a merge ([decision](../evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release)) |
    | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver; a waiver is recorded only from the operator's words asking for that criterion's waiver, never from words that call a criterion wrong or authorize a commit or a pull request (the fork's WO-021, where a Codex verifier recorded one from such words and the segment was repaired by hand; the 2026-11-01 pass); `retract` undoes a waiver recorded without them (WO-249) |
    | a criterion no candidate can meet as written (the verifier or the final reviewer judges it) | `npm run resume -- defect N --class bookkeeping\|later-phase\|absent-input\|host-behavior\|contradiction --evidence <text> <actor-flags>` in `verifying` or `final-review` (WO-249) | the report records `**Criterion N:** unmet, defective (<class>) by <ordinal>` with its own evidence and the order goes on; the final review carries the same line, a fail whose blocking finding names N disputes it and a `met` line stands over it; the order's executor never records one, and a launchpad order's pull-request body names it for the operator |
    | the operator retracts a waiver or a defect record (words captured) | `npm run resume -- retract <ordinal> --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` in `verifying`, `verified`, `needs-fix`, `final-review` or `closed` (WO-249) | the record no longer stands and a line citing it is refused; in `closed` with the pull request unmerged the order returns to `needs-fix` and release close refuses until a repair, a verification and a final review follow; after the merge it is recorded from main and changes no phase; after release close it is refused |
@@ -477,10 +478,18 @@ activation.
 
 WO-026's generated index, two pages since WO-190 (`README.md` holds the
 active line, the sequence with its lane pairs and the Active and Open cards;
-`HISTORY.md` holds the settled cards, the sources and limits and the tag
-record), observes current headers and control evidence with a
-recorded snapshot of local annotated release tag objects and the control
-segments contained in each tagged revision. Each card's criteria line shows a
+`HISTORY.md` holds the settled cards and the sources and limits), observes
+current headers and control evidence with a recorded snapshot of local
+annotated release tag objects and the control segments contained in each
+tagged revision. The pages are for people and no reader takes data back from
+them. What the index observed outside this repository's files is committed in
+two records, each with one writer: `docs/control/release-history.json` holds
+that tag snapshot and `docs/control/workstream-observations.json` the target
+facts of each workstream's row. An order's card is committed nowhere and is
+derived again when it is needed: `npm run work-orders -- index --json` prints
+the cards, the console reads that output, and the resident takes it from the
+launcher that starts it
+([WO-276-D033](../evidence/WO-276/decisions.md#wo-276-d033--what-this-part-changes-in-the-ported-readers-one-build-free-source-reader-no-committed-cards-one-parse-a-document)). Each card's criteria line shows a
 criterion the handoff left unmet by its later criterion-level judgment (met
 by a verification, waived or defective by ordinal) with the executor's
 ordinal beside it, and as the current state only while no later judgment
@@ -789,6 +798,23 @@ Nothing else in `scripts/` holds a literal `docs/...` root or derives the
 repository from its own module URL, and `scripts/test-configuration-root.mjs`
 refuses both.
 
+Two committed records under the control root hold what the work-order index
+observed outside this repository's files, each with one writer:
+`release-history.json`, the release tags the index pages and the roadmap's
+release block were rendered from, and `workstream-observations.json`, the
+target facts each workstream's row was rendered from. `npm run work-orders --
+index` writes both with the pages, and `index --check` reads them, so the
+check looks up no tag and needs no target checkout. Where one is missing the
+check fails naming that command, which an instance runs once after taking
+the release that introduced the records
+([WO-276-D033](../evidence/WO-276/decisions.md#wo-276-d033--what-this-part-changes-in-the-ported-readers-one-build-free-source-reader-no-committed-cards-one-parse-a-document)).
+The index's refresh appends the release tags that arrived since and writes
+no product document: the roadmap's release block stays valid for the rows
+it holds, the docs check reports the tags recorded since as newer ones
+without refusing, and `npm run release -- list --markdown --write` adds
+their rows and renders the index with the record it extends
+([WO-276-D046](../evidence/WO-276/decisions.md#wo-276-d046--correction-two-repairs-of-this-morning-broke-other-consumers-and-are-replaced-what-the-stopped-run-deferred-the-third-critics-points-judged)).
+
 The **launchpad** is the directory whose documents a session owns. It is found
 in this order:
 
@@ -819,15 +845,51 @@ from the subject's merge base with the clone's fetched base-branch ref
 (`refs/remotes/origin/<baseBranch>`) when the activation base is its ancestor,
 otherwise from the activation base; review does not fetch, and an absent ref
 keeps the activation-base range with the absence named in any refusal. Reports are drafted
-in the launchpad; `resume target-records` copies the order and moves its
-decisions and filed reports into the target's `documentationRoot`, retaining
-control state, raw evidence and links in the launchpad.
+in the launchpad. Where a target order's records then go is its
+registration's `records` value ([decision](../evidence/WO-276/decisions.md#wo-276-d090--part-n-as-built-a-registration-says-whether-its-orders-records-are-filed-into-the-target-or-stay-in-the-instance-mains-value-governs-every-reader-and-a-committed-records-binding-decides-an-order-in-flight)). With `target`, the value
+when the key is absent, `resume target-records` copies the order and moves
+its decisions and filed reports into the target's `documentationRoot`,
+retaining control state, raw evidence and links in the launchpad. With
+`instance` nothing is moved: no records step is offered, the command refuses
+naming the setting, and the records stay in the launchpad's own layout as a
+self order's do. A records binding an order has committed decides that order:
+records already filed stay in the target whatever the registration now says,
+and an order whose registration changes to `target` before any is filed is
+offered the step again. The value is main's: status, the briefing, the
+records action and the order publish read main's configuration and the
+target publish main's committed one, so an order branch whose own copy of
+the file lags main or runs ahead of it is offered exactly what the publishes
+require, and no state leaves an order that neither value publishes. The
+records action refuses, filing nothing, where main's registration cannot be
+read. Under `instance` the target publish also refuses a reviewed change
+that adds or edits one of the paths the records step would write, naming
+it, and exempts no path of the change from the identifier rule as a record.
+It judges the reviewed tree, not the paths the change touched: such a path
+the target's base already held is left alone, and a change that removes one
+files nothing and is published
+([WO-276-D131](../evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names)).
 The plan-first directory is `<evidence root>/WO-NNN/plan-first/` for a self
-order, and `evidence/WO-NNN/plan-first/` under the target's `documentationRoot`
-for a target order. `plan.md` and `proposal.md` are regenerated with revision
-markers; `conversation.md` is appended under dated writer headings. These
-files are born in the target and `target-records` does not move them. A private
-target conversation is screened only when a passage leaves it; a public self
+order and for a target order whose registration keeps records in the
+instance, and `evidence/WO-NNN/plan-first/` under the target's
+`documentationRoot` for a target order whose registration files them into
+the target. `plan.md` and `proposal.md` are regenerated with revision
+markers; `conversation.md` is appended under dated writer headings. Under
+`target` these files are born in the target and `target-records` does not
+move them. Under `instance` they are documents of the instance: the
+lifecycle reads and binds them from the launchpad, and the conversation is
+screened where it is, by the screen command and by the publication check
+alike, as a self order's is. The directory follows the order's own
+checkout of the registration, which is main's as the order branched or last
+integrated it, so that it does not move under a proposed plan when main
+changes; where the order's own value does change under one, the approval
+no longer stands and the refusal names where the documents are and where
+they are now read from. A change of main's value alone leaves an approved
+plan approved and its documents in place, and the records step and both
+publishes then follow main. Plan documents kept in the target are committed
+with the reviewed change, and the target publish refuses their paths by the
+identifier rule, since they carry the order's number, under either value;
+kept in the instance they are no part of the target's change. A private
+target conversation kept in the target is screened only when a passage leaves it; a public self
 conversation is itself a screened publication input.
 
 The moved-record readers check the ignored clone mapping in the running
@@ -882,7 +944,16 @@ names are `docs` (the document base), `control`, `orders`, `workOrders`,
 `docs/repositories`). An undeclared root defaults under
 the document base — `orders` under `control` and `refutations` under `planning`
 — with `derivedWorkOrders` under `workOrders/derived`, so moving a parent moves
-its children unless the launchpad moves them too. `derivedOrders` declares
+its children unless the launchpad moves them too. A root moved outside `docs/`
+is marked as documentation in `.gitattributes` when it is moved
+(`<root>/** dotln-documentation`): the gate's code identity sets documents
+aside by the name `docs/` and by that mark (§Discipline, write once, run
+once) and reads no configured root. Under an unmarked root every document
+and record an order commits counts as a change of code, so the test rows
+recorded before the commit stand at an identity the tree no longer has, and
+the order's own publish is refused with `WO-NNN has no recorded passing
+reviewer npm test row`
+([decision](../evidence/WO-276/decisions.md#wo-276-d093--part-o-begins-on-checkpoint-43-an-initiatives-layout-is-a-section-of-its-workstream-document-planned-items-are-not-orders-and-a-pass-files-the-next-wave-and-the-twenty-seventh-critics-four-points)). `derivedOrders` declares
 `first` and `last` as inclusive `WO-NNN` bounds, defaulting to `WO-900` and
 `WO-999`; reversed or malformed ranges refuse.
 `repositories` is an object keyed by a public repository id. `self` is implicit
@@ -1087,6 +1158,39 @@ records a merge blocker only with the command and line that enforces it; a
 sentence nothing checks is a documented condition, not a gate
 [vision-into-use pass, 2026-09-17](../planning/passes/vision-into-use-2026-09-17.md).
 
+A target's repository merges by its team's method, and merged means the
+reviewed change is in its base ([decision](../evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release)). The launchpad's own
+merge keeps its rule: a merge commit, judged by ancestry and by the order's
+pass at the base. For the target, `scripts/lib/merged-change.mjs` answers
+from Git alone, with no forge: the branch is an ancestor of the fetched
+base; or one commit of the base since the two diverged has the patch
+identity of the branch's whole change (a squash); or each of the branch's
+commits that is not itself a merge has a commit of equal patch identity
+there (a rebase), where no merge of the branch carries a change of its own.
+Git's patch identity ignores whitespace and line numbers, so it only finds
+the commits that may carry the change, and one counts where it is the change
+exactly: it touches the same files and, for each, joins the same blobs under
+the same modes, or, where the base had changed the file since the branch
+left it, holds the branch's change merged cleanly into the base's file
+(`git merge-file` over the three blobs) and nothing else. Where a hunk
+sits is therefore part of the answer: another person's identical edit at
+another of several identical places has the identity and is refused
+([decision](../evidence/WO-276/decisions.md#wo-276-d089--part-n-begins-on-checkpoint-41-and-the-twenty-fifth-critics-three-points-a-base-commit-counts-only-where-it-is-the-branchs-change-exactly-the-uses-left-are-tracked-beside-the-hours-and-a-held-note-stays-held)). The close
+records what it found on the target cleanup row (`merged`: by what, the
+base commits matched and the count of base commits read) and prints it; a
+refusal prints the count too. A change the base holds under another patch
+matches nothing, and the close refuses with the source retained, naming
+`--merged-as <commit>`. The named commit must be one the clone holds by
+that id, in the fetched base, after the point where the branch left it, and
+must change a path the reviewed change touches; its subject is printed, no
+patch of the base is read, and the person naming it takes the judgment that
+it carries the change. A launchpad order takes no `--merged-as` and is
+refused before the close fetches. The hook admits the flag after the close
+helper's mode, and the command the close prints or records to run again
+carries a name the close accepted or had not yet judged, never one it
+refused. A patch read past the read limit, the base's or the branch's own,
+matches nothing and says so, and the named commit remains the route.
+
 ## Operator recovery controls
 
 No session asks the operator to run a kit command for a writer state the kit
@@ -1217,7 +1321,7 @@ those phases and the lifecycle's legal commands, and projects in `status --json`
 [WO-249](../work-orders/WO-249-criteria-judge-the-product.md), 2026-11-02]. The
 fold validates each event's shape; the route judges its legality.
 
-- `npm run resume -- accept-overrun <wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
+- `npm run resume -- accept-overrun <wallClockMs|completeRuns|subagentCap> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
   appends `DispatchBoundAccepted` in `active`, `needs-fix`, `repairing`,
   `verifying` or `final-review`. It extends only that order's current activation
   and phase attempt; `needs-fix` names the upcoming repair. Completion of that
@@ -1243,6 +1347,16 @@ fold validates each event's shape; the route judges its legality.
   this phase completes, without resetting timing or counters or changing
   task deadlines. Other phases and orders keep their own policy. Silence
   and an agent's own wish to proceed are not authorization.
+  `subagentCap` is the third metric, for an operator who authorizes more
+  workers for one dispatch. Its base is the top-level `subagentCap` of
+  `docs/control/budgets.json`, never a role's row, and its ceiling is a whole
+  number or `unlimited`. The hook that admits a subagent, the usage readback,
+  the review helper's own count and a driven session's ceiling read the cap
+  accepted since that dispatch's phase began; another order's dispatch reads
+  the file's value, the dispatch's wall-clock and complete-run standing read
+  as they did before the acceptance, and where the accepted cap cannot be
+  read the file's value stands. No session edits the budgets file for one
+  order ([WO-276-D016](../evidence/WO-276/decisions.md#wo-276-d016--a-cap-accepted-for-one-dispatch-is-read-by-every-counter-of-that-dispatch-step-a11)).
   The agent runs the command in the current session, keeps its writer and
   continues; no session exit, writer release, separate operator terminal or
   manual operator script is needed. If the command fails, the agent diagnoses
@@ -1255,6 +1369,19 @@ fold validates each event's shape; the route judges its legality.
   review derives the greater of four times each consumer's own completed
   phase median and 8 h 0 min. No local history uses 8 h 0 min. The original
   dispatch start is the history cutoff, so a running bound does not drift.
+  The wall-clock ceiling bounds worked time: the time since the dispatch
+  began less every idle gap in the journals of the phase's sessions. A gap is
+  idle only when it begins at a turn's end row, is longer than the idle
+  interval (ten minutes, `IDLE_INTERVAL_MS`) and no tool call's start row and
+  end row lie on either side of it; a tool row names its call, so the two pair
+  exactly, and rows written before that pair by tool. Every other span is
+  worked, a phase whose host journals no tool call reads elapsed time, and
+  the standing reports the elapsed time since the dispatch beside the worked
+  time. A dispatch whose line names no work order, such as a planning pass,
+  starts at its own session: it takes neither a start nor a complete run from
+  an earlier session on the same line, while an order's phase dispatched
+  again in a new session keeps its earliest start
+  ([decision](../evidence/WO-276/decisions.md#wo-276-d102--the-attack-on-steps-p1-and-p6-six-findings-tool-rows-name-their-call-so-a-calls-rows-pair-exactly-a-host-that-journals-no-tool-call-reads-elapsed-time-and-a-dispatch-names-an-order-by-its-line)).
   Exports carry this policy, never DotLn's numeric measurements. Explicit
   numeric budgets, null (disabled) and phase acceptances remain authoritative.
   The executor's `repair` object selects repair ceilings for `resume: fix`.
@@ -1401,7 +1528,13 @@ fold validates each event's shape; the route judges its legality.
   edited in place.
 - `withdraw --disposition failed|superseded|abandoned --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
   appends `WorkOrderWithdrawn` from any phase but `closed` and `withdrawn`
-  (from `none` only for an allocated order) and records the authority's
+  (from `none` for an allocated order, and for an order that was filed and
+  never activated: one file under the work-orders root and no event, named
+  with `--work-order` or by its own branch, whose withdrawal is then its
+  first event and names that file and the registered repository the file
+  declares, as an activation would have bound it, so the index reads a
+  target order withdrawn this way ([WO-276-D131](../evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names));
+  [WO-276-D109](../evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [WO-276-D112](../evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)) and records the authority's
   SHA-256 and the digests of its existing reactivation notes. Phase
   `withdrawn` claims no success and is terminal: its one legal action is
   `npm run resume -- activate <id> <path>` in place, which requires a changed
@@ -1460,6 +1593,25 @@ fold validates each event's shape; the route judges its legality.
   route advice, including the main-checkout and capture prerequisites for a
   closed order. The record is never a precondition for
   entering or leaving override.
+
+`npm run resume -- checkpoint` is not one of these routes. It records a
+recovery checkpoint of the active order's worktree, tracked and untracked
+files alike, as a transition does, prints its ref under
+`refs/dotln/checkpoint/` and its commit id with the command that restores its
+files, and appends no event, so `status` reads as it did before. A
+checkpoint holds every file Git tracks that the working tree still holds,
+whatever an ignore rule now says of its path, and every untracked file no
+rule matches
+([WO-276-D131](../evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names)).
+Where a tracked file's directory has become a file or a link, the checkpoint
+holds what stands there now. A directory that is a repository of its own is
+held by that repository's commit and without its files, as Git holds any
+nested repository; where a rule ignores such a directory, the files Git
+tracks beneath it are kept
+([WO-276-D137](../evidence/WO-276/decisions.md#wo-276-d137--the-repair-of-ver-003-the-snapshot-follows-a-tracked-path-whose-place-changed-shape-the-screen-asks-the-source-reader-what-is-source-and-every-reader-with-a-committed-input-is-compared),
+[WO-276-D138](../evidence/WO-276/decisions.md#wo-276-d138--the-repairs-combined-review-seven-findings-judged-a-rename-by-case-alone-leaves-one-name-again-and-the-feedback-audits-row-is-compared)).
+An order in parts runs it at each part's end
+([WO-276-D020](../evidence/WO-276/decisions.md#wo-276-d020--the-checkpoint-action-records-a-recovery-point-and-appends-no-event-step-a16)).
 
 Declined: a verdict-changing correction, one generic exception event, an
 override record as a precondition, and rewriting a closed order's existing events.
@@ -1621,6 +1773,19 @@ and non-authoritative suggestions, goes through blinded refutation, and stops at
 operator disposition without planning or fixing; the Repo Gardener is the
 walking skeleton's founding identity, not a session.
 
+An instance's planning pass that is handed an initiative produces one more
+planning artifact: the layout, the Layout section of the initiative's
+workstream document, a standing document revised in place
+([decision](../evidence/WO-276/decisions.md#wo-276-d093--part-o-begins-on-checkpoint-43-an-initiatives-layout-is-a-section-of-its-workstream-document-planned-items-are-not-orders-and-a-pass-files-the-next-wave-and-the-twenty-seventh-critics-four-points)).
+It states what exists, what the initiative asks, the way there in phases of
+planned items and what is unknown. Planned items are not orders: they have no
+identifiers and no order files, the index and the plan check read none of
+them, and the workstream block's members remain the filed orders alone, so a
+member named there with no order file is refused as before. The planner
+writes or revises the layout before it files, and files only the next wave;
+the refuter judges the filed orders and the sequence. This is the planner's
+rule and no check enforces it, and core's own sequence stays the operator's.
+
 No planning or entropy pass takes a newer starter release or merges upstream;
 only the operator's words in that session do. `node scripts/launchpad.mjs
 update --finish`, `update --publish` and core's `export --update` refuse under
@@ -1709,6 +1874,14 @@ Preconditions and inputs:
    register refuses entry before creating the branch; refresh it with
    `npm run meta` and include that document update in the preceding checkpoint.
 2. Read `npm run plan -- failures`; route each failed report's cause in the pass.
+   Its `pairedRounds` table counts, for every order whose header declares a
+   paired first round and whose decisions record that round's findings, what
+   only the combined worker found, what only the three kinds found and what
+   both found, by class, with each order's first verification and the sums.
+   Each order a pass files carries `**Review ladder:** paired` among its
+   header fields until a pass has read fifteen such rounds; that pass sets
+   the default size and retires the value
+   ([WO-276-D039](../evidence/WO-276/decisions.md#wo-276-d039--part-c-as-built-the-blocking-rule-in-every-brief-one-review-for-a-fix-the-ladder-line-and-the-paired-record)).
    `plan failures` also lists dispatch bound stops, acceptances and the next
    same-order lifecycle event with its delay; use that data to judge whether an
    intervention helped. `plan start` counts local closes, denials, interventions,
@@ -1722,6 +1895,11 @@ Preconditions and inputs:
    `unlimited` (WO-237).
    `plan start` counts numeric reopening conditions; `npm run plan -- conditions`
    lists them without refusing entry (`--slow` for gate timings, WO-175).
+   Its complete-run condition, `plain-gate`, reads the fresh passing complete
+   runs of thirty days in the plain and the review selection, each sample
+   named with its selection, since the lifecycle makes review runs; a
+   per-task row is read only for a task the newest complete run holds
+   ([WO-276-D047](../evidence/WO-276/decisions.md#wo-276-d047--part-d-as-built-the-control-and-what-it-can-show-the-convoy-the-shards-the-file-order-the-conditions-reading-and-the-cases-that-follow)).
    Read the deferred register rows whose reopening condition opens with an
    order's lifecycle event against the control phases and re-dispose each
    fired one in the pass: the REVIEW-005 and REVIEW-006 passes each found
@@ -1743,14 +1921,20 @@ Preconditions and inputs:
    ([2026-09-27 pass](../planning/passes/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)).
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
-5. An instance's observations and requests arrive as the pasted block its
-   own planning pass writes for core (its §Requests to core), one block per
-   instance pass that has items, until WO-193 carries them as filed requests
-   (operator question, 2026-10-21: the cadence is the instance's, and a pass
-   with nothing to ask sends nothing). An instance pass sends an item only
-   when it stops that instance's next order and has no working route there,
-   and keeps every other observation in its own record (operator direction,
-   2026-11-09, ignored capture SHA-256
+5. An instance's observations and requests arrive from its root
+   `FOR-CORE.md`: each of its final reviews appends an entry for what the kit
+   got wrong or made hard during that order, and each of its planning passes
+   reads the file at entry, appends its own entries there, sets `answered` on
+   those a release it has taken answered and writes no block for core in its
+   planning document ([decision](../evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)).
+   The operator paraphrases the entries they choose into a core `planning:`
+   dispatch or sends them; nothing leaves an instance on its own, the cadence
+   is the instance's (operator question, 2026-10-21), and WO-193's filed
+   requests are recut around this file before that order reopens. Each entry
+   says whether it stops that instance's next order: an instance asks core
+   only for what does and has no working route there, and what the operator
+   carries is the operator's choice (operator direction, 2026-11-09, ignored
+   capture SHA-256
    `9006bd8cbcdabb5647594adb6893150aaff9e5a8ee74260a4e890e9cba3d69ae`;
    [the 2026-11-09 pass](../planning/passes/whole-plan-and-codebase-review-2026-11-09.md)).
    The pass reads each item against the
@@ -1772,6 +1956,12 @@ Preconditions and inputs:
    When dispatching with a pasted block, put the dispatch on its first
    content line; one opening fence and blank lines are admitted, while a
    later quoted dispatch does not select a role.
+   A capture holds the operator's own words: a block the operator pasted
+   that a command or another session wrote is kept whole in the ignored
+   local planning lane (`docs/control/local/plan/`), and the capture names it
+   and its SHA-256, so the verbatim screen compares committed text with what
+   the operator wrote
+   ([WO-276-D109](../evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [WO-276-D112](../evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)).
    A block a session drafts for the operator to paste into an instance
    carries that session's authority and not the operator's, whatever its
    grammatical person: an instance pass reads it as context and reads only
@@ -1858,24 +2048,28 @@ captureDigest}` with an optional `class`, and the plan check reads that
 the dedicated refuter skill in either harness. The parent runs
 `npm run plan -- refute` (add `--scope full` for the whole horizon; `--direct`
 remains an alias). The command verifies the committed subject equals the
-workspace and prints the canonical prompt and closed JSON schema. The parent
+workspace and prints the canonical prompt and closed JSON schema on standard
+output and, on the error stream, the parent's steps, which are the refuter
+root's own paragraphs. A planning pass reaches its refutation through that
+command and loads no second skill; the phrases above load the refuter's root
+for a session dispatched to refute alone
+([WO-276-D055](../evidence/WO-276/decisions.md#wo-276-d055--part-f-as-built-the-shared-rules-as-records-the-rule-by-role-table-the-refutations-steps-from-its-command-the-review-helpers-section-and-the-meters-second-number)). The parent
 spawns one fresh background worker without inherited conversation, supplying
 only that prompt and the shared goal card. In Codex this uses `spawn_agent`
 with `fork_turns: none`; in Claude it uses the generated `dotln-worker`
-type pinned to `claude-opus-5-5` at `xhigh`, without a model override
-(or `dotln-worker-fable`, and in Codex `dotln-worker-astra`, only on the
-operator's dispatch, §Model-specific notes; `npm run plan -- refute --model
-<option>` prints that launch beside the prompt). The worker
+type, which holds the instance's `default` worker. Where the operator asks
+for another worker or model, `npm run plan -- refute --model <name>` prints
+that launch beside the prompt, as `npm run worker -- show <name>` prints it
+(§Model-specific notes). The worker
 judges the supplied prompt directly, returns its frozen JSON and a truthful
 single-line statement of at most 4000 characters, and makes no repository or
 Git writes. The parent remains the sole writer and can finish independent
 closeout work while waiting without changing the frozen subject. Save the
 worker's judgment and statement in ignored local files,
 then run `npm run plan -- receipt <result.json> --statement <statement.txt>`
-with any required `--dispositions <file>` and `--worker-type
-dotln-worker-fable` when that type ran (the default is `dotln-worker`);
-Codex uses `--worker-type codex-spawn-agent`, or `dotln-worker-astra` for its
-opt-in.
+with any required `--dispositions <file>` and the `--worker-type` the launch
+was printed with: `dotln-worker` for a Claude launch, which an omitted flag
+records, and `codex-spawn-agent` for a Codex spawn.
 The response and receipt record the worker type as the parent's launch
 attestation, separately from unavailable effective model/effort. The helper validates, screens,
 files and commits the immutable pair with a plain subject and runs the plan
@@ -1957,6 +2151,13 @@ keep their bytes and meaning.
 
 There is one judgment per planning pass. Repair a named criterion and record
 `npm run plan -- dispose <receipt-id> <hold-id> '<disposition and reason>'`.
+A receipt's known issue is disposed as a hold is: its identifier is built as
+a hold's is and is printed as `knownIssues` beside the holds by the command
+that files the receipt, a receipt stores nothing more for it, and the
+disposition binds the repaired text the same way, so a pass that repairs what
+its own refuter named records the repair without an operator authorization it
+does not have; an override names a hold alone
+([WO-276-D109](../evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [WO-276-D112](../evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)).
 The existing control log binds the original and accepted criterion text, including
 repairs of historical holds. A goal-review disposition or override also binds
 the exact old and accepted Cost declaration when that field changes. It admits
@@ -2144,8 +2345,8 @@ pass to do what this one can, and `amend-order` is for an order already on
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the
 operator. A live feedback episode an order owes runs in the executor's
-session on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at
-`xhigh` (the spawned-agent rule of §Model-specific notes), with no operator
+session on the instance's `default` worker for its host (the spawned-agent
+rule of §Model-specific notes), with no operator
 authorization and its cost accepted; a repair that edits a
 judged source again runs another the same way. A step the order's objective
 gives the operator (a session the operator witnesses, a run in the operator's
@@ -2243,12 +2444,29 @@ whose wording often marks one of those classes: a number followed by a unit
 (`s`, `ms`, `min`, `h`, `bytes`, `KB`, `MB`, `GB`, `tokens`, `USD`, `%`)
 or a dollar amount (`$5`), a median, ceiling, budget or cap beside a figure,
 `HEAD`, `git log`, a `..` or `...` revision range, or the phrases "after the
-review gate", "at release close" and "after the final review". It refuses
-nothing, because a figure can rightly name a record and a regular expression
-over prose is a screen, not a judgment: the planner reads each line before
-filing. `plan check` returns the same lines as its `criteriaAdvisories`, and
+review gate", "at release close" and "after the final review". An advisory
+refuses nothing, because a figure can rightly name a record and a regular
+expression over prose is a screen, not a judgment: the planner reads each
+line before filing. What the check does refuse is an open order whose
+criteria list the reader cannot read whole, naming the order, the line and
+the remedy ([WO-276-D175](../evidence/WO-276/decisions.md#wo-276-d175--a-criteria-list-the-parser-reads-as-shorter-than-written-is-refused-by-every-reader-of-it-and-never-returned-shorter)). `plan check` returns the same lines as its `criteriaAdvisories`, and
 `npm run test:docs` relays them from its passing `index` task, as it relays
-`ADVISORY` lines. `plan failures` counts the defect records by class, and a
+`ADVISORY` lines. `plan check` also returns `preflightAdvisories`: one
+`preflight advisory: WO-NNN names <file> in its execution plan, which the
+<suite> suite's declared sources hold; its Preflight field does not name that
+suite` for each
+machinery suite whose declared sources hold a file an active or open order's
+execution plan names and whose name the first paragraph of the order's
+Preflight field, the one the lifecycle reads, leaves out. A source holds a
+file as the runner reads it for a changed file: the file is the source or
+begins with it, since a source may be a directory or the stem of a family of
+files. Any code span of the plan without a space can name a file, and a plan
+whose label runs onto a second line is read as well. The structural rows
+are left out, since every run makes them, and so are the suites that check
+generated records, since no selection runs one. It refuses nothing, a table
+it cannot read included, which it reports as `preflight advisory:
+unavailable`, and the planner reads each line before filing
+([WO-276-D109](../evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [WO-276-D112](../evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)). `plan failures` counts the defect records by class, and a
 pass that reads one re-reads this list (WO-249). A release's Read before
 upgrading is also screened: it asks an instance to read, never to edit a
 closed record by hand. A new or tightened kit check must admit records the
@@ -2306,7 +2524,7 @@ planning subject reads the operator's dispatch and answers item by item
 where each was acted on or reviewed (the operator's item 15 of 2026-11-03):
 `npm run worker -- review --kind criteria --host codex|claude --subject planning --capture <file>`
 gives it the ignored dispatch capture, and its report answers in an `## Items`
-table or is refused (§Verification review and attack). The helper's planning
+table or is refused (§Review helper and round reports). The helper's planning
 lane is named by the pass's branch, so a pass that crosses midnight and a
 second pass on one day each run their own round 1 through it
 ([WO-255-D002](../evidence/WO-255/decisions.md#wo-255-d002--the-planning-lane-is-the-branch-and-a---since-round-1-starts-a-ladder-of-its-own),
@@ -2452,6 +2670,20 @@ existing practice this section names.
    recorded as a dated discovery row. Live local inference runs when no
    product gate is running on the host, because the gate bands are timing
    evidence.
+
+6. A research order that studies one area of a registered repository
+   delivers that area's note beside the repository's profile
+   (`docs/repositories/<id>/<area>.md`). Its block names the target paths
+   the note covers and the target commit that was read; its prose states
+   each rule the area follows with the file that shows it, the exceptions
+   found and what is unknown. The order's Design bounds what it may read
+   and spend, its handoff records what was not read, and no step reads the
+   whole target. The document gate judges the block's two fields and
+   nothing of the prose, and each later order on that repository is
+   briefed with the note and the commits that have touched its paths since
+   ([decision](../evidence/WO-276/decisions.md#wo-276-d086--part-l-as-built-area-notes-beside-a-targets-profile-read-by-the-document-check-and-the-briefing-and-one-sentence-in-three-roles);
+   the kit guide's [§Planning in this instance](../KIT.md#planning-in-this-instance)
+   gives the recipe).
 
 The verifier judges method and honesty; the reviewer judges the decision
 packet and whether a speculative result was presented as settled.
@@ -2765,7 +2997,13 @@ before the next document gate reads the pages, and a changed host settings
 emitter or a changed committed `.claude/settings.json` names a re-emit and a
 new session, since the host reads the emitted settings when a session starts;
 a release that changes neither adds no such line, and the derived block then
-carries only its standing source-only line (WO-257). A Read before upgrading line never asks an instance
+carries only its standing source-only line (WO-257). A release that changes
+one of the three outputs an instance's own tool may build on (an event of
+the control log, the `status --json` object or the usage report; kit guide
+§Extending this instance) says so in its Read before upgrading, in a line
+the order that changes it writes, since no changed file tells release
+preparation that a shape moved
+([decision](../evidence/WO-276/decisions.md#wo-276-d074--part-k-as-built-one-root-that-is-the-instances-by-guarantee-a-settings-fragment-that-only-adds-and-takes-no-pretooluse-hook-and-what-the-host-was-observed-to-do)). A Read before upgrading line never asks an instance
 to edit a closed record by hand; a necessary migration needs its own planning
 decision before release. Ordinary instance kit updates still preserve seed ownership;
 the instance's own session previews the refreshed starter with the incoming
@@ -2819,7 +3057,9 @@ cleanup work reports `preview`; an already current starter reports `current`,
 and a cleanup ownership mismatch refuses with the same recovery guidance.
 
 By default a registered target closes with `no-release`: fetch the declared base,
-fast-forward the clone's base, prove the target branch merged into it, remove
+fast-forward the clone's base, prove the reviewed change is in it (by
+ancestry, a squash or a rebase, or a commit named with `--merged-as`;
+§Independent workflows and integration), remove
 its local bundle, worktree and branch, then close the launchpad worktree.
 A dirty base checkout, failed fetch or non-fast-forward base refuses before
 changing clone refs; dry-run fetches for the containment preview without
@@ -2966,7 +3206,7 @@ author writes is judged like the rest of the notes, whatever its commit or
 bytes, though a fragment may name the closing order's own identifiers; a
 match is exempt only when it lies wholly inside the frame, so a listed term
 running from a written record path into the author's fragment is reviewed),
-review words and review-mode private terms wait for `--confirm-terms
+review words and context-mode private terms wait for `--confirm-terms
 sha256:<digest of the body>` on the close, and the registered display name
 reads as a name for the public review words (the private list is never
 masked). The body's source, digest and confirmation are bound in the close
@@ -3039,9 +3279,13 @@ approval remain host controls; the authorized session uses that permission flow.
 `worktree publish` refuses unless the order's committed control record shows a
 passing final review, naming the phase it read, as the target forms do
 ([WO-259-D010](../evidence/WO-259/decisions.md#wo-259-d010)); screens the lines
-the branch adds with the local-terms list before any push, refusing a match by
-file, line and mode and advising when no list is registered
-([WO-259-D009](../evidence/WO-259/decisions.md#wo-259-d009)); validates the
+the branch adds, read as its commits hold them, with the local-terms list
+before any push, refusing a refuse-mode match by file, line and mode, printing
+each context-mode match by file and line and proceeding, and advising when no
+list is registered
+([WO-259-D009](../evidence/WO-259/decisions.md#wo-259-d009);
+[WO-276-D010](../evidence/WO-276/decisions.md#wo-276-d010--where-each-screen-lists-a-context-mode-match-steps-a2-to-a4);
+[WO-276-D024](../evidence/WO-276/decisions.md#wo-276-d024--each-of-criterion-a4s-eight-commands-has-a-case-in-both-modes-and-a-publish-screen-reads-the-bytes-it-pushes)); validates the
 committed review row against the branch's code
 identity and adds its machine-readable record to the PR body. Existing DCO,
 publication, license and source-only controls remain. `npm run release -- notes
@@ -3198,8 +3442,15 @@ claims resolve only to these rows, with the latest covering row for the current
 command definitions deciding;
 the launchpad document gate still judges its documents. Passing final review
 records `targetGate` at the clean reviewed commit. The reviewer then commits
-the instance records (the order's records and evidence) on the order branch,
-and `npm run resume --
+the instance records (the order's records and evidence) on the order branch.
+Where the registration keeps records in the instance
+(`repositories.<id>.records` is `instance`) that is all: the target publish
+takes the reviewed commit as its head, refusing when the target's HEAD
+differs from it, the order publish needs no `TargetRecordsCommitted` and
+prints that the records are in this instance, a declared target's Release
+notes link no record into the target, and the index card says where the
+records are ([decision](../evidence/WO-276/decisions.md#wo-276-d090--part-n-as-built-a-registration-says-whether-its-orders-records-are-filed-into-the-target-or-stay-in-the-instance-mains-value-governs-every-reader-and-a-committed-records-binding-decides-an-order-in-flight)). Where it files them into the target
+(`target`, the value when the key is absent), `npm run resume --
 target-records` copies the order and moves decisions and every filed report
 into that root as one records-only commit, each filed record ending with one
 provenance line naming the launchpad by its release display name, the
@@ -3483,11 +3734,18 @@ are read separately when the order names them.
 | Authority and private data | Do effects stay authorized and public data stay separate from private inputs? | Hosts, writes, transport and publication |
 | Maintainer in six months | Can the next maintainer explain the rule and change it safely? | Every nontrivial implementation |
 
-Every execution and fix runs its independent reviews as a ladder with an end,
-before its complete validation run and only after implementation or repair
-and its write-backs are complete, never as early scouts. Round one is three
-fresh independent `dotln-worker` reviewers over the whole diff against the
-merge base, each given the current order and diff with a distinct brief.
+Every execution runs its independent reviews as a ladder with an end,
+before its complete validation run and only after implementation and its
+write-backs are complete, never as early scouts. An order's header sizes
+round one with the line `**Review ladder:**`. `full`, which an order without
+the line also runs, is three fresh independent `dotln-worker` reviewers over
+the whole diff against the merge base, each given the current order and diff
+with a distinct brief. `combined` is one worker carrying the three briefs.
+`paired` is those three reviewers and one combined worker on the same tree,
+all launched before any fix and none given another's report. The planner
+writes the line, the index shows it on the order's card, and the index check
+refuses any other value on an open order; a settled order keeps what it
+closed with ([WO-276-D039](../evidence/WO-276/decisions.md#wo-276-d039--part-c-as-built-the-blocking-rule-in-every-brief-one-review-for-a-fix-the-ladder-line-and-the-paired-record)).
 The criteria adversary seeks concrete
 counterexamples, failed acceptance criteria and missing regression tests;
 design cleanup is outside its brief. The design improver seeks simpler
@@ -3507,7 +3765,10 @@ and fixture copy/export manifests. Check oracle selectors, command/field
 inventories, runtime setup, gate environment and timing assumptions. Use
 relevant retained gate failures to search for the same failure shapes.
 Preserve intentional contract pins; update expectations from requirements,
-replacing incidental prose coupling with semantic assertions. Report concrete
+replacing incidental prose coupling with semantic assertions. A suite's case
+titles are no pin to trace: they are checked for duplicates within a file
+and against no registry, so a case added, renamed or moved between files
+changes no list ([WO-276-D053](../evidence/WO-276/decisions.md#wo-276-d053--part-e-as-built-case-titles-checked-for-duplicates-no-per-case-time-bound-a-fixed-self-host-edition-the-statement-wordings-as-a-table-and-one-vertical-task-a-file)). Report concrete
 producer/consumer pairs, their disposition and unsearched boundaries in a
 `Traced consumers` table (changed contract, consumer, command, result) with
 a generated pages row and a fixture manifests row, each naming the command
@@ -3528,7 +3789,9 @@ a closed failure on an input a writer produces, and it records a closed
 failure on an input no writer produces, with no code. A reviewer's
 `blocking` label is the reviewer's claim, never that judgment, and a
 round-one finding blocks on the verifier's standard above: the criterion it
-fails with a supported input, a leak, or behavior `main` had. A parsed
+fails with a supported input, a leak, or behavior `main` had. The brief of
+every round states that standard, and a round-one brief asks each finding to
+say which writer produces the input it names or that it found none. A parsed
 structure is preferred to a new scanner of source text. WO-259's executor
 wrote and then reverted a second JSON reader for a key spelling no writer
 produces because its reviewer had marked the finding blocking, and thirteen
@@ -3536,9 +3799,20 @@ of that order's twenty findings were of that kind
 ([WO-259-D021](../evidence/WO-259/decisions.md#wo-259-d021),
 [WO-259-D022](../evidence/WO-259/decisions.md#wo-259-d022), reviewed by
 [the 2026-11-08 pass](../planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md));
-[WO-262](../work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md)
-carries the brief, the role text and the record's typed form, and until it
-lands this paragraph is the rule and the executor carries it as text.
+the briefs and the executor's role text carry the rule
+([WO-276-D039](../evidence/WO-276/decisions.md#wo-276-d039--part-c-as-built-the-blocking-rule-in-every-brief-one-review-for-a-fix-the-ladder-line-and-the-paired-record)).
+After a paired round one the executor first records each distinct finding in
+the round's decision, as an entry of a `roundFindings` array: an identifier;
+the finders among `criteria`, `design`, `consistency` and `combined`; a
+class, which is `criterion` (it fails an acceptance criterion on a supported
+input, or breaks behavior `main` had), `lesser` (a real defect a gate or a
+final review would meet), `improvement` or `none` (no writer produces the
+input, or the finding is wrong); and a disposition, `fixed` or `recorded`.
+It then fixes the union under the judgment above. The document check reads
+the array's shape and nothing else, and `npm run plan -- failures` counts,
+over the orders that declare `paired`, the findings of each class that only
+the combined worker found, that only the three kinds found and that both
+found, beside each order's first verification.
 Round two is the recheck: each reviewer whose findings were fixed confirms
 those fixes, then reviews the whole current change against its base again,
 and a new finding is admitted only when it breaks an acceptance criterion or
@@ -3553,10 +3827,24 @@ delta since round two's reviewed tree under the same rule. After it no
 reviewer runs in that execution or repair; the executor judges the remaining
 delta. A round whose preceding fixes touch only comments, documentation,
 formatting, test names or regenerated files is skipped, and the handoff line
-says so. A repair after a failed complete run takes the same ladder over its
-own diff, and a repair diff under fifty changed source lines starts at round
-three; that threshold is the planner's figure, and the executor records the
-repair diffs that meet it so a later pass can re-read it. The ladder
+says so. A repair made inside an execution after a failed complete run takes
+no review round: the run that failed judges its own repair, the handoff's
+review line counts the repair's changed lines as unreviewed, and the verifier
+reads the whole candidate. A fix dispatch answers its report and runs no
+ladder: it repairs the failing case and the class the failed report names,
+redesigns only where recorded evidence shows the larger change is the better
+solution, and has the repair read once, by one combined worker carrying the
+three briefs over the change since the tree that report judged. The first
+execution's ladder read the whole change, the verifier named the failure
+with a reproducer, and the verifier reads the whole candidate again
+([WO-276-D039](../evidence/WO-276/decisions.md#wo-276-d039--part-c-as-built-the-blocking-rule-in-every-brief-one-review-for-a-fix-the-ladder-line-and-the-paired-record)). For an order whose execution plan is divided into
+parts the ladder is read for each part: a part's ladder runs when that part's
+steps and write-backs are complete, a part after the first opens it with
+`--since` naming the commit of the checkpoint the part before it ended on, the
+limit of three rounds holds within a part, the parts' rounds are the
+execution's ladder, and a complete run that a part's own step names is that
+step's evidence and not one of the selected runs
+([WO-276-D021](../evidence/WO-276/decisions.md#wo-276-d021--the-role-text-of-steps-a6-a7-a9-a11-a12-and-a15-and-the-installed-roots-bytes)). The ladder
 finishes before the closeout's selected runs and no reviewer runs after
 they pass; the
 executor's own pass and an earlier run's reviewers cannot stand in for a
@@ -3567,6 +3855,71 @@ rounds found defects, and the loop, not the review, was the defect
 [[the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
 the operator's items 6 and 6.a of that day;
 [WO-250](../work-orders/WO-250-reviews-converge-and-every-worker-counts.md)].
+
+How a round's reviewers are launched through the helper, where each report
+lands, what a round's report must hold and how an agent's returned text is
+recorded are in
+[§Review helper and round reports](#review-helper-and-round-reports).
+
+The executor writes a line in `handoff.md` that starts `self-review: found N;
+fixed N; recorded N`, optionally followed by `; rounds R` (with a
+parenthetical note such as a skipped round) and `; unreviewed M lines
+(<reason>)`, and names every round's workers and reports. Reviews belong to
+the execution or repair run; ordinary edits do not expire them or require new
+reviewers. The executor owns the final handoff and write-backs before the
+document check. A list marker, balanced inline emphasis or code wrappers may
+decorate the line; case and a parenthetical worker label are tolerated, and
+prose may follow after a space, but a `;` after the counts must open one of
+the two fields. The three integer counts remain required. The advisory checks
+line shape only; a summary line does not prove a review occurred. Both
+completion commands retain the existing advisory when the summary is absent
+or malformed; the mandatory review is the executor's duty. No additional
+receipt or hash check is required.
+
+Final review is acceptance: the criteria, the integration and the release
+surfaces. A finding outside the criteria that breaks no behavior `main` had
+is a follow-up by rule, never blocking; the class counts below still measure
+escapes [2026-10-07 pass](../planning/passes/machinery-reset-2026-10-07.md).  Its report lists every finding once, in
+one block: a `<!-- dotln-findings:start -->` line, a JSON array and a
+`<!-- dotln-findings:end -->` line. Each entry is
+`{"id": "F1", "route": "blocking", "class": "escape", "summary": "<one line>"}`:
+an id `F1`, `F2` and so on that no other entry has, a route (`blocking`,
+`follow-up` or `operator`), a class and a one-line summary. A review with no finding writes
+`[]`. The class is `escape` when the defect was present in the verified
+subject and inside verification's instructed review scope; `integration` when
+it arose from integrating main or preparing the release; or `new-scope`
+otherwise. Record the basis for that judgment in the report's prose.
+`final-review-result` reads only that block and never counts a prose line. It
+records the three class counts and `unclassed`; an entry whose class is
+missing or outside the three counts as `unclassed` and is named in one
+advisory. Counts that cannot be complete record as unmeasured, with one
+advisory naming the cause: a report without exactly one block (any other line
+whose only letters are a marker's name is a second copy, an example
+included), a block that is not a JSON array, an entry with a bad or repeated
+id, an unlisted route or no one-line summary, or a failed review whose block
+lists no blocking finding. A passing result records in every case; a failed
+one is refused without a readable block, or with neither an unmet line nor a
+blocking entry (above). `plan failures` shows per-order counts (its export includes every
+order); `plan start` gives escapes per final review across all attempts of
+the ten most recently reviewed orders. Historical events without counts are
+unmeasured, so the rate is unknown until every review in that window is
+measured.
+
+Byte headroom is an operating-cost goal: measure before and after, preserve
+useful duties, and board any overrun for optimization with equivalent
+usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-187-d003--preserve-useful-guidance-and-report-byte-overruns)].
+
+## Review helper and round reports
+
+The mechanics of a review round: the helper that launches a round's
+reviewers, the lane its reports land in, what a report must hold to be the
+round's record, and the recorder for a worker an agent launched itself.
+The ladder they serve, with its rounds, its admission rule and its blocking
+standard, is in
+[§Verification review and attack](#verification-review-and-attack); the
+executor's root states the ladder, and the verifier's and the reviewer's
+roots read that section and not this one
+([WO-276-D055](../evidence/WO-276/decisions.md#wo-276-d055--part-f-as-built-the-shared-rules-as-records-the-rule-by-role-table-the-refutations-steps-from-its-command-the-review-helpers-section-and-the-meters-second-number)).
 
 A recheck resumes the same worker where the host keeps it (Claude's
 `SendMessage`), because that worker holds the diff and its own findings and
@@ -3588,16 +3941,19 @@ and a worker that returns no report costs its use and a retry; `subagentCap`
 in `docs/control/budgets.json` is the operator's knob.
 
 `npm run worker -- review --kind criteria|design|consistency|combined --host
-codex|claude [--model opus|fable|sol|astra] [--order WO-NNN [--target
-<repository-id>] | --subject planning [--capture <file>]...] [--since <tree>]
-[--round N] [--recheck <report>]... [--dry-run]` launches one review worker
+codex|claude [--model <worker or model>] [--effort <level>] [--order WO-NNN
+[--target <repository-id>] [--part <letter>|<letter>-<letter>] | --subject
+planning [--capture <file>]...] [--since <tree>] [--round N] [--recheck
+<report>]... [--dry-run]` launches one
+review worker
 with the canonical brief: the generated `dotln-worker` definition with its
 probe rule, its rule that what a worker returns paraphrases the operator, and
 its rules that a worker never reads or prints the contents of
 `docs/control/local/` (journals, ledgers, the terms list, the reviews lane
 beyond the report it was given) and never prints a commit header or an author
-line, which every role's text and both hosts' worker definitions carry
-([WO-259-D003](../evidence/WO-259/decisions.md#wo-259-d003)), the reviewer
+line, which every role's text and the Claude worker definition carry, and
+which a Codex launch is given as the preamble `npm run worker -- show`
+prints ([WO-259-D003](../evidence/WO-259/decisions.md#wo-259-d003)), the reviewer
 brief this section and the role text state (all three
 for `combined`), the round's admission rule, the order's text (or, with
 `--subject planning` on a `planning/` branch, the branch's changed planning
@@ -3605,7 +3961,13 @@ documents and orders), the diff stat between the base and the working tree
 written as a Git tree, and for a recheck the earlier findings to confirm or
 refute, named by kind and round, with the tree their round reviewed. The base
 is the merge base with `main` for round one and a recheck, and the tree an
-earlier round reviewed for the combined round; `--since` names another. With
+earlier round reviewed for the combined round; `--since` names another. For an
+order whose execution plan is divided into parts, `--part <letter>` names the
+part under review: the brief then tells the worker to judge the change against
+the order's design frame and that part's own design, steps, criteria,
+Preflight line, known issues and non-goals, and that a criterion of another
+part the change does not meet is no finding
+([WO-276-D023](../evidence/WO-276/decisions.md#wo-276-d023--a-review-launch-names-the-part-whose-criteria-are-due)). With
 `--target <repository-id> --order WO-NNN` the subject is a registered target's
 order: its activation names the repository and the base commit, the
 launchpad registers that repository and its target registry names the order's
@@ -3639,7 +4001,15 @@ round prefix. Both the launched and recorded-part routes validate the merged
 result before filing it
 ([WO-257-D041](../evidence/WO-257/decisions.md#wo-257-d041--preserve-batch-table-semantics-and-unique-finding-identities)).
 A batch whose worker returns no report records no merged report and
-is named, so a merged report is never recorded over a missing one.
+is named, so a merged report is never recorded over a missing one. A round in
+batches owes its `Items` table once, in the merged report, so a batch that
+returns none is not refused for it. A report the helper refuses, a single
+one, a batch's or the merged one, on the launch route and on the record
+route, is kept in the round's lane with the operator's words left out, under
+a name that ends `.refused.md`, beside the reports of the batches that
+passed before it, which end `.unrecorded.md`; the refusal line names each
+path, and the round still records no report
+([WO-276-D039](../evidence/WO-276/decisions.md#wo-276-d039--part-c-as-built-the-blocking-rule-in-every-brief-one-review-for-a-fix-the-ladder-line-and-the-paired-record)).
 `--dry-run` prints the measured size, the ceiling and the batch plan, with
 every batch's full worker prompt and digest under `batches[]`, so the ordinary
 Claude route reads the whole round: `npm run worker -- record --batch N` keeps
@@ -3757,54 +4127,6 @@ Release close moves the lane into the order's retained lane under `reviews/`,
 beside its journals. The reports are the executor's working record; the
 consolidated account and the handoff line are the committed one.
 
-The executor writes a line in `handoff.md` that starts `self-review: found N;
-fixed N; recorded N`, optionally followed by `; rounds R` (with a
-parenthetical note such as a skipped round) and `; unreviewed M lines
-(<reason>)`, and names every round's workers and reports. Reviews belong to
-the execution or repair run; ordinary edits do not expire them or require new
-reviewers. The executor owns the final handoff and write-backs before the
-document check. A list marker, balanced inline emphasis or code wrappers may
-decorate the line; case and a parenthetical worker label are tolerated, and
-prose may follow after a space, but a `;` after the counts must open one of
-the two fields. The three integer counts remain required. The advisory checks
-line shape only; a summary line does not prove a review occurred. Both
-completion commands retain the existing advisory when the summary is absent
-or malformed; the mandatory review is the executor's duty. No additional
-receipt or hash check is required.
-
-Final review is acceptance: the criteria, the integration and the release
-surfaces. A finding outside the criteria that breaks no behavior `main` had
-is a follow-up by rule, never blocking; the class counts below still measure
-escapes [2026-10-07 pass](../planning/passes/machinery-reset-2026-10-07.md).  Its report lists every finding once, in
-one block: a `<!-- dotln-findings:start -->` line, a JSON array and a
-`<!-- dotln-findings:end -->` line. Each entry is
-`{"id": "F1", "route": "blocking", "class": "escape", "summary": "<one line>"}`:
-an id `F1`, `F2` and so on that no other entry has, a route (`blocking`,
-`follow-up` or `operator`), a class and a one-line summary. A review with no finding writes
-`[]`. The class is `escape` when the defect was present in the verified
-subject and inside verification's instructed review scope; `integration` when
-it arose from integrating main or preparing the release; or `new-scope`
-otherwise. Record the basis for that judgment in the report's prose.
-`final-review-result` reads only that block and never counts a prose line. It
-records the three class counts and `unclassed`; an entry whose class is
-missing or outside the three counts as `unclassed` and is named in one
-advisory. Counts that cannot be complete record as unmeasured, with one
-advisory naming the cause: a report without exactly one block (any other line
-whose only letters are a marker's name is a second copy, an example
-included), a block that is not a JSON array, an entry with a bad or repeated
-id, an unlisted route or no one-line summary, or a failed review whose block
-lists no blocking finding. A passing result records in every case; a failed
-one is refused without a readable block, or with neither an unmet line nor a
-blocking entry (above). `plan failures` shows per-order counts (its export includes every
-order); `plan start` gives escapes per final review across all attempts of
-the ten most recently reviewed orders. Historical events without counts are
-unmeasured, so the rate is unknown until every review in that window is
-measured.
-
-Byte headroom is an operating-cost goal: measure before and after, preserve
-useful duties, and board any overrun for optimization with equivalent
-usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-187-d003--preserve-useful-guidance-and-report-byte-overruns)].
-
 ## Discipline
 
 An artifact's shape comes from its contract and the check that judges it; an
@@ -3820,6 +4142,105 @@ Byte counts measure resource cost. They do not establish quality, select a
 best example or justify removing useful context, and structural passes do not
 prove usefulness. Writing guidance names the contract, kind and reader without
 ranking historical artifacts by size. [Decision](../evidence/WO-235/decisions.md#wo-235-d039).
+
+Each format the code reads has at most one reader, and every other source
+calls it. Markdown is read through the shared readers of
+`scripts/lib/markdown-links.mjs`, over the pinned Prettier parser the scripts
+carry under `scripts/lib/vendor/` so the lifecycle reads it before any
+install. A work order's title and header are read through
+`scripts/lib/work-order-document.mjs`, which parses a document once however
+many fields are read from it and gives a header as the whole document reads
+it: for a header alone it parses the order's lead, through the paragraph of
+the first line that could end the header, where the parser itself finds the
+header's end in that text, and the whole document wherever it does not or
+the text below could change the lead's reading
+([WO-276-D131](../evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names)). The carried parser's extensions read inline and display
+math between dollar signs, a Liquid tag and a wiki link as one span with no
+children, across line breaks as well, and none of them is CommonMark: a
+link, a code span, a comment or a label written between two dollar figures
+would be hidden inside one. The parse entry hands the parser a copy of the
+text in which the characters such a span needs stand as private-use
+characters the text does not hold, one for one, so no span forms and every
+offset holds, and the tree's strings take the original characters back: a
+dollar sign and a brace before a brace or a percent sign wherever they
+stand, since they mean nothing to CommonMark, and a wiki link's inner
+brackets only where the extension would read one, so the outer brackets
+keep their meaning and a link whose text opens with a bracketed word is
+read as written. Every reader then takes CommonMark's reading of such text. A check of where the parser's own
+reading and another renderer's differ asks for that reading, the spans
+included: the front page's guard refuses each such span, since GitHub reads
+it another way. A label that opens a line inside a GFM
+strikethrough between two tildes, which holds its lines as its own children,
+opens its field as it would outside it
+([WO-276-D169](../evidence/WO-276/decisions.md#wo-276-d169--a-label-that-opens-a-line-inside-a-span-the-parsers-extensions-read-as-one-node-opens-its-field),
+[WO-276-D178](../evidence/WO-276/decisions.md#wo-276-d178--the-ladders-first-round-eleven-findings-from-three-reviewers-five-of-them-in-a-criterions-class-each-closed-as-its-class-with-a-case),
+[WO-276-D181](../evidence/WO-276/decisions.md#wo-276-d181--the-front-pages-guard-reads-the-parsers-own-reading-with-the-spans-the-parse-entrys-neutral-copy-had-taken-from-it-the-checks-before-the-second-round-found-it),
+[WO-276-D183](../evidence/WO-276/decisions.md#wo-276-d183--the-ladders-second-round-two-regressions-the-first-rounds-repairs-left-or-made-each-closed-as-its-class-and-five-lesser-findings)).
+An order's acceptance criteria are the numbered list the parser reads under
+their label, to the next label or heading, and text that holds none of its
+items, a note or a comment, is read past. The reader keeps the numbers the
+author wrote, so a list that skips one (1, 3, 4) reads as written. It is
+held to the line reader the lifecycle used before the shared parser, for
+which every line up to the next label or heading at the margin that opened
+a numbered item was an item. Where another block holds such a line,
+whatever its number, the parser has read a shorter list than the author
+wrote: a wrapped line that opens with an HTML tag's name or a comment, such
+as a placeholder `<option>`, starts a raw block that holds the items after
+it; a wrapped line that opens with three backticks or tildes starts a fence
+that holds them as code; a paragraph between items takes them as its own
+text; and a wrapped line that opens with a number sign, or a bold label
+indented short of an item's text, reads as the next heading or label, so
+every block after it, to the next label or heading at the margin, is read
+as the list's. A label or a heading set at the margin between groups of
+criteria ends the list as well, and every block after it, up to the first
+ordered list, is read for the next number after the last item: only that
+number, since prose after the criteria may wrap onto a line that opens with
+any other, and a later section's own list, which starts at one, ends that
+reading
+([WO-276-D192](../evidence/WO-276/decisions.md#wo-276-d192--the-repair-of-ver-006-a-criteria-list-is-refused-where-a-block-holds-an-item-numbered-as-none-before-it-was-not-only-where-it-holds-the-next-number),
+[WO-276-D194](../evidence/WO-276/decisions.md#wo-276-d194--the-repairs-combined-review-a-wrapped-fence-prose-after-a-complete-list-and-a-repeated-number-each-closed-by-holding-the-refusal-to-the-line-readers-items)).
+Every reader of the list refuses
+such an order,
+naming the line and the remedy (a code span, a backslash before the
+bracket, a re-wrap, the item's own indentation, or a group named in its
+items' text), and never reads a shorter list; a resident's mission check
+records it as `contract-unreadable`
+([WO-276-D175](../evidence/WO-276/decisions.md#wo-276-d175--a-criteria-list-the-parser-reads-as-shorter-than-written-is-refused-by-every-reader-of-it-and-never-returned-shorter),
+[WO-276-D178](../evidence/WO-276/decisions.md#wo-276-d178--the-ladders-first-round-eleven-findings-from-three-reviewers-five-of-them-in-a-criterions-class-each-closed-as-its-class-with-a-case),
+[WO-276-D183](../evidence/WO-276/decisions.md#wo-276-d183--the-ladders-second-round-two-regressions-the-first-rounds-repairs-left-or-made-each-closed-as-its-class-and-five-lesser-findings),
+[WO-276-D185](../evidence/WO-276/decisions.md#wo-276-d185--the-ladders-third-round-the-criteria-class-closed-by-reading-every-block-after-the-closing-one-to-the-first-ordered-list-a-reading-wo-276-d183-rejected-on-a-reason-that-did-not-hold)). JavaScript and TypeScript source is read through
+`packages/skeleton/src/source-reading.mjs`, a build-free module that reads
+tokens in the calling process and starts the compiler's interface once for a
+batch, only where a caller needs a syntax tree. A reader of comments in
+sources that may hold a regular expression, a template or JSX is such a
+caller, since after a closing parenthesis or brace only the grammar tells a
+regular expression from a division: the comment check and the feedback
+audit take their comments from the tree
+([WO-276 D127](../evidence/WO-276/decisions.md#wo-276-d127--the-comment-check-reads-its-comments-from-one-syntax-tree-batch-so-every-admitted-extension-is-judged-and-a-regular-expression-is-never-a-comment)).
+Shell is read through
+`packages/skeleton/src/shell-reading.mjs`, the hooks' reader, also build-free.
+JSON is read through `JSON.parse`. A page a command generates is an output,
+never an input: its reader takes what the generator derives, in process or
+from the command's own structured output, and a committed record holds only
+what a generator observed outside the repository's files. A runtime package
+imports no Prettier and takes the structure its caller parsed; the resident
+takes its mission documents and its work-order cards from
+`scripts/resident.mjs`.
+
+The document gate holds the rule. It refuses a non-test source under
+`scripts/` or `packages/*/src/`, in any dialect the source reader parses,
+that reads a fence, a heading, a table row, a list item, a bold field label,
+a marker comment or JSON text with its own pattern, naming the file and line
+and the reader to call ([WO-276-D131](../evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names)). Its exceptions are named in
+`scripts/lib/markdown-screen.mjs`, each with its file, its pattern and its
+reason: the patterns that only resemble Markdown, and the two readers of chat
+text that run inside a hook, where no parser can be reached. A new name there
+is a change a reviewer reads. The carried parser is left out of this screen
+and of the words screens only where its bytes are the recorded ones
+([one reader a format](../evidence/WO-276/decisions.md#wo-276-d031--part-b-begins-on-part-as-checkpoint-and-is-ported-from-the-earlier-worktree-whose-choices-are-restated-here);
+[the source reader, the cards and the single parse](../evidence/WO-276/decisions.md#wo-276-d033--what-this-part-changes-in-the-ported-readers-one-build-free-source-reader-no-committed-cards-one-parse-a-document);
+[the shell reader](../evidence/WO-276/decisions.md#wo-276-d034--the-shell-reader-moves-as-the-hooks-read-it-and-the-refusing-classifier-keeps-its-own-tokenizer);
+[the carried parser](../evidence/WO-276/decisions.md#wo-276-d032--the-carried-parser-is-proven-by-recorded-hash-and-left-out-of-the-screens-by-its-bytes)).
 
 Standing documents hold current state for their readers; dated accounts belong
 in decisions or the pass document. Integrate each change into the affected
@@ -3874,6 +4295,18 @@ Expected-data changes name their cause and provenance in decisions; consistency
 review traces changed contracts through their consumers with file-level source
 and generated evidence, including fixtures, manifests and installed guidance.
 
+- **The standing file.** An executor that stops with its order unfinished,
+  at the day's figure or for any other reason, finishes the step in hand and
+  writes `docs/evidence/WO-NNN/standing.md` before it ends the turn: the steps
+  of the execution plan done, the step in hand and its state, what comes
+  next, and what is undecided. It replaces the file at each stop. The
+  briefing of an active order names the file while it exists, as a repair's
+  does, and the phase's completion (`implementation-ready`, or
+  `repair-complete` in a repair) removes it and says so, so the file is never
+  committed and the handoff file is never edited for it. A day's figure
+  (`spend.daily` in the budgets) only adds the line that asks for the stop;
+  it refuses nothing
+  ([decision](../evidence/WO-276/decisions.md#wo-276-d098--part-p-begins-on-checkpoint-45-the-bound-reads-worked-time-from-the-phases-journals-the-days-figure-is-advisory-and-the-standing-is-a-file-of-its-own-with-the-parts-consumer-map-and-its-two-gates)).
 - **The handoff sequence (2026-10-07 pass, revised 2026-10-19).** Finish
   source edits, run `npm run format`, use `npm run sync` for stale
   publication, bookkeeping and installed-harness artifacts (a gate compiles a
@@ -4012,10 +4445,17 @@ and generated evidence, including fixtures, manifests and installed guidance.
   found with their lines and the part of the composed body they sit in,
   reviewed prose, Change table or target checks, and refuses until the
   reviewer confirms them with `--confirm-terms sha256:<digest of the
-  composed body>`, never on the word alone. Each private term has a mode,
-  `refuse:` or review by default; a review-mode match is confirmed the same
-  way and a refuse-mode match refuses as before, while in committed text
-  every listed term still refuses. Launchpad identifiers (`WO-NNN`,
+  composed body>`, never on the word alone. Each private entry has one of two
+  classes, `refuse` or `context`; an unmarked line outside a section is
+  context, and `review:` is read as `context:`. In a target publication a
+  context-mode match is confirmed the same way and a refuse-mode match
+  refuses as before. Everywhere else a screen reads the list (committed text,
+  a launchpad publish, an export, a receipt) a refuse-mode match refuses by
+  file, line and mode, and a context-mode match refuses nothing: the screen
+  lists its file and line, and the stage at hand reads the line beside the
+  entry it matched and states how many it read
+  ([WO-276-D008](../evidence/WO-276/decisions.md#wo-276-d008--the-lists-two-classes-and-the-runs-a-match-joins-across-step-a1);
+  [WO-276-D010](../evidence/WO-276/decisions.md#wo-276-d010--where-each-screen-lists-a-context-mode-match-steps-a2-to-a4)). Launchpad identifiers (`WO-NNN`,
   `WO-NNN-DNNN`, `FUP-<16 hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`,
   `WS-NNN`) refuse in a target's branch, commits, title and body under
   `identifier.launchpad`; the kit's own frame, the records it moves into the
@@ -4119,17 +4559,20 @@ and generated evidence, including fixtures, manifests and installed guidance.
   `git stash drop` in a work-order worktree. Until final review, the
   deliverable, every `VER-NNN`, and the order's control segment are typically
   uncommitted, and `docs/intake` is gitignored single-copy raw material that is
-  in no commit at all. Valid control transitions create the only
-  pre-final-review checkpoint commits as local `refs/dotln/checkpoint/...` refs;
-  do not add hand-written checkpoint commits to the work-order branch. Before
+  in no commit at all. Valid control transitions and `npm run resume --
+  checkpoint` create the only pre-final-review checkpoint commits, as local
+  `refs/dotln/checkpoint/...` refs; an order in parts records one with that
+  command at each part's end, and its standing file names the ref and commit
+  ([WO-276-D020](../evidence/WO-276/decisions.md#wo-276-d020--the-checkpoint-action-records-a-recovery-point-and-appends-no-event-step-a16)).
+  Do not add hand-written checkpoint commits to the work-order branch. Before
   any rollback, preserve the current dirty tree with a named
   `git stash push --include-untracked -m 'WO-NNN recovery before rollback'` and
   never drop that stash. Git's stash stack is shared across every worktree of
   this repository, so a concurrent session can reorder or consume entries;
   re-find yours by its `-m` tag, never by `stash@{n}` position, and restore with
   `git stash apply`, not `pop`. Restore only from the exact latest checkpoint
-  ref advertised by the current control projection, and say in your result which
-  recovery point you used. Ignored intake is outside both mechanisms and must be
+  ref the current control projection advertises, or a later one the order's
+  standing file names, and say in your result which recovery point you used. Ignored intake is outside both mechanisms and must be
   backed up separately.
 - **Verification artifacts are immutable and numbered.** Verifiers write to
   `docs/verifications/WO-NNN/VER-NNN.md`; the first pass is `VER-001.md` and
@@ -4403,6 +4846,22 @@ and generated evidence, including fixtures, manifests and installed guidance.
   further acceptance is recorded: a breach is boarded as this paragraph
   says [WO-192-D095; the 2026-10-31 pass](../evidence/WO-192/decisions.md#wo-192-d095--board-what-the-second-review-round-left-for-planning).
 
+  The meter reports two numbers for a role. The first is the installed bytes
+  above, and the ceilings judge it alone. The second is the bytes of the
+  role's fixed reads: the files and sections its skill's explicit `Read:`
+  lines name outright, a selector that begins with `@` left out because it
+  resolves by the order in hand, and a read the root states on a condition
+  left out with it. `npm run meta` prints both for each root, so the planner's
+  line shows its planning section and the sequence beside its skill. A role's
+  text is changed by editing it and regenerating: `node scripts/harness.mjs
+  check` refuses a committed root that differs from the emitted one, each
+  shared rule is a record that names the roles it binds, and one case derives
+  from the records which rules every emitted root holds once and which it
+  does not hold. No test retypes a sentence of a root; an order that adds or
+  edits a rule record changes that rule's row in the rule-by-role table it
+  keeps with its evidence, with a reason for every role
+  ([WO-276-D055](../evidence/WO-276/decisions.md#wo-276-d055--part-f-as-built-the-shared-rules-as-records-the-rule-by-role-table-the-refutations-steps-from-its-command-the-review-helpers-section-and-the-meters-second-number)).
+
   WO-054 raises the executor ceiling to 24,576 bytes and release-close to
   16,384 bytes for the shared advisory-boundary and Codex continuation rule
   (measured 20,849 and 12,437 bytes in both roots). The operator directed
@@ -4512,12 +4971,14 @@ and generated evidence, including fixtures, manifests and installed guidance.
   worktree; a write during the live gate; a classified repository write
   outside `docs/` and root Markdown on a `planning/` branch; an observable
   worker use exceeding `docs/control/budgets.json` `subagentCap`
-  (default 20, `null` disables), where a use is a launch, a re-task (a
+  (default 20, `null` disables) or the cap the operator's `accept-overrun`
+  records for the dispatch (§Operator recovery controls), where a use is a launch, a re-task (a
   `SendMessage` or an `Agent` call resuming a known agent) or a worker a kit
-  command launches (§Verification review and attack); a test-runner gate
+  command launches (§Review helper and round reports); a test-runner gate
   (`npm test` in any form, `test-runner.mjs`, `target-gate.mjs`, `test:docs`,
   `test:full`, including inside the bounded wrapper) started by an agent the
-  host names `dotln-worker` or `dotln-worker-fable`, refused with
+  host names `dotln-worker` (or `dotln-worker-fable`, a type an earlier kit
+  emitted that an instance holds until its next emit), refused with
   `DOTLN_WORKER_GATE_REFUSED` naming the bounded single-test form, while a
   lifecycle phase agent and the session itself keep their gates; and a known outside-project write destination
   without a containing root declared by its active role or equipped support
@@ -4889,6 +5350,18 @@ and generated evidence, including fixtures, manifests and installed guidance.
 
 ### Preflight before the full gate
 
+The shared worker launcher, after a Codex worker returns, and a lifecycle
+dispatch from another host may close Codex's abandoned background server.
+Cleanup recognizes the daemon's command and its server and helper children
+within the same installed release; the daemon must have parent 1. A live
+Codex command, an unrecognized command in that installation, or an
+unrecognized parent chain prevents cleanup. Sharing the server's executable
+does not make an interactive or `exec` session a cleanup target. Temporary
+repositories, gates and Codex-hosted sessions never perform this cleanup.
+These checks use a process-table snapshot; no live interruption or recovery
+guarantee is inferred from the synthetic signal-recording tests
+([decision](../evidence/WO-276/decisions.md#wo-276-d148--recognize-background-roles-before-cleanup)).
+
 The shared temporary-root helper marks every fixture with its class, process
 lifetime, repository, gate/suite or session identity, creation time and retention.
 As each suite ends, the runner removes the roots that suite registered under
@@ -5040,11 +5513,28 @@ partial task still displaces its prior pass. In an export, `launchpad update --f
 fast-forwards clean main before bootstrap, and release-close recovery, `worktree finish` and
 `npm run harness` restore the verified carried runtime instead of building
 omitted sources; bootstrap is the named manual recovery command (WO-226).
-Sync refuses a role oracle without its authorizing
-update, a feedback edition whose judged sources require a live episode,
-and manual baseline fingerprints. Host admission refuses a Node outside the
+Sync refuses a feedback edition whose judged sources require a live episode
+and manual baseline fingerprints. It mints no role baseline: the generated
+role roots are judged by `node scripts/harness.mjs check`, which fails naming
+a committed root whose bytes differ from the emitted ones
+([WO-276-D014](../evidence/WO-276/decisions.md#wo-276-d014--the-role-baseline-chain-is-removed-step-a5)). Host admission refuses a Node outside the
 root `engines.node` range, naming both, and measured warning or critical
-memory pressure, and records its sampled values. For complete/plain
+memory pressure, and records its sampled values. A gate started inside a
+running gate, under a lease that gate holds and the new one validates,
+stands on that gate's admission at warning pressure, which the run may
+itself have produced, and says so beside its sample; it refuses at critical
+pressure alone
+([WO-276-D140](../evidence/WO-276/decisions.md#wo-276-d140--a-gate-started-inside-a-running-gate-stands-on-that-gates-admission-at-warning-memory-pressure-on-the-operators-direction-that-a-suite-which-cannot-run-on-this-machine-is-defective)).
+On macOS the host task also prints the resident memory of the file-events
+daemon (`fseventsd`) at every start and refuses above 1 GiB, naming the
+restart that clears it, which needs an administrator. The refusal is a
+precaution: the one daemon seen above that size reached 15 GiB over the
+next day of gates and returned to megabytes only when it was restarted,
+and what made it grow is not established
+([WO-276-D144](../evidence/WO-276/decisions.md#wo-276-d144--correction-what-the-daemon-comparison-established-and-what-wo-276-d142-and-the-gates-refusal-said-beyond-it-the-thirty-seventh-critics-three-points)).
+A gate started inside a running gate prints the same reading and is admitted
+([WO-276-D142](../evidence/WO-276/decisions.md#wo-276-d142--a-gate-shows-the-file-events-daemons-size-at-every-start-and-refuses-above-1-gib-after-a-restart-showed-the-daemon-healthy-and-a-measured-comparison-showed-that-where-the-gates-files-are-made-does-not-matter)).
+For complete/plain
 and review selections it also refuses an exhausted dispatch wall-clock or
 complete-run bound; the stopped row records every exceeded metric, value, ceiling and
 owning dispatch. Failed and interrupted admitted complete selections consume a
@@ -5060,11 +5550,12 @@ as `npm test -- --only <suite>`, the spelling the handoff reads. The
 executor and each repair finish formatting and regeneration, then run the
 checks the order's closeout selection names (below): for a launchpad order,
 one complete run, `npm test -- --review`, in the background and never under
-the bounded probe wrapper. If it fails and a repair changes code, finish the repair
-and its write-backs, format, then take the repair's diff through the review
-ladder of §Verification review and attack (round three alone when the diff is
-under fifty changed source lines) and finish it before starting a fresh
-complete run.
+the bounded probe wrapper. If it fails, finish the named repair and its
+write-backs, format, and start a fresh complete run with `--keep-going`, so
+that one run names every suite that still fails. The run that failed judges
+its own repair: the repair takes no review round, and the handoff's review
+line counts its changed lines as unreviewed
+([WO-276-D021](../evidence/WO-276/decisions.md#wo-276-d021--the-role-text-of-steps-a6-a7-a9-a11-a12-and-a15-and-the-installed-roots-bytes)).
 Synthetic lifecycle tests belong to the product
 preflight: `resume --fixtures-only` must pass before later product suites,
 including with `--keep-going`. The separate `resume-docs` selection retains
@@ -5160,7 +5651,14 @@ failures receive 3000, sources changed since the last product gate receive
 2000, and older branch changes receive 100. Failed and newly changed suites
 lead; the smaller branch lead lets unchanged exclusive work precede shared
 branch work, while preserving branch work's priority over ordinary unchanged
-shared work. The scheduler stops starting tasks after the first
+shared work. The exclusive suites run as one convoy: each takes the highest
+priority any of them holds and they stand together in the queue, in the
+order their own priorities gave, so heavy work drains for them once. A heavy
+suite whose lead is above the convoy's (it failed last and no exclusive
+suite did) still starts before it; when one exclusive suite changed and the
+others did not, the unchanged ones run ahead of a heavy suite that changed,
+which waits the convoy's length ([WO-276-D047](../evidence/WO-276/decisions.md#wo-276-d047--part-d-as-built-the-control-and-what-it-can-show-the-convoy-the-shards-the-file-order-the-conditions-reading-and-the-cases-that-follow)). The scheduler stops starting tasks
+after the first
 failure, lets running tasks finish, and records the first failure and unrun
 tasks. `--keep-going`
 continues independent work without bypassing failed prerequisites. A stop
@@ -5173,6 +5671,8 @@ each with its own 900-second deadline and two host slots. Measured light
 files can still run first beside an exclusive task. Declaring the longer
 update file first aims to reduce the tail when only one heavy file fits;
 the required tasks, assertions and admission limits are unchanged.
+Target-worktree declares its close file first for the same reason: it takes
+most of the group's time ([WO-276-D047](../evidence/WO-276/decisions.md#wo-276-d047--part-d-as-built-the-control-and-what-it-can-show-the-convoy-the-shards-the-file-order-the-conditions-reading-and-the-cases-that-follow)).
 
 The host-lane registry records the first acquirer's capacity, the lesser of
 eight and half the logical processors, at least one; later clones inherit
@@ -5214,16 +5714,34 @@ gate reservation; granting each a full gate share would multiply permitted
 memory outside admission. The bare-group limit is the least live registered
 task limit, capped at the default physical-memory task share.
 
-The three exclusive suites keep a full host reservation and lend nested
-leases to their own task and up to two local light peers. Another gate cannot
+Two exclusive suites, the hook suite and process-debt, keep a full host
+reservation and lend nested leases to their own task and up to two local
+light peers; sync-fixtures and worktree-integration hold the whole host
+alone ([WO-276-D050](../evidence/WO-276/decisions.md#wo-276-d050--part-ds-comparison-54-minutes-before-and-42-after-what-the-pair-shows-worktree-integration-declares-no-overlap-and-the-part-closed)). Another gate cannot
 fill the reserved overlap with heavy work. Only shared tasks whose every
 held baseline sample is below 60 seconds and 512 MiB RSS may use those spare
 lanes. The exclusive task's
 shared deadline declaration has at most three concurrent tasks and a factor
 twice that declaration, up to six; nested gates remain inside its inherited
-reservation. Target-worktree's
-start, publication, close and release files run two at a time, each under
-its own 900-second deadline, preserving the base's complete case inventory.
+reservation. The hook suite's cases run as three shards inside its
+reservation: a row may declare `shards`, each shard is a process of the
+row's own command that registers the cases whose title's hash falls in it
+(`scripts/lib/test-shards.mjs`, from which the suite's files take `test`),
+the shards share the lanes the row reserves and are admitted together, and
+light peers beside them stay within the row's overlap. A case is in exactly
+one shard and a new case needs no registration; with no shard named every
+case registers, so one case still runs by its name under the bounded
+wrapper. A shard's deadline declaration counts the other shards with the
+light peers ([WO-276-D047](../evidence/WO-276/decisions.md#wo-276-d047--part-d-as-built-the-control-and-what-it-can-show-the-convoy-the-shards-the-file-order-the-conditions-reading-and-the-cases-that-follow)). Target-worktree's
+close, start, publication and release files run two at a time, each under
+its own 900-second deadline. No list of case titles is kept for those files
+or the launchpad's: a case of the runner's tests reads the top-level
+registrations of every suite file through the source reader and refuses a
+file that declares one title twice, the fault that makes a name pattern
+select the wrong case. The vertical row runs one task a file; how a
+statement's wording is classified is a table in the skeleton's tests, and
+the end-to-end file keeps one case for each statement class and outcome
+([WO-276-D053](../evidence/WO-276/decisions.md#wo-276-d053--part-e-as-built-case-titles-checked-for-duplicates-no-per-case-time-bound-a-fixed-self-host-edition-the-statement-wordings-as-a-table-and-one-vertical-task-a-file)).
 The [WO-222 measurement](../evidence/WO-222/README.md) compares these levers
 with a before median of 2,538.373 seconds and a three-fresh-run after median
 of 1,668.518 seconds, 34.2682% lower, with no outer task deadline hit. The
@@ -5278,52 +5796,80 @@ provider spend at USD 5 when the selected transport exposes a hard dollar-cap
 control. A recorded budget on a transport without that control is a limit
 declaration, not an enforced cap, and must be reported that way.
 
-Spawned agents run the operator's pinned models (direction of 2026-09-30,
-restated 2026-11-03): a worker, reviewer, refuter, live episode or probe that a
-session launches has four options, Claude `claude-opus-5-5` at `xhigh`,
-Claude `claude-fable-5-1` at `xhigh`, Codex `gpt-6.1-sol` at `max` and
-Codex `gpt-6-astra` at `max`; the first and third are the defaults of their
-harnesses, and the Fable and Astra options run only when the operator asks
-(operator direction of 2026-11-03, ignored capture SHA-256
-`589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`).
-`contributorWorkerOptions` in `packages/skeleton/src/loadouts/contributor.ts`
-is the one table of the four: the generated definitions, the option lookup
-and the receipt's worker types derive from it, and only the transports'
-default pins (`TRANSPORT_DEFAULTS`, which the entropy review reads before any
-build) repeat two of its entries, held equal by a test. A kit launch names its
-option with `--model opus|fable|sol|astra` on `npm run worker -- review` and
-`npm run plan -- refute` (a word or that option's model id); without the flag
-it takes the option the session's latest `planning:` or `resume:` line named
-for its host, `fable` for Claude launches and `astra` for Codex launches, read
-only from the words that close the line (a label such as `planning: standard
-pass, astra`) or close the dispatch phrase before its first `;` (a lifecycle
-phrase's suffix, as in `resume: next astra; keep it short`), so a model named
-mid-line as a topic selects nothing. Claude's prompt hook and the generated Codex prompt hook
-journal that selection as a `WorkerOptionsSelected` row on every such line (one
-that names neither returns to the defaults), the Codex hook making the
-checkout's journal lane for the first such line when it has none; otherwise a
-launch takes its host's default, and an option of the other host and anything
-outside the four are refused by name. The
-direct `plan refute --model <option>` prints the launch the parent makes with
-the receipt's `--worker-type`
-([WO-255-D009](../evidence/WO-255/decisions.md#wo-255-d009--the-operators-four-worker-options-and-the-generated-astra-agent),
-[WO-255-D010](../evidence/WO-255/decisions.md#wo-255-d010--both-prompt-hooks-journal-the-dispatch-lines-worker-words),
-[WO-255-D031](../evidence/WO-255/decisions.md#wo-255-d031--the-repairs-round-2-on-astra-four-admitted-findings-fixed-the-claim-read-by-what-an-object-is)).
-Claude workers use the generated `.claude/agents/dotln-worker.md` type:
-`model: claude-opus-5-5` and `effort: xhigh`. Launch Agent with
-`subagent_type: dotln-worker` and no per-call model override; its definition's
-effort overrides the root's effort. The generated lifecycle definitions
-(`dotln-executor`, `dotln-verifier`, `dotln-reviewer`, `dotln-release-close`)
-carry the same pins for the phase workers a router spawns. The host's [subagent documentation](https://code.claude.com/docs/en/sub-agents)
+**What a spawned worker runs is one table**
+([decision](../evidence/WO-276/decisions.md#wo-276-d077--worker-models-as-redesigned-on-the-operators-direction-models-are-rows-of-data-workers-are-names-an-instance-binds-to-them-one-resolver-and-two-commands-answer-every-launch-and-no-worker-definition-hook-or-sentence-names-a-model)). A worker, reviewer, refuter, live episode or probe that a
+session or a kit command launches runs what its name resolves to in the
+worker table: the kit's models and workers
+(`packages/skeleton/src/worker-models.mjs`, the one place the kit names a
+model that a worker runs) with the instance's `dotln.models.json` and the `workers` section of
+its `dotln.config.json` over them (the kit guide's passage on what each
+worker runs gives both shapes). The kit's rows are the four models the
+operator named for workers, `opus` and `fable` for Claude and `sol` and
+`astra` for Codex, and the two the resident's judge already ran, `sonnet`
+and `luna`, each with its exact id and effort; and four workers: `default`,
+which a launch that names nothing and every driven phase runs; `advanced`,
+each provider's stronger model, which runs when the operator asks;
+`verifier`, which a driven independent verification runs; and `judge`, which
+the resident's always-on judge runs where a bind names no model. `worker-catalog.mjs` beside the
+data is the one interface: `workerTable` merges the table and judges it (one
+namespace, so a name means one thing), `resolveWorker` answers a worker's
+name, a model's name or a model's exact id for a provider, an effort given
+for one launch standing over the table's, and each provider's adapter says
+how its own sessions launch what was resolved. Every reader takes its answer
+there, through `scripts/lib/worker-launch.mjs` for a launchpad: the
+generated definitions, the review helper, the refuter, the entropy reviewer,
+whose `--model` names a worker or a model as any launch does and whose
+transports otherwise run `default` for their provider, and the drive. No role's
+text, hook or worker definition's name holds a model, and the host probes
+launch the `default` worker's. What still writes a model of its own is a
+script that regenerates a dated record, which keeps the model that record
+measured, by the rule at this section's end. The Entropy Reducer's compiled
+reviewer is the kit's own `default` worker for Claude, read from the kit's
+rows, so an instance that binds another default launches a substitute
+reviewer, which its receipt says
+([decision](../evidence/WO-276/decisions.md#wo-276-d078--part-js-rebuilt-half-closed-rolling-review-31-and-the-fifth-attack-pass-judged-the-host-probes-launch-the-default-worker-from-the-table-and-what-in-the-kit-still-writes-a-model-of-its-own-is-named)).
+
+A session finds its worker by command and by its own judgment. `npm run
+worker -- list` prints every worker and model with what each runs and where
+each value was written; the session maps the operator's words to one name,
+uses `default` where they name none and asks where they fit no entry or
+several; `npm run worker -- show <name> [--provider <provider>] [--effort
+<level>]` prints this session's launch of it and the `--worker-type` a direct
+refutation receipt takes. No code matches a word loosely, and no dispatch
+line selects a worker: the session hook is given the table's names only so
+that a line which closes with them (`resume: next astra; keep it short`,
+`resume: verify fable 5.2`) still dispatches its phrase, while a line that
+closes with any other word stays prose. A kit launch names a worker or a
+model with `--model <name>` on `npm run worker -- review` and `npm run plan
+-- refute`, with `--effort <level>` for that launch; without the flag it
+runs `default`, another provider's model is refused naming the host's own,
+and an unknown name is answered with every name the instance has.
+
+How a launch reaches its model is the provider's adapter's to say. The kit's
+command-line transports pass the exact id and effort. A Claude session
+launches the one generated type, `.claude/agents/dotln-worker.md`, whose
+`model` and `effort` lines are `default`'s for Claude: as it stands for
+that model, with `effort` on the call where the launch differs, and for
+another model with the row's `family` as the call's `model` and its effort,
+since the host's launch takes a family and not an id. The host resolves the
+family, so `show` marks that launch as not exact and the record carries the
+model the host reports (observed on Claude Code 2.1.322: the family `fable`
+ran the kit's Fable row's id, and an effort on the call stood over the
+definition's). A model row with no family is launched by the kit's command
+only. The generated lifecycle definitions (`dotln-executor`,
+`dotln-reviewer`, `dotln-release-close`) hold `default` for the phase
+workers a router spawns, and `dotln-verifier` holds `verifier`. The host's
+[subagent documentation](https://code.claude.com/docs/en/sub-agents)
 documents both fields, per-call model precedence and `/tasks` model/effort
-readback (checked 2026-10-05). Codex workers use `spawn_agent` with
-`fork_turns: none`, `model: gpt-6.1-sol`, `reasoning_effort: max`; use the same
-pin for adversaries, reviewers, refuters and research. A review worker on the
-other host launches through `npm run worker -- review --host codex|claude`
-(§Verification review and attack) at the option it resolves, these pins by
-default, and its `WorkerLaunched` journal row records the model and effort it
-launched with their source, the option and what selected it, and the host's
-own readback where its CLI prints one. Generated-definition
+readback (checked 2026-10-05). A Codex session spawns with `spawn_agent`,
+`fork_turns: none`, the exact `model` and `reasoning_effort`, and opens the
+brief with the worker's standing rules, which `show` prints as the launch's
+preamble, since a spawn reads no definition; the kit emits no Codex agent
+file. A review worker on the other host launches through `npm run worker --
+review --host codex|claude` (§Review helper and round reports), and its
+`WorkerLaunched` journal row records the model and effort it launched with
+their source, the name it was launched by and whether the launch named one,
+and the host's own readback where its CLI prints one. Generated-definition
 and call arguments are launch selections, never proof of effective effort.
 Report the host's readback or that it reports none; a root's own selection
 does not decide the worker's. A script that regenerates a dated record keeps the
@@ -5333,15 +5879,18 @@ ran.
 **Hosts are elections.** A host's surfaces are emitted only where the
 instance runs it: `features.host-codex` and `features.host-copilot` are off by
 default, and an undeclared row is inferred on from the instance's own
-committed record, an attestation whose harness names the host in its control
-log (`resume.jsonl` or an order segment) or an observed version in
-`docs/discovery/environment.json`; the ignored session journals are never
-read, so a clone and its origin infer alike. Claude's profile is always in the
-bundle; the Codex profile (`.codex/`, `.agents/skills/` and the
-`dotln-worker-astra` agent it contributes) and the Copilot profile join it
+committed control log, an attestation whose harness names the host
+(`resume.jsonl` or an order segment); an observed version in
+`docs/discovery/environment.json` turns no host on, and the feature table
+names it as showing the host without an election
+([decision](../evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)). The ignored
+session journals are never read, so a clone and its origin infer alike. Claude's profile is always in the
+bundle; the Codex profile (`.codex/` and `.agents/skills/`) and the Copilot profile
+join it
 when their rows are on, and the manifest's `profiles` and residue name only
-those. This repository's record shows all three hosts, so its bundle is
-unchanged; a fresh export is Claude-only
+those. This repository attests Codex and elects Copilot, which only its
+discovery record showed, so its bundle is unchanged; a fresh export is
+Claude-only
 ([decision](../evidence/WO-258/decisions.md#wo-258-d003)).
 
 **Codex CLI 0.166.0 and the driven close (WO-247, read 2026-11-01).** Under
@@ -5397,20 +5946,12 @@ a session whose prompt hook never fires keeps its reservation until
 completion, as before
 ([WO-254](../evidence/WO-254/decisions.md#wo-254-d011--the-operators-standing-instructions-ride-the-codex-compaction-record)).
 
-The opt-in Claude type `.claude/agents/dotln-worker-fable.md` selects
-`claude-fable-5-1` at `xhigh` only when the operator's `planning:` or
-`resume:` dispatch line names `fable` or `fable 5.1`. Use that type without
-a per-call model override. The opt-in Codex type is the generated custom agent
-`.codex/agents/dotln-worker-astra.toml`, `gpt-6-astra` at `max`, used only when
-the line names `astra`: a Codex session spawns it with `spawn_agent`
-(`agent_type: dotln-worker-astra`, `fork_turns: none`), and Codex applies the
-file's model and effort over the call's (the host's custom-agent
-documentation, read 2026-11-05). `dotln-worker` and the Codex pin above remain
-the defaults. The parent records the type that ran in its response and the
-direct refutation receipt's `workerType`, passing `--worker-type
-dotln-worker-fable` or `--worker-type dotln-worker-astra` to `plan receipt`
-for an opt-in; an omitted option records `dotln-worker`; Codex passes
-`--worker-type codex-spawn-agent` to record its actual default launcher. This field attests to the launch type, never to
+A direct refutation receipt's `workerType` names the launcher that ran:
+`dotln-worker` for a Claude launch of any model, which an omitted
+`--worker-type` records, and `codex-spawn-agent` for a Codex spawn.
+`dotln-worker-fable` and `dotln-worker-astra`, which an earlier kit emitted
+as per-model definitions and recorded, still read in a receipt and are
+written by no launch now. This field attests to the launch type, never to
 effective model or effort. Older receipts lacking it retain their original
 bytes and do not acquire invented readback (WO-226).
 

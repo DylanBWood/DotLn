@@ -1454,7 +1454,7 @@ Counterfactual profiling work orders [publication-d1322ea84afaf4ab]
   Published status label: specified [evidence-297]
   -> Source section [evidence-298]
 
-v0.0.0 — Clean-room bootstrap _(mostly complete)_ [publication-321ed3468981dcce]
+v0.0.0 — Clean-room bootstrap (mostly complete) [publication-321ed3468981dcce]
   Audiences: software-engineer [evidence-299]
   Published status label: implemented [evidence-299]
   -> Source section [evidence-300]
@@ -2118,8 +2118,7 @@ SOURCES
 unavailable: skeleton:loadout-exports — Source not supplied
 unavailable: skeleton:feedback-units — Source not supplied
 unavailable: control:canonical-segments — Source not supplied
-unavailable: docs/work-orders/README.md — Source not supplied
-unavailable: docs/work-orders/HISTORY.md — Source not supplied
+unavailable: work-orders:index--json — Source not supplied
 unavailable: resume:status--json — Source not supplied
 unavailable: worktree:constellation — Source not supplied
 unavailable: release:list — Source not supplied

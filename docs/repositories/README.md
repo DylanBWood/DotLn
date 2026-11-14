@@ -16,6 +16,25 @@ forks, never in this reference repository. Keep the clean-room floor: use public
 sources and generic descriptions, with no credentials, private identifiers,
 internal services or employer material.
 
+A profile is the entry and the index. What a session learns about one area
+of the repository is written as an area note, one Markdown file under the
+directory that has the profile's name without `.md`
+(`docs/repositories/<repository-id>/` for
+`docs/repositories/<repository-id>.md`). A note opens with one JSON object
+between a `dotln-area-note:start` and a `dotln-area-note:end` comment line,
+with two fields: `paths`, the target paths the note covers, a non-empty
+list of relative paths written with forward slashes; and `commit`, the
+target commit it was written at, as its full id. Its prose states each rule
+the area follows with the file that shows it, the exceptions found and what
+is unknown. The block is the only part a program reads: the document check
+refuses a note whose block is missing or malformed, naming the file and the
+field, and a target order's dispatch briefing prints each note with its
+paths, its commit and the commits on the registered clone's base branch
+that touched those paths since, or `unknown`. The count refuses nothing. A
+research order writes or revises one area's note, and no step reads the
+whole repository
+([decision](../evidence/WO-276/decisions.md#wo-276-d086--part-l-as-built-area-notes-beside-a-targets-profile-read-by-the-document-check-and-the-briefing-and-one-sentence-in-three-roles)).
+
 Use these sections, recording unknowns and the evidence needed to resolve them:
 
 - Purpose and standards to emulate: what the repository does and which observed
@@ -37,10 +56,12 @@ Use these sections, recording unknowns and the evidence needed to resolve them:
   still govern execution. Do not copy target skills into the launchpad or
   claim discovery by a client that was not observed.
 - Discovery conventions: an optional fenced `dotln-discovery` JSON block in the
-  existing discovery producer's conventions shape. If that producer is given a
-  Markdown profile, it requires exactly one such block and retains its existing
-  target-relative path and resource checks; registration does not copy or
-  transport a launchpad profile into a target.
+  existing discovery producer's conventions shape, for this document's readers;
+  the producer itself reads conventions only as JSON, the target's
+  `.dotln/discovery.json` or a declared JSON profile, keeping its
+  target-relative path and resource checks
+  ([decision](../evidence/WO-276/decisions.md#wo-276-d031--part-b-begins-on-part-as-checkpoint-and-is-ported-from-the-earlier-worktree-whose-choices-are-restated-here)). Registration does
+  not copy or transport a launchpad profile into a target.
 
 A target executor reads the declared profile on demand for the active order's
 `Repository:` id. Profiles are repo-native convention authority, with explicit

@@ -1305,19 +1305,22 @@ record is [the planning document](../planning/standard-pass-2026-09-30.md).
     product 03 §VerificationAdapter and §DeliveryAdapter; product 06's
     vertical; the search of the queued orders. Reopen: a run of WO-112
     passes a step the roadmap names and no order lands.
-- **The `v1.0.0` exit has an order, months away** `candidate`
+- **The `v2.0.0` exit has an order, months away** `candidate`
   - The stranger test (a person who has not read these documents declares
     one intent and receives a verifiable result) had waited as a candidate
     since 2026-09-06 for the parity contract, which WO-115 closed. Filed as
     WO-183 after WO-118, the shape of the exit and no priority: the
-    operator places `v1.0.0` months away. Provenance: the map's candidate;
-    product 06 §v1.0.0; the operator's messages 6 and 7. Reopen: WO-118
+    operator places it months away. The rung was numbered `v1.0.0` until
+    2026-11-11, when the operator gave that number to WO-276's release
+    ([decision](../evidence/WO-276/decisions.md#wo-276-d073--this-orders-release-is-v100-and-the-roadmaps-teammate-ready-rung-is-v200-on-the-operators-word)). Provenance: the map's candidate;
+    product 06 §v2.0.0; the operator's messages 6 and 7. Reopen: WO-118
     closes, or the operator re-cuts the exit.
-- **Early access until `v1.0.0`** `adopted`
-  - The operator's framing: the ladder below `v1.0.0` is an early-access
+- **Early access until `v2.0.0`** `adopted`
+  - The operator's framing: the ladder below `v2.0.0` (numbered `v1.0.0`
+    until 2026-11-11) is an early-access
     period, as games hold an alpha or beta; critical product features are
     likely still unconsidered; once this queue drains the operator brings
-    direction. Written into product 06 §v1.0.0. Planning drains the queue
+    direction. Written into product 06 §v2.0.0. Planning drains the queue
     with a delivery lane in every pair and files product work only where
     the ladder already promises a step. Provenance: the operator's messages
     7 and 8. Reopen: the operator opens the post-queue direction, or a

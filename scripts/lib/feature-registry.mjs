@@ -58,7 +58,7 @@ export const featureRegistry = Object.freeze([
       `host-${id}`,
       "instance",
       false,
-      `Emits the ${name} host's surfaces and puts its profile in the bundle. Undeclared, it is on when the committed control log attests a session on the host or the discovery record observed its version.`,
+      `Emits the ${name} host's surfaces and puts its profile in the bundle. Undeclared, it is on when the committed control log attests a session on the host; the discovery record turns no host on.`,
       `features.host-${id}`,
       "scripts/lib/harness.mjs",
     ),

@@ -230,18 +230,32 @@ decoder defined in skeleton; these define the shared consumer contract.
 The view contains configured actors, live episodes, presence and next cadence
 times, coded holds, portfolio budget, and every Active or Open order in the
 generated index. `unknown` and `unavailable` are explicit; a missing index
-never creates a second order truth. The resident CLI selects the launchpad's
-configured work-order index, including `DOTLN_LAUNCHPAD`, and binds its path in
-private store metadata. Missing launchpads, malformed regular-file configuration,
-and missing, unreadable, nonregular or malformed index files leave the resident running with orders unavailable
-and an allowlisted `workOrders.reason`; no local path enters that reason.
-Helpers retain the same failure binding, and a valid restart can replace it.
-Configuration, index and binding reads use nonblocking descriptors and require regular files,
-so a FIFO at any of those paths cannot block startup. Lifetime acquire
-removes stale `.runtime-status-*.tmp` files. All helper and harness writers use that binding. Library
-hosts supply `workOrderIndexPath` on first start; without a binding, orders are
-unavailable. Elapsed time uses the resident's recorded clock, so rebuilding from
-the same log and index reproduces the same bytes. This file is
+never creates a second order truth. A resident started with
+`node scripts/resident.mjs` is handed the work-order cards as
+`npm run work-orders -- index --json` prints them for the launchpad, including
+`DOTLN_LAUNCHPAD`; they are read again when a file they derive from changes,
+and a read is given up after two minutes. The resident keeps a copy of them
+in its store with a private binding that names it, and helpers and harness
+writers over the same store read the cards through that binding. A resident
+started by the package's own entry, `dotln resident`, holds no card source:
+its orders are unavailable with the reason `binding-unavailable`, which the
+console shows with the launcher to start. A missing launchpad, malformed
+regular-file configuration or a card read that fails leaves the resident
+running with orders unavailable and an allowlisted `workOrders.reason`; no
+local path enters that reason, helpers read the same failure through the
+binding, and a valid restart can replace it. The cards are read before the
+store's append lock is taken, so a helper's transaction never waits on the
+index command
+([decision](../../docs/evidence/WO-276/decisions.md#wo-276-d171--the-resident-store-reads-the-work-order-cards-before-it-takes-its-append-lock-and-the-launchers-card-command-has-a-time-bound)).
+Configuration, binding and copy reads use nonblocking descriptors and require
+regular files, so a FIFO at any of those paths cannot block startup. Lifetime
+acquire removes stale `.runtime-status-*.tmp` files. A library host hands the
+resident `workOrderCards`, a function that returns the cards, as the launcher
+does, and the host refuses an option it does not read, the removed
+`workOrderIndexPath` among them
+([decision](../../docs/evidence/WO-276/decisions.md#wo-276-d172--the-resident-host-refuses-an-option-it-does-not-read-and-the-live-walkthrough-hands-over-the-card-source)).
+Elapsed time uses the resident's recorded clock, so rebuilding from the same
+log and cards reproduces the same bytes. This file is
 read-only to hosts and grants no action. The resident keeps raw actor
 declarations and event payloads out of it because they can contain local paths
 or endpoint details. Status writes use atomic replacement without durability
@@ -371,25 +385,33 @@ durations and legal-action strings are preserved. Status has no dependency
 blocker field; that cell stays unknown and dependency evidence comes separately
 from the generated index. Beacon metadata never establishes worker liveness.
 
-The generated work-order index is read from both of its pages (WO-190):
+The generated work-order index has two pages (WO-190):
 `docs/work-orders/README.md` holds the active and sequenced orders and
-`docs/work-orders/HISTORY.md` the settled ones, each projected as its own
-section of the Work panel, so a release row and an order's status row link to
-the card of every order they name on either page. A card on both pages makes
-the history section unavailable rather than a second truth; a page without
-cards is a valid, empty source.
+`docs/work-orders/HISTORY.md` the settled ones. The console reads neither
+page: it runs `npm run work-orders -- index --json`, which prints each
+page's cards and the workstream observation from the same fields the pages
+are rendered from. No record of the cards is committed.
+Each page's cards are projected as their own section of the Work panel, and
+each card's evidence names its page and the line of its heading, so a release
+row and an order's status row link to the card of every order they name on
+either page. A card on both pages makes the history section unavailable
+rather than a second truth; a page without cards is a valid, empty source.
 
-The Workstreams section reads only the index's `dotln-workstreams` JSON line,
-never rendered prose or live Git state. An older index without the marker
-produces an empty section; malformed or duplicate records make it unavailable.
-It shares the index source reference, so a grouping parse failure marks that
-source unavailable while the independently parsed order-card section stays
+The Workstreams section reads only the index record's workstream
+observation, never rendered prose or live Git state. A record without
+workstreams produces an empty section; malformed or duplicate members make it
+unavailable. It shares the record with the order-card sections, so a grouping
+parse failure marks the record unavailable while those sections stay
 available. A member links to its card only when that card is present. The
 section is additive within `uifa-board-v1`; hosts still accept older views
 without it. `stale` is `yes`, `no` or `unknown`, with integration unknown when
 the target could not be read at the last explicit index refresh.
 
-Text adapters pin the generated index's `### WO-NNN` sections and named fields, the constellation's
+The console parses no Markdown. The index record is JSON; the capability table,
+the publication index and the roadmap reach the board as their structure
+(headings, and table cells with their text and links), which the collector
+reads with one run of `scripts/markdown-structure.mjs`, the repository's
+Markdown reader. Adapters pin the index record's schema, the constellation's
 individual/group format, release-list TSV, capability table variants (including
 dated additions), publication tables, and roadmap headings. Unsupported formats
 fail visibly. Blueprint rows retain their original assessment headings and
@@ -408,9 +430,13 @@ npm test
 [manifest.json](fixtures/manifest.json) pins every input by SHA-256. Six cases
 cover WO-009, the self-hosted feedback edition (`selfhost`), control,
 refutations, absent sources and a generated synthetic workstream; each pins JSON, terminal and HTML outputs in
-[expected/](fixtures/expected/). The `selfhost` case pins the report and both
-streams of one recorded edition; when the edition moves, update its three
-manifest inputs and regenerate the expected outputs. The six real
+[expected/](fixtures/expected/). The `selfhost` case reads the report and both
+streams of one recorded edition, copied beside the other cases' inputs
+(`fixtures/inputs/selfhost*`), and does not follow the current edition: a
+newer edition changes no fixture. A case of `test/board.test.ts` loads the
+edition the current-evidence manifest selects and applies the board's
+property checks to it with no byte comparison
+([WO-276-D053](../../docs/evidence/WO-276/decisions.md#wo-276-d053--part-e-as-built-case-titles-checked-for-duplicates-no-per-case-time-bound-a-fixed-self-host-edition-the-statement-wordings-as-a-table-and-one-vertical-task-a-file)). The six real
 2026-09-06 refutation receipts remain input alongside the later live receipt.
 Constellation addresses are explicitly replaced by fixture addresses in the
 captured text. Other fixture records retain their declared provenance.

@@ -349,6 +349,16 @@ function hostMissionJudgment(subject: unknown): MissionCheckObserved | null {
     return null;
   }
 }
+/** What a hold names beside a mission check's failure where the operator has
+ * a remedy: the hold stays a held check with no judgment, and the reason says
+ * how to start a resident that can make one. */
+const MISSION_FAILURE_REMEDIES: Readonly<Record<string, string>> = {
+  "documents-unread":
+    ": this resident holds no reader of the documents a mission check judges; start it with scripts/resident.mjs",
+  "contract-unreadable":
+    ": the order's criteria list cannot be read whole as it is written; npm run work-orders -- index --check names the line and the remedy",
+};
+
 /** The verdict is read from the already-validated observation; the fold never
  * takes a worker's word for whether a hold is needed. */
 function foldMissionJudgment(
@@ -398,7 +408,9 @@ function foldMissionJudgment(
             ].join("; ")}`
           : observed !== undefined
             ? `mission check ${episodeId} returned an unknown judgment`
-            : `mission check ${episodeId} returned no judgment (${failure})`,
+            : `mission check ${episodeId} returned no judgment (${failure})${
+                MISSION_FAILURE_REMEDIES[failure] ?? ""
+              }`,
     episodeId,
     subjectHash: subject?.hash ?? "",
     verdict,

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { htmlComment, markdownComments } from "./lib/markdown-links.mjs";
 import { runGit } from "./lib/git.mjs";
 import { json } from "./lib/helpers.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
@@ -99,7 +100,8 @@ const results = {
     contributorLoadout,
     baseline.fixtures.contributor.artifactIdentity.compilationEnvironment,
   ),
-  planRefuter: compilePlanRefuter("fixture", 0),
+  // Core's own refuter: this evidence is core's alone.
+  planRefuter: compilePlanRefuter("fixture", 0, true),
 };
 // Reconstruct each historical subject before comparing its authorized migration.
 const entropyFixturePath =
@@ -318,6 +320,7 @@ const migratedInspection = {
 };
 const currentPlan = planRefuterLoadout(
   baseline.fixtures.planRefuter.artifactIdentity.authorityExpiresAt,
+  true,
 );
 assert.deepEqual(
   currentPlan.role.obligations,
@@ -809,23 +812,35 @@ const projections = Object.entries({
 
 // Generated runtime/policy hashes are derived from the executing compiler pin.
 // Compare every other hook configuration byte and every wrapper byte exactly.
+// No hook exists for the presence heartbeat alone: the file of a hook that
+// carries it ends with the heartbeat's call, after the adapter's, and its
+// configuration is the adapter's like any other hook's.
 const parseHook = (source) => {
-  const heartbeat = /await recordHarnessHeartbeat\(("[^"]+"), input\);/u.exec(
+  const heartbeat = /await recordHarnessHeartbeat\(([^\n]+), input\);/u.exec(
     source,
   );
   if (heartbeat) {
-    const event = JSON.parse(heartbeat[1]);
+    // A hook of one event names it as a string. The session hook, which
+    // serves the session's start and a prompt, names an expression on its
+    // input that tells them apart at run time.
+    const named = heartbeat[1].startsWith("(input?.hook_event_name ===")
+      ? null
+      : JSON.parse(heartbeat[1]);
     assert.ok(
-      ["UserPromptSubmit", "PreToolUse", "PostToolUse", "Stop"].includes(event),
+      named === null || ["PreToolUse", "PostToolUse", "Stop"].includes(named),
+      "known heartbeat event",
     );
     assert.match(
       source,
       /packages\/skeleton\/dist\/src\/presence-heartbeat\.js/,
     );
-    return { config: { kind: "presence", event }, wrapper: source };
   }
   const call = /await (?:runHarnessHook|runCommitMessageHook)\(/u.exec(source);
   assert.ok(call, "known generated hook adapter");
+  assert.ok(
+    !heartbeat || heartbeat.index > call.index,
+    "the heartbeat follows the adapter",
+  );
   const start = call.index + call[0].length;
   const end = source.indexOf(", feedbackBoundary", start);
   assert.ok(end > start);
@@ -923,8 +938,7 @@ const bundleFiles = comparisonPaths.map((path) => {
   const after = generated(unequipped, path);
   if (after !== null && path.startsWith(".claude/hooks/")) {
     const { config } = parseHook(after);
-    if (config.kind !== "presence")
-      assert.equal(config.compilerPackageVersion, COMPILER_PACKAGE_VERSION);
+    assert.equal(config.compilerPackageVersion, COMPILER_PACKAGE_VERSION);
     if (config.policy) assertCompiledFeedback(config.policy);
   }
   return {
@@ -996,14 +1010,15 @@ const overlayFiles = currentPaths(unequipped).map((path) => {
   } else {
     let expected = before.replaceAll(savedHash, equippedHash);
     if (path.endsWith("dotln-executor/SKILL.md")) {
-      expected = expected.replace(
-        /<!-- Origin: (\{[^\n]+\}) -->/u,
-        (_match, raw) => {
-          const origin = JSON.parse(raw);
-          origin.ids = [...origin.ids, ...defaultExecutorSupportIds].sort();
-          return `<!-- Origin: ${canonicalStringify(origin)} -->`;
-        },
+      // The root's origin comment gains the supports' ids.
+      const named = markdownComments(expected).find(({ text }) =>
+        text.startsWith("Origin: {"),
       );
+      if (named) {
+        const origin = JSON.parse(named.text.slice("Origin: ".length));
+        origin.ids = [...origin.ids, ...defaultExecutorSupportIds].sort();
+        expected = `${expected.slice(0, named.start)}${htmlComment(`Origin: ${canonicalStringify(origin)}`)}${expected.slice(named.end)}`;
+      }
       for (const support of supports)
         for (const modifier of support.semanticsModified)
           expected = expected.replace(modifier.from, modifier.to);

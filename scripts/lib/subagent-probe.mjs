@@ -1,7 +1,7 @@
 import { createFixtureRoot } from "./temporary-roots.mjs";
 import { write as writeFixture, json as prettyJson } from "./helpers.mjs";
 import { spawnGit } from "./git.mjs";
-import { TOOL_ROOT } from "./config.mjs";
+import { TOOL_ROOT, workerSelector } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
@@ -18,6 +18,53 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 
 const repository = TOOL_ROOT;
+
+/** One print-mode Claude session in a scratch root, its stream read a line
+ * at a time: `inspect` is given each JSON row with its text, non-JSON output
+ * is not retained, and the session's process group is stopped at the
+ * deadline. Resolves with the exit code and whether the deadline fired. */
+export function runProbeSession(root, launch, inspect, timeoutMs = 240_000) {
+  return new Promise((done) => {
+    const child = spawn("claude", launch, {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+      detached: true,
+    });
+    let buffer = "";
+    const read = (line) => {
+      let value;
+      try {
+        value = JSON.parse(line);
+      } catch {
+        return;
+      }
+      inspect(value, line);
+    };
+    child.stdout.on("data", (chunk) => {
+      buffer += chunk.toString();
+      const lines = buffer.split("\n");
+      buffer = lines.pop();
+      lines.forEach(read);
+    });
+    child.stderr.resume();
+    let timedOut = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      try {
+        process.kill(-child.pid, "SIGTERM");
+      } catch {}
+    }, timeoutMs);
+    child.on("error", () => {
+      clearTimeout(timer);
+      done({ exitCode: null, launchFailed: true, timedOut });
+    });
+    child.on("close", (exitCode) => {
+      clearTimeout(timer);
+      if (buffer) read(buffer);
+      done({ exitCode, timedOut });
+    });
+  });
+}
 export async function subagentProbe(args) {
   assert.equal(
     process.env.DOTLN_LIVE_HARNESS,
@@ -93,14 +140,16 @@ export async function subagentProbe(args) {
   );
   const prompt =
     'This is an authorized isolated identity probe. First call Agent exactly once (general-purpose, foreground): ask it to Read direct.txt exactly once and return the text, with no other tools or agents. Then call Workflow exactly once with scriptPath "probe-workflow.ts"; that script is already written and creates exactly two sequential agents. Do not inspect the script or files yourself, change the script, run a shell, make network calls, or spawn any other agents. If either tool is unavailable, report that fact without substitutes. Finish after both calls.';
+  // What the launchpad's default worker runs on Claude.
+  const selected = workerSelector("claude");
   const launch = [
     "-p",
     "--session-id",
     id,
     "--model",
-    "claude-opus-5-5",
+    selected.model,
     "--effort",
-    "xhigh",
+    selected.effort,
     "--no-session-persistence",
     "--setting-sources",
     "project",
@@ -129,55 +178,20 @@ export async function subagentProbe(args) {
     workflowUnavailable: false,
     authenticationUnavailable: false,
   };
-  const result = await new Promise((done) => {
-    const child = spawn("claude", launch, {
-      cwd: root,
-      stdio: ["ignore", "pipe", "pipe"],
-      detached: true,
-    });
-    let buffer = "";
-    const inspect = (line) => {
-      try {
-        const value = JSON.parse(line);
-        for (const block of value.message?.content ?? [])
-          if (block.type === "tool_use")
-            observed.tools.push({
-              name: block.name,
-              parent: Boolean(value.parent_tool_use_id),
-            });
-        if (value.type === "result") observed.error = value.is_error === true;
-        observed.workflowUnavailable ||=
-          /workflow.{0,80}(not available|unavailable|not provided)/i.test(line);
-        observed.authenticationUnavailable ||=
-          /not logged in|authentication_failed/i.test(line);
-      } catch {
-        /* Non-JSON output is not retained. */
-      }
-    };
-    child.stdout.on("data", (chunk) => {
-      buffer += chunk.toString();
-      const lines = buffer.split("\n");
-      buffer = lines.pop();
-      lines.forEach(inspect);
-    });
-    child.stderr.resume();
-    let timedOut = false;
-    const timer = setTimeout(() => {
-      timedOut = true;
-      try {
-        process.kill(-child.pid, "SIGTERM");
-      } catch {}
-    }, 240000);
-    child.on("error", () => {
-      clearTimeout(timer);
-      done({ exitCode: null, launchFailed: true, timedOut });
-    });
-    child.on("close", (exitCode) => {
-      clearTimeout(timer);
-      if (buffer) inspect(buffer);
-      done({ exitCode, timedOut });
-    });
-  });
+  const inspect = (value, line) => {
+    for (const block of value.message?.content ?? [])
+      if (block.type === "tool_use")
+        observed.tools.push({
+          name: block.name,
+          parent: Boolean(value.parent_tool_use_id),
+        });
+    if (value.type === "result") observed.error = value.is_error === true;
+    observed.workflowUnavailable ||=
+      /workflow.{0,80}(not available|unavailable|not provided)/i.test(line);
+    observed.authenticationUnavailable ||=
+      /not logged in|authentication_failed/i.test(line);
+  };
+  const result = await runProbeSession(root, launch, inspect);
   const events = existsSync(join(root, "probe-events.jsonl"))
     ? readFileSync(join(root, "probe-events.jsonl"), "utf8")
         .trim()
@@ -203,11 +217,7 @@ export async function subagentProbe(args) {
     observedAt: new Date().toISOString(),
     harness: "claude-code",
     version,
-    actor: {
-      model: "claude-opus-5-5",
-      effort: "xhigh",
-      source: "launch-selector",
-    },
+    actor: { ...selected, source: "launch-selector" },
     ...result,
     ...observed,
     events,
