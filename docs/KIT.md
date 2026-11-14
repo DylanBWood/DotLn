@@ -910,7 +910,14 @@ cat FOR-CORE.md
   advisory refuses nothing, and the planner screens each criterion against the
   classes before filing. An open order whose criteria list the reader cannot
   read whole is refused by the check, naming the order, the line and the
-  remedy ([decision](evidence/WO-276/decisions.md#wo-276-d175--a-criteria-list-the-parser-reads-as-shorter-than-written-is-refused-by-every-reader-of-it-and-never-returned-shorter)). Run `node scripts/docs-check.mjs`,
+  remedy ([decision](evidence/WO-276/decisions.md#wo-276-d175--a-criteria-list-the-parser-reads-as-shorter-than-written-is-refused-by-every-reader-of-it-and-never-returned-shorter)). The rest of an order is read as CommonMark reads it,
+  and there nothing refuses: a wrapped line of the header, of a field's
+  paragraph or of a criterion that opens with a placeholder spelled as an HTML
+  element's name (`<title>`, `<dir>`), with a greater-than sign, or with a
+  hyphen, a plus sign or an asterisk before a space, starts a block, and the
+  fields or the text after it are not read as written. Write such a token in a
+  code span, or keep it off the start of a line
+  ([decision](evidence/WO-276/decisions.md#wo-276-d199--the-block-opener-class-where-a-wrapped-line-opens-a-block-the-moved-readers-return-less-than-the-bases-line-readers-read-in-about-thirty-readers-and-in-no-committed-document-and-the-choice-of-repair-is-the-operators)). Run `node scripts/docs-check.mjs`,
   `npm run publication:check`, `npm run reader -- check` and
   `npm run test:docs` before handing off the planning pass.
 - Release-close reads can be inspected with `npm run release -- check-surfaces
@@ -1089,9 +1096,12 @@ when the target's base holds the reviewed change as the branch itself (a
 merge commit or a fast-forward), as one commit whose patch equals the
 branch's whole change (a squash) or as a commit of equal patch for each of
 the branch's own commits, in the branch's order, each base commit answering
-for one of them (a rebase): a branch that makes a change, reverts it and
-makes it again is not merged until the base holds all three
-([decision](evidence/WO-276/decisions.md#wo-276-d167--the-closes-rebase-rule-takes-one-base-commit-for-each-of-the-branchs-commits-in-the-branchs-order)). It reads Git alone and asks no forge. A
+for one of them (a rebase), so a commit the base replayed once never answers
+for two of the branch's
+([decision](evidence/WO-276/decisions.md#wo-276-d167--the-closes-rebase-rule-takes-one-base-commit-for-each-of-the-branchs-commits-in-the-branchs-order)). The squash reading is tried first: where one base commit is the
+branch's whole change, the close takes it and does not compare the branch's
+own commits
+([decision](evidence/WO-276/decisions.md#wo-276-d200--follow-ups-on-the-update-plan-and-the-close-a-runtime-file-the-incoming-kit-adds-is-loaded-before-it-is-compared-a-retry-refused-for-a-file-the-kit-dropped-and-a-squash-reading-that-answers-before-the-rebase-rule)). It reads Git alone and asks no forge. A
 base commit counts where Git's patch identity agrees and the commit is the
 reviewed change exactly, file by file: it joins the same blobs, or, where
 the base had changed a file since the branch left it, holds the change
