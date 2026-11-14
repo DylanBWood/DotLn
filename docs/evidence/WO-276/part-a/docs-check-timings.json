@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "command": "/usr/bin/time -p node scripts/docs-check.mjs, three runs each, wall seconds",
+  "before": {
+    "seconds": [
+      32.8,
+      32.29,
+      32.05
+    ],
+    "verbatimScreen": "63 changed files against 5 captures, a 12-word window",
+    "exit": 1,
+    "exitCause": "an attribution finding in this order's own decisions, repaired before the second three runs"
+  },
+  "after": {
+    "seconds": [
+      33.34,
+      32.15,
+      32.51
+    ],
+    "verbatimScreen": "66 changed files against 5 captures, a 12-word window; 0 shared runs",
+    "exit": 0
+  },
+  "note": "Step Z1 takes the timing again on the final candidate."
+}

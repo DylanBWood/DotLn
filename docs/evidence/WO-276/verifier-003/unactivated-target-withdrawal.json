@@ -1,0 +1,9 @@
+{
+  "beforeIndexRead": true,
+  "withdrawalExit": 0,
+  "eventType": "WorkOrderWithdrawn",
+  "hasRepositoryId": true,
+  "hasBaseCommit": true,
+  "indexError": null,
+  "limit": "Real withdrawal CLI in local target fixture, followed by actual index reader; no real order was withdrawn."
+}

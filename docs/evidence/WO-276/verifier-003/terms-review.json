@@ -1,0 +1,9 @@
+{
+  "command": "node scripts/terms.mjs branch",
+  "exitCode": 0,
+  "changedFilesScreened": 763,
+  "refuseLines": 0,
+  "contextLines": 0,
+  "contextLinesRead": 0,
+  "scope": "Branch after authored VER-003 and D135-D136; private entries are neither quoted nor retained here."
+}

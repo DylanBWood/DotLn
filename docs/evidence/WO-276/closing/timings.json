@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "what": "Step Z1: the timings of steps A14, B1, B10, C5, G4 and L2, taken again on the final candidate. The parts' own files keep the figures their decisions cite.",
+  "tree": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "treeNote": "the working tree of the order at step Z1, uncommitted on this commit",
+  "node scripts/docs-check.mjs (steps A14, B1, C5, L2)": {
+    "seconds": [
+      30.34,
+      29.09,
+      28.15
+    ],
+    "exitCode": 0,
+    "method": "wall seconds of three runs, one at a time"
+  },
+  "npm run work-orders -- index --check (step B1)": {
+    "seconds": [
+      6.24,
+      6.1,
+      6
+    ],
+    "exitCode": 0,
+    "method": "wall seconds of three runs, one at a time"
+  },
+  "the Markdown screen (step B10)": {
+    "sources": 430,
+    "findings": 0,
+    "seconds": 0.65,
+    "method": "markdownScreen over every screened source, one batch, in this process"
+  },
+  "the operator page's generated check (step G4)": {
+    "exitCode": 0,
+    "generatedCheck": {
+      "checkMs": 11,
+      "exits": {
+        "current": 0,
+        "stale": 1,
+        "regenerated": 0,
+        "unmarked": 1
+      }
+    }
+  },
+  "a target order's briefing and the document check (step L2)": {
+    "exitCode": 0,
+    "briefing": {
+      "what": "node scripts/resume.mjs briefing for the target fixture's order in its execution phase, with a profile, the notes named and a workstream: wall milliseconds of three runs and the bytes printed",
+      "twoNotes": {
+        "ms": [
+          221,
+          224,
+          225
+        ],
+        "bytes": 3887
+      },
+      "twentyNotes": {
+        "ms": [
+          360,
+          349,
+          327
+        ],
+        "bytes": 8243
+      }
+    },
+    "docsCheck": {
+      "seconds": [
+        27.34,
+        27.72,
+        27.72
+      ],
+      "exitCode": 0,
+      "method": "wall seconds of three runs, one at a time"
+    }
+  }
+}

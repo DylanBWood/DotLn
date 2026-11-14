@@ -1,0 +1,18 @@
+{
+  "comparison": "drive-route-operator-finding",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every filed verification and final-review report, as a bound failure report: whether its findings block routes a finding to the operator (null when no block is read)",
+  "read": 673,
+  "equal": 672,
+  "differences": {
+    "defect of the old reader: its pattern took the two marker names a prose line quotes (line 150) as a findings block and threw parsing the sentence between them as JSON; the shared reader takes a marker only on a line of its own and reads no block here": 1
+  },
+  "examples": [
+    {
+      "input": "docs/verifications/WO-187/VER-004.md",
+      "named": "defect of the old reader: its pattern took the two marker names a prose line quotes (line 150) as a findings block and threw parsing the sentence between them as JSON; the shared reader takes a marker only on a line of its own and reads no block here",
+      "old": "threw: Unexpected token '`', \"` line, a \"... is not valid JSON",
+      "new": "null"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "comparison": "github-body-criterion-records",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every stored pull-request body: the criterion-record lines between its record markers",
+  "read": 221,
+  "equal": 221,
+  "differences": {},
+  "examples": []
+}

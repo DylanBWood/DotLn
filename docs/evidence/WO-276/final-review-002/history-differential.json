@@ -1,0 +1,45 @@
+{
+  "what": "Every revision of every work order in the history of main (git log main --raw, the paths under docs/work-orders), read by the base's readers and by the candidate's at code identity adba01dad241e0707e58f4efb26e95bb296d055c042b7b8c156e3667d08c5f28, on 2026-11-14 at 18:02 UTC under node scripts/harness.mjs bounded, in 22 seconds.",
+  "revisions": 1196,
+  "header": {
+    "reads": "parseHeader of scripts/work-orders.mjs, on the keys both sides return",
+    "equal": 1183,
+    "differ": 13,
+    "candidateAloneRefuses": 0,
+    "baseAloneRefuses": 0,
+    "differences": {
+      "ledgerSubstitution": {
+        "count": 13,
+        "revisions": [
+          "WO-088-phrase-table-single-source.md@5e4684b9c1",
+          "WO-088-phrase-table-single-source.md@dc43dba720",
+          "WO-088-phrase-table-single-source.md@16cecc17a2",
+          "WO-088-phrase-table-single-source.md@43bec05729",
+          "WO-126-process-debt.md@7387f7cc64",
+          "WO-126-process-debt.md@3e696ef355",
+          "WO-126-process-debt.md@4f0167defc",
+          "WO-126-process-debt.md@434b7b47d0",
+          "WO-126-process-debt.md@58240cdd9e",
+          "WO-126-process-debt.md@c4bf2a6e49",
+          "WO-126-process-debt.md@957dbfc91b",
+          "WO-126-process-debt.md@acceab95cf",
+          "WO-126-process-debt.md@054986cef1"
+        ]
+      }
+    }
+  },
+  "criteria": {
+    "reads": "declaredCriteria of scripts/lib/handoff-ledger.mjs",
+    "equal": 1195,
+    "differ": 0,
+    "candidateAloneRefuses": [
+      {
+        "revision": "WO-276-the-queue-lands-as-one-order.md@a4c0e508d4",
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "refusal": "acceptance criteria: line 3407 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 79 on line 3410 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or "
+      }
+    ],
+    "baseAloneRefuses": 0
+  },
+  "reading": "The thirteen header differences are one order, WO-088, in thirteen of its revisions, on the one key the Part B comparison work-order-headers.json already names as a defect of the old reader. The one refusal is this order as the planning pass filed it, which FINAL-001 asked the reader to refuse (F52). No revision holds a wrapped header line that opens a block, so the finding of header-block-openers.mjs has no instance in the record."
+}

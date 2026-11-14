@@ -1,0 +1,166 @@
+{
+  "an order of the usual shape": {
+    "subjectsEqual": true,
+    "baseOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "It stays working."
+        }
+      ],
+      "nonGoals": "none."
+    },
+    "candidateOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "It stays working."
+        }
+      ],
+      "nonGoals": "none."
+    },
+    "validationOfABaseFiledReceipt": {
+      "base": "invalid-result: plan-refutation-v1 result shape",
+      "candidate": "invalid-result: plan-refutation-v1 result shape"
+    }
+  },
+  "a paragraph that opens with bold words and is no label, after the criteria": {
+    "subjectsEqual": false,
+    "baseOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "It stays working."
+        }
+      ],
+      "nonGoals": "none."
+    },
+    "candidateOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "It stays working.\n\n**Note** the second follows the first."
+        }
+      ],
+      "nonGoals": "none."
+    },
+    "validationOfABaseFiledReceipt": {
+      "base": "invalid-result: plan-refutation-v1 result shape",
+      "candidate": "receipt subject does not match committed sources"
+    }
+  },
+  "the same kind of paragraph after the non-goals": {
+    "subjectsEqual": false,
+    "baseOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "It stays working."
+        }
+      ],
+      "nonGoals": "none."
+    },
+    "candidateOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "It stays working."
+        }
+      ],
+      "nonGoals": "none.\n\n**Steps** follow in the plan below."
+    },
+    "validationOfABaseFiledReceipt": {
+      "base": "invalid-result: plan-refutation-v1 result shape",
+      "candidate": "receipt subject does not match committed sources"
+    }
+  },
+  "a criterion wrapped onto a line that opens with three backticks": {
+    "subjectsEqual": true,
+    "baseOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "The page holds one\n   ```json block and stays working."
+        }
+      ],
+      "nonGoals": "none."
+    },
+    "candidateOrder": {
+      "workOrderId": "WO-001",
+      "path": "docs/work-orders/WO-001-first-order.md",
+      "title": "WO-001 — First order (version assigned at activation)",
+      "objective": "Make it work.",
+      "criteria": [
+        {
+          "id": "criterion:1",
+          "text": "It works."
+        },
+        {
+          "id": "criterion:2",
+          "text": "The page holds one\n   ```json block and stays working."
+        }
+      ],
+      "nonGoals": "none."
+    },
+    "validationOfABaseFiledReceipt": {
+      "base": "invalid-result: plan-refutation-v1 result shape",
+      "candidate": "invalid-result: plan-refutation-v1 result shape"
+    }
+  }
+}

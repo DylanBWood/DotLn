@@ -1,0 +1,531 @@
+{
+  "what": "Every wording the four statement cases of scripts/test-vertical.mjs iterate at the order's base, read from the titles the file registers there. Each row is one registered case: the wording, the statement role its fixture supplies for the body's section and the assertion kind it supplies for that statement. The statement judged is the wording followed by the suffix.",
+  "command": "node docs/evidence/WO-276/part-e/wordings.mjs base main",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "file": "scripts/test-vertical.mjs",
+  "suffix": ": make `fixture.txt` contain changed by synthetic worker.",
+  "registered": 165,
+  "iterations": 95,
+  "distinct": 82,
+  "cases": [
+    {
+      "case": "composed baseline reproduces",
+      "title": "WO-123 composed baseline records source-bound failure judgments and reproduces across statement roles",
+      "expects": {
+        "kind": "defect",
+        "outcome": "reproduced"
+      },
+      "iterations": 63,
+      "rows": [
+        {
+          "wording": "The endpoint returns status: 500",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The endpoint returns status: 500",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The response status = 500",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The response status = 500",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "HTTP status: 500",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "HTTP status: 500",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login isn't actually working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login isn't actually working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login isn't yet working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login isn't yet working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login is not currently working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login is not currently working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The gateway returns HTTP code=503",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The gateway returns HTTP code=503",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Search isn’t reliably working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Search isn’t reliably working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Errors are thrown",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Errors are thrown",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The parser doesn't throw errors yet uploads fail",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The parser doesn't throw errors yet uploads fail",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The response status is 500",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The response status is 500",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The server returns a 502 Bad Gateway",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The server returns a 502 Bad Gateway",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The endpoint is returning 500",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The endpoint is returning 500",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login is not always working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login is not always working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hasn't been working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hasn't been working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The export has been broken since v2",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The export has been broken since v2",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The HTTP code had consistently been 429",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The HTTP code had consistently been 429",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Users have been seeing 504 Gateway Timeout",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Users have been seeing 504 Gateway Timeout",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hadn't often been working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hadn't often been working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The result has remained quite clearly incorrect",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The result has remained quite clearly incorrect",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The endpoint is returning 429 Too Many Requests",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The endpoint is returning 429 Too Many Requests",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The result is consistently and visibly broken",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The result is consistently and visibly broken",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The response status is `500`",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The response status is `500`",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login has not, actually, been working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login has not, actually, been working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login has not (consistently and reliably) been working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login has not (consistently and reliably) been working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hasn't, for several days, been working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hasn't, for several days, been working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Uploads fail for files larger than 10 MB",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Uploads fail for files larger than 10 MB",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Saving a document throws a TypeError",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The export endpoint returns HTTP 500",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The image decoder cannot parse JPEGs",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login isn't working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Users see a 404 on the settings page",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login can’t complete",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "This should be fixed, uploads fail for large files",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The importer didn’t finish",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The API gives a 503 error",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        }
+      ]
+    },
+    {
+      "case": "composed baseline walks",
+      "title": "WO-123 composed baseline walks requirement-voice wording without a failing-behavior finding",
+      "expects": {
+        "kind": "new",
+        "outcome": "walked"
+      },
+      "iterations": 11,
+      "rows": [
+        {
+          "wording": "No errors are thrown",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "No error is ever thrown",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "No errors are yet thrown",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The parser doesn't yet throw exceptions",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The build has not yet failed",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The endpoint cannot fail",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The parser can't throw errors",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The parser doesn't throw errors",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The parser cannot yet throw errors",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "Show an error message when the upload exceeds 10 MB",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "Add retry when the upload fails",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        }
+      ]
+    },
+    {
+      "case": "resident consumes",
+      "title": "WO-123 resident consumes source-bound failure judgments across statement roles",
+      "expects": {
+        "kind": "defect",
+        "outcome": "reproduced"
+      },
+      "iterations": 10,
+      "rows": [
+        {
+          "wording": "The endpoint returns status: 500",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The endpoint returns status: 500",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The HTTP code had consistently been 429",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The HTTP code had consistently been 429",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Users have been seeing 504 Gateway Timeout",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Users have been seeing 504 Gateway Timeout",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hadn't often been working",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "Login hadn't often been working",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The result has remained quite clearly incorrect",
+          "role": "current-behavior observation",
+          "assertion": "existing-failure"
+        },
+        {
+          "wording": "The result has remained quite clearly incorrect",
+          "role": "requirement",
+          "assertion": "existing-failure"
+        }
+      ]
+    },
+    {
+      "case": "healthy loop completes",
+      "title": "WO-123 healthy negative wording completes the composed loop without a false baseline hold",
+      "expects": {
+        "kind": "new",
+        "outcome": "walked"
+      },
+      "iterations": 11,
+      "rows": [
+        {
+          "wording": "No errors are thrown",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "No errors are yet thrown",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The parser cannot yet throw errors",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The response status is not 500",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The result has not been broken",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The endpoint is returning 500 rows per page",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "Login is not only working but working reliably",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The API is not returning 500 \"Internal Server Error\"",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The output has not (ever) been wrong",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The result has not (consistently and visibly) been wrong",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        },
+        {
+          "wording": "The result is not, in any way, broken",
+          "role": "requirement",
+          "assertion": "no-existing-failure"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "comparison": "index-partition",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the two generated pages of the index: the order of each card a page holds, as the partition check reads them",
+  "read": 2,
+  "equal": 2,
+  "differences": {},
+  "examples": []
+}

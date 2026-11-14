@@ -1,0 +1,38 @@
+{
+  "51": {
+    "class": "contradiction",
+    "criterion": "The records equal the evidence table by the F1 product-suite case.",
+    "conflict": "Product tasks may not read an active order\u2019s evidence; this table must live under that evidence directory.",
+    "sources": [
+      "packages/skeleton/test/executor-supports.test.ts:332-351",
+      "scripts/lib/product-read-guard.mjs",
+      "docs/work-orders/WO-276-the-queue-lands-as-one-order.md:3338-3343"
+    ],
+    "observed": "The F2 comparison is a separate [document] case, which independently passed; putting it into F1 produces the recorded product-read-guard failure.",
+    "limit": "The table and role composition themselves pass; this concerns the named product-test location."
+  },
+  "121": {
+    "class": "contradiction",
+    "criterion": "Attribution refuses a shell command under every tool name mapped to shell.",
+    "conflict": "Part Q requires unchanged refusal behavior and adds no refusal; the base unit inspects commands only under Bash and exec_command, while shell also names Monitor, write_stdin and functions.exec.",
+    "sources": [
+      "docs/work-orders/WO-276-the-queue-lands-as-one-order.md:1419-1462",
+      "scripts/test-harness.mjs:22826-23038",
+      "refs/dotln/checkpoint/WO-276/48"
+    ],
+    "observed": "The focused Q1/Q2 test checks unchanged attribution behavior for those names.",
+    "limit": "Matcher registration, heartbeat and existing refusals remain testable; this concerns the universal attribution clause."
+  },
+  "123": {
+    "class": "contradiction",
+    "criterion": "Every unchanged second snapshot reads zero bytes.",
+    "conflict": "Part Q known issues require re-reading a file whose timestamps lie within the cache write\u2019s filesystem tick. An unchanged recently written file must be read again.",
+    "sources": [
+      "docs/work-orders/WO-276-the-queue-lands-as-one-order.md:4748-4785",
+      "packages/skeleton/src/harness-host.ts:4251-4322",
+      "scripts/test-harness.mjs:23459-23608"
+    ],
+    "observed": "The independent Q4 case passed: settled unchanged files read zero bytes, a recent unchanged file reads again, changed files hash equally to a full read.",
+    "limit": "The required conservative fallback stands; this concerns the unconditional zero-read wording."
+  }
+}

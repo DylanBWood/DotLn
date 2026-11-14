@@ -1,0 +1,18 @@
+{
+  "comparison": "release-notes-sections",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every filed release-notes document: its five required sections as written, or the refusal the reader names",
+  "read": 213,
+  "equal": 212,
+  "differences": {
+    "defect of the old reader: both refuse this pre-format document, but the base's first refusal is a false one, a `<WO>` inside an inline code span (line 33) read as raw HTML; the parser reads it as code and names the real refusal, the title and paragraph before the first required heading": 1
+  },
+  "examples": [
+    {
+      "input": "docs/releases/v0.2.0-notes.md",
+      "named": "defect of the old reader: both refuse this pre-format document, but the base's first refusal is a false one, a `<WO>` inside an inline code span (line 33) read as raw HTML; the parser reads it as code and names the real refusal, the title and paragraph before the first required heading",
+      "old": "threw: docs/releases/v0.2.0-notes.md: raw HTML is not allowed in reviewed notes (line 33)",
+      "new": "threw: docs/releases/v0.2.0-notes.md: content appears before the first required heading"
+    }
+  ]
+}

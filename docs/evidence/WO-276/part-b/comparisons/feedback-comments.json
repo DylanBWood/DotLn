@@ -1,0 +1,9 @@
+{
+  "comparison": "feedback-comments",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every JavaScript and TypeScript source under scripts/ and packages/: the comment bodies the feedback audit judges, the base's own syntax tree against the source reader's",
+  "read": 645,
+  "equal": 645,
+  "differences": {},
+  "examples": []
+}

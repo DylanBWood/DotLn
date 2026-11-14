@@ -1,0 +1,190 @@
+{
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "sets": [
+    {
+      "set": "tracked shell files",
+      "read": 11,
+      "longerThanTheOldBound": 4,
+      "equal": 5,
+      "different": {
+        "ansi-quote and here-string": 3,
+        "here-string": 3
+      },
+      "examples": [
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "scripts/test-backup-intake.sh"
+        },
+        {
+          "kind": "here-string",
+          "input": "scripts/test-checkpoint.sh"
+        },
+        {
+          "kind": "here-string",
+          "input": "scripts/test-fixture-temp-root.sh"
+        },
+        {
+          "kind": "here-string",
+          "input": "scripts/test-publication.sh"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "scripts/test-resume.sh"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "scripts/test-worktree.sh"
+        }
+      ]
+    },
+    {
+      "set": "Git forms of the surface record",
+      "read": 494,
+      "longerThanTheOldBound": 0,
+      "equal": 494,
+      "different": {},
+      "examples": []
+    },
+    {
+      "set": "generated commands",
+      "read": 20000,
+      "longerThanTheOldBound": 0,
+      "equal": 14342,
+      "different": {
+        "ansi-quote": 3708,
+        "here-string": 1645,
+        "ansi-quote and here-string": 305
+      },
+      "examples": [
+        {
+          "kind": "ansi-quote",
+          "input": "$'it\\'s' cat <<-EOF\n\tbody\n\tEOF\n case $x in a) git add . ;; *) ;; esac ${name:-default} && exec -a name git gc"
+        },
+        {
+          "kind": "here-string",
+          "input": "; git -C dir log --format='%h %s' 2>&1 & grep -Fq x <<<\"$output\" }"
+        },
+        {
+          "kind": "here-string",
+          "input": "if true; then grep -Fq x <<<\"$output\" eval \"git stash list\" x=$(echo \"$(git describe)\") a\\ b )"
+        },
+        {
+          "kind": "here-string",
+          "input": "echo \"a $b c\" grep -Fq x <<<\"$output\" cat <<-EOF\n\tbody\n\tEOF\n echo \"a $b c\" echo \"a $b c\" 2>&1"
+        },
+        {
+          "kind": "ansi-quote",
+          "input": "& `git branch --show-current` $'tab\\there' cat <<'EOF'\nbody $x\nEOF\n VAR=1 OTHER='two words' env git diff echo \"a $b c\""
+        },
+        {
+          "kind": "ansi-quote",
+          "input": "$'tab\\there' exec -a name git gc ( cat <<'EOF'\nbody $x\nEOF\n git status $(git rev-parse HEAD)"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "$'tab\\there' for f in *.md; do { grep -Fq x <<<\"$output\" > out.txt $((1 + 2))"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "$'tab\\there' ! grep -Fq x <<<\"$output\" `git branch --show-current` done > out.txt"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "grep -Fq x <<<\"$output\" cat <<EOF\nbody $x\nEOF\n $'it\\'s' bash -c 'git log -1' $((1 + 2)) grep -Fq x <<<\"$output\""
+        }
+      ]
+    }
+  ],
+  "defects": {
+    "ansi-quote": "the old reader took $'...' as a dollar and a single-quoted text, so an escaped quote inside it ended the quote early and an escape kept its backslash",
+    "here-string": "the old reader took a here-string (<<<) as a here-document and read the rest of the text as its body, so every command after it was unread",
+    "ansi-quote and here-string": "both of the defects above in one text"
+  },
+  "plainWords": {
+    "sets": [
+      {
+        "set": "Git forms of the surface record",
+        "read": 494,
+        "equal": 494,
+        "plainToBoth": 494,
+        "different": {},
+        "examples": []
+      },
+      {
+        "set": "generated commands",
+        "read": 20000,
+        "equal": 19550,
+        "plainToBoth": 4167,
+        "different": {
+          "first words of a command that opens with an assignment": 449,
+          "a quote left open inside a script handed to eval or a shell": 1
+        },
+        "examples": [
+          {
+            "kind": "first words of a command that opens with an assignment",
+            "input": "VAR=1 OTHER='two words' env git diff \\\n [[ -n $x ]] 2>&1 'unclosed x=$(echo \"$(git describe)\")",
+            "old": "[null,[\"VAR=1\",\"OTHER=two words\",\"env\"]]",
+            "new": "[null,null]"
+          },
+          {
+            "kind": "first words of a command that opens with an assignment",
+            "input": "VAR=1 OTHER='two words' env git diff ) \"unclosed noglob git add *.md [[ -n $x ]] {",
+            "old": "[null,[\"VAR=1\",\"OTHER=two words\",\"env\"]]",
+            "new": "[null,null]"
+          },
+          {
+            "kind": "first words of a command that opens with an assignment",
+            "input": "VAR=1 OTHER='two words' env git diff case $x in a) git add . ;; *) ;; esac $((1 + 2)) eval \"git stash list\" git status [[ -n $x ]]",
+            "old": "[null,[\"VAR=1\",\"OTHER=two words\",\"env\"]]",
+            "new": "[null,null]"
+          },
+          {
+            "kind": "first words of a command that opens with an assignment",
+            "input": "VAR=1 OTHER='two words' env git diff exec -a name git gc `git branch --show-current` & echo \"a $b c\" $((1 + 2))",
+            "old": "[null,[\"VAR=1\",\"OTHER=two words\",\"env\"]]",
+            "new": "[null,null]"
+          },
+          {
+            "kind": "a quote left open inside a script handed to eval or a shell",
+            "input": "eval \"git stash list\" \"unclosed 'unclosed VAR=1 OTHER='two words' env git diff done \"unclosed",
+            "old": "[[\"eval\",\"git stash list\",\"unclosed 'unclosed VAR=1 OTHER='two words' env git diff done unclosed\"],[\"eval\",\"git stash list\",\"unclosed 'unclosed VAR=1 OTHER='two words' env git diff done unclosed\"]]",
+            "new": "[null,null]"
+          }
+        ]
+      },
+      {
+        "set": "lines of the tracked shell files",
+        "read": 7496,
+        "equal": 7493,
+        "plainToBoth": 1935,
+        "different": {
+          "first words of a command that opens with an assignment": 3
+        },
+        "examples": [
+          {
+            "kind": "first words of a command that opens with an assignment",
+            "input": "  IFS= read -r opening <\"$1\" 2>/dev/null",
+            "old": "[null,[\"IFS=\",\"read\",\"-r\"]]",
+            "new": "[null,null]"
+          },
+          {
+            "kind": "first words of a command that opens with an assignment",
+            "input": "CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish >/dev/null",
+            "old": "[null,[\"CODEX_THREAD_ID=fixture-close-session\",\"release_close\",\"WO-099\"]]",
+            "new": "[null,null]"
+          },
+          {
+            "kind": "first words of a command that opens with an assignment",
+            "input": "CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_SESSION_ID='' CLAUDE_CODE_SESSION_ID=\"$session\" release_close WO-099 --dry-run >/dev/null",
+            "old": "[null,[\"CODEX_THREAD_ID=\",\"COPILOT_AGENT_SESSION_ID=\",\"CLAUDE_SESSION_ID=\"]]",
+            "new": "[null,null]"
+          }
+        ]
+      }
+    ],
+    "defects": {
+      "first words of a command that opens with an assignment": "a command whose first word holds an equals sign is no plain command, and the old splitter refused one read whole; asked for a command's first words it returned them before it applied that rule, so the same command was plain by its first three words and not plain whole. The new splitter applies the rule to both. The one caller that asks for first words (the near-miss advisory for a publish helper) compares the first with node's name and path, so both answers end it alike wherever node's path holds no equals sign",
+      "a quote left open inside a script handed to eval or a shell": "the old splitter took the argument of eval, or of a shell's -c, as one quoted word and called the command plain; the shared reader reads the script that argument is, and a quote the script never closes makes the command no plain one, as the shell that runs it would refuse it"
+    }
+  }
+}

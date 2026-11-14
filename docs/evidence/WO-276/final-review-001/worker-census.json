@@ -1,0 +1,127 @@
+{
+  "what": "The workers the final review launched: twenty uses, the whole of the cap of twenty, all the instance table's default worker on Claude (the generated dotln-worker definition, which holds claude-opus-5-5 at xhigh; requested values, no host readback of the effective model or effort was taken from a worker). Sixteen were launched together at 22:52:46 UTC on 2026-11-13, each read-only with one batch of the change. Four more were launched together at 23:53:19 UTC, each read-only with one batch of what those sixteen declared unread. Each wrote its report and probes to session scratch. No worker was re-tasked. Tokens and durations are the host's completion notices as printed; the harness's own count reads 20 launched, 0 re-tasked, 0 remaining.",
+  "workers": [
+    {
+      "id": "W01-terms",
+      "batch": "Part A: the list's classes, the screens and publishes, the verbatim screen, the checkpoint, the guard's title, the attested version",
+      "tokens": 315906,
+      "durationMs": 1663356
+    },
+    {
+      "id": "W02-hooks",
+      "batch": "a worker's stop, the accepted cap, Part Q's matchers and caches, the launch count",
+      "tokens": 353621,
+      "durationMs": 1439390
+    },
+    {
+      "id": "W03-pacing",
+      "batch": "Part P",
+      "tokens": 279883,
+      "durationMs": 1151068
+    },
+    {
+      "id": "W04-md-readers",
+      "batch": "Part B: the Markdown readers, the screen, the carried parser",
+      "tokens": 329225,
+      "durationMs": 1620443
+    },
+    {
+      "id": "W05-md-callers",
+      "batch": "Part B: the readers that moved and the generated pages",
+      "tokens": 323705,
+      "durationMs": 1354656
+    },
+    {
+      "id": "W06-source-shell",
+      "batch": "Part B: the source reader and the shell reader",
+      "tokens": 264178,
+      "durationMs": 1137143
+    },
+    {
+      "id": "W07-resident-console",
+      "batch": "Part B: the resident's launcher, the mission check, the console; Part E's self-host edition",
+      "tokens": 301923,
+      "durationMs": 1256563
+    },
+    {
+      "id": "W08-reviews-roles",
+      "batch": "Parts C and F and the role text of every part",
+      "tokens": 363388,
+      "durationMs": 1318576
+    },
+    {
+      "id": "W09-runner",
+      "batch": "Parts D and E, the machinery table, the host task",
+      "tokens": 334433,
+      "durationMs": 1357494
+    },
+    {
+      "id": "W10-kit-seeds",
+      "batch": "Parts G and K",
+      "tokens": 317030,
+      "durationMs": 1400948
+    },
+    {
+      "id": "W11-doctor-update",
+      "batch": "Parts H and I",
+      "tokens": 321577,
+      "durationMs": 1288558
+    },
+    {
+      "id": "W12-models-usage",
+      "batch": "Part J and the cleanup of Codex's background server",
+      "tokens": 312576,
+      "durationMs": 1056874
+    },
+    {
+      "id": "W13-targets",
+      "batch": "Parts L, M and N",
+      "tokens": 251975,
+      "durationMs": 1102580
+    },
+    {
+      "id": "W14-planning-routes",
+      "batch": "Parts O and R and the status schema",
+      "tokens": 304257,
+      "durationMs": 1246790
+    },
+    {
+      "id": "W15-kit-guide",
+      "batch": "the kit guide and the seeded documents as standing documents",
+      "tokens": 266927,
+      "durationMs": 1101720
+    },
+    {
+      "id": "W16-product-docs",
+      "batch": "the product documents as standing documents",
+      "tokens": 282982,
+      "durationMs": 953462
+    },
+    {
+      "id": "G1-planning-readers",
+      "batch": "second reading: the planning and document readers that moved onto the shared readers, eighteen files",
+      "tokens": 390029,
+      "durationMs": 1749503
+    },
+    {
+      "id": "G2-lifecycle-commands",
+      "batch": "second reading: the lifecycle, publish and release commands whole, eighteen files, traced along the path this order still travels",
+      "tokens": 413800,
+      "durationMs": 1551702
+    },
+    {
+      "id": "G3-runtime-kit-rest",
+      "batch": "second reading: the hook runtime's reader of a command line, the launchpad, the harness libraries, the document check and the configuration",
+      "tokens": 407045,
+      "durationMs": 1685652
+    },
+    {
+      "id": "G4-tests-removed",
+      "batch": "second reading: every test and fixture the change removed or loosened, and the expected outputs it rewrote",
+      "tokens": 420325,
+      "durationMs": 1107557
+    }
+  ],
+  "totalTokens": 6554785,
+  "reports": "docs/control/local/reviews/WO-276/final-review-001/ (the ignored local lane: the twenty reports, their briefs and their probe scripts)"
+}

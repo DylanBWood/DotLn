@@ -1,0 +1,78 @@
+{
+  "comparison": "release-authority",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every committed revision of every work order and the worktree's: its authority as release reads it (title, version, objective and non-goals), the title its release notes print and the target release classification",
+  "read": 1492,
+  "equal": 545,
+  "differences": {
+    "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads": 947
+  },
+  "examples": [
+    {
+      "input": "docs/work-orders/WO-261-an-instances-update-keeps-its-own-files.md 3c438df3239a",
+      "named": "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads",
+      "differing": {
+        "versioned": {
+          "sameOnceMarkerDropped": true,
+          "old": "tain exactly one strict vX.Y.Z version: # WO-261 — An instance's update keeps its own files: the update publish refuses ",
+          "new": "tain exactly one strict vX.Y.Z version: WO-261 — An instance's update keeps its own files: the update publish refuses a "
+        }
+      }
+    },
+    {
+      "input": "docs/work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md 3c438df3239a",
+      "named": "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads",
+      "differing": {
+        "versioned": {
+          "sameOnceMarkerDropped": true,
+          "old": "tain exactly one strict vX.Y.Z version: # WO-262 — Review findings are judged before they are fixed, and a review is siz",
+          "new": "tain exactly one strict vX.Y.Z version: WO-262 — Review findings are judged before they are fixed, and a review is sized"
+        }
+      }
+    },
+    {
+      "input": "docs/work-orders/WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md 3c438df3239a",
+      "named": "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads",
+      "differing": {
+        "versioned": {
+          "sameOnceMarkerDropped": true,
+          "old": "tain exactly one strict vX.Y.Z version: # WO-263 — The complete run takes its exclusive suites in one convoy and runs th",
+          "new": "tain exactly one strict vX.Y.Z version: WO-263 — The complete run takes its exclusive suites in one convoy and runs the "
+        }
+      }
+    },
+    {
+      "input": "docs/work-orders/WO-264-each-role-loads-the-rules-that-apply-to-it.md 3c438df3239a",
+      "named": "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads",
+      "differing": {
+        "versioned": {
+          "sameOnceMarkerDropped": true,
+          "old": "tain exactly one strict vX.Y.Z version: # WO-264 — Each role loads the rules that apply to it: a shared rule names the r",
+          "new": "tain exactly one strict vX.Y.Z version: WO-264 — Each role loads the rules that apply to it: a shared rule names the rol"
+        }
+      }
+    },
+    {
+      "input": "docs/work-orders/WO-265-a-new-host-learns-what-it-lacks-from-one-command.md 3c438df3239a",
+      "named": "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads",
+      "differing": {
+        "versioned": {
+          "sameOnceMarkerDropped": true,
+          "old": "tain exactly one strict vX.Y.Z version: # WO-265 — A new host learns what it lacks from one command: `node scripts/docto",
+          "new": "tain exactly one strict vX.Y.Z version: WO-265 — A new host learns what it lacks from one command: `node scripts/doctor."
+        }
+      }
+    },
+    {
+      "input": "docs/work-orders/WO-266-an-instance-chooses-its-models-and-reads-what-an-order-cost.md 3c438df3239a",
+      "named": "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads",
+      "differing": {
+        "versioned": {
+          "sameOnceMarkerDropped": true,
+          "old": "tain exactly one strict vX.Y.Z version: # WO-266 — An instance chooses its models and reads what an order cost: a `worke",
+          "new": "tain exactly one strict vX.Y.Z version: WO-266 — An instance chooses its models and reads what an order cost: a `workers"
+        }
+      }
+    }
+  ]
+}

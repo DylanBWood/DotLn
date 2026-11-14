@@ -1,0 +1,685 @@
+{
+  "what": "The rows of the table STATEMENT_WORDINGS in the skeleton's judgment test, read from its source, and their comparison with wordings.json: every distinct row of the base is a row of the table with the classification kind its case expected.",
+  "command": "node docs/evidence/WO-276/part-e/wordings.mjs table",
+  "file": "packages/skeleton/test/vertical-judgment.test.ts",
+  "comparison": {
+    "baseRows": 82,
+    "tableRows": 83,
+    "repeatedInTable": 0,
+    "missingFromTable": [],
+    "kindDiffers": [],
+    "beyondTheBase": [
+      [
+        "The settings page returns 200",
+        "current-behavior observation",
+        "no-existing-failure"
+      ]
+    ]
+  },
+  "rows": [
+    {
+      "wording": "The endpoint returns status: 500",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The endpoint returns status: 500",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The response status = 500",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The response status = 500",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "HTTP status: 500",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "HTTP status: 500",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login isn't actually working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login isn't actually working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login isn't yet working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login isn't yet working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login is not currently working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login is not currently working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The gateway returns HTTP code=503",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The gateway returns HTTP code=503",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Search isn’t reliably working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Search isn’t reliably working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Errors are thrown",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Errors are thrown",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The parser doesn't throw errors yet uploads fail",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The parser doesn't throw errors yet uploads fail",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The response status is 500",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The response status is 500",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The server returns a 502 Bad Gateway",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The server returns a 502 Bad Gateway",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The endpoint is returning 500",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The endpoint is returning 500",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login is not always working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login is not always working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login hasn't been working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login hasn't been working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The export has been broken since v2",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The export has been broken since v2",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The HTTP code had consistently been 429",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The HTTP code had consistently been 429",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Users have been seeing 504 Gateway Timeout",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Users have been seeing 504 Gateway Timeout",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login hadn't often been working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login hadn't often been working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The result has remained quite clearly incorrect",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The result has remained quite clearly incorrect",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The endpoint is returning 429 Too Many Requests",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The endpoint is returning 429 Too Many Requests",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The result is consistently and visibly broken",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The result is consistently and visibly broken",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The response status is `500`",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The response status is `500`",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login has not, actually, been working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login has not, actually, been working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login has not (consistently and reliably) been working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login has not (consistently and reliably) been working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login hasn't, for several days, been working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login hasn't, for several days, been working",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Uploads fail for files larger than 10 MB",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Uploads fail for files larger than 10 MB",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Saving a document throws a TypeError",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The export endpoint returns HTTP 500",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The image decoder cannot parse JPEGs",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login can’t complete",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The importer didn’t finish",
+      "role": "requirement",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login isn't working",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Users see a 404 on the settings page",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "This should be fixed, uploads fail for large files",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The API gives a 503 error",
+      "role": "current-behavior observation",
+      "assertion": "existing-failure",
+      "kind": "defect",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "No errors are thrown",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "No error is ever thrown",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "No errors are yet thrown",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The parser doesn't yet throw exceptions",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The build has not yet failed",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The endpoint cannot fail",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The parser can't throw errors",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The parser doesn't throw errors",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The parser cannot yet throw errors",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Show an error message when the upload exceeds 10 MB",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Add retry when the upload fails",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The response status is not 500",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The result has not been broken",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The endpoint is returning 500 rows per page",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "Login is not only working but working reliably",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The API is not returning 500 \"Internal Server Error\"",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The output has not (ever) been wrong",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The result has not (consistently and visibly) been wrong",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The result is not, in any way, broken",
+      "role": "requirement",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    },
+    {
+      "wording": "The settings page returns 200",
+      "role": "current-behavior observation",
+      "assertion": "no-existing-failure",
+      "kind": "new",
+      "rule": "active-existing-failure-assertion",
+      "storyRule": "supplied-assertion-judgments"
+    }
+  ]
+}

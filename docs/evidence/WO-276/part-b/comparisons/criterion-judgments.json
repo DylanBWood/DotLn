@@ -1,0 +1,9 @@
+{
+  "comparison": "criterion-judgments",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every handoff, verification report and final-review report: each criterion's judgment with the evidence its paragraph holds",
+  "read": 776,
+  "equal": 776,
+  "differences": {},
+  "examples": []
+}

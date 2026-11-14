@@ -1,0 +1,26 @@
+{
+  "scope": "Repair of VER-004",
+  "observations": [
+    {
+      "event": "Broad initial reads exceeded their output limits; guessed paths and unmatched zsh globs also failed.",
+      "correction": "Selected the report finding, relevant order clauses and exact implementation/test paths with bounded reads. No missing or truncated content is claimed as read."
+    },
+    {
+      "event": "A working-tree diff against checkpoint 77 treated files still untracked relative to HEAD as deletions.",
+      "correction": "That diff is not the repair inventory. Review uses a complete checkpoint tree, which includes untracked files, against the report's judged checkpoint. No file was restored or discarded."
+    },
+    {
+      "event": "The first publication check found the software-engineer source lock stale after the product edit.",
+      "correction": "npm run sync regenerated the source lock; npm run publication:check then passed."
+    },
+    {
+      "event": "The first sync began before the format process had returned.",
+      "correction": "Both processes completed successfully. Sync reported formatting current; a subsequent format ran after sync completed to establish ordered completion before the review snapshot."
+    },
+    {
+      "event": "During closing, format was started before the metadata process had returned.",
+      "correction": "Both completions were awaited. The final document gate checks the resulting metadata and formatting together; neither overlapping command is itself claimed as validation."
+    }
+  ],
+  "limits": "These are execution-process observations, not product defects or passing gate evidence. The deliberate baseline regression run failed both tests as expected."
+}

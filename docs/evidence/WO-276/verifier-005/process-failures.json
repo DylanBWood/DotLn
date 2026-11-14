@@ -1,0 +1,26 @@
+{
+  "dispatch": "resume: verify, VER-005",
+  "failures": [
+    {
+      "operation": "Entry status, lifecycle diff, briefing, previous report and decisions reads",
+      "observed": "Several unbounded or under-budgeted outputs were truncated, including output of the legal verify dispatch.",
+      "disposition": "Do not treat omitted text as read. Read selected fields and bounded sections; never repeat the recorded dispatch. Later evidence names the exact repair scope."
+    },
+    {
+      "operation": "git diff --stat refs/dotln/checkpoint/WO-276/82",
+      "observed": "The checkpoint includes untracked files that the ordinary index comparison reports as deleted.",
+      "disposition": "Do not infer missing work from this comparison. repair-inventory.json hashes every current subject file, including untracked files, against the checkpoint and records actual missing or changed bytes. The inventory also distinguishes deleted paths still named by the index from actual new files; all 9347 subject paths exist and no unexpected new path was found."
+    },
+    {
+      "operation": "Selected source/evidence path searches",
+      "observed": "Two searches included guessed paths repair-ver003 and scripts/lib/verification-findings.mjs that do not exist.",
+      "disposition": "Located comparisons under part-b/comparisons and read the actual findings contract from scripts/lib/review-findings.mjs. These failed reads supplied no evidence."
+    },
+    {
+      "operation": "npm run meta output",
+      "observed": "The generator completed with exit 0, but its all-order console report exceeded the output budget.",
+      "disposition": "Treat the command result as generation evidence only. Read the two new decision-index entries directly; do not claim review of the omitted historical metrics."
+    }
+  ],
+  "implementationChanged": false
+}

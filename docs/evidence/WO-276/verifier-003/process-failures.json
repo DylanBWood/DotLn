@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "failures": [
+    {
+      "kind": "read-output",
+      "error": "Initial canonical status, briefing, long reports and source batches exceeded output budgets and were truncated.",
+      "correction": "Captured full status, briefing and repair diff in session scratch; selected report fields and bounded source passages for judgment. Truncation is not evidence of absence."
+    },
+    {
+      "kind": "path",
+      "error": "Guessed repair-002/handoff.md and two gate helper names did not exist.",
+      "correction": "Located docs/evidence/WO-276/handoff.md and actual gate-evidence/handoff-ledger modules with rg."
+    },
+    {
+      "kind": "probe-bootstrap",
+      "error": "The direct test-work-orders.mjs launch lacked the wrapper-created root and ownership marker.",
+      "correction": "Run scripts/test-work-orders.sh, whose existing wrapper establishes the fixture. The initial assertion is a verifier setup error, not a product finding."
+    },
+    {
+      "kind": "probe-import",
+      "error": "The boundary probe initially imported a local alias as if source-reading.mjs exported readSources.",
+      "correction": "Read the export and caller imports; use sourceTrees as readSources and rerun."
+    },
+    {
+      "kind": "probe-comparison",
+      "error": "The first header parity probe compared headerFields function identities, reporting unequal closures.",
+      "correction": "Compare returned header data instead; both independent boundary controls then match. No header failure is claimed."
+    },
+    {
+      "kind": "decision-schema",
+      "error": "The first meta run rejected the new D135 correction because its required rejected choices field was missing.",
+      "correction": "Add the missing field to the unfiled decision and rerun meta before the document gate. No product failure is claimed."
+    }
+  ]
+}

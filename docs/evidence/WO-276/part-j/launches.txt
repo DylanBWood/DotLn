@@ -1,0 +1,106 @@
+# In an exported instance whose dotln.config.json holds "workers": {"default":{"claude":"small"},"verifier":{"claude":{"model":"small","effort":"max"}},"night-review":{"description":"Reviews that run unattended.","codex":{"model":"astra","effort":"high"}}}
+# and whose dotln.models.json holds {"schemaVersion":1,"models":{"small":{"provider":"claude","id":"model-a","effort":"high"}}}.
+
+## npm run worker -- list
+Workers: a name bound, for each provider, to a model.
+  default [default]: The worker a launch runs when it names none.
+    claude: small (model-a) at high; in a session, Agent subagent_type=dotln-worker; from dotln.config.json#workers.default.claude
+    codex: sol (gpt-6.1-sol) at max; in a session, spawn_agent fork_turns=none model=gpt-6.1-sol reasoning_effort=max; from the kit
+  advanced: Each provider's stronger model, for work the operator asks it for.
+    claude: fable (claude-fable-5-2) at xhigh; in a session, Agent subagent_type=dotln-worker model=fable effort=xhigh (the host resolves the family); from the kit
+    codex: astra (gpt-6-astra) at max; in a session, spawn_agent fork_turns=none model=gpt-6-astra reasoning_effort=max; from the kit
+  judge: The resident's always-on judge.
+    claude: sonnet (claude-sonnet-5) at xhigh; in a session, Agent subagent_type=dotln-worker model=sonnet effort=xhigh (the host resolves the family); from the kit
+    codex: luna (gpt-6-luna) at xhigh; in a session, spawn_agent fork_turns=none model=gpt-6-luna reasoning_effort=xhigh; from the kit
+  verifier: A driven independent verification.
+    claude: small (model-a) at max; in a session, Agent subagent_type=dotln-worker effort=max; from dotln.config.json#workers.verifier.claude
+    codex: sol (gpt-6.1-sol) at xhigh; in a session, spawn_agent fork_turns=none model=gpt-6.1-sol reasoning_effort=xhigh; from the kit
+  night-review: Reviews that run unattended.
+    codex: astra (gpt-6-astra) at high; in a session, spawn_agent fork_turns=none model=gpt-6-astra reasoning_effort=high; from dotln.config.json#workers.night-review.codex
+Models: a model's name launches it at its own effort.
+  opus: Claude Opus 5.5
+    claude: opus (claude-opus-5-5) at xhigh; in a session, Agent subagent_type=dotln-worker model=opus effort=xhigh (the host resolves the family); from the kit
+  fable: Claude Fable 5.2
+    claude: fable (claude-fable-5-2) at xhigh; in a session, Agent subagent_type=dotln-worker model=fable effort=xhigh (the host resolves the family); from the kit
+  sol: GPT-6.1 Sol
+    codex: sol (gpt-6.1-sol) at max; in a session, spawn_agent fork_turns=none model=gpt-6.1-sol reasoning_effort=max; from the kit
+  astra: GPT-6 Astra
+    codex: astra (gpt-6-astra) at max; in a session, spawn_agent fork_turns=none model=gpt-6-astra reasoning_effort=max; from the kit
+  sonnet: Claude Sonnet 5
+    claude: sonnet (claude-sonnet-5) at xhigh; in a session, Agent subagent_type=dotln-worker model=sonnet effort=xhigh (the host resolves the family); from the kit
+  luna: GPT-6 Luna
+    codex: luna (gpt-6-luna) at xhigh; in a session, spawn_agent fork_turns=none model=gpt-6-luna reasoning_effort=xhigh; from the kit
+  small
+    claude: small (model-a) at high; in a session, Agent subagent_type=dotln-worker; from dotln.models.json#models.small
+npm run worker -- show <name> [--provider <provider>] [--effort <level>] prints this session's launch of one.
+
+## npm run worker -- show night-review
+{
+  "name": "night-review",
+  "entry": "worker",
+  "provider": "codex",
+  "model": {
+    "name": "astra",
+    "id": "gpt-6-astra",
+    "family": null
+  },
+  "effort": "high",
+  "description": "Reviews that run unattended.",
+  "launchable": true,
+  "workerType": "codex-spawn-agent",
+  "source": {
+    "model": "dotln.config.json#workers.night-review.codex",
+    "id": "kit",
+    "effort": "dotln.config.json#workers.night-review.codex"
+  },
+  "session": {
+    "tool": "spawn_agent",
+    "arguments": {
+      "fork_turns": "none",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "high"
+    },
+    "exact": true,
+    "preamble": "<the worker's standing rules, 1854 characters>"
+  },
+  "receipt": "--worker-type codex-spawn-agent"
+}
+
+## 1. npm run worker -- review --kind criteria --host claude --order WO-001 --dry-run
+option: {"name":"default","selection":"host-default"}
+launch: --print --model model-a --effort high ...
+
+## 2. npm run plan -- refute --model small (the launch it prints beside the prompt, from the command's own function)
+{
+  "name": "small",
+  "entry": "model",
+  "provider": "claude",
+  "model": {
+    "name": "small",
+    "id": "model-a",
+    "family": null
+  },
+  "effort": "high",
+  "description": null,
+  "launchable": true,
+  "workerType": "dotln-worker",
+  "source": {
+    "model": "dotln.models.json#models.small",
+    "id": "dotln.models.json#models.small",
+    "effort": "dotln.models.json#models.small"
+  },
+  "session": {
+    "tool": "Agent",
+    "arguments": {
+      "subagent_type": "dotln-worker"
+    },
+    "exact": true
+  },
+  "receipt": "--worker-type dotln-worker"
+}
+
+## 3. The drive's arguments for a phase's Claude session (the phase's agent, model and effort)
+resume: next   --agent dotln-executor --add-dir <launchpad> --model model-a --effort high
+resume: verify --agent dotln-verifier --add-dir <launchpad> --model model-a --effort max
+where a failed launch says the instance wrote the executor's model: dotln.models.json#models.small and dotln.config.json#workers.default.claude
+and the verifier's: dotln.models.json#models.small and dotln.config.json#workers.verifier.claude

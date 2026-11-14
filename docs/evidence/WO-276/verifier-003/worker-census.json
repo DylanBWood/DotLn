@@ -1,0 +1,29 @@
+{
+  "plannedUses": 2,
+  "cap": 20,
+  "launches": 2,
+  "retasks": 0,
+  "descendants": 0,
+  "worker": "default",
+  "configuredLaunch": {
+    "provider": "codex",
+    "model": "gpt-6.1-sol",
+    "effort": "max"
+  },
+  "effectiveReadback": "unknown; workers returned no independent host readback",
+  "scope": [
+    {
+      "task": "comparison_audit",
+      "work": "Read-only audit of criterion-25 coverage and named-difference predicates",
+      "used": "Root independently confirmed the four comparison gaps; named examples have old/new calls. Predicate counterexamples were not promoted to a corpus defect without a real-input mismatch."
+    },
+    {
+      "task": "parser_repair_audit",
+      "work": "Read-only audit of the source selector, header prefix and execution appendix",
+      "used": "Root reproduced root-level suffix-only source omissions. Proposed header examples matched after correcting the verifier comparison."
+    }
+  ],
+  "probesByWorkers": 0,
+  "repositoryWritesByWorkers": 0,
+  "verdictOwner": "root"
+}

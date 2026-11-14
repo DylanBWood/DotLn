@@ -1,0 +1,4 @@
+The close record as the close wrote it: publication no-release; cleanup clean, branch deleted; target removed.
+no-release, as written: phase closed; route {"action":null,"stop":{"reason":"released","next":"The local release attribution, a no-release close or a target's own published release is recorded."}}
+not-attempted, declared, target published: phase closed; route {"action":null,"stop":{"reason":"released","next":"The local release attribution, a no-release close or a target's own published release is recorded."}}
+not-attempted, declared, target prepared: phase closed; route {"action":"release-close","stop":null}

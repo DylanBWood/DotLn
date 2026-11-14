@@ -1,0 +1,262 @@
+[
+  {
+    "name": "rebase-reuse",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "durationMs": 382,
+    "result": {
+      "branchCommits": "4",
+      "branchTipHoldsTheChange": true,
+      "baseTipHoldsTheChange": false,
+      "merged": false,
+      "by": null,
+      "baseCommitsMatched": 0,
+      "baseCommitsRead": 4
+    },
+    "stderr": ""
+  },
+  {
+    "name": "terms-numbered-lines-cost",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "durationMs": 44,
+    "result": [
+      {
+        "reader": "base",
+        "entryLettersAndDigits": 19,
+        "lines": 100,
+        "milliseconds": 1,
+        "findings": 0
+      },
+      {
+        "reader": "candidate",
+        "entryLettersAndDigits": 19,
+        "lines": 100,
+        "milliseconds": 2,
+        "findings": 0
+      },
+      {
+        "reader": "base",
+        "entryLettersAndDigits": 23,
+        "lines": 100,
+        "milliseconds": 1,
+        "findings": 0
+      },
+      {
+        "reader": "candidate",
+        "entryLettersAndDigits": 23,
+        "lines": 100,
+        "milliseconds": 0,
+        "findings": 0
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "name": "dollar-fields",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "durationMs": 69,
+    "result": {
+      "no dollar figure": {
+        "classificationFieldsNow": 1,
+        "costNow": "one session.",
+        "costAtBase": "one session.",
+        "trackNow": "machinery",
+        "trackAtBase": "machinery"
+      },
+      "a dollar figure in one field": {
+        "classificationFieldsNow": 1,
+        "costNow": "about $5 of tokens.",
+        "costAtBase": "about $5 of tokens.",
+        "trackNow": "machinery",
+        "trackAtBase": "machinery"
+      },
+      "a dollar figure in two fields": {
+        "classificationFieldsNow": 1,
+        "costNow": "about $5 of tokens.",
+        "costAtBase": "about $5 of tokens.",
+        "trackNow": "machinery",
+        "trackAtBase": "machinery"
+      }
+    },
+    "stderr": ""
+  },
+  {
+    "name": "unread-refusal",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "durationMs": 704,
+    "result": {
+      "holdReason": "mission check <episode> returned no judgment (documents-unread): this resident holds no reader of the documents a mission check judges; start it with scripts/resident.mjs",
+      "eventLogNamesTheLauncher": true,
+      "runtimeStatusNamesTheLauncher": false,
+      "statusCommandNamesTheLauncher": false,
+      "auditCommandNamesTheLauncher": true
+    },
+    "stderr": "DotLn advisory: codex CLI 0.154.0 is outside the recorded version observation 0.166.0; launch continues.\n"
+  },
+  {
+    "name": "presence-during-card-refresh",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "durationMs": 6561,
+    "result": [
+      {
+        "startedBy": "launcher",
+        "ownerExit": 0,
+        "ownerMs": 4848,
+        "presenceExit": 0,
+        "presenceMs": 114,
+        "presenceSaid": "Presence recorded: away"
+      },
+      {
+        "startedBy": "package-entry",
+        "ownerExit": 0,
+        "ownerMs": 1659,
+        "presenceExit": 0,
+        "presenceMs": 157,
+        "presenceSaid": "Presence recorded: away"
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "name": "walkthrough-option",
+    "exitCode": 1,
+    "signal": null,
+    "error": null,
+    "durationMs": 76,
+    "result": null,
+    "stderr": "file://[worktree]/packages/skeleton/dist/src/resident-host.js:202\n                throw new Error(REPLACED_OPTIONS[key]\n                      ^\n\nError: resident host option workOrderIndexPath was replaced by workOrderCards, a function that returns the work-order cards: scripts/resident.mjs hands the resident workOrderCardSource from scripts/lib/work-order-cards.mjs\n    at new ResidentHost (file://[worktree]/packages/skeleton/dist/src/resident-host.js:202:23)\n    at file://[worktree]/docs/evidence/WO-276/final-review-001/walkthrough-option.mjs:55:14\n\nNode.js v26.9.0\n"
+  },
+  {
+    "name": "comparison-coverage-gaps",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "durationMs": 76,
+    "result": [
+      {
+        "file": "scripts/lib/front-page-scope.mjs",
+        "reader": "the Front page field an order's header declares",
+        "sourceNowCallsTheSharedReader": true,
+        "baseTestedAString": true,
+        "coverageRowForTheFile": true,
+        "coverageRowsReaders": [
+          "frontPageDeclaration: the Front page field an order's leading header declares, which the base took as the header line that opens with the label"
+        ],
+        "comparisonDriverNamesIt": true
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "reader": "the integration note a decisions file holds for a checkpoint",
+        "sourceNowCallsTheSharedReader": true,
+        "baseTestedAString": true,
+        "coverageRowForTheFile": true,
+        "coverageRowsReaders": [
+          "the integration note the module reads in an order's decisions file before it files a saved release outcome",
+          "mixedProjectionMask, and the restore of the release block's version after a masked merge (restoreReleaseVersion): the generated blocks of the root instruction file and the front page that a mixed projection sets aside"
+        ],
+        "comparisonDriverNamesIt": true
+      },
+      {
+        "file": "scripts/lib/worktree-integration.mjs",
+        "reader": "the generated blocks of the root instruction file and the front page that a mixed projection sets aside",
+        "sourceNowCallsTheSharedReader": true,
+        "baseTestedAString": true,
+        "coverageRowForTheFile": true,
+        "coverageRowsReaders": [
+          "the integration note the module reads in an order's decisions file before it files a saved release outcome",
+          "mixedProjectionMask, and the restore of the release block's version after a masked merge (restoreReleaseVersion): the generated blocks of the root instruction file and the front page that a mixed projection sets aside"
+        ],
+        "comparisonDriverNamesIt": true
+      },
+      {
+        "file": "scripts/lib/release-preparation.mjs",
+        "reader": "the integration note release preparation reads",
+        "sourceNowCallsTheSharedReader": true,
+        "baseTestedAString": true,
+        "coverageRowForTheFile": true,
+        "coverageRowsReaders": [
+          "the Release classification an order's header declares",
+          "integrationPreparationRefusal: the integration note an order's decisions file holds for a checkpoint"
+        ],
+        "comparisonDriverNamesIt": true
+      },
+      {
+        "file": "scripts/check-publication.mjs",
+        "reader": "the links a publication page makes into the product documents",
+        "sourceNowCallsTheSharedReader": true,
+        "baseTestedAString": true,
+        "coverageRowForTheFile": true,
+        "coverageRowsReaders": [
+          "headings, with the fence reading inside it",
+          "checkCoverage",
+          "productLinks: the links a publication page makes into the product documents",
+          "voiceSection: the section of the dual-voice sample under one voice's heading"
+        ],
+        "comparisonDriverNamesIt": true
+      },
+      {
+        "file": "scripts/check-publication.mjs",
+        "reader": "the section of a dual-voice page under one voice's heading",
+        "sourceNowCallsTheSharedReader": true,
+        "baseTestedAString": true,
+        "coverageRowForTheFile": true,
+        "coverageRowsReaders": [
+          "headings, with the fence reading inside it",
+          "checkCoverage",
+          "productLinks: the links a publication page makes into the product documents",
+          "voiceSection: the section of the dual-voice sample under one voice's heading"
+        ],
+        "comparisonDriverNamesIt": true
+      },
+      {
+        "file": "scripts/lib/plan-dependency-migration.mjs",
+        "reader": "the standalone dependencies block the dependency migration removes",
+        "sourceNowCallsTheSharedReader": true,
+        "baseTestedAString": true,
+        "coverageRowForTheFile": true,
+        "coverageRowsReaders": [
+          "the Umbrella record notice the dependency migration reads",
+          "withoutStandaloneBlock: the standalone dependencies block the migration takes out of an order once its relations are transcribed"
+        ],
+        "comparisonDriverNamesIt": true
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "name": "verify-order",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "durationMs": 72,
+    "result": {
+      "base": {
+        "refusal": "kit runtime differs from the manifest: packages/skeleton/dist/src/a.js",
+        "instanceCodeRanBeforeTheRefusal": false
+      },
+      "candidate": {
+        "refusal": "kit runtime differs from the manifest: packages/skeleton/dist/src/a.js",
+        "instanceCodeRanBeforeTheRefusal": false
+      }
+    },
+    "stderr": ""
+  },
+  {
+    "name": "criteria-html-block",
+    "exitCode": 1,
+    "signal": null,
+    "error": null,
+    "durationMs": 249,
+    "result": null,
+    "stderr": "file://[worktree]/scripts/lib/work-order-document.mjs:164\n    const error = new Error(`${name}: ${detail}`);\n                  ^\n\nError: acceptance criteria: line 3407 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 79 on line 3410 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag.\n    at refuse (file://[worktree]/scripts/lib/work-order-document.mjs:164:19)\n    at refuseUnreadList (file://[worktree]/scripts/lib/work-order-document.mjs:219:7)\n    at Module.declaredCriteria (file://[worktree]/scripts/lib/handoff-ledger.mjs:70:3)\n    at ids (file://[worktree]/docs/evidence/WO-276/final-review-001/criteria-html-block.mjs:53:11)\n    at file://[worktree]/docs/evidence/WO-276/final-review-001/criteria-html-block.mjs:57:20\n    at Array.map (<anonymous>)\n    at count (file://[worktree]/docs/evidence/WO-276/final-review-001/criteria-html-block.mjs:56:29)\n    at file://[worktree]/docs/evidence/WO-276/final-review-001/criteria-html-block.mjs:86:12 {\n  code: 'DOTLN_ORDER_LIST_UNREAD'\n}\n\nNode.js v26.9.0\n"
+  }
+]

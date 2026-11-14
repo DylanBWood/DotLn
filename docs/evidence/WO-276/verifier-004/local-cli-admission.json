@@ -1,0 +1,13 @@
+{
+  "installedSubpath": ".codex/packages/app-server-daemon/releases/0.169.0-aarch64-apple-darwin/bin/codex",
+  "command": "codex --help (absolute installed executable)",
+  "exitCode": 0,
+  "interactiveUsage": true,
+  "execCommand": true,
+  "helpLines": [
+    "If no subcommand is specified, options will be forwarded to the interactive CLI.",
+    "Usage: codex [OPTIONS] [PROMPT]",
+    "  exec              Run Codex non-interactively [aliases: e]"
+  ],
+  "limits": "Help only. No worker, model request or active session was launched. No process was signalled."
+}

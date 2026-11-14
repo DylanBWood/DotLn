@@ -1,0 +1,16 @@
+{
+  "command": "node scripts/terms.mjs branch",
+  "exitCode": 0,
+  "list": "present",
+  "entries": {
+    "refuse": 0,
+    "context": 9
+  },
+  "changedFilesScreened": 909,
+  "findings": {
+    "refuse": 0,
+    "context": 0
+  },
+  "contextLinesRead": 0,
+  "privateListPrintedOrCopied": false
+}

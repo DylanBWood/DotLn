@@ -1,0 +1,145 @@
+[
+  {
+    "command": "node scripts/harness.mjs bounded -- npm run format:check",
+    "result": {
+      "name": "bounded-probe",
+      "durationMs": 12114,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 12114,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 802044768,
+      "peakRssBytes": 866353152,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-13T00:58:31.836Z",
+      "finishedAt": "2026-11-13T00:58:43.950Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "testSummary": []
+  },
+  {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-276 criterion Q[1-4]' scripts/test-harness.mjs",
+    "result": {
+      "name": "bounded-probe",
+      "durationMs": 26190,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 26190,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 206527960,
+      "peakRssBytes": 348798976,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-13T00:58:57.121Z",
+      "finishedAt": "2026-11-13T00:59:23.311Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "testSummary": [
+      "\u2714 WO-276 criterion Q1: a target installed while its bundle held a presence hook verifies, is replaced without the hook and is removed (1194.435292ms)",
+      "\u2714 WO-276 criterion Q2: with a store named each of the four events records one heartbeat from a hook that already runs for it, under operator control and with the adapter unavailable too, no other event records one, and a heartbeat that fails changes no hook's answer (14829.382417ms)",
+      "\u2714 WO-276 criterion Q3: on a planning branch a read asks Git for no branch, a write outside the admitted paths is refused in the words it had, and a tool the table does not hold is asked the branch as a write is (3572.766875ms)",
+      "\u2714 WO-276 criterion Q4: two authorship snapshots with no file changed between them read no file's bytes the second time, a changed file is read alone, a file written within the tick is read again, and every hash is the one a full read records (6367.865375ms)",
+      "\u2139 tests 4",
+      "\u2139 pass 4",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-276 criterion F2' packages/skeleton/dist/test/executor-supports.test.js",
+    "result": {
+      "name": "bounded-probe",
+      "durationMs": 175,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 175,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 43161480,
+      "peakRssBytes": 134758400,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-13T01:05:14.919Z",
+      "finishedAt": "2026-11-13T01:05:15.094Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "testSummary": [
+      "\u2714 [document] WO-276 criterion F2: the shared rule records equal the committed rule-by-role table (49.685875ms)",
+      "\u2139 tests 1",
+      "\u2139 pass 1",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-276 criteria Q1 and Q2' scripts/test-harness.mjs",
+    "result": {
+      "name": "bounded-probe",
+      "durationMs": 3184,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 3184,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 166480304,
+      "peakRssBytes": 304840704,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-13T01:05:29.558Z",
+      "finishedAt": "2026-11-13T01:05:32.742Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "testSummary": [
+      "\u2714 WO-276 criteria Q1 and Q2: the attribution hook and the lint-directive hook are registered for no table name of a kind they do not judge, for every name the table does not hold where the only host was observed to read a matcher that leaves names out and for the listed names alone where another host is elected, and each refusal is made under the names the unit judges as before (2950.287584ms)",
+      "\u2139 tests 1",
+      "\u2139 pass 1",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-276/verifier-001/comment-regressions.mjs",
+    "result": {
+      "name": "bounded-probe",
+      "durationMs": 180,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 180,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 30068576,
+      "peakRssBytes": 84443136,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-11-13T01:04:37.934Z",
+      "finishedAt": "2026-11-13T01:04:38.114Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "testSummary": []
+  }
+]

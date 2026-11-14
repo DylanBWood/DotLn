@@ -1,0 +1,9 @@
+{
+  "comparison": "console-capabilities",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the capability table at every committed revision and in the worktree: each row of its recognized tables, with its assessment, as the board shows it",
+  "read": 36,
+  "equal": 36,
+  "differences": {},
+  "examples": []
+}

@@ -1,0 +1,14 @@
+# node scripts/docs-check.mjs in a document fixture that registers two repositories, noted (docs/repositories/noted.md, with docs/repositories/noted/billing.md beside it) and plain (docs/repositories/plain.md, no directory). The FAIL lines are the command's own.
+
+## A profile with a directory that holds no note, and a profile with no directory: exit 0
+
+## A note whose block lists paths and a commit: exit 0
+
+## A note whose block lacks the commit: exit 1
+FAIL docs/repositories/noted/billing.md:3: area note: field commit is missing; it holds the target commit the note was written at, as its full hexadecimal id
+
+## A note whose block lacks the paths: exit 1
+FAIL docs/repositories/noted/billing.md:3: area note: field paths is missing; it holds a non-empty list of the target paths the note covers, each relative with forward slashes, no . or .. segment and no control character
+
+## A note whose list of paths is empty: exit 1
+FAIL docs/repositories/noted/billing.md:3: area note: field paths is outside its set (a non-empty list of the target paths the note covers, each relative with forward slashes, no . or .. segment and no control character)

@@ -1,0 +1,13 @@
+{
+  "controlPreservesTrackedAndUntracked": true,
+  "trackedBefore": "keep.txt",
+  "changedTrackedFileStillInRealIndex": true,
+  "checkpointFiles": [
+    ".dotln-owner.json",
+    ".gitignore",
+    "new.txt"
+  ],
+  "trackedChangedFilePreserved": false,
+  "untrackedNonignoredPreserved": true,
+  "untrackedIgnoredExcluded": true
+}

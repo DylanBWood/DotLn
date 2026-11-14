@@ -1,0 +1,668 @@
+{
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "baselineReader": "Baseline TypeScript grammar reader stripped without semantic edits; its package require resolves the candidate's installed compiler. Baseline check imports shared utilities from current tree.",
+  "commentComparisons": [
+    {
+      "path": "case-lf.js",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.js",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-lf.cjs",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.cjs",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-lf.mjs",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.mjs",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-lf.ts",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.ts",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-lf.cts",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.cts",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-lf.mts",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.mts",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-lf.jsx",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.jsx",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-lf.tsx",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "case-crlf.tsx",
+      "baseline": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          7,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "markup.jsx",
+      "baseline": [
+        [
+          1,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          1,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "markup.tsx",
+      "baseline": [
+        [
+          1,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          1,
+          "decision-number"
+        ]
+      ]
+    },
+    {
+      "path": "script.sh",
+      "baseline": [
+        [
+          4,
+          "decision-number"
+        ]
+      ],
+      "candidate": [
+        [
+          4,
+          "decision-number"
+        ]
+      ]
+    }
+  ],
+  "commentParity": true,
+  "screenExtensions": [
+    {
+      "path": "scripts/reader.mjs",
+      "selected": true,
+      "direct": [
+        {
+          "file": "scripts/reader.mjs",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": [
+        {
+          "file": "scripts/reader.mjs",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ]
+    },
+    {
+      "path": "scripts/reader.js",
+      "selected": false,
+      "direct": [
+        {
+          "file": "scripts/reader.js",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": []
+    },
+    {
+      "path": "scripts/reader.cjs",
+      "selected": false,
+      "direct": [
+        {
+          "file": "scripts/reader.cjs",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": []
+    },
+    {
+      "path": "scripts/reader.ts",
+      "selected": false,
+      "direct": [
+        {
+          "file": "scripts/reader.ts",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": []
+    },
+    {
+      "path": "packages/app/src/reader.ts",
+      "selected": true,
+      "direct": [
+        {
+          "file": "packages/app/src/reader.ts",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": [
+        {
+          "file": "packages/app/src/reader.ts",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ]
+    },
+    {
+      "path": "packages/app/src/reader.tsx",
+      "selected": false,
+      "direct": [
+        {
+          "file": "packages/app/src/reader.tsx",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": []
+    },
+    {
+      "path": "packages/app/src/reader.jsx",
+      "selected": false,
+      "direct": [
+        {
+          "file": "packages/app/src/reader.jsx",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": []
+    },
+    {
+      "path": "packages/app/src/reader.cts",
+      "selected": false,
+      "direct": [
+        {
+          "file": "packages/app/src/reader.cts",
+          "line": 1,
+          "form": "a heading",
+          "pattern": "^## "
+        }
+      ],
+      "checkout": []
+    }
+  ]
+}

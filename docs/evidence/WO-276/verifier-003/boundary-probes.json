@@ -1,0 +1,80 @@
+{
+  "sourceDiscovery": [
+    {
+      "path": "scripts/reader.js",
+      "sharedReaderAccepts": true,
+      "directFindings": 1,
+      "checkoutSelected": true,
+      "checkoutFindings": 1
+    },
+    {
+      "path": "scripts/.js",
+      "sharedReaderAccepts": true,
+      "directFindings": 1,
+      "checkoutSelected": false,
+      "checkoutFindings": 0
+    },
+    {
+      "path": "scripts/nested/.js",
+      "sharedReaderAccepts": true,
+      "directFindings": 1,
+      "checkoutSelected": true,
+      "checkoutFindings": 1
+    },
+    {
+      "path": "packages/example/src/reader.ts",
+      "sharedReaderAccepts": true,
+      "directFindings": 1,
+      "checkoutSelected": true,
+      "checkoutFindings": 1
+    },
+    {
+      "path": "packages/example/src/.ts",
+      "sharedReaderAccepts": true,
+      "directFindings": 1,
+      "checkoutSelected": false,
+      "checkoutFindings": 0
+    },
+    {
+      "path": "packages/example/src/nested/.ts",
+      "sharedReaderAccepts": true,
+      "directFindings": 1,
+      "checkoutSelected": true,
+      "checkoutFindings": 1
+    }
+  ],
+  "checkpoints": [
+    {
+      "case": "ignored tracked, forced file/link, assume-unchanged, skip-worktree, newline path, deletion",
+      "passed": true,
+      "indexBytesUnchanged": true
+    },
+    {
+      "case": "tracked directory replaced with file",
+      "passed": false,
+      "code": "ENOTDIR",
+      "message": "ENOTDIR: not a directory, lstat '<fixture>/directory/nested.txt'"
+    }
+  ],
+  "headerParity": [
+    {
+      "name": "reference title across blank",
+      "equal": true
+    },
+    {
+      "name": "body reference changes leading bracketed label",
+      "equal": true
+    }
+  ],
+  "hiddenJavaScriptSyntaxAccepted": true,
+  "directoryReplacementBaseline": {
+    "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+    "passed": true,
+    "limit": "Actual baseline module; relative shared utilities rebound to current tree"
+  },
+  "currentCheckpointAction": {
+    "passed": false,
+    "code": "ENOTDIR",
+    "message": "ENOTDIR: not a directory, lstat '<fixture>/directory/nested.txt'"
+  }
+}

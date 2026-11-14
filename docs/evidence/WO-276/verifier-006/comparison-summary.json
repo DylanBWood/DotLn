@@ -1,0 +1,553 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-276/part-b/comparisons/readers.mjs",
+  "completed": 79,
+  "unnamed": 0,
+  "comparisons": [
+    {
+      "name": "markdown-links",
+      "read": 2429,
+      "equal": 2426,
+      "differences": {
+        "defect of the old reader: the carried parser's math extension read the text from one dollar figure to the next on line 129 (from the first $60 to the dollar sign of the second) as one inline-math span, and the code span `pricedUsd: 0` written inside it was not read; the worktree's parse forms no math span, and the paragraph's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)": 1,
+        "defect of the old reader: in the shell command quoted on line 25, the math extension read the text between two dollar signs of its substitutions as inline math, and the first such span took a backtick into it, so the backticks after it were paired wrongly and the line's code spans were not the ones written; the worktree's parse forms no math span, and the line's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)": 1,
+        "defect of the old reader: in the two reproduction commands (lines 11 and 19), the math extension read the text between two dollar signs of the commands' substitutions as inline math, and three of those spans took backticks into them, so the later backticks were paired wrongly and one code span ran from line 11 to line 13 over the operator's disposition, which is prose; the worktree's parse forms no math span, and each paragraph's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)": 1
+      }
+    },
+    {
+      "name": "work-order-headers",
+      "read": 270,
+      "equal": 269,
+      "differences": {
+        "defect of the old reader: its pattern for the ledger duty began at an Acceptance criteria label quoted in a code span of a step (line 417) and ended at the Non-goals label quoted two lines on, so it never read the order's real criteria (lines 639 to 902), which name the ledger; the new reader takes the two fields from the document's own top-level labels and answers true": 1
+      }
+    },
+    {
+      "name": "work-order-header-only",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "imports",
+      "read": 647,
+      "equal": 647,
+      "differences": {}
+    },
+    {
+      "name": "decisions",
+      "read": 3965,
+      "equal": 3965,
+      "differences": {}
+    },
+    {
+      "name": "order-criteria",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "dependencies",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "generated-pages",
+      "read": 2429,
+      "equal": 2429,
+      "differences": {}
+    },
+    {
+      "name": "planning-subjects",
+      "read": 68,
+      "equal": 68,
+      "differences": {}
+    },
+    {
+      "name": "planning-subjects-base",
+      "read": 68,
+      "equal": 68,
+      "differences": {}
+    },
+    {
+      "name": "planning-rules",
+      "read": 145,
+      "equal": 145,
+      "differences": {}
+    },
+    {
+      "name": "known-issues",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "criterion-judgments",
+      "read": 780,
+      "equal": 780,
+      "differences": {}
+    },
+    {
+      "name": "plan-cost",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "product-content",
+      "read": 17,
+      "equal": 17,
+      "differences": {}
+    },
+    {
+      "name": "red-tags",
+      "read": 145,
+      "equal": 145,
+      "differences": {}
+    },
+    {
+      "name": "execution-plan-paths",
+      "read": 269,
+      "equal": 241,
+      "differences": {
+        "defect of the old reader: it paired backticks by its own rule and not Markdown's. Step 6 writes an escaped backtick inside a code span (line 178), where Markdown escapes nothing, so by Markdown's rule the pairing shifts for the rest of the item and the two paths lost (lines 178 and 182) stand outside any code span, as the rendered page shows them; the old pattern's pairing reported them as spans": 1,
+        "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it": 26,
+        "defect of the old reader: its pattern ended the Execution plan only at a label with a colon or at a line that opens with a number sign, so it ran through the Acceptance criteria label (line 3009), which carries no colon, to the Preflight label (line 3741); the eleven paths lost are code spans of the criteria and the fields after them (lines 3146 to 4008), which are no part of the plan": 1
+      }
+    },
+    {
+      "name": "amendment-decisions",
+      "read": 110,
+      "equal": 110,
+      "differences": {}
+    },
+    {
+      "name": "planning-passes",
+      "read": 220,
+      "equal": 220,
+      "differences": {}
+    },
+    {
+      "name": "planning-captures",
+      "read": 153,
+      "equal": 153,
+      "differences": {}
+    },
+    {
+      "name": "operator-words",
+      "read": 454,
+      "equal": 454,
+      "differences": {}
+    },
+    {
+      "name": "order-declarations",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "sequence-groups",
+      "read": 66,
+      "equal": 66,
+      "differences": {}
+    },
+    {
+      "name": "index-partition",
+      "read": 2,
+      "equal": 2,
+      "differences": {}
+    },
+    {
+      "name": "umbrella-notices",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "cost-fields",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "script-tokens",
+      "read": 647,
+      "equal": 647,
+      "differences": {}
+    },
+    {
+      "name": "feedback-comments",
+      "read": 647,
+      "equal": 647,
+      "differences": {}
+    },
+    {
+      "name": "receipt-cost-lines",
+      "read": 677,
+      "equal": 677,
+      "differences": {}
+    },
+    {
+      "name": "findings-blocks",
+      "read": 677,
+      "equal": 677,
+      "differences": {}
+    },
+    {
+      "name": "drive-route-operator-finding",
+      "read": 677,
+      "equal": 676,
+      "differences": {
+        "defect of the old reader: its pattern took the two marker names a prose line quotes (line 150) as a findings block and threw parsing the sentence between them as JSON; the shared reader takes a marker only on a line of its own and reads no block here": 1
+      }
+    },
+    {
+      "name": "release-notes-sections",
+      "read": 213,
+      "equal": 212,
+      "differences": {
+        "defect of the old reader: both refuse this pre-format document, but the base's first refusal is a false one, a `<WO>` inside an inline code span (line 33) read as raw HTML; the parser reads it as code and names the real refusal, the title and paragraph before the first required heading": 1
+      }
+    },
+    {
+      "name": "release-notes-target-source",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "release-preparation-reading",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "instance-secrets",
+      "read": 196,
+      "equal": 196,
+      "differences": {}
+    },
+    {
+      "name": "harness-context-directives",
+      "read": 196,
+      "equal": 196,
+      "differences": {}
+    },
+    {
+      "name": "harness-context-sections",
+      "read": 1927,
+      "equal": 1927,
+      "differences": {}
+    },
+    {
+      "name": "harness-context-citations",
+      "read": 269,
+      "equal": 267,
+      "differences": {
+        "defect of the old reader: the Cites block ended only at a literal **Objective: label, which this order does not write (it has **Original objective:**), so the block was never read; the order reader reads it to the next label, and it then refuses a cited section 06-roadmap.md no longer has": 1,
+        "defect of the old reader: the Cites block ran past two later labelled paragraphs (Usefulness correction, Authorized expansion) to the Objective and read their decision links as citations; the order reader stops at the next label": 1
+      }
+    },
+    {
+      "name": "github-body-soft-wraps",
+      "read": 434,
+      "equal": 434,
+      "differences": {}
+    },
+    {
+      "name": "github-body-shape",
+      "read": 442,
+      "equal": 442,
+      "differences": {}
+    },
+    {
+      "name": "github-body-criterion-records",
+      "read": 221,
+      "equal": 221,
+      "differences": {}
+    },
+    {
+      "name": "outward-rendered-view",
+      "read": 434,
+      "equal": 420,
+      "differences": {
+        "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same": 14
+      }
+    },
+    {
+      "name": "publication-headings",
+      "read": 762,
+      "equal": 762,
+      "differences": {}
+    },
+    {
+      "name": "publication-coverage",
+      "read": 1,
+      "equal": 1,
+      "differences": {}
+    },
+    {
+      "name": "shell-comments",
+      "read": 16,
+      "equal": 15,
+      "differences": {
+        "defect of the old reader: two `//` lines inside a JavaScript template literal, in a node here-document (lines 536 on), were read as comments; the worktree reads the here-document as a module, in which those lines are string text": 1
+      }
+    },
+    {
+      "name": "mission-clauses",
+      "read": 269,
+      "equal": 210,
+      "differences": {
+        "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section": 55,
+        "defect of the old reader: a field ended only at a blank line before the next bold phrase, so a label on the very next line (no blank line between) was read as part of the clause": 3,
+        "defect of the old reader: its Objective pattern took a wrapped citation line that opens with a bold **Objective** (no colon) as the field; the order reader reads the declared **Objective:** field": 1
+      }
+    },
+    {
+      "name": "mission-decisions",
+      "read": 187,
+      "equal": 185,
+      "differences": {
+        "defect of the old reader: its pattern ended a ```json block at the first ``` anywhere, so a decision whose JSON text quotes ``` in a string was cut short, failed to parse and was dropped (WO-187-D032, WO-187-D039, WO-226-D023); the parser ends a fence only on its own line": 2
+      }
+    },
+    {
+      "name": "mission-vision",
+      "read": 19,
+      "equal": 0,
+      "differences": {
+        "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading": 13,
+        "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word": 6
+      }
+    },
+    {
+      "name": "console-capabilities",
+      "read": 36,
+      "equal": 36,
+      "differences": {}
+    },
+    {
+      "name": "console-publication",
+      "read": 53,
+      "equal": 0,
+      "differences": {
+        "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`": 53
+      }
+    },
+    {
+      "name": "console-roadmap-rungs",
+      "read": 158,
+      "equal": 155,
+      "differences": {
+        "same refusal, reworded: both readers refuse a roadmap revision whose first line is not the ladder title; the worktree's message names the expected title": 3
+      }
+    },
+    {
+      "name": "console-work-order-cards",
+      "read": 2,
+      "equal": 0,
+      "differences": {
+        "defect of the old reader: the generated pages escape a backtick, a square bracket and an angle bracket as character references (&#96;, &#91; and &#93;, &lt; and &gt;), which the base's plainText showed as written; the index command's record holds the characters, so the board shows `plan start` where the base showed &#96;plan start&#96;, and <dir> where it showed &lt;dir&gt;. Every card's line, cells and links are the same once the references are decoded, which the comparison tests for each page": 2
+      }
+    },
+    {
+      "name": "runtime-status-orders",
+      "read": 1,
+      "equal": 1,
+      "differences": {}
+    },
+    {
+      "name": "plan-continuation-order-pairs",
+      "read": 1223,
+      "equal": 1223,
+      "differences": {}
+    },
+    {
+      "name": "plan-continuation-criteria",
+      "read": 261,
+      "equal": 261,
+      "differences": {}
+    },
+    {
+      "name": "plan-continuation-citation-headings",
+      "read": 2429,
+      "equal": 2428,
+      "differences": {
+        "defect of the old reader: it refused any heading whose line is not an ATX one, so a document that holds a heading written by the line under it (here inside a quotation of the carried parser's notices) could not have its headings read at all; the parser reads the heading and its title. No citation names this file": 1
+      }
+    },
+    {
+      "name": "plan-continuation-reassessments",
+      "read": 35,
+      "equal": 35,
+      "differences": {}
+    },
+    {
+      "name": "release-authority",
+      "read": 1492,
+      "equal": 545,
+      "differences": {
+        "same refusal, reworded: an order whose title carries no strict version is refused by both; the base's message quoted the heading line with its `# `, the worktree's quotes the title the order reader reads": 947
+      }
+    },
+    {
+      "name": "git-surface",
+      "read": 240,
+      "equal": 236,
+      "differences": {
+        "defect of the old reader: a GIT_* name written as a member of a TypeScript interface (line 67) was not read": 1,
+        "defect of the old reader: a command substituted inside a quoted argument, as in test \"$(git -C dir log -1)\" = text, went unread; the forms gained are those commands": 2,
+        "defect of the old reader, twice: the forms gained are commands substituted inside a quoted argument, which went unread; the one form lost (check-attr, line 3882) was the text of a regular expression inside a here-document that node reads, which is JavaScript and no Git command": 1
+      }
+    },
+    {
+      "name": "temporary-roots",
+      "read": 1,
+      "equal": 1,
+      "differences": {}
+    },
+    {
+      "name": "followup-sources",
+      "read": 88,
+      "equal": 86,
+      "differences": {
+        "defect of the old reader: its pattern took the label of ER4-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-004; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)": 1,
+        "defect of the old reader: its pattern took the label of ER5-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-005; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)": 1
+      }
+    },
+    {
+      "name": "release-history-components",
+      "read": 12,
+      "equal": 12,
+      "differences": {}
+    },
+    {
+      "name": "release-history-order-titles",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "ledger-entries",
+      "read": 154,
+      "equal": 154,
+      "differences": {}
+    },
+    {
+      "name": "siblings-manifest-hashes",
+      "read": 41,
+      "equal": 41,
+      "differences": {}
+    },
+    {
+      "name": "capability-row-ids",
+      "read": 36,
+      "equal": 0,
+      "differences": {
+        "defect of the old reader: its pattern gave a row an id only where the row's first cell opens with the code span, a rule of its own for what a capability row is. The rows of the table's first section name the capability in words before the code span (`Kernel event loop (`kernel.event-loop`)`; twelve rows of the table as the worktree holds it, where the base's pattern reads 37 rows and the worktree's reader 49), so the history repair read no id from those and, by the base's source, refused to restore an edited one; the dated rows under them open with the code span and both readers read them. The planning subject at the base read the id anywhere in the first cell, and the worktree's one row reader does. Every id the base read stands at the same line; the rows gained are those whose first cell holds text before its code span": 36
+      }
+    },
+    {
+      "name": "qualification-source-rows",
+      "read": 1,
+      "equal": 1,
+      "differences": {}
+    },
+    {
+      "name": "probe-hook-runtime",
+      "read": 126,
+      "equal": 126,
+      "differences": {}
+    },
+    {
+      "name": "feedback-tap-rows",
+      "read": 219,
+      "equal": 219,
+      "differences": {}
+    },
+    {
+      "name": "front-page-declarations",
+      "read": 1479,
+      "equal": 1479,
+      "differences": {}
+    },
+    {
+      "name": "integration-notes",
+      "read": 291,
+      "equal": 291,
+      "differences": {}
+    },
+    {
+      "name": "mixed-projection-masks",
+      "read": 253,
+      "equal": 253,
+      "differences": {}
+    },
+    {
+      "name": "publication-product-links",
+      "read": 564,
+      "equal": 564,
+      "differences": {}
+    },
+    {
+      "name": "publication-voice-sections",
+      "read": 2,
+      "equal": 0,
+      "differences": {
+        "defect of the old reader: its search for the text of the next second-level heading ended the first voice's section one line break short of that heading, leaving out the blank line the section holds; the worktree reads the section the parser bounds, and the product links the check reads from each section are the same": 2
+      }
+    },
+    {
+      "name": "dependency-migration-blocks",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "name": "executor-origin-comments",
+      "read": 112,
+      "equal": 112,
+      "differences": {}
+    },
+    {
+      "name": "harness-instruction-blocks",
+      "read": 34,
+      "equal": 34,
+      "differences": {}
+    },
+    {
+      "name": "record-link-targets",
+      "read": 2360,
+      "equal": 2360,
+      "differences": {}
+    },
+    {
+      "name": "product-gate-blocks",
+      "read": 223,
+      "equal": 223,
+      "differences": {}
+    }
+  ],
+  "bounded": {
+    "name": "bounded-probe",
+    "durationMs": 762875,
+    "slowestCases": [
+      {
+        "name": "bounded-probe",
+        "durationMs": 762875,
+        "exitCode": 0,
+        "granularity": "task"
+      }
+    ],
+    "peakFootprintBytes": 2950210760,
+    "peakRssBytes": 2971680768,
+    "memoryBudgetBytes": 3221225472,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "droppedOutputBytes": 0,
+    "startedAt": "2026-11-14T14:00:33.856Z",
+    "finishedAt": "2026-11-14T14:13:16.731Z",
+    "exitCode": 0,
+    "executed": true
+  }
+}

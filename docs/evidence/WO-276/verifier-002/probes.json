@@ -1,0 +1,98 @@
+{
+  "wrapper": "node scripts/harness.mjs bounded --",
+  "probes": [
+    {
+      "command": "npm run format:check",
+      "exitCode": 0,
+      "result": "All matched files use Prettier code style"
+    },
+    {
+      "command": "node --test scripts/test-comment-labels.mjs",
+      "exitCode": 0,
+      "tests": 12,
+      "pass": 12,
+      "fail": 0
+    },
+    {
+      "command": "node docs/evidence/WO-276/repair-001/comment-reader-comparison.mjs <scratch-output>",
+      "exitCode": 0,
+      "result": "691 repository files, 69 identical findings; 18 of 21 synthetic inputs equal main; three pre-existing here-document differences retained in D128"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/independent-probes.mjs <evidence-output>",
+      "exitCode": 0,
+      "result": "19 inputs match extracted baseline grammar reader; six supported extensions omitted from checkout screen"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/target-record-deletion.mjs <evidence-output>",
+      "exitCode": 0,
+      "result": "Reproduced false refusal of reviewed deletion with records kept in instance"
+    },
+    {
+      "command": "node docs/evidence/WO-276/part-b/comparisons/shell-reader.mjs",
+      "exitCode": 0,
+      "result": "No unexplained differences"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/source-imports.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "source-imports.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/contract-boundaries.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "contract-boundaries.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/checkpoint-preservation.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "checkpoint-preservation.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/header-parity.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "header-parity.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/close-history.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "close-history.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/paired-measurement.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "paired-measurement.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/shard-inferred-titles.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "shard-inferred-titles.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/host-update-boundaries.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "host-update-boundaries.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/execution-appendix.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "execution-appendix.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/usage-lower-bounds.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "usage-lower-bounds.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/area-note-parent.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "area-note-parent.json"
+    },
+    {
+      "command": "node docs/evidence/WO-276/verifier-002/unactivated-target-withdrawal.mjs <evidence-output>",
+      "exitCode": 0,
+      "resultFile": "unactivated-target-withdrawal.json"
+    }
+  ],
+  "scope": "Passing probe means its assertions reproduced the documented behavior, including failures; it does not mean the candidate passed verification."
+}

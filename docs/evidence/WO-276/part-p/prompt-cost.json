@@ -1,0 +1,6 @@
+{
+  "note": "One node process each, the median of five, in milliseconds, on this checkout's own usage ledger. A prompt with no figure declared starts none of these: it reads the budgets file's one key.",
+  "emptyProcessMs": 30,
+  "figureCheckMs": 54,
+  "dayReadingMs": 145
+}

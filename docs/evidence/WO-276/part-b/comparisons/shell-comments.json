@@ -1,0 +1,18 @@
+{
+  "comparison": "shell-comments",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every tracked shell script: its comment lines, each with its line, grouped into blocks",
+  "read": 16,
+  "equal": 15,
+  "differences": {
+    "defect of the old reader: two `//` lines inside a JavaScript template literal, in a node here-document (lines 536 on), were read as comments; the worktree reads the here-document as a module, in which those lines are string text": 1
+  },
+  "examples": [
+    {
+      "input": "scripts/test-release.sh",
+      "named": "defect of the old reader: two `//` lines inside a JavaScript template literal, in a node here-document (lines 536 on), were read as comments; the worktree reads the here-document as a module, in which those lines are string text",
+      "old": "[[[51,\"Cancellation can precede the case's normal permission restoration. Restore\"],[52,\"only these captured fixture objects before the guarded root removal.\"]],[[87,\"Signal tests enter the real suite after its cleanup traps are installed.\"]],[[93,\"A waiting foreground child makes shell-only signal delivery fail reliably.\"]],[[146,\"These disposable stores are copied into templates and local clones",
+      "new": "[[[51,\"Cancellation can precede the case's normal permission restoration. Restore\"],[52,\"only these captured fixture objects before the guarded root removal.\"]],[[87,\"Signal tests enter the real suite after its cleanup traps are installed.\"]],[[93,\"A waiting foreground child makes shell-only signal delivery fail reliably.\"]],[[146,\"These disposable stores are copied into templates and local clones"
+    }
+  ]
+}

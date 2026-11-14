@@ -1,0 +1,50 @@
+{
+  "source": "Own executed bounded probes; full logs remain in ignored session scratch",
+  "format": {
+    "command": "node scripts/harness.mjs bounded -- npm run format:check",
+    "startedAt": "2026-11-14T17:38:17.818Z",
+    "finishedAt": "2026-11-14T17:38:30.712Z",
+    "exitCode": 0,
+    "durationMs": 12894,
+    "result": "All matched files use Prettier code style."
+  },
+  "focused": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'a criteria list is refused|WO-276 F52' scripts/test-derived-orders.mjs",
+    "startedAt": "2026-11-14T17:38:40.302Z",
+    "finishedAt": "2026-11-14T17:38:40.543Z",
+    "exitCode": 0,
+    "durationMs": 240,
+    "tests": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "comparison": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-276/part-b/comparisons/readers.mjs order-criteria",
+    "startedAt": "2026-11-14T17:39:44.110Z",
+    "finishedAt": "2026-11-14T17:39:46.764Z",
+    "exitCode": 0,
+    "durationMs": 2654,
+    "read": 269,
+    "equal": 269,
+    "unnamedDifferences": 0
+  },
+  "feedback": {
+    "command": "node scripts/harness.mjs bounded -- node scripts/feedback-evidence.mjs --check",
+    "startedAt": "2026-11-14T17:38:56.075Z",
+    "finishedAt": "2026-11-14T17:38:58.961Z",
+    "exitCode": 0,
+    "durationMs": 2886,
+    "edition": "feedback-009",
+    "result": "Live audit judged current source; ten passing regressions, ten removal failures, 1192 fewer instruction bytes in matched projection."
+  },
+  "independentMatrix": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-276/verifier-007/reader-probe.mjs [session scratch] [result file]",
+    "startedAt": "2026-11-14T17:41:41.239Z",
+    "finishedAt": "2026-11-14T17:41:41.951Z",
+    "exitCode": 0,
+    "cases": 451,
+    "refusals": 134,
+    "silentLosses": 0,
+    "consumerCases": 6
+  }
+}

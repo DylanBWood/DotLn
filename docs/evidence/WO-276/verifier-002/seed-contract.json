@@ -1,0 +1,21 @@
+{
+  "template": "scripts/kit/first-order.template.md",
+  "authorityLines": [
+    15,
+    18
+  ],
+  "deliverableLines": [
+    82,
+    84
+  ],
+  "criterionLines": [
+    98,
+    101
+  ],
+  "facts": [
+    "Authority requires Claude Code plus the session host and says a fresh instance elects none",
+    "Deliverables require each inspected host in the discovery JSON",
+    "Criterion 2 forbids a host the instance does not elect"
+  ],
+  "scope": "Follow-up: WO-276 criterion 57 requires the seed default but does not judge this downstream criterion; no fresh instance lifecycle was run for this documentary finding"
+}

@@ -1,0 +1,9 @@
+{
+  "note": "The standing of one session of this order's dispatch on this checkout's own journals; the median of nine readings in one process, in milliseconds.",
+  "journals": 3,
+  "journalBytes": 21347462,
+  "baseStandingMs": 72,
+  "standingMs": 199,
+  "elapsedMs": 169399234,
+  "workedMs": 156220640
+}

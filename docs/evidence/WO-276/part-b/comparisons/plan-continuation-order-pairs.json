@@ -1,0 +1,9 @@
+{
+  "comparison": "plan-continuation-order-pairs",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every pair of consecutive committed revisions of each work order, and the newest against the worktree: the release label a later revision assigns, whether its change is only an appended execution record, the amendment-bound source, and the release-classification spelling admission",
+  "read": 1223,
+  "equal": 1223,
+  "differences": {},
+  "examples": []
+}

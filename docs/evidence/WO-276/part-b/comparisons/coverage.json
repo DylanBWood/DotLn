@@ -1,0 +1,668 @@
+{
+  "schemaVersion": 2,
+  "what": "each source the inventory names, reader by reader: the recorded comparison that calls the reader at the base and in the worktree over the committed documents or sources it reads, or, where none exists, why: the reader has no committed input (none is committed, with the count that shows it, or what it reads is never committed) or it reads no text",
+  "audited": "2026-11-13, after VER-002: each row was traced to the call that reaches the reader, and each comparison was rerun (WO-276-D132). 2026-11-13, after VER-003: every row without a comparison was judged by one rule, that only a reader with no committed input goes uncompared; the four readers held by a generated page's check and three readers the audit found with a committed input are compared, and the counts behind the rows that remain were taken again (WO-276-D137). After that repair's review: the feedback audit's row named a reading that had not moved and gave no committed input for the one that had, the test result row, which 216 committed records hold; it is compared (WO-276-D138). 2026-11-14, in the repair of FINAL-001: the six readers the final review found moved with no comparison are compared (the Front page field, the integration note at its two sites, a mixed projection's masks with the restore of the release block, the publication check's product links and voice sections, and the dependency migration's removal of its standalone block), and the inventory's screen, run again with the marker-comment form over the tree it was taken on, is recorded beside the inventory with the row here that holds each reader it finds ; four more readers of a marker comment that the screen run again found moved are compared as well: the executor root's origin comment, the instruction file's harness block, a filed record's link destinations and the product gate's block in a pull-request body ; and a census of the sources that call the shared readers more often than at the base (reader-census.json) found one more, the entropy review's workstream block, which has no committed input (WO-276-D173)",
+  "files": {
+    "packages/console/src/text-sources.ts": {
+      "readers": [
+        {
+          "reader": "parseCapabilities",
+          "comparison": "console-capabilities"
+        },
+        {
+          "reader": "tableRows over the publication index",
+          "comparison": "console-publication"
+        },
+        {
+          "reader": "parsePendingRungs",
+          "comparison": "console-roadmap-rungs"
+        },
+        {
+          "reader": "the work-order cards, which the base read from the generated pages (parseWorkOrderIndex) and the worktree takes from the index command's record",
+          "comparison": "console-work-order-cards",
+          "note": "for this tree alone: the record is the index command's own output and no file holds an earlier one"
+        }
+      ]
+    },
+    "packages/skeleton/src/discovery.ts": {
+      "readers": [
+        {
+          "reader": "the dotln-discovery block of a Markdown profile",
+          "none": "the worktree reads a profile as JSON and refuses a Markdown one by name; no profile is committed here (0 files under a .dotln directory), so the removed reading had no committed input"
+        }
+      ]
+    },
+    "packages/skeleton/src/feedback-audit.ts": {
+      "readers": [
+        {
+          "reader": "tapResult: a test's result row, found by the test's name, where the base wrote the name into a pattern and into a search of the whole output",
+          "comparison": "feedback-tap-rows",
+          "note": "over the lines each committed record of the audit kept, which are the lines the base's own test chose: the comparison cannot show a row the base dropped, and a run's whole output, the reader's input, is never committed. The pattern for a run's pass and fail counts, which the map named here before, is the same at the base and in the worktree"
+        }
+      ]
+    },
+    "packages/skeleton/src/feedback-source-comments.ts": {
+      "readers": [
+        {
+          "reader": "feedbackSourcesComments: a source's comment bodies",
+          "comparison": "feedback-comments"
+        }
+      ]
+    },
+    "packages/skeleton/src/harness-command.ts": {
+      "readers": [
+        {
+          "reader": "readShellCommand and the word readers built on it",
+          "comparison": "shell-reader"
+        }
+      ]
+    },
+    "packages/skeleton/src/harness-host.ts": {
+      "readers": [
+        {
+          "reader": "plainShellWords, the hook host's word splitter",
+          "comparison": "shell-reader",
+          "note": "its plainWords sets"
+        }
+      ]
+    },
+    "packages/skeleton/src/mission-check-source.ts": {
+      "readers": [
+        {
+          "reader": "missionClauses",
+          "comparison": "mission-clauses"
+        },
+        {
+          "reader": "missionDecisions",
+          "comparison": "mission-decisions"
+        },
+        {
+          "reader": "missionTheses and missionExclusions",
+          "comparison": "mission-vision"
+        }
+      ]
+    },
+    "packages/skeleton/src/reactor.ts": {
+      "readers": [
+        {
+          "reader": "the comparison of an enforcement payload with the one recorded",
+          "none": "it compares two parsed values and reads no text: the base compared their canonical strings and the worktree calls a function that compares the same strings"
+        }
+      ]
+    },
+    "packages/skeleton/src/runtime-status-contract.ts": {
+      "readers": [
+        {
+          "reader": "runtimeOrdersFromIndex, which the base read from the generated page and the worktree takes from the index command's record",
+          "comparison": "runtime-status-orders",
+          "note": "for this tree alone, as the console's cards"
+        }
+      ]
+    },
+    "scripts/authority-evidence.mjs": {
+      "readers": [
+        {
+          "reader": "the origin comment of the installed executor root, whose support ids the overlay evidence extends",
+          "comparison": "executor-origin-comments",
+          "note": "read inline in a longer step: the comparison makes each side's reading as its source makes it, the base's pattern taken from the base's file"
+        }
+      ]
+    },
+    "scripts/check-publication.mjs": {
+      "readers": [
+        {
+          "reader": "headings, with the fence reading inside it",
+          "comparison": "publication-headings"
+        },
+        {
+          "reader": "checkCoverage",
+          "comparison": "publication-coverage"
+        },
+        {
+          "reader": "productLinks: the links a publication page makes into the product documents",
+          "comparison": "publication-product-links"
+        },
+        {
+          "reader": "voiceSection: the section of the dual-voice sample under one voice's heading",
+          "comparison": "publication-voice-sections"
+        }
+      ]
+    },
+    "scripts/docs-check.mjs": {
+      "readers": [
+        {
+          "reader": "productContent: a product document's sections, anchors and sizes",
+          "comparison": "product-content"
+        },
+        {
+          "reader": "operatorWordFindings with decisionSections and decisionSection: provenance fields, each decision's section and the fenced text set aside",
+          "comparison": "operator-words"
+        },
+        {
+          "reader": "requestedQuotes: a decision's operatorQuote",
+          "none": "no committed decisions file holds an operatorQuote (0 of 187), so the reader has no committed input"
+        }
+      ]
+    },
+    "scripts/harness-context.mjs": {
+      "readers": [
+        {
+          "reader": "whether the root instruction file holds the harness's generated block, in measureHarnessContext",
+          "comparison": "harness-instruction-blocks",
+          "note": "read inline in a longer step: the comparison makes each side's reading as its source makes it, the base's string and the worktree's call of the marker-block reader"
+        }
+      ]
+    },
+    "scripts/launchpad.mjs": {
+      "readers": [
+        {
+          "reader": "kitProvenance: the upstream commit an exported instance's UPSTREAM.md names",
+          "none": "it reads a file an export writes into an instance; none is committed here (0 files named UPSTREAM.md)"
+        }
+      ]
+    },
+    "scripts/lib/comment-labels.mjs": {
+      "readers": [
+        {
+          "reader": "the comments of a shell file and of its here-documents",
+          "comparison": "shell-comments"
+        },
+        {
+          "reader": "the comments of a JavaScript or TypeScript source",
+          "comparison": "repair-001/comment-reader-comparison",
+          "note": "recorded by the repair of VER-001 beside this order's other evidence, over the 691 code files the check reads"
+        }
+      ]
+    },
+    "scripts/lib/dependencies.mjs": {
+      "readers": [
+        {
+          "reader": "dependencyHeader and parseDependencies: the typed block or the Depends on line",
+          "comparison": "dependencies"
+        },
+        {
+          "reader": "the Umbrella record label, read by umbrellaNotice",
+          "comparison": "work-order-headers",
+          "note": "through the header's umbrella key; also umbrella-notices"
+        },
+        {
+          "reader": "inheritedLedgerDuty",
+          "comparison": "work-order-headers",
+          "note": "through the header's ledgerSubstitution key, read as core's root reads it"
+        }
+      ]
+    },
+    "scripts/lib/derived-contract.mjs": {
+      "readers": [
+        {
+          "reader": "parseDerivedProvenance",
+          "comparison": "work-order-headers",
+          "note": "through the header's provenance key; no committed order carries the field (0 of 269), so every answer is the absent one"
+        },
+        {
+          "reader": "checkGeneratedSections and validateAllocation",
+          "none": "they read a derived order and its allocation event: no committed order is derived and the control log holds no identity allocation (0 and 0), so the readers have no committed input"
+        }
+      ]
+    },
+    "scripts/lib/document-kinds.mjs": {
+      "readers": [
+        {
+          "reader": "hasGeneratedMarker",
+          "comparison": "generated-pages"
+        },
+        {
+          "reader": "redTagBlock",
+          "comparison": "red-tags"
+        }
+      ]
+    },
+    "scripts/lib/drive-route.mjs": {
+      "readers": [
+        {
+          "reader": "the findings block of a filed failure report, by whether a finding routes to the operator",
+          "comparison": "drive-route-operator-finding"
+        }
+      ]
+    },
+    "scripts/lib/entropy-review.mjs": {
+      "readers": [
+        {
+          "reader": "workstreamRepositories: the dotln-workstream block of a workstream document, which the base found by comparing each line with its two markers",
+          "none": "it reads a workstream document under the workstreams root, and none is committed here (0 files named WS-NNN-*.md: the root holds its README alone), so the reader has no committed input",
+          "note": "found by reader-census.mjs, which counts the shared readers' calls at the base and now; no screen's form holds a line compared with a marker's string"
+        }
+      ]
+    },
+    "scripts/lib/evidence-sources.mjs": {
+      "readers": [
+        {
+          "reader": "relativeImports: a source's import specifiers",
+          "comparison": "imports"
+        }
+      ]
+    },
+    "scripts/lib/features.mjs": {
+      "readers": [
+        {
+          "reader": "renderInstanceSecrets",
+          "comparison": "instance-secrets"
+        }
+      ]
+    },
+    "scripts/lib/front-page-scope.mjs": {
+      "readers": [
+        {
+          "reader": "frontPageDeclaration: the Front page field an order's leading header declares, which the base took as the header line that opens with the label",
+          "comparison": "front-page-declarations",
+          "note": "the base tested the line with a string, which the inventory's screen of pattern literals did not hold; found by the final review (FINAL-001 F7)"
+        }
+      ]
+    },
+    "scripts/lib/git-surface.mjs": {
+      "readers": [
+        {
+          "reader": "readGitSurface: the Git forms of shell text and of script sources",
+          "comparison": "git-surface"
+        }
+      ]
+    },
+    "scripts/lib/github-body.mjs": {
+      "readers": [
+        {
+          "reader": "githubBodyProfileFailures: the lines a prose paragraph wraps onto",
+          "comparison": "github-body-soft-wraps"
+        },
+        {
+          "reader": "pullRequestBodyShapeFailures",
+          "comparison": "github-body-shape"
+        },
+        {
+          "reader": "the criterion-record lines criterionRecordProblem reads",
+          "comparison": "github-body-criterion-records"
+        }
+      ]
+    },
+    "scripts/lib/handoff-ledger.mjs": {
+      "readers": [
+        {
+          "reader": "declaredCriteria and readPreflightSuites",
+          "comparison": "order-criteria"
+        }
+      ]
+    },
+    "scripts/lib/harness-context.mjs": {
+      "readers": [
+        {
+          "reader": "readDirectives",
+          "comparison": "harness-context-directives"
+        },
+        {
+          "reader": "sectionRange",
+          "comparison": "harness-context-sections"
+        },
+        {
+          "reader": "citedSelectors",
+          "comparison": "harness-context-citations"
+        }
+      ]
+    },
+    "scripts/lib/harness.mjs": {
+      "readers": [
+        {
+          "reader": "excludeRegistry: the lines the kit wrote into a target repository's exclude file",
+          "none": "it reads .git/info/exclude of a registered target, which no repository commits"
+        }
+      ]
+    },
+    "scripts/lib/machinery-coverage.mjs": {
+      "readers": [
+        {
+          "reader": "scriptTokens",
+          "comparison": "script-tokens"
+        }
+      ]
+    },
+    "scripts/lib/meta.mjs": {
+      "readers": [
+        {
+          "reader": "readDecisions, and the heading anchor each record takes",
+          "comparison": "decisions"
+        },
+        {
+          "reader": "planningCaptures",
+          "comparison": "planning-captures"
+        },
+        {
+          "reader": "the Cost declaration collectMeta reconciles",
+          "comparison": "cost-fields",
+          "note": "the base wrote the pattern inline; it is taken from the base's file"
+        }
+      ]
+    },
+    "scripts/lib/off-ramps.mjs": {
+      "readers": [
+        {
+          "reader": "criterionJudgments",
+          "comparison": "criterion-judgments"
+        }
+      ]
+    },
+    "scripts/lib/outward-lint.mjs": {
+      "readers": [
+        {
+          "reader": "the rendered view of a pull-request or release body, with each character's source span",
+          "comparison": "outward-rendered-view",
+          "note": "the lint's rules over that view are another matter and are not compared; the reader reads no commit message"
+        }
+      ]
+    },
+    "scripts/lib/plan-continuation.mjs": {
+      "readers": [
+        {
+          "reader": "between two revisions of an order: the release label the later one assigns, whether its change is only an appended execution record, the amendment-bound source and the admitted spelling of a release classification",
+          "comparison": "plan-continuation-order-pairs"
+        },
+        {
+          "reader": "where a disposed criterion's text is found after the acceptance criteria",
+          "comparison": "plan-continuation-criteria"
+        },
+        {
+          "reader": "reassessments: the dated sections appended to the capability table",
+          "comparison": "plan-continuation-reassessments"
+        },
+        {
+          "reader": "citationHeadings",
+          "comparison": "plan-continuation-citation-headings"
+        },
+        {
+          "reader": "capabilityHistoryRepair: the capability id of each table row, by its line",
+          "comparison": "capability-row-ids",
+          "note": "the reading inside the repair, over the committed revisions of the table it is given two of; the whole repair also needs a pending edit in a workspace, which nothing commits"
+        }
+      ]
+    },
+    "scripts/lib/plan-dependency-migration.mjs": {
+      "readers": [
+        {
+          "reader": "the Umbrella record notice the dependency migration reads",
+          "comparison": "umbrella-notices",
+          "note": "the base wrote the pattern inline; it is taken from the base's file"
+        },
+        {
+          "reader": "withoutStandaloneBlock: the standalone dependencies block the migration takes out of an order once its relations are transcribed",
+          "comparison": "dependency-migration-blocks",
+          "note": "the base wrote the pattern inline; it is taken from the base's file"
+        }
+      ]
+    },
+    "scripts/lib/plan-first.mjs": {
+      "readers": [
+        {
+          "reader": "proposedPlan: a plan-first proposal's marker block",
+          "none": "it reads an order's plan-first documents, which no order has committed here (0 files under a plan-first directory)"
+        }
+      ]
+    },
+    "scripts/lib/plan-receipts.mjs": {
+      "readers": [
+        {
+          "reader": "amendmentDecision",
+          "comparison": "amendment-decisions"
+        },
+        {
+          "reader": "executionPlanPaths",
+          "comparison": "execution-plan-paths"
+        }
+      ]
+    },
+    "scripts/lib/plan-subject.mjs": {
+      "readers": [
+        {
+          "reader": "section, field, parsePlanOrder and buildPlanSubject",
+          "comparison": "planning-subjects-base",
+          "note": "also planning-subjects, against the subject each receipt stored"
+        },
+        {
+          "reader": "planCostDeclaration",
+          "comparison": "plan-cost"
+        },
+        {
+          "reader": "planningPasses",
+          "comparison": "planning-passes"
+        }
+      ]
+    },
+    "scripts/lib/planning-document.mjs": {
+      "readers": [
+        {
+          "reader": "rulesRecordedBlock",
+          "comparison": "planning-rules"
+        }
+      ]
+    },
+    "scripts/lib/planning-followups.mjs": {
+      "readers": [
+        {
+          "reader": "collectFollowupSources: the candidates of the product and planning documents",
+          "comparison": "followup-sources",
+          "note": "the decisions it also lists are read by readDecisions, which the decisions comparison holds"
+        }
+      ]
+    },
+    "scripts/lib/receipt-cost.mjs": {
+      "readers": [
+        {
+          "reader": "judgeCostLine",
+          "comparison": "receipt-cost-lines"
+        }
+      ]
+    },
+    "scripts/lib/release-history.mjs": {
+      "readers": [
+        {
+          "reader": "historicalComponents: the components of the manifest-free edition",
+          "comparison": "release-history-components"
+        },
+        {
+          "reader": "orderLinks: the display title of each order the roadmap's release block links",
+          "comparison": "release-history-order-titles"
+        }
+      ]
+    },
+    "scripts/lib/release-notes.mjs": {
+      "readers": [
+        {
+          "reader": "parseReleaseNotes",
+          "comparison": "release-notes-sections"
+        },
+        {
+          "reader": "targetReleaseNotesSource",
+          "comparison": "release-notes-target-source",
+          "note": "no committed order carries the field (0 of 269), so every answer is the absent one"
+        }
+      ]
+    },
+    "scripts/lib/release-preparation.mjs": {
+      "readers": [
+        {
+          "reader": "the Release classification an order's header declares",
+          "comparison": "release-preparation-reading"
+        },
+        {
+          "reader": "integrationPreparationRefusal: the integration note an order's decisions file holds for a checkpoint",
+          "comparison": "integration-notes"
+        }
+      ]
+    },
+    "scripts/lib/review-findings.mjs": {
+      "readers": [
+        {
+          "reader": "readFindingsBlock",
+          "comparison": "findings-blocks"
+        }
+      ]
+    },
+    "scripts/lib/review-worker.mjs": {
+      "readers": [
+        {
+          "reader": "the headings, tables and fences of a worker's returned report",
+          "none": "it reads a worker's reply, recorded under the ignored reviews lane and never committed"
+        }
+      ]
+    },
+    "scripts/lib/target-records.mjs": {
+      "readers": [
+        {
+          "reader": "recordLinkTargets: a filed record's link destinations, with the comments of its raw HTML left out",
+          "comparison": "record-link-targets"
+        }
+      ]
+    },
+    "scripts/lib/temporary-root-declarations.mjs": {
+      "readers": [
+        {
+          "reader": "unownedTemporaryRootSites, over the tokens scriptTokens gives",
+          "comparison": "temporary-roots",
+          "note": "both readers find no unowned site; the tokens themselves are compared by script-tokens"
+        }
+      ]
+    },
+    "scripts/lib/verification-briefing.mjs": {
+      "readers": [
+        {
+          "reader": "knownIssueSections",
+          "comparison": "known-issues"
+        }
+      ]
+    },
+    "scripts/lib/work-order-repository.mjs": {
+      "readers": [
+        {
+          "reader": "parseRepositoryDeclaration",
+          "comparison": "work-order-headers",
+          "note": "also order-declarations; no committed order or retired order declares a repository (0 of 270), so every answer is the absent one"
+        }
+      ]
+    },
+    "scripts/lib/work-order-workstream.mjs": {
+      "readers": [
+        {
+          "reader": "parseWorkstreamDeclaration",
+          "comparison": "work-order-headers",
+          "note": "one committed document declares a workstream, the retired order, which the comparison reads"
+        }
+      ]
+    },
+    "scripts/lib/worktree-integration.mjs": {
+      "readers": [
+        {
+          "reader": "the integration note the module reads in an order's decisions file before it files a saved release outcome",
+          "comparison": "integration-notes",
+          "note": "the same test as release preparation's, with the same string at the base and the same call of the shared reader now; the comparison runs release preparation's, the one written as a function of its own"
+        },
+        {
+          "reader": "mixedProjectionMask, and the restore of the release block's version after a masked merge (restoreReleaseVersion): the generated blocks of the root instruction file and the front page that a mixed projection sets aside",
+          "comparison": "mixed-projection-masks",
+          "note": "the base wrote the restore inline with its mask's pattern, which is taken from the base's file"
+        }
+      ]
+    },
+    "scripts/lineage.mjs": {
+      "readers": [
+        {
+          "reader": "inspectLedger",
+          "comparison": "ledger-entries"
+        }
+      ]
+    },
+    "scripts/probe-codex-effort.mjs": {
+      "readers": [
+        {
+          "reader": "the last message of a live Codex run",
+          "none": "it reads the reply of a Codex process it starts on request, which no committed document holds"
+        }
+      ]
+    },
+    "scripts/probes/local-model-role-qualification.mjs": {
+      "readers": [
+        {
+          "reader": "t1Input: the table rows and criterion headings it quotes from the report its fixture names",
+          "comparison": "qualification-source-rows"
+        }
+      ]
+    },
+    "scripts/probes/wo242-controls.mjs": {
+      "readers": [
+        {
+          "reader": "hookRetainedRuntime: the retained runtime a permission hook names",
+          "comparison": "probe-hook-runtime",
+          "note": "the worktree's reading could not load before this comparison was written: the probe imported a module that does not exist (WO-276-D137)"
+        }
+      ]
+    },
+    "scripts/release.mjs": {
+      "readers": [
+        {
+          "reader": "readWorkOrderAuthority: an order's title, version, objective, non-goals and target classification at each revision",
+          "comparison": "release-authority",
+          "note": "no committed order declares a target classification (0 of 269); the lookup of an order's path in the control log, inside workOrderTitleAtHead, is not compared"
+        }
+      ]
+    },
+    "scripts/resume.mjs": {
+      "readers": [
+        {
+          "reader": "workOrderDeclaration: the Model, Effort and Experiment declarations",
+          "comparison": "order-declarations"
+        },
+        {
+          "reader": "reactivationNotes",
+          "comparison": "order-declarations",
+          "note": "no committed order carries a reactivation note (0 of 269), so every answer is the empty one"
+        }
+      ]
+    },
+    "scripts/siblings.mjs": {
+      "readers": [
+        {
+          "reader": "manifestHashes: each entry's recorded manifest hash, which checkRegistry reads back",
+          "comparison": "siblings-manifest-hashes",
+          "note": "the base's entries and manifestHashLine, called as the check called them; the check itself returns before either reading when the registry is current"
+        }
+      ]
+    },
+    "scripts/work-orders.mjs": {
+      "readers": [
+        {
+          "reader": "parseHeader",
+          "comparison": "work-order-headers",
+          "note": "also work-order-header-only, the lead's reading against the whole document's"
+        },
+        {
+          "reader": "parseSequenceGroups",
+          "comparison": "sequence-groups",
+          "note": "its order ids also through planning-subjects-base"
+        },
+        {
+          "reader": "checkPartition",
+          "comparison": "index-partition"
+        }
+      ]
+    },
+    "scripts/worktree.mjs": {
+      "readers": [
+        {
+          "reader": "the product gate's block in the pull-request body the order publish stores",
+          "comparison": "product-gate-blocks",
+          "note": "read inline in a longer step: the comparison makes each side's reading as its source makes it, the base's pattern taken from the base's file"
+        }
+      ]
+    }
+  },
+  "also": {
+    "markdown-links": "the shared Markdown module's own reading of links and code spans, the base's against the worktree's, over every document: the module every moved reader now reads through",
+    "planning-subjects": "the planning subject each receipt stored, against the one the worktree rebuilds from the receipt's revision",
+    "work-order-header-only": "in the worktree alone, the header read from an order's lead against the header the whole document gives"
+  }
+}

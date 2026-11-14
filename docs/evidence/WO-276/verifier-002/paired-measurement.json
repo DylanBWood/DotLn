@@ -1,0 +1,84 @@
+{
+  "observed": {
+    "workOrder": "WO-276",
+    "firstVerification": "fail",
+    "rounds": 2,
+    "counts": {
+      "criterion": {
+        "combinedOnly": 3,
+        "kindsOnly": 1,
+        "both": 1
+      },
+      "lesser": {
+        "combinedOnly": 0,
+        "kindsOnly": 1,
+        "both": 0
+      },
+      "improvement": {
+        "combinedOnly": 0,
+        "kindsOnly": 0,
+        "both": 0
+      },
+      "none": {
+        "combinedOnly": 0,
+        "kindsOnly": 0,
+        "both": 0
+      }
+    },
+    "perRound": [
+      {
+        "decision": "WO-276-D081",
+        "findings": 4,
+        "counts": {
+          "criterion": {
+            "combinedOnly": 1,
+            "kindsOnly": 1,
+            "both": 1
+          },
+          "lesser": {
+            "combinedOnly": 0,
+            "kindsOnly": 1,
+            "both": 0
+          },
+          "improvement": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 0
+          },
+          "none": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 0
+          }
+        }
+      },
+      {
+        "decision": "WO-276-D082",
+        "findings": 2,
+        "counts": {
+          "criterion": {
+            "combinedOnly": 2,
+            "kindsOnly": 0,
+            "both": 0
+          },
+          "lesser": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 0
+          },
+          "improvement": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 0
+          },
+          "none": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 0
+          }
+        }
+      }
+    ]
+  },
+  "sourceObservation": "D081 describes a recheck; D082 describes a final combined delta round; D043 reserves roundFindings for paired first rounds, and D121 reports no paired round"
+}

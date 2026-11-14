@@ -1,0 +1,48 @@
+{
+  "hostElection": {
+    "unreadFactIndistinguishableFromControl": true,
+    "unknownRows": 0,
+    "exitCode": 0
+  },
+  "privacy": [
+    {
+      "input": "from /équipe",
+      "tableRetainsPath": true,
+      "jsonRetainsPath": true
+    },
+    {
+      "input": "from /alpha",
+      "tableRetainsPath": false,
+      "jsonRetainsPath": false
+    },
+    {
+      "input": "from /文書",
+      "tableRetainsPath": true,
+      "jsonRetainsPath": true
+    }
+  ],
+  "privacyLimit": "Same injected Node version surface as existing privacy corpus; no real host secret or live leak observed.",
+  "update": {
+    "missingPrior": [
+      {
+        "path": ".agents/skills/dotln-executor/SKILL.md",
+        "kind": "refuse",
+        "reason": "instance-owned collision",
+        "unchanged": false,
+        "upstreamUnchanged": false
+      }
+    ],
+    "missingPriorCheckCalls": 0,
+    "oldListed": [
+      {
+        "path": ".agents/skills/dotln-executor/SKILL.md",
+        "kind": "replace",
+        "reEmitted": true,
+        "unchanged": false,
+        "upstreamUnchanged": false
+      }
+    ],
+    "oldListedCheckCalls": 1,
+    "limit": "Pure planner inputs; own check injected as passes, no host election lifecycle or real update published."
+  }
+}

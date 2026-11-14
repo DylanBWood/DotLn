@@ -1,0 +1,9 @@
+{
+  "comparison": "operator-words",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order's provenance fields, every decision's section and fields, and every paragraph of a report or planning document that attributes words: each record the operator-words screen finds, with its class, its fingerprint and the lines it spans",
+  "read": 454,
+  "equal": 454,
+  "differences": {},
+  "examples": []
+}

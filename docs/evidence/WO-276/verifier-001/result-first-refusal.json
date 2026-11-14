@@ -1,0 +1,7 @@
+{
+  "action": "verification-result fail",
+  "exitCode": 1,
+  "resultRecorded": false,
+  "failure": "git diff --check failed: docs/verifications/WO-276/VER-001.md:350: new blank line at EOF.",
+  "disposition": "D126 removes the extra blank line and runs the exact lifecycle whitespace check before a new document gate and result attempt."
+}

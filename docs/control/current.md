@@ -1,24 +1,27 @@
 # Current control state
 
-## WO-260
+## WO-276
 
-- Work order: WO-260
-- Work-order path: docs/work-orders/WO-260-the-kit-runs-on-git-2-31.md
+- Work order: WO-276
+- Work-order path: docs/work-orders/WO-276-the-queue-lands-as-one-order.md
 - Phase: closed
-- Latest verification: VER-003
-- Verification path: docs/verifications/WO-260/VER-003.md
+- Latest verification: VER-007
+- Verification path: docs/verifications/WO-276/VER-007.md
 - Latest verdict: pass
-- Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-260/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.321; model claude-fable-5-2; effort max; source claude-session-readback; account not-applicable
-- Effort drift: max -> xhigh
-- Latest recordedAt: 2026-11-09T21:33:20.761Z
-- Elapsed implementation: 5 h 44 min
-- Elapsed verification: 0 h 32 min
-- Elapsed repair: 1 h 46 min
-- Elapsed finalReview: 0 h 41 min
-- Latest checkpoint: 3153f080aa2d5049e82965619224a954f873c048 (restore: `git checkout refs/dotln/checkpoint/WO-260/14 -- .`)
+- Final review: FINAL-002
+- Final-review path: docs/final-reviews/WO-276/FINAL-002.md
+- Latest attestation: harness claude-code; version 2.1.325; model claude-fable-5-2; effort max; source claude-session-readback; account not-applicable
+- Effort drift: xhigh -> xhigh (subagents) (raw: ultra) -> max
+- Latest recordedAt: 2026-11-14T19:07:59.550Z
+- Elapsed implementation: 56 h 6 min
+- Elapsed verification: 0 h 13 min
+- Elapsed repair: 1 h 35 min
+- Elapsed finalReview: 1 h 17 min
+- Latest checkpoint: deef765dcb1318c4decb24838d072403bf19973e (restore: `git checkout refs/dotln/checkpoint/WO-276/102 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record, retract
+- Bound acceptances: active wallClockMs=24 h 0 min (ordinal 2); active subagentCap=100 (ordinal 3); active wallClockMs=48 h 0 min (ordinal 4); active subagentCap=220 (ordinal 5); active wallClockMs=72 h 0 min (ordinal 6); active wallClockMs=96 h 0 min (ordinal 7); repairing subagentCap=50 (ordinal 33)
+- Defective criteria: 51 (contradiction, ordinal 10), 121 (contradiction, ordinal 11), 123 (contradiction, ordinal 12)
+- Criteria: 51 defective (contradiction) by ordinal 10 (executor: unmet at handoff, ordinal 38); 121 defective (contradiction) by ordinal 11 (executor: unmet at handoff, ordinal 38); 123 defective (contradiction) by ordinal 12 (executor: unmet at handoff, ordinal 38)
 
 Generated from the append-only `docs/control/resume.jsonl` and `docs/control/orders/WO-NNN.jsonl` segments; do not edit this projection manually.

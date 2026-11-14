@@ -1,0 +1,9 @@
+{
+  "comparison": "github-body-soft-wraps",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every stored pull-request body and release-notes document under docs/final-reviews and docs/releases: each line a prose paragraph wraps onto",
+  "read": 434,
+  "equal": 434,
+  "differences": {},
+  "examples": []
+}

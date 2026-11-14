@@ -1,0 +1,1620 @@
+{
+  "baseline": "main",
+  "comparison": "entire declaredCriteria objects, not counts alone",
+  "comparisons": [
+    {
+      "file": "docs/work-orders/WO-001-environment-truth.md",
+      "count": 0,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-002-pure-kernel.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-003-walking-skeleton.md",
+      "count": 0,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-004-environment-truth-addendum.md",
+      "count": 0,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-005-capability-table.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-006-publication-bootstrap.md",
+      "count": 20,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-007-audit-record-baseline.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-008-composition-compiler.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-009-real-disposable-worker.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-010-independent-verification.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-011-feedback-compiler.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-012-release-gate-path-quoting.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-013-portable-fixture-temp-roots.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-014-approval-burden-contract.md",
+      "count": 18,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-015-release-cadence-parser.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-016-skeleton-reactor.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-017-kernel-truthfulness.md",
+      "count": 0,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-018-control-plane-consolidation.md",
+      "count": 0,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-019-effort-truth.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-020-beacon-codebook.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-021-control-plane-beacons.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-022-senses.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-023-compile-entropy-reducer.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-024-release-notes-surfaced.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-025-version-bearing-surfaces.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-026-work-order-index.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-027-local-inference-probe.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-028-control-event-time.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-029-pinned-artifact-identity.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-030-concurrent-control-state.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-031-actor-usage-projection.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-032-uifa-actor-board.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-033-compiled-starter-export.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-034-cross-repository-workstream-pilot.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-035-documentation-structure-reset.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-036-evidence-runner.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-037-five-s-equipment-set.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-038-license-posture-lands.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-039-harness-lowering.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-040-rule-migration-batch-one.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-041-plan-refutation-mechanism.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-042-authority-provenance.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-043-typed-dependency-truth.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-044-writing-worker-harness-truth.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-045-store-and-hook-input-decoders.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-046-executable-program-split.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-047-replay-environment-projector.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-048-worker-host-on-disk-decode.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-049-target-worktree-bundle.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-050-reactor-typed-state-slices.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-051-source-change-transport-profile.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-052-source-change-host.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-053-first-external-source-change.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-054-verification-over-real-worktree.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-055-repair-continuation.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-056-live-verification-and-repair.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-057-browser-runtime-truth.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-058-visual-and-network-claim-types.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-059-playwright-evidence-adapter.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-060-source-bundle-contract.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-061-story-contract-compile.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-062-github-issue-source-adapter.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-063-outward-artifact-lint.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-064-target-publish.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-065-pull-request-state-observation.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-066-review-comment-resolution-loop.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-067-presence-policy-compiled.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-068-resident-host.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-069-configuration-root.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-070-beacon-portability.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-071-registered-target-repositories.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-072-target-worktree-lifecycle.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-073-repository-class-and-profile.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-074-launchpad-export-kit.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-075-kit-runtime-and-bundle.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-076-instance-build-overlay.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-077-launchpad-export-update.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-078-sibling-registry.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-079-worktree-sync.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-080-workstream-document-and-index.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-081-board-workstreams-section.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-082-synthetic-pilot-six-demonstrations.md",
+      "count": 3,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-083-real-run-launchpad-instance.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-084-ledger-order-and-index.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-085-spec-receipt-boundary.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-086-generated-release-history.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-087-roadmap-split.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-088-phrase-table-single-source.md",
+      "count": 12,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-089-capability-table-fold.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-090-shorter-cold-start.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-091-multi-active-link-groups.md",
+      "count": 16,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-092-sets-graph-extension.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-093-five-s-mechanics-as-data.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-094-set-bonuses-lowered.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-095-full-set-scenario-and-render.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-096-migration-ledger.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-097-rule-migration-batch-1a.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-098-rule-migration-batch-1b.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-099-mission-check.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-100-preauthorized-portfolio.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-101-program-and-hash-corpus.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-102-cadence-corpus.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-103-authority-outbox-corpus.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-105-crash-shape-corpus.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-107-profiling-baseline.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-108-mutation-probe.md",
+      "count": 0,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-109-shape-first-source-remine.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-110-local-model-transport.md",
+      "count": 4,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-111-unattended-live-proof.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-112-core-run-loop-proof.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-113-work-order-files-stable-contracts.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-114-runtime-status-projection.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-115-console-parity-contract.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-116-audit-projection-served.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-117-console-live-host.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-118-resident-owned-loop-from-starter.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-119-executable-discovery-producer.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-120-derived-work-identity.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-121-presence-signals-with-origin.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-122-actor-catalog-cli-and-human.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-123-vertical-composition.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-124-impact-surfaces-derivation.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-125-codex-effort-selection.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-126-process-debt.md",
+      "count": 18,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-127-release-close-recovery.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-128-fresh-gates-pass-first-time.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-129-suite-evidence-input-identity.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-130-declared-suite-inputs-replica.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-131-remaining-suites-under-replica.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-132-machinery-stand-down.md",
+      "count": 14,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-133-stand-down-residue.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-134-planning-pass-selection.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-135-capability-id-admission.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-136-authority-enforcement-boundary.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-137-local-runner-readiness.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-138-local-model-role-qualification.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-139-subagent-cap.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-140-gate-sandbox-preflight.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-141-no-guessing-enforced.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-142-outstanding-cleanup.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-143-resident-lock-recovery.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-144-outside-project-write-grant.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-145-tinkerer-economy-experiment.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-146-copilot-cli-harness.md",
+      "count": 12,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-147-resident-lock-contention.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-148-resident-binding.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-149-codex-sessions-begin.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-150-tinkerer-economy-default.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-151-entropy-reducer-dispatch.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-152-mission-check-schema-ids.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-153-codex-session-entry-advisory.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-154-evidence-editions-by-reference.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-155-single-source-floor.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-156-plan-check-sub-second.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-157-closeout-followups.md",
+      "count": 19,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-158-lifecycle-off-ramps.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-159-codex-episode-isolation.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-160-wo111-machinery-followups.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-161-sandbox-vocabulary.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-162-in-unit-helper-reuse.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-163-5s-sort-and-set-in-order.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-164-constant-process-console-collection.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-165-entropy-review-route-agreement.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-166-session-boundaries.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-167-execution-guide-folded.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-168-printed-path-exists.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-169-followups-reach-their-seam.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-170-meter-keeps-what-sessions-observed.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-171-prune-apply-finishes.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-172-failures-reach-planning.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-173-handoff-states-what-it-knows.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-174-gate-rows-cover-what-suites-read.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-175-reopening-conditions-report-themselves.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-176-release-close-finishes-on-the-handoff.md",
+      "count": 2,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-177-spawned-agents-run-the-pinned-models.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-178-the-record-holds-what-the-operator-sees.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-179-role-text-carries-the-confirmed-corrections.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-180-baseline-witness-before-any-change.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-181-independent-review-episode.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-182-deliverable-ready-conjunction.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-183-intent-declaration-and-the-stranger-test.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-184-seams-before-the-vertical.md",
+      "count": 22,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-185-no-order-can-exhaust-the-host.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-186-gate-time-follows-the-change.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-187-verification-attacks-and-reviews.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-188-boarded-machinery-items.md",
+      "count": 27,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-189-front-page.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-190-index-and-roadmap-show-the-work-ahead.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-191-reader-profiles.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-192-router-drives-an-order.md",
+      "count": 16,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-193-instance-capability-requests.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-194-private-predecessor-map.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-195-roles-finish-what-was-dispatched.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-196-the-handoff-is-one-command.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-197-slow-suites-back-to-their-medians.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-198-a-worktree-gate-names-what-moved.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-199-the-vertical-survives-an-interrupt.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-200-pinned-collector-bytes-observed.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-201-export-runs-core-suites.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-202-planning-machinery-runs-in-an-instance.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-203-update-preview.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-204-source-writer-cleanup-revocation.md",
+      "count": 25,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-205-writer-resistant-git-interpretation.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-206-source-writer-object-store-protection.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-207-update-rollback.md",
+      "count": 22,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-208-instance-extension-point.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-209-build-as-update-channel.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-210-instance-orders-reach-release-close.md",
+      "count": 28,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-213-private-paths-in-every-record.md",
+      "count": 14,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-215-release-close-refreshes-the-starter.md",
+      "count": 12,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-216-no-gate-fails-late-on-bookkeeping.md",
+      "count": 15,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-217-boarded-follow-ups-the-gate.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-218-boarded-follow-ups-the-instance-and-publication.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-219-boarded-follow-ups-records-roles-and-the-harness.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-220-boarded-follow-ups-the-resident-and-the-vertical.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-221-target-order-without-an-operator-step.md",
+      "count": 12,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-222-the-complete-run-fits-the-machine.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-223-an-instance-takes-a-starter-update.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-224-entropy-reducer-on-a-registered-target.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-225-console-host-contracts.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-226-kit-runtime-after-an-update.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-227-outward-publication-as-intended.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-229-host-lane-visibility.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-230-target-publish-against-the-base-branch.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-231-final-review-lint-from-the-described-base.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-232-a-release-does-not-break-the-instance.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-233-dotln-cleans-up-after-itself.md",
+      "count": 16,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-234-a-dispatch-cannot-run-away.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-235-no-artifact-shaped-by-its-predecessor.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-236-executor-edits-the-registered-target-worktree.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-237-a-closed-order-keeps-its-journals.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-238-a-document-says-what-is-so.md",
+      "count": 13,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-239-release-close-prepares-before-it-loads-and-runs-once.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-240-node-24-beside-node-26.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-241-the-features-file.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-242-plan-first-mode.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-243-closeout-checks-follow-the-repositories-an-order-changed.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-244-paired-planning-passes-and-the-synthesis-pass.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-245-the-kit-guide-is-a-kit-file.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-246-the-launchpads-own-pull-requests.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-247-a-driven-codex-order-finishes.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-248-the-pull-request-table-says-what-its-reader-can-use.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-249-criteria-judge-the-product.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-250-reviews-converge-and-every-worker-counts.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-251-desktop-control-is-opt-in.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-252-release-close-owns-what-the-kit-wrote.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-253-temporary-roots-leave-with-the-gate-that-made-them.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-254-the-hooks-get-out-of-the-operators-way.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-255-reviews-find-what-the-complete-run-finds.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-257-instance-returns-of-2026-11-03.md",
+      "count": 20,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-258-an-instances-first-cycle-meets-the-kit.md",
+      "count": 12,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-259-committed-words-and-filed-records.md",
+      "count": 11,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-260-the-kit-runs-on-git-2-31.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-261-an-instances-update-keeps-its-own-files.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-262-review-findings-are-judged-before-they-are-fixed.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-263-the-complete-run-takes-its-exclusive-suites-in-one-convoy.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-264-each-role-loads-the-rules-that-apply-to-it.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-265-a-new-host-learns-what-it-lacks-from-one-command.md",
+      "count": 10,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-266-an-instance-chooses-its-models-and-reads-what-an-order-cost.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-267-an-instance-builds-its-own-tools-beside-the-kit.md",
+      "count": 8,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-268-what-a-session-learns-about-a-target-is-loaded-by-the-next.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-269-a-team-works-one-instance-against-a-repository-that-squashes-its-merges.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-270-an-initiative-is-laid-out-before-its-orders-are-cut.md",
+      "count": 5,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-271-an-order-is-paced-across-days.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-272-a-tool-call-pays-for-the-hooks-that-judge-it.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-273-a-complete-run-fails-for-a-defect-in-the-change.md",
+      "count": 6,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-274-a-target-orders-records-stay-in-the-instance-where-its-registration-says-so.md",
+      "count": 9,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-275-a-new-instance-starts-on-claude-alone-and-tells-its-operator-what-to-type.md",
+      "count": 7,
+      "mainEqual": true,
+      "priorEqual": true
+    },
+    {
+      "file": "docs/work-orders/WO-276-the-queue-lands-as-one-order.md",
+      "count": 133,
+      "mainEqual": true,
+      "priorEqual": true
+    }
+  ]
+}

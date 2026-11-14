@@ -4279,6 +4279,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "70008190954c794f72f9ba3be27df1e3b760713cdbc434ea8efb902305a8bb69",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -27151,6 +27158,13 @@
           "title": "ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when",
           "summary": "- **ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when ** Surface `scripts/test-runner.mjs (machinerySources, changedMachinery); scripts/test-harness.mjs; scripts/harness.mjs; scripts/test-runner.test.mjs (runner-fixtures)`, severity major, altitude 5, evidence measured. Observed: machinerySources is a hand-kept list in scripts/test-runner.mjs whose comments cite six orders that each added entries after the fact (WO-157, WO-159, WO-163, WO-169, WO-171, WO-173). It omits files its suites execute. harness-fixtures (scripts/test-harness.mjs, 11,299 lines) copies and spawns scri",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when",
+          "summary": "- **ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when ** Surface `scripts/test-runner.mjs (machinerySources, changedMachinery); scripts/test-harness.mjs; scripts/harness.mjs; scripts/test-runner.test.mjs (runner-fixtures)`, severity major, altitude 5, evidence measured. Observed: machinerySources is a hand-kept list in scripts/test-runner.mjs whose comments cite six orders that each added entries after the fact (WO-157, WO-159, WO-163, WO-169, WO-171, WO-173). It omits files its suites execute. harness-fixtures (scripts/test-harness.mjs, 11,299 lines) copies and spawns scri",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -27171,6 +27185,16 @@
           "reopenWhen": "A mutant of a direct entry, import or literal script input that a machinery suite executes passes npm test -- --review because that suite is not selected.",
           "targets": [],
           "at": "2026-09-30T21:07:27.126Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "Re-keyed, not changed: REVIEW-004's bytes are as they were, and WO-276's Markdown reader no longer takes a label with a space before its closing asterisks as bold, which moved ER4-002's key. FUP-0ec1f3eae656c226 is the same candidate under the new key and carries this row's dispositions [WO-276-D059, docs/evidence/WO-276/decisions.md].",
+          "reopenWhen": "FUP-0ec1f3eae656c226 is found not to be ER4-002 of REVIEW-004",
+          "targets": [
+            "FUP-0ec1f3eae656c226"
+          ],
+          "at": "2026-11-11T10:24:00.000Z"
         }
       ]
     },
@@ -29694,6 +29718,13 @@
           "title": "ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30",
           "summary": "- **ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30 ** Surface `docs/planning/followups.json (deferred rows); scripts/lib/planning-conditions.mjs (conditions listing); scripts/lib/planning-followups.mjs (touching listing); the close-time completion advisory`, severity minor, altitude 6, evidence measured. Observed: 152 register rows are deferred. In 4 of them the reopening condition opens with a bare order activation or landing, and 2 of those have fired yet stay deferred. FUP-0086 waits on 'WO-117 lands'; WO-117 is closed (FinalReviewCompleted 2026-09-29). FUP-0113 waits",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02",
+          "title": "ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30",
+          "summary": "- **ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30 ** Surface `docs/planning/followups.json (deferred rows); scripts/lib/planning-conditions.mjs (conditions listing); scripts/lib/planning-followups.mjs (touching listing); the close-time completion advisory`, severity minor, altitude 6, evidence measured. Observed: 152 register rows are deferred. In 4 of them the reopening condition opens with a bare order activation or landing, and 2 of those have fired yet stay deferred. FUP-0086 waits on 'WO-117 lands'; WO-117 is closed (FinalReviewCompleted 2026-09-29). FUP-0113 waits",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -29712,6 +29743,16 @@
           "reopenWhen": "A subsequent planning or close pass leaves a named fired lifecycle trigger unchanged; compare an explicit typed condition with the anchored prose parser on that concrete example.",
           "targets": [],
           "at": "2026-10-21T03:21:45.914Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "Re-keyed, not changed: REVIEW-005's bytes are as they were, and WO-276's Markdown reader no longer takes a label with a space before its closing asterisks as bold, which moved ER5-002's key. FUP-c0f34b7e4ff569c0 is the same candidate under the new key and carries this row's dispositions [WO-276-D059, docs/evidence/WO-276/decisions.md].",
+          "reopenWhen": "FUP-c0f34b7e4ff569c0 is found not to be ER5-002 of REVIEW-005",
+          "targets": [
+            "FUP-c0f34b7e4ff569c0"
+          ],
+          "at": "2026-11-11T10:24:00.000Z"
         }
       ]
     },
@@ -57877,6 +57918,1320 @@
           "at": "2026-11-10T14:56:37.308Z"
         }
       ]
+    },
+    {
+      "id": "FUP-9f1885f7ba369f4b",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "88b2161338ec8c4f4ac6be6be1d4167e7afc91aea55b7203d89ce4846751af36",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d012--the-refusal-of-the-question-dialog-is-struck-from-this-order-on-the-operators-direction",
+          "title": "WO-276-D012: A planning pass takes the operator's direction of 2026-11-10 on questions before any order proposes a rule about them: useful questions stay available to every role; a question should…",
+          "summary": "{ \"id\": \"WO-276-D012\", \"date\": \"2026-11-10\", \"dispatch\": \"resume: next; the operator's message during the dispatch rejecting the refusal of the host's question dialog (Part A's design item on a dispatched role, step A10, criterion A9)\", \"decision\": \"The refusal of the host's question dialog to a dispatched role is not part of this order. The operator read the design item during the execution, said it was not wanted in this change, and gave the reasons: a question that blocks work needlessly is the nuisance, useful questions are many, a host whose question lets the session continue on the recommended option while it waits is the behavior the operator likes, and the operator's own instance nee",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0ec1f3eae656c226",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::1f91247fda16eb4faad7c37ea873ae4c39fe7b2ff54629f73dd15a4390bad345",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d3f2c8711fd5ab4dabd140d1e35aea4800e701f4022cf966a40557fe9c236dfb",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when",
+          "summary": "- **ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when ** Surface `scripts/test-runner.mjs (machinerySources, changedMachinery); scripts/test-harness.mjs; scripts/harness.mjs; scripts/test-runner.test.mjs (runner-fixtures)`, severity major, altitude 5, evidence measured. Observed: machinerySources is a hand-kept list in scripts/test-runner.mjs whose comments cite six orders that each added entries after the fact (WO-157, WO-159, WO-163, WO-169, WO-171, WO-173). It omits files its suites execute. harness-fixtures (scripts/test-harness.mjs, 11,299 lines) copies and spawns scri",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-174 as its second group: a closure check in runner-fixtures over each machinery suite's entry file, static imports and literally spawned scripts, and the repaired source lists; selection by declared sources stays the rule. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "a mutant of a file a machinery suite executes passes npm test -- --review after WO-174 closes",
+          "targets": [
+            "WO-174"
+          ],
+          "at": "2026-09-30T14:01:26.904Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by closed WO-174 (docs/final-reviews/WO-174/FINAL-001.md; evidence in docs/evidence/WO-174/). A runner-fixtures check holds each machinery suite's declared sources to three kinds of path: its entry file, its direct relative imports and its literal first-party script paths. Four shared helpers are excluded with reasons, and 73 missing inputs were declared. REVIEW-004's evidence --wait exit-code mutant now selects harness-fixtures under --review, and its evidence-wait case fails (WO-174 harness-drill.md; VER-001 criterion 5). Transitive imports and paths built at run time stay outside the check by design. The added review cost for scripts/harness.mjs is routed by WO-174-D021.",
+          "reopenWhen": "A mutant of a direct entry, import or literal script input that a machinery suite executes passes npm test -- --review because that suite is not selected.",
+          "targets": [],
+          "at": "2026-09-30T21:07:27.126Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c0f34b7e4ff569c0",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02::b779ccec6fcaeacc75178e61a836039eba71cd8d972e4ae3e4ff89186e24c9f1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7a822ad7d25c2818aeab162846cdb35705ad2784873472342e2f3cd029a703e9",
+          "ref": "docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02",
+          "title": "ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30",
+          "summary": "- **ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30 ** Surface `docs/planning/followups.json (deferred rows); scripts/lib/planning-conditions.mjs (conditions listing); scripts/lib/planning-followups.mjs (touching listing); the close-time completion advisory`, severity minor, altitude 6, evidence measured. Observed: 152 register rows are deferred. In 4 of them the reopening condition opens with a bare order activation or landing, and 2 of those have fired yet stay deferred. FUP-0086 waits on 'WO-117 lands'; WO-117 is closed (FinalReviewCompleted 2026-09-29). FUP-0113 waits",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "ER5-002 is accepted after blinded REFUTATION-006. This pass re-disposes all three observed stale triggers, adopting WO-062 D002's already recorded boundary and reassessing authorship and broad harness requalification. No new order for the four-row anchored prose parser: it would omit the live-smoke case and can silently miss wording variants. The rest of the register is not certified correct. Its NoOp compares typed conditions and preserves explicit unknown coverage. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "a subsequent planning or close pass again leaves a named fired lifecycle trigger unchanged; compare a typed condition with anchored prose using that example",
+          "targets": [],
+          "at": "2026-10-02T04:08:21.839Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D057 in docs/evidence/WO-217/decisions.md: Decline a partial natural-language lifecycle-trigger parser; retain explicit re-disposition by the observer and state that unexamined conditions remain unknown. The accepted ER5-002 record identified three missed triggers and the 2026-10-02 pass re-disposed all three. Its proposed anchored parser covered four rows and omitted the observed live-smoke trigger and wording variants. The harm remains: arbitrary prose conditions are not automatically evaluated, so later observers can miss a fired condition. NoOp avoids presenting four-row parsing as complete coverage; this order actually re-disposes every pending changed-file match it observes. Evidence: docs/planning/entropy-reviews/REVIEW-005.md ER5-002; its complete disposition history; scripts/lib/planning-conditions.mjs typed condition table and scripts/lib/planning-followups.mjs textual touching boundary",
+          "reopenWhen": "A subsequent planning or close pass leaves a named fired lifecycle trigger unchanged; compare an explicit typed condition with the anchored prose parser on that concrete example.",
+          "targets": [],
+          "at": "2026-10-21T03:21:45.914Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f8e6fa8027f0bc3b",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d073",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0aabb04ed8c1b9f507c1e5eb21c6a100814de5ec79394c87685535a733931b71",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d073--this-orders-release-is-v100-and-the-roadmaps-teammate-ready-rung-is-v200-on-the-operators-word",
+          "title": "WO-276-D073: Planning: rename the roadmap's Teammate-ready rung to v2.0.0 where this order left its old number. The queued orders WO-183 (ten mentions: its citations of product 06's section, its…",
+          "summary": "{ \"id\": \"WO-276-D073\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Parts J and K; an operator scope expansion received during Part J, at about 17:00 UTC\", \"decision\": \"The operator expanded this order's scope: what the repository calls v1.0.0 is to be called 2.0.0, and this work order is to be called v1.0.0. A second message, fifty minutes later, bounded it: it is no priority, what can be done is done, a later planning pass takes the stragglers, and what cannot be resolved is boarded. It is done as its own small piece between Parts J and K, so that every later part names the right version. What was read before any edit. The repository calls one thing v1.0.0: the roadmap's",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2d104bb644bc094c",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d074",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02ccfe7d7d266162a33b9bbb349215cebeb1487bbe41a44acdb478c3ff56d905",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d074--part-k-as-built-one-root-that-is-the-instances-by-guarantee-a-settings-fragment-that-only-adds-and-takes-no-pretooluse-hook-and-what-the-host-was-observed-to-do",
+          "title": "WO-276-D074: Planning: on Claude Code 2.1.322 a PreToolUse hook from any settings source can return a rewritten input, and the host runs the rewritten call without showing it to the other PreToolUse…",
+          "summary": "{ \"id\": \"WO-276-D074\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 Part K (extensions), steps K1 to K6, from checkpoint 28 at 18:08 UTC; rolling reviews 27 and 28, the part's first attack pass and the seventeenth critic judged\", \"decision\": \"What the part gives an instance. (K1) One root, extensions/, is the instance's by guarantee: scripts/lib/config.mjs names it and asks two questions of a path, one exact (is this the root or under it, the question for an exemption) and one that folds letter case (does its first segment spell the root, the question for a guard, since a file system that ignores case holds the other spellings as that directory). The kit-path predicate answers fal",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2de3c94204e13b7a",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d077",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "eed5aa7eff0f8f73759bfc8b329cf4f1d818a3c512a89fc7f43cb2054a50c658",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d077--worker-models-as-redesigned-on-the-operators-direction-models-are-rows-of-data-workers-are-names-an-instance-binds-to-them-one-resolver-and-two-commands-answer-every-launch-and-no-worker-definition-hook-or-sentence-names-a-model",
+          "title": "WO-276-D077: Planning: a kind of worker and a cadence are not yet data. Today the three review kinds are the only codified kinds (scripts/lib/review-worker.mjs), and the attacker, the meta critic and…",
+          "summary": "{ \"id\": \"WO-276-D077\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the operator's direction on worker models (19:50 to 20:50 UTC), the plan made from it and its build (20:17 to 21:45 UTC)\", \"decision\": \"The operator rejected how Part J configured and launched worker models and directed what replaces it; this decision records the direction, the plan and what was built, and it supersedes WO-255-D009 and WO-255-D010 (the four fixed options with their two per-model worker definitions, and the prompt hooks that journaled a dispatch line's worker words) and the option parts of WO-276-D069 and D072 (an instance restating an option; the withdrawn defaul",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-556aa33ee7c4b0f7",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d078",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a7541f944387d7aaa6834495ebadf85616fd82c1337651277f5f6ad646c59d31",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d078--part-js-rebuilt-half-closed-rolling-review-31-and-the-fifth-attack-pass-judged-the-host-probes-launch-the-default-worker-from-the-table-and-what-in-the-kit-still-writes-a-model-of-its-own-is-named",
+          "title": "WO-276-D078: Planning, five items the rebuilt worker table leaves. (1) Models still written outside the table: the resident's judge defaults (scripts/resident-bind.mjs, DEFAULT_JUDGE) and its binding…",
+          "summary": "{ \"id\": \"WO-276-D078\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the close of Part J's rebuilt worker half, 21:22 to 22:15 UTC\", \"decision\": \"Rolling review 31 (design, round 12 over Parts A to K, 21:22 to 21:34 UTC): two findings, both real, both derived from reading, both repaired with a case. The first, rated blocking against criterion 78: the note show prints for a worker the session cannot launch named a refutation command that left out an effort given for the launch, so following it ran the table's effort. Both commands of the note are now built from the one launch asked for. The second, a note: the configuration loader opens the models ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d886cffcb0695e76",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d080",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3385b49d7101e3e6a71faeb95e6d15886ba923b36132dd5fb331186858d62447",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d080--the-mid-order-ladders-first-round-nine-findings-from-four-reviewers-each-judged-and-repaired-and-the-twentieth-critics-five-points",
+          "title": "WO-276-D080: Planning: the Entropy Reducer's attested reviewer on an instance whose default worker is another model. Its requirement now reads the kit's own default worker for Claude…",
+          "summary": "{ \"id\": \"WO-276-D080\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the operator's mid-order ladder, its first round, 22:05 to 23:10 UTC\", \"decision\": \"Rolling review 32 (criteria, round 11 over Parts A to K, 22:05 to 22:20 UTC): three findings in closed parts, each derived from reading. Two were rated blocking and both are real, each a further form of a heuristic widened before. The Markdown pattern screen (criterion B1) did not read a compact table header written without its closing pipe: a row is now also a line that opens with a pipe and holds two cells, the second begun by text after the second pipe, and the rule's comment states what tells ",
+          "missing": false
+        },
+        {
+          "hash": "2da0d72d0f4efec68e1525596af01d2930f60b112b3167969241e74a5d23c34c",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d080--the-mid-order-ladders-first-round-nine-findings-from-four-reviewers-each-judged-and-repaired-and-the-twentieth-critics-five-points",
+          "title": "WO-276-D080: Planning: the Entropy Reducer's attested reviewer on an instance whose default worker is another model. Its requirement now reads the kit's own default worker for Claude…",
+          "summary": "{ \"id\": \"WO-276-D080\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the operator's mid-order ladder, its first round, 22:05 to 23:10 UTC\", \"decision\": \"Rolling review 32 (criteria, round 11 over Parts A to K, 22:05 to 22:20 UTC): three findings in closed parts, each derived from reading. Two were rated blocking and both are real, each a further form of a heuristic widened before. The Markdown pattern screen (criterion B1) did not read a compact table header written without its closing pipe: a row is now also a line that opens with a pipe and holds two cells, the second begun by text after the second pipe, and the rule's comment states what tells ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9a6b117811966204",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d081",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ced8350cff1b4164d5ebafbad0bd3e9a3a4b9924f332fd2c82829ad228cacb0a",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d081--the-mid-order-ladders-recheck-round-the-first-rounds-nine-findings-held-four-new-ones-repaired-and-the-title-rule-measured-against-nodes-own-registrations",
+          "title": "WO-276-D081: Planning: judge duplicate titles from what node registers. The rule in scripts/test-runner.test.mjs reads source, and reviews have found it a further form five times (D080 counts four;…",
+          "summary": "{ \"id\": \"WO-276-D081\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the operator's mid-order ladder, its recheck round, 23:02 to 23:55 UTC\", \"decision\": \"The mid-order ladder's recheck round (23:02 to 23:24 UTC): the criteria, consistency and combined reviewers, each given its own last report, on one tree (6c5570caf61c5454f6eaa099f4cfcda8e0be3fa2). All nine findings of the first round were judged held. The three reports carry six new findings, four once merged, since all three reviewers found one form in the duplicate-title rule. Each was judged under the round's rule that a new finding is admitted when it breaks a criterion or main behavior: thr",
+          "missing": false
+        },
+        {
+          "hash": "24c0868ae158a7a9db1f7a8466227d089887cf4cd0a5c5787504537f41ef97f7",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d081--the-mid-order-ladders-recheck-round-the-first-rounds-nine-findings-held-four-new-ones-repaired-and-the-title-rule-measured-against-nodes-own-registrations",
+          "title": "WO-276-D081: Planning: judge duplicate titles from what node registers. The rule in scripts/test-runner.test.mjs reads source, and reviews have found it a further form five times (D080 counts four;…",
+          "summary": "{ \"id\": \"WO-276-D081\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the operator's mid-order ladder, its recheck round, 23:02 to 23:30 UTC\", \"decision\": \"The mid-order ladder's recheck round (23:02 to 23:24 UTC): the criteria, consistency and combined reviewers, each given its own last report, on one tree (6c5570caf61c5454f6eaa099f4cfcda8e0be3fa2). All nine findings of the first round were judged held. The three reports carry six new findings, four once merged, since all three reviewers found one form in the duplicate-title rule. Each was judged under the round's rule that a new finding is admitted when it breaks a criterion or main behavior: thr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-20d4cb240cd43c51",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d082",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3260e51f82f779ef6419cad8227dc0ad9870142824ce24eeb5921a6271b40135",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d082--the-mid-order-ladders-last-round-two-findings-repaired-the-pattern-screen-now-also-judged-by-what-a-pattern-matches-and-the-twenty-first-critics-five-points",
+          "title": "WO-276-D082: No new follow-up. D081's stands (judge duplicate titles from what node registers), and the comparison by file made during the complete run is its first evidence. D078's items 2 and 3…",
+          "summary": "{ \"id\": \"WO-276-D082\", \"date\": \"2026-11-11\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the operator's mid-order ladder, its last round, 23:34 to 23:58 UTC\", \"decision\": \"The mid-order ladder's last round (23:34 to 23:43 UTC): one combined reviewer on the difference since the tree the recheck round read (6c5570caf61c5454f6eaa099f4cfcda8e0be3fa2), reviewing tree d597900bb4d34faf7d07c08e9a93fddb8a7622c1. Both of the recheck round's repairs it had found were judged held. It found two more, both rated blocking and both in the two readers every round of this ladder has found a form in. Each is an open failure on text an author would ordinarily write, so each is fixed; no",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d83238234d974d57",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d083",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "67c13592fd865e0559d0a3806011f25a19540d20739af7a7d314ac228ad39cdd",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d083--paused-on-the-operators-word-the-complete-run-stopped-eleven-minutes-in-two-failing-cases-named-for-the-next-session-and-a-status-wording-corrected",
+          "title": "WO-276-D083: No new follow-up. Owed by the session that resumes, in the standing file's order: the two repairs, the complete run, the title comparison, the forecast, the document gate, a decision for…",
+          "summary": "{ \"id\": \"WO-276-D083\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the complete run after the mid-order ladder, 00:01 to 00:25 UTC\", \"decision\": \"The operator paused this session and is continuing in a new one, having found it too slow. The complete run started at 00:01 UTC with --keep-going was stopped by request at 00:11, eleven minutes in, so that the worktree holds no live gate and the next session is not refused; its row is a stopped row and supplies no pass, and the run is owed again. Before the stop 68 tasks had passed and two cases of scripts/test-harness.mjs had failed, each a leftover of Part J's rebuilt worker half that no focused che",
+          "missing": false
+        },
+        {
+          "hash": "882f6b95f0aece96b0e62759f59957448b2385df13eb581a906fb064927340b8",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d083--paused-on-the-operators-word-the-complete-run-stopped-eleven-minutes-in-two-failing-cases-named-for-the-next-session-and-a-status-wording-corrected",
+          "title": "WO-276-D083: No new follow-up. Owed by the session that resumes, in the standing file's order: the two repairs, the complete run, the title comparison, the forecast, the document gate, a decision for…",
+          "summary": "{ \"id\": \"WO-276-D083\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; the complete run after the mid-order ladder, 00:01 to 00:16 UTC\", \"decision\": \"The operator paused this session and is continuing in a new one, having found it too slow. The complete run started at 00:01 UTC with --keep-going was stopped by request at 00:11, eleven minutes in, so that the worktree holds no live gate and the next session is not refused; its row is a stopped row and supplies no pass, and the run is owed again. Before the stop 68 tasks had passed and two cases of scripts/test-harness.mjs had failed, each a leftover of Part J's rebuilt worker half that no focused che",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-80ceadcebbadb4a6",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d084",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "17f51cc5e4c35f2b8607f34bfb1ba8d3e81e0ce9029504ca9b2ae2a53a5f2c63",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d084--resumed-in-a-new-session-the-stopped-runs-leftovers-and-the-four-failures-of-a-complete-run-repaired-the-title-rule-made-to-read-a-suite-file-with-the-files-it-loads-and-the-two-behaviors-of-part-js-rebuilt-half-left-as-d082-records-them",
+          "title": "WO-276-D084: No new follow-up. D081's stands (judge duplicate titles from what node registers), with this comparison as its evidence. D078's items 2 and 3 stand as unresolved behaviors of this order.",
+          "summary": "{ \"id\": \"WO-276-D084\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 between Part K's close and Part L; a new session's first hours, the complete run after the mid-order ladder, its repairs and the title comparison\", \"decision\": \"A new session resumed this order at 00:22 UTC from the standing file, six minutes after the operator's pause (D083), on the same host version, model and effort; the tree was checkpoint 35 byte for byte. Before the complete run: the two cases the stopped run had named were reproduced alone and repaired, each a leftover of Part J's rebuilt worker half. One is a fixture that copies the configuration reader without the two worker modules it now imports; it liv",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ae4a4c6b978859d5",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d085",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5cb5d07266d7e7b8902450de09e2775a048f3580a35a7d3a03dcd104c17625f0",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d085--part-l-begins-on-checkpoint-39-the-two-gates-after-the-second-complete-run-passed-the-twenty-third-critics-four-points-taken-and-the-parts-consumer-map",
+          "title": "WO-276-D085: No new follow-up. D081's stands and gains a condition from the twenty-third critic: a listing of node's registrations validates what it executes before it runs.",
+          "summary": "{ \"id\": \"WO-276-D085\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part L; the end of the mid-order sequence and the part's first step, 03:17 to 03:35 UTC\", \"decision\": \"The base of Part L is the tree of recovery checkpoint 39 (9f86bc03c0c8c89c40e57f6bbab19d3f5b599aee): a comparison Part L makes of emitted bytes, a suite's cases or a message is made against it. The two gates D084 named in place of a third complete run passed on it: the skeleton suite as a single gate, 0 h 9 min, with no line from the product read guard; and the document gate, 0 h 3 min, 29 tasks, skeleton-docs and terms among them. The case that compares the rule records with the committed table is selected by th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-097112c8525e947f",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d086",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "434c6eccd430899a9084aa80181714b04185f4cfaaf7e6f657484c666906cfa9",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d086--part-l-as-built-area-notes-beside-a-targets-profile-read-by-the-document-check-and-the-briefing-and-one-sentence-in-three-roles",
+          "title": "WO-276-D086: No new follow-up. For step Z1, the release's Read before upgrading says that the seeded repository profile page changed (an existing instance keeps its own copy and meets the convention…",
+          "summary": "{ \"id\": \"WO-276-D086\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part L (area notes), steps L1 to L5, its attack pass and rolling review 35, from 03:35 UTC\", \"decision\": \"Part L is built on checkpoint 39 (D085) and its criteria 91 to 96 are judged met in the handoff. The convention (steps L1 and L2). A note is a Markdown file under the directory that has the profile's name without its .md, at any depth, and its block is one JSON object between a dotln-area-note:start and a dotln-area-note:end comment line with two fields: paths, a non-empty list of target-relative paths with forward slashes, no . or .. segment, nothing Git reads as pathspec magic and no control character; and c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-231731f4c1cc4025",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d087",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "082b4021b83944067008b30c507e409812843b31dda9bac6526e141fad39dd13",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release",
+          "title": "WO-276-D087: No new follow-up. For step Z1, the release's Read before upgrading says: a target order closes on a squash or a rebase of its reviewed change and takes --merged-as <commit> where the…",
+          "summary": "{ \"id\": \"WO-276-D087\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part M (teams and merge methods), steps M1 to M4, its attack pass, rolling review 36 and the twenty-fourth critic, from 04:20 UTC\", \"decision\": \"Part M is built on checkpoint 40 (6538aaf0a, where D086 closed Part L) and its criteria 97 to 101 are judged in the handoff. Its two gates and its close are D088's. The merged check (step M1). scripts/lib/merged-change.mjs answers from Git alone whether a branch's change is in a fetched base: the branch is an ancestor of the base; or one commit of the base since the two diverged has the patch identity of the branch's whole change (a squash); or each of the branch's commit",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-87f30cf60e15375c",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d088",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "12852e1e6d152f8cdc3ea7ec08907937dcfc2d5aa2aba19c70546d971bd6360b",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d088--part-ms-second-attack-pass-and-its-close-the-drive-reads-a-close-over-the-records-attempts-a-refused-name-is-not-repeated-and-a-partial-clone-is-left-to-the-attended-close",
+          "title": "WO-276-D088: No new follow-up. Held for the closing preparation: rolling review 37's note on the update's per-path Git reads, and the launchpad row that reads refused after a declared target…",
+          "summary": "{ \"id\": \"WO-276-D088\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part M, the recheck by its attacker, rolling review 37 and the part's two gates, from 05:03 UTC\", \"decision\": \"D087 stands as the record of what was built by 05:00 UTC. The attacker's recheck of its own findings (the same worker re-tasked, 05:04 to 05:15 UTC) changed three things D087 states, and this record corrects them. (a) D087 says status asks only the branch's own history in a shallow clone as in a partial one. A shallow clone holds every blob of the commits it has, so comparing patches there starts no transfer: it is now compared as any clone is, and only a partial clone is asked for ancestry alone. (b) D08",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-28364fff54e2ffd5",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d089",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "db8fec221d5687557116f7a8d963a93de692b54a0b5ca0e44ca8f8f1c1a757ac",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d089--part-n-begins-on-checkpoint-41-and-the-twenty-fifth-critics-three-points-a-base-commit-counts-only-where-it-is-the-branchs-change-exactly-the-uses-left-are-tracked-beside-the-hours-and-a-held-note-stays-held",
+          "title": "WO-276-D089: No new follow-up. For step Z1, D087's line stands; the exact comparison changes no sentence of it.",
+          "summary": "{ \"id\": \"WO-276-D089\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part N (records in the instance), opened at 05:47 UTC, and the twenty-fifth critic's report of 05:58 UTC on Part M\", \"decision\": \"Part N begins on checkpoint 41 (347b6f4ae41f7620bc357e308b820cb1d00399e2), recorded at 05:47 UTC, where Part M closed. D088 gives Part M's interval as 04:20 to 05:50 and its lead as 3 h 32 min: those figures were written three minutes before the checkpoint existed. The observed interval is 04:20 to 05:47, 87 minutes, and the part closed 3 h 35 min ahead of its row. The standing file holds the observed figures. The twenty-fifth critic (05:46 to 05:58 UTC), three points, all taken. (1) D0",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-394805c9f84b8479",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d090",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a8d9f4375b6914bbdd475d6157be0010c7c10c723edf8d4e7ac5d1e41c61a17f",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d090--part-n-as-built-a-registration-says-whether-its-orders-records-are-filed-into-the-target-or-stay-in-the-instance-mains-value-governs-every-reader-and-a-committed-records-binding-decides-an-order-in-flight",
+          "title": "WO-276-D090: No new follow-up. Held for the closing preparation: the code identity's literal document root. For step Z1, the release's Read before upgrading says: repositories.<id>.records is…",
+          "summary": "{ \"id\": \"WO-276-D090\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part N (records in the instance), steps N1 to N7 and its attack pass, from 05:47 UTC\", \"decision\": \"Part N is built on checkpoint 41 (D089) and its criteria 102 to 109 are judged in the handoff. Its gates and its close are D091's. The key (step N1). repositories.<id>.records takes target or instance; any other value is refused naming the key; an absent key reads as target, so the registration a loaded configuration returns always carries the value (one expectation that held a whole registration gained it). One helper holds the rule every reader below shares: an order's records stay in the instance where its regist",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eb42ec4b4a0100c0",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d091",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "98512cbf0f8abcb3a74dcc631a23b2ffbcc5353abfd98e1a421dc246075d77ea",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d091--part-ns-second-attack-pass-two-failed-gates-and-its-close-only-the-change-is-judged-for-records-the-records-action-reads-mains-registration-or-refuses-a-plan-approved-under-one-value-stands-when-main-changes-and-the-release-notes-keep-their-links-where-records-are-filed",
+          "title": "WO-276-D091: For a planning pass, two things at the base that this order observed and did not change, both with plan-first elected for a target order. First, where the repository files records into…",
+          "summary": "{ \"id\": \"WO-276-D091\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part N, the recheck by its attacker, rolling reviews 39 and 40, the twenty-sixth critic and the part's gates, from 06:31 UTC\", \"decision\": \"D090 stands as the record of what was built by 06:30 UTC. This record corrects three of its sentences, states what a run settled about the one limit it left, and records two gates that failed. The attacker's recheck (the same worker re-tasked, 06:31 to 06:37 UTC) found none of its seven findings still holding and four new things in the repairs. (a) D090 says the target publish refuses, under instance, a reviewed tree that holds one of the paths the records step would write. Ru",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e63587acfe83df97",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d092",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0430935a7b7f268347fb52d8b960a0841065e8d140db7af15f8411d1e9f4a50d",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d092--rolling-review-40s-three-findings-in-closed-parts-the-title-rule-and-the-pattern-screen-each-get-a-declared-family-and-a-written-boundary-in-place-of-one-more-spelling-and-a-codex-count-without-its-cached-part-is-no-longer-read-as-uncached",
+          "title": "WO-276-D092: No new follow-up.",
+          "summary": "{ \"id\": \"WO-276-D092\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276, between Parts N and O: rolling review 40 (criteria, round 16) on Parts A to M, repaired under the twenty-sixth critic's third point\", \"decision\": \"Rolling review 40 (criteria, round 16, 07:37 to 07:54 UTC) returned three findings in closed parts, all rated blocking. Two are one more spelling each in the two readers D086 describes as readers whose inputs do not carry what they judge, and they are the fifth and sixth forms those readers have taken since: a field label written as a group of alternatives between underscores (criterion B1), and a module awaited where it is imported and given a name (criterion E1). The",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8530888b3e0b2de5",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d093",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bae1a17551bdd6660b3875fc99c5a78f72c2773247adaace74891e6d00f75aae",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d093--part-o-begins-on-checkpoint-43-an-initiatives-layout-is-a-section-of-its-workstream-document-planned-items-are-not-orders-and-a-pass-files-the-next-wave-and-the-twenty-seventh-critics-four-points",
+          "title": "WO-276-D093: For a planning pass, with what is held for the closing preparation: the gate's code identity and the product read guard set documents aside by the literal name docs/, so an instance that…",
+          "summary": "{ \"id\": \"WO-276-D093\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part O (initiative layouts), opened at 08:36 UTC on checkpoint 43, and the twenty-seventh critic's report, returned at 08:36 UTC\", \"decision\": \"Part O begins on checkpoint 43 (b7dedb4ffebbdcf9687f04c231ab3366820b7ea0, recorded at 08:35 UTC), which holds Part N as closed and rolling review 40's repairs as D092 records them. What the part builds, as the order's design decides it and this record is linked for. The layout is a section of the workstream document, a standing document revised in place: what exists, linking the target's area notes where there are any; what the initiative asks, in the instance's own words;",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-13211d95082b288a",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d094",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8cde1c4155389a5c56dcf184e5ef8ccc86fda7dc3326aab2be5e3161277d7c79",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d094--rolling-review-41s-finding-in-a-closed-part-the-title-rule-reads-what-a-registrar-is-in-one-place-by-either-spelling-of-a-member-and-to-any-depth-and-its-family-is-crossed-with-nodes-own-members-and-both-spellings",
+          "title": "WO-276-D094: No new follow-up.",
+          "summary": "{ \"id\": \"WO-276-D094\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276, during Part O: rolling review 41 (criteria, round 17) on Parts A to N, returned at 08:55 UTC\", \"decision\": \"Rolling review 41 (criteria, round 17, 08:35 to 08:55 UTC, 0 h 20 min) rechecked round 16's three findings and found each held, by reading the source: its one bounded probe did not start, because a temporary-directory lookup failed on its host with an input/output error, which is nothing of this repository. It returned one finding, rated blocking, on criterion E1: a member of a namespace taken by a literal key, runner[\\\"test\\\"](\\\"same\\\", ...) written twice after the module is awaited and named, is registere",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a3293167324ba77d",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d095",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c6f8587a21ad4867aa3a5704bb0843ae2b1fa9be701b52111e1cbab45885a439",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d095--the-attack-on-the-title-rule-eight-findings-and-a-ninth-the-executor-ran-repaired-the-rules-boundary-gains-a-second-side-how-often-a-body-runs",
+          "title": "WO-276-D095: No new follow-up.",
+          "summary": "{ \"id\": \"WO-276-D095\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276, during Part O: the part's attacker, given the title rule of criterion E1 as a second surface, from 09:12 UTC\", \"decision\": \"Part O's attacker (an Opus worker launched as the table's default, 09:12 to 09:18 UTC) was given two surfaces: the part's own change, on which it found nothing and which the part's as-built record reports, and the title rule as D094 left it, with the boundary that record wrote. It was asked for a suite file outside that boundary which the rule neither reports nor counts while node registers a title twice, or one the rule reports where node registers each title once. It returned eight, each r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f03c0b5e12b40280",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d097",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fad050d62cd7ca9c47b6b93c8c4c0891a2ec1a7bbe0cf2ee677b5749499bd6e8",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d097--the-twenty-eighth-critics-three-points-the-title-rules-contract-is-stated-and-its-extension-ended-for-this-order-its-scope-classes-are-held-to-node-by-files-of-their-own-the-case-is-made-to-pass-on-node-24-and-the-parts-evidence-reads-a-kept-run",
+          "title": "WO-276-D097: No new follow-up.",
+          "summary": "{ \"id\": \"WO-276-D097\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276, between Parts O and P: the twenty-eighth critic's report, returned at 09:51 UTC\", \"decision\": \"The twenty-eighth critic (09:38 to 09:51 UTC) made three points. All are taken. (1) Its first: from D092 to D095 the title rule grew by repair, from a reading of call expressions into an analysis of bindings, assignments and how often a body runs, and nobody stated what the criterion requires to be read exactly and what may be shown as unread, or compared the cost with a smaller rule; and the family's 335 files, which cross bindings with uses at the top level alone, are no evidence for the resolver's scope classes. Both",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-09787e49791b1282",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d096",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9655303e70f4bc75d2057bc7be549f3f5108219f720b82ff381ca9b3ff4d01b5",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d096--part-o-as-built-the-seeded-workstreams-page-carries-the-layout-no-reader-of-a-workstream-document-reads-it-but-the-document-check-the-planners-root-holds-one-sentence-and-the-guide-states-the-rolling-way",
+          "title": "WO-276-D096: No new follow-up. For step Z1, D093's line stands.",
+          "summary": "{ \"id\": \"WO-276-D096\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part O (initiative layouts), from 08:36 UTC on checkpoint 43\", \"decision\": \"D093 opened the part and is what the documents link. This record is the part as built, written once. Step O1. The seeded page, scripts/kit/workstream.template.md, says in its opening that for an initiative the document also holds a layout whose planned items are not member orders, and gained a Layout section: what the layout is, its four parts, the sentence that a planned item has no identifier and no order file and is not a member order, and a worked example for an invented outcome (a shop's checkout that takes a second currency) with a t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a484b783ba4c13e4",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d098",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e6d810fe86ed5b44e19f701ca591244d0eb8e95a75edfc86a37a92db10b00509",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d098--part-p-begins-on-checkpoint-45-the-bound-reads-worked-time-from-the-phases-journals-the-days-figure-is-advisory-and-the-standing-is-a-file-of-its-own-with-the-parts-consumer-map-and-its-two-gates",
+          "title": "WO-276-D098: No new follow-up at the part's opening. The part is the allocation of FUP-d8769cd30e3501af and FUP-0091 for an attended order paused by choice, as its known issues say.",
+          "summary": "{ \"id\": \"WO-276-D098\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part P (pacing), opened at 14:28 UTC on checkpoint 45 by a session that resumed the dispatch at 14:17 UTC after the pause of 10:35 UTC\", \"decision\": \"Part P begins on checkpoint 45 (05d26e6c3, made at 10:37 UTC at the pause), which holds Parts A to O as closed. The resuming session compared the working tree with that checkpoint through an index file in scratch before any edit: no path differed and none was untracked. What the part builds, as the order's design decides it and this record is linked for. The bound measures work. A phase's wall-clock value is the time since its dispatch began less every idle gap, and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b97c63ea66c278cc",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d102",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e1e8751bd31492180e2cc9e0bae7486052c52ac76b6d79806aea150f929b331e",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d102--the-attack-on-steps-p1-and-p6-six-findings-tool-rows-name-their-call-so-a-calls-rows-pair-exactly-a-host-that-journals-no-tool-call-reads-elapsed-time-and-a-dispatch-names-an-order-by-its-line",
+          "title": "WO-276-D102: For a planning pass: a Codex phase paused overnight is still refused the next morning, since nothing in its journal shows work; a route that journals its turns' work, or a pause the…",
+          "summary": "{ \"id\": \"WO-276-D102\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part P, the part's attacker (a Claude worker of the default type, launched at 14:33 UTC and returned at 14:49 UTC on 2026-11-12)\", \"decision\": \"The bound's reading as it stands after the attack, which the product documents link. A phase's wall-clock value is the time since its dispatch began less every idle gap in the journals of its sessions. A gap is idle only when it begins at a turn's end row (the hosts' Stop event), is longer than the idle interval (ten minutes, IDLE_INTERVAL_MS in scripts/lib/dispatch-bound.mjs) and no tool call's start row and end row lie on either side of it. Every row a hook writes for a ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eb9d2aaee0dd8234",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d103",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0bbbd06e04065c1ae82873d8e13f16d1dbbd9fafc325244dad70d7fa37c2f4be",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d103--part-p-as-built-worked-time-from-paired-tool-calls-a-days-figure-that-is-advisory-the-standing-file-in-both-of-the-executors-phases-the-second-attack-pass-rolling-review-45-and-the-gates",
+          "title": "WO-276-D103: For a planning pass: a Codex phase reads elapsed time, since its tool calls reach no hook (D102). A host that sends no call identifier pairs by tool, with the lenient history stated…",
+          "summary": "{ \"id\": \"WO-276-D103\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part P (pacing), from 14:28 UTC on checkpoint 45\", \"decision\": \"D098 opened the part and D102 states the bound's reading; the documents link those two. This record is the part as built, written once after the attacker's recheck and the gates. Step P1. readJournalRows in packages/skeleton/src/dispatch-journal.mjs is the one reader of a journal kept a row a line; the facts module's reader, the hook's session load and its count of hook rows call it. scripts/lib/dispatch-bound.mjs reads a phase's idle time from its sessions' rows (callSpans, idleTime, phaseJournalRows, IDLE_INTERVAL_MS) and the standing holds workedMs",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a09f496a8b89a228",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d104",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "39bd0ec27cffbfae8ca9ce7df843f8644143ef533c471c57a16e0714b04f57cb",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d104--part-q-begins-on-checkpoint-48-measure-then-cut-with-the-parts-consumer-map-what-was-confirmed-of-the-two-units-before-any-edit-and-its-two-gates",
+          "title": "WO-276-D104: No new follow-up at the part's opening. The part is the allocation of FUP-be6721fbdd4b6285, and the one process an event that would evaluate every unit stays the candidate that follows…",
+          "summary": "{ \"id\": \"WO-276-D104\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part Q (hook cost), opened on checkpoint 48 after Part P's close at 16:23 UTC\", \"decision\": \"Part Q begins on checkpoint 48 (0d4322a7f7074c6085d0db176211fcf5863e583b, made at 16:23:27 UTC), which holds Parts A to P as closed. What the part builds, as the order's design decides it. A unit's hook is registered for the tools it judges: the unit states the kinds its facts read, and the compiler builds the matcher so that the tool names harnessToolEffects maps to other kinds start no process, while a name the table does not hold is judged as today. Where a host's matcher cannot express an exclusion the matcher lists th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dd19c26097859895",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d105",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fc08d3e47d6c0886d1fc26dd6b54ecbdd811a5400abb265732da7b683a2d66a4",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d105--a-units-matcher-is-an-anchored-exclusion-of-the-names-its-kinds-do-not-cover-observed-on-claude-code-documented-and-not-observed-on-copilot-where-the-host-refused-the-run-and-the-units-own-name-tests-stay-as-they-are",
+          "title": "WO-276-D105: For the operator or a planning pass: one attended run of Copilot in a scratch directory on the matcher's form, as the Claude Code run was made, turns what is documented into what is…",
+          "summary": "{ \"id\": \"WO-276-D105\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part Q, step Q2, before any edit of the registrations (16:31 to 16:39 UTC)\", \"decision\": \"The form. A unit that states the kinds its facts read is registered with a matcher that leaves out every tool name harnessToolEffects maps to another kind and admits every other name: ^(?!(?:name|name|prefix.*)$).*$, each name escaped and each prefix of the table written as a prefix. A name the table does not hold is admitted, so it starts the hook and is judged as today. A unit that states no kinds keeps the matcher for all. Observed on Claude Code 2.1.322 in print mode, one run in a scratch directory with seven hook groups ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-70f79af022d4466a",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d106",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d1fbd9f7c2eaeedb8a58dae2102d1e9054f661544e84f4bd8148498140b9306c",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d106--part-q-as-built-with-both-readings-of-what-a-call-costs-in-hooks",
+          "title": "WO-276-D106: For a planning pass: (1) one attended run of Copilot CLI on a matcher that leaves names out, as the Claude Code runs were made, and a matcher row in the repository's host probe; with it…",
+          "summary": "{ \"id\": \"WO-276-D106\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part Q, steps Q2 to Q7, with the returns received during the part (16:39 to 18:12 UTC)\", \"decision\": \"The two readings (steps Q1 and Q6), on the harness fixture, for a read, a search, a shell command, an edit and a write, each ten times: 400 hook processes before (8 a call) and 210 after (3 for a read or a search, 5 for a shell command, an edit or a write); the processes' summed wall time 41,219 ms before and 25,709 ms after. Of the 190 processes gone, 100 are the two presence hooks and 90 the narrowed hooks. The hooks that remain take what they took: the permission hook's median 107 ms before and 108 after, the w",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-31c92aeaa3dbad03",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d108",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ab12aa7babb439ba1dfd3237360754ac6093ec123118a4614263374d9e1b433c",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d108--part-qs-gates-and-what-changed-after-d106-two-edits-to-a-parser-a-pinned-digest-the-part-had-not-run-and-one-statistic-joined-to-the-wrong-sample",
+          "title": "WO-276-D108: For the closing preparation: the kit guide's Hooks bullet cites D106; add this record beside it, since it corrects one of D106's figures. For every later part: a part that adds a field…",
+          "summary": "{ \"id\": \"WO-276-D108\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part Q, from the as-built decision to the part's gates (18:12 to 18:41 UTC)\", \"decision\": \"The part's two gates passed on the fourth start of the pre-gate sequence, 18:33 to 18:40 UTC on 2026-11-12, both on tree 6cb1ea9c8f8f: compiler (nine tasks, 0 h 1 min; recorded 18:34:16) and harness-fixtures (nine tasks, 0 h 6 min; recorded 18:40:39). The three starts before it: the first (18:14) stopped at the document check and the second (18:18) at a probe of the executor's own, neither reaching a gate; the third (18:20) passed compiler and failed one case of harness-fixtures, both on tree 29b7007dc2fb. Each stop was caus",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f9783edbe0b0fb56",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d110",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4f653d31f148cf5ecc67e1d1b7958487712ac52badcc663eb6118f649178ea14",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d110--the-meta-critic-is-kept-in-the-repository-as-it-is-built-and-run-and-d077s-follow-up-gains-it-as-the-first-row-of-the-kinds-table",
+          "title": "WO-276-D110: Planning, extending the follow-up of D077 (FUP-2de3c94204e13b7a): the meta critic is the first row of the kinds table that follow-up asks for, and it now exists as files to start from,…",
+          "summary": "{ \"id\": \"WO-276-D110\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part R, the operator's message of 18:54 UTC on 2026-11-12 (to 18:58 UTC)\", \"decision\": \"The operator asked that the way this critic is built and run be kept, so that a later work order can use it, and that the follow-up for it be added or the existing one updated. Until now its charter and its launcher were two files in the session's scratch directory, which does not outlive the session; D101 described the charter and held neither. Kept, under docs/evidence/WO-276/critic/: charter.md, the whole of what the critic is told apart from the worker's standing rules, with the order, the checkout, the transcripts' directo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fd4fadccb76a8a9a",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d111",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd5bde0ae92272be954b5261ebb3bfee7a1a0a90cf60276c05196c30cd2a4699",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d111--the-critics-criticisms-that-were-judged-valid-are-kept-as-a-record-for-planning-to-mine-and-the-thirty-third-critics-three-points-are-taken",
+          "title": "WO-276-D111: Planning: mine docs/evidence/WO-276/critic/criticisms.md for what the kit should carry so that an executor does not need a critic to say it. Take the classes of accepted conduct…",
+          "summary": "{ \"id\": \"WO-276-D111\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part R, the operator's message of 20:10 UTC on 2026-11-12 (to 20:25 UTC)\", \"decision\": \"The operator asked that the meta critic's criticisms that were valid be put somewhere a planning pass or the follow-up register can mine them. Until now they were spread over some thirty of this file's decisions, each beside whatever else that decision judged, and the reports themselves are in the ignored reviews lane. Kept: docs/evidence/WO-276/critic/criticisms.md, beside the critic's charter and launcher. It holds every point of the thirty-three critics launched so far, 128 in all, each with the decision that judged it, whet",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-349d50f3d73f070d",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d112",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0d73e525954541a137cbd6ab7c3f21d2f222ff40190c656383d3a5d4badbe337",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules",
+          "title": "WO-276-D112: Planning: four things Part R left. (1) No case prepares a release in a kit root, so the release-note contract there is held at a seam and a source pin; a kit-root fixture for the release…",
+          "summary": "{ \"id\": \"WO-276-D112\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 Part R, 18:47 to 21:09 UTC on 2026-11-12\", \"decision\": \"Part R is built on checkpoint 50 as D109 opened it. What follows is what was built, what the three attack returns changed, what was left, and the gates. R1, core's order numbers. isCoreRoot (packages/skeleton/src/runtime-inputs.mjs, exported for the scripts by scripts/lib/harness-runtime.mjs) is asked before an order's number is compared with one of core's. D109 counted eight sites: the sentence in a receipt's page, the release-note contract's two sites through one exported decision, the effort exemption, the cost adoption, the dependency migration, the feedb",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7fb5568a139c9621",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d113",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5671e660aac5b65161628d51764790c933d02e31f33a2dcfce3c2b6070f5e978",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d113--the-kept-record-of-criticisms-tells-the-two-instruments-apart-critics-1-to-29-briefed-by-the-executor-and-critics-30-to-34-under-the-fixed-charter",
+          "title": "WO-276-D113: Planning, with the follow-up of D111 (FUP-fd4fadccb76a8a9a): when the record of criticisms is mined, weigh the two sides of the thirtieth launch apart. The later side is small (17 points…",
+          "summary": "{ \"id\": \"WO-276-D113\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 closing preparation, the operator's message of 21:15 UTC on 2026-11-12 (to 21:16 UTC)\", \"decision\": \"The operator asked for a summary of the key findings of the record D111 kept, and that the findings of the proper meta critics be told apart from the earlier ones, taking there to have been two or so proper critics. The record gives five: the fixed charter under which a critic reads the session's transcripts itself and judges conduct alone began with the thirtieth launch (D101, D103), and critics 30 to 34 have run under it. The operator was told so with the summary. docs/evidence/WO-276/critic/criticisms.md now ope",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ba14f6042abb2d58",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d114",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "53155f5f4f41fa3945f7e85089f55b3cf83664572f85298fc1399189231de209",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d114--the-closing-preparation-each-held-note-is-repaired-or-declined-before-the-ladders-first-round",
+          "title": "WO-276-D114: Planning: the notes WO-276 held and declined at its closing preparation, none a failure observed, for a pass to take or drop with a reason. (1) Explain the growth of the runner mode of…",
+          "summary": "{ \"id\": \"WO-276-D114\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 closing preparation, 21:14 to 21:21 UTC on 2026-11-12\", \"decision\": \"D068 asks that every note held during the parts be decided before the review ladder's first round, repaired with a case or declined with its reason, so that the round reads the candidate meant for completion and does not report again what is already known. None of the notes is a criterion's failure or a wrong output that was observed (D066, D100, D106, D110). Two are repaired; the others are declined here, each for its own reason, and go to planning in one follow-up. Repaired. (1) The documents that cited a part's opening decision before its gate",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9b9aaa27aa208bde",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d115",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a2c63df7dae27ff8938dca81950afa17b4af63702058c7bb38ca8195724ba4af",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d115--a-note-for-planning-there-may-be-a-use-for-both-kinds-of-critic-the-briefed-one-and-the-independent-one",
+          "title": "WO-276-D115: Planning, with the follow-ups of D077, D110, D111 and D113: the table of worker kinds may want two critic rows and not one. An independent critic of conduct, as…",
+          "summary": "{ \"id\": \"WO-276-D115\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 closing preparation, the operator's message of 21:21 UTC on 2026-11-12 (to 21:22 UTC)\", \"decision\": \"On seeing the record of criticisms split at the thirtieth launch (D113), the operator asked for a note that both kinds of critic may be of use. The note is kept in two places a pass will read: the critic's page (docs/evidence/WO-276/critic/README.md, a section on the two kinds) and the record itself, and it is given to planning by this decision's follow-up. What the record supports. The briefed critic, launches 1 to 29, was told the state of the work, the hours and the plan and could judge the approach; it found fo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f5abf0346fdc9c0c",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d116",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c6014f7daea92f0136f6052f2d94dcb1ed990bf5e190b99b824d6d591c7a70e2",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d116--step-z1-the-release-target-stands-main-has-not-moved-no-feedback-episode-is-owed-the-six-timings-are-taken-again-and-the-document-gate-passes",
+          "title": "WO-276-D116: None.",
+          "summary": "{ \"id\": \"WO-276-D116\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 step Z1, 21:23 to 21:35 UTC on 2026-11-12\", \"decision\": \"The release. npm run release -- prepare --local leaves the order's target at v1.0.0 and changes the meter snapshot alone; the components were each bumped once when their source first changed (D005, D006, D073). The release's notes are the final review's to write: what this order asks them to carry is in the handoff. Main. The local main and the remote-tracking main are both at 0097fcac6, the commit this branch stands on, so there is nothing to integrate by the refs this checkout holds; no fetch was made, and the final review integrates main by its own comman",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9a546892dff2e2b8",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d117",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "61219520fa4caef4989af4c4231334e503ceb5e87667672dc26d354825acc12c",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d117--the-closing-ladders-first-round-three-findings-from-four-reviewers-on-one-tree-each-reproduced-and-repaired-with-a-case",
+          "title": "WO-276-D117: None.",
+          "summary": "{ \"id\": \"WO-276-D117\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 the closing ladder, 21:38 to 22:07 UTC on 2026-11-12\", \"decision\": \"The ladder's first round was a paired round over the whole change: criteria (round 20), design (round 21), consistency (round 20) and one combined worker (round 6), each on Codex with the worker the table names astra, each rechecking its own kind's last report and given no other's, launched together between 21:38:53 and 21:38:55 UTC on the tree a1151cb4b381. Nothing in the repository was edited until the last had returned at 22:00; the helper reports the checkout unchanged across the episodes. Design (12 min) and consistency (22 min) found nothing",
+          "missing": false
+        },
+        {
+          "hash": "2b198085f438f73d3775e463e0caccb688c0bbe55f5dbd8ef5949958b07ecdf7",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d117--the-closing-ladders-first-round-three-findings-from-four-reviewers-on-one-tree-each-reproduced-and-repaired-with-a-case",
+          "title": "WO-276-D117: None.",
+          "summary": "{ \"id\": \"WO-276-D117\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 the closing ladder, 21:38 to 22:07 UTC on 2026-11-12\", \"decision\": \"The ladder's first round was a paired round over the whole change: criteria (round 20), design (round 21), consistency (round 20) and one combined worker (round 6), each on Codex with the worker the table names astra, each rechecking its own kind's last report and given no other's, launched together between 21:38:53 and 21:38:55 UTC on the tree a1151cb4b381. Nothing in the repository was edited until the last had returned at 22:00; the helper reports the checkout unchanged across the episodes. Design (12 min) and consistency (22 min) found nothing",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c2ff437aee8cdb29",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d118",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "421e11f29a69cc02f2c6b1be26072471203127238de52dbe06b6a66147bcb785",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d118--correction-the-closing-round-of-d117-was-not-the-paired-measurement-six-reviewers-were-stopped-on-a-misreading-of-the-operators-condition-and-the-order-goes-to-its-complete-run-on-the-operators-direction",
+          "title": "WO-276-D118: Planning: (1) WO-276 records no paired round, although its header declares the paired ladder: the pass that reads the paired rounds counts it out, and a verification or a final review…",
+          "summary": "{ \"id\": \"WO-276-D118\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 the closing ladder, 22:11 to 22:20 UTC on 2026-11-12\", \"decision\": \"The thirty-fifth critic (21:57 to 22:11 UTC), three points, given to the operator whole and all taken. (1) The round D117 records was not the paired measurement the order describes. It was launched as rounds 20, 21, 20 and 6 with a report to recheck: the three kinds were given recheck briefs over the whole change, and the combined worker, by the helper's rule for a combined round that names an earlier report, was given the change since the tree that report had reviewed (d597900bb4d3, the mid-order ladder's last combined round) and not the whole ch",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5e0f2493927f0c90",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d119",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7f98c2a1e8ea11a13689ccbdd363400ef2e5a0cc2d6ee1e57711fb7189ba340c",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d119--correction-codexs-background-server-was-left-running-after-the-reviewers-were-stopped-and-called-the-operators-own-without-evidence-it-is-closed-on-the-operators-direction",
+          "title": "WO-276-D119: Planning: a Codex worker launch can leave Codex's own background server running after the worker ends, and nothing in the kit looks for it: stopping a worker, the worker helper's exit…",
+          "summary": "{ \"id\": \"WO-276-D119\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 the closing, 22:18 to 22:26 UTC on 2026-11-12\", \"decision\": \"After the six reviewers were stopped at 22:18 (D118) the process table still held two Codex processes: the background server's daemon (codex app-server daemon pid-update-loop, parent 1, started 2026-11-05 06:37:38 UTC) and the server it keeps (codex app-server listening on a local socket, started 2026-11-11 23:46:09 UTC), both from the install under ~/.codex/packages/app-server-daemon. The executor told the operator that only the operator's own Codex app daemon remained and that it had left it alone. That was wrong twice. The attribution had no evidence:",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-197d2df229999795",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d120",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c719124a73d69ad2d2d8a46a678d88d1eadba14e2c6766f3681fb100cf67240f",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d120--the-ninth-complete-run-failed-three-suites-on-expectations-this-orders-own-changes-had-left-stale-each-is-repaired-and-the-run-is-started-again",
+          "title": "WO-276-D120: Planning: Parts M and Q each changed a printed line or a bundle's count that a suite outside the part's gates pinned, and the miss showed only at the closing run, fifty minutes each…",
+          "summary": "{ \"id\": \"WO-276-D120\", \"date\": \"2026-11-12\", \"dispatch\": \"resume: next; WO-276 step Z2, 22:27 to 23:26 UTC on 2026-11-12\", \"decision\": \"The ninth complete run (npm test -- --review --keep-going, 22:33:26 to 23:23:46 UTC, 50 minutes, on checkpoint 55) passed 122 tasks and failed three: license-fixtures (one case of twelve), launchpad:file:test-launchpad-export.mjs (one of 36) and target-worktree:file:test-target-worktree-start.mjs (two of 37). Each failure is a test's expectation that a change of this order made stale; the behavior each change built is as the order asks, and no source file is changed by the repair. (1) license-fixtures, the case that the contribution exemption follows instanc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d6863b3c5aa7b48e",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d121",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "de5e8f192883d3941e87c0fb639f6f570812b8cbfac9f38336fabf549d8445e0",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d121--the-tenth-complete-run-passes-on-the-final-candidate-and-how-step-z3-judges-the-handoffs-lines",
+          "title": "WO-276-D121: No new follow-up.",
+          "summary": "{ \"id\": \"WO-276-D121\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: next; WO-276 steps Z2 and Z3, 23:26 UTC on 2026-11-12 to 00:32 UTC on 2026-11-13\", \"decision\": \"The tenth complete run (npm test -- --review --keep-going, 23:30:47 UTC on 2026-11-12 to 00:26:52 UTC on 2026-11-13, 56 minutes, on checkpoint 56) passed: 125 tasks, no failure, with the three suites the ninth run failed scheduled first. Its row names tree 969687f5c086 and, at its start and its end, main and the remote-tracking main at 0097fcac6: main did not move by the refs this checkout holds. It is the order's tenth complete run of the twenty the bound allows. Step Z3. The branch terms check screens 628 changed files and lists n",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-958a4e82b4fb9f00",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d122",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f1264fe289008f73e6c31c8a32b453e005178517ca689f4581a3051441a994e8",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d122--correction-renaming-d080s-array-in-place-changed-a-decision-that-a-planning-amendment-binds-the-closing-document-gate-failed-on-it-and-the-decision-is-re-bound",
+          "title": "WO-276-D122: Planning: an executor that corrects a filed decision in place learns that an amendment binds it only at the document gate. Two things to weigh: the planning check among the checks an…",
+          "summary": "{ \"id\": \"WO-276-D122\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: next; WO-276 step Z3, 00:36 to 00:42 UTC on 2026-11-13\", \"decision\": \"The document gate run after the handoff was written (00:36:54 to 00:39:43 UTC) passed 27 tasks and failed two, plan and plan-refutation-current, on one message: execution amendment decision binding differs. The cause is the executor's edit of 22:15 UTC on 2026-11-12 (D118). To take the mid-order round out of the count of paired rounds it renamed the roundFindings key of WO-276-D080 to reviewFindings in the record itself, as D043 had done for D030 and D038. D080 is one of the eight decisions of this order that a planning amendment binds by hash (the third ame",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9de04198f561eb27",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d124",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2caa63cd57c3ba416d5531d4447e1c3f0cda2cf0b03f56ef8f792de472629af6",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d124--verification-finds-two-comment-reader-regressions-and-records-three-contradictory-clauses",
+          "title": "WO-276-D124: WO-276 next repair, VER-001 F1 and F2: restore comment recognition for every supported JavaScript and TypeScript extension and syntax context, using the shared source reader; add the…",
+          "summary": "{ \"id\": \"WO-276-D124\", \"date\": \"2026-11-13\", \"dispatch\": \"verification of WO-276, allocated VER-001\", \"decision\": \"Fail VER-001 on two reproduced regressions in the migrated comment check. The candidate ignores JSX and TSX comments that main judged, and treats valid regular-expression text after a conditional as a comment. Repair that reader class in the existing order; the verifier changes no implementation. Record criteria 51, 121 and 123 as defective contradictions at control ordinals 10, 11 and 12 rather than asking the executor to satisfy incompatible clauses. Consume the executor’s current passing complete review row; focused independent probes and the final document gate are sufficien",
+          "missing": false
+        },
+        {
+          "hash": "ae7c3320aa313a5a7c03a89233642faa18d85d50e03640ab3bf640ee6e102676",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d124--verification-finds-two-comment-reader-regressions-and-records-three-contradictory-clauses",
+          "title": "WO-276-D124: WO-276 next repair, VER-001 F1 and F2: restore comment recognition for every supported JavaScript and TypeScript extension and syntax context, using the shared source reader; add the…",
+          "summary": "{ \"id\": \"WO-276-D124\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: verify; WO-276 VER-001\", \"decision\": \"Fail VER-001 on two reproduced regressions in the migrated comment check. The candidate ignores JSX and TSX comments that main judged, and treats valid regular-expression text after a conditional as a comment. Repair that reader class in the existing order; the verifier changes no implementation. Record criteria 51, 121 and 123 as defective contradictions at control ordinals 10, 11 and 12 rather than asking the executor to satisfy incompatible clauses. Consume the executor’s current passing complete review row; focused independent probes and the final document gate are sufficient here with",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Done in the order it named: WO-276-D127 repairs the comment check, which now reads every JavaScript and TypeScript comment from one syntax-tree batch of the shared source reader, judges .jsx and .tsx files, and reads a regular expression after a conditional or a block as one; the regression inputs are cases of scripts/test-comment-labels.mjs.",
+          "reopenWhen": "A verification or final review of WO-276 finds the comment check skipping a comment in an admitted extension or reading text of a regular expression, a template or JSX as a comment.",
+          "targets": [],
+          "at": "2026-11-13T01:43:29.596Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5d58f2b322fe5ff7",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d128",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "13814f189ca6d7dbd7a371e9f4a339a286d126cbaf8dbed32ab0770582f21b7c",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d128--the-repairs-combined-review-six-findings-judged-the-line-count-it-broke-repaired-with-a-case-the-here-document-dialect-recorded-with-a-follow-up",
+          "title": "WO-276-D128: Planning: the comment check reads every shell here-document body as a TypeScript module whatever command it feeds, so a CSS or ignore-file body can fail a label as a comment and a…",
+          "summary": "{ \"id\": \"WO-276-D128\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-001, the one combined review over the change since the dispatch's checkpoint\", \"decision\": \"One default worker (Claude, claude-opus-5-5 at xhigh as the host recorded it) read the change from refs/dotln/checkpoint/WO-276/63's tree (a6811f85a332) to tree 2ff145387523, carrying the three briefs, with VER-001 as an assigned input. It found the class of both findings closed for JavaScript and TypeScript sources and for JavaScript here-documents, and returned six findings, judged here. F1 (blocking): the repair took each comment's line from the compiler's line map, which also breaks at U+2028, U+2029 and a lone ca",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c5343087653dc9a9",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d130",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "668336692bb6688171dc1dbd9f007ad81199a9e2bd9307269adad3f06cdad2f6",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d130--re-verification-closes-the-comment-regressions-and-reproduces-two-criterion-failures",
+          "title": "WO-276-D130: Next repair: close VER-002 F1 by screening every supported JavaScript and TypeScript source extension under both declared roots, with existing exclusions preserved; close F2 by admitting…",
+          "summary": "{ \"id\": \"WO-276-D130\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: verify; VER-002 independent judgment\", \"decision\": \"The two findings of VER-001 are repaired: the 691-file comparison agrees with main, all 12 comment-label fixtures pass, and 19 independently varied sources match the extracted baseline grammar reader. Fail re-verification on criterion 18 because ordinary supported script and package source extensions are omitted by the Markdown screen, and on criterion 103 because a reviewed target deletion of an earlier record is refused as retaining records under instance policy. Both are executable supported-input failures of declared criteria; route their bounded classes to the existing o",
+          "missing": false
+        },
+        {
+          "hash": "53dabb9a752ce65e600b956bb0ce4da19388ee887f40bbcce7c82fbf5a25ddea",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d130--twenty-use-re-verification-reconciles-independent-findings-and-fails-the-original-criteria",
+          "title": "WO-276-D130: Next repair: F1 cover supported source extensions; F2 distinguish removed target records from retained ones; F4 preserve newly ignored tracked changes in checkpoints; F5 preserve…",
+          "summary": "{ \"id\": \"WO-276-D130\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: verify; VER-002 independent full-surface re-verification\", \"decision\": \"The two findings of VER-001 are repaired. The 691-file comparison agrees with main, all 12 comment-label fixtures pass, and 19 independently varied sources match the extracted baseline grammar reader. The operator requested thoroughness and all 20 workers; the manual census records 17 launches and three clarifying continuations, exhausting 20 uses. Fail VER-002 on original criteria 17, 18, 21, 25, 64, 65, 101, 103, 115 and 127, plus the baseline regression in execution-record appendices. Each blocker names its supported input or missing mandated artifact a",
+          "missing": false
+        },
+        {
+          "hash": "26c1abf9c02ff49405f1543c8281e25910ce9d5382cd60a82950abeee37281fa",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d130--twenty-use-re-verification-reconciles-independent-findings-and-fails-the-original-criteria",
+          "title": "WO-276-D130: Next repair: F1 cover supported source extensions; F2 distinguish removed target records from retained ones; F4 preserve newly ignored tracked changes in checkpoints; F5 preserve…",
+          "summary": "{ \"id\": \"WO-276-D130\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: verify; VER-002 independent full-surface re-verification\", \"decision\": \"The two findings of VER-001 are repaired. The 691-file comparison agrees with main, all 12 comment-label fixtures pass, and 19 independently varied sources match the extracted baseline grammar reader. The operator requested thoroughness and all 20 workers; the manual census records 17 launches and three clarifying continuations, exhausting 20 uses. Fail VER-002 on original criteria 17, 18, 21, 25, 64, 65, 101, 103, 115 and 127, plus the baseline regression in execution-record appendices. Each blocker names its supported input or missing mandated artifact a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "duplicate",
+          "reason": "The eleven repairs it names are done in the order it named: WO-276-D131 repairs F1, F2, F4, F5, F7 to F11 and F18 in code, each as its class with cases, and WO-276-D132 completes the reader comparisons F6 asked for. The seven planning items it names (F3 and F12 to F17) are carried, unchanged in substance, by WO-276-D131's follow-up, which is the row to triage.",
+          "reopenWhen": "A verification or final review of WO-276 finds one of the eleven repairs not held, or WO-276-D131's follow-up is found to have dropped one of the seven planning items.",
+          "targets": [
+            "FUP-6a841898d40036f8"
+          ],
+          "at": "2026-11-13T05:48:31.951Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6a841898d40036f8",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d131",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "575e4643c71c8162c24e74431ca2fa0a580d4197184b5870b003a0523961e298",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names",
+          "title": "WO-276-D131: Planning, carried from VER-002 (WO-276-D130): F3 reconcile the starter order's host criterion with the hosts its discovery must inspect; F12 reopen D033's grammar boundary for the fast…",
+          "summary": "{ \"id\": \"WO-276-D131\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-002, its ten blocking findings in code (F1, F2, F4, F5, F7 to F11 and F18)\", \"decision\": \"Each finding is repaired as the class it names, with the rule the repaired code holds and cases the report did not quote. F6, the missing reader comparisons, is evidence and is WO-276-D132's. F1 (criterion 18). Cause: the pattern-reader screen chose its sources by a suffix list of its own, .mjs under scripts/ and .ts, .mts, .mjs and .js under a package's src/, narrower than the dialects the source reader parses. Rule: the screen selects every non-test source under both roots whose suffix the source reader's dialect rule",
+          "missing": false
+        },
+        {
+          "hash": "5edbe855e59c45743db0d70cf183365cb649d7394a889a9e9c2090d11b232744",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names",
+          "title": "WO-276-D131: Planning, carried from VER-002 (WO-276-D130): F3 reconcile the starter order's host criterion with the hosts its discovery must inspect; F12 reopen D033's grammar boundary for the fast…",
+          "summary": "{ \"id\": \"WO-276-D131\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-002, its ten blocking findings in code (F1, F2, F4, F5, F7 to F11 and F18)\", \"decision\": \"Each finding is repaired as the class it names, with the rule the repaired code holds and cases the report did not quote. F6, the missing reader comparisons, is evidence and is WO-276-D132's. F1 (criterion 18). Cause: the pattern-reader screen chose its sources by a suffix list of its own, .mjs under scripts/ and .ts, .mts, .mjs and .js under a package's src/, narrower than the dialects the source reader parses. Rule: the screen selects every non-test source under both roots whose suffix the source reader's dialect rule",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ab48eed76d79dc10",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d132",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "de203e126ccaa3dcf30066ebe5bd02aa3b77f43d59483685a6e908c7166b6b09",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d132--the-reader-comparisons-are-audited-reader-by-reader-and-completed-and-what-they-found",
+          "title": "WO-276-D132: Planning: a bold label that wraps onto a second line is no label to the order format's reader, so the field before it runs through the section the label was meant to open; 55 closed…",
+          "summary": "{ \"id\": \"WO-276-D132\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-002 F6, the reader comparisons criterion 25 requires\", \"decision\": \"The coverage map of Part B's comparisons was audited reader by reader and rebuilt, every reader it had sent to a comparison that never called it now has one, every reader it had left to unit cases or a pass-or-fail check although it reads committed documents now has one, and every difference the comparisons show is named. docs/evidence/WO-276/part-b/comparisons/ now records 60 comparisons of readers.mjs over 29,678 inputs (28,540 equal, 1,138 different in 16 comparisons, none unnamed), and shell-reader.mjs also compares the hook host's word ",
+          "missing": false
+        },
+        {
+          "hash": "85391cdd8a0607abb8c0484fdf55ab9be501ab31f0dac6a87752af4c5186f8dd",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d132--the-reader-comparisons-are-audited-reader-by-reader-and-completed-and-what-they-found",
+          "title": "WO-276-D132: Planning: a bold label that wraps onto a second line is no label to the order format's reader, so the field before it runs through the section the label was meant to open; 55 closed…",
+          "summary": "{ \"id\": \"WO-276-D132\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-002 F6, the reader comparisons criterion 25 requires\", \"decision\": \"The coverage map of Part B's comparisons was audited reader by reader and rebuilt, every reader it had sent to a comparison that never called it now has one, every reader it had left to unit cases or a pass-or-fail check although it reads committed documents now has one, and every difference the comparisons show is named. docs/evidence/WO-276/part-b/comparisons/ now records 60 comparisons of readers.mjs over 29,678 inputs (28,540 equal, 1,138 different in 16 comparisons, none unnamed), and shell-reader.mjs also compares the hook host's word ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6df4bd24f57a0249",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d136",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "15d136762281aa207d90c721c34a144ba32b7619a8091172ee12b74c3f426ee7",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d136--ver-003-repairs-held-new-checkpoint-regression-and-unfinished-reader-scope",
+          "title": "WO-276-D136: Next repair: F1 treat an obsolete tracked descendant whose parent is now a file as absent, preserving the replacement, true read-error reporting and all newly ignored/flagged/forced-file…",
+          "summary": "{ \"id\": \"WO-276-D136\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: verify; VER-003 re-verification of the VER-002 repair\", \"decision\": \"Fail criteria 17, 18 and 25 on three independently checked findings, while retaining the repaired behavior that the probes confirm. The new checkpoint pass over tracked paths throws ENOTDIR after an ordinary tracked directory becomes a file, where main snapshots the replacement. The source screen now covers ordinary filenames in every admitted dialect but still omits a suffix-only basename at the source root, although the shared reader and direct screen accept it and the same basename below another directory is selected. The comparison map fills VER-002 F6's ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-36884e4e8f78b6a2",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d137",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "094699c4d47b8b806f4ead3460fea731332483f600e5d437e5a148ef65349430",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d137--the-repair-of-ver-003-the-snapshot-follows-a-tracked-path-whose-place-changed-shape-the-screen-asks-the-source-reader-what-is-source-and-every-reader-with-a-committed-input-is-compared",
+          "title": "WO-276-D137: Planning: a snapshot holds a directory that is a repository of its own as a commit entry, as main's did, so a recovery checkpoint keeps no bytes of the files under it; where such a…",
+          "summary": "{ \"id\": \"WO-276-D137\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-003, three findings (criteria 17, 18 and 25)\", \"decision\": \"Each of VER-003's three findings is repaired as the class it names, with the rule the repaired code or evidence holds and cases the report did not quote. F1, criterion 17. Cause: the second pass of the snapshot, which the repair of VER-002 added so that a tracked file an ignore rule has come to match is kept, asked the file system about every tracked path the first pass had not staged and took only a missing entry for a file that is gone; a tracked path under a directory that has become a file answers ENOTDIR, which stopped the snapshot. The class i",
+          "missing": false
+        },
+        {
+          "hash": "1802847648bdede89c85283ba8ad2863c280704ae0f39a644e233933401b15d7",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d137--the-repair-of-ver-003-the-snapshot-follows-a-tracked-path-whose-place-changed-shape-the-screen-asks-the-source-reader-what-is-source-and-every-reader-with-a-committed-input-is-compared",
+          "title": "WO-276-D137: Planning: a snapshot holds a directory that is a repository of its own as a commit entry, as main's did, so a recovery checkpoint keeps no bytes of the files under it; where such a…",
+          "summary": "{ \"id\": \"WO-276-D137\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-003, three findings (criteria 17, 18 and 25)\", \"decision\": \"Each of VER-003's three findings is repaired as the class it names, with the rule the repaired code or evidence holds and cases the report did not quote. F1, criterion 17. Cause: the second pass of the snapshot, which the repair of VER-002 added so that a tracked file an ignore rule has come to match is kept, asked the file system about every tracked path the first pass had not staged and took only a missing entry for a file that is gone; a tracked path under a directory that has become a file answers ENOTDIR, which stopped the snapshot. The class i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b3d2847373e48096",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d138",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ce0df35523ba7477fc1af9aa6ed3762ed6ddc7d672be88bdf7e12817bde8dd9a",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d138--the-repairs-combined-review-seven-findings-judged-a-rename-by-case-alone-leaves-one-name-again-and-the-feedback-audits-row-is-compared",
+          "title": "WO-276-D138: Planning: no gate refuses a relative import under scripts/ that names no file, so a script can be left importing a module that does not exist until someone runs it, as…",
+          "summary": "{ \"id\": \"WO-276-D138\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-003, the one combined review over the change since the dispatch's tree\", \"decision\": \"One default worker (Claude; its host named its model claude-opus-5-5 and gave it no effort readback) read the repair from the dispatch's tree 78a31bd5da2f to tree 3e086f57d7ac, carrying the three briefs, with VER-003 and WO-276-D137 as assigned inputs. It found the three classes closed for what it probed (the snapshot's shapes, the screen's selection by construction, and the eight comparisons each calling the base's reader and the worktree's over committed inputs, none returning before the reader runs) and returned seven fi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a81dd3a30ac1108d",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d139",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e4b57b1f03ad45a3530eec35980eb43391cd99dedc81ec1916499a4c33d2eac3",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d139--the-fourteenth-complete-run-failed-in-two-suites-neither-on-the-repairs-own-change-a-nested-gate-refused-on-the-hosts-memory-pressure-and-a-lane-case-met-a-reader-cache-that-answered-for-the-wrong-directory-which-is-repaired",
+          "title": "WO-276-D139: Planning: a complete run can fail on memory pressure that arises while it runs. A gate of an exported instance, run by a case inside the run, reads host admission for itself and refuses…",
+          "summary": "{ \"id\": \"WO-276-D139\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-003, the complete run on the repaired candidate\", \"decision\": \"The order's fourteenth complete run (npm test -- --review, 15:29 to 16:07 UTC, 0 h 38 min) failed: 39 suites passed and 9 failed, of which two ran and failed and seven were never started, since without --keep-going the runner starts nothing after a first failure. Neither failure is in code the repair of VER-003 changed, and each was diagnosed before anything was changed. launchpad-planning. Its case that runs the planning and release-close commands in a fresh exported instance runs that instance's document gate, and the gate's host admission refu",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-309ff4feeae7ab27",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d141",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6b476dd30c47efc83c4109eaed111c1ad141b52249f0381cdaa2b677b1b40c22",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d141--the-fifteenth-complete-run-is-stopped-on-the-operators-direction-what-is-and-is-not-established-about-the-file-events-daemons-memory-the-thirty-sixth-critics-five-points-and-the-two-things-this-session-could-not-do-itself",
+          "title": "WO-276-D141: Planning, unless this order settles it first: the gate samples the file-events daemon's memory at every start and says nothing about it, so the daemon grew from 0.1 to 15 GiB over 31…",
+          "summary": "{ \"id\": \"WO-276-D141\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-003, the operator's messages of 17:08 to 17:18 UTC and the stop of the fifteenth complete run\", \"decision\": \"The fifteenth complete run (npm test -- --review --keep-going, started 16:28:16 UTC) was stopped by node scripts/harness.mjs evidence --stop at 17:16:51 UTC, 0 h 49 min in, on the operator's direction: the machine could run out of memory while the executor waited for the run. 119 tasks had passed and none had failed; the stop itself ended five files in flight and one suite unstarted, and the stopped row supplies no pass. The executor had already decided on changes that would stale the run's result (WO",
+          "missing": false
+        },
+        {
+          "hash": "911374d3dc639fce0287e4e2ac1cf1a7603b5213aa0d28df19c5c9040e492b15",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d141--the-fifteenth-complete-run-is-stopped-on-the-operators-direction-what-is-and-is-not-established-about-the-file-events-daemons-memory-the-thirty-sixth-critics-five-points-and-the-two-things-this-session-could-not-do-itself",
+          "title": "WO-276-D141: Planning, unless this order settles it first: the gate samples the file-events daemon's memory at every start and says nothing about it, so the daemon grew from 0.1 to 15 GiB over 31…",
+          "summary": "{ \"id\": \"WO-276-D141\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-003, the operator's messages of 17:08 to 17:18 UTC and the stop of the fifteenth complete run\", \"decision\": \"The fifteenth complete run (npm test -- --review --keep-going, started 16:28:16 UTC) was stopped by node scripts/harness.mjs evidence --stop at 17:16:51 UTC, 0 h 49 min in, on the operator's direction: the machine could run out of memory while the executor waited for the run. 119 tasks had passed and none had failed; the stop itself ended five files in flight and one suite unstarted, and the stopped row supplies no pass. The executor had already decided on changes that would stale the run's result (WO",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-532530eb14c5703d",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d143",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4344fbf16c9ffdc5b7065217c710fcc270f27e661f1e530a598551243582cf3b",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d143--the-kit-closes-the-background-server-codex-leaves-running-the-sixteenth-complete-run-is-stopped-for-that-change-the-critics-record-and-clock-are-brought-up-to-date-in-the-repair",
+          "title": "WO-276-D143: Planning: (1) four sites build the Codex transport themselves and close nothing when their worker ends (scripts/refute-plan.mjs, scripts/lib/review-comment-loop.mjs,…",
+          "summary": "{ \"id\": \"WO-276-D143\", \"date\": \"2026-11-13\", \"kind\": \"correction\", \"dispatch\": \"resume: fix; repair of VER-003, 18:11 to 18:35 UTC on 2026-11-13\", \"misread\": \"Three things, each the executor's. (1) WO-276-D142 put to the operator whether the kit may end Codex's leftover background processes itself, after the session's permission check refused the edit that wired the cleanup in, and the executor then offered to put the change back if the operator said so. The operator had asked twice why closing those processes fell to the operator; the answer to that question was already the direction. (2) The record of the meta critics' criticisms, which the executor of the order kept current at the operato",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0fd5498635e93b90",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d144",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "81ee0d031aca715a81c5b39e2855ccaab4b754143375773d5105d12f273d3303",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d144--correction-what-the-daemon-comparison-established-and-what-wo-276-d142-and-the-gates-refusal-said-beyond-it-the-thirty-seventh-critics-three-points",
+          "title": "WO-276-D144: Planning, with WO-276-D141's follow-up: whether the gate's temporary roots belong off the volume the daemon logs is open, not settled; the comparison to make is a complete run's file…",
+          "summary": "{ \"id\": \"WO-276-D144\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: fix; repair of VER-003, 18:34 to 18:39 UTC on 2026-11-13\", \"decision\": \"The thirty-seventh critic (launched as GPT-6 Astra at max effort, read-only, 18:20:47 to 18:33:53 UTC, 0 h 13 min) made three points, and each is accepted. (1) WO-276-D142 said more than its comparison showed. The comparison made 20,000 files in each of four places on a daemon restarted minutes earlier, and showed that for that load, on a healthy daemon, the place makes no measurable difference. D142 went on to say that where the files are made does not matter, that the comparison showed moving the gate's temporary roots would change nothing, and, by multi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c964896b30330ea2",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d145",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "185756fd38162c01d2bdc28b9e6f6380ac6051af45a6b7940ece24e81a521d59",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d145--the-seventeenth-complete-run-passes-on-the-candidate-the-repair-of-ver-003-leaves-the-restarted-daemon-stayed-flat-under-it-a-critic-launched-after-the-pass-is-stopped-on-the-operators-direction",
+          "title": "WO-276-D145: Planning, with the fourth item of WO-276-D143's follow-up: where the kit carries the critic's cadence, it says when the clock starts and when it ends, the passing run being the end.",
+          "summary": "{ \"id\": \"WO-276-D145\", \"date\": \"2026-11-13\", \"kind\": \"correction\", \"dispatch\": \"resume: fix; repair of VER-003, 18:43 to 19:35 UTC on 2026-11-13\", \"misread\": \"The executor launched a thirty-eighth meta critic at 19:29:18 UTC, forty seconds after the passing run ended, because the standing file it had written before the run gave the clock's next time. Only the closing was left: the handoff, the terms screen, the document gate and the completion. A critic's report could have changed none of them, and would have returned during or after them. The order's own executor launched no critic in its closing stretch after the thirty-fifth.\", \"meant\": \"The operator's message, in paraphrase: there is no ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c6f928195975c40d",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d147",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b65133d4dfbd05a9b0762f79aeb61e1d5fc71be42e85467ed512f687473119e5",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d147--ver-004-confirms-the-three-repairs-and-fails-the-new-cleanup-at-its-live-process-boundary",
+          "title": "WO-276-D147: WO-276 repair: preserve every live CLI process even when its executable shares the server installation directory; restrict cleanup to identified abandoned background-server roles, with…",
+          "summary": "{ \"id\": \"WO-276-D147\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: verify, VER-004, from the repair completed at checkpoint 77\", \"decision\": \"The three failures of VER-003 are repaired. Six independent checkpoint shapes preserve the expected content and the real index, and six source-name variations reach the screen. The nine reader comparisons added by this repair run successfully over 944 inputs, with 906 equal readings and 38 differences in the declared classes. Verification nevertheless fails on the new background cleanup, an authority boundary: it treats every process whose executable is under the app-server-daemon installation directory as an abandoned server. A live interactive CLI or ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-276-D148 implements the VER-004 cleanup repair. The combined review found no findings; the selected gates and fresh independent verification remain in WO-276's existing lifecycle.",
+          "reopenWhen": "The repair or its independent verification fails, or the order ends without satisfying the cleanup boundary.",
+          "targets": [
+            "WO-276"
+          ],
+          "at": "2026-11-13T20:07:26.107Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-27ff5c4e26de1675",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d151",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "185e3bf1dc1ce6aabf1ec8f5edd95b5fcac6561f094d2286b1e71141d963fd40",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d151--the-complete-run-passes-the-operator-defers-the-discovery-timeout-to-a-follow-up-fix",
+          "title": "WO-276-D151: Priority high: investigate and fix the intermittent five-second discovery timeout recorded in docs/evidence/WO-276/repair-ver004/discovery-timeout.json. The test WO-119 default npm…",
+          "summary": "{ \"id\": \"WO-276-D151\", \"date\": \"2026-11-13\", \"kind\": \"correction\", \"dispatch\": \"resume: fix; repair of VER-004; operator direction to defer the intermittent discovery timeout\", \"misread\": \"The executor treated an isolated passing rerun as sufficient reason to leave the discovery timeout without a concrete follow-up. Repeated progress messages also failed to explain the full-run requirement and the active long-running fixtures clearly.\", \"meant\": \"A passing retry does not establish the cause or repair an intermittent failure. The operator directed that its investigation and fix be recorded as a follow-up, so this repair can finish without expanding the four-day order.\", \"changed\": \"Preserve t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-348ac9430f5e66f3",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d155",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b570a451be7a5d7f54473fb5ebe0b3a5a50bbb2a9b60e31a594849e1cb68879e",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d155--follow-ups-on-the-terms-and-verbatim-screens-a-quoted-sentence-inside-a-code-span-passes-a-list-written-before-this-release-can-change-meaning-and-the-guides-never-refuses-sentence-leaves-out-a-target",
+          "title": "WO-276-D155: Planning, priority high for the first item: (1) scripts/lib/verbatim-screen.mjs reads an inline code span as an address only where it is address-shaped (a path, an identifier, a URL) or…",
+          "summary": "{ \"id\": \"WO-276-D155\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Three findings on Part A's screens are follow-ups. (1) The verbatim screen reads an inline code span as one word that no capture holds, as the order's design states, so a capture's sentence copied whole into one code span is no finding, where the same sentence in plain prose or in a fenced block is one and the base found all three. The design meant addresses: paths, identifiers, link targets. A sentence in backticks is none of those, and it is the form in which an agent is most likely to carry the operator's words into a record. It is no criterion's failure, since criterion 13 holds as wr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5e8613230ee9c07c",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d156",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9517685dc48f2e6b0743951b8f6e890a659cf44068002203275b5fc1630de422",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d156--follow-ups-on-the-hooks-and-the-days-figure-a-list-matcher-the-host-reads-as-a-search-a-workers-monitor-task-the-fixed-tick-and-a-codex-session-that-is-shown-no-figure",
+          "title": "WO-276-D156: Planning: (1) packages/compiler/src/harness.ts emits a list matcher anchored at both ends, and the suite's helper reads a matcher as the host does (a whole name where it holds only names…",
+          "summary": "{ \"id\": \"WO-276-D156\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Four findings on Parts A, P and Q are follow-ups; none changes a refusal. (1) The writer hook's emitted list matcher holds a name with a dot in it, and Claude Code reads a matcher with such a character as an unanchored search, so the name of the write tool matches inside the name of the to-do tool and the hook starts for it: one more process a call, no judgment changed. The suite's helper that reads registered hooks anchors every matcher and so cannot see it, and a dotted name added to the lint hook's list later would break criterion 120's first clause in silence. (2) A worker's own Monit",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-79439387f395813a",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d157",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "077dfbd8b2a30c884366c3a5ecafe28f8f2351afaa3730c2cc4ab44b79ba4dab",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d157--follow-ups-on-the-runner-and-the-host-task-shard-forms-that-run-in-every-shard-two-inherited-variables-that-empty-a-shard-the-file-events-refusals-one-remedy-and-an-advisory-that-names-cores-suites-in-a-kit-root",
+          "title": "WO-276-D157: Planning, with the repair taking what stands in its surfaces: (1) scripts/lib/test-shards.mjs places or refuses a registration with no title and the member forms, and the guard case…",
+          "summary": "{ \"id\": \"WO-276-D157\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Four findings on Parts D, H and R and on the repair of VER-003 are follow-ups. (1) The shard helper places a case by its title, so a registration with no title string, and the member forms of the registration function, register in every shard and run once in each; no file of the row uses one today, and the guard case does not catch them. (2) An inherited variable that names test titles or a shard passes into suites and bounded probes through the allowed prefix, where a shard file then registers no case and exits zero: a wrong pass on an input no kit tool writes into a session. (3) The fil",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-15b0b2a93e939481",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d158",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d426edde66c23ddb0aa654af6a15d9d41e60c6e215a9ac43928a182bfd92b033",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d158--follow-ups-on-the-readers-and-their-evidence-two-exemptions-by-path-the-document-checks-parse-ceiling-a-case-that-cannot-fail-and-a-mission-contract-that-reads-longer-for-59-orders",
+          "title": "WO-276-D158: Planning, with the repair taking what stands in its surfaces: (1) name the two carried files in scripts/lib/vendor/.gitattributes in place of every file, and state both path exemptions…",
+          "summary": "{ \"id\": \"WO-276-D158\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Nine findings on Part B are follow-ups. (1) The vendor directory's attributes file unsets the whitespace check for every file under it, and the format ignore list names the parser's path, so a file there that the proof does not hold skips both, where the legal page and WO-276-D032 say that such a file is screened as any other; the words screens do leave out by proven bytes alone, which is what the order's non-goal covers. (2) The document check keeps parsed documents under a ceiling of 1 GiB, which is no ceiling at this corpus: its peak is 2.17 GB of the bounded wrapper's 3.2 GB, and it g",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-aef88807af184d12",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d159",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e8d8595221eff990db63f010444039a4b7c5e4d8572d7b43c41ba608d69e0800",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d159--follow-ups-on-a-targets-close-a-named-merge-commit-that-touches-none-of-the-reviewed-paths-a-squash-the-base-reverted-and-a-read-of-the-bases-patches-at-every-status",
+          "title": "WO-276-D159: Planning, with the repair of the rebase rule taking the first where it edits the same function: (1) scripts/lib/merged-change.mjs judges a named commit by its change against its first…",
+          "summary": "{ \"id\": \"WO-276-D159\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Three findings on Part M are follow-ups; the fourth, the rebase rule, blocks and is in WO-276-D154. (1) The order's known issues ask that a commit named with --merged-as be refused where it changes none of the paths the reviewed change touches. The touched set is read against every parent, so a merge commit whose own change, against its first parent, touches none of them is admitted where the line it merged into had changed them. The person who names the commit takes the judgment by design, and no criterion states this refusal. (2) A squash that the base later reverted is accepted, as a r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-78b4c1ed19b20051",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d160",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5c15f6a29e128bae605e460e24f5b0ede82bea66e10c1e1af2ed932b71dcc219",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d160--follow-ups-on-updates-and-a-new-instance-a-grafted-clone-refused-for-the-wrong-cause-and-a-marker-form-the-step-does-not-describe",
+          "title": "WO-276-D160: Planning: (1) scripts/launchpad.mjs reads the update's histories with the grafts file set aside, or detects one and names it in the refusal; case beside the shallow clone's. (2) The…",
+          "summary": "{ \"id\": \"WO-276-D160\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Two findings on Parts G and I are follow-ups; the order of kit verification blocks and is in WO-276-D154. (1) A merge base hidden by a hand-written grafts file is refused before any push, as it should be, with the wrong cause: the refusal says that the clone is whole and the two histories share nothing, since the two causes are told apart by whether the clone is shallow alone. Only an operator who uses that deprecated Git feature writes such a file, and the modern form is read correctly. (2) Step G3 describes each marker as a start and an end comment around a block. What was built is one ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-953b83228d3a6594",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d161",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b89290ad28714e6450af1e23852e66d2da36382cf1d028a601061b20839f2d49",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d161--follow-ups-on-the-cleanup-of-codexs-background-server-and-on-the-usage-classes-a-wrapper-run-that-is-not-yet-counted-as-live-and-a-class-sum-that-covers-some-rows",
+          "title": "WO-276-D161: Planning: (1) scripts/lib/codex-background.mjs counts a process as live where its first word, or its second after an interpreter or a shell's command flag, names a Codex program; reads…",
+          "summary": "{ \"id\": \"WO-276-D161\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Two findings on Part J and on the repair of VER-003 are follow-ups. (1) The cleanup counts a process as a live Codex process where its command line names a Codex program at its start or after a path separator. A run through a Node or a shell wrapper names the program elsewhere, so the wrapper alone is not counted; in current packaging the native child that follows is, so the exposure is the moment before that child exists, inside the limit WO-276-D148 states, that the classifier reads one snapshot and takes no lock. It signals only the three recognized background roles under one orphaned ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c2004496635379d9",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d162",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e603ac6c4997e4f6d769c45943924c810730fabfe535de1e092553efb10bd6a4",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d162--follow-ups-on-the-planning-routes-and-the-role-text-a-release-note-contract-an-instance-can-no-longer-switch-on-a-site-the-guide-leaves-out-a-register-read-the-planner-is-not-told-of-and-a-rule-table-that-later-orders-must-rewrite",
+          "title": "WO-276-D162: Planning: (1) docs/KIT.md §Taking upstream updates and the release's notes say that an instance's own order no longer switches the release-note contract on and what an instance that…",
+          "summary": "{ \"id\": \"WO-276-D162\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Six findings on Parts F and R are follow-ups. (1) In a kit root no order switches the release-note contract on any longer, which criterion 126 asks. An instance whose own order of core's number had passed its final review before the upgrade loses the contract when it takes this release: its release entries fall back to commit subjects, by a reading of scripts/release.mjs that was not probed. Neither the kit guide nor the known issues say so. (2) The kit guide's list of the sites that compared an order's number leaves out the ledger exemption, so an instance's order of that number gains a ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8ad1dbd8da33320b",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d163",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2dd64dd3630a3f1ead2ba22f6baf292dd42c7f78505b5def34d8f4c77952f21b",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d163--follow-ups-in-standing-documents-sentences-the-kit-guides-update-section-is-said-to-carry-and-does-not-a-seeds-check-that-names-three-files-of-four-dated-accounts-a-stale-synopsis-and-four-passages-that-still-call-the-teammate-ready-rung-10",
+          "title": "WO-276-D163: The repair, within its bound, and planning for the rest: (1) docs/KIT.md §Taking upstream updates gains the six sentences. (2) scripts/kit/first-order.template.md names the host report's…",
+          "summary": "{ \"id\": \"WO-276-D163\", \"date\": \"2026-11-13\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"Ten findings in the standing documents and the seeds are follow-ups; every documentation criterion is met as written, and each changed passage not named here is a replacement that states the current rule and links its decision. No document was edited by this review, since the order returns to repair and the repair owns the candidate. (1) The order's known issues say that the kit guide's update section carries the sentences the release's Read before upgrading states. It carries four (an unmarked entry, the two records, the launcher, the floor lines) and lacks six: that the role roots chang",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3b2b31a1f1aa53b9",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d164",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f56111bab72f3239ab444412973fa68e31e13cf07de90e1bd63560f370744fda",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d164--the-second-reading-the-files-the-first-sixteen-readers-left-unread-and-an-update-from-the-previous-releases-kit-add-one-blocking-finding-three-readers-under-criterion-25-and-nineteen-follow-ups",
+          "title": "WO-276-D164: The repair, within its bound, and planning for the rest: (F53) the kit guide's take-release steps run npm run sync after the emit and the lineage index, or the update's publish refuses a…",
+          "summary": "{ \"id\": \"WO-276-D164\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: final review, FINAL-001\", \"decision\": \"After the sixteen readings the operator asked, during the dispatch, that this review find every issue in one pass, so that the order does not return a round at a time. Each of the sixteen reports ends with what its reader did not read, and a census of the change against the briefs and reports found 123 of its 372 code and configuration files named by none, most of them deleted fixtures and generated hooks. The four worker uses that remained read the gaps in four batches: the planning and document readers that moved onto the shared readers (eighteen files); the lifecycle, publish and relea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b9d4f046b5aa5419",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d177",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e51b800ee85b58967896d7958cdeea622feb3ba439644f2687ea3bfeb55508fa",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d177--what-the-repair-of-final-001-takes-of-the-reviews-follow-ups-what-it-boards-and-the-provenance-records-reader-beside-f3",
+          "title": "WO-276-D177: Planning: scripts/docs-check.mjs provenanceRecords takes its fields from markdownFields over the paragraph's range, rendering a span the range cuts as its text, so a provenance label…",
+          "summary": "{ \"id\": \"WO-276-D177\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: fix; repair of FINAL-001\", \"decision\": \"FINAL-001 leaves to this repair, within its bound, the follow-ups in the order's surfaces, and WO-276-D163 and WO-276-D164 say which. Taken, with what now holds each: of WO-276-D163, (1) the kit guide's update section gains a paragraph for an instance taking v1.0.0 (the role roots and worker definitions the emit rewrites, the election and emit for a host a discovery record alone showed, the first order that has not run, the attributes seed and the one renormalizing command, the seeded profile and workstream pages, and the status's first key); (2) the seeded first order's terms check name",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-187c6e9dea8903cb",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d182",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f4dc543979e5cdf9bb4337ef931f9a77550f56d958d7aa2cf297c98822fe4c98",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d182--the-forty-first-critics-four-points-a-shared-repairs-consumers-not-listed-before-it-exit-statuses-read-from-the-logging-a-return-field-the-brief-never-named-and-a-requested-setting-given-as-what-ran",
+          "title": "WO-276-D182: Planning: packages/skeleton/src/change-review-protocol.ts changeReviewPrompt's output contract names every field changeReviewResultSchema requires (schemaVersion: 1 among them), so a…",
+          "summary": "{ \"id\": \"WO-276-D182\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: fix; repair of FINAL-001, the forty-first meta critic\", \"decision\": \"The forty-first critic (the worker table's astra entry, gpt-6-astra at max as requested; the launcher prints the table's setting and no host readback was read; read-only, launched at 03:41:52 UTC and returned at 03:57:10 UTC) made four points, given to the operator whole and each accepted. (1) The parse entry's repair (WO-276-D178's third) changed what every reader of the tree receives, and the executor's search for the readers of the extensions' node types had covered one directory, scripts/lib; the search over scripts and packages came only after the front ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0ababcfbaa44a912",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d187",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0f4300eff3804aff7224b884b6e474a07248fed411c066adc6541ddfdf79efd5",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d187--the-closing-runs-the-first-two-complete-runs-failed-on-two-consumers-of-this-repairs-changes-each-repaired-as-its-runs-own-the-third-passed-and-main-had-not-moved",
+          "title": "WO-276-D187: Planning: an order that adds a control-log metric leaves main's lifecycle commands unable to fold that order's log until it merges, while the executor's role text has it run main's…",
+          "summary": "{ \"id\": \"WO-276-D187\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: fix; repair of FINAL-001, the closing complete runs, 05:54 to 07:55 UTC on 2026-11-14\", \"decision\": \"Before the runs, node scripts/worktree.mjs integrate WO-276 fetched origin/main, found it at 0097fcac6, the branch's base, and took in nothing. Main's own copy of the command, the main checkout's scripts/worktree.mjs, refused before fetching: its validator admits DispatchBoundAccepted with the metrics wallClockMs and completeRuns only, and the third line of this order's control log, the cap acceptance of 2026-11-10 (WO-276-D003), names subagentCap, a metric this order added; so the worktree's command was run, which folds the lo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fd53a36c83596313",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d190",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5b658ed8fc2f3f8109b0e0f5d49e9b41eb5ff253788a074c3120cdc1a30be36a",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d190--the-sixth-verification-retains-a-criteria-reader-regression-and-boards-a-text-reading-follow-up",
+          "title": "WO-276-D190: Markdown neutralization punctuation: preserve delimiter behavior when a dollar sign or template brace follows underscore emphasis. Probe Price _net_$5. with the base and candidate…",
+          "summary": "{ \"id\": \"WO-276-D190\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: verify, VER-006\", \"decision\": \"Record VER-006 fail for the remaining F52 class on existing lifecycle orders with skipped identifiers. Main and the candidate both accept the complete 1,3,4 handoff, preserving its gate claims. With a wrapped HTML tag or heading and a handoff judging 1 alone, main requires 3 and 4 while the candidate accepts only 1 and loses their gate claims. The lifecycle reader explicitly preserves skipped identifiers; new planning submissions require sequential numbering and are not the supported-input basis. No current corpus order has a raw numbering gap. The other eight original blocking findings are repai",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d2e2a9af488d3de7",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d199",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c136865a72c8eb728491ca8b1b463f6ff674251ea85a190b7b105c7f44a9acf8",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d199--the-block-opener-class-where-a-wrapped-line-opens-a-block-the-moved-readers-return-less-than-the-bases-line-readers-read-in-about-thirty-readers-and-in-no-committed-document-and-the-choice-of-repair-is-the-operators",
+          "title": "WO-276-D199: A planning pass takes the block-opener class with docs/evidence/WO-276/final-review-002/block-openers-census.json and the operator's direction on it: either one mechanism that holds…",
+          "summary": "{ \"id\": \"WO-276-D199\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: final review; FINAL-002\", \"decision\": \"Eight findings of FINAL-002 are one class and are boarded together, with one more that puts its repair to the operator. An author wraps prose by hand, and a line can come to open with what CommonMark reads as the start of a block: a placeholder spelled as an HTML block element's name (<title>, <dir>, <base>, <summary>, <option>), which opens a raw block to the next blank line; <pre>, <script> or an unclosed comment, which open one to their closing tag; a greater-than sign or a list marker, whose block takes the lines after it as its own; a line of hyphens or equals signs, which makes the ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d3cc376ffee92ed7",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d200",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6e424213345b0b305dbead48496682b5cb5ea2f0013b567c8f40067458830edf",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d200--follow-ups-on-the-update-plan-and-the-close-a-runtime-file-the-incoming-kit-adds-is-loaded-before-it-is-compared-a-retry-refused-for-a-file-the-kit-dropped-and-a-squash-reading-that-answers-before-the-rebase-rule",
+          "title": "WO-276-D200: The order that next touches the update plan covers, in its runtime guard, every compiled runtime path the incoming and the pending manifests list that is present on disk, counts a prior…",
+          "summary": "{ \"id\": \"WO-276-D200\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: final review; FINAL-002\", \"decision\": \"Three findings on the repair's work in the update plan and the close are follow-ups. (1) The update plan asks the instance's harness check only where every compiled runtime file the prior kit listed holds bytes a kit wrote. A runtime file that only the incoming kit lists is not among them. Where an interrupted update has already written the incoming files and one such file was altered since, the check's child process loads the altered file before the plan refuses it as an instance's own; the base's plan ran none of the instance's code. Kit verification, which FINAL-001's finding named, co",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-55056f2ba92f082c",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d201",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c46303bbd996e446176b1f74cf4c4a77efe68c4c2e1b448c738513d873cb730c",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d201--follow-ups-on-the-resident-a-first-card-read-that-tells-the-operator-to-use-the-launcher-it-was-started-with-and-a-failed-card-read-run-again-at-every-tick",
+          "title": "WO-276-D201: The order that next touches the resident store binds a pending state once the owner holds its lock, whose console line does not name the launcher; remembers a failed card read against…",
+          "summary": "{ \"id\": \"WO-276-D201\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: final review; FINAL-002\", \"decision\": \"Two findings on the repair of the resident store are follow-ups, and the repair itself holds: a presence command answers in a tenth of a second while the owner's card read runs, the hold of a mission check names the launcher, and the host refuses an option it does not read. (1) The owner now reads its cards before it takes its lock, so during a launcher-started resident's first read over a fresh store no binding exists yet. A helper in that window publishes the work orders as unavailable with the reason that no binding exists, which the console renders as an instruction to start the resid",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b9fd92a20037ab95",
+      "key": "decision:docs/evidence/WO-276/decisions.md#wo-276-d202",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2b1b89e6b4d8609b7dd41b6c404b56f98c7e381d4327304100013883a233fa71",
+          "ref": "docs/evidence/WO-276/decisions.md#wo-276-d202--follow-ups-on-the-criteria-lists-refusal-and-on-cases-that-cannot-fail",
+          "title": "WO-276-D202: The order that next touches the work-order reader takes a closing line at the margin as a section boundary whatever stands above it, stops the reading past it at the second boundary,…",
+          "summary": "{ \"id\": \"WO-276-D202\", \"date\": \"2026-11-14\", \"dispatch\": \"resume: final review; FINAL-002\", \"decision\": \"Four findings on the Markdown-reader part of the repair are follow-ups; none has an input a writer produced, by a worker's reading of 1,590 order revisions in main's history, the 273 working orders and the template. (1) The refusal of a criteria list reads a closing heading or label as a wrapped line of an item whenever the line above it holds text. A heading written straight under the last criterion, or a label under a note with no blank line between, is then refused where the next section's own list follows, with a diagnosis that names the wrong cause; and past a label set at the margin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

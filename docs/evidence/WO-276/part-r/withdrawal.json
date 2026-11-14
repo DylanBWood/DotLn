@@ -1,0 +1,70 @@
+{
+  "note": "A fixture launchpad holding one order file, WO-151, and no event for it. The event is shown without its recordedAt.",
+  "orderFileSha256": "sha256:a7f4821cd132d83808a50ed1b8f61f323ae40950c91ad63c8df0dc4d2e1844b8",
+  "withdrawAnIdentifierWithNoFile": {
+    "exit": 1,
+    "output": [
+      "error: unknown work order WO-152; open orders: none; use --work-order WO-NNN"
+    ]
+  },
+  "withdrawTheFiledOrder": {
+    "exit": 0,
+    "output": [
+      "Recorded WorkOrderWithdrawn for WO-151 (abandoned) at ordinal 1. Phase withdrawn is terminal: it claims no success, a typed dependency on it is unmet, and only activate of a changed revision with a dated reactivation note leaves it.",
+      "Observed facts at 2026-11-12T20:46:00.579Z: unknown (observation-runtime-unavailable); advisory only.",
+      "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation."
+    ]
+  },
+  "eventsOfTheOrder": [
+    {
+      "schemaVersion": 1,
+      "type": "WorkOrderWithdrawn",
+      "workOrderId": "WO-151",
+      "workOrderPath": "docs/work-orders/WO-151-never-activated.md",
+      "disposition": "abandoned",
+      "reason": "set aside before it began",
+      "capture": "docs/intake/notes/abandon.md",
+      "captureHash": "sha256:66a33e90188b2a539f9889b331bab31a190c6a79d6fe02ea67a18448513d908f",
+      "orderHash": "sha256:a7f4821cd132d83808a50ed1b8f61f323ae40950c91ad63c8df0dc4d2e1844b8",
+      "reactivationNotes": [],
+      "recordingSession": {
+        "role": "unobserved",
+        "capture": "unobserved"
+      },
+      "actor": {
+        "harness": "human",
+        "harnessVersion": "not-applicable",
+        "model": "human",
+        "effort": "unknown",
+        "source": "operator-attested"
+      },
+      "checkpointSha": "65fbfda485c9014fd0f5170e79659dd919db6df6",
+      "checkpointRef": "refs/dotln/checkpoint/WO-151/1"
+    }
+  ],
+  "indexWritten": {
+    "exit": 0,
+    "output": [
+      "Generated docs/control/release-history.json",
+      "Generated docs/control/workstream-observations.json",
+      "Generated docs/work-orders/README.md",
+      "Generated docs/work-orders/HISTORY.md"
+    ]
+  },
+  "indexCheck": {
+    "exit": 0,
+    "output": [
+      "PASS docs/work-orders/README.md is current",
+      "PASS docs/work-orders/HISTORY.md is current"
+    ]
+  },
+  "historyPageLines": [
+    "## Withdrawn",
+    "### WO-151",
+    "[WO-151 — Never activated](WO-151-never-activated.md)",
+    "- Withdrawal: abandoned at ordinal 1 — set aside before it began.",
+    "- Authority: [docs/work-orders/WO-151-never-activated.md](WO-151-never-activated.md)",
+    "- **Two pages (WO-190):** `README.md` holds the active line, the proposed sequence with its lane pairs and the Active and Open cards, the Open cards in sequence order; this page holds every settled card (Closed, Withdrawn, Superseded, Historical), these sources and limits and the release tags used. The cards are data only in this command's own output, `npm run work-orders -- index --json`; no file records them. What the pages were rendered from that no file of this repository holds is recorded by the refresh: the release tags in `docs/control/release-history.json` and each workstream member's target facts in `docs/control/workstream-observations.json`. Every order file appears on exactly one page. `index --check` judges both pages and the record, names the stale one, and refuses an open order that has no place in the sequence unless it is an umbrella record, a derived draft whose place is its allocation, or a member placed in a separate workstream.",
+    "- **Control evidence:** the shared fold of legacy `docs/control/resume.jsonl` plus `docs/control/orders/WO-NNN.jsonl`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. A withdrawn order is listed under Withdrawn on this page with its recorded disposition, unchecked in the proposed order, and never counts as a pass. Report verdicts come from events, not inferred report contents."
+  ]
+}

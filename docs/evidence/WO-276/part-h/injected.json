@@ -1,0 +1,254 @@
+{
+  "every assumption met": {
+    "exitCode": 0,
+    "rows": [
+      {
+        "id": "node",
+        "assumption": "Node is inside the range package.json engines.node declares",
+        "observed": "Node v26.9.0",
+        "verdict": "met",
+        "dependsOn": "every script of the kit, the gate and the hooks",
+        "remedy": "none"
+      },
+      {
+        "id": "git",
+        "assumption": "Git is at or above the floor package.json engines.git declares",
+        "observed": "Git 2.55.0",
+        "verdict": "met",
+        "dependsOn": "worktrees, updates and every Git read the scripts make",
+        "remedy": "none"
+      },
+      {
+        "id": "compiler",
+        "assumption": "a C compiler builds the kit's host helpers",
+        "observed": "the lock helper compiled",
+        "verdict": "met",
+        "dependsOn": "the lock every gate task starts through, and the gate's memory reader",
+        "remedy": "none"
+      },
+      {
+        "id": "lane-memory",
+        "assumption": "one gate lane's memory budget covers the largest task this root's gate carries",
+        "observed": "16 logical processors, 48.0 GiB of memory, 8 lanes of 3.0 GiB each",
+        "verdict": "met",
+        "dependsOn": "the host task of every gate, which refuses a lane too small for its heaviest task",
+        "remedy": "none"
+      },
+      {
+        "id": "symlinks",
+        "assumption": "this account can create a symbolic link",
+        "observed": "a symbolic link was created",
+        "verdict": "met",
+        "dependsOn": "the workspace links an install makes and the instruction file's second name",
+        "remedy": "none"
+      },
+      {
+        "id": "line-endings",
+        "assumption": "Git converts no line ending of a kit file in this clone",
+        "observed": "core.autocrlf unset; 0 of 1 tracked kit files open to conversion",
+        "verdict": "met",
+        "dependsOn": "the kit's verification, which hashes its files' bytes",
+        "remedy": "none"
+      },
+      {
+        "id": "forge",
+        "assumption": "the origin is a forge the publish helpers accept, and the forge's tool is installed",
+        "observed": "a GitHub-form origin (HOST/OWNER/REPO), one target for fetch and push; gh found (1.2.3)",
+        "verdict": "met",
+        "dependsOn": "final review's push and pull request, release close's tag and Release, and an update's publish",
+        "remedy": "none"
+      },
+      {
+        "id": "platform",
+        "assumption": "the platform is one the kit runs on",
+        "observed": "macOS, which the kit is exercised on",
+        "verdict": "met",
+        "dependsOn": "every command",
+        "remedy": "none"
+      },
+      {
+        "id": "agent-claude",
+        "assumption": "the agent CLI of Claude Code, every instance's host",
+        "observed": "found (1.2.3)",
+        "verdict": "reported",
+        "dependsOn": "sessions on that host; reported and never judged",
+        "remedy": "none"
+      }
+    ]
+  },
+  "a Node below the floor, a Git below the floor and a compiler that fails, at once": {
+    "exitCode": 1,
+    "rows": [
+      {
+        "id": "node",
+        "assumption": "Node is inside the range package.json engines.node declares",
+        "observed": "Node v18.20.0",
+        "verdict": "unmet",
+        "dependsOn": "every script of the kit, the gate and the hooks",
+        "remedy": "Node runtime v18.20.0 is outside package.json engines.node ^24.15.0 || ^26.0.0. Run under a Node that range admits; node scripts/bootstrap.mjs is unaffected."
+      },
+      {
+        "id": "git",
+        "assumption": "Git is at or above the floor package.json engines.git declares",
+        "observed": "Git 2.20.1",
+        "verdict": "unmet",
+        "dependsOn": "worktrees, updates and every Git read the scripts make",
+        "remedy": "Git 2.20.1 (git --version) is below package.json engines.git >=2.31.0. Put a Git at or above that floor first on PATH; node scripts/bootstrap.mjs is unaffected."
+      },
+      {
+        "id": "compiler",
+        "assumption": "a C compiler builds the kit's host helpers",
+        "observed": "the lock helper did not compile",
+        "verdict": "unmet",
+        "dependsOn": "the lock every gate task starts through, and the gate's memory reader",
+        "remedy": "install the Command Line Tools (xcode-select --install) or Xcode, then retry"
+      },
+      {
+        "id": "lane-memory",
+        "assumption": "one gate lane's memory budget covers the largest task this root's gate carries",
+        "observed": "16 logical processors, 48.0 GiB of memory, 8 lanes of 3.0 GiB each",
+        "verdict": "met",
+        "dependsOn": "the host task of every gate, which refuses a lane too small for its heaviest task",
+        "remedy": "none"
+      },
+      {
+        "id": "symlinks",
+        "assumption": "this account can create a symbolic link",
+        "observed": "a symbolic link was created",
+        "verdict": "met",
+        "dependsOn": "the workspace links an install makes and the instruction file's second name",
+        "remedy": "none"
+      },
+      {
+        "id": "line-endings",
+        "assumption": "Git converts no line ending of a kit file in this clone",
+        "observed": "core.autocrlf unset; 0 of 1 tracked kit files open to conversion",
+        "verdict": "met",
+        "dependsOn": "the kit's verification, which hashes its files' bytes",
+        "remedy": "none"
+      },
+      {
+        "id": "forge",
+        "assumption": "the origin is a forge the publish helpers accept, and the forge's tool is installed",
+        "observed": "a GitHub-form origin (HOST/OWNER/REPO), one target for fetch and push; gh found (1.2.3)",
+        "verdict": "met",
+        "dependsOn": "final review's push and pull request, release close's tag and Release, and an update's publish",
+        "remedy": "none"
+      },
+      {
+        "id": "platform",
+        "assumption": "the platform is one the kit runs on",
+        "observed": "macOS, which the kit is exercised on",
+        "verdict": "met",
+        "dependsOn": "every command",
+        "remedy": "none"
+      },
+      {
+        "id": "agent-claude",
+        "assumption": "the agent CLI of Claude Code, every instance's host",
+        "observed": "found (1.2.3)",
+        "verdict": "reported",
+        "dependsOn": "sessions on that host; reported and never judged",
+        "remedy": "none"
+      }
+    ]
+  },
+  "two facts that cannot be read": {
+    "exitCode": 0,
+    "rows": [
+      {
+        "id": "node",
+        "assumption": "Node is inside the range package.json engines.node declares",
+        "observed": "Node v26.9.0",
+        "verdict": "met",
+        "dependsOn": "every script of the kit, the gate and the hooks",
+        "remedy": "none"
+      },
+      {
+        "id": "git",
+        "assumption": "Git is at or above the floor package.json engines.git declares",
+        "observed": "Git 2.55.0",
+        "verdict": "met",
+        "dependsOn": "worktrees, updates and every Git read the scripts make",
+        "remedy": "none"
+      },
+      {
+        "id": "compiler",
+        "assumption": "a C compiler builds the kit's host helpers",
+        "observed": "the lock helper compiled",
+        "verdict": "met",
+        "dependsOn": "the lock every gate task starts through, and the gate's memory reader",
+        "remedy": "none"
+      },
+      {
+        "id": "lane-memory",
+        "assumption": "one gate lane's memory budget covers the largest task this root's gate carries",
+        "observed": "16 logical processors, 48.0 GiB of memory, 8 lanes of 3.0 GiB each",
+        "verdict": "met",
+        "dependsOn": "the host task of every gate, which refuses a lane too small for its heaviest task",
+        "remedy": "none"
+      },
+      {
+        "id": "symlinks",
+        "assumption": "this account can create a symbolic link",
+        "observed": "a symbolic link was created",
+        "verdict": "met",
+        "dependsOn": "the workspace links an install makes and the instruction file's second name",
+        "remedy": "none"
+      },
+      {
+        "id": "line-endings",
+        "assumption": "Git converts no line ending of a kit file in this clone",
+        "observed": "Git's configuration could not be read",
+        "verdict": "unknown",
+        "dependsOn": "the kit's verification, which hashes its files' bytes",
+        "remedy": "none"
+      },
+      {
+        "id": "forge",
+        "assumption": "the origin is a forge the publish helpers accept, and the forge's tool is installed",
+        "observed": "no origin; gh found (1.2.3)",
+        "verdict": "unknown",
+        "dependsOn": "final review's push and pull request, release close's tag and Release, and an update's publish",
+        "remedy": "add the private repository as origin before the first order is published"
+      },
+      {
+        "id": "platform",
+        "assumption": "the platform is one the kit runs on",
+        "observed": "macOS, which the kit is exercised on",
+        "verdict": "met",
+        "dependsOn": "every command",
+        "remedy": "none"
+      },
+      {
+        "id": "agent-claude",
+        "assumption": "the agent CLI of Claude Code, every instance's host",
+        "observed": "found (1.2.3)",
+        "verdict": "reported",
+        "dependsOn": "sessions on that host; reported and never judged",
+        "remedy": "none"
+      }
+    ]
+  },
+  "a Node below the floor and a library that cannot be loaded": {
+    "exitCode": 1,
+    "rows": [
+      {
+        "id": "node",
+        "assumption": "Node is inside the range package.json engines.node declares",
+        "observed": "Node v18.20.0",
+        "verdict": "unmet",
+        "dependsOn": "every script of the kit, the gate and the hooks",
+        "remedy": "Node v18.20.0 is outside package.json engines.node ^24.15.0 || ^26.0.0. Run under a Node that range admits."
+      },
+      {
+        "id": "modules",
+        "assumption": "this Node can load the kit's own modules",
+        "observed": "the host report's module did not load",
+        "verdict": "unknown",
+        "dependsOn": "the rest of this report",
+        "remedy": "run under a Node the range admits, then run this again"
+      }
+    ]
+  }
+}

@@ -1,0 +1,608 @@
+{
+  "summary": {
+    "cases": 451,
+    "refused": 134,
+    "shorter": [],
+    "newRefusals": 71,
+    "unknownErrors": 0
+  },
+  "dimensions": {
+    "breaks": 22,
+    "indentations": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "numberings": [
+      "consecutive",
+      "gap",
+      "falling",
+      "repeat"
+    ],
+    "additionalControls": 11
+  },
+  "controls": [
+    {
+      "name": "tag/indent-2/gap",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  <option> and the result.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1"
+        ]
+      },
+      "candidate": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      }
+    },
+    {
+      "name": "heading/indent-2/gap",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  # Commands and the result.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1"
+        ]
+      },
+      "candidate": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 reads as a heading inside the list, and criterion 3 on line 13 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a number sign."
+      }
+    },
+    {
+      "name": "fence/indent-2/gap",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  ```json fence and nothing else.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1"
+        ]
+      },
+      "candidate": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      }
+    },
+    {
+      "name": "tilde/indent-2/gap",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  ~~~ fence and nothing else.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1"
+        ]
+      },
+      "candidate": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      }
+    },
+    {
+      "name": "gap-control",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. One holds.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      }
+    },
+    {
+      "name": "escaped-control",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  \\<option> and the result.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      }
+    },
+    {
+      "name": "two-digit-label",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n9. Nine holds.\n10. Ten holds.\n\n   **Check:** the fixture.\n12. `npm run test:docs` passes.\n13. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "9",
+          "10",
+          "12",
+          "13"
+        ]
+      },
+      "previous": {
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "candidate": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 14 reads as a label inside the list, and criterion 12 on line 15 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a bold label."
+      }
+    },
+    {
+      "name": "closed-fence",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The reply uses\n  ```json fence\n3. `npm run test:docs` passes.\n  ```\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "4"
+        ]
+      },
+      "candidate": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      }
+    },
+    {
+      "name": "later-prose-ten",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. One holds.\n2. Two holds.\n3. Three holds.\n\n**Non-goals:** the log keeps only the last\n10. Older entries are pruned by hand.\n",
+      "main": {
+        "value": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "2",
+          "3"
+        ]
+      }
+    },
+    {
+      "name": "later-prose-year",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. One holds.\n2. Two holds.\n\n**Non-goals:** none.\n\n## Background\n\nThe rule was set in\n2026. It has not changed.\n",
+      "main": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "2"
+        ]
+      }
+    },
+    {
+      "name": "later-comment",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. One holds.\n2. Two holds.\n\n**Non-goals:** none.\n\n## Notes\n\n<!-- a note on\n5. a retired step -->\n",
+      "main": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "2"
+        ]
+      }
+    },
+    {
+      "name": "later-list-five",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. One holds.\n2. Two holds.\n\n**Non-goals:** none.\n\n## Follow-ups\n\n5. Five.\n6. Six.\n",
+      "main": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "2"
+        ]
+      }
+    },
+    {
+      "name": "nested-fence-control",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. One holds.\n\n   ```json\n   {}\n   ```\n\n3. Three holds.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "3"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "3"
+        ]
+      }
+    },
+    {
+      "name": "margin-group-control",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. One holds.\n2. Two holds.\n\n**Part B:**\n\n5. Five holds.\n6. Six holds.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "previous": {
+        "value": [
+          "1",
+          "2"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "2"
+        ]
+      }
+    },
+    {
+      "name": "empty-list",
+      "input": "# WO-999 — Reader verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": []
+      },
+      "previous": {
+        "value": []
+      },
+      "candidate": {
+        "value": []
+      }
+    }
+  ],
+  "consumers": [
+    {
+      "name": "tag/indent-2/gap",
+      "mainHandoff": {
+        "code": null,
+        "message": "docs/evidence/WO-999/handoff.md: no line judges criteria 3, 4. Before handoff the executor judges each declared criterion (1, 3, 4) on one line, met followed by its evidence or unmet followed by the decision that says why (criterion lines: `**Criterion <id>:** met`, `**Criterion <id>:** unmet`, `**Criterion <id>:** unmet, waived by <ordinal>` or `**Criterion <id>:** unmet, defective (<class>) by <ordinal>`)."
+      },
+      "handoff": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      },
+      "report": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      },
+      "mission": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      },
+      "index": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "WO-999 acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      },
+      "filing": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "docs/work-orders/WO-999-fixture.md: acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      }
+    },
+    {
+      "name": "heading/indent-2/gap",
+      "mainHandoff": {
+        "code": null,
+        "message": "docs/evidence/WO-999/handoff.md: no line judges criteria 3, 4. Before handoff the executor judges each declared criterion (1, 3, 4) on one line, met followed by its evidence or unmet followed by the decision that says why (criterion lines: `**Criterion <id>:** met`, `**Criterion <id>:** unmet`, `**Criterion <id>:** unmet, waived by <ordinal>` or `**Criterion <id>:** unmet, defective (<class>) by <ordinal>`)."
+      },
+      "handoff": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 reads as a heading inside the list, and criterion 3 on line 13 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a number sign."
+      },
+      "report": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 reads as a heading inside the list, and criterion 3 on line 13 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a number sign."
+      },
+      "mission": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 reads as a heading inside the list, and criterion 3 on line 13 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a number sign."
+      },
+      "index": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "WO-999 acceptance criteria: line 12 reads as a heading inside the list, and criterion 3 on line 13 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a number sign."
+      },
+      "filing": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "docs/work-orders/WO-999-fixture.md: acceptance criteria: line 12 reads as a heading inside the list, and criterion 3 on line 13 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a number sign."
+      }
+    },
+    {
+      "name": "two-digit-label",
+      "mainHandoff": {
+        "code": null,
+        "message": "docs/evidence/WO-999/handoff.md: no line judges criteria 9, 10, 12, 13; criterion 1 is not declared by docs/work-orders/WO-999-fixture.md. Before handoff the executor judges each declared criterion (9, 10, 12, 13) on one line, met followed by its evidence or unmet followed by the decision that says why (criterion lines: `**Criterion <id>:** met`, `**Criterion <id>:** unmet`, `**Criterion <id>:** unmet, waived by <ordinal>` or `**Criterion <id>:** unmet, defective (<class>) by <ordinal>`)."
+      },
+      "handoff": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 14 reads as a label inside the list, and criterion 12 on line 15 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a bold label."
+      },
+      "report": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 14 reads as a label inside the list, and criterion 12 on line 15 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a bold label."
+      },
+      "mission": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 14 reads as a label inside the list, and criterion 12 on line 15 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a bold label."
+      },
+      "index": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "WO-999 acceptance criteria: line 14 reads as a label inside the list, and criterion 12 on line 15 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a bold label."
+      },
+      "filing": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "docs/work-orders/WO-999-fixture.md: acceptance criteria: line 14 reads as a label inside the list, and criterion 12 on line 15 goes on after it, so the list ends before it: indent the line to the item's text, or re-wrap it so that it does not open with a bold label."
+      }
+    },
+    {
+      "name": "closed-fence",
+      "mainHandoff": {
+        "code": null,
+        "message": "docs/evidence/WO-999/handoff.md: no line judges criteria 3, 4. Before handoff the executor judges each declared criterion (1, 3, 4) on one line, met followed by its evidence or unmet followed by the decision that says why (criterion lines: `**Criterion <id>:** met`, `**Criterion <id>:** unmet`, `**Criterion <id>:** unmet, waived by <ordinal>` or `**Criterion <id>:** unmet, defective (<class>) by <ordinal>`)."
+      },
+      "handoff": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      },
+      "report": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      },
+      "mission": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      },
+      "index": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "WO-999 acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      },
+      "filing": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "docs/work-orders/WO-999-fixture.md: acceptance criteria: line 12 opens a fenced code block (the line opens with three backticks or tildes), which ends the numbered list there and holds criterion 3 on line 13 and the lines after it, to the closing fence, as code: re-wrap the line so that it does not open with the fence, or write the fence in a code span."
+      }
+    },
+    {
+      "name": "gap-control",
+      "mainHandoff": {
+        "value": {
+          "met": [
+            "1",
+            "3",
+            "4"
+          ],
+          "claims": {
+            "document": [
+              "3"
+            ],
+            "review": [
+              "4"
+            ],
+            "plain": [
+              "4"
+            ]
+          }
+        }
+      },
+      "handoff": {
+        "value": {
+          "met": [
+            "1",
+            "3",
+            "4"
+          ],
+          "claims": {
+            "document": [
+              "3"
+            ],
+            "review": [
+              "4"
+            ],
+            "plain": [
+              "4"
+            ]
+          }
+        }
+      },
+      "report": {
+        "value": {
+          "checked": true,
+          "claims": {
+            "document": [
+              "3"
+            ],
+            "review": [
+              "4"
+            ],
+            "plain": [
+              "4"
+            ]
+          },
+          "advisories": []
+        }
+      },
+      "mission": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "index": {
+        "value": []
+      },
+      "filing": {
+        "code": null,
+        "message": "non-sequential acceptance criteria: docs/work-orders/WO-999-fixture.md"
+      }
+    },
+    {
+      "name": "escaped-control",
+      "mainHandoff": {
+        "value": {
+          "met": [
+            "1",
+            "3",
+            "4"
+          ],
+          "claims": {
+            "document": [
+              "3"
+            ],
+            "review": [
+              "4"
+            ],
+            "plain": [
+              "4"
+            ]
+          }
+        }
+      },
+      "handoff": {
+        "value": {
+          "met": [
+            "1",
+            "3",
+            "4"
+          ],
+          "claims": {
+            "document": [
+              "3"
+            ],
+            "review": [
+              "4"
+            ],
+            "plain": [
+              "4"
+            ]
+          }
+        }
+      },
+      "report": {
+        "value": {
+          "checked": true,
+          "claims": {
+            "document": [
+              "3"
+            ],
+            "review": [
+              "4"
+            ],
+            "plain": [
+              "4"
+            ]
+          },
+          "advisories": []
+        }
+      },
+      "mission": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "index": {
+        "value": []
+      },
+      "filing": {
+        "code": null,
+        "message": "non-sequential acceptance criteria: docs/work-orders/WO-999-fixture.md"
+      }
+    }
+  ],
+  "fullResults": "Full matrix output remains in ignored session scratch; reader-probe.mjs reproduces every case."
+}

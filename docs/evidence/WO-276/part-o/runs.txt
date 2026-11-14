@@ -1,0 +1,47 @@
+## npm run work-orders -- index --check
+
+In the exported instance: a workstream document with a layout of three planned items and no filed member, committed, the index refreshed.
+Exit 0.
+
+PASS docs/work-orders/README.md is current
+PASS docs/work-orders/HISTORY.md is current
+
+## npm run plan -- check
+
+In the exported instance: the same tree.
+Exit 0.
+
+{
+  "receipts": 2,
+  "passes": 1,
+  "enforcement": "2026-11-12",
+  "localTerms": "unavailable",
+  "rulesRecorded": {
+    "document": "docs/planning/passes/fixture-2026-11-12.md",
+    "rules": 0
+  },
+  "continuation": {
+    "receiptId": "2026-11-12-planning-8f24f313bb3510c6-002",
+    "judgedSubject": "sha256:945ff69695cc1f4ff530a8d984c7d6cecd8833a2a20de97317414223f0f13e62",
+    "committedSubject": "sha256:945ff69695cc1f4ff530a8d984c7d6cecd8833a2a20de97317414223f0f13e62",
+    "workspaceSubject": "sha256:945ff69695cc1f4ff530a8d984c7d6cecd8833a2a20de97317414223f0f13e62",
+    "committedUpdates": [],
+    "workspaceUpdates": []
+  },
+  "advisories": [],
+  "criteriaAdvisories": []
+}
+
+## npm run work-orders -- index --check
+
+In the exported instance: a member, WO-905, added to the document's marked block with no order file.
+Exit 1.
+
+error: docs/workstreams/WS-002-layout-fixture.md: WO-905 must declare **Workstream:** WS-002 in its order
+
+## npm run plan -- check
+
+In the exported instance: the same tree.
+Exit 1.
+
+docs/workstreams/WS-002-layout-fixture.md: WO-905 must declare **Workstream:** WS-002 in its order

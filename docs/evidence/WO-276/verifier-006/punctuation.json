@@ -1,0 +1,76 @@
+{
+  "scope": "Parsed text only; no wrong gate, missing obligation or lost link reproduced from underscore emphasis.",
+  "rows": [
+    {
+      "input": "Price _net_$5.",
+      "mainText": "Price net$5.",
+      "candidateText": "Price _net_$5.",
+      "mainLinks": [],
+      "candidateLinks": []
+    },
+    {
+      "input": "Price _net_${amount}.",
+      "mainText": "Price net${amount}.",
+      "candidateText": "Price _net_${amount}.",
+      "mainLinks": [],
+      "candidateLinks": []
+    },
+    {
+      "input": "Price _net_{{amount}}.",
+      "mainText": "Price net{{amount}}.",
+      "candidateText": "Price _net_{{amount}}.",
+      "mainLinks": [],
+      "candidateLinks": []
+    },
+    {
+      "input": "Price **net**$5.",
+      "mainText": "Price net$5.",
+      "candidateText": "Price net$5.",
+      "mainLinks": [],
+      "candidateLinks": []
+    },
+    {
+      "input": "Price _net_ $5.",
+      "mainText": "Price net $5.",
+      "candidateText": "Price net $5.",
+      "mainLinks": [],
+      "candidateLinks": []
+    },
+    {
+      "input": "See [[DRAFT] the plan](missing.md).",
+      "mainText": "See [DRAFT] the plan.",
+      "candidateText": "See [DRAFT] the plan.",
+      "mainLinks": [
+        {
+          "href": "missing.md",
+          "line": 1
+        }
+      ],
+      "candidateLinks": [
+        {
+          "href": "missing.md",
+          "line": 1
+        }
+      ]
+    },
+    {
+      "input": "Cost $5 for [the guide](missing.md), plus $2.",
+      "mainText": "Cost 5 for [the guide](missing.md), plus 2.",
+      "candidateText": "Cost $5 for the guide, plus $2.",
+      "mainLinks": [],
+      "candidateLinks": [
+        {
+          "href": "missing.md",
+          "line": 1
+        }
+      ]
+    },
+    {
+      "input": "Price $5 and glyph &#xE000; here.",
+      "mainText": "Price $5 and glyph  here.",
+      "candidateText": "Price $5 and glyph  here.",
+      "mainLinks": [],
+      "candidateLinks": []
+    }
+  ]
+}

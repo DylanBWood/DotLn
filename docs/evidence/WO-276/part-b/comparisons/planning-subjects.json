@@ -1,0 +1,9 @@
+{
+  "comparison": "planning-subjects",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every filed planning receipt: the judged subject it holds (the sequence block, each order's objective, criteria and non-goals, the capability rows and the goal rules), against the subject rebuilt from the same committed revision",
+  "read": 68,
+  "equal": 68,
+  "differences": {},
+  "examples": []
+}

@@ -1,0 +1,87 @@
+{
+  "base": "refs/dotln/checkpoint/WO-276/85",
+  "subject": "refs/dotln/checkpoint/WO-276/94",
+  "dispatch": "refs/dotln/checkpoint/WO-276/95",
+  "codeFiles": [
+    "packages/console/README.md",
+    "packages/skeleton/README.md",
+    "packages/skeleton/src/cli-actor-contract.ts",
+    "packages/skeleton/src/local-model-contract.ts",
+    "packages/skeleton/src/mission-check-source.ts",
+    "packages/skeleton/src/resident-host.ts",
+    "packages/skeleton/src/resident-state.ts",
+    "packages/skeleton/src/resident-store.ts",
+    "packages/skeleton/src/worker-protocol.ts",
+    "scripts/docs-check.mjs",
+    "scripts/evidence-resident-actors.mjs",
+    "scripts/kit/first-order.template.md",
+    "scripts/launchpad.mjs",
+    "scripts/lib/handoff-ledger.mjs",
+    "scripts/lib/markdown-links.mjs",
+    "scripts/lib/merged-change.mjs",
+    "scripts/lib/mission-documents.mjs",
+    "scripts/lib/plan-dependency-migration.mjs",
+    "scripts/lib/plan-receipts.mjs",
+    "scripts/lib/plan-subject.mjs",
+    "scripts/lib/target-worktree-close.mjs",
+    "scripts/lib/terms.mjs",
+    "scripts/lib/work-order-cards.mjs",
+    "scripts/lib/work-order-document.mjs",
+    "scripts/lib/worktree-integration.mjs",
+    "scripts/resume.mjs",
+    "scripts/work-orders.mjs"
+  ],
+  "testFiles": [
+    "packages/console/fixtures/live-walkthrough.mjs",
+    "packages/skeleton/test/mission-check.test.ts",
+    "packages/skeleton/test/resident-actors.test.ts",
+    "packages/skeleton/test/runtime-status.test.ts",
+    "scripts/fixtures/worktree-integration/wo276-criteria-wrap-bridge.json",
+    "scripts/test-configuration-root.mjs",
+    "scripts/test-derived-orders.mjs",
+    "scripts/test-docs-check.mjs",
+    "scripts/test-launchpad-seeds.mjs",
+    "scripts/test-launchpad-update.mjs",
+    "scripts/test-lineage.mjs",
+    "scripts/test-plan-refutation.mjs",
+    "scripts/test-runner.mjs",
+    "scripts/test-target-worktree-close.mjs",
+    "scripts/test-work-orders.mjs",
+    "scripts/test-worktree-integration.mjs"
+  ],
+  "docFiles": [
+    "docs/AI-HARNESS-SECURITY.md",
+    "docs/KIT.md",
+    "docs/OPERATOR.md",
+    "docs/control/FEATURES.md",
+    "docs/control/current.md",
+    "docs/control/orders/WO-276.jsonl",
+    "docs/lineage/decisions-index.md",
+    "docs/planning/followups.json",
+    "docs/planning/sequence.md",
+    "docs/product/07-execution-guide.md",
+    "docs/product/08-publication-compiler.md",
+    "docs/publication/everyday-ai-user-toc.md",
+    "docs/publication/software-engineer-toc.md",
+    "docs/work-orders/README.md"
+  ],
+  "changedAfterDispatch": [
+    {
+      "path": "docs/control/current.md",
+      "change": "bytes differ"
+    },
+    {
+      "path": "docs/control/orders/WO-276.jsonl",
+      "change": "bytes differ"
+    },
+    {
+      "path": "docs/work-orders/README.md",
+      "change": "bytes differ"
+    }
+  ],
+  "diffSizes": {
+    "source-diff.txt": 80467,
+    "document-diff.txt": 174231,
+    "test-diff.txt": 65094
+  }
+}

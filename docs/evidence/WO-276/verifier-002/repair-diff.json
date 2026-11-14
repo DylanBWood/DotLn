@@ -1,0 +1,58 @@
+[
+  {
+    "path": "docs/control/current.md",
+    "change": "modified"
+  },
+  {
+    "path": "docs/control/orders/WO-276.jsonl",
+    "change": "modified"
+  },
+  {
+    "path": "docs/evidence/WO-276/decisions.md",
+    "change": "modified"
+  },
+  {
+    "path": "docs/evidence/WO-276/handoff.md",
+    "change": "modified"
+  },
+  {
+    "path": "docs/evidence/WO-276/meta.json",
+    "change": "modified"
+  },
+  {
+    "path": "docs/lineage/decisions-index.md",
+    "change": "modified"
+  },
+  {
+    "path": "docs/planning/followups.json",
+    "change": "modified"
+  },
+  {
+    "path": "docs/product/07-execution-guide.md",
+    "change": "modified"
+  },
+  {
+    "path": "docs/publication/software-engineer-toc.md",
+    "change": "modified"
+  },
+  {
+    "path": "docs/work-orders/README.md",
+    "change": "modified"
+  },
+  {
+    "path": "scripts/lib/comment-labels.mjs",
+    "change": "modified"
+  },
+  {
+    "path": "scripts/test-comment-labels.mjs",
+    "change": "modified"
+  },
+  {
+    "path": "docs/evidence/WO-276/repair-001/comment-reader-comparison.json",
+    "change": "added"
+  },
+  {
+    "path": "docs/evidence/WO-276/repair-001/comment-reader-comparison.mjs",
+    "change": "added"
+  }
+]

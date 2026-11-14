@@ -1,0 +1,59 @@
+{
+  "failures": [
+    {
+      "kind": "output-budget",
+      "observed": "Early unfiltered status, broad diff and nested review reads exceeded their output budgets. No claim relies on omitted output.",
+      "correction": "Selected fields and bounded passages; full scratch captures and extracted JSON fields."
+    },
+    {
+      "kind": "path-lookup",
+      "observed": "Guessed implementation.md and test-markdown-screen.mjs paths did not exist.",
+      "correction": "Resolved handoff.md and the screen tests through file inventory."
+    },
+    {
+      "kind": "checkpoint-comparison",
+      "observed": "git diff checkpoint listed checkpoint-only untracked files as deleted despite their presence on disk.",
+      "correction": "Compared current blob bytes against checkpoint tree entries, including untracked files; repair-diff.json names actual changes."
+    },
+    {
+      "kind": "verifier-probe",
+      "observed": "First independent probe did not parse: Invalid regular expression, Invalid escape, from an escaped quote in a Unicode character class.",
+      "correction": "Removed the redundant escape in the unfiled probe; rerun passed all assertions."
+    },
+    {
+      "kind": "record-shape",
+      "observed": "Initial D129 omitted the required rejected array; meta refused it.",
+      "correction": "Added the alternatives array to the unfiled decision; meta then passed."
+    },
+    {
+      "kind": "verifier-probe",
+      "observed": "The first source-import scaffold named a nonexistent old private export; the first appendix scaffold did not resolve the old bare Prettier import from scratch.",
+      "correction": "Read and bound the actual runtimeSpecifiers export and installed parser path; both corrected probes passed."
+    },
+    {
+      "kind": "verifier-fixture",
+      "observed": "The first withdrawal fixture lacked the index planning map; the next used the default capture root although that fixture declares records/.",
+      "correction": "Added the fixture planning map and an ignored capture under its declared records/intake root. The real withdrawal then succeeded and the index failure reproduced."
+    },
+    {
+      "kind": "output-budget",
+      "observed": "Several follow-up source/decision reads, the first compacted skill reread, and unredirected meta output still exceeded aggregate output budgets.",
+      "correction": "Re-read relevant passages or selected structured fields. Full discarded output is not evidence and no conclusion relies on truncated portions."
+    },
+    {
+      "kind": "rejected-candidate",
+      "observed": "A worker initially inferred the records transition omitted states.",
+      "correction": "Root found states: mine in the implementation and worker withdrew the inference; no finding recorded."
+    },
+    {
+      "kind": "document-gate-format",
+      "observed": "The first closing document run rejected formatting in 12 newly authored verifier evidence scripts. Root stopped its own gate through evidence --stop; no pass was claimed.",
+      "correction": "Formatted only allocated verifier evidence scripts, recorded this verifier error, and reran the document gate after the final record edits."
+    },
+    {
+      "kind": "intake-provenance",
+      "observed": "The unfiled D130 draft duplicated exact operator wording from ignored intake into the decision.",
+      "correction": "Stopped the second document run, retained the exact words only in the ignored capture, and replaced the decision wording with synthesis plus capture path/hash. No filed record was changed; final document run follows these edits."
+    }
+  ]
+}

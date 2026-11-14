@@ -1,0 +1,9 @@
+{
+  "comparison": "siblings-manifest-hashes",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the siblings registry as the worktree holds it and at each commit that changed it: each entry's recorded manifest hash, by sibling id",
+  "read": 41,
+  "equal": 41,
+  "differences": {},
+  "examples": []
+}

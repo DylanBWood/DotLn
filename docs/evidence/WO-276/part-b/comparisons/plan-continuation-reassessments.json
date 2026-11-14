@@ -1,0 +1,9 @@
+{
+  "comparison": "plan-continuation-reassessments",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every pair of consecutive committed revisions of the capability table, and the newest against the worktree: the dated sections appended, each with its order, date and capability ids",
+  "read": 35,
+  "equal": 35,
+  "differences": {},
+  "examples": []
+}

@@ -1,0 +1,116 @@
+{
+  "planning branch: Git calls a tool call makes": {
+    "Read (a read), before and after the call": {
+      "hooks": [
+        "permissions",
+        "write-observer",
+        "read-observer"
+      ],
+      "gitCalls": 3,
+      "branchCalls": 0
+    },
+    "Grep (a read), before and after the call": {
+      "hooks": [
+        "permissions",
+        "write-observer",
+        "read-observer"
+      ],
+      "gitCalls": 3,
+      "branchCalls": 0
+    },
+    "Write to scripts/new.mjs (refused)": {
+      "hooks": [
+        "concurrent-work-requires-worktrees",
+        "permissions",
+        "write-observer"
+      ],
+      "gitCalls": 6,
+      "branchCalls": 3
+    },
+    "Write to docs/new.json (admitted)": {
+      "hooks": [
+        "concurrent-work-requires-worktrees",
+        "permissions",
+        "write-observer"
+      ],
+      "gitCalls": 12,
+      "branchCalls": 3
+    },
+    "SomethingNew (a name the table does not hold)": {
+      "hooks": [
+        "concurrent-work-requires-worktrees",
+        "no-attribution",
+        "permissions",
+        "write-observer"
+      ],
+      "gitCalls": 8,
+      "branchCalls": 4
+    }
+  },
+  "authorship snapshots: files and bytes read": [
+    {
+      "snapshot": "nothing kept yet",
+      "files": 30,
+      "bytes": 749727,
+      "commands": 2,
+      "filesRead": 30,
+      "bytesRead": 749727
+    },
+    {
+      "snapshot": "nothing changed",
+      "files": 30,
+      "bytes": 749727,
+      "commands": 2,
+      "filesRead": 0,
+      "bytesRead": 0
+    },
+    {
+      "snapshot": "one file changed",
+      "files": 30,
+      "bytes": 749729,
+      "commands": 2,
+      "filesRead": 1,
+      "bytesRead": 24
+    },
+    {
+      "snapshot": "that file, written within the tick",
+      "files": 30,
+      "bytes": 749729,
+      "commands": 2,
+      "filesRead": 1,
+      "bytesRead": 24
+    },
+    {
+      "snapshot": "a second file rewritten at the same size",
+      "files": 30,
+      "bytes": 749729,
+      "commands": 2,
+      "filesRead": 2,
+      "bytesRead": 46
+    },
+    {
+      "snapshot": "a tick later",
+      "files": 30,
+      "bytes": 749729,
+      "commands": 2,
+      "filesRead": 2,
+      "bytesRead": 46
+    },
+    {
+      "snapshot": "nothing changed",
+      "files": 30,
+      "bytes": 749729,
+      "commands": 2,
+      "filesRead": 0,
+      "bytesRead": 0
+    },
+    {
+      "snapshot": "one file deleted and one added",
+      "files": 30,
+      "bytes": 749731,
+      "commands": 2,
+      "filesRead": 1,
+      "bytesRead": 23
+    }
+  ]
+}

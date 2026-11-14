@@ -1,0 +1,9 @@
+{
+  "comparison": "script-tokens",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every JavaScript and TypeScript source under scripts/ and packages/: the tokens the machinery-coverage and temporary-root declarations read, the base's own drive of the scanner against the source reader's",
+  "read": 645,
+  "equal": 645,
+  "differences": {},
+  "examples": []
+}

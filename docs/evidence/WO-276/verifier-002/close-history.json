@@ -1,0 +1,72 @@
+{
+  "scenario": "One settled target close followed by nine dry-run attempts, using the real close-history producer and router reader",
+  "rows": [
+    {
+      "attempt": 0,
+      "released": true
+    },
+    {
+      "attempt": 1,
+      "released": true,
+      "inlineAttempts": 1,
+      "archiveCount": 1,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 2,
+      "released": true,
+      "inlineAttempts": 2,
+      "archiveCount": 2,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 3,
+      "released": true,
+      "inlineAttempts": 3,
+      "archiveCount": 3,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 4,
+      "released": true,
+      "inlineAttempts": 4,
+      "archiveCount": 4,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 5,
+      "released": true,
+      "inlineAttempts": 5,
+      "archiveCount": 5,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 6,
+      "released": true,
+      "inlineAttempts": 6,
+      "archiveCount": 6,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 7,
+      "released": true,
+      "inlineAttempts": 7,
+      "archiveCount": 7,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 8,
+      "released": true,
+      "inlineAttempts": 8,
+      "archiveCount": 8,
+      "settledStillRecoverable": true
+    },
+    {
+      "attempt": 9,
+      "released": false,
+      "inlineAttempts": 8,
+      "archiveCount": 9,
+      "settledStillRecoverable": true
+    }
+  ]
+}

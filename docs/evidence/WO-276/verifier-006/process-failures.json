@@ -1,0 +1,41 @@
+{
+  "failures": [
+    {
+      "id": "P1",
+      "cause": "Entry reads used raw status, diffs and large records; tool output truncated, so those reads did not establish complete coverage.",
+      "disposition": "Re-read verdict-relevant records in bounded character chunks and select JSON fields; retain full logs in scratch. Do not claim truncated passages read."
+    },
+    {
+      "id": "P2",
+      "cause": "Reader probe initially called a helper that the pre-order module does not export; no conclusions or artifact resulted.",
+      "disposition": "Use the current parser extension-preserving entry as the neutralization control, while criterion comparisons continue to call the actual base module. Rerun the probe."
+    },
+    {
+      "id": "P3",
+      "cause": "The initial reader probe selected missionContract.acceptanceCriteria, which is not its returned field, and JSON omitted the undefined value. Those empty mission objects establish no mission result.",
+      "disposition": "The focused criteria-gap probe reads missionContract.criteria and asserts the returned identifiers. Retain only that corrected probe as mission evidence."
+    },
+    {
+      "id": "P4",
+      "cause": "The focused criteria probe initially called criteriaAdvisories with its arguments reversed. Its empty arrays were not evidence of the screen.",
+      "disposition": "Read the exported signature, correct the argument order and rerun before filing; the consecutive-number control must refuse."
+    },
+    {
+      "id": "P5",
+      "cause": "The first meta refresh refused the new D189 decision because its required rejected-choices field was absent.",
+      "disposition": "Add the rejected option and reason to the unfiled decision, then rerun meta before the document gate."
+    },
+    {
+      "id": "P6",
+      "cause": "The closing document gate recorded 2026-11-14T14:17:41.449Z failed its format preflight on the verifier's new criteria-gap.mjs and punctuation.mjs evidence files; the later suites were skipped.",
+      "disposition": "Format exactly those two verifier-owned files, record the correction in D191, refresh the decision index and rerun the document gate. The failed row supplies no passing subject evidence."
+    }
+  ],
+  "entryUsage": {
+    "totalTokens": 62290,
+    "source": "codex-transcript-counter",
+    "scope": "dispatch",
+    "cutoff": "2026-11-14T13:38:41.876Z"
+  },
+  "subagentUses": 0
+}

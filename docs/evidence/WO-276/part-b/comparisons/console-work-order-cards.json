@@ -1,0 +1,111 @@
+{
+  "comparison": "console-work-order-cards",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the generated work-order pages (base) and the index command's record of the same tree (worktree): each card's order, line, shown cells and links",
+  "read": 2,
+  "equal": 0,
+  "differences": {
+    "defect of the old reader: the generated pages escape a backtick, a square bracket and an angle bracket as character references (&#96;, &#91; and &#93;, &lt; and &gt;), which the base's plainText showed as written; the index command's record holds the characters, so the board shows `plan start` where the base showed &#96;plan start&#96;, and <dir> where it showed &lt;dir&gt;. Every card's line, cells and links are the same once the references are decoded, which the comparison tests for each page": 2
+  },
+  "examples": [
+    {
+      "input": "index",
+      "named": "defect of the old reader: the generated pages escape a backtick, a square bracket and an angle bracket as character references (&#96;, &#91; and &#93;, &lt; and &gt;), which the base's plainText showed as written; the index command's record holds the characters, so the board shows `plan start` where the base showed &#96;plan start&#96;, and <dir> where it showed &lt;dir&gt;. Every card's line, cells and links are the same once the references are decoded, which the comparison tests for each page",
+      "cards": [
+        10,
+        10
+      ],
+      "differing": 3,
+      "examples": [
+        {
+          "id": "WO-244",
+          "line": false,
+          "cells": [
+            {
+              "label": "title",
+              "old": "WO-244 — Paired planning passes and the synthesis pass: the dispatch line carries a host label the pass checks against the host it runs on, a paired pass is ref",
+              "new": "WO-244 — Paired planning passes and the synthesis pass: the dispatch line carries a host label the pass checks against the host it runs on, a paired pass is ref"
+            }
+          ]
+        },
+        {
+          "id": "WO-193",
+          "line": false,
+          "cells": [
+            {
+              "label": "title",
+              "old": "WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labell",
+              "new": "WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labell"
+            }
+          ]
+        },
+        {
+          "id": "WO-091",
+          "line": false,
+          "cells": [
+            {
+              "label": "title",
+              "old": "WO-091 — The full 5S equipment set: the Repo Gardener equips all six 5S pieces, with multi-active link groups under a visible six-link budget, the additive &#96",
+              "new": "WO-091 — The full 5S equipment set: the Repo Gardener equips all six 5S pieces, with multi-active link groups under a visible six-link budget, the additive `set"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "input": "history",
+      "named": "defect of the old reader: the generated pages escape a backtick, a square bracket and an angle bracket as character references (&#96;, &#91; and &#93;, &lt; and &gt;), which the base's plainText showed as written; the index command's record holds the characters, so the board shows `plan start` where the base showed &#96;plan start&#96;, and <dir> where it showed &lt;dir&gt;. Every card's line, cells and links are the same once the references are decoded, which the comparison tests for each page",
+      "cards": [
+        259,
+        259
+      ],
+      "differing": 84,
+      "examples": [
+        {
+          "id": "WO-023",
+          "line": false,
+          "cells": [
+            {
+              "label": "Model",
+              "old": "any capable model for the implementation. The loadout it compiles pins its own actor: Claude Fable 5.1 at &#96;max&#96; effort for review episodes (Principle 8;",
+              "new": "any capable model for the implementation. The loadout it compiles pins its own actor: Claude Fable 5.1 at `max` effort for review episodes (Principle 8; a subst"
+            }
+          ]
+        },
+        {
+          "id": "WO-028",
+          "line": false,
+          "cells": [
+            {
+              "label": "title",
+              "old": "WO-028 — Control-event time: &#96;recordedAt&#96; on every appended control event, an elapsed-phase projection, and labeled recovery of historical times from lo",
+              "new": "WO-028 — Control-event time: `recordedAt` on every appended control event, an elapsed-phase projection, and labeled recovery of historical times from local chec"
+            }
+          ]
+        },
+        {
+          "id": "WO-039",
+          "line": false,
+          "cells": [
+            {
+              "label": "Latest attestation",
+              "old": "harness claude-code; version 2.1.263; model claude-opus-5&#91;1m&#93;; effort max; source self-reported; account not-applicable.",
+              "new": "harness claude-code; version 2.1.263; model claude-opus-5[1m]; effort max; source self-reported; account not-applicable."
+            }
+          ]
+        },
+        {
+          "id": "WO-042",
+          "line": false,
+          "cells": [
+            {
+              "label": "Latest attestation",
+              "old": "harness claude-code; version 2.1.265; model claude-opus-5&#91;1m&#93;; effort unknown; source self-reported; account not-applicable.",
+              "new": "harness claude-code; version 2.1.265; model claude-opus-5[1m]; effort unknown; source self-reported; account not-applicable."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# The operator-commands check (writeOperatorPage with check) in a scratch copy of README.md, docs/KIT.md and docs/OPERATOR.md.
+## As committed: exit 0
+docs/OPERATOR.md is current
+## After one line is added to a marked block of the guide: exit 1
+stale docs/OPERATOR.md: it differs from the kit guide's marked command blocks; run npm run sync or node scripts/lib/operator-commands.mjs
+DOTLN_ARTIFACT_STALE operator-commands
+## After the page is regenerated: exit 0, then the check: exit 0
+## After a fenced shell block with no marker is added to the guide: exit 1
+FAIL docs/KIT.md:1983: a fenced shell block carries no operator-commands marker; mark it with its step (<!-- operator-commands <step> -->) or set it aside (<!-- operator-commands aside -->)

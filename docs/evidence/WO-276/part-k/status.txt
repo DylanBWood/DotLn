@@ -1,0 +1,11 @@
+$ npm run resume -- status --json   (its first lines, in an instance with no order yet)
+{
+  "schemaVersion": 1,
+  "workOrder": null,
+  "workOrderPath": null,
+  "phase": "none",
+  "route": {
+  …
+
+$ npm run resume -- status --all --json   (the same instance)
+[]

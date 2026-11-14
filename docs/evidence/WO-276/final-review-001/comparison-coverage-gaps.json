@@ -1,0 +1,75 @@
+[
+  {
+    "file": "scripts/lib/front-page-scope.mjs",
+    "reader": "the Front page field an order's header declares",
+    "sourceNowCallsTheSharedReader": true,
+    "baseTestedAString": true,
+    "coverageRowForTheFile": false,
+    "coverageRowsReaders": [],
+    "comparisonDriverNamesIt": false
+  },
+  {
+    "file": "scripts/lib/worktree-integration.mjs",
+    "reader": "the integration note a decisions file holds for a checkpoint",
+    "sourceNowCallsTheSharedReader": true,
+    "baseTestedAString": true,
+    "coverageRowForTheFile": false,
+    "coverageRowsReaders": [],
+    "comparisonDriverNamesIt": false
+  },
+  {
+    "file": "scripts/lib/worktree-integration.mjs",
+    "reader": "the generated blocks of the root instruction file and the front page that a mixed projection sets aside",
+    "sourceNowCallsTheSharedReader": true,
+    "baseTestedAString": true,
+    "coverageRowForTheFile": false,
+    "coverageRowsReaders": [],
+    "comparisonDriverNamesIt": false
+  },
+  {
+    "file": "scripts/lib/release-preparation.mjs",
+    "reader": "the integration note release preparation reads",
+    "sourceNowCallsTheSharedReader": true,
+    "baseTestedAString": true,
+    "coverageRowForTheFile": true,
+    "coverageRowsReaders": [
+      "the Release classification an order's header declares"
+    ],
+    "comparisonDriverNamesIt": false
+  },
+  {
+    "file": "scripts/check-publication.mjs",
+    "reader": "the links a publication page makes into the product documents",
+    "sourceNowCallsTheSharedReader": true,
+    "baseTestedAString": true,
+    "coverageRowForTheFile": true,
+    "coverageRowsReaders": [
+      "headings, with the fence reading inside it",
+      "checkCoverage"
+    ],
+    "comparisonDriverNamesIt": false
+  },
+  {
+    "file": "scripts/check-publication.mjs",
+    "reader": "the section of a dual-voice page under one voice's heading",
+    "sourceNowCallsTheSharedReader": true,
+    "baseTestedAString": true,
+    "coverageRowForTheFile": true,
+    "coverageRowsReaders": [
+      "headings, with the fence reading inside it",
+      "checkCoverage"
+    ],
+    "comparisonDriverNamesIt": false
+  },
+  {
+    "file": "scripts/lib/plan-dependency-migration.mjs",
+    "reader": "the standalone dependencies block the dependency migration removes",
+    "sourceNowCallsTheSharedReader": true,
+    "baseTestedAString": true,
+    "coverageRowForTheFile": true,
+    "coverageRowsReaders": [
+      "the Umbrella record notice the dependency migration reads"
+    ],
+    "comparisonDriverNamesIt": false
+  }
+]

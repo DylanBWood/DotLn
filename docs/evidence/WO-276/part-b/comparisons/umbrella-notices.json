@@ -1,0 +1,9 @@
+{
+  "comparison": "umbrella-notices",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: its Umbrella record notice as the dependency migration reads it (the base's own pattern, taken from its file, against the order reader's field)",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

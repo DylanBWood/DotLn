@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-10T18:36:01.584Z",
+  "command": "node scripts/harness.mjs usage <session>, after npm run resume -- accept-overrun subagentCap --ceiling 100 (control ordinal 3)",
+  "note": "The readback's subagent count and its dispatch standing line; its token counters stay in the ignored receipt and the response.",
+  "subagents": {
+    "count": 0,
+    "cap": 100,
+    "remaining": 100,
+    "countKind": "exact-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "launched": 0,
+    "launchedByHost": {
+      "claude": 0,
+      "codex": 0,
+      "unattributed": 0
+    },
+    "retasked": 0
+  },
+  "standing": "dispatch standing: 1 h 52 min of 24 h 0 min; complete runs 0 of 20; within",
+  "boundAcceptancesInStanding": [
+    {
+      "metric": "wallClockMs",
+      "ceiling": 86400000
+    }
+  ]
+}

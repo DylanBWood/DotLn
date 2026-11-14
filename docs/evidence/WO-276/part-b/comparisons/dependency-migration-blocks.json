@@ -1,0 +1,9 @@
+{
+  "comparison": "dependency-migration-blocks",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: its text once the standalone dependencies block is taken out, as a digest, with the count of characters taken",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

@@ -1,0 +1,100 @@
+[
+  {
+    "name": "standalone-inline-code",
+    "full": [
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ],
+    "headerOnly": []
+  },
+  {
+    "name": "ordinary",
+    "full": [
+      {
+        "label": "Model",
+        "value": "capable"
+      },
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ],
+    "headerOnly": [
+      {
+        "label": "Model",
+        "value": "capable"
+      },
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ]
+  },
+  {
+    "name": "multiline-inline-code",
+    "full": [
+      {
+        "label": "Model",
+        "value": "capable `example\n**Objective:** quoted inside code\nend`"
+      },
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ],
+    "headerOnly": [
+      {
+        "label": "Model",
+        "value": "capable `example"
+      }
+    ]
+  },
+  {
+    "name": "fenced-example",
+    "full": [
+      {
+        "label": "Model",
+        "value": "capable"
+      },
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ],
+    "headerOnly": [
+      {
+        "label": "Model",
+        "value": "capable"
+      },
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ]
+  },
+  {
+    "name": "quoted-example",
+    "full": [
+      {
+        "label": "Model",
+        "value": "capable"
+      },
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ],
+    "headerOnly": [
+      {
+        "label": "Model",
+        "value": "capable"
+      },
+      {
+        "label": "Track",
+        "value": "machinery"
+      }
+    ]
+  }
+]

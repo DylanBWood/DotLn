@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-10T18:36:01.585Z",
+  "method": "wc -c of each installed root before and after npm run sync at this part's end; the before bytes are the roots as the part began (unchanged since its base)",
+  "roots": [
+    {
+      "file": ".claude/skills/dotln-executor/SKILL.md",
+      "before": 37939,
+      "after": 39626,
+      "delta": 1687
+    },
+    {
+      "file": ".claude/skills/dotln-planner/SKILL.md",
+      "before": 24156,
+      "after": 25098,
+      "delta": 942
+    },
+    {
+      "file": ".claude/skills/dotln-refuter/SKILL.md",
+      "before": 20936,
+      "after": 21339,
+      "delta": 403
+    },
+    {
+      "file": ".claude/skills/dotln-release-close/SKILL.md",
+      "before": 22014,
+      "after": 22417,
+      "delta": 403
+    },
+    {
+      "file": ".claude/skills/dotln-reviewer/SKILL.md",
+      "before": 34737,
+      "after": 35950,
+      "delta": 1213
+    },
+    {
+      "file": ".claude/skills/dotln-router/SKILL.md",
+      "before": 10611,
+      "after": 10611,
+      "delta": 0
+    },
+    {
+      "file": ".claude/skills/dotln-verifier/SKILL.md",
+      "before": 32091,
+      "after": 33304,
+      "delta": 1213
+    },
+    {
+      "file": ".agents/skills/dotln-executor/SKILL.md",
+      "before": 37939,
+      "after": 39626,
+      "delta": 1687
+    },
+    {
+      "file": ".agents/skills/dotln-planner/SKILL.md",
+      "before": 24156,
+      "after": 25098,
+      "delta": 942
+    },
+    {
+      "file": ".agents/skills/dotln-refuter/SKILL.md",
+      "before": 20936,
+      "after": 21339,
+      "delta": 403
+    },
+    {
+      "file": ".agents/skills/dotln-release-close/SKILL.md",
+      "before": 22014,
+      "after": 22417,
+      "delta": 403
+    },
+    {
+      "file": ".agents/skills/dotln-reviewer/SKILL.md",
+      "before": 34737,
+      "after": 35950,
+      "delta": 1213
+    },
+    {
+      "file": ".agents/skills/dotln-router/SKILL.md",
+      "before": 10611,
+      "after": 10611,
+      "delta": 0
+    },
+    {
+      "file": ".agents/skills/dotln-verifier/SKILL.md",
+      "before": 32091,
+      "after": 33304,
+      "delta": 1213
+    },
+    {
+      "file": ".claude/agents/dotln-executor.md",
+      "before": 1158,
+      "after": 1312,
+      "delta": 154
+    },
+    {
+      "file": ".claude/agents/dotln-release-close.md",
+      "before": 1173,
+      "after": 1327,
+      "delta": 154
+    },
+    {
+      "file": ".claude/agents/dotln-reviewer.md",
+      "before": 1158,
+      "after": 1312,
+      "delta": 154
+    },
+    {
+      "file": ".claude/agents/dotln-verifier.md",
+      "before": 1158,
+      "after": 1312,
+      "delta": 154
+    },
+    {
+      "file": ".claude/agents/dotln-worker-fable.md",
+      "before": 2252,
+      "after": 2477,
+      "delta": 225
+    },
+    {
+      "file": ".claude/agents/dotln-worker.md",
+      "before": 2082,
+      "after": 2307,
+      "delta": 225
+    },
+    {
+      "file": ".codex/agents/dotln-worker-astra.toml",
+      "before": 2272,
+      "after": 2497,
+      "delta": 225
+    },
+    {
+      "file": "CLAUDE.md",
+      "before": 7380,
+      "after": 7446,
+      "delta": 66
+    }
+  ]
+}

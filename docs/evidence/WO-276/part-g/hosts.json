@@ -1,0 +1,87 @@
+{
+  "what": "Criterion G2. A discovery record's observed versions turn no host on: with no election and no attestation the inventory reports both hosts off and names the record, and an emit writes Claude's surfaces alone; an attestation under a host turns that host on, as at the base. And this repository's emitted surfaces, by its harness manifest, at the tree Part G began on, in the working tree and at main.",
+  "command": "node docs/evidence/WO-276/part-g/hosts.mjs refs/dotln/checkpoint/WO-276/19",
+  "inventories": [
+    {
+      "instance": "observed versions, no election, no attestation",
+      "hosts": [
+        {
+          "id": "host-codex",
+          "value": false,
+          "source": "default (docs/discovery/environment.json observed versions show the host without an election; a discovery record turns no host on)"
+        },
+        {
+          "id": "host-copilot",
+          "value": false,
+          "source": "default (docs/discovery/environment.json observed versions show the host without an election; a discovery record turns no host on)"
+        }
+      ],
+      "emittedSurfaceRoots": [
+        ".claude",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "instance": "observed versions and an attestation under codex-cli",
+      "hosts": [
+        {
+          "id": "host-codex",
+          "value": true,
+          "source": "inferred: docs/control/orders/ attestations"
+        },
+        {
+          "id": "host-copilot",
+          "value": false,
+          "source": "default (docs/discovery/environment.json observed versions show the host without an election; a discovery record turns no host on)"
+        }
+      ],
+      "emittedSurfaceRoots": [
+        ".agents",
+        ".claude",
+        ".codex",
+        "CLAUDE.md"
+      ]
+    }
+  ],
+  "thisRepository": {
+    "hosts": [
+      {
+        "id": "host-codex",
+        "value": true,
+        "source": "inferred: docs/control/resume.jsonl attestations; docs/control/orders/ attestations"
+      },
+      {
+        "id": "host-copilot",
+        "value": true,
+        "source": "elected"
+      }
+    ],
+    "began": "edb0f3693e09fc3923d9d4941dc580ed03b18837",
+    "surfaces": 42,
+    "surfaceRoots": [
+      ".agents",
+      ".claude",
+      ".codex",
+      "CLAUDE.md"
+    ],
+    "equalToTheTreeThePartBeganOn": true,
+    "profiles": [
+      "claude-code-2.1.263",
+      "codex-cli-0.153.4",
+      "copilot-cli-1.0.86"
+    ],
+    "profilesAtMain": [
+      "claude-code-2.1.263",
+      "codex-cli-0.153.4",
+      "copilot-cli-1.0.86"
+    ],
+    "surfaceRootsAtMain": [
+      ".agents",
+      ".claude",
+      ".codex",
+      "CLAUDE.md"
+    ],
+    "surfacesAtMainMissingNow": [],
+    "surfacesNowMissingAtMain": []
+  }
+}

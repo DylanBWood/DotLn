@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "what": "Criterion C5: what node scripts/docs-check.mjs prints for a current decision's roundFindings in the document fixture's three states, and the command's wall seconds on this repository before and after the shape check was added.",
+  "fixture": {
+    "oneEntryOfEachClass": "exit 0; no line names roundFindings",
+    "aClassAFinderAndADispositionOutsideTheAdmittedValues": [
+      "FAIL docs/evidence/WO-999/decisions.md#WO-999-D001/roundFindings[0]/class: expected one of criterion, lesser, improvement, none",
+      "FAIL docs/evidence/WO-999/decisions.md#WO-999-D001/roundFindings[1]/finders: expected one or more of criteria, design, consistency, combined, each once",
+      "FAIL docs/evidence/WO-999/decisions.md#WO-999-D001/roundFindings[2]/disposition: expected fixed or recorded"
+    ],
+    "noArray": "exit 0",
+    "case": "scripts/test-docs-check.mjs, the case named for criterion C5"
+  },
+  "seconds": {
+    "before": [
+      26.6,
+      26.4,
+      26.57
+    ],
+    "after": [
+      26.62,
+      26.65,
+      26.83
+    ],
+    "exitCode": 0,
+    "method": "wall seconds of three runs, one at a time; before is Part B's last measurement"
+  }
+}

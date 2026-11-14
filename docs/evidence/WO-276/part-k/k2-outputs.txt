@@ -1,0 +1,25 @@
+Files under extensions/, committed in the instance:
+  extensions/tools/scratch.mjs
+  extensions/tools/unformatted.mjs
+  extensions/package.json
+  extensions/package-lock.json
+  extensions/data/rows.jsonl
+
+$ npm test   (through node scripts/harness.mjs bounded --)
+exit 0; tasks run: format, configuration-root, registrations, declarations, generated, host, kit-verify
+PASS format 0 h 0 min
+PASS configuration-root 0 h 0 min
+PASS registrations 0 h 0 min
+PASS declarations 0 h 0 min
+PASS generated 0 h 0 min
+PASS host 0 h 0 min
+PASS kit-verify 0 h 0 min
+
+$ node scripts/harness.mjs emit
+harness emit: 32 generated surfaces; local-terms list: unavailable
+
+$ node scripts/harness.mjs check
+harness check: 32 generated surfaces; local-terms list: unavailable
+
+kit root after the gate: true
+git status --porcelain -- extensions: (empty: no tracked file there changed and no file Git does not ignore was added)

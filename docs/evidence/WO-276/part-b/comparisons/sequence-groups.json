@@ -1,0 +1,9 @@
+{
+  "comparison": "sequence-groups",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every committed revision of the proposed sequence: its entries with their labels, in their lane groups",
+  "read": 66,
+  "equal": 66,
+  "differences": {},
+  "examples": []
+}

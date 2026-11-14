@@ -1,0 +1,9 @@
+{
+  "comparison": "planning-subjects-base",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every filed planning receipt's committed revision: the planning subject the base's function builds from it, against the one the worktree's builds",
+  "read": 68,
+  "equal": 68,
+  "differences": {},
+  "examples": []
+}

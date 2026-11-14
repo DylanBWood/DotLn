@@ -1,0 +1,9 @@
+The first lines of this order's briefing with its standing file:
+Execute docs/work-orders/WO-276-the-queue-lands-as-one-order.md.
+Standing: docs/evidence/WO-276/standing.md holds where this order's execution stood at its last stop (the steps done, the step in hand, what comes next and what is undecided). Read it before the order's steps; implementation-ready removes it.
+**Model:** any capable model. State the model and effort actually run
+
+And with the file set aside:
+Execute docs/work-orders/WO-276-the-queue-lands-as-one-order.md.
+**Model:** any capable model. State the model and effort actually run
+(07-execution-guide.md §Model-specific notes).

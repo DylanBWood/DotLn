@@ -1,0 +1,9 @@
+{
+  "comparison": "release-preparation-reading",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order, as release prepare reads its authority: the heading, the version it carries and the Release classification",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

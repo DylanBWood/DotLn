@@ -1,0 +1,464 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-14T02:00:08.091Z",
+  "tree": "refs/dotln/checkpoint/WO-276/5 (842803cda6dbd7cf5320ad672b5bebc006f213bc), before any edit of Part B",
+  "method": "the document check's screen, scripts/lib/markdown-screen.mjs as the repair of FINAL-001 leaves it, run over every source it selects in the inventory's tree, keeping the findings in its marker-comment form; each is listed with the readers comparisons/coverage.json records for its file",
+  "sources": 407,
+  "findings": [
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 197,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-workstreams:",
+      "readers": [
+        "parseCapabilities (console-capabilities)",
+        "tableRows over the publication index (console-publication)",
+        "parsePendingRungs (console-roadmap-rungs)",
+        "the work-order cards, which the base read from the generated pages (parseWorkOrderIndex) and the worktree takes from the index command's record (console-work-order-cards)"
+      ]
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 206,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-workstreams: ",
+      "readers": [
+        "parseCapabilities (console-capabilities)",
+        "tableRows over the publication index (console-publication)",
+        "parsePendingRungs (console-roadmap-rungs)",
+        "the work-order cards, which the base read from the generated pages (parseWorkOrderIndex) and the worktree takes from the index command's record (console-work-order-cards)"
+      ]
+    },
+    {
+      "file": "scripts/authority-evidence.mjs",
+      "line": 1000,
+      "form": "a marker comment",
+      "pattern": "<!-- Origin: (\\{[^\\n]+\\}) -->",
+      "readers": [
+        "the origin comment of the installed executor root, whose support ids the overlay evidence extends (executor-origin-comments)"
+      ]
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 197,
+      "form": "a marker comment",
+      "pattern": "<!--[\\s\\S]*?-->",
+      "readers": [
+        "productContent: a product document's sections, anchors and sizes (product-content)",
+        "operatorWordFindings with decisionSections and decisionSection: provenance fields, each decision's section and the fenced text set aside (operator-words)",
+        "requestedQuotes: a decision's operatorQuote"
+      ]
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 898,
+      "form": "a marker comment",
+      "pattern": "^<!--.*-->$",
+      "readers": [
+        "productContent: a product document's sections, anchors and sizes (product-content)",
+        "operatorWordFindings with decisionSections and decisionSection: provenance fields, each decision's section and the fenced text set aside (operator-words)",
+        "requestedQuotes: a decision's operatorQuote"
+      ]
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 1199,
+      "form": "a marker comment",
+      "pattern": "^\\s*<!--[\\s\\S]*-->\\s*$",
+      "readers": [
+        "productContent: a product document's sections, anchors and sizes (product-content)",
+        "operatorWordFindings with decisionSections and decisionSection: provenance fields, each decision's section and the fenced text set aside (operator-words)",
+        "requestedQuotes: a decision's operatorQuote"
+      ]
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 1486,
+      "form": "a marker comment",
+      "pattern": "<!--[\\s\\S]*?(?:-->|$)",
+      "readers": [
+        "productContent: a product document's sections, anchors and sizes (product-content)",
+        "operatorWordFindings with decisionSections and decisionSection: provenance fields, each decision's section and the fenced text set aside (operator-words)",
+        "requestedQuotes: a decision's operatorQuote"
+      ]
+    },
+    {
+      "file": "scripts/harness-context.mjs",
+      "line": 81,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-harness:start -->",
+      "readers": [
+        "whether the root instruction file holds the harness's generated block, in measureHarnessContext (harness-instruction-blocks)"
+      ]
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 217,
+      "form": "a marker comment",
+      "pattern": "^<!-- ([\\w.-]+):start -->$",
+      "readers": [
+        "hasGeneratedMarker (generated-pages)",
+        "redTagBlock (red-tags)"
+      ]
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 667,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-red-tags:start -->",
+      "readers": [
+        "hasGeneratedMarker (generated-pages)",
+        "redTagBlock (red-tags)"
+      ]
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 668,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-red-tags:end -->",
+      "readers": [
+        "hasGeneratedMarker (generated-pages)",
+        "redTagBlock (red-tags)"
+      ]
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 673,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-red-tags:end -->",
+      "readers": [
+        "hasGeneratedMarker (generated-pages)",
+        "redTagBlock (red-tags)"
+      ]
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 673,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-red-tags:start -->",
+      "readers": [
+        "hasGeneratedMarker (generated-pages)",
+        "redTagBlock (red-tags)"
+      ]
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 678,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-red-tags:start -->",
+      "readers": [
+        "hasGeneratedMarker (generated-pages)",
+        "redTagBlock (red-tags)"
+      ]
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 679,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-red-tags:end -->",
+      "readers": [
+        "hasGeneratedMarker (generated-pages)",
+        "redTagBlock (red-tags)"
+      ]
+    },
+    {
+      "file": "scripts/lib/drive-route.mjs",
+      "line": 318,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-findings:start -->\\s*([\\s\\S]*?)\\s*<!-- dotln-findings:end -->",
+      "readers": [
+        "the findings block of a filed failure report, by whether a finding routes to the operator (drive-route-operator-finding)"
+      ]
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "line": 1382,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-product-gate:start -->[\\s\\S]*?<!-- dotln-product-gate:end -->",
+      "readers": [
+        "githubBodyProfileFailures: the lines a prose paragraph wraps onto (github-body-soft-wraps)",
+        "pullRequestBodyShapeFailures (github-body-shape)",
+        "the criterion-record lines criterionRecordProblem reads (github-body-criterion-records)"
+      ]
+    },
+    {
+      "file": "scripts/lib/harness-context.mjs",
+      "line": 208,
+      "form": "a marker comment",
+      "pattern": "<!--",
+      "readers": [
+        "readDirectives (harness-context-directives)",
+        "sectionRange (harness-context-sections)",
+        "citedSelectors (harness-context-citations)"
+      ]
+    },
+    {
+      "file": "scripts/lib/outward-lint.mjs",
+      "line": 236,
+      "form": "a marker comment",
+      "pattern": "^<!--",
+      "readers": [
+        "the rendered view of a pull-request or release body, with each character's source span (outward-rendered-view)"
+      ]
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 81,
+      "form": "a marker comment",
+      "pattern": "\\n<!-- prettier-ignore -->\\n$",
+      "readers": [
+        "between two revisions of an order: the release label the later one assigns, whether its change is only an appended execution record, the amendment-bound source and the admitted spelling of a release classification (plan-continuation-order-pairs)",
+        "where a disposed criterion's text is found after the acceptance criteria (plan-continuation-criteria)",
+        "reassessments: the dated sections appended to the capability table (plan-continuation-reassessments)",
+        "citationHeadings (plan-continuation-citation-headings)",
+        "capabilityHistoryRepair: the capability id of each table row, by its line (capability-row-ids)"
+      ]
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 100,
+      "form": "a marker comment",
+      "pattern": "^<!--(?:(?!-->)[\\s\\S])*-->$",
+      "readers": [
+        "between two revisions of an order: the release label the later one assigns, whether its change is only an appended execution record, the amendment-bound source and the admitted spelling of a release classification (plan-continuation-order-pairs)",
+        "where a disposed criterion's text is found after the acceptance criteria (plan-continuation-criteria)",
+        "reassessments: the dated sections appended to the capability table (plan-continuation-reassessments)",
+        "citationHeadings (plan-continuation-citation-headings)",
+        "capabilityHistoryRepair: the capability id of each table row, by its line (capability-row-ids)"
+      ]
+    },
+    {
+      "file": "scripts/lib/plan-dependency-migration.mjs",
+      "line": 140,
+      "form": "a marker comment",
+      "pattern": "\\n<!-- dotln-dependencies:start -->\\r?\\n[\\s\\S]*?\\r?\\n<!-- dotln-dependencies:end -->\\r?\\n",
+      "readers": [
+        "the Umbrella record notice the dependency migration reads (umbrella-notices)",
+        "withoutStandaloneBlock: the standalone dependencies block the migration takes out of an order once its relations are transcribed (dependency-migration-blocks)"
+      ]
+    },
+    {
+      "file": "scripts/lib/plan-first.mjs",
+      "line": 229,
+      "form": "a marker comment",
+      "pattern": "^<!-- dotln-plan-first\\n([\\s\\S]*?)\\n-->\\n",
+      "readers": [
+        "proposedPlan: a plan-first proposal's marker block"
+      ]
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 405,
+      "form": "a marker comment",
+      "pattern": "^<!-- dotln-work-order-sequence:start -->\\r?\\n[\\s\\S]*?^<!-- dotln-work-order-sequence:end -->[^\\S\\r\\n]*(?:\\r?\\n|$)",
+      "readers": [
+        "section, field, parsePlanOrder and buildPlanSubject (planning-subjects-base)",
+        "planCostDeclaration (plan-cost)",
+        "planningPasses (planning-passes)"
+      ]
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 524,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-plan-defer: ([a-z0-9:-]+) -> (WO-\\d{3}) -->",
+      "readers": [
+        "section, field, parsePlanOrder and buildPlanSubject (planning-subjects-base)",
+        "planCostDeclaration (plan-cost)",
+        "planningPasses (planning-passes)"
+      ]
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 718,
+      "form": "a marker comment",
+      "pattern": "<!-- \u0000:",
+      "readers": [
+        "section, field, parsePlanOrder and buildPlanSubject (planning-subjects-base)",
+        "planCostDeclaration (plan-cost)",
+        "planningPasses (planning-passes)"
+      ]
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 74,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-rules-recorded:start -->",
+      "readers": [
+        "rulesRecordedBlock (planning-rules)"
+      ]
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 75,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-rules-recorded:end -->",
+      "readers": [
+        "rulesRecordedBlock (planning-rules)"
+      ]
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 80,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-rules-recorded:end -->",
+      "readers": [
+        "rulesRecordedBlock (planning-rules)"
+      ]
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 80,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-rules-recorded:start -->",
+      "readers": [
+        "rulesRecordedBlock (planning-rules)"
+      ]
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 87,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-rules-recorded:start -->",
+      "readers": [
+        "rulesRecordedBlock (planning-rules)"
+      ]
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 88,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-rules-recorded:end -->",
+      "readers": [
+        "rulesRecordedBlock (planning-rules)"
+      ]
+    },
+    {
+      "file": "scripts/lib/release-history.mjs",
+      "line": 27,
+      "form": "a marker comment",
+      "pattern": "^\\s*<!--",
+      "readers": [
+        "historicalComponents: the components of the manifest-free edition (release-history-components)",
+        "orderLinks: the display title of each order the roadmap's release block links (release-history-order-titles)"
+      ]
+    },
+    {
+      "file": "scripts/lib/release-history.mjs",
+      "line": 186,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-release-tags: ",
+      "readers": [
+        "historicalComponents: the components of the manifest-free edition (release-history-components)",
+        "orderLinks: the display title of each order the roadmap's release block links (release-history-order-titles)"
+      ]
+    },
+    {
+      "file": "scripts/lib/release-notes.mjs",
+      "line": 139,
+      "form": "a marker comment",
+      "pattern": "<!--",
+      "readers": [
+        "parseReleaseNotes (release-notes-sections)",
+        "targetReleaseNotesSource (release-notes-target-source)"
+      ]
+    },
+    {
+      "file": "scripts/lib/release-preparation.mjs",
+      "line": 63,
+      "form": "a marker comment",
+      "pattern": "<!-- integration \u0000 -->",
+      "readers": [
+        "the Release classification an order's header declares (release-preparation-reading)",
+        "integrationPreparationRefusal: the integration note an order's decisions file holds for a checkpoint (integration-notes)"
+      ]
+    },
+    {
+      "file": "scripts/lib/target-records.mjs",
+      "line": 55,
+      "form": "a marker comment",
+      "pattern": "<!--[\\s\\S]*?(?:-->|$)",
+      "readers": [
+        "recordLinkTargets: a filed record's link destinations, with the comments of its raw HTML left out (record-link-targets)"
+      ]
+    },
+    {
+      "file": "scripts/lib/work-order-workstream.mjs",
+      "line": 150,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-workstreams:",
+      "readers": [
+        "parseWorkstreamDeclaration (work-order-headers)"
+      ]
+    },
+    {
+      "file": "scripts/lib/work-order-workstream.mjs",
+      "line": 153,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-workstreams: ",
+      "readers": [
+        "parseWorkstreamDeclaration (work-order-headers)"
+      ]
+    },
+    {
+      "file": "scripts/lib/worktree-integration.mjs",
+      "line": 178,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-harness:start -->[\\s\\S]*?<!-- dotln-harness:end -->",
+      "readers": [
+        "the integration note the module reads in an order's decisions file before it files a saved release outcome (integration-notes)",
+        "mixedProjectionMask, and the restore of the release block's version after a masked merge (restoreReleaseVersion): the generated blocks of the root instruction file and the front page that a mixed projection sets aside (mixed-projection-masks)"
+      ]
+    },
+    {
+      "file": "scripts/lib/worktree-integration.mjs",
+      "line": 190,
+      "form": "a marker comment",
+      "pattern": "<!-- DOTLN-RELEASE-BEGIN -->[\\s\\S]*?<!-- DOTLN-RELEASE-END -->",
+      "readers": [
+        "the integration note the module reads in an order's decisions file before it files a saved release outcome (integration-notes)",
+        "mixedProjectionMask, and the restore of the release block's version after a masked merge (restoreReleaseVersion): the generated blocks of the root instruction file and the front page that a mixed projection sets aside (mixed-projection-masks)"
+      ]
+    },
+    {
+      "file": "scripts/lib/worktree-integration.mjs",
+      "line": 237,
+      "form": "a marker comment",
+      "pattern": "<!-- DOTLN-RELEASE-BEGIN -->[\\s\\S]*?<!-- DOTLN-RELEASE-END -->",
+      "readers": [
+        "the integration note the module reads in an order's decisions file before it files a saved release outcome (integration-notes)",
+        "mixedProjectionMask, and the restore of the release block's version after a masked merge (restoreReleaseVersion): the generated blocks of the root instruction file and the front page that a mixed projection sets aside (mixed-projection-masks)"
+      ]
+    },
+    {
+      "file": "scripts/work-orders.mjs",
+      "line": 925,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-work-order-tags: ",
+      "readers": [
+        "parseHeader (work-order-headers)",
+        "parseSequenceGroups (sequence-groups)",
+        "checkPartition (index-partition)"
+      ]
+    },
+    {
+      "file": "scripts/worktree.mjs",
+      "line": 1794,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-product-gate:start -->",
+      "readers": [
+        "the product gate's block in the pull-request body the order publish stores (product-gate-blocks)"
+      ]
+    },
+    {
+      "file": "scripts/worktree.mjs",
+      "line": 1796,
+      "form": "a marker comment",
+      "pattern": "<!-- dotln-product-gate:start -->[\\s\\S]*?<!-- dotln-product-gate:end -->",
+      "readers": [
+        "the product gate's block in the pull-request body the order publish stores (product-gate-blocks)"
+      ]
+    }
+  ],
+  "unheld": 0
+}

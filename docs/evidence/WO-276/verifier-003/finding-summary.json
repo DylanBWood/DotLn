@@ -1,0 +1,32 @@
+[
+  {
+    "id": "F1",
+    "route": "blocking",
+    "class": "escape",
+    "summary": "The repaired checkpoint fails when a tracked directory is replaced by a file; main captures the replacement.",
+    "basis": {
+      "criterion": "17"
+    },
+    "reproduction": "docs/evidence/WO-276/verifier-003/checkpoint-directory-replacement.mjs"
+  },
+  {
+    "id": "F2",
+    "route": "blocking",
+    "class": "escape",
+    "summary": "Four migrated readers with committed inputs still lack the required old/new corpus comparisons.",
+    "basis": {
+      "criterion": "25"
+    },
+    "reproduction": "docs/evidence/WO-276/verifier-003/comparison-coverage-gaps.json"
+  },
+  {
+    "id": "F3",
+    "route": "blocking",
+    "class": "escape",
+    "summary": "Checkout screening still omits supported suffix-only source filenames directly under its source roots.",
+    "basis": {
+      "criterion": "18"
+    },
+    "reproduction": "docs/evidence/WO-276/verifier-003/boundary-probes.mjs"
+  }
+]

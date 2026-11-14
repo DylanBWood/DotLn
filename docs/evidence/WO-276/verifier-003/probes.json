@@ -1,0 +1,339 @@
+{
+  "wrapper": "node scripts/harness.mjs bounded --",
+  "probes": [
+    {
+      "name": "checkpoint-preservation",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/checkpoint-preservation.mjs",
+        "docs/evidence/WO-276/verifier-003/checkpoint-preservation.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 474
+    },
+    {
+      "name": "close-history",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/close-history.mjs",
+        "docs/evidence/WO-276/verifier-003/close-history.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 2791
+    },
+    {
+      "name": "usage-lower-bounds",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/usage-lower-bounds.mjs",
+        "docs/evidence/WO-276/verifier-003/usage-lower-bounds.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 284
+    },
+    {
+      "name": "target-record-deletion",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/target-record-deletion.mjs",
+        "docs/evidence/WO-276/verifier-003/target-record-deletion.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 6188
+    },
+    {
+      "name": "unactivated-target-withdrawal",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/unactivated-target-withdrawal.mjs",
+        "docs/evidence/WO-276/verifier-003/unactivated-target-withdrawal.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 1241
+    },
+    {
+      "name": "execution-appendix",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/execution-appendix.mjs",
+        "docs/evidence/WO-276/verifier-003/execution-appendix.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 330
+    },
+    {
+      "name": "independent-probes",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/independent-probes.mjs",
+        "docs/evidence/WO-276/verifier-003/independent-probes.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 708
+    },
+    {
+      "name": "host-update-boundaries",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-276/verifier-003/host-update-boundaries.mjs",
+        "docs/evidence/WO-276/verifier-003/host-update-boundaries.json"
+      ],
+      "exitCode": 0,
+      "durationMs": 310
+    },
+    {
+      "name": "header-test",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "WO-276 criterion B4",
+        "scripts/test-configuration-root.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 384,
+      "counts": [
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "source-screen-test",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "dialect",
+        "scripts/test-docs-check.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 532,
+      "counts": [
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "host-tests",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "WO-276 criteria H[12]",
+        "scripts/test-runner.test.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 405,
+      "counts": [
+        "\u2139 tests 3",
+        "\u2139 pass 3",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "close-history-test",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "WO-276 criterion M6",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 2763,
+      "counts": [
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "target-record-test",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "WO-276 criterion N2",
+        "scripts/test-target-worktree-publish.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 22844,
+      "counts": [
+        "\u2139 tests 2",
+        "\u2139 pass 2",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "usage-test",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "WO-276 criterion P2",
+        "scripts/test-process-debt.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 496,
+      "counts": [
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "withdrawal-test",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "WO-276 criterion R2",
+        "scripts/test-work-orders.mjs"
+      ],
+      "exitCode": 1,
+      "durationMs": 342,
+      "counts": [
+        "\u2139 tests 1",
+        "\u2139 pass 0",
+        "\u2139 fail 1",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "appendix-test",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "execution record|continuation",
+        "scripts/test-plan-refutation.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 31300,
+      "counts": [
+        "\u2139 tests 7",
+        "\u2139 pass 7",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "format",
+      "command": "npm run format:check",
+      "exitCode": 0,
+      "durationMs": 11374,
+      "resultLines": []
+    },
+    {
+      "name": "work-orders-corrected",
+      "command": "bash scripts/test-work-orders.sh",
+      "exitCode": 0,
+      "durationMs": 33903,
+      "resultLines": [
+        "\u2139 tests 43",
+        "\u2139 pass 43",
+        "\u2139 fail 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "name": "comparisons",
+      "command": "node docs/evidence/WO-276/part-b/comparisons/readers.mjs known-issues criterion-judgments execution-plan-paths work-order-headers",
+      "exitCode": 0,
+      "durationMs": 9999,
+      "resultLines": [
+        "known-issues: read 269, equal 269, different {}",
+        "criterion-judgments: read 776, equal 776, different {}",
+        "execution-plan-paths: read 269, equal 241, different {\"defect of the old reader: it paired backticks by its own rule and not Markdown's. Step 6 writes an escaped backtick inside a code span (line 178), where Markdown escapes nothing, so by Markdown's rule the pairing shifts for the rest of the item and the two paths lost (lines 178 and 182) stand outside any code span, as the rendered page shows them; the old pattern's pairing reported them as spans\":1,\"defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it\":26,\"defect of the old reader: its pattern ended the Execution plan only at a label with a colon or at a line that opens with a number sign, so it ran through the Acceptance criteria label (line 3009), which carries no colon, to the Preflight label (line 3741); the eleven paths lost are code spans of the criteria and the fields after them (lines 3146 to 4008), which are no part of the plan\":1}",
+        "work-order-headers: read 270, equal 269, different {\"defect of the old reader: its pattern for the ledger duty began at an Acceptance criteria label quoted in a code span of a step (line 417) and ended at the Non-goals label quoted two lines on, so it never read the order's real criteria (lines 639 to 902), which name the ledger; the new reader takes the two fields from the document's own top-level labels and answers true\":1}"
+      ]
+    },
+    {
+      "name": "boundaries",
+      "command": "node docs/evidence/WO-276/verifier-003/boundary-probes.mjs <output>",
+      "exitCode": 0,
+      "durationMs": 391,
+      "resultLines": []
+    },
+    {
+      "name": "checkpoint-replacement",
+      "command": "node docs/evidence/WO-276/verifier-003/checkpoint-directory-replacement.mjs <output>",
+      "exitCode": 0,
+      "durationMs": 174,
+      "resultLines": []
+    }
+  ],
+  "meaning": "A reproducer passing means its observations were asserted, including reported product defects. The initial direct work-order test failed its verifier-owned bootstrap; its existing shell wrapper later passed 43 cases."
+}

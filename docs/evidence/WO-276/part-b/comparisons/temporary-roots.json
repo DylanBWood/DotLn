@@ -1,0 +1,9 @@
+{
+  "comparison": "temporary-roots",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the whole tree: each temporary-root site no declaration owns",
+  "read": 1,
+  "equal": 1,
+  "differences": {},
+  "examples": []
+}

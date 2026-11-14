@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "what": "The pairedRounds table of npm run plan -- failures for the fixture of criterion C6: two orders that declare a paired first round (WO-911 with two recorded rounds and a failed first verification, WO-912 with one round and none yet), one that declares full and one with no line.",
+  "pairedRounds": {
+    "orders": [
+      {
+        "workOrder": "WO-911",
+        "firstVerification": "fail",
+        "rounds": 2,
+        "counts": {
+          "criterion": {
+            "combinedOnly": 1,
+            "kindsOnly": 0,
+            "both": 1
+          },
+          "lesser": {
+            "combinedOnly": 0,
+            "kindsOnly": 1,
+            "both": 0
+          },
+          "improvement": {
+            "combinedOnly": 0,
+            "kindsOnly": 1,
+            "both": 0
+          },
+          "none": {
+            "combinedOnly": 1,
+            "kindsOnly": 0,
+            "both": 0
+          }
+        },
+        "perRound": [
+          {
+            "decision": "WO-911-D002",
+            "findings": 4,
+            "counts": {
+              "criterion": {
+                "combinedOnly": 1,
+                "kindsOnly": 0,
+                "both": 1
+              },
+              "lesser": {
+                "combinedOnly": 0,
+                "kindsOnly": 1,
+                "both": 0
+              },
+              "improvement": {
+                "combinedOnly": 0,
+                "kindsOnly": 1,
+                "both": 0
+              },
+              "none": {
+                "combinedOnly": 0,
+                "kindsOnly": 0,
+                "both": 0
+              }
+            }
+          },
+          {
+            "decision": "WO-911-D003",
+            "findings": 1,
+            "counts": {
+              "criterion": {
+                "combinedOnly": 0,
+                "kindsOnly": 0,
+                "both": 0
+              },
+              "lesser": {
+                "combinedOnly": 0,
+                "kindsOnly": 0,
+                "both": 0
+              },
+              "improvement": {
+                "combinedOnly": 0,
+                "kindsOnly": 0,
+                "both": 0
+              },
+              "none": {
+                "combinedOnly": 1,
+                "kindsOnly": 0,
+                "both": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "workOrder": "WO-912",
+        "firstVerification": "none",
+        "rounds": 1,
+        "counts": {
+          "criterion": {
+            "combinedOnly": 0,
+            "kindsOnly": 1,
+            "both": 0
+          },
+          "lesser": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 1
+          },
+          "improvement": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 0
+          },
+          "none": {
+            "combinedOnly": 0,
+            "kindsOnly": 0,
+            "both": 0
+          }
+        },
+        "perRound": [
+          {
+            "decision": "WO-912-D001",
+            "findings": 2,
+            "counts": {
+              "criterion": {
+                "combinedOnly": 0,
+                "kindsOnly": 1,
+                "both": 0
+              },
+              "lesser": {
+                "combinedOnly": 0,
+                "kindsOnly": 0,
+                "both": 1
+              },
+              "improvement": {
+                "combinedOnly": 0,
+                "kindsOnly": 0,
+                "both": 0
+              },
+              "none": {
+                "combinedOnly": 0,
+                "kindsOnly": 0,
+                "both": 0
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "sums": {
+      "orders": 2,
+      "rounds": 3,
+      "counts": {
+        "criterion": {
+          "combinedOnly": 1,
+          "kindsOnly": 1,
+          "both": 1
+        },
+        "lesser": {
+          "combinedOnly": 0,
+          "kindsOnly": 1,
+          "both": 1
+        },
+        "improvement": {
+          "combinedOnly": 0,
+          "kindsOnly": 1,
+          "both": 0
+        },
+        "none": {
+          "combinedOnly": 1,
+          "kindsOnly": 0,
+          "both": 0
+        }
+      },
+      "firstVerification": {
+        "pass": 0,
+        "fail": 1,
+        "none": 1
+      }
+    }
+  }
+}

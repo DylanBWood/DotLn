@@ -1,0 +1,30 @@
+{
+  "briefing": {
+    "what": "node scripts/resume.mjs briefing for the target fixture's order in its execution phase, with a profile, the notes named and a workstream: wall milliseconds of three runs and the bytes printed",
+    "twoNotes": {
+      "ms": [
+        171,
+        169,
+        170
+      ],
+      "bytes": 2869
+    },
+    "twentyNotes": {
+      "ms": [
+        170,
+        169,
+        168
+      ],
+      "bytes": 2869
+    }
+  },
+  "docsCheck": {
+    "seconds": [
+      28.41,
+      27.74,
+      28.15
+    ],
+    "exitCode": 0,
+    "method": "wall seconds of three runs, one at a time"
+  }
+}

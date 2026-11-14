@@ -1,0 +1,61 @@
+# AI harness security baseline
+
+A sanitized template, seeded once by the kit export and owned by this
+instance. Record here the operator's dated posture for each host this
+launchpad runs: Claude Code, and any other host this instance's
+`dotln.config.json` elects under `features` (a `host-` row of
+`npm run features -- list` that reads `true`); a fresh instance elects none. A
+host it does not elect is not recorded here, looked for on this machine or
+called.
+The repository does not install or enforce these settings; the record is what
+a session and a reviewer check against. Re-check vendor documentation and
+local behavior after upgrades, because names, defaults, precedence and
+sandbox boundaries change.
+
+**Current operating note:** `<date>`; `<harness> <version>` checked locally.
+
+## Invariant
+
+Discovering a credential, host, open port, connector or capable tool is not
+authority to use it. Repository exploration stays inside the requested project
+unless the operator explicitly expands scope. Sandbox controls are a backstop
+for that judgment rule, not a replacement for it.
+
+A standing rule enters this record, or any standing document, only from the
+operator's direction: the planning pass that writes it names it in its Rules
+recorded block with the operator message's journal reference and capture
+digest, and `plan check` refuses a rule whose message was a question or that
+names no message.
+
+## Harnesses in use
+
+| Harness  | Provider | Version checked | Roles using it | Sandbox and approval mode              |
+| -------- | -------- | --------------- | -------------- | -------------------------------------- |
+| `<name>` | `<name>` | `<version>`     | `<roles>`      | `<mode; operator-attested or observed>` |
+
+Model names are not additional harnesses; they inherit the permissions of the
+harness that launches them. Browser, web-search, plugin, app, MCP and other
+connectors can have separate permission and network boundaries that neither a
+shell sandbox nor this record governs automatically.
+
+## Settings locations
+
+| Harness  | User settings | Project settings | Local, ignored settings |
+| -------- | ------------- | ---------------- | ----------------------- |
+| `<name>` | `<path>`      | `<path>`         | `<path>`                |
+
+Record which layer each of those hosts actually loaded, read from its
+settings files or documented, and which wins when two disagree; no call to a
+host tests it.
+
+## What stays out of this file
+
+No credentials, hostnames, account identifiers, internal service names, or
+policy text copied from an employer or a managed host. Describe the posture a
+session runs under; do not describe infrastructure.
+
+## Re-check log
+
+| Date     | Harness  | Version     | What was re-checked | Result     |
+| -------- | -------- | ----------- | ------------------- | ---------- |
+| `<date>` | `<name>` | `<version>` | `<scope>`           | `<result>` |

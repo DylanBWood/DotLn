@@ -1,0 +1,49 @@
+{
+  "failures": [
+    {
+      "phase": "entry reading",
+      "failure": "Broad status, briefing, report and decision reads exceeded their output budgets; several outputs were truncated.",
+      "disposition": "Use bounded source passages and selected fields; recover relevant omitted passages before judging; do not treat truncated reads as whole-file evidence."
+    },
+    {
+      "phase": "source reads",
+      "failure": "Nonexistent scripts/lib/source-reader.mjs and unquoted unmatched codex wildcard",
+      "disposition": "Corrected through file inventory and quoted rg globs; neither read supplies evidence."
+    },
+    {
+      "phase": "plan-refutation probe",
+      "failure": "The focused capability case passed but the file-level check rejected D146 because this verifier omitted its required rejected array.",
+      "disposition": "Corrected the unfiled decision in place; rerun the affected probe after regenerating indexes. This is not a subject finding."
+    },
+    {
+      "phase": "comparison selection",
+      "failure": "A broad run over unchanged readers was started unnecessarily and stopped intentionally before the driver completed.",
+      "disposition": "The bounded wrapper recorded stopped after 0 h 3 min. The nine comparison additions were then run to completion: 944 inputs, 906 equal, 38 named differences, no unnamed difference. Untouched comparisons retain earlier evidence."
+    },
+    {
+      "phase": "report preparation",
+      "failure": "An unnecessary empty scratch placeholder was mistakenly created under /tmp instead of the role scratch directory.",
+      "disposition": "Removed the exact empty file created by this session immediately. It contained no data; no other outside path was changed."
+    },
+    {
+      "phase": "report preparation",
+      "failure": "An initial extraction matched numbered items throughout the order and failed its 133-criterion assertion before writing any report.",
+      "disposition": "Restricted extraction to the actual Acceptance criteria section, verified exactly 133 entries, then wrote the allocated report."
+    },
+    {
+      "phase": "handoff continuation",
+      "failure": "Recovery reads repeated the broad briefing, status and report output; their aggregate output was truncated. The gate wait also returned a full row larger than the output budget.",
+      "disposition": "Read the omitted report passages in bounded sections and recover the gate result through the existing selected-field observer. Keep the original gate and its passing row; no implementation edit or replacement gate is needed."
+    },
+    {
+      "phase": "result filing",
+      "failure": "The first verification-result fail command exited 1 because git diff --check found a new blank line at EOF in VER-004.md line 349.",
+      "disposition": "Remove the extra blank line from the unfiled report, record the correction in D146, refresh metadata and rerun the document gate before retrying the completion. The subject finding is unchanged."
+    },
+    {
+      "phase": "document-gate retry",
+      "failure": "The retry was started while the metadata command still had a live host session, and that command's eventual output exceeded the emission budget.",
+      "disposition": "Stopped the new document gate through the canonical evidence --stop command; its receipt reports no pass. Both processes have exited. Keep subsequent metadata output in scratch, await its completion before starting the gate, and use only the later completed row for filing."
+    }
+  ]
+}

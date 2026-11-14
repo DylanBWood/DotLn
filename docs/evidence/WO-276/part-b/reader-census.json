@@ -1,0 +1,420 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-14T02:00:06.491Z",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "method": "every source under scripts/ and packages/*/src/ that the base also held, tests and fixtures aside: the calls of the shared readers it makes, counted at the base and in the worktree, and each source that makes one more often now, with the row that holds its readers",
+  "sourcesTheBaseHeld": 405,
+  "gained": [
+    {
+      "file": "packages/skeleton/src/feedback-source-comments.ts",
+      "calls": [
+        "sourceTrees +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/authority-evidence.mjs",
+      "calls": [
+        "markdownComments +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/check-publication.mjs",
+      "calls": [
+        "markdownHeadings +1",
+        "markdownNodes +1",
+        "parseMarkdown +1",
+        "markdownLinks +1",
+        "markdownSection +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "withoutHtmlComments +2",
+        "markdownHeadings +1",
+        "markdownCodeBlocks +2"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/harness-context.mjs",
+      "calls": [
+        "markdownMarkerBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/launchpad.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "markdownFields +1",
+        "markdownNodes +1",
+        "replaceMarkerBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/comment-labels.mjs",
+      "calls": [
+        "sourceTrees +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "calls": [
+        "readWorkOrderHeader +1",
+        "readWorkOrder +2"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/derived-contract.mjs",
+      "calls": [
+        "readWorkOrderHeader +1",
+        "headerField +1",
+        "readWorkOrder +2"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "calls": [
+        "markdownCodeBlocks +1",
+        "markdownComments +1",
+        "markdownMarkerBlocks +1",
+        "markdownJsonBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/entropy-review.mjs",
+      "calls": [
+        "markdownMarkerBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/features.mjs",
+      "calls": [
+        "markdownSection +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/front-page-scope.mjs",
+      "calls": [
+        "readWorkOrderHeader +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "calls": [
+        "markdownNodes +3",
+        "parseMarkdown +3",
+        "markdownMarkerBlocks +1",
+        "markdownListItems +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/handoff-ledger.mjs",
+      "calls": [
+        "readWorkOrder +2",
+        "markdownListItems +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/harness-context.mjs",
+      "calls": [
+        "markdownHeadings +1",
+        "markdownCodeBlocks +1",
+        "markdownComments +1",
+        "readWorkOrder +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/machinery-coverage.mjs",
+      "calls": [
+        "sourceTokens +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/markdown-links.mjs",
+      "calls": [
+        "parseMarkdown +9",
+        "markdownLeadEnd +1",
+        "markdownComments +3",
+        "markdownNodes +6",
+        "markdownMarkerBlocks +2",
+        "replaceMarkerBlocks +1",
+        "markdownText +3",
+        "markdownHeadings +3",
+        "markdownSections +2",
+        "markdownSection +1",
+        "markdownCodeBlocks +2",
+        "markdownJsonBlocks +1",
+        "markdownTables +1",
+        "markdownListItems +1",
+        "markdownFields +1"
+      ],
+      "row": "the markdown-links comparison"
+    },
+    {
+      "file": "scripts/lib/meta.mjs",
+      "calls": [
+        "parseMarkdown +2",
+        "markdownJsonBlocks +1",
+        "markdownSections +1",
+        "readWorkOrder +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/off-ramps.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "markdownFields +1",
+        "markdownCodeBlocks +1",
+        "markdownHeadings +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/outward-lint.mjs",
+      "calls": [
+        "parseMarkdown +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "calls": [
+        "readWorkOrder +1",
+        "markdownNodes +2",
+        "parseMarkdown +3",
+        "markdownHeadings +2",
+        "markdownTables +2"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/plan-dependency-migration.mjs",
+      "calls": [
+        "markdownMarkerBlocks +1",
+        "readWorkOrder +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/plan-first.mjs",
+      "calls": [
+        "markdownComments +1",
+        "markdownCodeBlocks +1",
+        "markdownHeadings +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/plan-receipts.mjs",
+      "calls": [
+        "readWorkOrder +1",
+        "markdownNodes +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "calls": [
+        "parseMarkdown +3",
+        "markdownSections +1",
+        "readWorkOrder +2",
+        "markdownListItems +1",
+        "markdownNodes +2",
+        "markdownMarkerBlocks +2",
+        "readVision +1",
+        "markdownTables +2",
+        "markdownComments +2",
+        "markdownCodeSpans +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/planning-followups.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "markdownListItems +1",
+        "markdownFields +1",
+        "markdownSections +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/receipt-cost.mjs",
+      "calls": [
+        "markdownFields +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/release-history.mjs",
+      "calls": [
+        "markdownTables +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/release-notes.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "markdownNodes +1",
+        "readWorkOrder +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/release-preparation.mjs",
+      "calls": [
+        "markdownComments +1",
+        "readWorkOrder +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/review-findings.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "markdownCodeBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/review-worker.mjs",
+      "calls": [
+        "markdownHeadings +2",
+        "markdownTables +1",
+        "markdownCodeBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/target-records.mjs",
+      "calls": [
+        "withoutHtmlComments +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/verification-briefing.mjs",
+      "calls": [
+        "readWorkOrder +1",
+        "markdownHeadings +1",
+        "markdownCodeBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/work-order-repository.mjs",
+      "calls": [
+        "headerField +1",
+        "readWorkOrderHeader +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/work-order-workstream.mjs",
+      "calls": [
+        "headerField +1",
+        "readWorkOrderHeader +1",
+        "markdownMarkerBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lib/worktree-integration.mjs",
+      "calls": [
+        "replaceMarkerBlocks +3",
+        "markdownComments +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/lineage.mjs",
+      "calls": [
+        "parseMarkdown +2",
+        "markdownSections +1",
+        "markdownCodeBlocks +1",
+        "markdownNodes +2",
+        "markdownListItems +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/probes/local-model-role-qualification.mjs",
+      "calls": [
+        "markdownTables +1",
+        "parseMarkdown +1",
+        "markdownHeadings +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/probes/wo242-controls.mjs",
+      "calls": [
+        "sourceTrees +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/release.mjs",
+      "calls": [
+        "readWorkOrder +3"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "markdownCodeBlocks +1",
+        "readWorkOrder +3",
+        "markdownSection +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/siblings.mjs",
+      "calls": [
+        "parseMarkdown +1",
+        "markdownFields +1",
+        "markdownSections +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/work-orders.mjs",
+      "calls": [
+        "readWorkOrderHeader +1",
+        "parseMarkdown +1",
+        "markdownListItems +1"
+      ],
+      "row": "comparisons/coverage.json"
+    },
+    {
+      "file": "scripts/worktree.mjs",
+      "calls": [
+        "markdownMarkerBlocks +1"
+      ],
+      "row": "comparisons/coverage.json"
+    }
+  ],
+  "unheld": 0
+}

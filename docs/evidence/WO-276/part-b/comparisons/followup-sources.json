@@ -1,0 +1,25 @@
+{
+  "comparison": "followup-sources",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every product and planning document the follow-up register walks: its candidates, each with its identity, its title, its summary and the hash of its text; and, last, any row of no such document",
+  "read": 88,
+  "equal": 86,
+  "differences": {
+    "defect of the old reader: its pattern took the label of ER4-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-004; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)": 1,
+    "defect of the old reader: its pattern took the label of ER5-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-005; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)": 1
+  },
+  "examples": [
+    {
+      "input": "docs/planning/entropy-reviews/REVIEW-004.md",
+      "named": "defect of the old reader: its pattern took the label of ER4-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-004; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)",
+      "old": "[{\"key\":\"candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::0396dd1bbaef8e562967754a407d469cecdff63de2595a7e2f95de59814a648c\",\"kind\":\"candidate\",\"source\":{\"hash\":\"d3f2c8711fd5ab4dabd140d1e35aea4800e701f4022cf966a40557fe9c236dfb\",\"ref\":\"docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-red",
+      "new": "[{\"key\":\"candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::08837d652ab2ac926b467c400c54ad8b719a89f254a7638b45369e8dae195f41\",\"kind\":\"candidate\",\"source\":{\"hash\":\"346d8577ce13a61ad696eaf4dd31ab8a85faf22177e22b7af3b837c990f4a10b\",\"ref\":\"docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-red"
+    },
+    {
+      "input": "docs/planning/entropy-reviews/REVIEW-005.md",
+      "named": "defect of the old reader: its pattern took the label of ER5-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-005; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)",
+      "old": "[{\"key\":\"candidate:docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02::9a69ec5208284ba69987428c7b6e7757b3b9c841ac32c4e19e15f102ac125220\",\"kind\":\"candidate\",\"source\":{\"hash\":\"d7b38f09a3941ff1b5634595de5a84bba124ca99ab06dcced21b86aff38afdf0\",\"ref\":\"docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-red",
+      "new": "[{\"key\":\"candidate:docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02::9a69ec5208284ba69987428c7b6e7757b3b9c841ac32c4e19e15f102ac125220\",\"kind\":\"candidate\",\"source\":{\"hash\":\"d7b38f09a3941ff1b5634595de5a84bba124ca99ab06dcced21b86aff38afdf0\",\"ref\":\"docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-red"
+    }
+  ]
+}

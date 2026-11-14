@@ -1,0 +1,66 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-276/part-b/comparisons/readers.mjs followup-sources release-history-components release-history-order-titles ledger-entries siblings-manifest-hashes capability-row-ids qualification-source-rows probe-hook-runtime feedback-tap-rows",
+  "exitCode": 0,
+  "comparisons": [
+    {
+      "comparison": "followup-sources",
+      "read": 88,
+      "equal": 86,
+      "differences": {
+        "defect of the old reader: its pattern took the label of ER4-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-004; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)": 1,
+        "defect of the old reader: its pattern took the label of ER5-002 (line 15), whose closing asterisks follow a space, as bold; CommonMark and the pinned parser read no bold there, so the candidate's title is the item's first line as written and the identity made from that title moves, while the item's text and its hash stand. The order's known issues for Part B expect this for REVIEW-005; the register carries the old row's dispositions on the new row and ends the old row as its duplicate (WO-276-D059)": 1
+      }
+    },
+    {
+      "comparison": "release-history-components",
+      "read": 12,
+      "equal": 12,
+      "differences": {}
+    },
+    {
+      "comparison": "release-history-order-titles",
+      "read": 269,
+      "equal": 269,
+      "differences": {}
+    },
+    {
+      "comparison": "ledger-entries",
+      "read": 154,
+      "equal": 154,
+      "differences": {}
+    },
+    {
+      "comparison": "siblings-manifest-hashes",
+      "read": 41,
+      "equal": 41,
+      "differences": {}
+    },
+    {
+      "comparison": "capability-row-ids",
+      "read": 36,
+      "equal": 0,
+      "differences": {
+        "defect of the old reader: its pattern gave a row an id only where the row's first cell opens with the code span, a rule of its own for what a capability row is. The rows of the table's first section name the capability in words before the code span (`Kernel event loop (`kernel.event-loop`)`; twelve rows of the table as the worktree holds it, where the base's pattern reads 37 rows and the worktree's reader 49), so the history repair read no id from those and, by the base's source, refused to restore an edited one; the dated rows under them open with the code span and both readers read them. The planning subject at the base read the id anywhere in the first cell, and the worktree's one row reader does. Every id the base read stands at the same line; the rows gained are those whose first cell holds text before its code span": 36
+      }
+    },
+    {
+      "comparison": "qualification-source-rows",
+      "read": 1,
+      "equal": 1,
+      "differences": {}
+    },
+    {
+      "comparison": "probe-hook-runtime",
+      "read": 126,
+      "equal": 126,
+      "differences": {}
+    },
+    {
+      "comparison": "feedback-tap-rows",
+      "read": 217,
+      "equal": 217,
+      "differences": {}
+    }
+  ],
+  "limit": "Only the nine comparison additions of the current repair were completed in this run. Earlier unchanged comparisons retain their prior evidence."
+}

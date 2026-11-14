@@ -1,0 +1,28 @@
+{
+  "note": "npm run plan -- check in this repository: its exit status and the preflight advisories it returned, one for each machinery suite an active or open order's execution plan owes and its Preflight field does not name.",
+  "exit": 0,
+  "receipts": 68,
+  "passes": 56,
+  "preflightAdvisories": [
+    "preflight advisory: WO-088 names scripts/test-runner.mjs in its execution plan, which the sync-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-091 names packages/compiler/src/index.ts and 2 more in its execution plan, which the harness-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-091 names scripts/lib/evidence-sources.mjs and 1 more in its execution plan, which the runner-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-091 names packages/compiler/src/index.ts in its execution plan, which the process-debt suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-091 names packages/compiler/src/compile.ts and 1 more in its execution plan, which the mutation suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-096 names scripts/test-runner.mjs in its execution plan, which the sync-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-096 names scripts/test-runner.mjs and 2 more in its execution plan, which the launchpad-planning suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-096 names packages/skeleton/src/loadouts/contributor.ts and 1 more in its execution plan, which the plan-refutation suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-183 names scripts/lib/control.mjs in its execution plan, which the plan-refutation suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-193 names scripts/test-runner.mjs in its execution plan, which the sync-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-193 names scripts/lib/terms.mjs and 4 more in its execution plan, which the harness-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-193 names scripts/refute-plan.mjs and 2 more in its execution plan, which the process-debt suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-207 names scripts/test-runner.mjs and 2 more in its execution plan, which the sync-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-207 names scripts/lib/harness.mjs in its execution plan, which the harness-context suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-207 names scripts/lib/gate-reuse.mjs in its execution plan, which the plan-refutation suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-207 names scripts/lib/paths.mjs and 2 more in its execution plan, which the process-debt suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-244 names docs/KIT.md in its execution plan, which the sync-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-244 names scripts/refute-plan.mjs and 2 more in its execution plan, which the launchpad-planning suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-244 names packages/skeleton/src/harness-host.ts and 1 more in its execution plan, which the runner-fixtures suite's declared sources hold; its Preflight field does not name that suite",
+    "preflight advisory: WO-244 names packages/skeleton/src/harness-host.ts and 1 more in its execution plan, which the process-debt suite's declared sources hold; its Preflight field does not name that suite"
+  ]
+}

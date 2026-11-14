@@ -1,0 +1,129 @@
+{
+  "note": "The hooks the harness fixture's own settings register, started as a host starts them (one process for each registration whose matcher admits the tool) for a read, a search, a shell command, an edit and a write, each ten times. wallMs is the process's wall time as the case measured it; timingMs is the hook's own timing row in the session journal, which a hook that writes none leaves empty. Milliseconds.",
+  "node": "v26.9.0",
+  "calls": 50,
+  "processes": 210,
+  "wallMs": 25709,
+  "byTool": {
+    "Read": {
+      "calls": 10,
+      "processesACall": 3,
+      "wallMsACallMedian": 298
+    },
+    "Grep": {
+      "calls": 10,
+      "processesACall": 3,
+      "wallMsACallMedian": 298
+    },
+    "Bash": {
+      "calls": 10,
+      "processesACall": 5,
+      "wallMsACallMedian": 648
+    },
+    "Edit": {
+      "calls": 10,
+      "processesACall": 5,
+      "wallMsACallMedian": 660
+    },
+    "Write": {
+      "calls": 10,
+      "processesACall": 5,
+      "wallMsACallMedian": 664
+    }
+  },
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "hook": "permissions",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5282,
+      "wallMsMedian": 108,
+      "timingRows": 50,
+      "timingMsMedian": 90
+    },
+    {
+      "event": "PreToolUse",
+      "hook": "write-observer",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5824,
+      "wallMsMedian": 125,
+      "timingRows": 50,
+      "timingMsMedian": 108
+    },
+    {
+      "event": "PostToolUse",
+      "hook": "read-observer",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5583,
+      "wallMsMedian": 118,
+      "timingRows": 50,
+      "timingMsMedian": 100
+    },
+    {
+      "event": "PreToolUse",
+      "hook": "concurrent-work-requires-worktrees",
+      "matcher": "^(?!(?:Agent|AskUserQuestion|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*)$)[\\s\\S]*$",
+      "tools": [
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 30,
+      "wallMsTotal": 5320,
+      "wallMsMedian": 177,
+      "timingRows": 30,
+      "timingMsMedian": 159
+    },
+    {
+      "event": "PreToolUse",
+      "hook": "no-attribution",
+      "matcher": "^(?!(?:Agent|AskUserQuestion|Edit|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|NotebookEdit|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|Write|apply_patch|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*)$)[\\s\\S]*$",
+      "tools": [
+        "Bash"
+      ],
+      "starts": 10,
+      "wallMsTotal": 1094,
+      "wallMsMedian": 110,
+      "timingRows": 10,
+      "timingMsMedian": 91
+    },
+    {
+      "event": "PostToolUse",
+      "hook": "no-lint-type-disables-as-fixes",
+      "matcher": "^(?!(?:Agent|AskUserQuestion|Bash|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|Monitor|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|exec_command|functions\\.exec|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*|write_stdin)$)[\\s\\S]*$",
+      "tools": [
+        "Edit",
+        "Write"
+      ],
+      "starts": 20,
+      "wallMsTotal": 2606,
+      "wallMsMedian": 130,
+      "timingRows": 20,
+      "timingMsMedian": 111
+    }
+  ]
+}

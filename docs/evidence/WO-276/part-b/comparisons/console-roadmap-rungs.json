@@ -1,0 +1,30 @@
+{
+  "comparison": "console-roadmap-rungs",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the roadmap at every committed revision and in the worktree: each pending application rung its level-two headings name",
+  "read": 158,
+  "equal": 155,
+  "differences": {
+    "same refusal, reworded: both readers refuse a roadmap revision whose first line is not the ladder title; the worktree's message names the expected title": 3
+  },
+  "examples": [
+    {
+      "input": "9a054f3ce3c6",
+      "named": "same refusal, reworded: both readers refuse a roadmap revision whose first line is not the ladder title; the worktree's message names the expected title",
+      "old": "threw: roadmap heading changed",
+      "new": "threw: expected a document titled \"Roadmap — application release ladder\""
+    },
+    {
+      "input": "2bd4e6099d77",
+      "named": "same refusal, reworded: both readers refuse a roadmap revision whose first line is not the ladder title; the worktree's message names the expected title",
+      "old": "threw: roadmap heading changed",
+      "new": "threw: expected a document titled \"Roadmap — application release ladder\""
+    },
+    {
+      "input": "6310344c3da3",
+      "named": "same refusal, reworded: both readers refuse a roadmap revision whose first line is not the ladder title; the worktree's message names the expected title",
+      "old": "threw: roadmap heading changed",
+      "new": "threw: expected a document titled \"Roadmap — application release ladder\""
+    }
+  ]
+}

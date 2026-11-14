@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-13T05:02:09.174Z",
+  "reads": "every work order under docs/work-orders: its header read from its lead and read from the whole document",
+  "orders": 269,
+  "characters": 5635485,
+  "headerFields": 2278,
+  "equal": 269,
+  "differing": [],
+  "readFromTheLeadAlone": 268,
+  "readFromTheWholeDocument": 1,
+  "milliseconds": {
+    "headerReader": 580,
+    "wholeDocument": 2056
+  }
+}

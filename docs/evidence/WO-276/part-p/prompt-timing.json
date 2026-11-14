@@ -1,0 +1,20 @@
+{
+  "note": "The session hook's timing rows at a prompt in one session, in milliseconds, split at the instant the hooks were reinstalled with Part P's code. No figure is declared in this checkout. The hook reads its session's journal whole at each call, so the journal's size at each group's first and last row is given: the later group read a larger journal.",
+  "split": "2026-11-12T14:59:56.000Z",
+  "before": {
+    "rows": 10,
+    "medianMs": 182,
+    "minMs": 153,
+    "maxMs": 1493,
+    "journalBytesAtFirstRow": 1003,
+    "journalBytesAtLastRow": 555052
+  },
+  "after": {
+    "rows": 6,
+    "medianMs": 207,
+    "minMs": 189,
+    "maxMs": 232,
+    "journalBytesAtFirstRow": 603912,
+    "journalBytesAtLastRow": 1050249
+  }
+}

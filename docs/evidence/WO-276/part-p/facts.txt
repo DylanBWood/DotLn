@@ -1,0 +1,10 @@
+Below the figure:
+Day's use (2026-11-12, local calendar day): 1500000 tokens of a daily figure of 2000000 tokens.
+
+At or above it:
+Day's use (2026-11-12, local calendar day): 1500000 tokens of a daily figure of 1500000 tokens. The daily figure is reached: finish the step in hand, write the standing and end the turn. This is advisory and refuses nothing.
+
+A dollar figure and a model with no declared price:
+Day's use (2026-11-12, local calendar day): 1500000 tokens, estimate unknown (no price declared for model-c) against a daily figure of $50.00.
+
+No figure declared: no line is added to the facts.

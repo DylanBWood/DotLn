@@ -1,0 +1,37 @@
+# The lines Part L adds to a target order's briefing, in the target fixture (scripts/lib/target-worktree-fixture.mjs) with a profile, two area notes and a workstream the order declares. The first line of each is cut after its first sentence.
+
+## Criterion L3: the execution briefing (resume next)
+Repo-native authority includes <fixture>/Targets/target-wo999/docs and the registered profile <instance>/records/repositories/target.md. […]
+Area notes of target, each with the paths it covers, the commit it was written at and the commits on main in the registered clone that touched those paths since:
+- <instance>/records/repositories/target/area-01.md: paths "area-01/", "source.txt"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+- <instance>/records/repositories/target/billing.md: paths "billing/"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+This order is a member of workstream WS-001: <instance>/records/workstreams/WS-001-fixture.md, whose section Rules (line 3) holds the rules every member follows.
+
+## Criterion L3: the verification briefing (resume verify)
+Repo-native authority includes <fixture>/Targets/target-wo999/docs and the registered profile <instance>/records/repositories/target.md. […]
+Area notes of target, each with the paths it covers, the commit it was written at and the commits on main in the registered clone that touched those paths since:
+- <instance>/records/repositories/target/area-01.md: paths "area-01/", "source.txt"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+- <instance>/records/repositories/target/billing.md: paths "billing/"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+This order is a member of workstream WS-001: <instance>/records/workstreams/WS-001-fixture.md, whose section Rules (line 3) holds the rules every member follows.
+
+## Criterion L3: the final-review briefing (resume final-review)
+Repo-native authority includes <fixture>/Targets/target-wo999/docs and the registered profile <instance>/records/repositories/target.md. […]
+Area notes of target, each with the paths it covers, the commit it was written at and the commits on main in the registered clone that touched those paths since:
+- <instance>/records/repositories/target/area-01.md: paths "area-01/", "source.txt"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+- <instance>/records/repositories/target/billing.md: paths "billing/"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+This order is a member of workstream WS-001: <instance>/records/workstreams/WS-001-fixture.md, whose section Rules (line 3) holds the rules every member follows.
+
+## Criterion L4: after two commits in the registered clone touch billing/
+Repo-native authority includes <fixture>/Targets/target-wo999/docs and the registered profile <instance>/records/repositories/target.md. […]
+Area notes of target, each with the paths it covers, the commit it was written at and the commits on main in the registered clone that touched those paths since:
+- <instance>/records/repositories/target/area-01.md: paths "area-01/", "source.txt"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+- <instance>/records/repositories/target/billing.md: paths "billing/"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 2
+This order is a member of workstream WS-001: <instance>/records/workstreams/WS-001-fixture.md, whose section Rules (line 3) holds the rules every member follows.
+
+## Criterion L4: with a note written at a commit the clone does not hold
+Repo-native authority includes <fixture>/Targets/target-wo999/docs and the registered profile <instance>/records/repositories/target.md. […]
+Area notes of target, each with the paths it covers, the commit it was written at and the commits on main in the registered clone that touched those paths since:
+- <instance>/records/repositories/target/absent.md: paths "absent/"; commit ffffffffffffffffffffffffffffffffffffffff; commits since: unknown
+- <instance>/records/repositories/target/area-01.md: paths "area-01/", "source.txt"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 0
+- <instance>/records/repositories/target/billing.md: paths "billing/"; commit 07399f593ab2464f259189fa1f5fbc289fadefeb; commits since: 2
+This order is a member of workstream WS-001: <instance>/records/workstreams/WS-001-fixture.md, whose section Rules (line 3) holds the rules every member follows.

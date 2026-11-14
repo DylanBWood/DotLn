@@ -1,0 +1,32 @@
+{
+  "comparison": "markdown-links",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every Markdown document under docs/, the root documents and the kit templates: its links and its code spans",
+  "read": 2429,
+  "equal": 2426,
+  "differences": {
+    "defect of the old reader: the carried parser's math extension read the text from one dollar figure to the next on line 129 (from the first $60 to the dollar sign of the second) as one inline-math span, and the code span `pricedUsd: 0` written inside it was not read; the worktree's parse forms no math span, and the paragraph's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)": 1,
+    "defect of the old reader: in the shell command quoted on line 25, the math extension read the text between two dollar signs of its substitutions as inline math, and the first such span took a backtick into it, so the backticks after it were paired wrongly and the line's code spans were not the ones written; the worktree's parse forms no math span, and the line's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)": 1,
+    "defect of the old reader: in the two reproduction commands (lines 11 and 19), the math extension read the text between two dollar signs of the commands' substitutions as inline math, and three of those spans took backticks into them, so the later backticks were paired wrongly and one code span ran from line 11 to line 13 over the operator's disposition, which is prose; the worktree's parse forms no math span, and each paragraph's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)": 1
+  },
+  "examples": [
+    {
+      "input": "docs/verifications/WO-276/VER-002.md",
+      "named": "defect of the old reader: the carried parser's math extension read the text from one dollar figure to the next on line 129 (from the first $60 to the dollar sign of the second) as one inline-math span, and the code span `pricedUsd: 0` written inside it was not read; the worktree's parse forms no math span, and the paragraph's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)",
+      "old": "[[{\"href\":\"../../evidence/WO-276/verifier-002/worker-census.json\",\"line\":13},{\"href\":\"../../evidence/WO-276/verifier-002/repair-diff.json\",\"line\":17},{\"href\":\"../../evidence/WO-276/verifier-002/repair-comparison.json\",\"line\":19},{\"href\":\"../../evidence/WO-276/verifier-002/independent-probes.mjs\",\"line\":21},{\"href\":\"../../evidence/WO-276/verifier-002/independent-probes.json\",\"line\":21},{\"href\":\"../",
+      "new": "[[{\"href\":\"../../evidence/WO-276/verifier-002/worker-census.json\",\"line\":13},{\"href\":\"../../evidence/WO-276/verifier-002/repair-diff.json\",\"line\":17},{\"href\":\"../../evidence/WO-276/verifier-002/repair-comparison.json\",\"line\":19},{\"href\":\"../../evidence/WO-276/verifier-002/independent-probes.mjs\",\"line\":21},{\"href\":\"../../evidence/WO-276/verifier-002/independent-probes.json\",\"line\":21},{\"href\":\"../"
+    },
+    {
+      "input": "docs/instance/entropy-reducer/runs/REVIEW-005.md",
+      "named": "defect of the old reader: in the shell command quoted on line 25, the math extension read the text between two dollar signs of its substitutions as inline math, and the first such span took a backtick into it, so the backticks after it were paired wrongly and the line's code spans were not the ones written; the worktree's parse forms no math span, and the line's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)",
+      "old": "[[],[{\"value\":\"b0e11b0da2a743dde63cb8d5da5d73ef6d02628e\",\"line\":3},{\"value\":\"880df716e553ecb8eecf715c5b9bd4b17a5f8cb562576326215256b7754cbeb4\",\"line\":3},{\"value\":\"claude-opus-5-5\",\"line\":5},{\"value\":\"xhigh\",\"line\":5},{\"value\":\"claude-code\",\"line\":5},{\"value\":\"launched\",\"line\":5},{\"value\":\"claude-cli-print\",\"line\":5},{\"value\":\"command-line-readback-and-invocation\",\"line\":5},{\"value\":\"ep_entropy_880",
+      "new": "[[],[{\"value\":\"b0e11b0da2a743dde63cb8d5da5d73ef6d02628e\",\"line\":3},{\"value\":\"880df716e553ecb8eecf715c5b9bd4b17a5f8cb562576326215256b7754cbeb4\",\"line\":3},{\"value\":\"claude-opus-5-5\",\"line\":5},{\"value\":\"xhigh\",\"line\":5},{\"value\":\"claude-code\",\"line\":5},{\"value\":\"launched\",\"line\":5},{\"value\":\"claude-cli-print\",\"line\":5},{\"value\":\"command-line-readback-and-invocation\",\"line\":5},{\"value\":\"ep_entropy_880"
+    },
+    {
+      "input": "docs/planning/entropy-reviews/REVIEW-005.md",
+      "named": "defect of the old reader: in the two reproduction commands (lines 11 and 19), the math extension read the text between two dollar signs of the commands' substitutions as inline math, and three of those spans took backticks into them, so the later backticks were paired wrongly and one code span ran from line 11 to line 13 over the operator's disposition, which is prose; the worktree's parse forms no math span, and each paragraph's code spans are the ones CommonMark's backtick rule gives (WO-276-D178)",
+      "old": "[[],[{\"value\":\"npm run entropy -- dispose\",\"line\":3},{\"value\":\"npm run meta\",\"line\":3},{\"value\":\"packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_LIMITS); packages/skeleton/src/worker-transport.ts (runner deadline); scripts/lib/planning-conditions.mjs (CONDITION_TABLE)\",\"line\":8},{\"value\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && node -e 'const fs=require(\\\"fs\\\");const src=fs.rea",
+      "new": "[[],[{\"value\":\"npm run entropy -- dispose\",\"line\":3},{\"value\":\"npm run meta\",\"line\":3},{\"value\":\"packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_LIMITS); packages/skeleton/src/worker-transport.ts (runner deadline); scripts/lib/planning-conditions.mjs (CONDITION_TABLE)\",\"line\":8},{\"value\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && node -e 'const fs=require(\\\"fs\\\");const src=fs.rea"
+    }
+  ]
+}

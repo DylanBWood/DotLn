@@ -1,0 +1,61 @@
+{
+  "what": "The review workers FINAL-002 launched, each the instance table's default on Claude as npm run worker -- show default printed it (the generated dotln-worker definition, which holds claude-opus-5-5 at xhigh: requested values). Each worker said its host named its model as claude-opus-5-5 and gave no effort, but for one whose host named neither. Tokens, tool uses and durations are the host's completion notices; whether the session's own total holds any of them was not read. Six of the dispatch's twenty uses; none was re-tasked. Each read only what its brief named, wrote only to session scratch and started no gate. Their reports, briefs and probes are in the ignored local lane under docs/control/local/reviews/WO-276/final-review-002/.",
+  "launchedAt": "2026-11-14T18:10:05Z",
+  "workers": [
+    {
+      "name": "R1",
+      "scope": "the Markdown-reader part of the repair made since FINAL-001: the neutral copy, the criteria list's refusal and each of its consumers, and the cases added",
+      "givenTheReviewersConclusion": false,
+      "tokens": 285506,
+      "toolUses": 111,
+      "duration": "0 h 30 min",
+      "result": "nothing blocking; five follow-ups"
+    },
+    {
+      "name": "R2",
+      "scope": "the resident and console part of the repair: the store's transaction, the new failure codes, the host's refusal of an option it does not read, and the cases added",
+      "givenTheReviewersConclusion": false,
+      "tokens": 241098,
+      "toolUses": 126,
+      "duration": "0 h 18 min",
+      "result": "nothing blocking; three follow-ups"
+    },
+    {
+      "name": "R3",
+      "scope": "the close, terms-screen and update part of the repair, and each hunk of the standing documents the repair edited",
+      "givenTheReviewersConclusion": false,
+      "tokens": 222952,
+      "toolUses": 95,
+      "duration": "0 h 21 min",
+      "result": "two findings proposed as blocking, which the reviewer ran again and routed as follow-ups; two more follow-ups; every document hunk a replacement but one sentence"
+    },
+    {
+      "name": "S1",
+      "scope": "the block-opener class over the readers of a work order and of a lifecycle report",
+      "givenTheReviewersConclusion": "the class and the header case, as the lead to measure",
+      "tokens": 278928,
+      "toolUses": 119,
+      "duration": "0 h 21 min",
+      "result": "the class reaches a criterion's text, the report's criterion lines and four header fields with a lifecycle consequence"
+    },
+    {
+      "name": "S2",
+      "scope": "the block-opener class over the planning readers and the decisions reader",
+      "givenTheReviewersConclusion": "the class and the header case, as the lead to measure",
+      "tokens": 256328,
+      "toolUses": 103,
+      "duration": "0 h 17 min",
+      "result": "the class reaches the decisions reader, the follow-up candidates and five more planning readers"
+    },
+    {
+      "name": "S3",
+      "scope": "the block-opener class over the release, publication and kit-document readers",
+      "givenTheReviewersConclusion": "the class and the header case, as the lead to measure",
+      "tokens": 316824,
+      "toolUses": 134,
+      "duration": "0 h 24 min",
+      "result": "the class reaches the Objective a release publishes, the pull-request body checks, the decisions' sections and four more readers"
+    }
+  ],
+  "tokensInAll": 1601636
+}

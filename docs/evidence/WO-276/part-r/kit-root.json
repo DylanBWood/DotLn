@@ -1,0 +1,30 @@
+{
+  "note": "Each value is what the function gives in the root. The effort exemption, the two one-time continuations, the index card's delivery line and the ledger duty need a lifecycle or a planning fixture: their kit-root cases are in scripts/test-resume.sh, scripts/test-plan-refutation.mjs and scripts/test-work-orders.mjs (WO-276 criterion R1).",
+  "coreRoot": {
+    "isCoreRoot": true,
+    "receiptPageNamesCoresOrder": true,
+    "releaseNoteContractSwitchedByWO024": true,
+    "feedbackEditionWO011Revision002": {
+      "refused": "Invalid current-evidence edition: feedback"
+    },
+    "feedbackEditionWO011NoRevision": "docs/evidence/WO-011",
+    "refuterKnownFacts": [
+      "Only the compiled subject is visible",
+      "WO-041's own verdict is advisory"
+    ],
+    "persistedCorrectionIdsReadFromWO172": [
+      "WO-804-D001"
+    ]
+  },
+  "kitRoot": {
+    "isCoreRoot": false,
+    "receiptPageNamesCoresOrder": false,
+    "releaseNoteContractSwitchedByWO024": false,
+    "feedbackEditionWO011Revision002": "docs/evidence/WO-011/feedback-002",
+    "feedbackEditionWO011NoRevision": "docs/evidence/WO-011/feedback",
+    "refuterKnownFacts": [
+      "Only the compiled subject is visible"
+    ],
+    "persistedCorrectionIdsReadFromWO172": []
+  }
+}
