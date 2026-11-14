@@ -1,6 +1,13 @@
-import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { join, posix } from "node:path";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, join, posix } from "node:path";
 import { docPath, docRelative } from "./config.mjs";
+import { markdownTables, opensHtmlComment } from "./markdown-links.mjs";
 import {
   containedRegularFile,
   parseJson,
@@ -8,6 +15,7 @@ import {
 } from "./paths.mjs";
 import { localReleaseRecords, localTags, semver } from "./release-records.mjs";
 import { releaseAnnotations, releaseTagsFrom } from "./release-tags.mjs";
+import { readWorkOrderTitle } from "./work-order-document.mjs";
 
 // The one generated product block (WO-086): the roadmap's release history,
 // rendered from local annotated tags joined to the orders their manifests
@@ -19,26 +27,35 @@ export const RELEASE_HISTORY = Object.freeze({
 });
 export const historyStart = `<!-- ${RELEASE_HISTORY.marker}:start -->`;
 export const historyEnd = `<!-- ${RELEASE_HISTORY.marker}:end -->`;
-const snapshotPrefix = "<!-- dotln-release-tags: ";
+// The tags a rendered block was generated from are a record of their own, a
+// generated JSON file beside the other control projections: the docs check
+// reads them there, never back out of the page it judges.
+export const releaseHistoryRecord = (root) =>
+  docRelative(root, "control", "release-history.json");
 export const historyCommand = "npm run release -- list --markdown --write";
 // A marker or a lookalike is a comment line naming the marker; the same name
 // in a table cell or prose (an order's display text) is neither.
 export const markerLine = (line) =>
-  /^\s*<!--/.test(line) && line.includes(`${RELEASE_HISTORY.marker}:`);
+  opensHtmlComment(line) && line.includes(`${RELEASE_HISTORY.marker}:`);
 
 // The manifest-free v0.2.0 edition keeps its components in its reviewed
-// record, the file its order join reads (release-tags.mjs).
+// record, the file its order join reads (release-tags.mjs): the table rows
+// of two cells whose first names a component package in code and whose
+// second holds its version in code.
 const historicalComponents = (root, name) => {
   const path = docPath(root, "releases", `${name}.md`);
-  return existsSync(path)
-    ? Object.fromEntries(
-        [
-          ...readFileSync(path, "utf8").matchAll(
-            /^\| Component: `(@dotln\/[^`]+)` \| `([^`]+)` \|$/gm,
-          ),
-        ].map(([, component, version]) => [component, version]),
-      )
-    : {};
+  if (!existsSync(path)) return {};
+  return Object.fromEntries(
+    markdownTables(readFileSync(path, "utf8")).flatMap((table) =>
+      table.rows.slice(1).flatMap(({ cells }) => {
+        const component = /^Component: `(@dotln\/[^`]+)`$/u.exec(cells[0])?.[1];
+        const version = /^`([^`]+)`$/u.exec(cells[1] ?? "")?.[1];
+        return cells.length === 2 && component && version
+          ? [[component, version]]
+          : [];
+      }),
+    ),
+  );
 };
 
 // The same escaping as the work-order index's table cells.
@@ -55,13 +72,10 @@ const cell = (value) =>
     .replace(/\s+/g, " ")
     .trim();
 
-// The heading supplies display text only: its name before the first colon
-// outside code, without the id or the version the tag already shows.
-export const displayTitle = (heading, id) => {
-  let text = heading
-    .replace(/^#\s+/, "")
-    .replace(/[ \t]+#+[ \t]*$/, "")
-    .trim();
+// The order's title supplies display text only: its name before the first
+// colon outside code, without the id or the version the tag already shows.
+export const displayTitle = (title, id) => {
+  let text = title.trim();
   if (text.startsWith(`${id} — `)) text = text.slice(id.length + 3);
   // Headings carry their target as "(vX.Y.Z)", ", vX.Y.Z" or " — vX.Y.Z".
   const version = "v(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)";
@@ -114,18 +128,26 @@ function orderLinks(root) {
     if (!path) return id;
     if (!titles.has(path)) {
       const file = join(root, path);
-      const heading = containedRegularFile(file, root)
-        ? readFileSync(file, "utf8").split("\n", 1)[0]
+      const title = containedRegularFile(file, root)
+        ? (readWorkOrderTitle(readFileSync(file, "utf8"))?.title ?? "")
         : "";
-      titles.set(path, cell(displayTitle(heading, id)));
+      titles.set(path, cell(displayTitle(title, id)));
     }
     const title = titles.get(path);
     return `[${id}](${posix.relative(product, path)})${title ? ` ${title}` : ""}`;
   };
 }
 
+/** The record of the tags `records` names, as release-history.json holds
+ * it. `table` is the newest of them the roadmap's table was rendered
+ * through, null where no table has been written: the index's refresh
+ * appends tags the table does not show yet, and the table's check compares
+ * it with exactly the tags it was rendered from. */
+export const renderReleaseRecord = (records, table = null, tableObjects = {}) =>
+  `${JSON.stringify({ schemaVersion: 1, tags: records.map(({ name, object }) => ({ name, object })), table, ...(Object.keys(tableObjects).length ? { tableObjects } : {}) }, null, 2)}\n`;
+
 /** The generated block for `records` (localReleaseRecords rows), newest
- * first, with the snapshot of the tags it was generated from. */
+ * first; the tags it was generated from are recorded in its JSON record. */
 export function renderReleaseHistory(root, records) {
   const link = orderLinks(root);
   const rows = [...records].reverse().map((record) => {
@@ -142,9 +164,7 @@ export function renderReleaseHistory(root, records) {
   return [
     historyStart,
     "",
-    `Generated by \`${historyCommand}\` from the local annotated release tags recorded below, newest first. Dates are the tags' UTC dates; the classification is each tag's step over the previous release its manifest names. The docs check refuses a row that differs from its recorded tag, names a recorded tag this checkout lacks and reports a newer tag without refusing.`,
-    "",
-    `${snapshotPrefix}${JSON.stringify(records.map(({ name, object }) => ({ name, object })))} -->`,
+    `Generated by \`${historyCommand}\` from the local annotated release tags recorded in \`${releaseHistoryRecord(root)}\`, newest first. Dates are the tags' UTC dates; the classification is each tag's step over the previous release its manifest names. The docs check refuses a row that differs from its recorded tag, names a recorded tag this checkout lacks and reports a newer tag without refusing.`,
     "",
     "| Version | Date | Order | Classification | Components |",
     "| --- | --- | --- | --- | --- |",
@@ -182,17 +202,35 @@ export function historyBlock(source, displayPath) {
   };
 }
 
-function readSnapshot(block, displayPath) {
-  const records = block.lines.filter((line) => line.startsWith(snapshotPrefix));
-  if (records.length !== 1 || !records[0].endsWith(" -->"))
+/** The release tags the generated pages were rendered from, as the record
+ * holds them. A missing or unreadable record refuses naming `command`, the
+ * command of the page being judged (`what`), which writes it. */
+export const readReleaseRecord = (root, displayPath, command, what) =>
+  readRecord(root, displayPath, command, what).tags;
+
+/** The record whole: its tags and the tag its table was rendered through.
+ * A record written before the table's tag was kept has none, which reads
+ * as its newest tag: the table and the record were written together then. */
+function readRecord(
+  root,
+  displayPath,
+  command = historyCommand,
+  what = "the generated release history",
+) {
+  const path = releaseHistoryRecord(root);
+  if (!containedRegularFile(join(root, path), root))
     throw new Error(
-      `${displayPath}: the generated release history needs one release tag snapshot; run ${historyCommand}`,
+      `${displayPath}: ${what} needs its tag record ${path}; run ${command}`,
     );
-  const snapshot = parseJson(
-    records[0].slice(snapshotPrefix.length, -4),
-    `${displayPath} release tag snapshot`,
-  );
+  let record;
+  try {
+    record = JSON.parse(readFileSync(join(root, path), "utf8"));
+  } catch {
+    record = undefined;
+  }
+  const snapshot = record?.tags;
   if (
+    record?.schemaVersion !== 1 ||
     !Array.isArray(snapshot) ||
     snapshot.some(
       (tag) =>
@@ -202,22 +240,117 @@ function readSnapshot(block, displayPath) {
         !semver(tag.name) ||
         !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(tag.object),
     ) ||
-    new Set(snapshot.map(({ name }) => name)).size !== snapshot.length
+    new Set(snapshot.map(({ name }) => name)).size !== snapshot.length ||
+    (record.table !== undefined &&
+      record.table !== null &&
+      !snapshot.some(({ name }) => name === record.table)) ||
+    (record.tableObjects !== undefined &&
+      (!record.tableObjects ||
+        typeof record.tableObjects !== "object" ||
+        Array.isArray(record.tableObjects) ||
+        Object.entries(record.tableObjects).some(
+          ([name, object]) =>
+            !snapshot.some((tag) => tag.name === name) ||
+            typeof object !== "string" ||
+            !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(object),
+        )))
   )
-    throw new Error(`${displayPath}: invalid release tag snapshot`);
-  return snapshot;
+    throw new Error(`${path}: invalid release tag record; run ${command}`);
+  return {
+    tags: snapshot,
+    table:
+      record.table === undefined
+        ? (snapshot.at(-1)?.name ?? null)
+        : record.table,
+    // The object the table was rendered from, for each tag replaced since.
+    tableObjects: record.tableObjects ?? {},
+  };
+}
+
+/** Writes the record of the tags `records` names: the one writer, which the
+ * roadmap's block and the work-order index both call when they render. It
+ * holds what was observed outside this repository's files, a tag's name and
+ * object, and through which of them the roadmap's table was rendered. The
+ * table's writer passes `table`; the index's refresh passes none and the
+ * record keeps the tag it held, while that tag is still among `records`.
+ * True when the bytes changed. */
+export function writeReleaseRecord(root, records, { table } = {}) {
+  const display = releaseHistoryRecord(root);
+  const path = join(root, display);
+  if (existsSync(path) && !containedRegularFile(path, root))
+    throw new Error(`${display}: expected a contained regular file`);
+  // A tag the table was rendered through and that was replaced since keeps,
+  // for the table, the object it was rendered from: the index's refresh
+  // takes the new object for its own pages, and the table's check names the
+  // replaced tag until the table's writer renders it again.
+  let tableObjects = {};
+  if (table === undefined) {
+    try {
+      const held = readRecord(root, display);
+      table = held.table;
+      const through = held.tags.findIndex(({ name }) => name === table);
+      for (const tag of held.tags.slice(0, through + 1)) {
+        const rendered = held.tableObjects[tag.name] ?? tag.object;
+        const observed = records.find(({ name }) => name === tag.name);
+        if (observed && observed.object !== rendered)
+          tableObjects[tag.name] = rendered;
+      }
+    } catch {
+      // No record, or one nothing can be read from, to keep a boundary
+      // from. Where the committed table equals the rendering of every tag
+      // it was rendered through the newest; otherwise none is known, and
+      // the table's own writer sets one.
+      table = tableIsCurrent(root, records)
+        ? (records.at(-1)?.name ?? null)
+        : null;
+    }
+    if (!records.some(({ name }) => name === table)) table = null;
+  }
+  if (table === null) tableObjects = {};
+  const next = renderReleaseRecord(records, table, tableObjects);
+  if (existsSync(path) && readFileSync(path, "utf8") === next) return false;
+  mkdirSync(dirname(path), { recursive: true });
+  const temporary = `${path}.${process.pid}.tmp`;
+  writeFileSync(temporary, next, { flag: "wx" });
+  renameSync(temporary, path);
+  return true;
+}
+
+/** Whether the product document's committed table is the rendering of
+ * exactly `records`: the same comparison the check makes, line for line. */
+function tableIsCurrent(root, records) {
+  const path = docPath(root, "product", RELEASE_HISTORY.product);
+  if (!containedRegularFile(path, root)) return false;
+  try {
+    const block = historyBlock(
+      readFileSync(path, "utf8"),
+      RELEASE_HISTORY.product,
+    );
+    const expected = renderReleaseHistory(root, records).split("\n");
+    return (
+      Boolean(block) &&
+      block.lines.length === expected.length &&
+      expected.every((line, index) => line === block.lines[index])
+    );
+  } catch {
+    return false;
+  }
 }
 
 const missingBlock = (displayPath) =>
   `${displayPath}: no generated release history block; add the ${historyStart} and ${historyEnd} lines where the table belongs, then run ${historyCommand}`;
 
 /** The index's rule for the committed table: each recorded tag must remain
- * available and unchanged, the rows must equal those tags' rows, and a
- * newer local release tag is reported without refusing. A document whose
- * block is gone fails; so does a local release tag whose annotation cannot be
- * read, which is reported rather than thrown. */
+ * available and unchanged, the rows must equal the rows of the tags the
+ * table was rendered through, and a newer release tag is reported without
+ * refusing. The record is shared with the work-order index, whose refresh
+ * appends the tags that arrived since the table was written and leaves this
+ * document alone: the record names the tag the table was rendered through,
+ * and the tags after it are newer tags too. A document whose block is gone
+ * fails; so does a local release tag whose annotation cannot be read, which
+ * is reported rather than thrown. */
 export function checkReleaseHistory(root, source, displayPath) {
-  let block, records, snapshot;
+  let block, records, snapshot, table;
   try {
     block = historyBlock(source, displayPath);
     if (!block)
@@ -226,8 +359,17 @@ export function checkReleaseHistory(root, source, displayPath) {
         failures: [missingBlock(displayPath)],
         newer: [],
       };
-    snapshot = readSnapshot(block, displayPath);
-    records = localReleaseRecords(root, snapshot);
+    let tableObjects;
+    ({ tags: snapshot, table, tableObjects } = readRecord(root, displayPath));
+    // The table's own observation of each tag: the object it was rendered
+    // from, where the tag has been replaced since.
+    records = localReleaseRecords(
+      root,
+      snapshot.map((tag) => ({
+        name: tag.name,
+        object: tableObjects[tag.name] ?? tag.object,
+      })),
+    );
   } catch (error) {
     return {
       present: Boolean(block),
@@ -236,7 +378,12 @@ export function checkReleaseHistory(root, source, displayPath) {
     };
   }
   const failures = [];
-  const expected = renderReleaseHistory(root, records).split("\n");
+  // The table was rendered through `table`: the recorded tags after it
+  // arrived since and have no row yet.
+  const through = records.findIndex(({ name }) => name === table) + 1;
+  const expected = renderReleaseHistory(root, records.slice(0, through)).split(
+    "\n",
+  );
   const differs = expected.findIndex(
     (line, index) => line !== block.lines[index],
   );
@@ -252,10 +399,13 @@ export function checkReleaseHistory(root, source, displayPath) {
   );
   let newer = [];
   try {
-    newer = releaseTagsFrom(
-      candidates,
-      releaseAnnotations(root, candidates),
-    ).map(({ name }) => name);
+    newer = [
+      // Recorded since the table was written, oldest first.
+      ...records.slice(through).map(({ name }) => name),
+      ...releaseTagsFrom(candidates, releaseAnnotations(root, candidates)).map(
+        ({ name }) => name,
+      ),
+    ];
   } catch (error) {
     failures.push(
       `${displayPath}: a local release tag's annotation cannot be read (${error instanceof Error ? error.message : String(error)}); repair or delete the tag`,
@@ -264,9 +414,12 @@ export function checkReleaseHistory(root, source, displayPath) {
   return { present: true, failures, newer };
 }
 
-/** Replaces the committed block with one generated from every local release
- * tag; the product document must already hold the marker pair. */
-export function writeReleaseHistory(root) {
+/** Replaces the committed block with one generated from `records`, every
+ * local release tag unless the caller has read them; the product document
+ * must already hold the marker pair. `record` says whether the tag record
+ * changed, which the caller answers by rendering the other pages the record
+ * serves. */
+export function writeReleaseHistory(root, records = localReleaseRecords(root)) {
   const path = docPath(root, "product", RELEASE_HISTORY.product);
   const displayPath = docRelative(root, "product", RELEASE_HISTORY.product);
   if (!containedRegularFile(path, root))
@@ -274,18 +427,27 @@ export function writeReleaseHistory(root) {
   const source = readFileSync(path, "utf8");
   const block = historyBlock(source, displayPath);
   if (!block) throw new Error(missingBlock(displayPath));
-  const records = localReleaseRecords(root);
   const lines = source.split("\n");
   lines.splice(
     block.first,
     block.last - block.first + 1,
     renderReleaseHistory(root, records),
   );
-  const next = lines.join("\n");
-  if (next !== source) {
-    const temporary = `${path}.${process.pid}.tmp`;
+  const replace = (file, before, next) => {
+    if (next === before) return false;
+    const temporary = `${file}.${process.pid}.tmp`;
     writeFileSync(temporary, next, { flag: "wx" });
-    renameSync(temporary, path);
-  }
-  return { path: displayPath, tags: records.length, changed: next !== source };
+    renameSync(temporary, file);
+    return true;
+  };
+  const page = replace(path, source, lines.join("\n"));
+  const record = writeReleaseRecord(root, records, {
+    table: records.at(-1)?.name ?? null,
+  });
+  return {
+    path: displayPath,
+    tags: records.length,
+    changed: page || record,
+    record,
+  };
 }

@@ -22,6 +22,9 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/loadouts/feedback.ts",
   "packages/skeleton/src/feedback-boundary.ts",
   "packages/skeleton/src/feedback-source-comments.ts",
+  // The comments the boundary judges are read by the source reader this
+  // module delegates to, so a change there changes the audited behavior.
+  "packages/skeleton/src/source-reading.mjs",
   "packages/skeleton/src/feedback-audit.ts",
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/duration.mjs",
@@ -197,6 +200,15 @@ export function feedbackContextAccounting(
       "Counterfactual instruction projection, not effective-session tokens or total workflow cost. Verifier source/evidence context and tool schemas are outside this matched comparison.",
   };
 }
+/** A top-level test's TAP result line, `ok N - name` or `not ok N - name`:
+ * whether it passed and the test's name, or `null` for any other line. The
+ * name is compared as text, so a test name is never read as a pattern. */
+const tapResult = (
+  line: string,
+): { readonly ok: boolean; readonly name: string } | null => {
+  const match = /^(not )?ok \d+ - (.*)$/u.exec(line);
+  return match ? { ok: match[1] === undefined, name: match[2]! } : null;
+};
 export function runFeedbackRegressions(
   root: string,
   program: CompiledFeedback,
@@ -229,13 +241,18 @@ export function runFeedbackRegressions(
     if (result.error || result.signal)
       throw new Error("feedback regression subprocess unavailable");
     const output = result.stdout;
+    const lines = output.split("\n");
     const passed = Number(output.match(/^# pass (\d+)$/mu)?.[1] ?? -1);
     const failed = Number(output.match(/^# fail (\d+)$/mu)?.[1] ?? -1);
+    // The removed mechanism must fail this fixture by name, on an assertion.
     const expected = removed
       ? result.status === 1 &&
         passed === 0 &&
         failed === 1 &&
-        output.includes(`- ${name}`) &&
+        lines.some((line) => {
+          const row = tapResult(line);
+          return row !== null && !row.ok && row.name === name;
+        }) &&
         /code: 'ERR_ASSERTION'/u.test(output)
       : result.status === 0 && passed === 1 && failed === 0;
     if (!expected)
@@ -248,14 +265,12 @@ export function runFeedbackRegressions(
       exitCode: result.status,
       passed,
       failed,
-      captured: output
-        .split("\n")
-        .filter(
-          (line) =>
-            new RegExp(`^(?:not )?ok \\d+ - ${name}$`, "u").test(line) ||
-            /^\s+(?:code: 'ERR_ASSERTION'|operator: )/u.test(line) ||
-            /^# (?:pass|fail) /u.test(line),
-        ),
+      captured: lines.filter(
+        (line) =>
+          tapResult(line)?.name === name ||
+          /^\s+(?:code: 'ERR_ASSERTION'|operator: )/u.test(line) ||
+          /^# (?:pass|fail) /u.test(line),
+      ),
     };
   };
   const fixtures = program.units.map((unit) => ({

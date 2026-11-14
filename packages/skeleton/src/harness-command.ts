@@ -4,18 +4,45 @@ import {
   desktopControlSkills,
   desktopControlToolPrefixes,
 } from "@dotln/compiler";
+import {
+  DYNAMIC_SHELL_SUBSTITUTION,
+  HarnessCommandRefused,
+  READ_LIMIT,
+  SHELL_CONTROL_SYNTAX,
+  ShellReadingLimit,
+  readCommands,
+  readShellCommand,
+  readShellText,
+  shellPrograms,
+  shellWords as readShellWords,
+  writtenText,
+} from "./shell-reading.mjs";
+import { corepackManager } from "./test-selection.mjs";
+import type {
+  ReadHeredoc,
+  ReadWord,
+  ShellInvocation,
+  ShellReading,
+  ShellWord,
+} from "./shell-reading.mjs";
 
-/** Classification could not establish an effect; generated hooks advise the host. */
-export class HarnessCommandRefused extends Error {}
+// The shell reader lives in ./shell-reading.mjs, which scripts import with
+// no build: the whole-text reading and the classifier's own word reader.
+// This module judges what they read and keeps the names its importers know.
+export {
+  DYNAMIC_SHELL_SUBSTITUTION,
+  HarnessCommandRefused,
+  SHELL_CONTROL_SYNTAX,
+  readShellText,
+  writtenText,
+};
+export type { ReadHeredoc, ReadWord, ShellReading };
+const asWritten = writtenText;
 
 /** The three shell forms the classifier leaves to the host's permissions on
  * nearly every compound call: control syntax, a dynamic substitution and a
  * working-directory override. Each names no refusal, so a hook journals it
  * and shows nothing; every other classification advisory is still shown. */
-export const SHELL_CONTROL_SYNTAX =
-  "Shell control syntax requires an explicit effect adapter";
-export const DYNAMIC_SHELL_SUBSTITUTION =
-  "Dynamic shell substitution requires an explicit effect adapter";
 export const SHELL_WORKING_DIRECTORY =
   "Shell working-directory override needs a separately reviewed host adapter";
 export const HOST_DECIDED_CLASSIFICATIONS: ReadonlySet<string> = new Set([
@@ -96,275 +123,17 @@ export function isDesktopControlTool(
   );
 }
 
-interface ShellWord {
-  readonly value: string;
-  readonly dynamic: boolean;
-  readonly quoted: boolean;
-  /** WO-158: an unquoted, unescaped `*?[]{}~` the shell may expand; WO-168
-   * adds zsh's `=` expansion. */
-  readonly expands?: boolean;
-  /** WO-168: an unquoted, unescaped `<` or `>` the shell reads as an operator. */
-  readonly redirects?: boolean;
-}
-interface ShellInvocation {
-  readonly words: ShellWord[];
-  readonly pipeline: readonly ShellInvocation[];
-  readonly stdin: string[];
-}
-const shellPrograms = new Set([
-  "bash",
-  "sh",
-  "zsh",
-  "dash",
-  "ksh",
-  "csh",
-  "tcsh",
-]);
 const literal = (value: string): ShellWord => ({
   value,
   dynamic: false,
   quoted: false,
 });
-const controlWords = new Set([
-  "if",
-  "then",
-  "elif",
-  "else",
-  "fi",
-  "while",
-  "until",
-  "do",
-  "done",
-  "!",
-]);
 
-/** Preserve expansion provenance until effect operands and message bytes have
- * been classified. Single-quoted and escaped dollars remain literal data.
- */
-function shellWords(source: string): ShellInvocation[] {
-  const lines = source.split("\n");
-  const commands: ShellInvocation[] = [];
-  let pipeline: ShellInvocation[] = [];
-  const groups: { start: number; input: ShellInvocation[]; close: string }[] =
-    [];
-  let completedGroup: ShellInvocation[] | undefined;
-  let current: ShellWord[] = [];
-  let word = "",
-    quote = "",
-    inWord = false,
-    dynamic = false,
-    quoted = false,
-    expands = false,
-    redirects = false,
-    equals = -1;
-  let heredocs: { delimiter: string; words: ShellWord[] }[] = [];
-  let needsDelimiter = false;
-  const flush = () => {
-    if (!inWord) return;
-    if (equals >= 0 && word.length > equals + 1) expands = true;
-    if (needsDelimiter) {
-      heredocs.push({ delimiter: word, words: current });
-      needsDelimiter = false;
-    } else if (!current.length && !quoted && controlWords.has(word)) {
-      // These reserved words introduce a command list, not an executable.
-    } else if (
-      !current.length &&
-      !quoted &&
-      /^(for|select|case|function)$/.test(word)
-    ) {
-      throw new HarnessCommandRefused(SHELL_CONTROL_SYNTAX);
-    } else current.push({ value: word, dynamic, quoted, expands, redirects });
-    word = "";
-    inWord = false;
-    dynamic = false;
-    quoted = false;
-    expands = false;
-    redirects = false;
-    equals = -1;
-  };
-  const finish = (piped = false) => {
-    flush();
-    if (!current.length) {
-      if (piped && completedGroup) {
-        pipeline = completedGroup;
-        completedGroup = undefined;
-      }
-      return;
-    }
-    const invocation = { words: current, pipeline, stdin: [] };
-    commands.push(invocation);
-    pipeline = piped ? [...pipeline, invocation] : [];
-    completedGroup = undefined;
-    current = [];
-  };
-  for (let row = 0; row < lines.length; row++) {
-    const line = lines[row]!;
-    let continued = false;
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i]!;
-      if (quote === "'") {
-        if (char === "'") quote = "";
-        else word += char;
-        continue;
-      }
-      if (char === "\\" && quote !== "'") {
-        if (i === line.length - 1) {
-          continued = true;
-          break;
-        }
-        inWord = true;
-        quoted = true;
-        // In double quotes, backslash is special only before these characters.
-        if (quote === '"' && !/[\$`"\\]/.test(line[i + 1]!)) word += "\\";
-        word += line[++i] ?? "";
-        continue;
-      }
-      if (char === "`" || (char === "$" && line[i + 1] === "("))
-        throw new HarnessCommandRefused(DYNAMIC_SHELL_SUBSTITUTION);
-      // zsh also expands `$=name`, `$^name`, `$~name` and `$+name`.
-      if (char === "$" && /[A-Za-z0-9_{$'"@*#?!=^~+-]/.test(line[i + 1] ?? ""))
-        dynamic = true;
-      if (quote === '"') {
-        if (char === '"') quote = "";
-        else word += char;
-        continue;
-      }
-      if (char === "'" || char === '"') {
-        quote = char;
-        inWord = true;
-        quoted = true;
-        continue;
-      }
-      if (char === "#" && !inWord) break;
-      // A shell's blanks are space and tab; lines are already split. Any other
-      // whitespace stays inside its word, where a `#` begins no comment.
-      if (char === " " || char === "\t") {
-        flush();
-        continue;
-      }
-      if (completedGroup && /[<>]/.test(char))
-        throw new HarnessCommandRefused(
-          "Redirected shell group requires an explicit effect adapter",
-        );
-      if ((char === "<" || char === ">") && line[i + 1] === "(")
-        throw new HarnessCommandRefused(
-          "Shell process substitution requires an explicit effect adapter",
-        );
-      if (char === "<" && line[i + 1] === "<") {
-        if (line[i + 2] === "<")
-          throw new HarnessCommandRefused(
-            "Shell here-string requires an explicit effect adapter",
-          );
-        flush();
-        i++;
-        if (line[i + 1] === "-") i++;
-        needsDelimiter = true;
-        continue;
-      }
-      // File-descriptor duplication is one redirection, never a command-list
-      // separator. Keep its token as data without losing the producer stage.
-      if (
-        ((char === ">" || char === "<") && line[i + 1] === "&") ||
-        (char === "&" && line[i + 1] === ">")
-      ) {
-        inWord = true;
-        redirects = true;
-        word += char + line[++i];
-        if (line[i] === ">" && line[i + 1] === ">") word += line[++i];
-        continue;
-      }
-      if (
-        char === ";" ||
-        char === "|" ||
-        char === "&" ||
-        char === "(" ||
-        char === ")" ||
-        (!inWord &&
-          !current.length &&
-          (char === "{" || char === "}") &&
-          (!line[i + 1] || /[\s;)]/.test(line[i + 1]!)))
-      ) {
-        if (char === "(" || char === "{") {
-          finish();
-          groups.push({
-            start: commands.length,
-            input: pipeline,
-            close: char === "(" ? ")" : "}",
-          });
-          completedGroup = undefined;
-          continue;
-        }
-        if (char === ")" || char === "}") {
-          finish();
-          const group = groups.pop();
-          if (!group || group.close !== char)
-            throw new HarnessCommandRefused("Unmatched shell group");
-          // Every command can contribute output, not just the group's last one.
-          completedGroup = [...group.input, ...commands.slice(group.start)];
-          pipeline = [];
-          continue;
-        }
-        const piped = char === "|" && line[i + 1] !== "|";
-        finish(piped);
-        if (!piped) {
-          pipeline = [];
-          completedGroup = undefined;
-        }
-        if (char === "|" && /[|&]/.test(line[i + 1] ?? "")) i++;
-        continue;
-      }
-      inWord = true;
-      if (/[*?\[\]{}~]/.test(char)) expands = true;
-      // zsh expands `=name` to a command path at the start of a word, even
-      // after empty quotes, and after `=` or `:` in an assignment value; a
-      // `=` with nothing after it stays literal (judged at flush).
-      if (char === "=" && equals < 0 && /(?:^|[=:])$/.test(word))
-        equals = word.length;
-      if (char === "<" || char === ">") redirects = true;
-      word += char;
-    }
-    if (continued) {
-      if (row === lines.length - 1)
-        throw new HarnessCommandRefused("Unclosed shell continuation");
-      continue;
-    }
-    if (quote) {
-      if (row === lines.length - 1)
-        throw new HarnessCommandRefused("Unclosed shell quotation");
-      word += "\n";
-      continue;
-    }
-    finish();
-    if (needsDelimiter)
-      throw new HarnessCommandRefused("Unclassified shell heredoc delimiter");
-    for (const { delimiter, words } of heredocs) {
-      const body: string[] = [];
-      while (
-        ++row < lines.length &&
-        lines[row]!.replace(/^\t+/, "") !== delimiter
-      )
-        body.push(lines[row]!);
-      if (row >= lines.length)
-        throw new HarnessCommandRefused("Unclosed shell heredoc");
-      commands
-        .find((command) => command.words === words)!
-        .stdin.push(body.join("\n"));
-      const own = invocationProgram(words)[0]?.value;
-      if (
-        !shellPrograms.has(own ?? "") &&
-        /\$\(|`/.test(body.join("\n")) &&
-        !line.includes(`'${delimiter}'`) &&
-        !line.includes(`"${delimiter}"`)
-      )
-        throw new HarnessCommandRefused(
-          "Dynamic heredoc requires an explicit effect adapter",
-        );
-    }
-    heredocs = [];
-  }
-  if (groups.length) throw new HarnessCommandRefused("Unclosed shell group");
-  return commands;
-}
+/** A command's words with their expansion provenance, as the shell module's
+ * word reader splits them; the program behind a wrapper is this module's to
+ * say. */
+const shellWords = (source: string): ShellInvocation[] =>
+  readShellWords(source, invocationProgram);
 
 /** Public token view for diagnostics; classification uses the provenance above. */
 export function shellInvocations(source: string): string[][] {
@@ -377,9 +146,16 @@ export interface WrittenCommand {
   readonly assignments: readonly string[];
   /** Its words as the line wrote them, a wrapper among them. */
   readonly words: readonly string[];
+  /** For each of its words, whether the shell expands a parameter in it or
+   * substitutes a command or arithmetic. */
+  readonly expanded: readonly boolean[];
+  /** Where its program's word starts in the text read. */
+  readonly start: number;
   /** The program behind any wrapper, named without its path, and its operands;
    * empty when a wrapper's options cannot be read. */
   readonly program: readonly string[];
+  /** The here-documents it reads, in order. */
+  readonly heredocs: readonly ReadHeredoc[];
 }
 
 /** Every command a line would run, read without refusing any form: control
@@ -387,31 +163,21 @@ export interface WrittenCommand {
  * so a program inside one is found, while quoted text stays its command's
  * argument. Text the shell substitutes stands as U+0000. Unlike the effect
  * classification this is for a judgment of one program's literal words; a line
- * too deep to read holds no commands. */
-export function writtenCommands(source: string): WrittenCommand[] {
-  let reading: ShellReading;
-  try {
-    reading = readShellCommand(source);
-  } catch (error) {
-    if (error instanceof ShellReadingLimit) return [];
-    throw error;
-  }
-  const rows: { assignments: string[]; words: string[] }[] = [];
-  const assignments = new Map<number, string[]>();
-  // A substitution inside a word advances the reading's command number, so
-  // the words after it are joined to their command by the scope they stand in.
-  const latest = new Map<string, string[]>();
-  for (const { position, scope, command, text } of reading.words) {
-    const word = asWritten(text);
-    if (position === "assignment")
-      assignments.set(command, [...(assignments.get(command) ?? []), word]);
-    else if (position === "head") {
-      const words = [word];
-      rows.push({ assignments: assignments.get(command) ?? [], words });
-      latest.set(scope, words);
-    } else if (position === "argument") latest.get(scope)?.push(word);
-  }
-  return rows.map((row) => {
+ * too deep to read holds no commands. `whole` reads a script of any length. */
+export function writtenCommands(
+  source: string,
+  options: { readonly whole?: boolean } = {},
+): WrittenCommand[] {
+  const reading = readShellText(source, options);
+  return reading ? readingCommands(reading) : [];
+}
+
+/** The commands of a reading, as writtenCommands gives them, for a reader
+ * that also needs the reading's comments or here-documents: the shell
+ * reader's commands, each with the program the classifier finds behind any
+ * wrapper. */
+export function readingCommands(reading: ShellReading): WrittenCommand[] {
+  return readCommands(reading).map((row) => {
     try {
       return {
         ...row,
@@ -467,573 +233,6 @@ export interface ShellDiagnostic {
   /** The word with its pattern quoted, where the command's text gives one. */
   readonly remedy?: string;
 }
-interface ReadWord {
-  /** The word as the command wrote it. */
-  readonly raw: string;
-  /** What stood outside quotes, U+0000 where quoted or substituted text stood. */
-  readonly bare: string;
-  /** The word without its quotes. */
-  readonly text: string;
-  readonly position:
-    "assignment" | "control" | "head" | "argument" | "redirect" | "pattern";
-  readonly command: number;
-  readonly scope: string;
-  /** Inside backquotes that stand in double quotes or an unquoted heredoc. */
-  readonly ticked: boolean;
-  /** Inside a substitution of a heredoc whose delimiter is not quoted. */
-  readonly heredoc: boolean;
-}
-interface ShellReading {
-  readonly words: ReadWord[];
-  /** The command outside single quotes. */
-  readonly plain: string;
-  readonly background: boolean;
-  readonly commands: number;
-  readonly unmatchedQuotes: readonly string[];
-  readonly incomplete: boolean;
-  readonly syntax: readonly string[];
-  readonly syntaxFaults: readonly string[];
-  readonly arithmetic: readonly string[];
-}
-const readControl = new Set([
-  "if",
-  "then",
-  "elif",
-  "else",
-  "while",
-  "until",
-  "do",
-  "!",
-  "{",
-  "time",
-  "command",
-  "builtin",
-  "noglob",
-  "nocorrect",
-  "exec",
-]);
-const readWrappers = new Set([
-  "command",
-  "builtin",
-  "exec",
-  "noglob",
-  "nocorrect",
-  "time",
-]);
-const readShells = new Set(["zsh", "bash", "sh", "dash", "ksh"]);
-// An advisory may decline a costly shape; it never delays or refuses the call.
-const READ_LIMIT = 32768;
-const READ_NESTING = 64;
-class ShellReadingLimit extends Error {}
-// Text the shell takes as written stands in the private use area, so that a
-// quoted `$` or brace is never read as one zsh changes.
-const asHeld = (char: string) =>
-  /[${}~\u0000]/.test(char)
-    ? String.fromCharCode(0xe000 + char.charCodeAt(0))
-    : char;
-const asWritten = (text: string) =>
-  text.replace(/[\ue000-\ue07f]/g, (char) =>
-    String.fromCharCode(char.charCodeAt(0) - 0xe000),
-  );
-
-/** The command's words as the shell splits them, read without refusing any
- * form: control syntax, substitutions and heredocs are read, and a script
- * handed to a shell or to eval is read as a command of its own. */
-function readShellCommand(full: string, depth = 0): ShellReading {
-  const source = full.length > READ_LIMIT ? full.slice(0, READ_LIMIT) : full;
-  const words: ReadWord[] = [];
-  const unmatchedQuotes: string[] = [];
-  let incomplete = false;
-  const syntax: string[] = [];
-  const syntaxFaults: string[] = [];
-  const arithmetic: string[] = [];
-  const cases: {
-    stage: "header" | "pattern" | "body";
-    scope: number | undefined;
-  }[] = [];
-  const scopes: number[] = [];
-  const currentCase = () =>
-    cases.at(-1)?.scope === scopes.at(-1) ? cases.at(-1) : undefined;
-  let scopeSerial = 0,
-    lastSyntax = "";
-  const stack: {
-    start: number;
-    bare: string;
-    text: string;
-    first: boolean;
-    quote: string;
-    parens: number;
-    redirect: boolean;
-    wrapper: string;
-    wrapperValue: boolean;
-    scope: number;
-    at: number;
-    ticking: boolean;
-    close: string;
-  }[] = [];
-  let plain = "",
-    bare = "",
-    text = "",
-    quote = "";
-  let start = -1,
-    first = true,
-    parens = 0,
-    command = 0,
-    ticks = 0,
-    redirect = false,
-    wrapper = "",
-    wrapperValue = false,
-    background = false;
-  let awaited: { delimiter: string; strip: boolean; quoted: boolean }[] = [];
-  const flush = (end: number) => {
-    if (start >= 0) {
-      const literal = asWritten(text);
-      const wrapperFlag = first && Boolean(wrapper) && bare.startsWith("-");
-      const consumeValue = first && wrapperValue;
-      const position =
-        currentCase()?.stage === "pattern" && bare !== "esac"
-          ? "pattern"
-          : redirect
-            ? "redirect"
-            : wrapperFlag || consumeValue
-              ? "control"
-              : !first
-                ? "argument"
-                : /^[A-Za-z_]\w*\+?=/.test(bare)
-                  ? "assignment"
-                  : readControl.has(bare) || readWrappers.has(literal)
-                    ? "control"
-                    : "head";
-      words.push({
-        raw: source.slice(start, end),
-        bare,
-        text,
-        position,
-        command,
-        scope: scopes.join("/"),
-        ticked: ticks > 0,
-        heredoc: false,
-      });
-      if (position === "head" || position === "control") {
-        if (bare === "case")
-          cases.push({ stage: "header", scope: scopes.at(-1) });
-        else if (bare === "esac") cases.pop();
-      }
-      if (bare === "in" && currentCase()?.stage === "header")
-        currentCase()!.stage = "pattern";
-      if (position === "head") {
-        first = false;
-        wrapper = "";
-      }
-      if (consumeValue) wrapperValue = false;
-      if (wrapperFlag && wrapper === "exec" && bare === "-a")
-        wrapperValue = true;
-      if (wrapperFlag && wrapper === "command" && /^-[p]*[vV]/.test(bare))
-        first = false;
-      if (position === "control" && readWrappers.has(literal))
-        wrapper = literal;
-      redirect = false;
-      lastSyntax = "";
-    }
-    start = -1;
-    bare = "";
-    text = "";
-  };
-  const finish = (end: number) => {
-    flush(end);
-    first = true;
-    redirect = false;
-    wrapper = "";
-    wrapperValue = false;
-    command++;
-  };
-  for (let i = 0; i < source.length; i++) {
-    if (scopes.length > READ_NESTING || parens > READ_NESTING)
-      throw new ShellReadingLimit();
-    const char = source[i]!;
-    if (quote === "'") {
-      if (char === "'") quote = "";
-      else text += asHeld(char);
-      continue;
-    }
-    if (char === "\\") {
-      if (source[i + 1] === "\n") i++;
-      else if (i + 1 < source.length) {
-        if (start < 0) start = i;
-        if (!quote) bare += "\u0000";
-        plain += char + source[i + 1]!;
-        text += asHeld(source[++i]!);
-      }
-      continue;
-    }
-    const processSubstitution =
-      !quote &&
-      source[i + 1] === "(" &&
-      (/[<>]/.test(char) || (char === "=" && start < 0));
-    const substitutes =
-      (char === "$" && source[i + 1] === "(" && source[i + 2] !== "(") ||
-      processSubstitution;
-    const arithmeticWidth = source.startsWith("$((", i)
-      ? 3
-      : !quote && first && start < 0 && source.startsWith("((", i)
-        ? 2
-        : 0;
-    if (arithmeticWidth) {
-      let level = 2,
-        at = i + arithmeticWidth;
-      for (; at < source.length; at++) {
-        if (source[at] === "(") level++;
-        else if (source[at] === ")") level--;
-        if (level > READ_NESTING) throw new ShellReadingLimit();
-        if (level === 0) break;
-      }
-      arithmetic.push(
-        source.slice(i + arithmeticWidth, level === 0 ? at - 1 : at),
-      );
-      incomplete ||= level !== 0;
-      if (start < 0) start = i;
-      bare += "\u0000";
-      text += "\u0000";
-      plain += source.slice(i, at + 1);
-      i = at;
-      continue;
-    }
-    if (quote === '"' && !substitutes && char !== "`") {
-      if (char === '"') quote = "";
-      else {
-        plain += char;
-        text += /[{}~]/.test(char) ? asHeld(char) : char;
-      }
-      continue;
-    }
-    if (char === "'" || char === '"') {
-      quote = char;
-      if (start < 0) start = i;
-      bare += "\u0000";
-      continue;
-    }
-    if (parens && !substitutes && char !== "`") {
-      bare += char;
-      text += char;
-      plain += char;
-      if (char === "(") parens++;
-      else if (char === ")") parens--;
-      continue;
-    }
-    if (char === "\n") {
-      finish(i);
-      plain += char;
-      let at = i + 1,
-        body = "";
-      for (const { delimiter, strip, quoted } of awaited)
-        while (at <= source.length) {
-          const end = source.indexOf("\n", at);
-          const stop = end < 0 ? source.length : end;
-          const line = source.slice(at, stop);
-          at = stop + 1;
-          if ((strip ? line.replace(/^\t+/, "") : line) === delimiter) break;
-          if (!quoted) body += `${line}\n`;
-        }
-      if (awaited.length) i = at - 1;
-      awaited = [];
-      plain += body;
-      // A heredoc whose delimiter is not quoted runs the substitutions its
-      // body holds.
-      if (depth < 2)
-        for (const [, called, ticked] of body.matchAll(
-          /\$\(((?:[^()]|\([^()]*\))*)\)|`([^`]*)`/g,
-        )) {
-          const inner = readShellCommand(called ?? ticked ?? "", depth + 1);
-          unmatchedQuotes.push(...inner.unmatchedQuotes);
-          incomplete ||= inner.incomplete;
-          syntax.push(...inner.syntax);
-          syntaxFaults.push(...inner.syntaxFaults);
-          arithmetic.push(...inner.arithmetic);
-          for (const word of inner.words)
-            words.push({
-              ...word,
-              command: word.command + command + 1,
-              heredoc: true,
-              ticked: word.ticked || ticked !== undefined,
-            });
-          command += inner.commands + 1;
-        }
-      continue;
-    }
-    if (char === "#" && start < 0) {
-      const end = source.indexOf("\n", i);
-      i = (end < 0 ? source.length : end) - 1;
-      continue;
-    }
-    if (char === " " || char === "\t") {
-      flush(i);
-      plain += char;
-      continue;
-    }
-    if (substitutes || (char === "`" && stack.at(-1)?.close !== "`")) {
-      const ticking = quote === '"' && !substitutes;
-      stack.push({
-        start: start < 0 ? i : start,
-        bare: quote ? bare : `${bare}\u0000`,
-        text: `${text}\u0000`,
-        first,
-        quote,
-        parens,
-        redirect,
-        wrapper,
-        wrapperValue,
-        scope: ++scopeSerial,
-        at: i,
-        ticking,
-        close: substitutes ? ")" : "`",
-      });
-      if (ticking) ticks++;
-      start = -1;
-      bare = "";
-      text = "";
-      quote = "";
-      parens = 0;
-      redirect = false;
-      first = true;
-      wrapper = "";
-      wrapperValue = false;
-      scopes.push(scopeSerial);
-      command++;
-      plain += substitutes ? `${char}(` : char;
-      if (substitutes) i++;
-      continue;
-    }
-    const outer = stack.at(-1);
-    if (outer && char === outer.close && scopes.at(-1) === outer.scope) {
-      finish(i);
-      stack.pop();
-      scopes.pop();
-      if (outer.ticking) ticks--;
-      ({
-        start,
-        bare,
-        text,
-        first,
-        quote,
-        parens,
-        redirect,
-        wrapper,
-        wrapperValue,
-      } = outer);
-      plain += char;
-      continue;
-    }
-    // A parenthesis after a word, or among a command's arguments, opens a
-    // pattern and not a group.
-    if (char === "(" && currentCase()?.stage === "pattern" && start < 0) {
-      // Optional case-arm opener; its closing parenthesis starts the body.
-      plain += char;
-      continue;
-    }
-    if (
-      char === "(" &&
-      source[i + 1] !== ")" &&
-      (start < 0 ? !first : !/[$=]$/.test(bare))
-    ) {
-      if (start < 0) start = i;
-      parens = 1;
-      bare += char;
-      text += char;
-      plain += char;
-      continue;
-    }
-    if (char === "<" && source[i + 1] === "<" && source[i + 2] !== "<") {
-      flush(i);
-      let at = i + 2;
-      const strip = source[at] === "-";
-      if (strip) at++;
-      while (source[at] === " " || source[at] === "\t") at++;
-      let delimiter = "",
-        quoted = false;
-      for (; at < source.length && !/[\s;|&()<>]/.test(source[at]!); at++) {
-        const mark = source[at]!;
-        if (mark === "'" || mark === '"') {
-          const end = source.indexOf(mark, at + 1);
-          quoted = true;
-          delimiter += source.slice(at + 1, end < 0 ? source.length : end);
-          at = end < 0 ? source.length : end;
-        } else if (mark === "\\") {
-          quoted = true;
-          delimiter += source[++at] ?? "";
-        } else delimiter += mark;
-      }
-      if (delimiter) awaited.push({ delimiter, strip, quoted });
-      plain += " ";
-      i = at - 1;
-      continue;
-    }
-    // A duplicated descriptor is one redirection, not a list separator.
-    if (
-      char === "&" &&
-      (/[<>]/.test(source[i - 1] ?? "") || source[i + 1] === ">")
-    ) {
-      flush(i);
-      plain += char;
-      continue;
-    }
-    if (
-      char === ";" ||
-      char === "|" ||
-      char === "&" ||
-      char === "(" ||
-      char === ")"
-    ) {
-      if (char === "&" && source[i + 1] !== "&" && source[i - 1] !== "&")
-        background = true;
-      const previousSyntax = start < 0 ? lastSyntax : "";
-      finish(i);
-      if (char === "(" && currentCase()?.stage !== "pattern")
-        scopes.push(++scopeSerial);
-      else if (char === ")") {
-        if (currentCase()?.stage === "pattern") currentCase()!.stage = "body";
-        else {
-          if (!scopes.length) syntaxFaults.push(")");
-          scopes.pop();
-        }
-      }
-      const operator =
-        (char === "|" || char === "&" || char === ";") && source[i + 1] === char
-          ? char + source[++i]
-          : char;
-      if (operator === ";;") {
-        if (!currentCase()) syntaxFaults.push(operator);
-        else currentCase()!.stage = "pattern";
-      }
-      if (["|", "||", "&&"].includes(previousSyntax))
-        syntaxFaults.push(operator);
-      syntax.push(operator);
-      lastSyntax = operator;
-      plain += char;
-      continue;
-    }
-    if (char === "<" || char === ">") {
-      // A descriptor prefix belongs to the redirection, not a command head.
-      if (/^\d+$/.test(bare)) {
-        start = -1;
-        bare = "";
-        text = "";
-      } else flush(i);
-      redirect = true;
-      plain += char;
-      continue;
-    }
-    if (start < 0) start = i;
-    bare += char;
-    text += char;
-    plain += char;
-  }
-  finish(source.length);
-  if (depth < 2)
-    for (const [index, word] of [...words].entries()) {
-      if (word.position !== "head") continue;
-      const name = asWritten(word.text).replace(/^.*\//, "");
-      const rest: ReadWord[] = [];
-      for (
-        let next = words[index + 1];
-        next?.command === word.command;
-        next = words[index + 1 + rest.length]
-      )
-        rest.push(next);
-      const flag = rest.findIndex((option) =>
-        /^-[A-Za-z]*c$/.test(option.bare),
-      );
-      const script =
-        name === "eval"
-          ? rest.map((argument) => asWritten(argument.text)).join(" ")
-          : readShells.has(name) && flag >= 0
-            ? asWritten(rest[flag + 1]?.text ?? "")
-            : "";
-      if (!script) continue;
-      const inner = readShellCommand(
-        script.replaceAll("\u0000", " "),
-        depth + 1,
-      );
-      unmatchedQuotes.push(...inner.unmatchedQuotes);
-      incomplete ||= inner.incomplete;
-      syntax.push(...inner.syntax);
-      syntaxFaults.push(...inner.syntaxFaults);
-      arithmetic.push(...inner.arithmetic);
-      for (const within of inner.words)
-        words.push({
-          ...within,
-          command: within.command + command + 1,
-          scope:
-            name === "eval"
-              ? [word.scope, within.scope].filter(Boolean).join("/")
-              : `${word.scope}/script-${word.command}/${within.scope}`,
-        });
-      command += inner.commands + 1;
-      plain += `\n${inner.plain}`;
-      background ||= inner.background;
-    }
-  if (quote) unmatchedQuotes.push(quote);
-  for (const held of stack) {
-    if (held.quote) unmatchedQuotes.push(held.quote);
-    syntaxFaults.push(source.slice(held.at));
-  }
-  if (stack.some(({ close }) => close === "`")) unmatchedQuotes.push("`");
-  const blocks: { close: string; needs: string | null }[] = [];
-  for (const { bare, position } of words) {
-    if (position !== "head" && position !== "control") continue;
-    const close = (
-      {
-        if: "fi",
-        for: "done",
-        select: "done",
-        while: "done",
-        until: "done",
-        case: "esac",
-        "{": "}",
-      } as Record<string, string>
-    )[bare];
-    if (close)
-      blocks.push({
-        close,
-        needs:
-          bare === "if"
-            ? "then"
-            : /^(for|select|while|until)$/.test(bare)
-              ? "do"
-              : null,
-      });
-    else if (["then", "do"].includes(bare)) {
-      if (blocks.at(-1)?.needs === bare) blocks.at(-1)!.needs = null;
-      else syntaxFaults.push(bare);
-    } else if (["fi", "done", "esac", "}"].includes(bare)) {
-      if (blocks.at(-1)?.close !== bare || blocks.at(-1)?.needs)
-        syntaxFaults.push(bare);
-      if (blocks.at(-1)?.close === bare) blocks.pop();
-    } else if (["else", "elif"].includes(bare)) {
-      if (blocks.at(-1)?.close !== "fi" || blocks.at(-1)?.needs)
-        syntaxFaults.push(bare);
-      else if (bare === "elif") blocks.at(-1)!.needs = "then";
-    }
-  }
-  incomplete ||= Boolean(
-    quote ||
-    stack.length ||
-    blocks.length ||
-    scopes.length ||
-    ["|", "||", "&&"].includes(lastSyntax),
-  );
-  return {
-    words,
-    plain,
-    background,
-    commands: command,
-    unmatchedQuotes,
-    incomplete,
-    syntax,
-    syntaxFaults,
-    arithmetic,
-  };
-}
-
 /** What zsh may read as a file pattern in an unquoted word. */
 const patterned = /[*?\[\]^~#(|]/;
 /** What zsh changes in a word before it uses the word. */
@@ -2575,6 +1774,13 @@ function invocationProgram(source: readonly ShellWord[]): ShellWord[] {
     }
     if (program === "yarn" && subcommand === "npm") {
       tokens = [literal("npm"), ...tokens.slice(2)];
+      continue;
+    }
+    // Corepack runs the package manager it is given, at a version or not:
+    // `corepack npm@11 test` is `npm test`.
+    const managed = program === "corepack" ? corepackManager(subcommand) : null;
+    if (managed) {
+      tokens = [literal(managed), ...tokens.slice(2)];
       continue;
     }
     if (

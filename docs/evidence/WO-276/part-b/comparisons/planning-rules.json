@@ -1,0 +1,9 @@
+{
+  "comparison": "planning-rules",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every Markdown document under docs/planning: its rules-recorded block, or that it holds none",
+  "read": 145,
+  "equal": 145,
+  "differences": {},
+  "examples": []
+}

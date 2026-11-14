@@ -1,0 +1,9 @@
+{
+  "command": "node scripts/terms.mjs branch",
+  "exitCode": 0,
+  "contextLinesRead": 0,
+  "refuseLines": 0,
+  "contextLines": 0,
+  "privateListPrinted": false,
+  "output": "local-terms list: present; entries: 0 refuse, 9 context; changed files screened: 918; lines found: 0 refuse, 0 context"
+}

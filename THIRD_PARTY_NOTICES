@@ -1,0 +1,19 @@
+Third-party material carried in this repository
+
+This file lists the third-party files the repository holds and a kit
+export distributes. Dependencies that npm installs are not carried here.
+
+Prettier 3.9.6, Markdown plugin
+
+  Carried file  scripts/lib/vendor/prettier-markdown.mjs
+  Origin        npm package prettier@3.9.6, file plugins/markdown.mjs,
+                copied byte for byte
+  License       MIT
+  License text  scripts/lib/vendor/prettier-LICENSE
+  Notices       scripts/lib/vendor/prettier-THIRD-PARTY-NOTICES.md
+                Prettier's own notices for the packages its published
+                files bundle, copied byte for byte
+
+scripts/lib/vendored-parser.json records the SHA-256 of each of the
+three files, and node scripts/lib/vendored-parser.mjs --check compares
+them with the installed package where one is installed.

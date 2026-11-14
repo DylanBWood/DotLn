@@ -1,0 +1,9 @@
+{
+  "comparison": "ledger-entries",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the idea ledger as the worktree holds it and at each commit that changed it: its sections, each one's idea entries and lifecycle tags, the counts by status and the errors reported",
+  "read": 154,
+  "equal": 154,
+  "differences": {},
+  "examples": []
+}

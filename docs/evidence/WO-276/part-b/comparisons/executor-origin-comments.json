@@ -1,0 +1,9 @@
+{
+  "comparison": "executor-origin-comments",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every revision of the two installed executor roots, and the worktree's: the origin record its comment holds",
+  "read": 112,
+  "equal": 112,
+  "differences": {},
+  "examples": []
+}

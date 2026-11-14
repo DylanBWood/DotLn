@@ -500,7 +500,32 @@ cp "$subject/$notes_path" "$committed_notes"
 git -C "$subject" update-index --assume-unchanged pr-body.md "$notes_path"
 printf 'hidden uncommitted private body\n' >"$subject/pr-body.md"
 printf '<!-- hidden malformed notes -->\n' >"$subject/$notes_path"
+# The branch screen reads the local-terms list as the document gate's terms
+# task does: a refuse entry on a line the branch adds refuses before any push,
+# naming the file, the line and the mode and never the entry; under a context
+# entry the same line is listed and the publish proceeds. The working
+# pr-body.md is hidden from the index here and holds other bytes, so both arms
+# show that the screen reads the committed bytes the publish carries.
+mkdir -p "$subject/docs/control/local"
+printf 'refuse:\neighty characters\n' >"$subject/docs/control/local/terms.txt"
+if terms_refused="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted a refuse-mode term on a line the branch adds\n' >&2; exit 1; fi
+grep -Eq 'the local-terms list refuses lines wo-099 adds: (.*; )?pr-body\.md:3: a local term in refuse mode' <<<"$terms_refused"
+if grep -Fqi 'eighty' <<<"$terms_refused"; then printf 'error: the refusal printed the listed entry\n' >&2; exit 1; fi
+test ! -s "$gh_log"
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed past a refused term\n' >&2; exit 1; fi
+# The title is no file of the branch: a refuse entry in it refuses the same
+# way, before any push, naming its place and never the entry.
+printf 'refuse:\nzephyr canary\n' >"$subject/docs/control/local/terms.txt"
+if title_refused="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: the zephyr-canary fixture' --body-file pr-body.md 2>&1)"; then printf 'error: a refuse entry in the title published\n' >&2; exit 1; fi
+grep -Fq "the local-terms list refuses the pull request's title: pr-title:1: a local term in refuse mode" <<<"$title_refused"
+if grep -Fqi 'zephyr' <<<"$title_refused"; then printf 'error: the refusal printed the listed entry\n' >&2; exit 1; fi
+test ! -s "$gh_log"
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed past a refused title\n' >&2; exit 1; fi
+printf 'context:\neighty characters\n' >"$subject/docs/control/local/terms.txt"
 publish_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_BODY="$published_body" GH_REPO=wrong/target GH_HOST=wrong.example node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
+grep -Eq '^CONTEXT pr-body\.md:3: a local term in context mode$' <<<"$publish_output"
+if grep -Fqi 'eighty' <<<"$publish_output"; then printf 'error: the publish printed the listed entry\n' >&2; exit 1; fi
+rm -- "$subject/docs/control/local/terms.txt"
 grep -Fq "$(cat "$committed_body")" "$published_body"
 # Each committed line reaches the forge: the prose line whole, the code example
 # byte-for-byte and the empty-destination link written as its text.

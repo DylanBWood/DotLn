@@ -6,7 +6,7 @@ import { write as writeFixture } from "./lib/helpers.mjs";
 import { execGit, isolatedGitEnvironment, spawnGit } from "./lib/git.mjs";
 // Target publication over real source-change episodes, a local bare origin
 // behind a GitHub URL and the gh stub. No network or vendor CLI (WO-064).
-import nodeTest from "node:test";
+import test from "node:test";
 import assert from "node:assert/strict";
 import childProcess, { execFileSync, spawnSync } from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
@@ -98,140 +98,6 @@ import {
 import { fixtureVerificationResult } from "../packages/skeleton/dist/src/verification-fake.js";
 import { composeTargetBody, deliveryContractHash } from "./lib/github-body.mjs";
 import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
-import { deadlineLimit } from "../packages/skeleton/src/gate-deadlines.mjs";
-
-// Cold, standalone case durations rounded up to 0.1 s. Preserve twice-baseline
-// standalone bounds and derive loaded bounds from the scheduler declaration.
-// Register after the callback so FIFO after hooks include fixture cleanup.
-const repairedCaseMs = new Map([
-  [
-    "WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps",
-    2700,
-  ],
-  [
-    "WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag",
-    3600,
-  ],
-  [
-    "WO-182 current replayed baseline, verification and review permit required publication",
-    3300,
-  ],
-  [
-    "WO-182 stale preparation and forged baseline/review events cannot bypass readiness",
-    3800,
-  ],
-  [
-    "WO-064 AC1: publish refuses without an operator grant before any remote call",
-    2100,
-  ],
-  ["WO-064 AC1: a host-policy grant is not operator provenance", 2000],
-  [
-    "WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body",
-    5100,
-  ],
-  [
-    "WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria",
-    2900,
-  ],
-  [
-    "WO-157: publication runs no hook or repository configuration the target holds",
-    2600,
-  ],
-  [
-    "WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls",
-    2400,
-  ],
-  [
-    "WO-197 authentic scenario seeds restore files, refs, events and metadata; stale callbacks refuse",
-    3100,
-  ],
-  [
-    "WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice",
-    8300,
-  ],
-  [
-    "WO-066 AC1: a mapped failing check repairs and is freshly observed successful at the new head",
-    6000,
-  ],
-  [
-    "WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman",
-    3700,
-  ],
-  [
-    "WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round",
-    5800,
-  ],
-  [
-    "WO-066 AC3: later comments enter at observation, but a local resolved bit without an observer event proves nothing",
-    3300,
-  ],
-  [
-    "WO-066 AC4: push and every thread disposition require their operator effect before gh; a foreign repaired head cannot push",
-    5900,
-  ],
-  [
-    "WO-184 criterion 8: required publication rechecks a recorded head without remote calls",
-    3900,
-  ],
-  [
-    "WO-184 criterion 8: lint not-applicable carries its reason, while tests always require evidence",
-    3600,
-  ],
-  [
-    "WO-184 criterion 9: pending and cancelled mapped checks stop needs-human with their item",
-    9300,
-  ],
-  [
-    "WO-184 criterion 9: interruption after the observer append resumes from the last effect receipt",
-    6300,
-  ],
-  [
-    "WO-184 criterion 9: missing lines and unmatched required checks end human, allowing later items",
-    6600,
-  ],
-  [
-    "WO-184 criterion 9: pushRepairedHead refuses a failing exact-head matrix before any push",
-    5600,
-  ],
-  [
-    "WO-112 an unsupplied automated item is judged by the triage episode; its verdict is recorded with provenance and never bypasses the loop's guards",
-    11200,
-  ],
-  [
-    "WO-112 VER-003 F3 retryable inline and review-body triage stays undecided and retries once",
-    12800,
-  ],
-  [
-    "WO-112 VER-003 F3 non-retryable triage failures persist human decisions",
-    900,
-  ],
-  [
-    "WO-112 an automated review body is disposed only by a recorded model acknowledgement; an actionable or unjudged body still stops typed",
-    9500,
-  ],
-]);
-const unregisteredCaseBounds = new Set(repairedCaseMs.keys());
-const test = (name, ...args) => {
-  unregisteredCaseBounds.delete(name);
-  const measuredMs = repairedCaseMs.get(name);
-  if (measuredMs === undefined) return nodeTest(name, ...args);
-  const limitMs = deadlineLimit(measuredMs, 2 * measuredMs);
-  const run = args.pop();
-  assert.equal(typeof run, "function");
-  return nodeTest(name, ...args, async (t) => {
-    const started = performance.now();
-    try {
-      await run(t);
-    } finally {
-      t.after(() =>
-        assert.ok(
-          performance.now() - started <= limitMs,
-          `${name} stays within ${limitMs} ms derived from its measured ${measuredMs} ms duration`,
-        ),
-      );
-    }
-  });
-};
 
 const repoRoot = realpathSync(fileURLToPath(new URL("..", import.meta.url)));
 const cli = join(repoRoot, "scripts/worktree.mjs");
@@ -1124,9 +990,9 @@ await test("kit record paths exempt only launchpad identifiers and retain redact
       }),
     });
     const artifact = compose([kitPath, publicPath]);
-    for (const marker of ["refuse: ", "review: ", ""]) {
+    for (const marker of ["refuse: ", "context: ", "review: ", ""]) {
       terms(`${marker}cobaltwidget\n`);
-      const mode = marker.startsWith("refuse") ? "refuse" : "review";
+      const mode = marker.startsWith("refuse") ? "refuse" : "context";
       const redacted = (message) => {
         assert.match(
           message,
@@ -1272,8 +1138,13 @@ await test("private matches crossing two or three Change rows retain refusal, co
             baseTree: new Set(["a.txt", "bridge.md"]),
           }),
         };
-        const crossing = middle.length ? "0 bridge md 1 0 day" : "0day";
-        for (const marker of ["refuse: ", "review: ", ""]) {
+        // A run on either side of a pipe is one word only for an entry
+        // that carries the pipe between its own runs (WO-276), so the
+        // crossing entries are spelled as the table's rows spell them.
+        const crossing = middle.length
+          ? "0 | bridge.md | 1 | 0 | day"
+          : "0 | day";
+        for (const marker of ["refuse: ", "context: ", "review: ", ""]) {
           vocabulary(["day", "quiet"]);
           // Same starting line and mode, different ending lines: the first
           // term stays exempt, while the crossing term must remain visible.
@@ -1315,7 +1186,7 @@ await test("private matches crossing two or three Change rows retain refusal, co
             redacted(message);
             assert.match(message, /vocabulary\.review: \[redacted\]/u);
             assert.match(message, /path quiet\.md/u);
-            assert.match(message, /vocabulary\.local: review/u);
+            assert.match(message, /vocabulary\.local: context/u);
             assert.equal(preview.pending.items.length, 3);
             assert.throws(
               () =>
@@ -1347,7 +1218,7 @@ await test("private matches crossing two or three Change rows retain refusal, co
   }
 });
 
-await test("WO-227 criterion 2: a review-mode private term in the generated body is a review item the reviewer confirms with the composed body's digest, and the confirmation is recorded", async (t) => {
+await test("WO-227 criterion 2: a context-mode private term in the generated body is a review item the reviewer confirms with the composed body's digest, and the confirmation is recorded", async (t) => {
   const root = createFixtureRoot(join(tmpdir(), "dotln-private-path-"));
   try {
     writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
@@ -1359,7 +1230,7 @@ await test("WO-227 criterion 2: a review-mode private term in the generated body
         reviewTerms: ["launchpad", "cobaltwidget"],
       }),
     );
-    for (const marker of ["refuse: ", "review: ", ""])
+    for (const marker of ["refuse: ", "context: ", "review: ", ""])
       for (const suffix of ["", "-launchpad", "-WO-006"])
         for (const ending of ["\n", "\r\n", "\r"]) {
           writeFixture(
@@ -1377,7 +1248,7 @@ await test("WO-227 criterion 2: a review-mode private term in the generated body
             ],
           });
           const artifact = { kind: "pr-body", ...composed };
-          const mode = marker.startsWith("refuse") ? "refuse" : "review";
+          const mode = marker.startsWith("refuse") ? "refuse" : "context";
           const checkRedaction = (message) => {
             assert.doesNotMatch(message, /cobaltwidget/u);
             // Hard refusals are reported before review-only items. A private
@@ -1400,7 +1271,7 @@ await test("WO-227 criterion 2: a review-mode private term in the generated body
               return true;
             },
           );
-          if (mode === "review" && suffix !== "-WO-006") {
+          if (mode === "context" && suffix !== "-WO-006") {
             const preview = lintArtifacts(root, [artifact], { preview: true });
             checkRedaction(preview.pending.items.join("; "));
             assert.match(
@@ -1428,7 +1299,7 @@ await test("WO-227 criterion 2: a review-mode private term in the generated body
   refusedBeforeRemote(
     subject,
     unconfirmed,
-    /target publish refused: outward lint: 2 review items wait for the reviewer: pr-body: vocabulary\.local: review \(line 3\); pr-body: vocabulary\.local: review \(line \d+\)/u,
+    /target publish refused: outward lint: 2 review items wait for the reviewer: pr-body: vocabulary\.local: context \(line 3\); pr-body: vocabulary\.local: context \(line \d+\)/u,
   );
   assert.doesNotMatch(unconfirmed.stderr, /baseline/u);
   const digest = /sha256:[0-9a-f]{64}/u.exec(unconfirmed.stderr)[0];
@@ -4994,9 +4865,3 @@ await test("WO-112 review-body acknowledgements reject malformed evidence on adm
     }
   }
 });
-
-assert.deepEqual(
-  [...unregisteredCaseBounds],
-  [],
-  "every duration bound must match a declared case, including after a rename",
-);

@@ -41,13 +41,33 @@ import { compileMissionCheck } from "../src/loadouts/mission-check.js";
 // Reproduced from entry source by WO-165/sibling-identities.mjs. The serial
 // review correction must not version these independently dispatched judges.
 test("WO-165 preserves both derived judges' compiled identities", () => {
+  // The pinned identity is the one compiled in core's own root.
   assert.equal(
-    compilePlanRefuter("fixture-base", 1000).semanticHash,
+    compilePlanRefuter("fixture-base", 1000, true).semanticHash,
     "fnv1a64:e9f7e0080fcb9810",
   );
   assert.equal(
     compileMissionCheck("fixture-base", 1000).semanticHash,
     "fnv1a64:4c09a5d98f6bc433",
+  );
+});
+
+// One known fact names an order of core's own. The refuter is told it in
+// core's root alone, so an instance's order of that number is judged as any
+// other, and a caller that does not say the root is core's compiles the
+// instance's refuter.
+test("WO-276 criterion R1: the plan refuter is told of core's own order in core's root alone", () => {
+  const facts = (core?: boolean) =>
+    compilePlanRefuter("fixture-base", 1000, core).program.workOrder.knownFacts;
+  assert.deepEqual(facts(true), [
+    "Only the compiled subject is visible",
+    "WO-041's own verdict is advisory",
+  ]);
+  for (const instance of [facts(false), facts()])
+    assert.deepEqual(instance, ["Only the compiled subject is visible"]);
+  assert.notEqual(
+    compilePlanRefuter("fixture-base", 1000).semanticHash,
+    compilePlanRefuter("fixture-base", 1000, true).semanticHash,
   );
 });
 

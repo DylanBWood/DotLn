@@ -1,0 +1,178 @@
+{
+  "launches": [
+    {
+      "name": "reader_review",
+      "scope": "A\u2013F; format readers, screen, runner and review contracts",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "kit_review",
+      "scope": "G\u2013M; seed, host, update, configuration, extension, profile and team contracts",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "lifecycle_review",
+      "scope": "N\u2013R; target records, workstreams, usage, hooks and remaining lifecycle",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "selector_consistency",
+      "scope": "Shared source selectors, source imports, line maps and newline variants",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "policy_transitions",
+      "scope": "Records transitions, release routing, plan-first and disposal history",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "default_contracts",
+      "scope": "Model/effort declarations, emitted guidance and worker defaults",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "terms_contract",
+      "scope": "A; screening, checkpoints, exclusions and terms modes",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "metadata_readers",
+      "scope": "B; header parity, execution appendices and migration evidence",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "review_workflows",
+      "scope": "C; batch retention, paired measurement and round selection",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "runner_semantics",
+      "scope": "D/E/Q; sharding, case-title reading, hooks and oracle removal",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "host_configuration",
+      "scope": "H/J/K; unknown facts, privacy, declarations and extension guards",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "update_merges",
+      "scope": "I; merge preservation and emitted-surface membership transitions",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "evidence_dispositions",
+      "scope": "68 allocated review reports: 129 findings, 117 rechecks; disposition history and B8 comparisons",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "team_targets",
+      "scope": "M/N; merge proof, records policy, target receipts and close routing",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "profiles_workstreams",
+      "scope": "L/O; profile/area-note readability and planned/member distinction",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "time_usage",
+      "scope": "P and J usage; worked time, independent sessions, partial tokens and pricing",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "name": "export_lifecycle",
+      "scope": "G/K/R; export ownership, extension isolation and first-event withdrawal",
+      "mode": "read-only source review",
+      "configuration": {
+        "model": "gpt-6.1-sol",
+        "effort": "xhigh"
+      }
+    }
+  ],
+  "continuations": [
+    {
+      "name": "reader_review",
+      "purpose": "Clarify supported extension selection"
+    },
+    {
+      "name": "lifecycle_review",
+      "purpose": "Identify target deletion fixture"
+    },
+    {
+      "name": "policy_transitions",
+      "purpose": "Correct states-field assumption and retain existing assignment"
+    }
+  ],
+  "launchCount": 17,
+  "continuationCount": 3,
+  "uses": 20,
+  "cap": 20,
+  "descendants": 0,
+  "harnessObservedLaunches": 0,
+  "limit": "Manual session census; workers ran no probes or gates and made no writes. Root reproduced and judged findings. Effective worker effort not independently observed."
+}

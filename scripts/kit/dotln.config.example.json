@@ -8,7 +8,12 @@
   "build": {},
   "kit": { "applyInstanceActions": false },
   "release": { "displayName": "DotLn-Enterprise-Starter" },
+  "contributions": { "authors": [] },
   "drive": { "sandbox": "host" },
+  "workers": {
+    "default": { "claude": "opus", "codex": "sol" },
+    "advanced": { "claude": "fable", "codex": "astra" }
+  },
   "features": {
     "tinkerer-economy": { "on": true, "note": "Compare approaches when a useful fork appears." },
     "plan-first": { "on": false, "note": "Prepare a plan and complete candidate diff, then await operator approval before implementation." },

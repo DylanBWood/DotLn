@@ -1,0 +1,64 @@
+{
+  "what": "Part L's observations: the times of a target order's briefing and of the document check before and after the part, on this host.",
+  "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-276/part-l/evidence.mjs (before.json: the same with PART_L=before, on the tree the part began on)",
+  "before": {
+    "briefing": {
+      "what": "node scripts/resume.mjs briefing for the target fixture's order in its execution phase, with a profile, the notes named and a workstream: wall milliseconds of three runs and the bytes printed",
+      "twoNotes": {
+        "ms": [
+          171,
+          169,
+          170
+        ],
+        "bytes": 2869
+      },
+      "twentyNotes": {
+        "ms": [
+          170,
+          169,
+          168
+        ],
+        "bytes": 2869
+      }
+    },
+    "docsCheck": {
+      "seconds": [
+        28.41,
+        27.74,
+        28.15
+      ],
+      "exitCode": 0,
+      "method": "wall seconds of three runs, one at a time"
+    }
+  },
+  "after": {
+    "briefing": {
+      "what": "node scripts/resume.mjs briefing for the target fixture's order in its execution phase, with a profile, the notes named and a workstream: wall milliseconds of three runs and the bytes printed",
+      "twoNotes": {
+        "ms": [
+          238,
+          230,
+          232
+        ],
+        "bytes": 3887
+      },
+      "twentyNotes": {
+        "ms": [
+          386,
+          387,
+          389
+        ],
+        "bytes": 8243
+      }
+    },
+    "docsCheck": {
+      "seconds": [
+        27.47,
+        29.68,
+        29.19
+      ],
+      "exitCode": 1,
+      "method": "wall seconds of three runs, one at a time"
+    }
+  }
+}

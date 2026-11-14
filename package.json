@@ -36,6 +36,7 @@
     "evidence:console": "npm run build --silent && node scripts/console-fixtures.mjs",
     "harness": "node scripts/harness-entry.mjs",
     "launchpad": "node scripts/launchpad.mjs",
+    "commands": "node scripts/launchpad.mjs commands",
     "terms": "node scripts/terms.mjs",
     "adjacent": "node scripts/adjacent-work.mjs",
     "test:full": "node scripts/test-runner.mjs --review",
@@ -43,6 +44,7 @@
     "discover": "node scripts/discover.mjs",
     "meta": "node scripts/meta.mjs",
     "features": "node scripts/features.mjs",
+    "doctor": "node scripts/doctor.mjs",
     "reader": "node scripts/reader.mjs",
     "test:machinery": "node scripts/test-runner.mjs --machinery"
   },

@@ -1,0 +1,22 @@
+# loadConfig on a dotln.config.json holding each workers section below, with the models file shown where there is one.
+
+## an unknown key
+workers: {"night":{"claude":{"model":"fable","temperature":1}}}
+refused: invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: unknown key dotln.config.json#workers.night.claude.temperature; known keys: model, effort
+
+## a binding to a model that is not listed
+workers: {"night":{"claude":"small"}}
+refused: invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: dotln.config.json#workers.night.claude names the model "small", which is not in the model list (opus, fable, sol, astra, sonnet, luna)
+
+## a name that would mean two things
+workers: {"fable":{"claude":"opus"}}
+refused: invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: the worker "fable" (dotln.config.json#workers.fable) has the name of a model (the kit's model list); a name means one thing
+
+## an effort outside its provider's levels
+workers: {"night":{"claude":{"model":"fable","effort":"extreme"}}}
+refused: invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: dotln.config.json#workers.night.claude.effort must be one of "low", "medium", "high", "xhigh", "max", the efforts a claude launch takes; found "extreme"
+
+## a negative price
+workers: {}
+dotln.models.json: {"schemaVersion":1,"prices":{"model-a":{"uncachedInput":3,"cacheRead":0.3,"cacheWrite":3.75,"output":-1}}}
+refused: invalid DotLn configuration in <scratch>/part-j-malformed/dotln.models.json: dotln.models.json#prices["model-a"].output must be a number that is not negative, in US dollars for a million tokens; found -1

@@ -1,6 +1,12 @@
 {
   "version": 1,
   "historicalWorkOrders": ["WO-001", "WO-002"],
+  "features": {
+    "host-copilot": {
+      "on": true,
+      "note": "Copilot sessions run here; only the discovery record showed it, and since WO-276 that record turns no host on (docs/evidence/WO-276/decisions.md, WO-276-D057)."
+    }
+  },
   "contributions": {
     "operatorAuthor": "Dylan Wood <dylanwoodconsulting@gmail.com>"
   }

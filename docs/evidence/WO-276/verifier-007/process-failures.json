@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "kind": "truncated-read",
+      "scope": "Entry status, lifecycle diff, briefing and several report batches exceeded their output budgets.",
+      "disposition": "Re-read the selected status fields, complete implementation repair and test diff, latest report and review, original criteria and relevant prior findings in bounded portions. Do not treat omitted text as read; retain unchanged claims through the current identity and explicit earlier evidence."
+    },
+    {
+      "kind": "missing-path",
+      "scope": "A search named scripts/lib/evidence.mjs and scripts/lib/gate-identity.mjs, neither of which exists.",
+      "disposition": "Read the actual gate-reuse, gate-evidence and handoff-ledger modules and call their exported APIs."
+    },
+    {
+      "kind": "inventory-selection",
+      "scope": "The first inventory treated tracked deleted paths from git ls-files --cached as current added files.",
+      "disposition": "Require current path existence; rerun all 9437 subject path comparisons. The corrected inventory has no added path and only dispatch projections differ."
+    },
+    {
+      "kind": "metadata-record-contract",
+      "command": "npm run meta",
+      "exitCode": 1,
+      "observed": "decision requires id, date, dispatch source, evidence, rejected choices and reopening condition",
+      "cause": "The newly authored D195 lacked rejected.",
+      "disposition": "Read scripts/lib/meta.mjs, complete the unfiled decision contract and regenerate metadata; then run the final terms screen and document gate. D197 records this correction."
+    }
+  ],
+  "subjectFailure": false
+}

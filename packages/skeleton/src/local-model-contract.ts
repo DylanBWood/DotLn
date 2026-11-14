@@ -97,6 +97,10 @@ export function assertLocalModelObservation(
     (v.result === undefined) === (v.failure === undefined)
   )
     throw new Error("invalid local-model actor observation");
+  // The failures a local model's episode can end in: the protocol's codes
+  // (WORKER_FAILURE_CODES) but documents-unread and contract-unreadable,
+  // which a mission check's document read gives, and only the CLI adapter
+  // makes that read.
   if (
     v.failure !== undefined &&
     ![

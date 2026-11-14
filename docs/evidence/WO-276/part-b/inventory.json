@@ -1,0 +1,1251 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-10T20:50:54.523Z",
+  "tree": "refs/dotln/checkpoint/WO-276/5 (842803cda6dbd7cf5320ad672b5bebc006f213bc), before any edit of Part B",
+  "method": "Markdown and JSON: the pattern-reader screen of the earlier worktree (the screen this part ports), run over every non-test source under scripts/ and packages/*/src/ of this tree; shell and JavaScript source: the modules that carry a scanner of their own, read by hand. A row names the source line that reads the format by pattern and the reader it moves to.",
+  "counts": {
+    "sources": 405,
+    "patternReaders": 165,
+    "files": 46,
+    "byForm": {
+      "a heading": 65,
+      "a table row": 8,
+      "a list item": 15,
+      "a fence": 31,
+      "a bold field label": 42,
+      "JSON text": 4
+    }
+  },
+  "patternReaders": [
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 76,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 111,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 135,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 163,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 170,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 174,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 357,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/console/src/text-sources.ts",
+      "line": 360,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/discovery.ts",
+      "line": 229,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "packages/skeleton/src/feedback-audit.ts",
+      "line": 238,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "packages/skeleton/src/mission-check-source.ts",
+      "line": 207,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/mission-check-source.ts",
+      "line": 218,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/mission-check-source.ts",
+      "line": 224,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "packages/skeleton/src/mission-check-source.ts",
+      "line": 241,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "packages/skeleton/src/mission-check-source.ts",
+      "line": 288,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "packages/skeleton/src/mission-check-source.ts",
+      "line": 299,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/reactor.ts",
+      "line": 1612,
+      "format": "json",
+      "reads": "JSON text",
+      "movesTo": "JSON.parse"
+    },
+    {
+      "file": "packages/skeleton/src/runtime-status-contract.ts",
+      "line": 72,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/runtime-status-contract.ts",
+      "line": 101,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/runtime-status-contract.ts",
+      "line": 108,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/runtime-status-contract.ts",
+      "line": 117,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/check-publication.mjs",
+      "line": 215,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/check-publication.mjs",
+      "line": 251,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/check-publication.mjs",
+      "line": 303,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 152,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 167,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 508,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 524,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 611,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 612,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/docs-check.mjs",
+      "line": 749,
+      "format": "json",
+      "reads": "JSON text",
+      "movesTo": "JSON.parse"
+    },
+    {
+      "file": "scripts/launchpad.mjs",
+      "line": 2196,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/comment-labels.mjs",
+      "line": 104,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 55,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 55,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 67,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 105,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 108,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 112,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 136,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/dependencies.mjs",
+      "line": 318,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/derived-contract.mjs",
+      "line": 75,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/derived-contract.mjs",
+      "line": 126,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/derived-contract.mjs",
+      "line": 132,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/derived-contract.mjs",
+      "line": 177,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 208,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 681,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/document-kinds.mjs",
+      "line": 682,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/drive-route.mjs",
+      "line": 323,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/features.mjs",
+      "line": 240,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "line": 40,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "line": 40,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "line": 57,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "line": 58,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "line": 1423,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/github-body.mjs",
+      "line": 1517,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/handoff-ledger.mjs",
+      "line": 38,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/handoff-ledger.mjs",
+      "line": 44,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/handoff-ledger.mjs",
+      "line": 64,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/harness-context.mjs",
+      "line": 174,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/harness-context.mjs",
+      "line": 204,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/harness-context.mjs",
+      "line": 229,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/harness.mjs",
+      "line": 1227,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/harness.mjs",
+      "line": 1234,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/meta.mjs",
+      "line": 85,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/meta.mjs",
+      "line": 89,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/meta.mjs",
+      "line": 331,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/meta.mjs",
+      "line": 989,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/meta.mjs",
+      "line": 992,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/meta.mjs",
+      "line": 2233,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/off-ramps.mjs",
+      "line": 234,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/off-ramps.mjs",
+      "line": 272,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/outward-lint.mjs",
+      "line": 178,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/outward-lint.mjs",
+      "line": 226,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/outward-lint.mjs",
+      "line": 344,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 36,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 254,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 255,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 289,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 293,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 293,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 295,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 305,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 311,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 330,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 341,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 412,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 418,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 464,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 796,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 816,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-continuation.mjs",
+      "line": 820,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-dependency-migration.mjs",
+      "line": 96,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-first.mjs",
+      "line": 283,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-first.mjs",
+      "line": 299,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/plan-receipts.mjs",
+      "line": 1290,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/plan-receipts.mjs",
+      "line": 1639,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 215,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 220,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 227,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 232,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 235,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 244,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 250,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 266,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 281,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 476,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 487,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 498,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "scripts/lib/plan-subject.mjs",
+      "line": 851,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 90,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/planning-document.mjs",
+      "line": 91,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/planning-followups.mjs",
+      "line": 235,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/planning-followups.mjs",
+      "line": 238,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/planning-followups.mjs",
+      "line": 262,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/planning-followups.mjs",
+      "line": 270,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/receipt-cost.mjs",
+      "line": 26,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lib/receipt-cost.mjs",
+      "line": 30,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/release-history.mjs",
+      "line": 37,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "scripts/lib/release-history.mjs",
+      "line": 62,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/release-notes.mjs",
+      "line": 83,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/release-notes.mjs",
+      "line": 123,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/release-notes.mjs",
+      "line": 174,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/release-notes.mjs",
+      "line": 180,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/release-notes.mjs",
+      "line": 266,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/release-preparation.mjs",
+      "line": 159,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/release-preparation.mjs",
+      "line": 162,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/review-findings.mjs",
+      "line": 25,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/review-worker.mjs",
+      "line": 958,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/review-worker.mjs",
+      "line": 959,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/review-worker.mjs",
+      "line": 1124,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/review-worker.mjs",
+      "line": 1137,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "scripts/lib/review-worker.mjs",
+      "line": 2091,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/review-worker.mjs",
+      "line": 2092,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/verification-briefing.mjs",
+      "line": 48,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/verification-briefing.mjs",
+      "line": 56,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lib/work-order-repository.mjs",
+      "line": 12,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/work-order-repository.mjs",
+      "line": 18,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/work-order-workstream.mjs",
+      "line": 17,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lib/work-order-workstream.mjs",
+      "line": 21,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lineage.mjs",
+      "line": 34,
+      "format": "markdown",
+      "reads": "a fence",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownCodeBlocks, markdownJsonBlocks)"
+    },
+    {
+      "file": "scripts/lineage.mjs",
+      "line": 50,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/lineage.mjs",
+      "line": 131,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/lineage.mjs",
+      "line": 134,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/probe-codex-effort.mjs",
+      "line": 126,
+      "format": "json",
+      "reads": "JSON text",
+      "movesTo": "JSON.parse"
+    },
+    {
+      "file": "scripts/probes/local-model-role-qualification.mjs",
+      "line": 117,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/probes/local-model-role-qualification.mjs",
+      "line": 163,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "scripts/probes/local-model-role-qualification.mjs",
+      "line": 167,
+      "format": "markdown",
+      "reads": "a table row",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownTables)"
+    },
+    {
+      "file": "scripts/probes/wo242-controls.mjs",
+      "line": 30,
+      "format": "json",
+      "reads": "JSON text",
+      "movesTo": "JSON.parse"
+    },
+    {
+      "file": "scripts/release.mjs",
+      "line": 874,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/release.mjs",
+      "line": 1529,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/release.mjs",
+      "line": 3201,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 525,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 549,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 565,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 569,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 569,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 585,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 611,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/resume.mjs",
+      "line": 1249,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/siblings.mjs",
+      "line": 273,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/work-orders.mjs",
+      "line": 95,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/work-orders.mjs",
+      "line": 110,
+      "format": "markdown",
+      "reads": "a bold field label",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownFields) or scripts/lib/work-order-document.mjs"
+    },
+    {
+      "file": "scripts/work-orders.mjs",
+      "line": 176,
+      "format": "markdown",
+      "reads": "a list item",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownListItems)"
+    },
+    {
+      "file": "scripts/work-orders.mjs",
+      "line": 974,
+      "format": "markdown",
+      "reads": "a heading",
+      "movesTo": "scripts/lib/markdown-links.mjs (markdownHeadings, markdownSections) or scripts/lib/work-order-document.mjs"
+    }
+  ],
+  "ownScanners": [
+    {
+      "file": "packages/skeleton/src/harness-command.ts",
+      "format": "shell",
+      "reads": "the hooks' shell reader (shellWords and the readers built on it)",
+      "movesTo": "packages/skeleton/src/shell-reading.mjs, which this file then imports"
+    },
+    {
+      "file": "packages/skeleton/src/harness-host.ts",
+      "format": "shell",
+      "reads": "plainShellWords, a second word splitter",
+      "movesTo": "packages/skeleton/src/shell-reading.mjs"
+    },
+    {
+      "file": "scripts/lib/git-surface.mjs",
+      "format": "shell",
+      "reads": "its own shell lexer for the Git forms the surface file records",
+      "movesTo": "packages/skeleton/src/shell-reading.mjs"
+    },
+    {
+      "file": "scripts/lib/machinery-coverage.mjs",
+      "format": "javascript",
+      "reads": "scriptTokens, TypeScript's scanner driven in process",
+      "movesTo": "packages/skeleton/src/source-reading.mjs (sourceTokens)"
+    },
+    {
+      "file": "scripts/lib/evidence-sources.mjs",
+      "format": "javascript",
+      "reads": "codeTokens and the import specifier reader, a second drive of the same scanner",
+      "movesTo": "packages/skeleton/src/source-reading.mjs (sourceImports)"
+    },
+    {
+      "file": "scripts/lib/temporary-root-declarations.mjs",
+      "format": "javascript",
+      "reads": "scriptTokens through machinery-coverage",
+      "movesTo": "packages/skeleton/src/source-reading.mjs (sourceTokens)"
+    },
+    {
+      "file": "scripts/lib/comment-labels.mjs",
+      "format": "javascript",
+      "reads": "comments by pattern",
+      "movesTo": "packages/skeleton/src/source-reading.mjs (sourceComments)"
+    },
+    {
+      "file": "scripts/lib/git-surface.mjs",
+      "format": "javascript",
+      "reads": "script sources by its own reading, for the Git calls they make",
+      "movesTo": "packages/skeleton/src/source-reading.mjs"
+    },
+    {
+      "file": "packages/skeleton/src/feedback-source-comments.ts",
+      "format": "javascript",
+      "reads": "comments from a syntax tree of the compiler's interface",
+      "movesTo": "packages/skeleton/src/source-reading.mjs (sourceTrees), keeping its tree"
+    }
+  ],
+  "furtherFormatsReadInTwoPlaces": "none found beyond the four above: the engines range, the control log's lines and the tag manifests each have one reader",
+  "timingsBefore": {
+    "npm run work-orders -- index --check": {
+      "seconds": [
+        4.12,
+        3.93,
+        3.98
+      ],
+      "method": "/usr/bin/time -p, three runs, wall seconds"
+    },
+    "node scripts/docs-check.mjs": {
+      "seconds": [
+        33.34,
+        32.15,
+        32.51
+      ],
+      "method": "/usr/bin/time -p, three runs, wall seconds (Part A's after-timings, taken on this code)"
+    }
+  }
+}

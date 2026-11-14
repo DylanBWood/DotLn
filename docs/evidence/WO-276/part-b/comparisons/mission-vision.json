@@ -1,0 +1,85 @@
+{
+  "comparison": "mission-vision",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every committed revision of the vision, and the worktree's: the thesis text under each heading the capsule names and every other heading, and the exclusions",
+  "read": 19,
+  "equal": 0,
+  "differences": {
+    "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading": 13,
+    "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word": 6
+  },
+  "examples": [
+    {
+      "input": "worktree",
+      "named": "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading",
+      "old": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord",
+      "new": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord"
+    },
+    {
+      "input": "178e58d813ea",
+      "named": "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading",
+      "old": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord",
+      "new": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord"
+    },
+    {
+      "input": "30d2bc05473d",
+      "named": "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading",
+      "old": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord",
+      "new": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord"
+    },
+    {
+      "input": "d7f707a0792f",
+      "named": "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading",
+      "old": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord",
+      "new": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord"
+    },
+    {
+      "input": "e3bed98e817d",
+      "named": "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading",
+      "old": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord",
+      "new": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord"
+    },
+    {
+      "input": "3940b8993d6f",
+      "named": "defect of the old reader: its pattern ended a section at the next level-two or level-three heading whatever the section's own level, so the level-two thesis The differentiated interface lost its level-three subsection Shape-first synthesis; a section runs to the next heading at its own level or above, as the shared reader gives it. The mission capsule's thesis is longer by that subsection, to its bound, and no longer ends with the line break before the next heading",
+      "old": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord",
+      "new": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"This is the mission of the author's personal implementation and a motivating\\nuse of the platform, not a compulsory objective or operating policy for every\\nDotLn owner.\\n\\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coord"
+    },
+    {
+      "input": "039788a7047c",
+      "named": "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word",
+      "old": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"AI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coordinates tools and workers,\\nchecks unsupported completion claims, recovers stalled work, and spends active\\nattention on the machinery instead of the idea. The desired altern",
+      "new": "{\"theses\":[{\"id\":\"mission\",\"title\":\"Mission — increase the chance of operator flow\",\"text\":\"AI-assisted work commonly falls into a babysitting mode: the operator repeatedly\\nrestates context, supplies procedural guidance, coordinates tools and workers,\\nchecks unsupported completion claims, recovers stalled work, and spends active\\nattention on the machinery instead of the idea. The desired altern"
+    },
+    {
+      "input": "d32e68999884",
+      "named": "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word",
+      "old": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn ",
+      "new": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn "
+    },
+    {
+      "input": "2a895f5eaaf1",
+      "named": "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word",
+      "old": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn ",
+      "new": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn "
+    },
+    {
+      "input": "9a054f3ce3c6",
+      "named": "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word",
+      "old": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn ",
+      "new": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn "
+    },
+    {
+      "input": "2bd4e6099d77",
+      "named": "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word",
+      "old": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn ",
+      "new": "{\"theses\":[{\"id\":\"common-substrate\",\"title\":\"Common substrate, local doctrine\",\"text\":\"DotLn distributes the same **legos**, not the same finished organization. Its\\nproduct is the level playing field: a common event grammar, deterministic\\nkernel, composition rules, authority boundaries, provenance, replay,\\ninspection, and interchangeable execution ports. The secret sauce belongs to\\neach DotLn "
+    },
+    {
+      "input": "6310344c3da3",
+      "named": "defect of the old reader: its pattern captured the line break that stood before the next heading as the last character of a thesis; the section's text ends at its last word",
+      "old": "{\"theses\":[{\"id\":\"the-core-bet\",\"title\":\"The core bet\",\"text\":\"> \\\"The true work of the inventor consists in choosing among these combinations\\n> so as to eliminate the useless ones... the rules that must guide the choice\\n> are extremely fine and delicate. It's almost impossible to state them\\n> precisely; they must be felt rather than formulated.\\\" — Poincaré, via Pirsig\\n\\nGeneration is cheap a",
+      "new": "{\"theses\":[{\"id\":\"the-core-bet\",\"title\":\"The core bet\",\"text\":\"> \\\"The true work of the inventor consists in choosing among these combinations\\n> so as to eliminate the useless ones... the rules that must guide the choice\\n> are extremely fine and delicate. It's almost impossible to state them\\n> precisely; they must be felt rather than formulated.\\\" — Poincaré, via Pirsig\\n\\nGeneration is cheap a"
+    }
+  ]
+}

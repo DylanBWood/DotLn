@@ -1,4 +1,4 @@
-import test from "node:test";
+import test from "./lib/test-shards.mjs";
 import assert from "node:assert/strict";
 import {
   chmodSync,
@@ -1236,7 +1236,7 @@ test("an order reads as merged once its pass reaches the base, however its recor
     write(
       f.main,
       `${f.config.roots.control}/local/terms.txt`,
-      "Private Fixture Term\n",
+      "refuse: Private Fixture Term\n",
     );
     write(f.orderRoot, "records/evidence/WO-999/decisions.md", "# Decisions\n");
     // The records commit precedes the filing, so the commit the footer names
@@ -1565,6 +1565,107 @@ test("a lane failure says why, including a remote that never answered, and the l
   }
 });
 
+test("WO-276 Part M: a target change its base holds as one squashed commit or as its commits replayed is merged to the drive as it is to the close, and one squashed with an edit is not, the stop naming the attended close", () => {
+  for (const how of ["squash", "rebase", "edited"]) {
+    const base = realpathSync(
+      createFixtureRoot(join(tmpdir(), "dotln-drive-landed-")),
+    );
+    try {
+      const f = fixture(base);
+      f.mapClone();
+      f.start();
+      for (const file of ["change.txt", "second.txt"]) {
+        write(f.target, file, "target change\n");
+        git(f.target, "add", file);
+        git(f.target, "commit", "-qm", `Synthetic target change: ${file}`);
+      }
+      git(f.target, "push", "-q", "origin", "wo-999");
+      const hosted = join(base, "hosted-merge");
+      git(base, "clone", "-q", join(base, "target.git"), hosted);
+      git(hosted, "config", "user.name", "Fixture");
+      git(hosted, "config", "user.email", "fixture@example.invalid");
+      if (how === "rebase") {
+        const fork = git(hosted, "merge-base", "HEAD", "origin/wo-999");
+        for (const picked of git(
+          hosted,
+          "rev-list",
+          "--reverse",
+          `${fork}..origin/wo-999`,
+        ).split("\n"))
+          git(hosted, "cherry-pick", picked);
+      } else {
+        git(hosted, "merge", "--squash", "origin/wo-999");
+        if (how === "edited")
+          write(hosted, "change.txt", "target change, edited at merge\n");
+        git(hosted, "add", "-A");
+        git(hosted, "commit", "-qm", "Hosted squash");
+      }
+      git(hosted, "push", "-q", "origin", "main");
+      const state = {
+        phase: "closed",
+        workOrderId: "WO-999",
+        repositoryId: "target",
+      };
+      assert.equal(routeFacts(f.orderRoot, state).targetMerged, false, how);
+      assert.equal(
+        fetchMergedBases(f.orderRoot, "WO-999").find(
+          (row) => row.label === "target",
+        ),
+        undefined,
+        how,
+      );
+      assert.equal(
+        routeFacts(f.orderRoot, state).targetMerged,
+        how !== "edited",
+        how,
+      );
+      // Status is a local read: in a partial clone, where comparing patches
+      // could fetch their blobs, only the branch's own history is asked.
+      if (how === "squash") {
+        git(f.clone, "config", "remote.origin.promisor", "true");
+        const partial = routeFacts(f.orderRoot, state);
+        assert.deepEqual(
+          [partial.targetMerged, partial.targetUncompared],
+          [false, true],
+        );
+      }
+    } finally {
+      rmSync(base, { recursive: true, force: true });
+    }
+  }
+  // The stop for a target whose own records are merged and whose base does
+  // not hold the change names the attended close; any other keeps its words.
+  const closed = { phase: "closed", workOrderId: "WO-999" };
+  assert.match(
+    routeOrder({ ...closed, repositoryId: "target" }, [], {
+      merged: true,
+      targetMerged: false,
+    }).stop.next,
+    /where it was squashed with an edit, the operator runs the release close with --merged-as <commit>/u,
+  );
+  // In a partial clone nothing was compared, and the stop says so and names
+  // the attended close, which judges it.
+  assert.match(
+    routeOrder({ ...closed, repositoryId: "target" }, [], {
+      merged: true,
+      targetMerged: false,
+      targetUncompared: true,
+    }).stop.next,
+    /a partial clone, where status compares no patches.*types resume: release close in the launchpad's main checkout/u,
+  );
+  for (const [state, facts] of [
+    [
+      { ...closed, repositoryId: "target" },
+      { merged: false, targetMerged: false },
+    ],
+    [closed, { merged: false }],
+  ])
+    assert.equal(
+      routeOrder(state, [], facts).stop.next,
+      "The operator merges the reviewed pull request(s), then types the same drive phrase again.",
+    );
+});
+
 test("a hosted merge reaches release close through the remote base a drive fetches", () => {
   const base = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-drive-hosted-")),
@@ -1783,6 +1884,145 @@ test("target roots derive from the registered order and survive an alias spellin
       cleanup: { outcome: "clean" },
       targetCleanup: { outcome: "removed" },
     });
+    // A target that declares a release policy (WO-276 criterion M6). The
+    // launchpad publishes nothing for the order, so the close's publication
+    // reads not-attempted, and the target's own outcome settles it: published
+    // or current with the cleanup clean and the target removed is released,
+    // and status and the drive route no further step; prepared, the branch
+    // deleted and the target removed, goes back to the release close and
+    // never to a merge that has happened.
+    const declaredClose = (outcome, extra = {}) =>
+      closeReceipt({
+        publication: {
+          outcome: "not-attempted",
+          target: { repositoryId: "target", policy: "declared", outcome },
+        },
+        cleanup: { outcome: "clean", branch: { outcome: "deleted" } },
+        targetCleanup: { outcome: "removed" },
+        ...extra,
+      });
+    const routed = () =>
+      routeOrder(state, events, routeFacts(f.orderRoot, state, events));
+    for (const outcome of ["published", "current"]) {
+      declaredClose(outcome);
+      assert.equal(routeFacts(f.orderRoot, state, events).released, true);
+      assert.deepEqual(
+        [routed().action, routed().stop.reason],
+        [null, "released"],
+        outcome,
+      );
+    }
+    for (const outcome of [
+      "prepared",
+      "not-attempted",
+      "partially-published",
+      "refused",
+    ]) {
+      declaredClose(outcome);
+      assert.equal(routeFacts(f.orderRoot, state, events).released, false);
+      assert.equal(routed().action, "release-close", outcome);
+    }
+    // Published with its cleanup blocked, or its target retained, is not
+    // settled; a dry run, another repository's row and a close of an earlier
+    // activation settle nothing.
+    declaredClose("published", {
+      cleanup: { outcome: "blocked", branch: { outcome: "deleted" } },
+    });
+    assert.equal(routed().action, "release-close");
+    for (const extra of [
+      { targetCleanup: { outcome: "retained" } },
+      { dryRun: true },
+      {
+        publication: {
+          outcome: "not-attempted",
+          target: {
+            repositoryId: "other",
+            policy: "declared",
+            outcome: "published",
+          },
+        },
+      },
+    ]) {
+      declaredClose("published", extra);
+      assert.equal(routeFacts(f.orderRoot, state, events).released, false);
+    }
+    declaredClose("published", {
+      activation: { recordedAt: "2026-10-01T00:00:00.000Z" },
+    });
+    assert.equal(routeFacts(f.orderRoot, state, reactivated).released, false);
+    declaredClose("published", {
+      activation: { recordedAt: "2026-10-30T00:00:00.000Z" },
+    });
+    assert.equal(routeFacts(f.orderRoot, state, reactivated).released, true);
+    // A refusal after the target published rewrites the launchpad's own
+    // outcome; the target's block still settles the order.
+    declaredClose("published", {
+      publication: {
+        outcome: "refused",
+        target: {
+          repositoryId: "target",
+          policy: "declared",
+          outcome: "published",
+        },
+      },
+    });
+    assert.equal(routed().stop.reason, "released");
+    // A later attempt rewrites the record and undoes nothing: after a close
+    // that removed the target, deleted the branch and failed at the
+    // target's Release, a dry run and a publish stopped in its
+    // prerequisites both keep that attempt among the earlier ones, and the
+    // order still routes to the release close; after a settled close, it
+    // is still released.
+    const earlier = (outcome) => ({
+      workOrderId: "WO-999",
+      dryRun: false,
+      publication: {
+        outcome: "not-attempted",
+        target: { repositoryId: "target", policy: "declared", outcome },
+      },
+      cleanup: { outcome: "clean", branch: { outcome: "deleted" } },
+      targetCleanup: { outcome: "removed" },
+    });
+    for (const later of [
+      { dryRun: true, targetCleanup: { outcome: "removed" } },
+      {
+        publication: { outcome: "refused" },
+        cleanup: { outcome: "not-attempted" },
+        targetCleanup: undefined,
+      },
+    ]) {
+      closeReceipt({ ...later, previousAttempts: [earlier("refused")] });
+      assert.equal(routed().action, "release-close");
+      closeReceipt({ ...later, previousAttempts: [earlier("published")] });
+      assert.equal(routed().stop.reason, "released");
+      // Another order's attempt, a dry run and one of an earlier activation
+      // among the earlier ones count for nothing.
+      closeReceipt({
+        ...later,
+        previousAttempts: [
+          { ...earlier("published"), workOrderId: "WO-997" },
+          { ...earlier("published"), dryRun: true },
+        ],
+      });
+      assert.equal(routed().stop.reason, "awaiting-merge");
+    }
+    closeReceipt({
+      dryRun: true,
+      activation: { recordedAt: "2026-10-30T00:00:00.000Z" },
+      previousAttempts: [
+        {
+          ...earlier("published"),
+          activation: { recordedAt: "2026-10-01T00:00:00.000Z" },
+        },
+      ],
+    });
+    assert.equal(routeFacts(f.orderRoot, state, reactivated).released, false);
+    // A no-release close routes as before this part.
+    closeReceipt({
+      cleanup: { outcome: "clean" },
+      targetCleanup: { outcome: "removed" },
+    });
+    assert.equal(routed().stop.reason, "released");
     const removedState = { ...state, workOrderId: "WO-998" };
     const removedReceipt = (workOrderId, dryRun = false) =>
       write(
@@ -1813,6 +2053,134 @@ test("target roots derive from the registered order and survive an alias spellin
         .reason,
       "awaiting-merge",
     );
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion M6: a settled target close stays released however many later attempts rewrite its record, by the archives the close keeps; a close of an earlier activation and a history whose archive cannot be read settle nothing", async () => {
+  const { readCloseHistory } = await import("./release.mjs");
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-history-")),
+  );
+  try {
+    const f = fixture(base);
+    f.mapClone();
+    f.start();
+    const state = {
+      phase: "closed",
+      workOrderId: "WO-999",
+      repositoryId: "target",
+    };
+    const file = "records/state/local/retained/WO-999/release-close.json";
+    const settled = {
+      schemaVersion: 1,
+      workOrderId: "WO-999",
+      dryRun: false,
+      publication: {
+        outcome: "not-attempted",
+        target: {
+          repositoryId: "target",
+          policy: "declared",
+          outcome: "published",
+        },
+      },
+      cleanup: { outcome: "clean", branch: { outcome: "deleted" } },
+      targetCleanup: { outcome: "removed" },
+    };
+    const facts = (events = []) => routeFacts(f.orderRoot, state, events);
+    const published = (attempt) =>
+      attempt.publication?.target?.outcome === "published";
+    // The close's own writer: an attempt takes its history from the close
+    // reader, which archives the record it found, and writes the reader's
+    // recovered attempts into no record.
+    const attemptAfter = (attempt) => {
+      const { recoveryAttempts, ...history } = readCloseHistory(
+        f.main,
+        "WO-999",
+      );
+      write(
+        f.main,
+        file,
+        JSON.stringify({
+          schemaVersion: 1,
+          workOrderId: "WO-999",
+          ...attempt,
+          ...history,
+        }),
+      );
+      return { recoveryAttempts, ...history };
+    };
+    write(f.main, file, JSON.stringify(settled));
+    assert.equal(facts().released, true);
+    // Twelve later attempts, a dry run and a publish stopped in its
+    // prerequisites by turns: the record's own eight no longer hold the
+    // settled close after the ninth, and its archives still do.
+    let history;
+    for (let attempt = 1; attempt <= 12; attempt++) {
+      history = attemptAfter(
+        attempt % 2
+          ? {
+              dryRun: true,
+              publication: { outcome: "not-attempted" },
+              cleanup: { outcome: "not-attempted" },
+            }
+          : {
+              dryRun: false,
+              publication: { outcome: "refused" },
+              cleanup: { outcome: "not-attempted" },
+            },
+      );
+      assert.equal(
+        history.previousAttempts.some(published),
+        attempt <= 8,
+        `attempt ${attempt}: the record's own attempts`,
+      );
+      assert.ok(history.recoveryAttempts.some(published), `attempt ${attempt}`);
+      const read = facts();
+      assert.equal(read.released, true, `attempt ${attempt}`);
+      assert.equal(
+        routeOrder(state, [], read).stop.reason,
+        "released",
+        `attempt ${attempt}`,
+      );
+    }
+    assert.equal(history.previousAttempts.length, 8);
+    assert.equal(history.archivedAttempts.length, 12);
+    // The archived close carries no activation: after a reactivation it is
+    // an earlier activation's, and settles nothing for this one.
+    const reactivated = ["2026-10-01", "2026-10-30"].map((day) => ({
+      type: "WorkOrderActivated",
+      workOrderId: "WO-999",
+      recordedAt: `${day}T00:00:00.000Z`,
+    }));
+    assert.equal(facts(reactivated).released, false);
+    // An archive whose bytes no longer have the digest its name states is
+    // not read, and the archives named after it are not reached: the route
+    // no longer knows of the settled close and names the order unreleased,
+    // so the close runs and names the archive.
+    const first = join(f.main, history.archivedAttempts[0]);
+    const bytes = readFileSync(first, "utf8");
+    writeFileSync(first, `${bytes} `);
+    assert.equal(facts().released, false);
+    assert.match(
+      readCloseHistory(f.main, "WO-999").historyFailure,
+      /Close history cannot be read safely: .*\(invalid immutable archive\)/u,
+    );
+    writeFileSync(first, bytes);
+    assert.equal(facts().released, true);
+    // An archive name outside the order's own history is not followed.
+    const record = JSON.parse(readFileSync(join(f.main, file), "utf8"));
+    write(
+      f.main,
+      file,
+      JSON.stringify({
+        ...record,
+        previousAttempts: [],
+        archivedAttempts: ["records/state/local/retained/WO-998/x.json"],
+      }),
+    );
+    assert.equal(facts().released, false);
   } finally {
     rmSync(base, { recursive: true, force: true });
   }
@@ -2639,7 +3007,16 @@ test("supervisor death terminates its detached native worker before transport re
   );
 });
 
-test("both native hosts use every generated role with the shared host pins", async () => {
+test("both native hosts use every generated role with what the worker table gives it: the default worker, and the verifier worker for a verification", async () => {
+  const { KIT_MODELS, KIT_WORKERS } =
+    await import("../packages/skeleton/src/worker-models.mjs");
+  // This checkout states no worker of its own, so each phase runs the
+  // kit's binding for its host.
+  const kit = (worker, host) => {
+    const binding = KIT_WORKERS[worker][host];
+    const model = KIT_MODELS[binding.model ?? binding];
+    return { model: model.id, effort: binding.effort ?? model.effort };
+  };
   for (const host of ["claude", "codex"]) {
     for (const role of [
       "router",
@@ -2650,14 +3027,21 @@ test("both native hosts use every generated role with the shared host pins", asy
     ]) {
       const value = await phaseDefinition(process.cwd(), role, host);
       assert.equal(value.name, `dotln-${role}`);
-      assert.equal(
-        value.definition.model,
-        host === "codex" ? "gpt-6.1-sol" : "claude-opus-5-5",
+      assert.deepEqual(
+        { model: value.definition.model, effort: value.definition.effort },
+        kit(role === "verifier" ? "verifier" : "default", host),
+        `${role} on ${host}`,
       );
-      assert.equal(
-        value.definition.effort,
-        host === "codex" && role !== "verifier" ? "max" : "xhigh",
+      // The helper a phase's session launches is the default worker, and
+      // nothing of this checkout's named a model.
+      assert.deepEqual(
+        {
+          model: value.helpers["dotln-worker"].model,
+          effort: value.helpers["dotln-worker"].effort,
+        },
+        kit("default", host),
       );
+      assert.equal(value.modelKey, null);
       assert.match(value.definition.prompt, new RegExp(`name: dotln-${role}`));
       if (role === "router") {
         assert.match(

@@ -1,0 +1,531 @@
+{
+  "ordinary words (control)": {
+    "header": {
+      "candidate": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on with ordinary words to its end.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on with ordinary words to its end.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": true
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": true
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1"
+      ],
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": true
+    }
+  },
+  "<title>, a block element's name": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on <title> for each publish.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": {
+        "refused": "acceptance criteria: line 17 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 2 on line 18 and the lines after it, to the next blank line, as text: write the tag "
+      },
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": false
+    }
+  },
+  "<dir>, a block element's name": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on <dir> for each profile.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": {
+        "refused": "acceptance criteria: line 17 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 2 on line 18 and the lines after it, to the next blank line, as text: write the tag "
+      },
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": false
+    }
+  },
+  "<summary>, a block element's name": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on <summary> of the run.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": {
+        "refused": "acceptance criteria: line 17 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 2 on line 18 and the lines after it, to the next blank line, as text: write the tag "
+      },
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": false
+    }
+  },
+  "<path>, no block element's name (control)": {
+    "header": {
+      "candidate": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on <path> for each part.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on <path> for each part.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": true
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": true
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1"
+      ],
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": true
+    }
+  },
+  "a greater-than sign": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on > 20 workers in one dispatch.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1"
+      ],
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": true
+    }
+  },
+  "greater than or equal": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on >= 2.31.0 of Git on the host.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1"
+      ],
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": true
+    }
+  },
+  "a plus sign and a space": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on + 3 more suites for the part.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1"
+      ],
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": true
+    }
+  },
+  "a hyphen and a space": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on - as the record states - for each part.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1"
+      ],
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": true
+    }
+  },
+  "an asterisk and a space": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on * each measured once.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1"
+      ],
+      "base": [
+        "0",
+        "1"
+      ],
+      "equal": true
+    }
+  },
+  "one, a period and a space": {
+    "header": {
+      "candidate": {
+        "track": "unknown",
+        "cost": "the first line of the cost wraps where it wraps and goes on",
+        "repository": "none declared: the launchpad's own",
+        "dependsOn": []
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on 1. the first of two readings.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": false
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": false
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1",
+        "2"
+      ],
+      "base": [
+        "0",
+        "1",
+        "2"
+      ],
+      "equal": true
+    }
+  },
+  "two, a period and a space (control)": {
+    "header": {
+      "candidate": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on 2. the second of two readings.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "base": {
+        "track": "machinery",
+        "cost": "the first line of the cost wraps where it wraps and goes on 2. the second of two readings.",
+        "repository": "fixture",
+        "dependsOn": [
+          "WO-072"
+        ]
+      },
+      "equal": true
+    },
+    "preflightSuites": {
+      "candidate": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "base": [
+        "skeleton",
+        "compiler",
+        "resume",
+        "launchpad"
+      ],
+      "equal": true
+    },
+    "criteria": {
+      "candidate": [
+        "0",
+        "1",
+        "2"
+      ],
+      "base": [
+        "0",
+        "1",
+        "2"
+      ],
+      "equal": true
+    }
+  }
+}

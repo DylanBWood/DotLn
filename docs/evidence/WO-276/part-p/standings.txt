@@ -1,0 +1,8 @@
+Two half-hours of activity twenty hours apart, the gap beginning at a turn's end row, read at 21 h:
+dispatch standing: 1 h 0 min worked (21 h 0 min elapsed) of 8 h 0 min; complete runs 0 of 3; within
+
+Nine hours of unbroken activity, read at 9 h:
+DOTLN_DISPATCH_BOUND: wall clock=9 h 0 min, bound=8 h 0 min. dispatch standing: 9 h 0 min of 8 h 0 min; complete runs 0 of 3; exceeded. Use analysis: to diagnose. The operator can authorize proceeding in ordinary language in this conversation, including an early run for as long as needed; the agent records the contextual authorization with npm run resume -- accept-overrun <wallClockMs|completeRuns|subagentCap> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags> and continues in the same session. No special phrase, session exit or manual operator command is required.
+
+One tool call whose start and end rows are fifty minutes apart, the turn ending a minute later, read at 10 h:
+dispatch standing: 0 h 51 min worked (10 h 0 min elapsed) of 8 h 0 min; complete runs 0 of 3; within

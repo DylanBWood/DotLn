@@ -1,0 +1,9 @@
+{
+  "comparison": "integration-notes",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every order's decisions file, for each checkpoint whose integration note it holds by either reading and for one it holds none for: whether release preparation finds the note and refuses to retime the order",
+  "read": 291,
+  "equal": 291,
+  "differences": {},
+  "examples": []
+}

@@ -1,0 +1,10 @@
+contributions.authors: ["Planner One <one@example.invalid>","Teammate Two <two@example.invalid>"]; four commits after the base, by the first listed author, the second, an author outside the list, and that author with a sign-off trailer.
+
+PASS contribution-signoff 114111b641fd: observed listed author; expected listed author exemption (no sign-off required)
+PASS contribution-signoff 6123281f1bad: observed listed author; expected listed author exemption (no sign-off required)
+FAIL contribution-signoff 8668e95fdce6: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO; the declared contributions.operatorAuthor and contributions.authors already exempt their identities; other authors need the matching trailer
+PASS contribution-signoff a192e9181534: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO; the declared contributions.operatorAuthor and contributions.authors already exempt their identities; other authors need the matching trailer
+
+contributions.authors ["Planner One <one@example.invalid>","no identity"]: invalid DotLn configuration in <fixture>/dotln.config.json: contributions.authors[1] must be a single author identity: Name <email>
+contributions.authors ["Planner One <one@example.invalid>","Planner One <one@example.invalid>"]: invalid DotLn configuration in <fixture>/dotln.config.json: contributions.authors[1] repeats an identity the list already holds
+contributions.authors "Planner One <one@example.invalid>": invalid DotLn configuration in <fixture>/dotln.config.json: contributions.authors must be a list of author identities, each Name <email>

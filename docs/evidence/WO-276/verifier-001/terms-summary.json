@@ -1,0 +1,7 @@
+{
+  "command": "node scripts/terms.mjs branch",
+  "exitCode": 0,
+  "refuseFindings": 0,
+  "contextLinesRead": 0,
+  "privateListPrinted": false
+}

@@ -1,0 +1,219 @@
+The fragment, .claude/settings.instance.json:
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Bash(extensions/tools/deploy *)"
+    ]
+  }
+}
+
+$ node scripts/harness.mjs check   (the fragment written, emit not yet run)
+exit 1: harness drift: .claude/settings.json
+
+Entries before the merge and after it (hook groups by event; rules by list):
+  the kit's alone: {"hookGroups":{"PreToolUse":1,"PostToolUse":1,"PermissionDenied":1,"SubagentStop":1,"PostToolUseFailure":1,"UserPromptSubmit":1,"SessionStart":1,"Stop":1},"allow":3,"ask":0,"deny":24}
+  merged:          {"hookGroups":{"PreToolUse":1,"PostToolUse":2,"PermissionDenied":1,"SubagentStop":1,"PostToolUseFailure":1,"UserPromptSubmit":1,"SessionStart":1,"Stop":1},"allow":3,"ask":0,"deny":25}
+Every entry the kit emits is in the merged file at its place; the fragment's hook group is the last under PostToolUse and its rule the last of permissions.deny.
+
+The settings emit wrote, .claude/settings.json:
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "autoMemoryEnabled": false,
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/launchpad.mjs update --publish *)",
+      "Bash(node scripts/refute-plan.mjs publish *)",
+      "Bash(node scripts/worktree.mjs publish *)"
+    ],
+    "deny": [
+      "Bash(npm publish *)",
+      "Bash(scp *)",
+      "Bash(sftp *)",
+      "Bash(ssh *)",
+      "Skill(anthropic-skills:built-in-browser *)",
+      "Skill(anthropic-skills:built-in-browser)",
+      "Skill(anthropic-skills:chrome-browser *)",
+      "Skill(anthropic-skills:chrome-browser)",
+      "Skill(anthropic-skills:computer-use *)",
+      "Skill(anthropic-skills:computer-use)",
+      "Skill(claude-in-chrome *)",
+      "Skill(claude-in-chrome)",
+      "Skill(skill:anthropic-skills:built-in-browser)",
+      "Skill(skill:anthropic-skills:chrome-browser)",
+      "Skill(skill:anthropic-skills:computer-use)",
+      "Skill(skill:claude-in-chrome)",
+      "enable__mcp__claude-in-chrome*",
+      "enable__mcp__remote-devices__Claude_Browser*",
+      "enable__mcp__remote-devices__computer*",
+      "mcp__Claude_Browser__*",
+      "mcp__claude-in-chrome__*",
+      "mcp__computer-use__*",
+      "mcp__remote-devices__Claude_Browser__*",
+      "mcp__remote-devices__computer_*",
+      "Bash(extensions/tools/deploy *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/concurrent-work-requires-worktrees.mjs\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-attribution.mjs\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/permissions.mjs\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/write-observer.mjs\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-pretooluse.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-lint-type-disables-as-fixes.mjs\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/read-observer.mjs\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-posttooluse.mjs\"",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/permission-denied.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/agent-finished.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/failure-observer.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session.mjs\"",
+            "timeout": 600
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-userpromptsubmit.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/finish.mjs\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-stop.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

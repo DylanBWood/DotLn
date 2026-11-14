@@ -1696,8 +1696,7 @@ SOURCES
 unavailable: skeleton:loadout-exports — Source not supplied
 unavailable: skeleton:feedback-units — Source not supplied
 available: control:canonical-segments
-available: docs/work-orders/README.md
-available: docs/work-orders/HISTORY.md
+available: work-orders:index--json
 available: resume:status--json
 available: worktree:constellation
 available: release:list

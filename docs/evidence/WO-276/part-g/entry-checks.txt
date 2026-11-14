@@ -1,0 +1,9 @@
+# forCoreFailures of scripts/docs-check.mjs, which the document check runs on a root that holds FOR-CORE.md.
+## the file as seeded, with no entry: passes
+## an entry of the stated form: passes
+## an entry that lacks a field: fails
+FOR-CORE.md:44: entry "2026-11-11 — WO-002 — the update preview refused a path the kit had written": field stopsNextOrder is missing; it holds true or false
+## an entry with a value outside its set: fails
+FOR-CORE.md:44: entry "2026-11-11 — WO-002 — the update preview refused a path the kit had written": field stopsNextOrder holds "no", outside its set (true or false)
+## an entry whose block is no JSON: fails
+FOR-CORE.md:44: entry "2026-11-11 — WO-002 — the update preview refused a path the kit had written": its json block is not JSON

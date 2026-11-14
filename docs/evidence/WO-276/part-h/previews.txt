@@ -1,0 +1,19 @@
+# node scripts/launchpad.mjs preview --from <revision>, in a fork of a fresh export; the first eight lines of each.
+## A revision whose floors this host meets: exit 0
+Preview of the DotLn kit at 83db01af7a7d3238eaa1a62e75b5626b6cb38923 in <fork>.
+kit files: 0 replaced; 0 added; 0 removed; 0 refused; 1089 unchanged.
+incoming: 83db01af7a7d3238eaa1a62e75b5626b6cb38923 (v9.9.9-fixture)
+starter revision: 882a9d44e9bbcc94ccc8bac8b6d2685a454b2776
+scope: manifest-listed kit files; Git merge results may differ; instance actions are manual after the merge.
+build: fnv1a64:1966b0dd3255a4c1 -> fnv1a64:1966b0dd3255a4c1
+receipt: none (a starter merge writes no core sibling receipt)
+instance files both sides changed: none
+## A revision that declares engines.node ^99.0.0 and engines.git >=99.0.0: exit 0
+Preview of the DotLn kit at 83db01af7a7d3238eaa1a62e75b5626b6cb38923 in <fork>.
+kit files: 0 replaced; 0 added; 0 removed; 0 refused; 1089 unchanged.
+incoming floor not met on this host: engines.node ^99.0.0; this host runs Node v26.9.0. The incoming kit's commands refuse below it: run them under a Node that range admits, or take the update on the host that will.
+incoming floor not met on this host: engines.git >=99.0.0; this host runs Git 2.55.0. The incoming kit's commands refuse below it: put a Git at or above that floor first on PATH, or take the update on the host that has one.
+incoming: 83db01af7a7d3238eaa1a62e75b5626b6cb38923 (v9.9.9-fixture)
+starter revision: 32a336acb70b01985a3bf6938a661b6ec0f126ad
+scope: manifest-listed kit files; Git merge results may differ; instance actions are manual after the merge.
+build: fnv1a64:1966b0dd3255a4c1 -> fnv1a64:1966b0dd3255a4c1

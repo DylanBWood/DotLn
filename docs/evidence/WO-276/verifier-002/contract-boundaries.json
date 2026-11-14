@@ -1,0 +1,95 @@
+{
+  "fences": [
+    {
+      "newline": "\"\\n\"",
+      "blocks": [
+        {
+          "closed": true,
+          "value": "{\"x\":1}",
+          "line": 1,
+          "endLine": 3
+        }
+      ]
+    },
+    {
+      "newline": "\"\\r\\n\"",
+      "blocks": [
+        {
+          "closed": true,
+          "value": "{\"x\":1}",
+          "line": 1,
+          "endLine": 3
+        }
+      ]
+    },
+    {
+      "newline": "\"\\r\"",
+      "blocks": [
+        {
+          "closed": false,
+          "value": "{\"x\":1}",
+          "line": 1,
+          "endLine": 3
+        }
+      ]
+    }
+  ],
+  "ledgerReadings": [
+    {
+      "newline": "\"\\n\"",
+      "errors": []
+    },
+    {
+      "newline": "\"\\r\\n\"",
+      "errors": []
+    },
+    {
+      "newline": "\"\\r\"",
+      "errors": [
+        "Unclosed code fence",
+        "Line 7: top-level idea entries must start in column one"
+      ]
+    }
+  ],
+  "separatorFinding": [
+    {
+      "file": "scripts/example.mjs",
+      "line": 2,
+      "form": "a fence",
+      "pattern": "```"
+    }
+  ],
+  "header": [
+    {
+      "label": "Repository",
+      "value": "original"
+    },
+    {
+      "label": "Model",
+      "value": "any"
+    }
+  ],
+  "modes": [
+    {
+      "key": "unmarked",
+      "mode": "context"
+    },
+    {
+      "key": "firstentry",
+      "mode": "refuse"
+    },
+    {
+      "key": "secondentry",
+      "mode": "context"
+    },
+    {
+      "key": "thirdentry",
+      "mode": "context"
+    }
+  ],
+  "configuredVerifier": {
+    "effort": "max",
+    "emittedEffortMax": true,
+    "guidanceForbidsMax": true
+  }
+}

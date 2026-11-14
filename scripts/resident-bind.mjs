@@ -25,7 +25,9 @@ import {
   docRelative,
   findLaunchpad,
   loadConfig,
+  workerSelector,
 } from "./lib/config.mjs";
+import { PROVIDERS } from "../packages/skeleton/src/worker-catalog.mjs";
 import {
   readAuthorityGrantRegistry,
   registeredProfileMismatches,
@@ -39,6 +41,7 @@ import {
   spawnGit,
 } from "./lib/git.mjs";
 import { eventsForOrder, readControl } from "./lib/control-store.mjs";
+import { missionDocumentReader } from "./lib/mission-documents.mjs";
 import {
   isMainModule,
   workOrderAuthorityPath,
@@ -54,6 +57,7 @@ import {
 import { buildMissionCheckRequest } from "../packages/skeleton/dist/src/mission-check-host.js";
 import {
   missionPinFromSource,
+  observeMissionDocuments,
   observeMissionSubject,
 } from "../packages/skeleton/dist/src/mission-check-source.js";
 import { missionPath } from "../packages/skeleton/dist/src/mission-check-protocol.js";
@@ -66,22 +70,23 @@ import {
 
 export const BINDING_SCHEMA_VERSION = "resident-binding-v1";
 export const TRANSPORTS = ["claude-cli-print", "codex-cli-exec"];
-/** The always-on judge's default per transport, at `xhigh` (WO-157 item 7,
- * WO-100 D007): the model id the CLI itself reports, never an alias. Reopen
- * when Claude Sonnet 5.5 is available (the Claude default moves to it), a
- * default model is withdrawn, or the operator changes a role default. */
-export const DEFAULT_JUDGE = Object.freeze({
-  "claude-cli-print": Object.freeze({
-    model: "claude-sonnet-5",
-    effort: "xhigh",
-  }),
-  "codex-cli-exec": Object.freeze({ model: "gpt-6-luna", effort: "xhigh" }),
-});
-/** The judge a bind records, with whether each value was chosen or defaulted. */
-export function judgeSelection({ transport, model, effort }) {
-  if (!Object.hasOwn(DEFAULT_JUDGE, transport))
+/** The always-on judge's default for a transport (WO-157 item 7, WO-100
+ * D007): what the launchpad's `judge` worker runs on that transport's
+ * provider, the exact model id and the effort. The kit's rows for it are in
+ * the model list (`packages/skeleton/src/worker-models.mjs`), which is
+ * where a default is changed, and an instance binds `judge` to a model of
+ * its own in its configuration. */
+export function defaultJudge(transport, launchpad = findLaunchpad()) {
+  const provider = Object.values(PROVIDERS).find(
+    (candidate) => candidate.transport === transport,
+  );
+  if (!TRANSPORTS.includes(transport) || !provider)
     refuse(`--transport must be one of ${TRANSPORTS.join(", ")}`);
-  const fallback = DEFAULT_JUDGE[transport];
+  return workerSelector(provider.id, "judge", launchpad);
+}
+/** The judge a bind records, with whether each value was chosen or defaulted. */
+export function judgeSelection({ transport, model, effort }, launchpad) {
+  const fallback = defaultJudge(transport, launchpad);
   return {
     model: model ?? fallback.model,
     modelSource: model === undefined ? "default" : "operator",
@@ -424,8 +429,12 @@ export const missionConfiguration = (actor) =>
  * here and completed again at every dispatch, so the store judges the work as
  * it then reads while the contract it was given stays fixed. */
 export function missionActor(source, workOrderId, request, at = Date.now()) {
-  const pin = missionPinFromSource(source, workOrderId);
-  const subject = observeMissionSubject(source, pin);
+  const pin = missionPinFromSource(source, workOrderId, missionDocumentReader);
+  const subject = observeMissionSubject(
+    source,
+    pin,
+    observeMissionDocuments(source, missionDocumentReader),
+  );
   return {
     kind: "cli-worker",
     effect: "repo.read",
@@ -491,6 +500,9 @@ export function assertIgnoredStore(launchpad, store) {
 
 const dotln = join(TOOL_ROOT, "packages/skeleton/dist/src/dotln.js");
 const bind = join(TOOL_ROOT, "scripts/resident-bind.mjs");
+// The launch runs through the script-side launcher, which hands the resident
+// the reader of the documents its mission check judges.
+const resident = join(TOOL_ROOT, "scripts/resident.mjs");
 
 /** The lines a stage session and an outside terminal need, named for one
  * store. They are printed only for a binding that canonical state still
@@ -500,8 +512,8 @@ export function launchLines(store, selected = CONTRIBUTOR_MISSION_POLICY) {
   const policy = word(selected);
   return [
     "Launch (an outside terminal, with the operator marked away):",
-    `  node ${shellQuote(dotln)} resident --store ${at} --policy ${policy} --once`,
-    `  node ${shellQuote(dotln)} resident --store ${at} --policy ${policy} --tick 60000`,
+    `  node ${shellQuote(resident)} --store ${at} --policy ${policy} --once`,
+    `  node ${shellQuote(resident)} --store ${at} --policy ${policy} --tick 60000`,
     "Presence:",
     `  node ${shellQuote(dotln)} presence away --store ${at}`,
     `  node ${shellQuote(dotln)} presence back --store ${at}`,
@@ -534,7 +546,7 @@ export function describeBinding(binding) {
 }
 
 export function bindOrder(launchpad, request, now = () => new Date()) {
-  const judge = judgeSelection(request);
+  const judge = judgeSelection(request, launchpad);
   request = { ...request, model: judge.model, effort: judge.effort };
   const inputs = readBindingInputs(launchpad, request);
   const { lane, index, store } = nextStore(launchpad, request.workOrder);

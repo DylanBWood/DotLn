@@ -47,6 +47,7 @@ import {
   spawnGit,
   worktreeHasCheckout,
 } from "./git.mjs";
+import { inHistory, mergedChange, namedMerge } from "./merged-change.mjs";
 import {
   forgetTargetWorktree,
   physicalDirectory,
@@ -830,7 +831,7 @@ export const closeTargetWorktree = async (
   state,
   dryRun,
   record,
-  { retryMode = dryRun ? "--dry-run" : "--publish" } = {},
+  { retryMode = dryRun ? "--dry-run" : "--publish", mergedAs } = {},
 ) => {
   validateOrderHostRules(root, state.workOrderId);
   const entry = targetWorktreeForOrder(root, state.workOrderId);
@@ -933,7 +934,7 @@ export const closeTargetWorktree = async (
     }
     if (existsSync(join(lane, "installation.json")) || member)
       throw new Error(
-        `target bundle manifest is missing while installation ownership remains; source retained. Restore the installed ${manifestPath} and its bundle files before rerunning ${releaseCloseCommand(root, state.workOrderId, retryMode)}`,
+        `target bundle manifest is missing while installation ownership remains; source retained. Restore the installed ${manifestPath} and its bundle files before rerunning ${releaseCloseCommand(root, state.workOrderId, retryMode, { mergedAs })}`,
       );
   };
   if (!existsSync(entry.target)) requireReleasedBundleOwnership();
@@ -944,7 +945,8 @@ export const closeTargetWorktree = async (
     removeTargetHarness,
     runtimeSnapshotContent,
   } = await import("./harness.mjs");
-  const rerun = () => releaseCloseCommand(root, state.workOrderId, retryMode);
+  const rerun = () =>
+    releaseCloseCommand(root, state.workOrderId, retryMode, { mergedAs });
   const holders = parseWorktrees(entry.clone).filter(
     (item) => item.branch === `refs/heads/${entry.baseBranch}`,
   );
@@ -1230,22 +1232,56 @@ export const closeTargetWorktree = async (
           `${fetched}:refs/heads/${entry.baseBranch}`,
         ]);
     };
+    // Merged means the reviewed change is in the fetched base, whatever
+    // the team's repository made of it: the branch itself (a merge commit),
+    // one commit patch-equal to its whole change (a squash) or a patch-equal
+    // commit for each of its own (a rebase). Read from Git alone, so it
+    // needs no forge. A change the base holds under an edited patch matches
+    // none of these, and the person closing names the commit that carries
+    // it. What was found is kept on the cleanup's row, which the close
+    // prints.
     const containsBranch = () => {
-      if (git(entry.clone, ["branch", "--list", entry.branch]))
-        if (
-          spawnGit([
-            "-C",
-            entry.clone,
-            ...HOST_GIT_READ,
-            "merge-base",
-            "--is-ancestor",
-            entry.branch,
-            `origin/${entry.baseBranch}`,
-          ]).status !== 0
-        )
-          throw new Error(
-            `target branch ${entry.branch} is not merged into origin/${entry.baseBranch}; source retained. Merge the reviewed branch, then rerun ${rerun()}`,
+      if (!git(entry.clone, ["branch", "--list", entry.branch])) return;
+      const base = `origin/${entry.baseBranch}`;
+      // A commit named for the change is judged by name and no patch of the
+      // base is read, so a base too large to compare still closes; a branch
+      // that is in the base's history needs no name.
+      if (
+        mergedAs !== undefined &&
+        !inHistory(entry.clone, entry.branch, base)
+      ) {
+        let named;
+        try {
+          named = namedMerge(entry.clone, entry.branch, base, mergedAs, {
+            from: entry.baseCommit,
+          });
+        } catch (error) {
+          // The name was refused, so no command to run again repeats it.
+          throw Object.assign(
+            new Error(
+              `target branch ${entry.branch} is not merged into ${base}: ${error.message}; source retained. Name the commit of ${base} that carries the reviewed change, then rerun ${releaseCloseCommand(root, state.workOrderId, retryMode)} --merged-as <commit>`,
+            ),
+            { namedCommitRefused: true },
           );
+        }
+        row.merged = {
+          by: "named",
+          commits: [named.commit],
+          subject: named.subject,
+          read: 0,
+        };
+        return;
+      }
+      const found = mergedChange(entry.clone, entry.branch, base);
+      if (found.merged) {
+        row.merged = { by: found.by, commits: found.commits, read: found.read };
+        return;
+      }
+      // What the refusal cost is said beside it, as an accepted close says.
+      const cost = `${found.read} base ${found.read === 1 ? "commit" : "commits"} read${found.unread ? ", their patches more than the close compares" : ""}`;
+      throw new Error(
+        `target branch ${entry.branch} is not merged into ${base}; source retained. Merge the reviewed branch, then rerun ${rerun()}; where ${base} holds its change under a commit whose patch differs (a squash edited at merge or carrying other changes, a base that changed lines beside the change since the branch was cut, or a rebase that left out a commit of the branch the base already held), name that commit: ${rerun()} --merged-as <commit> (${cost})`,
+      );
     };
     containsBranch();
     const registered = parseWorktrees(entry.clone).find(
@@ -1428,7 +1464,7 @@ export const closeTargetWorktree = async (
         if (other.length)
           throw closeBlocker(
             "undeclared-ignored-material",
-            `target has undeclared ignored material; source retained: ${other.join(", ")}. Declare it disposable in the registration or remove it; regenerable build output is deleted at close, never moved to scratch. Then rerun ${releaseCloseCommand(root, state.workOrderId, retryMode)}`,
+            `target has undeclared ignored material; source retained: ${other.join(", ")}. Declare it disposable in the registration or remove it; regenerable build output is deleted at close, never moved to scratch. Then rerun ${releaseCloseCommand(root, state.workOrderId, retryMode, { mergedAs })}`,
           );
         const roots = disposableRoots(targetDisposable, disposable);
         inspectDisposable(entry.target, roots, "target worktree", rerun);

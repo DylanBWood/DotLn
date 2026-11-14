@@ -24,8 +24,14 @@ import { createHash } from "node:crypto";
 import { readDecisions } from "./meta.mjs";
 import { runGit, runGitPathList, spawnGit } from "./git.mjs";
 import { readAdjacentQueue } from "./adjacent-queue.mjs";
-import { checkLocalTerms } from "./terms.mjs";
+import { screenLocalTerms } from "./terms.mjs";
 import { withoutHomeDirectories } from "./private-paths.mjs";
+import {
+  markdownFields,
+  markdownListItems,
+  markdownSections,
+  parseMarkdown,
+} from "./markdown-links.mjs";
 
 // The default-layout name peers and fixtures use; `followupsPath` resolves the
 // same record under a launchpad's configured planning root.
@@ -230,17 +236,28 @@ export function collectFollowupSources(root) {
   for (const file of files) {
     const path = moved.get(file) ?? file;
     const body = readFileSync(safePath(root, file), "utf8");
-    // Ignore fenced examples; a candidate must be a real Markdown heading.
-    const visible = body.replace(
-      /^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm,
-      (match) => match.replace(/[^\n]/g, " "),
+    // The pinned parser reads the document, so a candidate is a real heading
+    // and an item a real list item, never a line of a fenced example.
+    const tree = parseMarkdown(body);
+    // A candidate item is a dash or numbered item at the left margin; any
+    // other line up to the next one is part of its text.
+    const items = markdownListItems(body, tree).filter(
+      (item) =>
+        (item.start === 0 || body[item.start - 1] === "\n") &&
+        (item.marker === "-" || (item.ordered && item.marker.endsWith("."))),
     );
-    const headings = [...visible.matchAll(/^(#{1,6}) (.+)$/gm)];
+    // The bold text that opens an item names it.
+    const leads = markdownFields(body, tree);
+    const leadTitle = (item) =>
+      leads.find(
+        (field) =>
+          field.start > item.start &&
+          field.start < item.end &&
+          !body.slice(item.start + item.marker.length, field.start).trim(),
+      )?.raw;
     const seenAnchors = new Map();
-    for (let i = 0; i < headings.length; i++) {
-      const heading = headings[i],
-        label = heading[2],
-        level = heading[1].length;
+    for (const heading of markdownSections(body, tree)) {
+      const label = heading.title;
       const stem = anchor(label),
         ordinal = seenAnchors.get(stem) ?? 0;
       seenAnchors.set(stem, ordinal + 1);
@@ -252,22 +269,20 @@ export function collectFollowupSources(root) {
         !/\(candidate\)$|—.*\bcandidate(?: trial)?$/i.test(label)
       )
         continue;
-      const end =
-        headings.slice(i + 1).find((next) => next[1].length <= level)?.index ??
-        body.length;
-      const section = body.slice(heading.index, end).trim();
+      const end = heading.bodyEnd;
+      const section = body.slice(heading.start, end).trim();
       if (
         /\b(candidates|follow-ups?|deferred work|unallocated)\b/i.test(label)
       ) {
-        const items = [...section.matchAll(/^(?:- |\d+\. )/gm)];
-        if (items.length) {
-          for (let j = 0; j < items.length; j++) {
-            const item = section
-              .slice(items[j].index, items[j + 1]?.index ?? section.length)
+        const listed = items.filter(
+          (item) => item.start > heading.start && item.start < end,
+        );
+        if (listed.length) {
+          listed.forEach((entry, j) => {
+            const item = body
+              .slice(entry.start, listed[j + 1]?.start ?? end)
               .trim();
-            const title =
-              item.match(/^[-\d. ]+\*\*([\s\S]*?)\*\*/)?.[1] ??
-              item.split("\n")[0].replace(/^(?:- |\d+\. )/, "");
+            const title = leadTitle(entry) ?? entry.text.split("\n")[0];
             add(
               "candidate",
               path,
@@ -275,7 +290,7 @@ export function collectFollowupSources(root) {
               title,
               item,
             );
-          }
+          });
           continue;
         }
       }
@@ -455,13 +470,16 @@ function retained(previous, current) {
     );
   }
 }
-export function readFollowups(root) {
+/** The register as it is on disk. `targets: false` leaves out the check
+ * that every allocation names a filed order: a batch reads the register that
+ * way and makes the check once, on the state it produces. */
+export function readFollowups(root, { targets = true } = {}) {
   const path = safePath(root, followupsPath(root));
   const state = existsSync(path)
     ? validate(JSON.parse(readFileSync(path, "utf8")), root)
     : empty();
   retained(committedState(root), state);
-  requireAllocationTargets(root, state);
+  if (targets) requireAllocationTargets(root, state);
   return state;
 }
 
@@ -519,12 +537,12 @@ function requireAllocationTargets(root, state) {
                 safePath(root, docRelative(root, "workOrders", `${name}`)),
               ).isFile(),
           ),
-        `allocation target ${target} has no filed work order`,
+        `allocation target ${target} has no filed work order (row ${entry.id})`,
       );
     }
 }
-function projected(root) {
-  const state = readFollowups(root),
+function projected(root, options) {
+  const state = readFollowups(root, options),
     sources = collectFollowupSources(root),
     present = new Set(sources.map((row) => row.key));
   // Displayed excerpts are projections; source identity and disposition history
@@ -575,7 +593,7 @@ function projected(root) {
 function persist(root, state) {
   const path = safePath(root, followupsPath(root)),
     temporary = safePath(root, `${followupsPath(root)}.tmp`);
-  checkLocalTerms(root, [{ name: followupsPath(root), text: encode(state) }]);
+  screenLocalTerms(root, [{ name: followupsPath(root), text: encode(state) }]);
   writeFileSync(temporary, encode(state), { flag: "wx" });
   renameSync(temporary, path);
 }
@@ -596,9 +614,9 @@ function withLock(root, fn) {
     rmdirSync(lock);
   }
 }
-export function syncFollowups(root, { check = false } = {}) {
+export function syncFollowups(root, { check = false, targets = true } = {}) {
   const run = () => {
-    const state = projected(root),
+    const state = projected(root, { targets }),
       path = safePath(root, followupsPath(root));
     if (
       !existsSync(path) &&
@@ -640,13 +658,20 @@ function dispose(root, state, revision, request, at) {
   const { expectedRevision, id, ...disposition } = request;
   entry.dispositions.push({ ...disposition, at });
   validate(state, root);
-  requireAllocationTargets(root, state);
   return entry;
 }
+// One request is a batch of one: its allocation targets are judged on the
+// register it produces, so a request that re-disposes the one row naming a
+// removed order applies, and one that leaves such a row is refused.
 export function disposeFollowup(root, request, { now = timestamp } = {}) {
   return withLock(root, () => {
-    const state = syncFollowups(root, { check: true });
+    const state = syncFollowups(root, { check: true, targets: false });
     const entry = dispose(root, state, hash(state), request, now());
+    try {
+      requireAllocationTargets(root, state);
+    } catch (error) {
+      throw new Error(`${error.message}; nothing was written`);
+    }
     persist(root, state);
     return {
       id: entry.id,
@@ -657,10 +682,14 @@ export function disposeFollowup(root, request, { now = timestamp } = {}) {
 }
 // A batch binds every request to the one revision its planner read. Each is
 // judged against the state the earlier ones produce; the register is written
-// once, after the last, so one invalid request writes nothing.
+// once, after the last, so one invalid request writes nothing. Allocation
+// targets are judged on the register the whole batch produces, once, before
+// it is written: a batch that re-disposes a row and the change that removes
+// the order the row named can then land together, and a batch whose result
+// still names an order with no file is refused naming the row.
 export function disposeFollowups(root, requests, { now = timestamp } = {}) {
   return withLock(root, () => {
-    const state = syncFollowups(root, { check: true }),
+    const state = syncFollowups(root, { check: true, targets: false }),
       revision = hash(state);
     requireFollowup(
       Array.isArray(requests) && requests.length > 0,
@@ -671,7 +700,7 @@ export function disposeFollowups(root, requests, { now = timestamp } = {}) {
         const entry = dispose(root, state, revision, request, now());
         // The register is screened whole when it is written; screening each
         // request's own text first lets a refusal name the request.
-        checkLocalTerms(root, [
+        screenLocalTerms(root, [
           {
             name: `request index ${index}`,
             text: `${request.reason}\n${request.reopenWhen ?? ""}`,
@@ -684,6 +713,11 @@ export function disposeFollowups(root, requests, { now = timestamp } = {}) {
         );
       }
     });
+    try {
+      requireAllocationTargets(root, state);
+    } catch (error) {
+      throw new Error(`${error.message}; nothing was written`);
+    }
     persist(root, state);
     return { applied, revision: hash(state) };
   });

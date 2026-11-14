@@ -1,0 +1,9 @@
+{
+  "comparison": "record-link-targets",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every Markdown document under docs/: the link destinations a filed record's reader can follow",
+  "read": 2360,
+  "equal": 2360,
+  "differences": {},
+  "examples": []
+}

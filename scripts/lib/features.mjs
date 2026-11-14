@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { docPath, docRelative, loadConfig } from "./config.mjs";
 import { readBuildOverlayFile } from "./build-overlay.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import { markdownSection } from "./markdown-links.mjs";
 import {
   featureAliases,
   featureRegistry,
@@ -23,10 +24,12 @@ export const HOST_FEATURES = Object.freeze({
 
 /** What this instance's own committed record shows about each host: the
  * control log's attestations naming its harness (the legacy log and every
- * order segment, the two locations the control store reads) and the
- * discovery record's observed versions. The ignored session journals are
- * never read, so a fresh clone infers what its origin infers. A record that
- * cannot be read shows nothing, which leaves the host off. */
+ * order segment, the two locations the control store reads), each a phase
+ * the operator ran under that host. The discovery record's observed versions
+ * are read and reported, never counted: an inspection that found a CLI on
+ * the machine is not the operator using it (WO-275). The ignored session
+ * journals are never read, so a fresh clone infers what its origin infers. A
+ * record that cannot be read shows nothing, which leaves the host off. */
 export function hostRecord(root) {
   const legacy = docRelative(root, "control", "resume.jsonl");
   const orders = docRelative(root, "orders");
@@ -76,11 +79,9 @@ export function hostRecord(root) {
         probe[harness].versions.some(
           (version) => version?.classification === "observed",
         );
-      // Each record row that shows the host, named for the inventory.
-      const rows = [
-        ...attestations.map(([path]) => `${path} attestations`),
-        ...(observed ? [`${discovery} observed versions`] : []),
-      ];
+      // Each record row that shows the host, named for the inventory; the
+      // discovery record is named apart, as a row that shows no host.
+      const rows = attestations.map(([path]) => `${path} attestations`);
       return [
         id,
         {
@@ -89,6 +90,7 @@ export function hostRecord(root) {
           rows,
           attestations: Object.fromEntries(attestations),
           observed,
+          ...(observed ? { discovered: `${discovery} observed versions` } : {}),
         },
       ];
     }),
@@ -192,17 +194,21 @@ export function readFeatureInventory(root) {
           : "dotln.config.json";
     const host = hosts[entry.id];
     if (host) {
-      // The election wins; without one the record decides. The source names
-      // the record's rows, not their count, so the generated page changes
-      // when a host turns on, not with every attestation (the count is in
-      // the JSON listing's record field).
+      // The election wins; without one the attestations decide. The source
+      // names the record's rows, not their count, so the generated page
+      // changes when a host turns on, not with every attestation (the count
+      // is in the JSON listing's record field). A discovery record that
+      // observed the host's version is named where it is the only row, so an
+      // operator sees why a host an inspection found stays off.
       if (value === undefined) effective = host.shown;
       source =
         value !== undefined
           ? `elected${host.shown ? ` (the record shows the host: ${host.rows.join("; ")})` : ""}`
           : host.shown
             ? `inferred: ${host.rows.join("; ")}`
-            : "default";
+            : host.discovered
+              ? `default (${host.discovered} show the host without an election; a discovery record turns no host on)`
+              : "default";
     }
     return {
       ...entry,
@@ -236,9 +242,21 @@ organisation are admitted inside this instance's repository. This admits no
 material the owner has no right to keep here. Anything published outside the
 instance still passes the private-terms and publication screens. `;
 
+/** A document's `## Secrets` section as written, from its first block to
+ * its last, and the offset that text starts at; null without the section. */
+const secretsSection = (source) => {
+  const section = markdownSection(source, "Secrets", { depths: [2] });
+  if (!section) return null;
+  const text = section.body.trim();
+  return {
+    text,
+    start:
+      section.bodyStart + section.body.length - section.body.trimStart().length,
+  };
+};
+
 export function renderInstanceSecrets(floor, template, on) {
-  const section = /^## Secrets\n\n([\s\S]*?)(?=\n\n## |$(?![\s\S]))/mu;
-  const ordinary = template.match(section)?.[1];
+  const ordinary = secretsSection(template)?.text;
   if (!ordinary) throw new Error("kit template has no Secrets paragraph");
   const privateSecrets = ordinary
     .replace(
@@ -246,15 +264,13 @@ export function renderInstanceSecrets(floor, template, on) {
       "credentials, tokens or the contents",
     )
     .replace("Environment\n", `${privateDestinationAdmission}Environment\n`);
-  const current = floor.match(section);
-  if (current && [ordinary, privateSecrets].includes(current[1])) {
-    const start = current.index + "## Secrets\n\n".length;
+  const current = secretsSection(floor);
+  if (current && [ordinary, privateSecrets].includes(current.text))
     return (
-      floor.slice(0, start) +
+      floor.slice(0, current.start) +
       (on ? privateSecrets : ordinary) +
-      floor.slice(start + current[1].length)
+      floor.slice(current.start + current.text.length)
     );
-  }
   if (on)
     throw new Error(
       "private-destination requires the kit's Secrets paragraph; review the instance-owned custom floor before electing it",

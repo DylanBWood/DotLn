@@ -40,10 +40,15 @@ exhausted budget. A stop's facts describe the log the drive last saw, so a
 transition recorded since, by hand or otherwise, clears a stale refusal or incomplete
 count; a repair bound limits only the repairs still to come. Type the same phrase to
 re-enter: the phase receives its same briefing in a fresh session.
-Release close requires the launchpad merge and, for a target, the target branch's
-ancestry in its registered base branch on the remote, as close itself judges it.
+Release close requires the launchpad merge and, for a target, the reviewed
+change in its registered base branch on the remote, as close itself judges it:
+the branch itself, one commit of the same patch (a squash) or its commits
+replayed (a rebase). Where a target's change landed under an edited patch the
+drive stops for the merge and its stop names the attended close with
+`--merged-as <commit>`
+([decision](../evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release)).
 Status reads local refs; a drive of a closed order fetches both bases first, because a
-hosted merge reaches neither clone by itself and a failed fetch reads as not yet merged. A merge also needs the order's passing final review in its own control record on the base, as close asks of that base, since a branch with no commits of its own is trivially an ancestor. A target merge counts once its branch has reached the remote base, and the drive also requires that branch to have left its recorded base.
+hosted merge reaches neither clone by itself and a failed fetch reads as not yet merged. A merge also needs the order's passing final review in its own control record on the base, as close asks of that base, since a branch with no commits of its own is trivially an ancestor. A target merge counts once its change has reached the remote base, and the drive also requires the branch to have left its recorded base; in a partial clone status asks only whether the branch is in the base's history, since comparing patches there could fetch their blobs: its stop says nothing was compared and names the attended close, which judges it. A target that declares a release policy is released once its close records the target's own release published or current with the cleanup clean and the target removed. What a real attempt of the close recorded stands when a later attempt, a dry run among them, rewrites the record: a branch it deleted is never a merge to wait for.
 A close the host declines is not retried. The drive stops at `awaiting-close`
 and names the next step: type `resume: release close` in the launchpad's main
 checkout for the order or, after a Codex decline, re-enter with `--host claude`,

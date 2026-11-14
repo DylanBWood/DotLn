@@ -1476,6 +1476,67 @@ export async function entropyFixtures() {
       writeFileSync(packetFile, filedBytes);
     });
 
+    await test("WO-276 criterion A4: the entropy receipt refuses a refuse-mode match before anything is filed, naming the place and the mode and never the entry, and files past a context-mode match that it lists", async () => {
+      const repo = fixtureRepository(parent);
+      await entropy(["review", "--transport", "fake"], repo);
+      const pending = currentDispatch(repo, "review");
+      const receipt = () =>
+        entropy(
+          [
+            "receipt",
+            join(pending.capture, "result.json"),
+            "--statement",
+            join(pending.capture, "statement.txt"),
+          ],
+          repo,
+        );
+      // A word the fake reviewer's validated result holds.
+      const word = "envelope";
+      assert.ok(
+        readFileSync(join(pending.capture, "result.json"), "utf8").includes(
+          word,
+        ),
+      );
+      write(repo, "docs/control/local/terms.txt", `refuse:\n${word}\n`);
+      await assert.rejects(receipt(), (error) => {
+        assert.match(
+          error.message,
+          /local-terms list present; refused \[\{"file":"REVIEW-001\.(?:payload|json|md)","line":\d+,"endLine":\d+,"count":\d+,"mode":"refuse"\}/u,
+        );
+        assert.doesNotMatch(error.message, new RegExp(word, "iu"));
+        return true;
+      });
+      assert.ok(
+        !existsSync(join(repo, runsRoot(repo), "REVIEW-001.json")),
+        "nothing is filed on a refusal",
+      );
+      assert.equal(
+        only(readEntropyControl(repo), "EntropyReviewFiled").length,
+        0,
+      );
+      assert.ok(currentDispatch(repo, "review"), "the dispatch stays pending");
+      write(repo, "docs/control/local/terms.txt", `context:\n${word}\n`);
+      const listed = [];
+      const inherited = console.error;
+      console.error = (line) => listed.push(String(line));
+      let filed;
+      try {
+        filed = await receipt();
+      } finally {
+        console.error = inherited;
+      }
+      assert.equal(filed.receiptId, "REVIEW-001");
+      assert.ok(
+        listed.some((line) =>
+          /^CONTEXT REVIEW-001\.(?:payload|json|md):\d+(?:-\d+)?: a local term in context mode/u.test(
+            line,
+          ),
+        ),
+        listed.join("\n"),
+      );
+      assert.doesNotMatch(listed.join("\n"), new RegExp(word, "iu"));
+    });
+
     await test("WO-175 fake review/refutation receive the requested temporary directory, inventory it and remove read-only trees", async () => {
       const repo = fixtureRepository(parent);
       const inherited = process.env.TMPDIR;

@@ -1,0 +1,244 @@
+{
+  "thisOrderAsFiled": {
+    "lineThatOpensWithThePlaceholder": 3407,
+    "base": {
+      "criteria": 133,
+      "last": "133"
+    },
+    "candidate": {
+      "criteria": 78,
+      "last": "78"
+    },
+    "candidatePlanningSubjectReader": {
+      "criteria": 133
+    }
+  },
+  "thisOrderAsAmended": {
+    "base": {
+      "criteria": 133,
+      "last": "133"
+    },
+    "candidate": {
+      "criteria": 133,
+      "last": "133"
+    }
+  },
+  "fixture": {
+    "<option>": {
+      "ids": {
+        "base": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "candidate": [
+          "1",
+          "2"
+        ]
+      },
+      "gateClaims": {
+        "base": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        },
+        "candidate": {
+          "document": [],
+          "review": [],
+          "plain": []
+        }
+      }
+    },
+    "<title>": {
+      "ids": {
+        "base": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "candidate": [
+          "1",
+          "2"
+        ]
+      },
+      "gateClaims": {
+        "base": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        },
+        "candidate": {
+          "document": [],
+          "review": [],
+          "plain": []
+        }
+      }
+    },
+    "<summary>": {
+      "ids": {
+        "base": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "candidate": [
+          "1",
+          "2"
+        ]
+      },
+      "gateClaims": {
+        "base": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        },
+        "candidate": {
+          "document": [],
+          "review": [],
+          "plain": []
+        }
+      }
+    },
+    "<details>": {
+      "ids": {
+        "base": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "candidate": [
+          "1",
+          "2"
+        ]
+      },
+      "gateClaims": {
+        "base": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        },
+        "candidate": {
+          "document": [],
+          "review": [],
+          "plain": []
+        }
+      }
+    },
+    "<path>": {
+      "ids": {
+        "base": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "candidate": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      "gateClaims": {
+        "base": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        },
+        "candidate": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        }
+      }
+    },
+    "`<option>`": {
+      "ids": {
+        "base": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "candidate": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      "gateClaims": {
+        "base": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        },
+        "candidate": {
+          "document": [
+            "4"
+          ],
+          "review": [
+            "5"
+          ],
+          "plain": [
+            "5"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -73,6 +73,12 @@ without changing the criterion:
 npm run plan -- dispose <receipt-id> <hold-id> '<disposition and reason>'
 ```
 
+The identifier is a hold's or a known issue's of that receipt. A known
+issue's is built as a hold's is and is printed as `knownIssues` beside the
+holds when the receipt is filed; the receipt stores nothing more for it, and
+an override still names a hold alone
+([decision](../../evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [as built](../../evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)).
+
 This appends `PlanHoldDisposed` to the existing
 `docs/control/plan-refutations.jsonl`, binding the source and accepted criterion
 text hashes, work-order ID and criterion ID. The plan check accepts the original

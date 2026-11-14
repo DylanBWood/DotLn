@@ -6,11 +6,13 @@ carries the outcome, the acceptance contract, the member orders (each naming
 its repository and base), the dependency and compatibility plan and the
 delivery states; the JSON block between the markers mirrors the membership.
 The generated work-order index groups members and records repository, base,
-phase, verdict, integration, staleness and the observed target commit in its
-`dotln-workstreams` JSON line. The board reads that same record. Refresh it
-with `npm run work-orders -- index`; `index --check` reuses the recorded Git
-facts and remains checkable without target checkouts. A later target change
-becomes visible at the next explicit refresh.
+phase, verdict, integration, staleness and the observed target commit. What
+it observed in each target is kept in
+`docs/control/workstream-observations.json`, and the board takes the cards
+from `npm run work-orders -- index --json`. Refresh the index with `npm run
+work-orders -- index`; `index --check` reuses the recorded Git facts and
+remains checkable without target checkouts. A later target change becomes
+visible at the next explicit refresh.
 
 Integration is `current` when the declared base equals the target's configured
 base-branch tip, `behind` when the base is its ancestor, `diverged` otherwise,

@@ -2056,84 +2056,20 @@ test("WO-123 a requirement naming an existing failure completes the defect loop 
   }
 });
 
+// One case for each statement class and outcome walks the loop from a story
+// to its judged run, here and in the three cases below. How a wording is
+// classified is the table of packages/skeleton/test/vertical-judgment.test.ts,
+// which holds every wording these four cases iterated until WO-276 (Part E).
+// The wordings kept carry what the loop handles beyond the classifier: code
+// marks, an apostrophe outside ASCII, a colon before a number, quotation marks.
 for (const [body, failureAsRequirement] of [
-  ...[
-    "The endpoint returns status: 500",
-    "The response status = 500",
-    "HTTP status: 500",
-    "Login isn't actually working",
-    "Login isn't yet working",
-    "Login is not currently working",
-    "The gateway returns HTTP code=503",
-    "Search isn\u2019t reliably working",
-    "Errors are thrown",
-    "The parser doesn't throw errors yet uploads fail",
-    "The response status is 500",
-    "The server returns a 502 Bad Gateway",
-    "The endpoint is returning 500",
-    "Login is not always working",
-    "Login hasn't been working",
-    "The export has been broken since v2",
-    // Unquoted grammatical products from the repaired families.
-    "The HTTP code had consistently been 429",
-    "Users have been seeing 504 Gateway Timeout",
-    "Login hadn't often been working",
-    "The result has remained quite clearly incorrect",
-    "The endpoint is returning 429 Too Many Requests",
-    "The result is consistently and visibly broken",
-    "The response status is `500`",
-    "Login has not, actually, been working",
-    "Login has not (consistently and reliably) been working",
-    "Login hasn't, for several days, been working",
-  ].flatMap((text) =>
-    [false, true].map((requirement) => [
-      `${text}: make \`fixture.txt\` contain changed by synthetic worker.`,
-      requirement,
-    ]),
-  ),
   [
-    "Uploads fail for files larger than 10 MB: make `fixture.txt` contain changed by synthetic worker.",
-    false,
-  ],
-  [
-    "Uploads fail for files larger than 10 MB: make `fixture.txt` contain changed by synthetic worker.",
-    true,
-  ],
-  [
-    "Saving a document throws a TypeError: make `fixture.txt` contain changed by synthetic worker.",
-    true,
-  ],
-  [
-    "The export endpoint returns HTTP 500: make `fixture.txt` contain changed by synthetic worker.",
-    true,
-  ],
-  [
-    "The image decoder cannot parse JPEGs: make `fixture.txt` contain changed by synthetic worker.",
-    true,
-  ],
-  [
-    "Login isn't working: make `fixture.txt` contain changed by synthetic worker.",
-    false,
-  ],
-  [
-    "Users see a 404 on the settings page: make `fixture.txt` contain changed by synthetic worker.",
+    "The response status is `500`: make `fixture.txt` contain changed by synthetic worker.",
     false,
   ],
   [
     "Login can\u2019t complete: make `fixture.txt` contain changed by synthetic worker.",
     true,
-  ],
-  [
-    "This should be fixed, uploads fail for large files: make `fixture.txt` contain changed by synthetic worker.",
-    false,
-  ],
-  [
-    "The importer didn\u2019t finish: make `fixture.txt` contain changed by synthetic worker.",
-    true,
-  ],
-  [
-    "The API gives a 503 error: make `fixture.txt` contain changed by synthetic worker.",
-    false,
   ],
 ])
   test(`WO-123 composed baseline records source-bound failure judgments and reproduces across statement roles: ${body} (${failureAsRequirement})`, async () => {
@@ -2203,17 +2139,7 @@ for (const [body, failureAsRequirement] of [
   });
 
 for (const body of [
-  "No errors are thrown: make `fixture.txt` contain changed by synthetic worker.",
-  "No error is ever thrown: make `fixture.txt` contain changed by synthetic worker.",
-  "No errors are yet thrown: make `fixture.txt` contain changed by synthetic worker.",
-  "The parser doesn't yet throw exceptions: make `fixture.txt` contain changed by synthetic worker.",
-  "The build has not yet failed: make `fixture.txt` contain changed by synthetic worker.",
-  "The endpoint cannot fail: make `fixture.txt` contain changed by synthetic worker.",
-  "The parser can't throw errors: make `fixture.txt` contain changed by synthetic worker.",
-  "The parser doesn't throw errors: make `fixture.txt` contain changed by synthetic worker.",
-  "The parser cannot yet throw errors: make `fixture.txt` contain changed by synthetic worker.",
   "Show an error message when the upload exceeds 10 MB: make `fixture.txt` contain changed by synthetic worker.",
-  "Add retry when the upload fails: make `fixture.txt` contain changed by synthetic worker.",
 ])
   test(`WO-123 composed baseline walks requirement-voice wording without a failing-behavior finding: ${body}`, async () => {
     const f = await verticalFixture({
@@ -2258,13 +2184,7 @@ for (const body of [
     }
   });
 
-for (const wording of [
-  "The endpoint returns status: 500",
-  "The HTTP code had consistently been 429",
-  "Users have been seeing 504 Gateway Timeout",
-  "Login hadn't often been working",
-  "The result has remained quite clearly incorrect",
-])
+for (const wording of ["The endpoint returns status: 500"])
   for (const failureAsRequirement of [false, true])
     test(`WO-123 resident consumes source-bound failure judgments across statement roles: ${wording} (${failureAsRequirement})`, async () => {
       const body = `${wording}: make \`fixture.txt\` contain changed by synthetic worker.`;
@@ -2344,19 +2264,7 @@ for (const wording of [
       }
     });
 
-for (const wording of [
-  "No errors are thrown",
-  "No errors are yet thrown",
-  "The parser cannot yet throw errors",
-  "The response status is not 500",
-  "The result has not been broken",
-  "The endpoint is returning 500 rows per page",
-  "Login is not only working but working reliably",
-  'The API is not returning 500 "Internal Server Error"',
-  "The output has not (ever) been wrong",
-  "The result has not (consistently and visibly) been wrong",
-  "The result is not, in any way, broken",
-])
+for (const wording of ['The API is not returning 500 "Internal Server Error"'])
   test(`WO-123 healthy negative wording completes the composed loop without a false baseline hold: ${wording}`, async () => {
     const f = await verticalFixture({
       forge: {

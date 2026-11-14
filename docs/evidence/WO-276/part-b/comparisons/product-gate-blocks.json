@@ -1,0 +1,9 @@
+{
+  "comparison": "product-gate-blocks",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every pull-request body the repository keeps, with the publication example's: the body the order publish composes from it, as a digest",
+  "read": 223,
+  "equal": 223,
+  "differences": {},
+  "examples": []
+}

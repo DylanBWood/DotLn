@@ -1245,3 +1245,100 @@ test("WO-257 the derived Read before upgrading notices name a generated page's r
       renderer,
     );
 });
+
+test("WO-276 criterion R1: the passing final review of an order numbered as core's WO-024 switches the release-note contract on in core's own root and leaves it as it was in a kit root", async (t) => {
+  const { activatesNotesContract, notesContractWasActive } =
+    await import("./release.mjs");
+  // A repository whose committed control log holds one order's passing final
+  // review, in a root that is core's own or a kit root.
+  const reviewed = (workOrderId, kit) => {
+    const root = realpathSync(
+      createFixtureRoot(join(tmpdir(), "dotln-notes-contract-")),
+    );
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    execGit(["init", "-q"], { cwd: root });
+    excludeFixtureOwnership(root);
+    if (kit) writeFileSync(join(root, "KIT-MANIFEST.json"), "{}\n");
+    mkdirSync(join(root, "docs/control"), { recursive: true });
+    const path = `docs/work-orders/${workOrderId}-fixture.md`;
+    const report = `docs/final-reviews/${workOrderId}/FINAL-001.md`;
+    writeFileSync(
+      join(root, "docs/control/resume.jsonl"),
+      [
+        { type: "WorkOrderActivated", workOrderId, workOrderPath: path },
+        { type: "ImplementationReady", workOrderId },
+        {
+          type: "VerificationRequested",
+          workOrderId,
+          verificationId: "VER-001",
+          reportPath: `docs/verifications/${workOrderId}/VER-001.md`,
+        },
+        {
+          type: "VerificationCompleted",
+          workOrderId,
+          verificationId: "VER-001",
+          reportPath: `docs/verifications/${workOrderId}/VER-001.md`,
+          verdict: "pass",
+        },
+        {
+          type: "FinalReviewRequested",
+          workOrderId,
+          finalReviewId: "FINAL-001",
+          reportPath: report,
+        },
+        {
+          type: "FinalReviewCompleted",
+          workOrderId,
+          finalReviewId: "FINAL-001",
+          reportPath: report,
+          verdict: "pass",
+        },
+      ]
+        .map((event) => JSON.stringify({ schemaVersion: 1, ...event }))
+        .join("\n") + "\n",
+    );
+    execGit(["add", "."], { cwd: root });
+    execGit(
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "a passing final review",
+      ],
+      { cwd: root },
+    );
+    return root;
+  };
+  // In core's own root the one order switches the contract on, as before.
+  const core = reviewed("WO-024", false);
+  assert.equal(activatesNotesContract(core, "WO-024"), true);
+  assert.equal(notesContractWasActive(core, "HEAD"), true);
+  assert.equal(
+    notesContractWasActive(reviewed("WO-025", false), "HEAD"),
+    false,
+  );
+  // In a kit root an order of that number is an order like any other.
+  const kit = reviewed("WO-024", true);
+  assert.equal(activatesNotesContract(kit, "WO-024"), false);
+  assert.equal(notesContractWasActive(kit, "HEAD"), false);
+  assert.equal(
+    notesContractWasActive(kit, "HEAD"),
+    notesContractWasActive(reviewed("WO-025", true), "HEAD"),
+  );
+  // Both sites of the contract ask that one decision. No release is prepared
+  // in a kit root here, so the script's source is held to it: it compares an
+  // order's number with one of core's in the decision and nowhere else.
+  const source = readFileSync(
+    new URL("./release.mjs", import.meta.url),
+    "utf8",
+  );
+  assert.deepEqual(source.match(/[!=]==?\s*"WO-\d{3}"/gu), ['=== "WO-024"']);
+  assert.equal(source.split("activatesNotesContract(root, ").length - 1, 2);
+});

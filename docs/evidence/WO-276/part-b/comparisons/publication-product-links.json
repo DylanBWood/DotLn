@@ -1,0 +1,9 @@
+{
+  "comparison": "publication-product-links",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every Markdown page under the publication root, as the worktree holds it and as each commit that changed it held it: the links it makes into the product documents, by file and anchor",
+  "read": 564,
+  "equal": 564,
+  "differences": {},
+  "examples": []
+}

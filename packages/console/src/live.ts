@@ -14,7 +14,10 @@ import {
 import { decodeLog, type Event } from "@dotln/kernel";
 import { projectAuditEvents } from "@dotln/skeleton/dist/src/audit.js";
 import { displayWidth } from "./render.js";
-import { renderRuntimeStatus } from "./runtime-status.js";
+import {
+  renderRuntimeStatus,
+  workOrderSourceReason,
+} from "./runtime-status.js";
 import { readConsoleConnection } from "./console-client-node.js";
 import { invokeConsoleCommand, readConsoleContract } from "./console-client.js";
 
@@ -93,7 +96,7 @@ function renderSnapshot({ status: view, events }: Snapshot): string {
       `Live episodes: ${view.liveEpisodes.map((episode) => `${field(episode.episodeId)}: ${field(episode.actor)} running ${Math.floor(episode.elapsedMs / 1000)}s`).join(", ") || "none"}`,
       `Cadence (UTC): ${view.presence.cadences.map((cadence) => `${field(cadence.phase)} ${cadence.nextFireAt === null ? "not armed" : clock(cadence.nextFireAt)}`).join(", ") || "none"}`,
       `Holds: ${view.holds.map((hold) => field(hold.reason)).join(", ") || "none"} · Budget (portfolio actors only): ${view.budget.status}, ${view.budget.episodes.consumed} episodes used`,
-      `Open work orders (${view.workOrders.status})${view.workOrders.reason ? `: ${view.workOrders.reason}` : ""} — ${view.workOrders.items.length} total; type orders for all`,
+      `Open work orders (${view.workOrders.status})${view.workOrders.reason ? `: ${workOrderSourceReason(view.workOrders.reason)}` : ""} — ${view.workOrders.items.length} total; type orders for all`,
       ...view.workOrders.items
         .slice(0, 3)
         .map(

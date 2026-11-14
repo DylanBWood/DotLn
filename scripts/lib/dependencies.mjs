@@ -1,3 +1,5 @@
+import { markdownMarkerLines } from "./markdown-links.mjs";
+import { readWorkOrder, readWorkOrderHeader } from "./work-order-document.mjs";
 import { readFileSync } from "node:fs";
 import { runGit } from "./git.mjs";
 import { workOrderAuthorityPath } from "./paths.mjs";
@@ -22,8 +24,8 @@ export const historicalDependencyIdsAt = (reader) => {
     );
   return new Set(ids);
 };
-const startMarker = "<!-- dotln-dependencies:start -->";
-const endMarker = "<!-- dotln-dependencies:end -->";
+const START = "dotln-dependencies:start";
+const END = "dotln-dependencies:end";
 const idPattern = /^WO-\d{3}$/;
 const fields = {
   hard: [],
@@ -45,16 +47,18 @@ const date = (value) =>
   Number.isFinite(Date.parse(value)) &&
   new Date(value).toISOString().slice(0, 10) === value;
 
-// Shared header boundary: examples and citations in the body are not metadata.
+// Shared header boundary, as the work-order reader finds it: examples and
+// citations in the body are not metadata. The lines, the first non-blank
+// line and the line where the header ends serve the marker block below.
 export function dependencyHeader(markdown) {
-  const lines = markdown.replace(/^\uFEFF/, "").split(/\r?\n/);
+  const order = readWorkOrderHeader(markdown);
+  const lines = order.source.split(/\r?\n/);
   const first = lines.findIndex((line) => line.trim());
-  const boundary = lines.findIndex(
-    (line, index) =>
-      index > first &&
-      (/^#{1,6}\s/.test(line) || /^\*\*Objective:\*\*/.test(line)),
-  );
-  return { lines, first, end: boundary < 0 ? lines.length : boundary };
+  const end =
+    order.headerEnd >= order.source.length
+      ? lines.length
+      : order.source.slice(0, order.headerEnd).split(/\r?\n/).length - 1;
+  return { lines, first, end, order };
 }
 
 // An umbrella record is an order superseded whole (WO-190). The class is the
@@ -63,12 +67,14 @@ export function dependencyHeader(markdown) {
 // label without typed entries, or entries without the label, is not an
 // umbrella: the index then lists the order as open work and the sequence
 // coverage check names it, rather than guessing.
-export const UMBRELLA_LABEL =
-  /^\*\*Umbrella record( \(\d{4}-\d{2}-\d{2}\))?:\*\*/;
+export const UMBRELLA_LABEL = /^Umbrella record( \(\d{4}-\d{2}-\d{2}\))?$/;
+/** The Umbrella record field a read order's leading header declares, or
+ * undefined: the notice the index and the dependency migration both read. */
+export const umbrellaNotice = (order) =>
+  order.header.find((field) => field.colon && UMBRELLA_LABEL.test(field.label));
 export function umbrellaSuccessors(markdown, dependencies) {
-  const { lines, first, end } = dependencyHeader(markdown);
-  if (!lines.slice(first + 1, end).some((line) => UMBRELLA_LABEL.test(line)))
-    return null;
+  const { order } = dependencyHeader(markdown);
+  if (!umbrellaNotice(order)) return null;
   if (dependencies.source !== "typed") return null;
   const successors = [
     ...new Set(
@@ -89,32 +95,37 @@ export function parseDependencies(
   historical = historicalDependencyIds(),
 ) {
   workOrderId ??= /(?:^|\/)(WO-\d{3})-/.exec(path)?.[1];
-  const { lines, first, end } = dependencyHeader(markdown);
-  const positions = (marker) =>
-    lines.flatMap((line, index) => (line.trim() === marker ? [index] : []));
-  const starts = positions(startMarker);
-  const ends = positions(endMarker);
+  const { lines, first, end, order } = dependencyHeader(markdown);
+  // A marker is a comment of the document's own text, alone on its line: the
+  // same words in a fenced example are code and declare nothing. The
+  // header's reading holds the header's comments; the whole document is
+  // read only where the markers' words also stand below the header.
+  const read =
+    order.source.indexOf("dotln-dependencies:", order.headerEnd) < 0
+      ? order.lead
+      : readWorkOrder(markdown);
+  const starts = markdownMarkerLines(read.source, START, read.tree).filter(
+    (line) => line < lines.length,
+  );
+  const ends = markdownMarkerLines(read.source, END, read.tree).filter(
+    (line) => line < lines.length,
+  );
   const refuse = (message, entry) => {
     throw new Error(
       `${path}: dependencies ${message}${entry === undefined ? "" : `; offending entry ${JSON.stringify(entry)}`}`,
     );
   };
   if (!starts.length && !ends.length) {
-    const header = lines.slice(first + 1, end);
-    const at = header.flatMap((line, index) =>
-      line.startsWith("**Depends on:**") ? [index] : [],
-    );
+    const at = order.headerFields("Depends on");
     let prose;
-    if (/^#\s/.test(lines[first] ?? "") && at.length === 1) {
-      const parts = [header[at[0]].slice("**Depends on:**".length).trim()];
-      if (parts[0]) {
-        for (const line of header.slice(at[0] + 1)) {
-          if (!line.trim() || /^\*\*[^*]+:\*\*/.test(line)) break;
-          parts.push(line.trim());
-        }
-        prose = parts.join(" ");
-      }
-    }
+    // The field's value runs to the next field or the paragraph's end; an
+    // empty first line is no declaration.
+    if (order.title && at.length === 1 && at[0].lineValue.trim())
+      prose = at[0].value
+        .split(/\r?\n/u)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .join(" ");
     return {
       source: "conservative-tokens",
       entries: [
@@ -133,7 +144,7 @@ export function parseDependencies(
     starts[0] <= first ||
     ends[0] >= end ||
     lines[starts[0] - 1].trim() ||
-    !/^#\s/.test(lines[first] ?? "")
+    !order.title
   )
     refuse("require one ordered block in leading metadata after a blank line");
   let entries;
@@ -309,12 +320,27 @@ export function dependencyRefusal(path, projection) {
     .join("; ")}`;
 }
 
-export function inheritedLedgerDuty(source) {
+/** `core` is whether the order is read in core's own root, where one order
+ * is exempt by its number; said by no caller, it is not. */
+export function inheritedLedgerDuty(source, core = false) {
+  // An order that never names the ledger has no such criterion, and its body
+  // is not parsed to say so; the index asks this of every order.
+  if (!/ledger/i.test(source)) return false;
+  const order = readWorkOrder(source);
+  // The order's own labels: a quoted or a listed example of one opens no
+  // section.
+  const criteria = order.labels.find((field) =>
+    field.label.startsWith("Acceptance criteria"),
+  );
+  const goals = order.labels.find(
+    (field) =>
+      field.label === "Non-goals" && field.start > (criteria?.start ?? 0),
+  );
   return (
+    Boolean(criteria) &&
     /(?:ledger|idea-ledger)/i.test(
-      source.match(
-        /\*\*Acceptance criteria[\s\S]*?(?=\*\*Non-goals:|$)/,
-      )?.[0] ?? "",
-    ) && !/^# WO-126\b/.test(source)
+      order.source.slice(criteria.start, goals?.start ?? order.source.length),
+    ) &&
+    !(core && /^WO-126\b/.test(order.title?.title ?? ""))
   );
 }

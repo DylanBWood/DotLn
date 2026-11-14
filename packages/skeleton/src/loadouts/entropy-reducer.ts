@@ -17,6 +17,7 @@ import {
   type JsonValue,
   type ResultEnvelope,
 } from "@dotln/kernel";
+import { resolveWorker, workerTable } from "../worker-catalog.mjs";
 
 export const ENTROPY_REDUCER_ACTOR_ID = "entropy-reducer";
 export const ENTROPY_REDUCER_WORKSTREAM_ID = "ws_entropy_reducer";
@@ -25,8 +26,20 @@ export const ENTROPY_REDUCER_REFERENCE_EPISODE_ID =
   "ep_entropy_reducer_reference";
 export const ENTROPY_REDUCER_REFERENCE_DISPATCH_AT = 0;
 export const ENTROPY_REDUCER_REFERENCE_EPISODE_ENDS_AT = 86_400_000;
-export const ENTROPY_REDUCER_REVIEWER_MODEL = "claude-opus-5-5";
-export const ENTROPY_REDUCER_REVIEWER_EFFORT = "xhigh";
+// The compiled reviewer is the kit's own default worker for Claude, read
+// from the kit's model list so that this loadout names no model. The table
+// here is the kit's alone: an instance that binds another default launches
+// a substitute reviewer, which the receipt says, as before.
+const kitWorkers = workerTable();
+const compiledReviewer = resolveWorker(kitWorkers, "default", {
+  provider: "claude",
+});
+export const ENTROPY_REDUCER_REVIEWER_MODEL = compiledReviewer.model.id;
+export const ENTROPY_REDUCER_REVIEWER_EFFORT = compiledReviewer.effort;
+/** What the compiled reviewer's model is called, from its row. */
+const ENTROPY_REDUCER_REVIEWER_NAME =
+  resolveWorker(kitWorkers, compiledReviewer.model.name).description ??
+  compiledReviewer.model.id;
 
 export const ENTROPY_REDUCER_ALLOWED_EFFECTS = [
   "repo.read*",
@@ -1089,16 +1102,16 @@ export interface ReviewerCompileOptions {
 
 export interface ReviewerRequirement {
   readonly harness: "claude-code";
-  readonly model: "claude-opus-5-5";
-  readonly displayModel: "Claude Opus 5.5";
-  readonly effort: "xhigh";
+  readonly model: string;
+  readonly displayModel: string;
+  readonly effort: string;
   readonly substitutionPolicy: "different-reviewer-and-must-be-attested";
 }
 
 export const entropyReducerReviewerRequirement = {
   harness: "claude-code",
   model: ENTROPY_REDUCER_REVIEWER_MODEL,
-  displayModel: "Claude Opus 5.5",
+  displayModel: ENTROPY_REDUCER_REVIEWER_NAME,
   effort: ENTROPY_REDUCER_REVIEWER_EFFORT,
   substitutionPolicy: "different-reviewer-and-must-be-attested",
 } as const satisfies ReviewerRequirement;

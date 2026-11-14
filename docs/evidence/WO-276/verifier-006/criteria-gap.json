@@ -1,0 +1,262 @@
+{
+  "mainCommit": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "completeGapControl": {
+    "main": {
+      "value": {
+        "checked": true,
+        "declared": [
+          "1",
+          "3",
+          "4"
+        ],
+        "met": [
+          "1",
+          "3",
+          "4"
+        ],
+        "claims": {
+          "document": [
+            "3"
+          ],
+          "review": [
+            "4"
+          ],
+          "plain": [
+            "4"
+          ]
+        }
+      }
+    },
+    "candidate": {
+      "value": {
+        "checked": true,
+        "declared": [
+          "1",
+          "3",
+          "4"
+        ],
+        "met": [
+          "1",
+          "3",
+          "4"
+        ],
+        "claims": {
+          "document": [
+            "3"
+          ],
+          "review": [
+            "4"
+          ],
+          "plain": [
+            "4"
+          ]
+        }
+      }
+    }
+  },
+  "shortLedger": {
+    "main": {
+      "code": null,
+      "message": "docs/evidence/WO-999/handoff.md: no line judges criteria 3, 4. Before handoff the executor judges each declared criterion (1, 3, 4) on one line, met followed by its evidence or unmet followed by the decision that says why (criterion lines: `**Criterion <id>:** met`, `**Criterion <id>:** unmet`, `**Criterion <id>:** unmet, waived by <ordinal>` or `**Criterion <id>:** unmet, defective (<class>) by <ordinal>`)."
+    },
+    "candidate": {
+      "value": {
+        "checked": true,
+        "declared": [
+          "1"
+        ],
+        "met": [
+          "1"
+        ],
+        "claims": {
+          "document": [],
+          "review": [],
+          "plain": []
+        }
+      }
+    }
+  },
+  "rule": "declaredCriteria explicitly preserves identifiers when an author skips a number; a shortened criterion list must refuse rather than silently omit obligations",
+  "rows": [
+    {
+      "name": "gap-control",
+      "input": "# WO-999 — Verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command runs.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "mission": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "filing": {
+        "code": null,
+        "message": "non-sequential acceptance criteria: docs/work-orders/WO-999-verification-fixture.md"
+      },
+      "advisories": {
+        "value": []
+      }
+    },
+    {
+      "name": "html-gap",
+      "input": "# WO-999 — Verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  <option> and the result.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1"
+        ]
+      },
+      "mission": {
+        "value": [
+          "1"
+        ]
+      },
+      "filing": {
+        "value": [
+          "criterion:1"
+        ]
+      },
+      "advisories": {
+        "value": []
+      }
+    },
+    {
+      "name": "heading-gap",
+      "input": "# WO-999 — Verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  # Commands and the result.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1"
+        ]
+      },
+      "mission": {
+        "value": [
+          "1"
+        ]
+      },
+      "filing": {
+        "value": [
+          "criterion:1"
+        ]
+      },
+      "advisories": {
+        "value": []
+      }
+    },
+    {
+      "name": "label-gap",
+      "input": "# WO-999 — Verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n9. Nine holds.\n10. Ten holds.\n\n   **Check:** the fixture.\n12. `npm run test:docs` passes.\n13. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "9",
+          "10",
+          "12",
+          "13"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "mission": {
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "filing": {
+        "code": null,
+        "message": "non-sequential acceptance criteria: docs/work-orders/WO-999-verification-fixture.md"
+      },
+      "advisories": {
+        "value": []
+      }
+    },
+    {
+      "name": "html-consecutive-control",
+      "input": "# WO-999 — Verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  <option> and the result.\n2. `npm run test:docs` passes.\n3. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "candidate": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 2 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      },
+      "mission": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 2 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      },
+      "filing": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "docs/work-orders/WO-999-verification-fixture.md: acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 2 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      },
+      "advisories": {
+        "code": "DOTLN_ORDER_LIST_UNREAD",
+        "message": "WO-999 acceptance criteria: line 12 opens a raw HTML block (the line opens with a tag's name or a comment), which ends the numbered list there and holds criterion 2 on line 13 and the lines after it, to the next blank line, as text: write the tag in a code span, put a backslash before its bracket, or re-wrap the line so that it does not open with the tag."
+      }
+    },
+    {
+      "name": "html-escaped-control",
+      "input": "# WO-999 — Verification fixture (v1.0.0)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** Verify the command.\n\n**Acceptance criteria (all required)**\n\n1. The command prints\n  \\<option> and the result.\n3. `npm run test:docs` passes.\n4. `npm test -- --review` passes.\n\n**Non-goals:** none.\n",
+      "main": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "candidate": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "mission": {
+        "value": [
+          "1",
+          "3",
+          "4"
+        ]
+      },
+      "filing": {
+        "code": null,
+        "message": "non-sequential acceptance criteria: docs/work-orders/WO-999-verification-fixture.md"
+      },
+      "advisories": {
+        "value": []
+      }
+    }
+  ]
+}

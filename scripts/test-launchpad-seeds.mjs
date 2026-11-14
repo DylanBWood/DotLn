@@ -326,10 +326,11 @@ test("WO-258 criterion 6: the export's WO-001 holds step 10's corrections and UP
   // Criterion 3 asks for the printed status and a fix where a match occurred.
   assert.match(
     order,
-    /3\. The local-terms registration step records the printed status, and a\s+match, where one occurred, was fixed before filing\./u,
+    /3\. The local-terms registration step records the printed status; a\s+refuse-mode match, where one occurred, was fixed before filing, and each\s+context-mode match was read, with the count read recorded\./u,
   );
   assert.doesNotMatch(order, /was\s+refused by the check and fixed/u);
-  // Item 4: an empty list refuses nothing; the check names this order's files.
+  // Item 4: an empty list refuses nothing; the check names the four files
+  // this order writes, the host report among them (WO-276-D177).
   assert.match(
     order,
     /an empty list is `present` with no terms and refuses nothing/u,
@@ -337,7 +338,7 @@ test("WO-258 criterion 6: the export's WO-001 holds step 10's corrections and UP
   assert.doesNotMatch(order, /an empty list refuses\)/u);
   assert.match(
     order,
-    /npm run terms -- check docs\/discovery\/environment\.md docs\/discovery\/environment\.json docs\/evidence\/WO-001\/README\.md/u,
+    /npm run terms -- check docs\/discovery\/environment\.md docs\/discovery\/environment\.json docs\/discovery\/host-report\.json docs\/evidence\/WO-001\/README\.md/u,
   );
   // No timebox; the review ladder every order runs.
   assert.doesNotMatch(order, /Timebox/u);
@@ -355,6 +356,284 @@ test("WO-258 criterion 6: the export's WO-001 holds step 10's corrections and UP
       lstatSync(join(kit, path), { throwIfNoEntry: false }),
       `${path} is written by the export`,
     );
+});
+
+/** The words a seed must not hold: an inspection of every harness and the
+ * call that once tested each (WO-275 step 1), and any agent harness or model
+ * provider other than Claude Code, by name or by its CLI's name. */
+const hostScreen = [
+  /each AI coding harness/iu,
+  /smoke invocation/iu,
+  /harmless probe/iu,
+  /\b(?:codex|copilot|gemini|openai|gpt|cursor|aider|windsurf|cline|mistral|ollama)\b/iu,
+];
+// A seed is wrapped prose: a phrase is found across the line break a
+// wrap puts inside it.
+const seedHostFindings = (text) =>
+  hostScreen
+    .filter((pattern) => pattern.test(text.replace(/\s+/gu, " ")))
+    .map(String);
+
+test("WO-275 criterion 1: a fresh export's first order and security seed inspect only the hosts the instance elects and invoke no harness", () => {
+  // The screen itself refuses a first order holding either phrase step 1
+  // removes, so a later rewording cannot bring the inspection back unseen.
+  assert.deepEqual(
+    seedHostFindings("2. Each AI coding harness as installed: version"),
+    [String(hostScreen[0])],
+  );
+  assert.deepEqual(
+    seedHostFindings("One smoke invocation per harness surface is permitted"),
+    [String(hostScreen[1])],
+  );
+  assert.equal(seedHostFindings("the Codex CLI").length, 1);
+  // A wrap inside a phrase hides nothing (WO-276, the attack on Part G).
+  assert.equal(
+    seedHostFindings("2. Each AI coding\n   harness as installed: version")
+      .length,
+    1,
+  );
+  assert.equal(
+    seedHostFindings("One smoke\ninvocation per harness surface is permitted")
+      .length,
+    1,
+  );
+  for (const path of [
+    "docs/work-orders/WO-001-environment-truth.md",
+    "AI-HARNESS-SECURITY.md",
+  ]) {
+    const seed = readFileSync(join(kit, path), "utf8");
+    const flat = seed.replace(/\s+/gu, " ");
+    assert.deepEqual(seedHostFindings(seed), [], path);
+    // Claude Code is the host, and another is inspected only when the
+    // instance's configuration elects it.
+    assert.match(flat, /Claude Code/u, path);
+    assert.match(
+      flat,
+      /any other host this instance's `dotln\.config\.json` elects under `features`/u,
+      path,
+    );
+    assert.match(flat, /a fresh instance elects none/u, path);
+  }
+  const order = readFileSync(
+    join(kit, "docs/work-orders/WO-001-environment-truth.md"),
+    "utf8",
+  ).replace(/\s+/gu, " ");
+  assert.match(
+    order,
+    /Look for no other agent harness or model provider on this machine, ask no version of one, and invoke no harness: no session, print-mode call or model request runs\./u,
+  );
+  assert.match(order, /This record turns no host on/u);
+  assert.match(
+    order,
+    /it is this instance's own choice, made outside this order, which invokes no harness\./u,
+  );
+  // The live smoke is named, never permitted here.
+  assert.doesNotMatch(order, /record it the same way if run/u);
+});
+
+test("WO-275 criteria 3 and 4: a fresh export carries the operator commands page at the kit's version with every block its guide marks, prints it with launchpad commands before any install, and seeds FOR-CORE.md as its template", async () => {
+  const { OPERATOR_STEPS, readMarkedBlocks } =
+    await import("./lib/operator-commands.mjs");
+  const page = readFileSync(join(kit, "docs/OPERATOR.md"), "utf8");
+  // The commit's page, carried as a kit file.
+  assert.equal(page, readFileSync(join(source, "docs/OPERATOR.md"), "utf8"));
+  const listed = manifestOf(kit).files.map(({ path }) => path);
+  assert.ok(listed.includes("docs/OPERATOR.md"));
+  // It names the kit's version: a strict version, the README claim core
+  // generated it from (the sync suite ties the two; this product case reads
+  // no core document).
+  assert.match(page, /the DotLn kit at `v\d+\.\d+\.\d+`/u);
+  // Every block the export's own guide marks, byte for byte, in the cycle's
+  // order.
+  const { blocks, faults } = readMarkedBlocks(
+    readFileSync(join(kit, "docs/KIT.md"), "utf8"),
+  );
+  assert.deepEqual(faults, []);
+  const order = OPERATOR_STEPS.map(([id]) => id);
+  let at = 0;
+  for (const block of [...blocks].sort(
+    (a, b) => order.indexOf(a.step) - order.indexOf(b.step) || a.line - b.line,
+  )) {
+    const bytes = `${block.fence}${block.info}\n${block.content.join("\n")}\n${block.fence}\n`;
+    const found = page.indexOf(bytes, at);
+    assert.ok(found >= at, `${block.step} block at guide line ${block.line}`);
+    at = found + bytes.length;
+  }
+  assert.equal(blocks.length >= OPERATOR_STEPS.length, true);
+  // Before any install: a copy with no node_modules at all prints the page.
+  const bare = join(scratch, "wo275-commands-before-install");
+  cpSync(kit, bare, {
+    recursive: true,
+    verbatimSymlinks: true,
+    filter: (path) => basename(path) !== "node_modules",
+  });
+  assert.equal(existsSync(join(bare, "node_modules")), false);
+  const printed = ok(
+    run(process.execPath, ["scripts/launchpad.mjs", "commands"], {
+      cwd: bare,
+    }),
+    "launchpad commands before any install",
+  );
+  assert.equal(printed.stdout, page);
+  // The instance's file for core: the template's bytes, a seed and no kit
+  // file.
+  assert.equal(
+    readFileSync(join(kit, "FOR-CORE.md"), "utf8"),
+    readFileSync(join(source, "scripts/kit/for-core.template.md"), "utf8"),
+  );
+  assert.ok(!listed.includes("FOR-CORE.md"));
+});
+
+test("WO-276 criteria H1, H2, H7 and H9: before any install a fresh export's host report prints a row for each assumption and the same rows as JSON; the export holds the attributes seed as its template; with stand-in codex and copilot commands on the path the report runs neither until the instance elects that host; and with its library replaced by a file that fails to load, under a Node below the floor, it still prints the Node row with the floor and exits 1", () => {
+  // Before any install: a copy with no node_modules at all.
+  const bare = join(scratch, "wo276-doctor-before-install");
+  cpSync(kit, bare, {
+    recursive: true,
+    verbatimSymlinks: true,
+    filter: (path) => basename(path) !== "node_modules",
+  });
+  assert.equal(existsSync(join(bare, "node_modules")), false);
+  // Stand-ins for three agent CLIs, first on the path, each recording how
+  // it was called.
+  const bin = join(scratch, "wo276-stand-ins");
+  const calls = join(scratch, "wo276-stand-ins.log");
+  mkdirSync(bin);
+  for (const name of ["claude", "codex", "copilot"]) {
+    writeFileSync(
+      join(bin, name),
+      `#!/bin/sh\necho "${name} $*" >> "${calls}"\necho "${name} 9.9.9"\n`,
+    );
+    chmodSync(join(bin, name), 0o755);
+  }
+  const report = (args = []) => {
+    writeFileSync(calls, "");
+    const result = run(process.execPath, ["scripts/doctor.mjs", ...args], {
+      cwd: bare,
+      env: { ...env, PATH: `${bin}:${env.PATH}` },
+    });
+    return {
+      ...result,
+      calls: readFileSync(calls, "utf8").split("\n").filter(Boolean).sort(),
+    };
+  };
+  const table = report();
+  const json = report(["--json"]);
+  const rows = JSON.parse(json.stdout);
+  assert.deepEqual(
+    rows.map((row) => row.id),
+    [
+      "node",
+      "git",
+      "compiler",
+      "lane-memory",
+      "symlinks",
+      "line-endings",
+      "forge",
+      "platform",
+      "agent-claude",
+    ],
+  );
+  for (const row of rows) {
+    for (const field of [
+      "assumption",
+      "observed",
+      "verdict",
+      "dependsOn",
+      "remedy",
+    ])
+      assert.ok(
+        typeof row[field] === "string" && row[field],
+        `${row.id}: ${field}`,
+      );
+    assert.ok(
+      table.stdout.includes(
+        `| ${row.assumption} | ${row.observed} | ${row.verdict} |`,
+      ),
+      row.id,
+    );
+  }
+  // This host meets what the kit assumes; the fresh export has no origin
+  // yet, which is unknown and changes no exit code; and the attributes
+  // seed already keeps Git from converting a line ending.
+  const verdict = (id) => rows.find((row) => row.id === id).verdict;
+  for (const id of [
+    "node",
+    "git",
+    "compiler",
+    "lane-memory",
+    "symlinks",
+    "line-endings",
+  ])
+    assert.equal(verdict(id), "met", id);
+  assert.equal(verdict("forge"), "unknown");
+  assert.equal(table.status, 0, table.stderr);
+  assert.equal(json.status, 0, json.stderr);
+  // The export elects no host and attests none: the Claude CLI's row alone,
+  // and neither stand-in was run.
+  assert.deepEqual(json.calls, ["claude --version"]);
+  const config = JSON.parse(
+    readFileSync(join(bare, "dotln.config.json"), "utf8"),
+  );
+  writeFileSync(
+    join(bare, "dotln.config.json"),
+    `${JSON.stringify({ ...config, features: { ...config.features, "host-codex": true } }, null, 2)}\n`,
+  );
+  const elected = report(["--json"]);
+  assert.deepEqual(
+    JSON.parse(elected.stdout)
+      .filter((row) => row.id.startsWith("agent-"))
+      .map((row) => [row.id, row.observed]),
+    [
+      ["agent-claude", "found (9.9.9)"],
+      ["agent-codex", "found (9.9.9)"],
+    ],
+  );
+  assert.deepEqual(elected.calls, ["claude --version", "codex --version"]);
+  // The attributes seed: the template's bytes, a seed and no kit file.
+  assert.equal(
+    readFileSync(join(kit, ".gitattributes"), "utf8"),
+    readFileSync(join(source, "scripts/kit/gitattributes.template"), "utf8"),
+  );
+  assert.ok(
+    !manifestOf(kit)
+      .files.map(({ path }) => path)
+      .includes(".gitattributes"),
+  );
+  // The instance gains the command's script name with the kit's package.
+  assert.equal(
+    JSON.parse(readFileSync(join(kit, "package.json"), "utf8")).scripts.doctor,
+    "node scripts/doctor.mjs",
+  );
+  // Criterion H2's last clause, on the export's own files: with the
+  // report's library replaced by a file that fails to load and a Node below
+  // the floor, the entry still prints the Node row with the floor and exits
+  // 1. The entry's exported function is called in the export, since the
+  // running Node is the one fact its command line cannot stand in for.
+  writeFileSync(
+    join(bare, "scripts/lib/host-doctor.mjs"),
+    "export const hostReport = ;\n",
+  );
+  const unloadable = run(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      'const { doctor } = await import("./scripts/doctor.mjs"); process.exitCode = await doctor([], { nodeVersion: "v18.20.0" });',
+    ],
+    { cwd: bare, env },
+  );
+  assert.equal(unloadable.status, 1, unloadable.stderr);
+  assert.ok(unloadable.stdout.includes("Node v18.20.0"), unloadable.stdout);
+  assert.ok(
+    unloadable.stdout.includes(
+      JSON.parse(readFileSync(join(bare, "package.json"), "utf8")).engines.node,
+    ),
+    unloadable.stdout,
+  );
+  assert.match(
+    unloadable.stdout,
+    /this Node can load the kit's own modules: unknown/u,
+  );
 });
 
 test("WO-258 criterion 6: a refresh plans every absent export seed, removes a retired seed at its kit rendering and keeps a customized one with its reason", async () => {

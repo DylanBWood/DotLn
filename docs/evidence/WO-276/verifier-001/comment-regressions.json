@@ -1,0 +1,124 @@
+{
+  "baseline": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "results": [
+    {
+      "path": "component.tsx",
+      "source": "// WO-999: renders a view\nexport const View = () => <div />;\n",
+      "baseline": [
+        {
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "380340e825750a637c10bee1d33622272b948e434c8a7e40426cb3254cdb6de2"
+        }
+      ],
+      "candidate": [],
+      "parsedCommentBodies": [
+        " WO-999: renders a view"
+      ]
+    },
+    {
+      "path": "component.jsx",
+      "source": "// WO-999: renders a view\nexport const View = () => <div />;\n",
+      "baseline": [
+        {
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "380340e825750a637c10bee1d33622272b948e434c8a7e40426cb3254cdb6de2"
+        }
+      ],
+      "candidate": [],
+      "parsedCommentBodies": [
+        " WO-999: renders a view"
+      ]
+    },
+    {
+      "path": "module.mjs",
+      "source": "// WO-999: exports a value\nexport const value = 1;\n",
+      "baseline": [
+        {
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "091836208dbb489acc87d3297ecfaa5991d4dbc374257e80d5d12e0255a0826f"
+        }
+      ],
+      "candidate": [
+        {
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "091836208dbb489acc87d3297ecfaa5991d4dbc374257e80d5d12e0255a0826f"
+        }
+      ],
+      "parsedCommentBodies": [
+        " WO-999: exports a value"
+      ]
+    },
+    {
+      "path": "matcher.mjs",
+      "source": "const ready = true; const text = \"sample\";\nif (ready) /[/*] D123/.test(text);\n",
+      "baseline": [],
+      "candidate": [
+        {
+          "line": 2,
+          "kind": "decision-number",
+          "fingerprint": "1fba9213b0824c4de313f74dabc3e557da5d7be9e6f3465537479bd3c1f00c2f"
+        }
+      ],
+      "parsedCommentBodies": []
+    }
+  ],
+  "checks": {
+    "baseline": {
+      "failures": [
+        "component.tsx:1: comment order-lead; lead with what the code does or why; an order identifier may follow the explanation",
+        "component.jsx:1: comment order-lead; lead with what the code does or why; an order identifier may follow the explanation",
+        "module.mjs:1: comment order-lead; lead with what the code does or why; an order identifier may follow the explanation"
+      ],
+      "findings": [
+        {
+          "file": "component.tsx",
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "380340e825750a637c10bee1d33622272b948e434c8a7e40426cb3254cdb6de2"
+        },
+        {
+          "file": "component.jsx",
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "380340e825750a637c10bee1d33622272b948e434c8a7e40426cb3254cdb6de2"
+        },
+        {
+          "file": "module.mjs",
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "091836208dbb489acc87d3297ecfaa5991d4dbc374257e80d5d12e0255a0826f"
+        }
+      ],
+      "stale": [],
+      "baselined": 0,
+      "scanned": 4
+    },
+    "candidate": {
+      "failures": [
+        "module.mjs:1: comment order-lead; lead with what the code does or why; an order identifier may follow the explanation",
+        "matcher.mjs:2: comment decision-number; qualify it with its order (WO-NNN D0NN) or say what the decision decided"
+      ],
+      "findings": [
+        {
+          "file": "module.mjs",
+          "line": 1,
+          "kind": "order-lead",
+          "fingerprint": "091836208dbb489acc87d3297ecfaa5991d4dbc374257e80d5d12e0255a0826f"
+        },
+        {
+          "file": "matcher.mjs",
+          "line": 2,
+          "kind": "decision-number",
+          "fingerprint": "1fba9213b0824c4de313f74dabc3e557da5d7be9e6f3465537479bd3c1f00c2f"
+        }
+      ],
+      "stale": [],
+      "baselined": 0,
+      "scanned": 4
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "comparison": "cost-fields",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: the Cost declaration the metrics reconcile (the base's own pattern, taken from its file, against the order reader's header field)",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

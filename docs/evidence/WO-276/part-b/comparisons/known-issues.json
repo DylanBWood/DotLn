@@ -1,0 +1,9 @@
+{
+  "comparison": "known-issues",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: its Known issues and carry-ins sections, each with its lines and the line that ends it, the lines that write the label in another layout, and a fence the order never closes",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

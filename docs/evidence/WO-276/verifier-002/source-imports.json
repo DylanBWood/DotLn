@@ -1,0 +1,63 @@
+{
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "inputs": [
+    {
+      "name": "control",
+      "expected": [
+        "./dep.mjs"
+      ],
+      "candidate": [
+        "./dep.mjs"
+      ],
+      "baseline": [
+        "./dep.mjs"
+      ],
+      "astImports": 1,
+      "syntaxValid": true
+    },
+    {
+      "name": "conditional-regex",
+      "expected": [
+        "./dep.mjs"
+      ],
+      "candidate": [],
+      "baseline": [],
+      "astImports": 1,
+      "syntaxValid": true
+    },
+    {
+      "name": "block-regex",
+      "expected": [
+        "./dep.mjs"
+      ],
+      "candidate": [],
+      "baseline": [],
+      "astImports": 1,
+      "syntaxValid": true
+    },
+    {
+      "name": "dynamic-property",
+      "expected": [
+        "./dep.mjs"
+      ],
+      "candidate": [],
+      "baseline": [],
+      "astImports": 1,
+      "syntaxValid": true
+    },
+    {
+      "name": "dynamic-then",
+      "expected": [
+        "./dep.mjs"
+      ],
+      "candidate": [
+        "./dep.mjs"
+      ],
+      "baseline": [
+        "./dep.mjs"
+      ],
+      "astImports": 1,
+      "syntaxValid": true
+    }
+  ]
+}

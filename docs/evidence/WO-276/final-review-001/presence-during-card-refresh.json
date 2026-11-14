@@ -1,0 +1,18 @@
+[
+  {
+    "startedBy": "launcher",
+    "ownerExit": 0,
+    "ownerMs": 5827,
+    "presenceExit": 1,
+    "presenceMs": 4300,
+    "presenceSaid": "worker host refused; inspect the store and declared environment before retrying"
+  },
+  {
+    "startedBy": "package-entry",
+    "ownerExit": 0,
+    "ownerMs": 1654,
+    "presenceExit": 0,
+    "presenceMs": 152,
+    "presenceSaid": "Presence recorded: away"
+  }
+]

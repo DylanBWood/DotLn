@@ -225,12 +225,7 @@
       "explanation": "Source not supplied"
     },
     {
-      "ref": "docs/work-orders/README.md",
-      "status": "unavailable",
-      "explanation": "Source not supplied"
-    },
-    {
-      "ref": "docs/work-orders/HISTORY.md",
+      "ref": "work-orders:index--json",
       "status": "unavailable",
       "explanation": "Source not supplied"
     },

@@ -13,6 +13,12 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, posix } from "node:path";
 import { docRelative, rootPattern } from "./config.mjs";
 import { runGit } from "./git.mjs";
+import {
+  markdownCodeBlocks,
+  markdownFields,
+  markdownHeadings,
+  parseMarkdown,
+} from "./markdown-links.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import {
   BASIS_FORMS,
@@ -205,12 +211,14 @@ export function captureTiming(root, capture, session) {
   return born >= started ? "created-during-session" : "created-before-session";
 }
 
-// A report judges a criterion on one line, outside code fences:
-// `**Criterion <id>:** met`, `unmet`, `unmet, waived by <ordinal>` or
-// `unmet, defective (<class>) by <ordinal>`, as a paragraph, a bullet or
-// numbered item, or a quotation.
-const criterionLine =
-  /^\s*(?:>\s*)*(?:(?:[-*+]|\d{1,9}[.)])\s+)?\*\*Criterion (?<id>[A-Za-z0-9][A-Za-z0-9._-]{0,63}):\*\*\s*(?<judged>[Mm]et|[Uu]nmet)\b(?:,\s*(?:waived by (?<waived>\d+)\b|defective \((?<kind>[a-z][a-z-]*)\) by (?<defective>\d+)\b))?/u;
+// A report judges a criterion with a bold field label opening a line of a
+// paragraph, so as a paragraph, a bullet or numbered item, or a quotation,
+// and never in code: `**Criterion <id>:** met`, `unmet`, `unmet, waived by
+// <ordinal>` or `unmet, defective (<class>) by <ordinal>`, the judgment
+// following the label on its line.
+const CRITERION_LABEL = /^Criterion (?<id>[A-Za-z0-9][A-Za-z0-9._-]{0,63})$/u;
+const JUDGMENT =
+  /^(?<judged>[Mm]et|[Uu]nmet)\b(?:,\s*(?:waived by (?<waived>\d+)\b|defective \((?<kind>[a-z][a-z-]*)\) by (?<defective>\d+)\b))?/u;
 export const criterionLineForms =
   "`**Criterion <id>:** met`, `**Criterion <id>:** unmet`, `**Criterion <id>:** unmet, waived by <ordinal>` or `**Criterion <id>:** unmet, defective (<class>) by <ordinal>`";
 // The header fields filed reports carry are never a judgment's evidence, even
@@ -219,7 +227,7 @@ export const criterionLineForms =
 // emphasis. A plain "Subject:" line and other prose after the judgment stay
 // its evidence, which only the judge can vouch for.
 const REPORT_FIELD =
-  /^\s*(?:>\s*)*(?:(?:[-*+]|\d{1,9}[.)])\s+)?\*\*(?:Actor attestation|Actor|Process cost|Verdict|Subject)(?::\*\*|\*\*:)/iu;
+  /^(?:Actor attestation|Actor|Process cost|Verdict|Subject)$/iu;
 
 /** The digest a defect record binds: the criterion's text as the order's
  * numbered list declares it, wrapped lines joined. An amended criterion no
@@ -227,74 +235,88 @@ const REPORT_FIELD =
 export const criterionTextHash = (text) => sha256Bytes(text);
 
 export const criterionJudgments = (report) => {
-  // CommonMark fences: a fence closes only on its own character, at least as
-  // long, with nothing after it.
-  let fence;
-  const rows = report.split(/\r?\n/).map((line) => {
-    const marker = /^ {0,3}(`{3,}|~{3,})(.*)$/u.exec(line);
-    if (
-      marker &&
-      !fence &&
-      !(marker[1][0] === "`" && marker[2].includes("`"))
-    ) {
-      fence = marker[1];
-      return { line, fenced: true, match: null };
-    }
-    if (
-      marker &&
-      fence &&
-      marker[1][0] === fence[0] &&
-      marker[1].length >= fence.length &&
-      !marker[2].trim()
-    ) {
-      fence = undefined;
-      return { line, fenced: true, match: null };
-    }
-    return {
-      line,
-      fenced: Boolean(fence),
-      match: fence ? null : criterionLine.exec(line),
-    };
-  });
-  return rows.flatMap((row, index) => {
-    if (!row.match) return [];
-    // The judgment's paragraph: its line and every line after it up to the
-    // next judgment, unfenced heading or findings block, fenced lines left
-    // out, so a receipt cited in a wrapped or following paragraph, or after a
-    // fenced example that holds a heading, belongs to the judgment above it,
-    // and the report's findings are never read as a judgment's evidence.
-    const paragraph = [row.line];
-    for (let next = index + 1; next < rows.length; next++) {
-      const following = rows[next];
-      if (
-        following.match ||
-        (!following.fenced &&
-          (/^ {0,3}#{1,6}\s/u.test(following.line) ||
-            isFindingsMarker(following.line)))
+  // The parser's offsets and lines count from after a byte-order mark.
+  const source = report.startsWith("﻿") ? report.slice(1) : report;
+  const tree = parseMarkdown(source);
+  const lines = source.split(/\r\n|\r|\n/u);
+  const lineStarts = [0];
+  for (const ending of source.matchAll(/\r\n|\r|\n/gu))
+    lineStarts.push(ending.index + ending[0].length);
+  const fields = markdownFields(source, tree);
+  // Fenced code's lines, its fence lines included, are never read.
+  const fenced = new Set(
+    markdownCodeBlocks(source, tree).flatMap((block) =>
+      Array.from(
+        { length: block.endLine - block.line + 1 },
+        (_, index) => block.line + index,
+      ),
+    ),
+  );
+  const headingLines = new Set(
+    markdownHeadings(source, tree).map((heading) => heading.line),
+  );
+  const reportFieldLines = new Set(
+    fields
+      .filter(
+        (field) =>
+          REPORT_FIELD.test(field.label) &&
+          (field.raw.endsWith(":") || field.value.startsWith(":")),
       )
-        break;
-      if (!following.fenced) paragraph.push(following.line);
-    }
-    while (paragraph.length > 1 && !paragraph.at(-1).trim()) paragraph.pop();
-    // What the paragraph says beyond the judgment's own form and the report's
-    // header fields: the evidence a defective line must carry.
-    const rest = [
-      row.line.slice(row.match.index + row.match[0].length),
-      ...paragraph.slice(1).filter((line) => !REPORT_FIELD.test(line)),
-    ].join("\n");
-    const { id, judged, waived, kind, defective } = row.match.groups;
+      .map((field) => field.line),
+  );
+  const judgments = fields.flatMap((field) => {
+    const id = CRITERION_LABEL.exec(field.label)?.groups.id;
+    if (!id || !field.raw.endsWith(":")) return [];
+    const line = lines[field.line - 1];
+    const after = line.slice(field.valueStart - lineStarts[field.line - 1]);
+    const lead = after.length - after.trimStart().length;
+    const match = JUDGMENT.exec(after.slice(lead));
+    if (!match) return [];
     return [
       {
-        criterionId: id,
-        met: judged.toLowerCase() === "met",
-        waivedBy: waived === undefined ? undefined : Number(waived),
-        defectiveBy: defective === undefined ? undefined : Number(defective),
-        defectClass: kind,
-        evidence: /[\p{L}\p{N}]/u.test(rest),
-        line: row.line,
-        paragraph: paragraph.join("\n"),
+        id,
+        number: field.line,
+        line,
+        rest: after.slice(lead + match[0].length),
+        groups: match.groups,
       },
     ];
+  });
+  const judged = new Set(judgments.map((judgment) => judgment.number));
+  return judgments.map(({ id, number, line, rest, groups }) => {
+    // The judgment's paragraph: its line and every line after it up to the
+    // next judgment, top-level heading or findings block, fenced lines left
+    // out, so a receipt cited in a wrapped or following paragraph, or after
+    // a fenced example that holds a heading, belongs to the judgment above
+    // it, and the report's findings are never read as a judgment's evidence.
+    const paragraph = [[number, line]];
+    for (let next = number + 1; next <= lines.length; next++) {
+      if (judged.has(next)) break;
+      if (fenced.has(next)) continue;
+      if (headingLines.has(next) || isFindingsMarker(lines[next - 1])) break;
+      paragraph.push([next, lines[next - 1]]);
+    }
+    while (paragraph.length > 1 && !paragraph.at(-1)[1].trim()) paragraph.pop();
+    // What the paragraph says beyond the judgment's own form and the report's
+    // header fields: the evidence a defective line must carry.
+    const evidence = [
+      rest,
+      ...paragraph
+        .slice(1)
+        .filter(([at]) => !reportFieldLines.has(at))
+        .map(([, text]) => text),
+    ].join("\n");
+    const { judged: verdict, waived, kind, defective } = groups;
+    return {
+      criterionId: id,
+      met: verdict.toLowerCase() === "met",
+      waivedBy: waived === undefined ? undefined : Number(waived),
+      defectiveBy: defective === undefined ? undefined : Number(defective),
+      defectClass: kind,
+      evidence: /[\p{L}\p{N}]/u.test(evidence),
+      line,
+      paragraph: paragraph.map(([, text]) => text).join("\n"),
+    };
   });
 };
 

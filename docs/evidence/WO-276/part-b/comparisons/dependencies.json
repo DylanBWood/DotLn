@@ -1,0 +1,9 @@
+{
+  "comparison": "dependencies",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: its typed dependency block or its Depends on line, as activation and the index project it",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

@@ -1,0 +1,21 @@
+{
+  "what": "Each blocking claim of the verification sequence, run again at the candidate the final review judged (code identity 46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323), one process at a time under node scripts/harness.mjs bounded, on 2026-11-13 between 22:41 and 22:44 UTC. Each verifier's own retained reproducer was run with its result written to session scratch, so no verifier's record was rewritten.",
+  "runs": [
+    { "claims": ["VER-001 F1", "VER-001 F2", "VER-002 F1"], "probe": "docs/evidence/WO-276/verifier-003/independent-probes.mjs", "exitCode": 0, "reads": "repaired: the comment check and the screen's selection agree with the base's readings" },
+    { "claims": ["VER-001 F1", "VER-001 F2"], "probe": "docs/evidence/WO-276/verifier-001/comment-regressions.mjs", "exitCode": 1, "reads": "repaired: this probe asserts the defect, and its assertion that the candidate reports no finding now fails (1 where it expects 0)" },
+    { "claims": ["VER-002 F2"], "probe": "docs/evidence/WO-276/verifier-003/target-record-deletion.mjs", "exitCode": 0, "reads": "repaired" },
+    { "claims": ["VER-002 F4"], "probe": "docs/evidence/WO-276/verifier-003/checkpoint-preservation.mjs", "exitCode": 0, "reads": "repaired" },
+    { "claims": ["VER-002 F5"], "probe": "node --test --test-name-pattern 'WO-276 criterion B4' scripts/test-configuration-root.mjs", "exitCode": 0, "reads": "repaired: 1 case passed" },
+    { "claims": ["VER-002 F5", "VER-003 F1", "VER-003 F3"], "probe": "docs/evidence/WO-276/verifier-003/boundary-probes.mjs", "exitCode": 0, "reads": "repaired: the six source names are selected, the checkpoint shapes are held and the header reads equal the whole reader's" },
+    { "claims": ["VER-002 F6", "VER-003 F2"], "probe": "docs/evidence/WO-276/part-b/comparisons/readers.mjs known-issues criterion-judgments execution-plan-paths followup-sources release-history-components release-history-order-titles ledger-entries siblings-manifest-hashes", "exitCode": 0, "reads": "the eight comparisons those findings named run and name every difference; the final review's own finding on criterion 25 is three further readers" },
+    { "claims": ["VER-002 F7"], "probe": "docs/evidence/WO-276/verifier-003/close-history.mjs", "exitCode": 0, "reads": "repaired" },
+    { "claims": ["VER-002 F8", "VER-002 F9"], "probe": "docs/evidence/WO-276/verifier-003/host-update-boundaries.mjs", "exitCode": 0, "reads": "repaired" },
+    { "claims": ["VER-002 F10"], "probe": "docs/evidence/WO-276/verifier-003/execution-appendix.mjs", "exitCode": 0, "reads": "repaired" },
+    { "claims": ["VER-002 F11"], "probe": "docs/evidence/WO-276/verifier-003/usage-lower-bounds.mjs", "exitCode": 0, "reads": "repaired" },
+    { "claims": ["VER-002 F18"], "probe": "docs/evidence/WO-276/verifier-003/unactivated-target-withdrawal.mjs", "exitCode": 0, "reads": "repaired" },
+    { "claims": ["VER-003 F1"], "probe": "docs/evidence/WO-276/verifier-003/checkpoint-directory-replacement.mjs", "exitCode": 1, "reads": "repaired: this probe asserts the defect, and its assertion that the snapshot throws ENOTDIR now fails (no error is thrown)" },
+    { "claims": ["VER-003 F1", "VER-003 F3", "VER-004 F1"], "probe": "docs/evidence/WO-276/verifier-004/independent-probes.mjs", "exitCode": 0, "reads": "repaired: six checkpoint shapes preserved, six source names selected, no live process signalled in any of the four cleanup rows" },
+    { "claims": ["VER-004 F1"], "probe": "docs/evidence/WO-276/verifier-005/cleanup-probes.mjs", "exitCode": 0, "reads": "repaired: 34 cases, none failed" },
+    { "claims": ["VER-004 F1"], "probe": "node --test scripts/test-codex-background.mjs", "exitCode": 0, "reads": "repaired: 2 cases passed" }
+  ]
+}

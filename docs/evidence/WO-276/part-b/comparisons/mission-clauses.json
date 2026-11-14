@@ -1,0 +1,74 @@
+{
+  "comparison": "mission-clauses",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order, as a mission contract: its objective, numbered criteria, non-goals and evidence gate as the capsule's clauses",
+  "read": 269,
+  "equal": 210,
+  "differences": {
+    "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section": 55,
+    "defect of the old reader: a field ended only at a blank line before the next bold phrase, so a label on the very next line (no blank line between) was read as part of the clause": 3,
+    "defect of the old reader: its Objective pattern took a wrapped citation line that opens with a bold **Objective** (no colon) as the field; the order reader reads the declared **Objective:** field": 1
+  },
+  "examples": [
+    {
+      "input": "docs/work-orders/WO-014-approval-burden-contract.md",
+      "named": "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Phase 1: reconcile the runbook's recorded posture, the startup evidence and the ADR claims for each harness the runbook records with a qualified role (Claude Code, Codex CLI and Copilot CLI) at recorded versions, as dated observations with a drift rule, wit",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective:part:1\",\"kind\":\"objective\",\"text\":\"Phase 1: reconcile the runbook's recorded posture, the startup evidence and the ADR claims for each harness the runbook records with a qualified role (Claude Code, Codex CLI and Copilot CLI) at recorded versions, as dated observations with a drift ru"
+    },
+    {
+      "input": "docs/work-orders/WO-026-work-order-index.md",
+      "named": "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Answer \\\"which work orders are open, which are closed, and what closed them\\\" from evidence, in a generated index that `npm test` proves fresh, without moving, renaming, or renumbering a single work-order file.\"},{\"id\":\"contract:criterion:1\",\"kind\":\"criteri",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Answer \\\"which work orders are open, which are closed, and what closed them\\\" from evidence, in a generated index that `npm test` proves fresh, without moving, renaming, or renumbering a single work-order file. **Why the index is generated and the files sta"
+    },
+    {
+      "input": "docs/work-orders/WO-027-local-inference-probe.md",
+      "named": "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Establish, with epistemic labels, whether this machine can run one pinned small model through an installed runner, non-interactively, with evidence about network egress, determinism, and cost per generation — enough to decide whether the local-inference cal",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Establish, with epistemic labels, whether this machine can run one pinned small model through an installed runner, non-interactively, with evidence about network egress, determinism, and cost per generation — enough to decide whether the local-inference cal"
+    },
+    {
+      "input": "docs/work-orders/WO-035-documentation-structure-reset.md",
+      "named": "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Stop the four growth patterns the sweep measured before they compound — a ledger that grows at both ends, specification documents that accrete dated implementation receipts, release history maintained by hand in three places, and a cold start that reads rou",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Stop the four growth patterns the sweep measured before they compound — a ledger that grows at both ends, specification documents that accrete dated implementation receipts, release history maintained by hand in three places, and a cold start that reads rou"
+    },
+    {
+      "input": "docs/work-orders/WO-036-evidence-runner.md",
+      "named": "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Make the root evidence gate faster to run, honest about ordering, and legible per case, without weakening any check: one runner builds first, runs independent suites concurrently under a bounded parallelism, reports every case with a summary, and preserves ",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Make the root evidence gate faster to run, honest about ordering, and legible per case, without weakening any check: one runner builds first, runs independent suites concurrently under a bounded parallelism, reports every case with a summary, and preserves "
+    },
+    {
+      "input": "docs/work-orders/WO-057-browser-runtime-truth.md",
+      "named": "defect of the old reader: it ended a field at any bold phrase after a blank line, a rule of its own for where a field ends. Where the next section's label wraps onto a second line the order format's reader takes that phrase as the field's text, as the planning subject's reader did at the base and does now, so the objective the planning receipts judged for this order runs through that section and the old mission check read a shorter one. The mission capsule's objective clause is wider by that section",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Before any adapter is written, record whether the `playwright` package and a browser binary install from a pinned lockfile in this environment (with and without the filtering proxy), launch headless inside a sandbox-confined scratch checkout, produce a scre",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Before any adapter is written, record whether the `playwright` package and a browser binary install from a pinned lockfile in this environment (with and without the filtering proxy), launch headless inside a sandbox-confined scratch checkout, produce a scre"
+    },
+    {
+      "input": "docs/work-orders/WO-127-release-close-recovery.md",
+      "named": "defect of the old reader: a field ended only at a blank line before the next bold phrase, so a label on the very next line (no blank line between) was read as part of the clause",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Complete guarded release close without manually moving retained worktree records or rejecting unchanged planning-cost inputs merely because execution or integration commits are newer.\"},{\"id\":\"contract:criterion:1\",\"kind\":\"criterion\",\"text\":\"Retained contro",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Complete guarded release close without manually moving retained worktree records or rejecting unchanged planning-cost inputs merely because execution or integration commits are newer.\"},{\"id\":\"contract:criterion:1\",\"kind\":\"criterion\",\"text\":\"Retained contro"
+    },
+    {
+      "input": "docs/work-orders/WO-215-release-close-refreshes-the-starter.md",
+      "named": "defect of the old reader: its Objective pattern took a wrapped citation line that opens with a bold **Objective** (no colon) as the field; the order reader reads the declared **Objective:** field",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"; `docs/siblings/siblings.json`; `docs/siblings/README.md`; `scripts/launchpad.mjs` (`harnessInExport` lines 784 to 796, `prepareKit` lines 821 to 1063 with the local-terms screen at line 1042, `destinationNames` lines 1065 to 1079, `closeWithReceipt` lines",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"Every core release reaches DotLn-Enterprise-Starter with no hand-run step. After `release close WO-NNN --publish` has published (or re-confirmed) the tag and its Release, the helper, in a launchpad whose sibling declaration names an export sibling with a re"
+    },
+    {
+      "input": "docs/work-orders/WO-258-an-instances-first-cycle-meets-the-kit.md",
+      "named": "defect of the old reader: a field ended only at a blank line before the next bold phrase, so a label on the very next line (no blank line between) was read as part of the clause",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective:part:1\",\"kind\":\"objective\",\"text\":\"A new instance cloned from the starter gets a Claude-only bundle unless it elects Codex or Copilot, an existing instance whose own record shows a host keeps that host without touching its configuration, and the first cycle an instance runs (clone, se",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"A new instance cloned from the starter gets a Claude-only bundle unless it elects Codex or Copilot, an existing instance whose own record shows a host keeps that host without touching its configuration, and the first cycle an instance runs (clone, setup, fi"
+    },
+    {
+      "input": "docs/work-orders/WO-259-committed-words-and-filed-records.md",
+      "named": "defect of the old reader: a field ended only at a blank line before the next bold phrase, so a label on the very next line (no blank line between) was read as part of the clause",
+      "old": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective:part:1\",\"kind\":\"objective\",\"text\":\"What a session commits never carries the operator's words, what a worker reads and prints never carries the local lane or an author line, what the journal attributes to the operator is the operator's, what a branch publishes is screened by the local-",
+      "new": "[{\"id\":\"contract:surfaces\",\"kind\":\"surface\",\"text\":\"Declared surfaces: scripts/, docs/\"},{\"id\":\"contract:objective\",\"kind\":\"objective\",\"text\":\"What a session commits never carries the operator's words, what a worker reads and prints never carries the local lane or an author line, what the journal attributes to the operator is the operator's, what a branch publishes is screened by the local-terms l"
+    }
+  ]
+}

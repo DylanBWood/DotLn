@@ -1,0 +1,66 @@
+{
+  "what": "The console-fixtures artifact's check, the one sync and the structural phase run, with another feedback edition selected than the one the self-host case reads: the check is current, the expected files keep their bytes, and the board's case applies its property checks to the edition selected. The selection was changed for the length of the run and put back.",
+  "command": "node docs/evidence/WO-276/part-e/console-check.mjs 001",
+  "selfhostCaseReads": {
+    "selfhostAudit": {
+      "path": "packages/console/fixtures/inputs/selfhostAudit.jsonl",
+      "ref": "docs/evidence/WO-276/feedback-002/selfhost-audit.jsonl"
+    },
+    "selfhostVerifier": {
+      "path": "packages/console/fixtures/inputs/selfhostVerifier.jsonl",
+      "ref": "docs/evidence/WO-276/feedback-002/selfhost-verification.jsonl"
+    },
+    "maturity": {
+      "path": "packages/console/fixtures/inputs/selfhostMaturity.json",
+      "ref": "docs/evidence/WO-276/feedback-002/feedback.json"
+    }
+  },
+  "before": {
+    "selected": "docs/evidence/WO-276/feedback-002",
+    "expected": {
+      "packages/console/fixtures/expected/selfhost.json": "4cd56fd9c97dc68b13fce5a968b9206a7880a9ca3c06af579246d1d5cac3f5d6",
+      "packages/console/fixtures/expected/selfhost.txt": "6bc8b07538ccea6de9e29078ee0b2b82d5d85af3525efe5733fd31a6d3b55480",
+      "packages/console/fixtures/expected/selfhost.html": "633a4a9c90f7eadf06bf6b79c910266b6637a107a4f9c13f457dfbc0aa70ddf0"
+    }
+  },
+  "during": {
+    "selected": "docs/evidence/WO-276/feedback-001",
+    "check": {
+      "command": "node scripts/console-fixtures.mjs --check",
+      "exitCode": 0,
+      "output": [
+        "wo009: JSON, terminal, HTML match",
+        "selfhost: JSON, terminal, HTML match",
+        "control: JSON, terminal, HTML match",
+        "refutations: JSON, terminal, HTML match",
+        "missing: JSON, terminal, HTML match",
+        "workstreams: JSON, terminal, HTML match"
+      ]
+    },
+    "boardCase": {
+      "command": "node --test --test-name-pattern=WO-276 criterion E3 packages/console/dist/test/board.test.js",
+      "exitCode": 0,
+      "output": [
+        "ℹ tests 1",
+        "ℹ pass 1",
+        "ℹ fail 0"
+      ]
+    },
+    "expected": {
+      "packages/console/fixtures/expected/selfhost.json": "4cd56fd9c97dc68b13fce5a968b9206a7880a9ca3c06af579246d1d5cac3f5d6",
+      "packages/console/fixtures/expected/selfhost.txt": "6bc8b07538ccea6de9e29078ee0b2b82d5d85af3525efe5733fd31a6d3b55480",
+      "packages/console/fixtures/expected/selfhost.html": "633a4a9c90f7eadf06bf6b79c910266b6637a107a4f9c13f457dfbc0aa70ddf0"
+    }
+  },
+  "after": {
+    "selected": "docs/evidence/WO-276/feedback-002",
+    "expected": {
+      "packages/console/fixtures/expected/selfhost.json": "4cd56fd9c97dc68b13fce5a968b9206a7880a9ca3c06af579246d1d5cac3f5d6",
+      "packages/console/fixtures/expected/selfhost.txt": "6bc8b07538ccea6de9e29078ee0b2b82d5d85af3525efe5733fd31a6d3b55480",
+      "packages/console/fixtures/expected/selfhost.html": "633a4a9c90f7eadf06bf6b79c910266b6637a107a4f9c13f457dfbc0aa70ddf0"
+    }
+  },
+  "expectedFilesUnchanged": true,
+  "selectionRestored": true,
+  "atTheBase": "git show main:scripts/console-fixtures.mjs: the artifact's check was the mode --check-current-selfhost, an equality of the manifest's maturity path with the selected edition's feedback.json under the message 'console selfhost fixture must follow the selected feedback edition; run npm run sync', so a selection the manifest did not follow failed with the selected edition's path as the expected value."
+}

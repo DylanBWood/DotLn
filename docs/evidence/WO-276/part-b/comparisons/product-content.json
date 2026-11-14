@@ -1,0 +1,9 @@
+{
+  "comparison": "product-content",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every product document: its sections with their anchors, levels and byte counts, and the failures its form raises, as the document check measures them",
+  "read": 17,
+  "equal": 17,
+  "differences": {},
+  "examples": []
+}

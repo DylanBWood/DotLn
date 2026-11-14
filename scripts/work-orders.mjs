@@ -2,6 +2,7 @@
 import { formatDuration } from "./lib/duration.mjs";
 import { renderCriteriaStatus } from "./lib/criteria-status.mjs";
 import { firstDifferingLine } from "./lib/validation.mjs";
+import { json } from "./lib/helpers.mjs";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import {
@@ -9,12 +10,14 @@ import {
   readPreflightSuites,
 } from "./lib/handoff-ledger.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { isCoreRoot } from "./lib/harness-runtime.mjs";
 import {
   defaultDocRelative,
   docPath,
   docRelative,
   findLaunchpad,
   loadConfig,
+  recordsStayInInstance,
 } from "./lib/config.mjs";
 import {
   existsSync,
@@ -31,7 +34,6 @@ import { readControl, readControls } from "./lib/control-store.mjs";
 import { renderAttestation } from "./lib/control-actor.mjs";
 import {
   closedDependencySet,
-  dependencyHeader,
   dependencyReleaseSet,
   historicalDependencyIds,
   inheritedLedgerDuty,
@@ -41,9 +43,15 @@ import {
   withdrawnDependencySet,
 } from "./lib/dependencies.mjs";
 import { runGit, primaryWorktree } from "./lib/git.mjs";
+import { markdownListItems, parseMarkdown } from "./lib/markdown-links.mjs";
+import {
+  REVIEW_LADDERS,
+  readWorkOrder,
+  readWorkOrderHeader,
+  reviewLadderLines,
+} from "./lib/work-order-document.mjs";
 import {
   containedRegularFile,
-  parseJson,
   workOrderAuthorityPath,
   workOrderAuthorityFiles,
 } from "./lib/paths.mjs";
@@ -64,17 +72,19 @@ import { recordedRepositoryClone } from "./lib/target-worktrees.mjs";
 import {
   parseWorkstreamDeclaration,
   readWorkstreams,
-  readWorkstreamSnapshot,
+  readWorkstreamObservations,
   projectWorkstreams,
-  workstreamSnapshotPrefix,
+  workstreamObservationsRecord,
+  writeWorkstreamObservations,
 } from "./lib/work-order-workstream.mjs";
+import {
+  readReleaseRecord,
+  releaseHistoryRecord,
+  writeReleaseRecord,
+} from "./lib/release-history.mjs";
 
 const toolRoot = findLaunchpad();
 const indexPath = defaultDocRelative("workOrders", "README.md");
-// The settled orders, the sources and limits and the tag record live on a
-// companion page (WO-190), so the page a reader opens for the work ahead
-// holds only the active line, the sequence and the Active and Open cards.
-const historyPath = defaultDocRelative("workOrders", "HISTORY.md");
 const planningPath = defaultDocRelative("planning", "sequence.md");
 // The default-layout storage names the generated index cites when a caller
 // hands it rows without the launchpad they were read from.
@@ -82,35 +92,39 @@ const DEFAULT_INDEX_PATHS = {
   legacy: DEFAULT_CONTROL_PATHS.legacy,
   orders: DEFAULT_CONTROL_PATHS.segment("WO-NNN"),
   legacyRelease: defaultDocRelative("releases", "v0.2.0.md"),
+  releaseRecord: defaultDocRelative("control", "release-history.json"),
+  observationsRecord: defaultDocRelative(
+    "control",
+    "workstream-observations.json",
+  ),
 };
-const snapshotPrefix = "<!-- dotln-work-order-tags: ";
+// The command that writes the two records the pages' check reads.
+const INDEX_COMMAND = "npm run work-orders -- index";
 const compare = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
 const INDEX_SECTIONS = ["Active", "Open"];
 const HISTORY_SECTIONS = ["Closed", "Withdrawn", "Superseded", "Historical"];
 
 // This is a tolerant view of existing prose, not another activation validator.
 // Unknown fields are named alongside their source path in the rendered details.
-export const parseHeader = (markdown, path, { historicalIds } = {}) => {
-  const { lines, first, end } = dependencyHeader(markdown);
-  const title = /^#\s+(.+?)\s*$/.exec(
-    (lines[first] ?? "").replace(/[ \t]+#+[ \t]*$/, ""),
-  )?.[1];
-  const header = lines.slice(first + 1, end);
+export const parseHeader = (
+  markdown,
+  path,
+  // `core`: whether the order is read in core's own root (the index says).
+  { historicalIds, core = false } = {},
+) => {
+  // The header alone: the index reads every order's and none of their bodies.
+  const order = readWorkOrderHeader(markdown);
+  const title = order.title?.title || undefined;
+  // A field the header writes once as `**Label:** value`, its continuation
+  // lines joined; absent, repeated or empty reads as unknown, and an order
+  // without a title has no header to read.
   const field = (label) => {
     if (!title) return undefined;
-    const prefix = `**${label}:**`;
-    const positions = header.flatMap((line, index) =>
-      line.startsWith(prefix) ? [index] : [],
-    );
-    if (positions.length !== 1) return undefined;
-    const start = positions[0];
-    const parts = [header[start].slice(prefix.length).trim()];
-    if (!parts[0]) return undefined;
-    for (const line of header.slice(start + 1)) {
-      if (!line.trim() || /^\*\*[^*]+:\*\*/.test(line)) break;
-      parts.push(line.trim());
-    }
-    return parts.join(" ").replace(/\s+/g, " ");
+    const found = order
+      .headerFields(label)
+      .filter((field) => field.raw === `${label}:`);
+    if (found.length !== 1) return undefined;
+    return found[0].value.replace(/\s+/g, " ") || undefined;
   };
   const versions = strictVersionsIn(title ?? "");
   const version = !title
@@ -138,10 +152,13 @@ export const parseHeader = (markdown, path, { historicalIds } = {}) => {
       ? field("Track")
       : "unknown",
     cost: field("Cost") ?? "unavailable",
+    // Every line that sizes the order's first review round, judged where
+    // the order's section is known.
+    reviewLadderLines: reviewLadderLines(markdown),
     repository: parseRepositoryDeclaration(markdown, path),
     workstream: parseWorkstreamDeclaration(markdown, path),
     provenance: parseDerivedProvenance(markdown, path),
-    ledgerSubstitution: inheritedLedgerDuty(markdown),
+    ledgerSubstitution: inheritedLedgerDuty(markdown, core),
     dependencies,
     // The umbrella class, read by the index and by activation (WO-190).
     umbrella: umbrellaSuccessors(markdown, dependencies),
@@ -155,35 +172,63 @@ const readContained = (root, path) => {
   return readFileSync(file, "utf8");
 };
 
+const SEQUENCE_START = "<!-- dotln-work-order-sequence:start -->";
+const SEQUENCE_END = "<!-- dotln-work-order-sequence:end -->";
+// One proposed entry: an order and its short label.
+const SEQUENCE_ENTRY = /^(WO-\d{3}) — (\S(?:.*\S)?)$/u;
+
 // Only this explicit operator-authored block selects the proposed order.
 // References elsewhere in the map or a Depends on paragraph cannot select it.
+// The block holds bulleted entries only; a blank line between two entries
+// ends a group, and a group of two is a lane pair.
 export const parseSequenceGroups = (markdown, source = planningPath) => {
-  const lines = markdown.split(/\r?\n/);
-  const positions = (marker) =>
-    lines.flatMap((line, index) => (line.trim() === marker ? [index] : []));
-  const starts = positions("<!-- dotln-work-order-sequence:start -->");
-  const ends = positions("<!-- dotln-work-order-sequence:end -->");
-  if (starts.length !== 1 || ends.length !== 1 || starts[0] >= ends[0])
+  const tree = parseMarkdown(markdown);
+  const markers = (marker) =>
+    tree.children.filter(
+      (node) => node.type === "html" && node.value.trim() === marker,
+    );
+  const starts = markers(SEQUENCE_START);
+  const ends = markers(SEQUENCE_END);
+  if (
+    starts.length !== 1 ||
+    ends.length !== 1 ||
+    starts[0].position.start.offset >= ends[0].position.start.offset
+  )
     throw new Error(`${source}: expected one marked proposed sequence`);
+  const from = starts[0].position.end.offset;
+  const to = ends[0].position.start.offset;
+  const inside = ({ start, end }) => start >= from && end <= to;
+  const malformed = () =>
+    new Error(`${source}: expected '- WO-NNN — short label'`);
+  if (
+    tree.children.some(
+      (node) =>
+        inside({
+          start: node.position.start.offset,
+          end: node.position.end.offset,
+        }) &&
+        (node.type !== "list" || node.ordered),
+    )
+  )
+    throw malformed();
   const seen = new Set();
   const groups = [];
-  let group = [];
-  for (const line of lines.slice(starts[0] + 1, ends[0])) {
-    if (!line.trim()) {
-      if (group.length) groups.push(group);
-      group = [];
-    } else {
-      const match = /^- (WO-\d{3}) — (\S(?:.*\S)?)$/u.exec(line);
-      if (!match)
-        throw new Error(`${source}: expected '- WO-NNN — short label'`);
-      const [, id, label] = match;
-      if (seen.has(id))
-        throw new Error(`${source}: duplicate proposed order ${id}`);
-      seen.add(id);
-      group.push({ id, label });
-    }
+  let previous;
+  for (const item of markdownListItems(markdown, tree).filter(inside)) {
+    const match = SEQUENCE_ENTRY.exec(item.text);
+    if (!match) throw malformed();
+    const [, id, label] = match;
+    if (seen.has(id))
+      throw new Error(`${source}: duplicate proposed order ${id}`);
+    seen.add(id);
+    if (
+      !previous ||
+      /\n[ \t]*\r?\n/u.test(markdown.slice(previous.end, item.start))
+    )
+      groups.push([]);
+    groups.at(-1).push({ id, label });
+    previous = item;
   }
-  if (group.length) groups.push(group);
   return groups;
 };
 
@@ -343,6 +388,15 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       .at(-1);
   };
   const ids = new Set();
+  // Asked once, before any order's number is compared with one of core's.
+  const core = isCoreRoot(root);
+  // A registration that cannot be read says nothing of where records go.
+  let registrations = {};
+  try {
+    registrations = loadConfig(root).repositories;
+  } catch {
+    registrations = {};
+  }
   const rows = workOrderAuthorityFiles(root)
     .map((path) => {
       const id = /^(WO-\d{3})-/.exec(basename(path))?.[1];
@@ -353,6 +407,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       const source = readContained(root, path);
       const header = parseHeader(source, path, {
         historicalIds: historicalDependencyIds(root),
+        core,
       });
       const evidence = orders.get(id);
       // A derived authority is judged by the section set its allocation was
@@ -425,14 +480,36 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
           : new Set(),
         withdrawn,
       );
-      const dependencyState =
-        dependencies.source === "conservative-tokens"
-          ? "conservative token view; does not block"
-          : HISTORY_SECTIONS.includes(section)
-            ? "typed; activation not applicable"
-            : dependencies.blocking.length
-              ? `typed; blocked on ${dependencies.blocking.map((entry) => entry.workOrderId).join(", ")}`
-              : "typed; dependency-ready";
+      // A conservative token view never decides activation, and a settled
+      // order has none to decide; otherwise the typed blocking entries do.
+      const conservative = dependencies.source === "conservative-tokens";
+      const settled = HISTORY_SECTIONS.includes(section);
+      const dependencyStatus =
+        conservative || settled
+          ? "unknown"
+          : dependencies.blocking.length
+            ? "blocked"
+            : "ready";
+      // An open order's ladder line is one of the three sizes, written
+      // once; a settled order keeps whatever it closed with.
+      if (!settled) {
+        const [first, repeated] = header.reviewLadderLines;
+        if (repeated)
+          throw new Error(
+            `${path}:${repeated.line}: ${id} repeats its **Review ladder:** line; an open order declares one of ${REVIEW_LADDERS.join(", ")} once, or no line for the full ladder`,
+          );
+        if (first && !REVIEW_LADDERS.includes(first.value))
+          throw new Error(
+            `${path}:${first.line}: ${id} declares **Review ladder:** ${first.value || "with no value"}; an open order declares one of ${REVIEW_LADDERS.join(", ")}, or no line for the full ladder`,
+          );
+      }
+      const dependencyState = conservative
+        ? "conservative token view; does not block"
+        : settled
+          ? "typed; activation not applicable"
+          : dependencyStatus === "blocked"
+            ? `typed; blocked on ${dependencies.blocking.map((entry) => entry.workOrderId).join(", ")}`
+            : "typed; dependency-ready";
       const release = releases.find(({ workOrders }) =>
         workOrders.includes(id),
       );
@@ -451,16 +528,25 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       return {
         id,
         ...header,
+        // Two of core's orders publish only to a deliverable-ready target.
+        deliveryGated: core && DELIVERY_GATED.includes(id),
         umbrella,
         authorityLink: posix.relative(authorityRoot, path),
         hasDecisions: existsSync(
           join(root, docRelative(root, "evidence", `${id}/decisions.md`)),
         ),
         records: state?.targetRecords,
+        // A closed target order with no records binding whose repository
+        // keeps records in the instance: its records are here.
+        recordsInInstance:
+          phase === "closed" &&
+          state?.repositoryId !== undefined &&
+          recordsStayInInstance(registrations[state.repositoryId], state),
         section,
         phase,
         dependencies,
         dependencyState,
+        dependencyStatus,
         state,
         repository:
           state?.repositoryId === undefined
@@ -468,6 +554,8 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
             : { id: state.repositoryId, baseCommit: state.baseCommit },
         finalReviewVerdict: evidence?.finalReviewVerdict,
         disposition,
+        // The declared size of round one, shown on an open order's card.
+        reviewLadder: settled ? undefined : header.reviewLadderLines[0]?.value,
       };
     })
     .sort((left, right) => compare(left.id, right.id));
@@ -522,6 +610,8 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       legacy: storage.legacy,
       orders: storage.segment("WO-NNN"),
       legacyRelease: docRelative(root, "releases", "v0.2.0.md"),
+      releaseRecord: releaseHistoryRecord(root),
+      observationsRecord: workstreamObservationsRecord(root),
       ...(!existsSync(docPath(root, "planning", "work-order-map.md"))
         ? {
             sequenceLink: posix.relative(
@@ -620,14 +710,71 @@ const cell = (value) =>
     .replaceAll("]", "&#93;")
     .replace(/\s+/g, " ")
     .trim();
-const link = (label, path) =>
-  `[${cell(label)}](${path.split("/").map(encodeURIComponent).join("/")})`;
+// A value as a reader sees it: the same spacing the page gives it, unescaped.
+const plain = (value) => String(value).replace(/\s+/g, " ").trim();
+const destination = (path) => path.split("/").map(encodeURIComponent).join("/");
+const link = (label, path) => `[${cell(label)}](${destination(path)})`;
+const definition = (row) =>
+  `[${row.id}]: ${destination(row.authorityLink ?? basename(row.path))}`;
+
+// A card field is built once from parts and rendered twice: as the page's
+// Markdown and as the text and links its observation records, so the two
+// cannot disagree. A string is a fixed phrase, the same in both; written text
+// is escaped on the page and recorded as written; a code span is recorded
+// without its marks; a link is recorded by its label and its destination.
+const written = (value) => ({ written: value });
+const code = (value) => ({ code: value });
+const linked = (label, path) => ({ label, path });
+const part = (value) => (typeof value === "string" ? { fixed: value } : value);
+const pageText = (parts) =>
+  parts
+    .map(part)
+    .map((value) =>
+      value.fixed !== undefined
+        ? value.fixed
+        : value.code !== undefined
+          ? `\`${value.code}\``
+          : value.path !== undefined
+            ? link(value.label, value.path)
+            : cell(value.written),
+    )
+    .join("");
+const readerText = (parts) =>
+  parts
+    .map(part)
+    .map(
+      (value) =>
+        value.fixed ??
+        value.code ??
+        plain(value.path !== undefined ? value.label : value.written),
+    )
+    .join("");
+const destinations = (parts) =>
+  parts
+    .map(part)
+    .filter((value) => value.path !== undefined)
+    .map((value) => destination(value.path));
+const field = (label, ...value) => ({
+  label: Array.isArray(label) ? label : [label],
+  value,
+});
+
 const report = (id, verdict, path) =>
   id
-    ? `${path && verdict ? link(id, `../../${path}`) : cell(id)} (${cell(verdict ?? "pending")})`
-    : "none recorded";
-const definition = (row) =>
-  `[${row.id}]: ${(row.authorityLink ?? basename(row.path)).split("/").map(encodeURIComponent).join("/")}`;
+    ? [
+        path && verdict ? linked(id, `../../${path}`) : written(id),
+        " (",
+        written(verdict ?? "pending"),
+        ")",
+      ]
+    : ["none recorded"];
+const references = (row) =>
+  row.dependencies.entries
+    .map(
+      (entry) =>
+        `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state}${entry.detail ? `: ${entry.detail}` : ""})` : `${entry.state}${entry.detail ? `: ${entry.detail}` : ""}`}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`,
+    )
+    .join("; ") || "none declared";
 
 // Open cards follow the sequence; a row without a place (a derived draft)
 // comes after them in identifier order. Every other section keeps id order.
@@ -641,69 +788,320 @@ const sectionRows = (rows, section) =>
         : compare(left.id, right.id),
     );
 
-// The card fields are the page contract both runtime readers parse; they are
-// the same on either page.
-const renderCard = (row) => {
+// The orders whose publication waits for a deliverable-ready target.
+const DELIVERY_GATED = ["WO-112", "WO-118"];
+
+// The order's off-ramp events, shown only when recorded (WO-158).
+const offRampFields = (state) => [
+  ...(state?.boundAcceptances?.length
+    ? [
+        field(
+          "Bound acceptances",
+          written(
+            state.boundAcceptances
+              .map(
+                (row) =>
+                  `${row.phase} ${row.metric}=${row.ceiling === null ? "as needed" : row.metric === "wallClockMs" ? formatDuration(row.ceiling) : row.ceiling} by ordinal ${row.ordinal}`,
+              )
+              .join("; "),
+          ),
+          ".",
+        ),
+      ]
+    : []),
+  ...(state?.withdrawal
+    ? [
+        field(
+          "Withdrawal",
+          written(
+            `${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`,
+          ),
+          ".",
+        ),
+      ]
+    : []),
+  ...(state?.waivedCriteria?.length
+    ? [
+        field(
+          "Waived criteria",
+          written(
+            state.waivedCriteria
+              .map(
+                (waiver) =>
+                  `${waiver.criterionId} by ordinal ${waiver.ordinal}`,
+              )
+              .join(", "),
+          ),
+          ".",
+        ),
+      ]
+    : []),
+  ...(state?.defectiveCriteria?.length
+    ? [
+        field(
+          "Defective criteria",
+          written(
+            state.defectiveCriteria
+              .map(
+                (record) =>
+                  `${record.criterionId} (${record.class}) by ordinal ${record.ordinal}`,
+              )
+              .join(", "),
+          ),
+          ".",
+        ),
+      ]
+    : []),
+  ...(state?.retractedOffRamps?.length
+    ? [
+        field(
+          "Retracted off-ramps",
+          written(
+            state.retractedOffRamps
+              .map(
+                (row) =>
+                  `ordinal ${row.ordinal} retracts ordinal ${row.subject.ordinal} (criterion ${row.subject.criterionId})`,
+              )
+              .join("; "),
+          ),
+          ".",
+        ),
+      ]
+    : []),
+  ...(state?.reopenedHandoffs?.length
+    ? [
+        field(
+          "Reopened handoffs",
+          written(
+            state.reopenedHandoffs
+              .map(
+                (row) =>
+                  `ordinal ${row.ordinal} reopens ordinal ${row.handoff.ordinal}`,
+              )
+              .join(", "),
+          ),
+          ".",
+        ),
+      ]
+    : []),
+  ...(state?.corrections?.length
+    ? [
+        field(
+          "Record corrections",
+          written(
+            state.corrections
+              .map(
+                (correction) =>
+                  `ordinal ${correction.ordinal} corrects ordinal ${correction.subject.ordinal} (${Object.keys(correction.fields).join(", ")})`,
+              )
+              .join("; "),
+          ),
+          ".",
+        ),
+      ]
+    : []),
+  ...(state?.overrideRecords?.length
+    ? [
+        field(
+          "Override records",
+          written(
+            state.overrideRecords
+              .map((record) => `ordinal ${record.ordinal}`)
+              .join(", "),
+          ),
+          ".",
+        ),
+      ]
+    : []),
+];
+
+// The criteria the executor left unmet, each by its later judgment with the
+// executor's ordinal beside it; absent when the handoff left none. The status
+// line names its own label before its first colon.
+const criteriaFields = (state) => {
+  const status = renderCriteriaStatus(state);
+  if (!status) return [];
+  const colon = status.indexOf(": ");
+  return [field(status.slice(0, colon), written(status.slice(colon + 2)), ".")];
+};
+
+// The card fields, in the order the page shows them.
+const cardFields = (row) => {
   const state = row.state;
   return [
-    `### ${row.id}`,
-    "",
-    link(row.title, row.authorityLink ?? basename(row.path)),
-    "",
-    `- State: ${cell(row.phase)}.`,
-    ...offRampLines(state),
+    field("State", written(row.phase), "."),
+    ...offRampFields(state),
     ...(row.provenance
-      ? [`- Provenance: ${cell(JSON.stringify(row.provenance))}.`]
+      ? [field("Provenance", written(JSON.stringify(row.provenance)), ".")]
       : []),
     ...(row.repository
       ? [
-          `- Repository: ${cell(row.repository.id)} @ ${cell(row.repository.baseCommit)}.`,
-        ]
-      : []),
-    `- Application target: ${cell(row.version)}.`,
-    `- Dependencies: ${cell(row.dependencyState)}.`,
-    `- References: ${cell(row.dependencies.entries.map((entry) => `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state}${entry.detail ? `: ${entry.detail}` : ""})` : `${entry.state}${entry.detail ? `: ${entry.detail}` : ""}`}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`).join("; ") || "none declared")}.`,
-    `- Verification: ${report(state?.latestVerificationId, state?.latestVerdict, row.records ? undefined : state?.latestVerificationPath)}.`,
-    `- Final review: ${report(state?.finalReviewId, row.finalReviewVerdict, row.records ? undefined : state?.finalReviewPath)}.`,
-    // The criteria the executor left unmet, each by its later judgment with
-    // the executor's ordinal beside it; absent when the handoff left none.
-    ...(renderCriteriaStatus(state)
-      ? [`- ${cell(renderCriteriaStatus(state))}.`]
-      : []),
-    ...(row.records
-      ? [
-          `- Records: ${cell(row.records.repositoryId)} at commit ${cell(row.records.commit)}.`,
-          ...row.records.records.map(
-            (record, index) =>
-              `- Record ${cell(record.kind)} ${index + 1}: ${cell(record.path)} (${cell(record.sha256)}).`,
+          field(
+            "Repository",
+            written(row.repository.id),
+            " @ ",
+            written(row.repository.baseCommit),
+            ".",
           ),
         ]
       : []),
-    `- Release: ${cell(row.disposition)}.`,
-    `- Model: ${cell(row.model)}`,
-    `- Effort: ${cell(row.effort)}`,
-    `- Track: ${cell(row.track ?? "unknown")}`,
-    ...(["WO-112", "WO-118"].includes(row.id)
+    field("Application target", written(row.version), "."),
+    field("Dependencies", written(row.dependencyState), "."),
+    field("References", written(references(row)), "."),
+    field(
+      "Verification",
+      ...report(
+        state?.latestVerificationId,
+        state?.latestVerdict,
+        row.records ? undefined : state?.latestVerificationPath,
+      ),
+      ".",
+    ),
+    field(
+      "Final review",
+      ...report(
+        state?.finalReviewId,
+        row.finalReviewVerdict,
+        row.records ? undefined : state?.finalReviewPath,
+      ),
+      ".",
+    ),
+    ...criteriaFields(state),
+    ...(row.records
       ? [
-          "- Delivery: target publication requires `worktree publish WO-NNN --target <request> --require-deliverable-ready` (WO-182); record every absent item before retrying.",
+          field(
+            "Records",
+            written(row.records.repositoryId),
+            " at commit ",
+            written(row.records.commit),
+            ".",
+          ),
+          ...row.records.records.map((record, index) =>
+            field(
+              ["Record ", written(record.kind), ` ${index + 1}`],
+              written(record.path),
+              " (",
+              written(record.sha256),
+              ").",
+            ),
+          ),
+        ]
+      : row.recordsInInstance
+        ? [
+            field(
+              "Records",
+              "in this instance (",
+              code(`repositories.${row.repository.id}.records`),
+              " is ",
+              code("instance"),
+              ").",
+            ),
+          ]
+        : []),
+    field("Release", written(row.disposition), "."),
+    field("Model", written(row.model)),
+    field("Effort", written(row.effort)),
+    field("Track", written(row.track ?? "unknown")),
+    ...(row.reviewLadder
+      ? [field("Review ladder", written(row.reviewLadder))]
+      : []),
+    ...(row.deliveryGated
+      ? [
+          field(
+            "Delivery",
+            "target publication requires ",
+            code(
+              "worktree publish WO-NNN --target <request> --require-deliverable-ready",
+            ),
+            " (WO-182); record every absent item before retrying.",
+          ),
         ]
       : []),
     ...(row.ledgerSubstitution && !row.records
       ? [
-          `- Inherited ledger duty: discharge with ${row.hasDecisions ? `[this order's decisions](../evidence/${row.id}/decisions.md)` : `this order's decisions file when recorded`} and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.`,
+          field(
+            "Inherited ledger duty",
+            "discharge with ",
+            row.hasDecisions
+              ? linked(
+                  "this order's decisions",
+                  `../evidence/${row.id}/decisions.md`,
+                )
+              : "this order's decisions file when recorded",
+            " and its row in ",
+            linked("the decisions index", "../lineage/decisions-index.md"),
+            "; no lifecycle ledger append.",
+          ),
         ]
       : []),
     ...(state?.latestAttestation
       ? [
-          `- Latest attestation: ${cell(renderAttestation(state.latestAttestation))}.`,
+          field(
+            "Latest attestation",
+            written(renderAttestation(state.latestAttestation)),
+            ".",
+          ),
         ]
       : []),
-    `- Authority: ${link(row.path, row.authorityLink ?? basename(row.path))}`,
-    "",
+    field(
+      "Authority",
+      linked(row.path, row.authorityLink ?? basename(row.path)),
+    ),
   ];
 };
 
-const renderSection = (lines, rows, section) => {
+// The latest verification's verdict as a lifecycle reader takes it.
+const verificationVerdict = (state) =>
+  state?.latestVerificationId && ["pass", "fail"].includes(state.latestVerdict)
+    ? state.latestVerdict
+    : null;
+
+// One card: its Markdown lines, and its record with the line its heading
+// takes on the page, `start` lines from the top.
+const renderCard = (row, start) => {
+  const fields = cardFields(row);
+  return {
+    lines: [
+      `### ${row.id}`,
+      "",
+      link(row.title, row.authorityLink ?? basename(row.path)),
+      "",
+      ...fields.map(
+        ({ label, value }) => `- ${pageText(label)}: ${pageText(value)}`,
+      ),
+      "",
+    ],
+    record: {
+      id: row.id,
+      line: start + 1,
+      section: row.section,
+      title: plain(row.title),
+      phase: row.phase,
+      dependency: row.dependencyStatus,
+      verdict: verificationVerdict(row.state),
+      fields: Object.fromEntries(
+        fields.map(({ label, value }) => [
+          readerText(label),
+          readerText(value),
+        ]),
+      ),
+      links: fields.flatMap(({ value }) => destinations(value)),
+    },
+  };
+};
+
+/** The sections each page holds: the work ahead on the index page and every
+ * settled order on the history page; every order is in exactly one. */
+export const PAGE_SECTIONS = Object.freeze({
+  index: INDEX_SECTIONS,
+  history: HISTORY_SECTIONS,
+});
+
+/** The cards one page holds, in the order it shows them. */
+export const pageCards = (rows, page) =>
+  PAGE_SECTIONS[page].flatMap((section) => sectionRows(rows, section));
+
+const renderSection = (lines, cards, rows, section) => {
   lines.push(`## ${section}`, "");
   const selected = sectionRows(rows, section);
   if (selected.length === 0) {
@@ -718,18 +1116,23 @@ const renderSection = (lines, rows, section) => {
       );
     lines.push("");
   }
-  for (const row of selected) lines.push(...renderCard(row));
+  for (const row of selected) {
+    const card = renderCard(row, lines.length);
+    lines.push(...card.lines);
+    cards.push(card.record);
+  }
 };
 
-/** The index page: the active line, the sequence with its lane pairs, and
- * the Active and Open cards. Its first line, generated-by sentence, headings
- * and card fields are the contract the resident and the console read. */
-export const renderIndex = ({
-  rows,
-  sequence,
-  groups = [],
-  workstreams = [],
-}) => {
+// A page's sections; the records of the cards they hold.
+const renderSections = (lines, rows, page) => {
+  const cards = [];
+  for (const section of PAGE_SECTIONS[page])
+    renderSection(lines, cards, rows, section);
+  return cards;
+};
+
+// The index page and the records of its cards.
+const indexPage = ({ rows, sequence, groups = [], workstreams = [] }) => {
   const byId = new Map(rows.map((row) => [row.id, row]));
   sequence = sequence.filter(({ id }) => !byId.get(id)?.separateWorkstream);
   groups = groups.map((group) =>
@@ -799,11 +1202,7 @@ export const renderIndex = ({
       );
     lines.push("");
   }
-  lines.push(
-    `${workstreamSnapshotPrefix}${JSON.stringify({ workstreams })} -->`,
-    "",
-  );
-  for (const section of INDEX_SECTIONS) renderSection(lines, rows, section);
+  const cards = renderSections(lines, rows, "index");
   // Only the references this page uses: the Now line and the sequence rows.
   const referenced = new Set([
     ...active.map((row) => row.id),
@@ -814,17 +1213,15 @@ export const renderIndex = ({
   ]);
   for (const row of rows)
     if (referenced.has(row.id)) lines.push(definition(row));
-  return `${lines.join("\n").trimEnd()}\n`;
+  return { text: `${lines.join("\n").trimEnd()}\n`, cards };
 };
 
-/** The history page: every settled card, the sources and limits of the
- * generated index and its release-tag record. Only the index page is a
- * runtime contract; the console reads this page as a second source. */
-export const renderHistory = ({
-  rows,
-  releases,
-  paths = DEFAULT_INDEX_PATHS,
-}) => {
+/** The index page: the active line, the sequence with its lane pairs, and
+ * the Active and Open cards. */
+export const renderIndex = (index) => indexPage(index).text;
+
+// The history page and the records of its cards.
+const historyPage = ({ rows, releases, paths = DEFAULT_INDEX_PATHS }) => {
   const lines = [
     "# Work-order history",
     "",
@@ -833,64 +1230,43 @@ export const renderHistory = ({
     "This file is generated by `npm run work-orders -- index` beside the index; `npm run work-orders -- index --check` judges both pages and names the stale one.",
     "",
   ];
-  for (const section of HISTORY_SECTIONS) renderSection(lines, rows, section);
+  const cards = renderSections(lines, rows, "history");
   lines.push(...renderSources(releases, paths));
   // Only the references this page uses: the Superseded summary rows.
   for (const row of sectionRows(rows, "Superseded"))
     lines.push(definition(row));
-  return `${lines.join("\n").trimEnd()}\n`;
+  return { text: `${lines.join("\n").trimEnd()}\n`, cards };
 };
 
-// The order's off-ramp events, shown only when recorded (WO-158).
-const offRampLines = (state) => [
-  ...(state?.boundAcceptances?.length
-    ? [
-        `- Bound acceptances: ${cell(state.boundAcceptances.map((row) => `${row.phase} ${row.metric}=${row.ceiling === null ? "as needed" : row.metric === "wallClockMs" ? formatDuration(row.ceiling) : row.ceiling} by ordinal ${row.ordinal}`).join("; "))}.`,
-      ]
-    : []),
-  ...(state?.withdrawal
-    ? [
-        `- Withdrawal: ${cell(`${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`)}.`,
-      ]
-    : []),
-  ...(state?.waivedCriteria?.length
-    ? [
-        `- Waived criteria: ${cell(state.waivedCriteria.map((waiver) => `${waiver.criterionId} by ordinal ${waiver.ordinal}`).join(", "))}.`,
-      ]
-    : []),
-  ...(state?.defectiveCriteria?.length
-    ? [
-        `- Defective criteria: ${cell(state.defectiveCriteria.map((record) => `${record.criterionId} (${record.class}) by ordinal ${record.ordinal}`).join(", "))}.`,
-      ]
-    : []),
-  ...(state?.retractedOffRamps?.length
-    ? [
-        `- Retracted off-ramps: ${cell(state.retractedOffRamps.map((row) => `ordinal ${row.ordinal} retracts ordinal ${row.subject.ordinal} (criterion ${row.subject.criterionId})`).join("; "))}.`,
-      ]
-    : []),
-  ...(state?.reopenedHandoffs?.length
-    ? [
-        `- Reopened handoffs: ${cell(state.reopenedHandoffs.map((row) => `ordinal ${row.ordinal} reopens ordinal ${row.handoff.ordinal}`).join(", "))}.`,
-      ]
-    : []),
-  ...(state?.corrections?.length
-    ? [
-        `- Record corrections: ${cell(state.corrections.map((correction) => `ordinal ${correction.ordinal} corrects ordinal ${correction.subject.ordinal} (${Object.keys(correction.fields).join(", ")})`).join("; "))}.`,
-      ]
-    : []),
-  ...(state?.overrideRecords?.length
-    ? [
-        `- Override records: ${cell(state.overrideRecords.map((record) => `ordinal ${record.ordinal}`).join(", "))}.`,
-      ]
-    : []),
-];
+/** The history page: every settled card, the sources and limits of the
+ * generated index and its release-tag record. */
+export const renderHistory = (index) => historyPage(index).text;
+
+/** What the two pages show, as data: each page's cards, each with the line of
+ * its heading on that page; the workstream members with the Git facts the
+ * last refresh observed; and the release tags that refresh attributed. It is
+ * this command's own output (`index --json`) and is never committed: a reader
+ * that needs the cards, the resident's launcher or the console's collector,
+ * takes them from here and never from a page. */
+export const renderRecord = (index) =>
+  json({
+    schemaVersion: 1,
+    index: { cards: indexPage(index).cards },
+    history: { cards: historyPage(index).cards },
+    workstreams: index.workstreams ?? [],
+    releaseTags: index.releases.map(({ name, object, controlSegments }) => ({
+      name,
+      object,
+      controlSegments,
+    })),
+  });
 
 const renderSources = (releases, paths) => {
   const lines = [
     "## Sources and limits",
     "",
-    "- **Two pages (WO-190):** `README.md` holds the active line, the proposed sequence with its lane pairs and the Active and Open cards, the Open cards in sequence order; this page holds every settled card (Closed, Withdrawn, Superseded, Historical), these sources and limits and the release-tag record. Every order file appears on exactly one page. `index --check` judges both pages, names the stale one, and refuses an open order that has no place in the sequence unless it is an umbrella record, a derived draft whose place is its allocation, or a member placed in a separate workstream.",
-    "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, optional Track (delivery, machinery or evidence; absent or invalid is unknown), Repository, Workstream and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link. Workstream documents mirror the leading fields. The index page's dotln-workstreams JSON records member columns, edges and target commits; check reuses its Git observations without opening targets. Refresh with index to observe moved targets. Integration compares the declared base (self uses the launchpad HEAD observed at refresh) with the target's configured base branch (self uses main): current, behind, diverged or unknown; stale is yes, no or unknown. A separate track is omitted from the serial sequence; its complete Open cards follow sequenced cards in identifier order.",
+    `- **Two pages (WO-190):** \`README.md\` holds the active line, the proposed sequence with its lane pairs and the Active and Open cards, the Open cards in sequence order; this page holds every settled card (Closed, Withdrawn, Superseded, Historical), these sources and limits and the release tags used. The cards are data only in this command's own output, \`npm run work-orders -- index --json\`; no file records them. What the pages were rendered from that no file of this repository holds is recorded by the refresh: the release tags in \`${paths.releaseRecord}\` and each workstream member's target facts in \`${paths.observationsRecord}\`. Every order file appears on exactly one page. \`index --check\` judges both pages and the record, names the stale one, and refuses an open order that has no place in the sequence unless it is an umbrella record, a derived draft whose place is its allocation, or a member placed in a separate workstream.`,
+    `- **Header observation:** each authority's H1, sole strict application version, Model, Effort, optional Track (delivery, machinery or evidence; absent or invalid is unknown), Repository, Workstream and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link. Workstream documents mirror the leading fields. \`${paths.observationsRecord}\` records each member's base, target commit and integration as the last refresh observed them; check reuses those observations without opening targets, and fails naming this command when the record is missing. Refresh with index to observe moved targets. Integration compares the declared base (self uses the launchpad HEAD observed at refresh) with the target's configured base branch (self uses main): current, behind, diverged or unknown; stale is yes, no or unknown. A separate track is omitted from the serial sequence; its complete Open cards follow sequenced cards in identifier order.`,
     "- **Proposed sequence:** the marked block in planning/sequence.md, in operator-selected order; two entries between blank lines are a lane pair. Historical fixtures without that file use the map. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.",
     `- **Control evidence:** the shared fold of legacy \`${paths.legacy}\` plus \`${paths.orders}\`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. A withdrawn order is listed under Withdrawn on this page with its recorded disposition, unchecked in the proposed order, and never counts as a pass. Report verdicts come from events, not inferred report contents.`,
     "- **Superseded:** an umbrella record is an order superseded whole: the `**Umbrella record:**` label in its leading header plus typed superseded entries. It is listed under Superseded with the successors those entries name, `resume activate` refuses it naming them, and no control event records it (WO-190). Recorded control state, when any exists, wins.",
@@ -908,29 +1284,21 @@ const renderSources = (releases, paths) => {
       : "See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.",
     "",
   ];
-  lines.push(
-    `${snapshotPrefix}${JSON.stringify(releases.map(({ name, object, controlSegments }) => ({ name, object, controlSegments })))} -->`,
-    "",
-  );
   return lines;
 };
 
+/** The release tags the last refresh attributed, as their record holds
+ * them: each tag's name and object (an older record's tag may also carry its
+ * control segments). */
 export const readTagSnapshot = (
-  source,
+  snapshot,
   storage = DEFAULT_CONTROL_PATHS,
-  displayPath = historyPath,
+  displayPath = defaultDocRelative("control", "release-history.json"),
 ) => {
-  const records = source
-    .split("\n")
-    .filter((line) => line.startsWith(snapshotPrefix));
-  if (records.length !== 1 || !records[0].endsWith(" -->"))
+  if (!Array.isArray(snapshot))
     throw new Error(
       `${displayPath}: missing or malformed tag snapshot; run npm run work-orders -- index`,
     );
-  const snapshot = parseJson(
-    records[0].slice(snapshotPrefix.length, -4),
-    `${displayPath} tag snapshot`,
-  );
   if (
     !Array.isArray(snapshot) ||
     snapshot.some(
@@ -967,12 +1335,12 @@ export const checkIndex = (expected, actual, displayPath = indexPath) => {
 };
 
 /** Every order file has a card on exactly one of the two pages, and no page
- * holds a card without an authority; `pages` maps display path to text. */
+ * holds a card without an authority; `pages` maps each page's display path to
+ * the order ids of the cards it holds. */
 export const checkPartition = ({ rows }, pages) => {
   const cards = new Map();
-  for (const [path, text] of Object.entries(pages))
-    for (const [, id] of text.matchAll(/^### (WO-\d{3})$/gm))
-      cards.set(id, [...(cards.get(id) ?? []), path]);
+  for (const [path, ids] of Object.entries(pages))
+    for (const id of ids) cards.set(id, [...(cards.get(id) ?? []), path]);
   const failures = [];
   for (const row of rows) {
     const on = cards.get(row.id) ?? [];
@@ -1035,23 +1403,28 @@ const CRITERIA_SCREENS = [
     (text) => text.replace(/[*_`]/gu, ""),
   ],
 ];
-/** One advisory per open-order criterion whose text a screen matches. */
+/** One advisory per open-order criterion whose text a screen matches. An
+ * open order whose criteria list the reader refuses is refused by name. */
 export function criteriaAdvisories(id, orderText) {
-  return (declaredCriteria(orderText) ?? []).flatMap(
-    ({ id: criterion, text }) => {
-      const matched = CRITERIA_SCREENS.flatMap(
-        ([name, pattern, read = (value) => value]) =>
-          [...read(text).matchAll(pattern)].map(
-            (match) => `"${match[0]}" (${name})`,
-          ),
-      );
-      return matched.length
-        ? [
-            `criteria advisory: ${id} criterion ${criterion}: ${matched.join("; ")}`,
-          ]
-        : [];
-    },
-  );
+  let declared;
+  try {
+    declared = declaredCriteria(orderText);
+  } catch (error) {
+    throw new Error(`${id} ${error.message}`, { cause: error });
+  }
+  return (declared ?? []).flatMap(({ id: criterion, text }) => {
+    const matched = CRITERIA_SCREENS.flatMap(
+      ([name, pattern, read = (value) => value]) =>
+        [...read(text).matchAll(pattern)].map(
+          (match) => `"${match[0]}" (${name})`,
+        ),
+    );
+    return matched.length
+      ? [
+          `criteria advisory: ${id} criterion ${criterion}: ${matched.join("; ")}`,
+        ]
+      : [];
+  });
 }
 
 // Resolve the checkout's own declarations once. A source-only control-plane
@@ -1119,9 +1492,9 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
   if (
     args[0] !== "index" ||
     args.length > 2 ||
-    (args.length === 2 && args[1] !== "--check")
+    (args.length === 2 && !["--check", "--json"].includes(args[1]))
   )
-    throw new Error("usage: work-orders index [--check]");
+    throw new Error("usage: work-orders index [--check | --json]");
   const planningSource = docRelative(root, "planning", "sequence.md");
   const pages = {
     readme: {
@@ -1133,6 +1506,48 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       render: renderHistory,
     },
   };
+  // What the pages were rendered from that no file of this repository holds:
+  // the release tags and each workstream member's target facts. The refresh
+  // writes both records and the check reads them, so the pages are judged
+  // without reading a tag again or opening a target checkout.
+  const records = [
+    releaseHistoryRecord(root),
+    workstreamObservationsRecord(root),
+  ];
+  // The index as the recorded observations give it, for the check and for
+  // `--json`: nothing is read from a page.
+  const observedIndex = () => {
+    const snapshot = readTagSnapshot(
+      readReleaseRecord(
+        root,
+        pages.readme.path,
+        INDEX_COMMAND,
+        "the work-order index",
+      ),
+      controlPaths(root),
+      records[0],
+    );
+    // A missing or changed tag object names the record that holds the tags.
+    let releases;
+    try {
+      releases = localReleaseRecords(root, snapshot);
+    } catch (error) {
+      throw new Error(
+        `${records[0]}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+    const index = readIndex(root, releases);
+    index.workstreams = projectWorkstreams(
+      index.workstreamDocuments,
+      index.rows,
+      readWorkstreamObservations(root),
+    );
+    return { index, releases };
+  };
+  if (args.includes("--json")) {
+    process.stdout.write(renderRecord(observedIndex().index));
+    return;
+  }
   for (const page of Object.values(pages)) {
     page.destination = join(root, page.path);
     if (
@@ -1153,45 +1568,29 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
         readFileSync(page.destination, "utf8"),
       ]),
     );
-    const snapshot = readTagSnapshot(
-      actual.history,
-      controlPaths(root),
-      pages.history.path,
-    );
-    // The tag record lives on the history page, so a missing or changed tag
-    // object names that page.
-    let releases;
-    try {
-      releases = localReleaseRecords(root, snapshot);
-    } catch (error) {
-      throw new Error(
-        `${pages.history.path}: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
-    const index = readIndex(root, releases);
-    index.workstreams = projectWorkstreams(
-      index.workstreamDocuments,
-      index.rows,
-      readWorkstreamSnapshot(actual.readme, pages.readme.path),
-    );
+    const { index, releases } = observedIndex();
     checkPreflightSuites(root, index);
     checkSequenceTopology(index, planningSource);
     checkSequenceCoverage(index, planningSource);
     for (const [key, page] of Object.entries(pages))
       checkIndex(page.render(index), actual[key], page.path);
-    checkPartition(
-      index,
-      Object.fromEntries(
-        Object.entries(pages).map(([key, page]) => [page.path, actual[key]]),
+    // Both pages now equal their renderings, so the partition is judged on
+    // the cards each rendering holds.
+    checkPartition(index, {
+      [pages.readme.path]: pageCards(index.rows, "index").map((row) => row.id),
+      [pages.history.path]: pageCards(index.rows, "history").map(
+        (row) => row.id,
       ),
-    );
+    });
     const names = new Set(releases.map(({ name }) => name));
     const newer = localReleaseTags(root).filter(({ name }) => !names.has(name));
     if (newer.length)
       process.stdout.write(
         `NEWER local release evidence: ${newer.map(({ name }) => name).join(", ")}; additional manifests are not validated by --check; run npm run work-orders -- index to refresh the tag observation\n`,
       );
-    // The criteria screen reads every open order and refuses nothing.
+    // The criteria screen reads every open order: its advisories refuse
+    // nothing, and an order whose criteria list cannot be read whole is
+    // refused by name.
     for (const row of index.rows.filter((row) =>
       INDEX_SECTIONS.includes(row.section),
     ))
@@ -1209,6 +1608,12 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       index.rows,
       readTargetFacts(root, index.rows),
     );
+    // The two observation records first: a refresh interrupted after them
+    // leaves pages the check names stale, never pages without their records.
+    if (writeReleaseRecord(root, index.releases))
+      process.stdout.write(`Generated ${records[0]}\n`);
+    if (writeWorkstreamObservations(root, index.workstreams))
+      process.stdout.write(`Generated ${records[1]}\n`);
     const writes = Object.values(pages)
       .map((page) => ({ ...page, expected: page.render(index) }))
       .filter(

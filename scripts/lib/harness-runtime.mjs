@@ -3,6 +3,7 @@ import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 
 /** The portable control plane can run with no skeleton package. A kit
@@ -13,6 +14,12 @@ export function isKitRoot(root) {
   return createRequire(import.meta.url)(
     "../../packages/skeleton/src/runtime-inputs.mjs",
   ).isKitRoot(root);
+}
+
+/** Whether the root is core's own, by the same shared check: asked before
+ * any comparison of an order's number with one of core's. */
+export function isCoreRoot(root) {
+  return !isKitRoot(root);
 }
 
 // Source-only: startup and close must diagnose a missing build before importing it.
@@ -123,19 +130,55 @@ export const CLAUDE_SELECTED_EFFORTS = [
   "xhigh",
   "max",
 ];
-export function claudeSessionReport(env = process.env) {
+/** The Claude Code version the hook observed for the running session, read
+ * from that session's harness state: the executable a session runs can be
+ * older than the one on the path. Null where the state records none (a root
+ * with no discovery record, a session the hooks did not see), where the hook
+ * could read only the executable on the path, which is not evidence of what
+ * this session runs, and outside Claude Code; a completion's stated version
+ * then stands as given. */
+export function observedClaudeVersion(root, env = process.env) {
+  if (env.CODEX_THREAD_ID || env.COPILOT_AGENT_SESSION_ID) return null;
+  const session = [env.CLAUDE_CODE_SESSION_ID, env.CLAUDE_SESSION_ID].find(
+    (value) => typeof value === "string" && value.trim(),
+  );
+  if (!session) return null;
+  const { dispatchJournalDirectory } = createRequire(import.meta.url)(
+    "../../packages/skeleton/src/dispatch-journal.mjs",
+  );
+  const state = join(
+    dispatchJournalDirectory(root),
+    `${createHash("sha256").update(session).digest("hex")}.json`,
+  );
+  let observed;
+  try {
+    observed = JSON.parse(readFileSync(state, "utf8")).versionObservation;
+  } catch {
+    return null;
+  }
+  return typeof observed?.value === "string" &&
+    observed.channel !== "PATH" &&
+    /^\d+\.\d+\.\d+(?:[-+.][0-9A-Za-z.-]+)?$/u.test(observed.value)
+    ? observed.value
+    : null;
+}
+
+/** `root` adds the version the session's hook observed, where it did. */
+export function claudeSessionReport(env = process.env, root) {
   const effort = env.CLAUDE_EFFORT;
   if (!CLAUDE_SELECTED_EFFORTS.includes(effort)) return null;
+  const harnessVersion = root ? observedClaudeVersion(root, env) : null;
   return {
     session: {
       available: true,
       harness: "claude-code",
+      ...(harnessVersion ? { harnessVersion } : {}),
       effort,
       channel: "CLAUDE_EFFORT",
       source: "claude-session-readback",
       scope: "selected, not effective",
     },
-    text: `Current Claude Code session: effort ${effort}; source claude-session-readback; host-selected (CLAUDE_EFFORT), not effective effort.`,
+    text: `Current Claude Code session: effort ${effort}; source claude-session-readback; host-selected (CLAUDE_EFFORT), not effective effort.${harnessVersion ? ` Harness version ${harnessVersion}, as the session's hook observed it; attest that version.` : ""}`,
   };
 }
 

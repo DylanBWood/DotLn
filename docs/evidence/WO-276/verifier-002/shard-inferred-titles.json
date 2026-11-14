@@ -1,0 +1,14 @@
+{
+  "shardExitCodes": [
+    0,
+    0,
+    0
+  ],
+  "registrations": 2,
+  "executedBodies": 6,
+  "counts": {
+    "inferred": 3,
+    "configured": 3
+  },
+  "sourceLimit": "The helper explicitly documents that a non-string title registers in every shard; current 431-case evidence uses explicit titles"
+}

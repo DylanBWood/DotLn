@@ -1,0 +1,18 @@
+{
+  "comparison": "work-order-headers",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order, and the one retired order, which alone declares a workstream: its repository and workstream declarations and its header fields, as the index reads them in core's root, on the keys the base's header holds",
+  "read": 270,
+  "equal": 269,
+  "differences": {
+    "defect of the old reader: its pattern for the ledger duty began at an Acceptance criteria label quoted in a code span of a step (line 417) and ended at the Non-goals label quoted two lines on, so it never read the order's real criteria (lines 639 to 902), which name the ledger; the new reader takes the two fields from the document's own top-level labels and answers true": 1
+  },
+  "examples": [
+    {
+      "input": "docs/work-orders/WO-088-phrase-table-single-source.md",
+      "named": "defect of the old reader: its pattern for the ledger duty began at an Acceptance criteria label quoted in a code span of a step (line 417) and ended at the Non-goals label quoted two lines on, so it never read the order's real criteria (lines 639 to 902), which name the ledger; the new reader takes the two fields from the document's own top-level labels and answers true",
+      "old": "[null,null,{\"path\":\"docs/work-orders/WO-088-phrase-table-single-source.md\",\"title\":\"WO-088 — Planning documents become checked contracts: the operator phrase list has one generated source, the capability table's dated sections fold into its rows in a table a planning pass installs, the index check holds order files to a stable contract, and planning passes register in planning records while the id",
+      "new": "[null,null,{\"path\":\"docs/work-orders/WO-088-phrase-table-single-source.md\",\"title\":\"WO-088 — Planning documents become checked contracts: the operator phrase list has one generated source, the capability table's dated sections fold into its rows in a table a planning pass installs, the index check holds order files to a stable contract, and planning passes register in planning records while the id"
+    }
+  ]
+}

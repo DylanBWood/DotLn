@@ -1,4 +1,4 @@
-import test from "node:test";
+import test from "./lib/test-shards.mjs";
 import assert from "node:assert/strict";
 import {
   appendFileSync,

@@ -1,0 +1,9 @@
+{
+  "comparison": "work-order-header-only",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: its title and header fields with their extents, read from the whole document (old) and from the text before its Objective or first later heading (new)",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

@@ -1,0 +1,35 @@
+# npm run meta -- --usage, over a ledger of three observations of two sessions (see evidence.mjs), in the zone America/New_York.
+
+## With no price declared
+Usage in tokens by class; local calendar days in America/New_York. A class a host reports none of reads unknown.
+No price is declared in dotln.models.json for a model that ran, so no estimate is made.
+
+By order:
+WO-999: uncached input 2,600; cache read 1,200; cache write 100; output 600; total 4,500; reported by the host unknown; estimate unknown
+  WO-999 executor (model-a): uncached input 2,000; cache read 800; cache write 100; output 400; total 3,300; reported by the host unknown; estimate unknown
+  WO-999 verifier (model-c): uncached input 600; cache read 400; cache write unknown; output 200; total 1,200; reported by the host unknown; estimate unknown
+
+By day:
+2026-11-09: uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate unknown
+  WO-999 executor (model-a): uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate unknown
+2026-11-10: uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate unknown
+  WO-999 executor (model-a): uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate unknown
+2026-11-11: uncached input 600; cache read 400; cache write unknown; output 200; total 1,200; reported by the host unknown; estimate unknown
+  WO-999 verifier (model-c): uncached input 600; cache read 400; cache write unknown; output 200; total 1,200; reported by the host unknown; estimate unknown
+
+## With dotln.models.json holding "prices": {"model-a":{"uncachedInput":3,"cacheRead":0.3,"cacheWrite":3.75,"output":15}}
+Usage in tokens by class; local calendar days in America/New_York. A class a host reports none of reads unknown.
+Estimates use the prices of this instance's dotln.models.json for model-a, in US dollars for a million tokens, as declared now; a cost the host reported is the figure of record.
+
+By order:
+WO-999: uncached input 2,600; cache read 1,200; cache write 100; output 600; total 4,500; reported by the host unknown; estimate unknown
+  WO-999 executor (model-a): uncached input 2,000; cache read 800; cache write 100; output 400; total 3,300; reported by the host unknown; estimate $0.01 (an estimate)
+  WO-999 verifier (model-c): uncached input 600; cache read 400; cache write unknown; output 200; total 1,200; reported by the host unknown; estimate unknown
+
+By day:
+2026-11-09: uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate $0.01 (an estimate)
+  WO-999 executor (model-a): uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate $0.01 (an estimate)
+2026-11-10: uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate $0.01 (an estimate)
+  WO-999 executor (model-a): uncached input 1,000; cache read 400; cache write 50; output 200; total 1,650; reported by the host unknown; estimate $0.01 (an estimate)
+2026-11-11: uncached input 600; cache read 400; cache write unknown; output 200; total 1,200; reported by the host unknown; estimate unknown
+  WO-999 verifier (model-c): uncached input 600; cache read 400; cache write unknown; output 200; total 1,200; reported by the host unknown; estimate unknown

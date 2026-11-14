@@ -57,7 +57,10 @@ const RUNTIME_PACKAGES = ["kernel", "compiler", "skeleton", "console"];
 const HARNESS_MANIFEST = ".claude/harness-manifest.json";
 // Built at runtime from reversed parts: the suite is itself a kit file, and
 // the terms check joins consecutive tokens, so the literal must not appear.
-const synthetic = `${["term", "synthetic", "wvut", "zyx"].reverse().join("-")}\n`;
+const syntheticTerm = ["term", "synthetic", "wvut", "zyx"].reverse().join("-");
+// The fixture's list: its one entry must never appear, so it is listed under
+// the refuse marker, and a kit file that carries it refuses the export.
+const synthetic = `refuse: ${syntheticTerm}\n`;
 const syntheticHash = createHash("sha256").update(synthetic).digest("hex");
 const planted = {
   intake: "docs/intake/planted-intake.md",
@@ -139,6 +142,194 @@ const commitExport = (destination) => {
     "exported launchpad",
   ]);
   return destination;
+};
+/** The update fixture of WO-276 Part I: a committed export with a forge
+ * stand-in as its origin, a starter revision on a line of its own, and an
+ * instance commit on main. Both sides change the seeded first order (on one
+ * line, so Git conflicts) and the budgets file (on distant lines, so Git
+ * merges it in silence), and a kit file; the starter alone changes one seed
+ * and adds one file. `installForge` is the publication fixture's. */
+const updateMergeFixture = (name, installForge) => {
+  const destination = commitExport(join(scratch, name));
+  // An instance has its dependencies installed; the body profile parses
+  // with one.
+  symlinkSync(
+    join(repository, "node_modules/prettier"),
+    join(destination, "node_modules/prettier"),
+  );
+  const base = join(scratch, `${name}-forge`);
+  mkdirSync(base);
+  const url = "https://github.invalid/dotln-fixture/instance.git";
+  const publishEnv = { ...env };
+  const forge = installForge(base, publishEnv, url);
+  git(destination, ["remote", "add", "origin", url]);
+  git(destination, ["push", "-q", forge.bare, "main"]);
+  const bodyFile = join(base, "body.md");
+  writeFileSync(bodyFile, "## The update\n\nThe launchpad's kit moves.\n");
+  // The instance's own terms list, ignored and empty: it refuses nothing.
+  mkdirSync(join(destination, "docs/control/local"), { recursive: true });
+  writeFileSync(join(destination, "docs/control/local/terms.txt"), "");
+  const launchpad = join(destination, "scripts/launchpad.mjs");
+  const head = (revision = "HEAD") =>
+    git(destination, ["rev-parse", revision]).stdout.trim();
+  const commitAll = (message) => {
+    git(destination, ["add", "."]);
+    git(destination, ["commit", "-qm", message]);
+    return head();
+  };
+  const rewrite = (path, change) =>
+    writeFileSync(
+      join(destination, path),
+      change(readFileSync(join(destination, path), "utf8")),
+    );
+  const changed = (text, from, to) => {
+    assert.ok(text.includes(from), from);
+    return text.replace(from, to);
+  };
+  const paths = {
+    order: "docs/work-orders/WO-001-environment-truth.md",
+    budgets: "docs/control/budgets.json",
+    onlyStarter: "FOR-CORE.md",
+    added: "docs/starter-note.md",
+    kitFile: "docs/KIT.md",
+  };
+  const exportCommit = head();
+  // The starter's next revision: its provenance moves, as an update's does.
+  git(destination, ["switch", "-q", "-c", "starter", exportCommit]);
+  const previous = manifestOf(destination).commit;
+  for (const path of ["UPSTREAM.md", "KIT-MANIFEST.json"])
+    rewrite(path, (text) => text.replaceAll(previous, "a".repeat(40)));
+  rewrite(paths.order, (text) =>
+    changed(
+      text,
+      "**Objective:** Establish",
+      "**Objective:** Establish (the starter's wording)",
+    ),
+  );
+  // The budgets are rewritten as the same JSON rendering on both sides, so
+  // each side's diff is its own value: the starter's near the file's end,
+  // the instance's near its start.
+  const budgetsWith = (change) => (text) => {
+    const budgets = JSON.parse(text);
+    change(budgets);
+    return `${JSON.stringify(budgets, null, 2)}\n`;
+  };
+  rewrite(
+    paths.budgets,
+    budgetsWith((budgets) => {
+      assert.equal(Object.keys(budgets).at(-2), "drivenSessionCeiling");
+      budgets.drivenSessionCeiling = 120;
+    }),
+  );
+  rewrite(paths.onlyStarter, (text) => `${text}\nA line the starter adds.\n`);
+  writeFileSync(join(destination, paths.added), "# A note the starter adds\n");
+  rewrite(paths.kitFile, (text) => `${text}\nA line the starter's kit adds.\n`);
+  const starter = commitAll("the starter's next revision");
+  // A fetch of the starter leaves its revision under a remote-tracking ref,
+  // which is how the instance knows the commit for the starter's.
+  git(destination, ["update-ref", "refs/remotes/upstream/main", starter]);
+  // The instance's own changes, on main.
+  git(destination, ["switch", "-q", "main"]);
+  rewrite(paths.order, (text) =>
+    changed(
+      text,
+      "**Objective:** Establish",
+      "**Objective:** Establish (the instance's wording)",
+    ),
+  );
+  rewrite(
+    paths.budgets,
+    budgetsWith((budgets) => {
+      assert.equal(Object.keys(budgets)[1], "subagentCap");
+      budgets.subagentCap = 40;
+    }),
+  );
+  rewrite(paths.kitFile, (text) => `An instance's line.\n\n${text}`);
+  const instance = commitAll("the instance's own changes");
+  return {
+    destination,
+    forge,
+    paths,
+    commits: { exported: exportCommit, starter, instance },
+    head,
+    commitAll,
+    publish: (...takes) =>
+      run(
+        process.execPath,
+        [
+          launchpad,
+          "update",
+          "--publish",
+          "--title",
+          ":arrow_up: Take the starter update",
+          "--body-file",
+          bodyFile,
+          ...takes.flatMap((path) => ["--take", path]),
+        ],
+        { cwd: destination, env: publishEnv },
+      ),
+    /** The same publish with the revision the branch merged stated. */
+    publishFrom: (revision, ...takes) =>
+      run(
+        process.execPath,
+        [
+          launchpad,
+          "update",
+          "--publish",
+          "--from",
+          revision,
+          "--title",
+          ":arrow_up: Take the starter update",
+          "--body-file",
+          bodyFile,
+          ...takes.flatMap((path) => ["--take", path]),
+        ],
+        { cwd: destination, env: publishEnv },
+      ),
+    preview: (revision) =>
+      run(process.execPath, [launchpad, "preview", "--from", revision], {
+        cwd: destination,
+      }),
+    /** Merge the starter's revision into a new branch cut from `from`. Git
+     * conflicts on the first order and merges the budgets in silence; the
+     * conflict is settled with the starter's bytes, or, with `keep`, both
+     * files are given the instance's bytes before the merge is committed.
+     * Returns the merge commit. */
+    mergeStarter(branch, { from = "main", keep = false } = {}) {
+      git(destination, ["switch", "-q", "-c", branch, from]);
+      const merging = run(
+        "git",
+        ["merge", "--no-commit", "--no-ff", "starter"],
+        { cwd: destination },
+      );
+      assert.equal(merging.status, 1, "the first order conflicts");
+      // Git merged the budgets in silence: the file parses and holds both
+      // sides' values.
+      const silent = JSON.parse(
+        readFileSync(join(destination, paths.budgets), "utf8"),
+      );
+      assert.deepEqual(
+        [silent.subagentCap, silent.drivenSessionCeiling],
+        [40, 120],
+      );
+      if (keep)
+        git(destination, [
+          "checkout",
+          "HEAD",
+          "--",
+          paths.budgets,
+          paths.order,
+        ]);
+      else
+        writeFileSync(
+          join(destination, paths.order),
+          git(destination, ["show", `starter:${paths.order}`]).stdout,
+        );
+      git(destination, ["add", "."]);
+      git(destination, ["commit", "-q", "--no-edit"]);
+      return head();
+    },
+  };
 };
 // The command line under test, run from the committed copy's own scripts.
 const runExport = (destination, extra = [], cwd = scratch) =>
@@ -268,12 +459,14 @@ for (const path of [
   "LICENSE",
   "LICENSE-docs",
   "NOTICE",
+  "THIRD_PARTY_NOTICES",
   ".gitignore",
   "docs/product/07-execution-guide.md",
   "docs/product/operator-reference.md",
   "docs/product/08-publication-compiler.md",
   "docs/PLAYBOOK.md",
   "docs/KIT.md",
+  "docs/OPERATOR.md",
   "docs/publication/implementation-overlay-template.md",
   // Not a kit file: an upstream pointer the export names and does not carry.
   "docs/LEGAL.md",
@@ -459,6 +652,7 @@ export {
   RUNTIME_PACKAGES,
   HARNESS_MANIFEST,
   synthetic,
+  syntheticTerm,
   syntheticHash,
   planted,
   marker,
@@ -472,6 +666,7 @@ export {
   configureRepository,
   initRepository,
   commitExport,
+  updateMergeFixture,
   commitWarmExport,
   linkWarmInstall,
   runExport,

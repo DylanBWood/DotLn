@@ -6845,7 +6845,7 @@
             },
             {
               "id": "publication-321ed3468981dcce",
-              "title": "v0.0.0 — Clean-room bootstrap _(mostly complete)_",
+              "title": "v0.0.0 — Clean-room bootstrap (mostly complete)",
               "cells": [
                 {
                   "key": "audiences",
@@ -10835,12 +10835,7 @@
       "explanation": "Source not supplied"
     },
     {
-      "ref": "docs/work-orders/README.md",
-      "status": "unavailable",
-      "explanation": "Source not supplied"
-    },
-    {
-      "ref": "docs/work-orders/HISTORY.md",
+      "ref": "work-orders:index--json",
       "status": "unavailable",
       "explanation": "Source not supplied"
     },

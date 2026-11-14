@@ -1,0 +1,71 @@
+{
+  "what": "Read-only checks at the tree FINAL-002 judged (code identity adba01dad241e0707e58f4efb26e95bb296d055c042b7b8c156e3667d08c5f28), run by the reviewer on 2026-11-14 between 18:05 and 18:14 UTC, one process at a time. None is a gate and none writes a gate row.",
+  "checks": [
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "reads": "no whitespace error"
+    },
+    {
+      "command": "node scripts/harness.mjs check",
+      "exitCode": 0,
+      "reads": "37 generated surfaces equal the emitted ones; local-terms list present"
+    },
+    {
+      "command": "node scripts/docs-check.mjs",
+      "exitCode": 0,
+      "seconds": 30,
+      "reads": "0 failures; the verbatim screen read 286 changed files against 73 captures and found no shared run"
+    },
+    {
+      "command": "npm run publication:check",
+      "exitCode": 0,
+      "reads": "the publication pages are current"
+    },
+    {
+      "command": "npm run work-orders -- index --check",
+      "exitCode": 0,
+      "reads": "the index and the history page are current"
+    },
+    {
+      "command": "npm run evidence:feedback -- --check",
+      "exitCode": 0,
+      "reads": "the live audit of edition feedback-009 judged the current source: ten passing regressions, ten removal failures"
+    },
+    {
+      "command": "npm run plan -- check",
+      "exitCode": 0,
+      "seconds": 33,
+      "reads": "passes; 20 preflight advisory lines"
+    },
+    {
+      "command": "npm run format:check",
+      "exitCode": 0,
+      "reads": "all matched files use the formatter's style"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs declarations",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs generated",
+      "exitCode": 0,
+      "seconds": 43,
+      "reads": "no stale artifact"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs git-surface",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs host",
+      "exitCode": 0,
+      "reads": "the per-lane memory budget covers the measured task peak; pressure normal"
+    },
+    {
+      "command": "node scripts/terms.mjs branch",
+      "exitCode": 0,
+      "reads": "list present; 0 refuse entries and 9 context entries; 920 changed files screened; 0 refuse lines and 0 context lines"
+    }
+  ]
+}

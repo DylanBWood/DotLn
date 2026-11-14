@@ -1,7 +1,10 @@
 import { docRelative } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import { join, posix } from "node:path";
+import {
+  sourceDialect,
+  sourceImports,
+} from "../../packages/skeleton/src/source-reading.mjs";
 // Source files imported by the evidence tools plus their fixed data/build inputs.
 // Generated harness output and selected edition output are deliberately absent.
 // Package indexes load their complete export graphs; these are explicit files.
@@ -10,12 +13,21 @@ const commonSources = [
   "packages/skeleton/src/duration.mjs",
   "packages/skeleton/src/test-selection.mjs",
   "packages/skeleton/src/dispatch-journal.mjs",
+  // What a worker runs: the configuration and the Contributor loadout both
+  // read the one table, and the kit's own models are its first rows.
+  "packages/skeleton/src/worker-catalog.mjs",
+  "packages/skeleton/src/worker-models.mjs",
   "scripts/lib/config.mjs",
   "scripts/lib/control-actor.mjs",
   "scripts/lib/control-store.mjs",
   "scripts/lib/control-time.mjs",
   "scripts/lib/control.mjs",
   "scripts/lib/dependencies.mjs",
+  // A work order's header is read through the format's one reader, over the
+  // one Markdown parser the scripts carry (WO-275).
+  "scripts/lib/work-order-document.mjs",
+  "scripts/lib/markdown-links.mjs",
+  "scripts/lib/vendor/prettier-markdown.mjs",
   "scripts/lib/derived-contract.mjs",
   "scripts/lib/dispatch-bound.mjs",
   "scripts/lib/duration.mjs",
@@ -115,6 +127,7 @@ const commonSources = [
   "packages/skeleton/src/live-reactor-driver.ts",
   "packages/skeleton/src/loadouts/feedback.ts",
   "packages/skeleton/src/usage-observation.mjs",
+  "packages/skeleton/src/usage-reading.mjs",
   "packages/skeleton/src/verification.ts",
   "packages/skeleton/src/worker-protocol.ts",
   "packages/skeleton/src/presence-machine.ts",
@@ -140,6 +153,8 @@ const commonSources = [
   "scripts/lib/build-freshness.mjs",
   "scripts/lib/gate-reuse.mjs",
   "scripts/lib/evidence-sources.mjs",
+  // The import reader reads sources through the one source reader.
+  "packages/skeleton/src/source-reading.mjs",
   // WO-162: evidence tools consume the shared byte serializers and Git/JSON IO.
   "scripts/lib/helpers.mjs",
   "scripts/lib/harness-instruction.mjs",
@@ -183,6 +198,7 @@ const authoritySources = (root) => [
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
   "packages/skeleton/src/harness-command.ts",
+  "packages/skeleton/src/shell-reading.mjs",
   "packages/skeleton/src/document-quality.ts",
   "packages/skeleton/src/harness-host.ts",
   "packages/skeleton/src/dispatch-journal.mjs",
@@ -199,6 +215,7 @@ const authoritySources = (root) => [
   "packages/skeleton/src/loadouts/prompt-support.ts",
   "packages/skeleton/src/plan-refutation-protocol.ts",
   "packages/skeleton/src/usage-observation.mjs",
+  "packages/skeleton/src/usage-reading.mjs",
   "packages/skeleton/src/worker-protocol.ts",
   "packages/skeleton/src/writer-teardown.mjs",
   "scripts/authority-evidence.mjs",
@@ -283,6 +300,7 @@ const feedbackSources = (root) => [
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
   "packages/skeleton/src/harness-command.ts",
+  "packages/skeleton/src/shell-reading.mjs",
   "packages/skeleton/src/document-quality.ts",
   "packages/skeleton/src/harness-host.ts",
   "packages/skeleton/src/dispatch-journal.mjs",
@@ -297,6 +315,7 @@ const feedbackSources = (root) => [
   "packages/skeleton/src/loadouts/prompt-support.ts",
   "packages/skeleton/src/plan-refutation-protocol.ts",
   "packages/skeleton/src/usage-observation.mjs",
+  "packages/skeleton/src/usage-reading.mjs",
   "packages/skeleton/src/verification-host.ts",
   "packages/skeleton/src/verification-worktree.ts",
   "packages/skeleton/src/verification-protocol.ts",
@@ -356,6 +375,7 @@ const harnessSources = (root) => [
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
   "packages/skeleton/src/harness-command.ts",
+  "packages/skeleton/src/shell-reading.mjs",
   "packages/skeleton/src/document-quality.ts",
   "packages/skeleton/src/harness-host.ts",
   "packages/skeleton/src/dispatch-journal.mjs",
@@ -369,6 +389,7 @@ const harnessSources = (root) => [
   "packages/skeleton/src/loadouts/process-cost.ts",
   "packages/skeleton/src/loadouts/prompt-support.ts",
   "packages/skeleton/src/usage-observation.mjs",
+  "packages/skeleton/src/usage-reading.mjs",
   "packages/skeleton/src/writer-teardown.mjs",
   "scripts/harness-context.mjs",
   "scripts/harness-evidence.mjs",
@@ -447,197 +468,57 @@ export const evidenceImportExclusions = {
   },
 };
 
-// Imports are read from code tokens, not text (WO-157 VER-001 F4 and its
-// repair review): TypeScript's own scanner (typescript/unstable/ast, the one
-// feedback-source-comments.ts uses) skips comments and lexes strings,
-// templates and regular expressions whole, so a quote, semicolon or `import`
-// inside any of them is never read as syntax.
-const require = createRequire(import.meta.url);
-let typescriptAst;
-const tokenKinds = () => {
-  if (!typescriptAst) {
-    if (require("typescript/package.json").version !== "7.0.2")
-      throw new Error(
-        "evidence import reader: typescript version drift; recheck the scanner rules",
-      );
-    typescriptAst = require("typescript/unstable/ast");
-  }
-  return typescriptAst;
-};
+// Imports are read from code tokens (the source reader's sourceImports),
+// not from text, so a quote, semicolon or `import` inside a string, template,
+// regular expression or comment is never read as syntax. No process starts.
 
-/** Code tokens, trivia skipped. A `/` after a value is division, otherwise a
- * regular expression; a `}` closing `${` resumes its template. */
-function codeTokens(text) {
-  const { SyntaxKind: K, LanguageVariant, createScanner } = tokenKinds();
-  const endsValue = (kind) =>
-    [
-      K.Identifier,
-      K.PrivateIdentifier,
-      K.StringLiteral,
-      K.NumericLiteral,
-      K.BigIntLiteral,
-      K.NoSubstitutionTemplateLiteral,
-      K.TemplateTail,
-      K.RegularExpressionLiteral,
-      K.CloseParenToken,
-      K.CloseBracketToken,
-      K.CloseBraceToken,
-      K.ThisKeyword,
-      K.SuperKeyword,
-      K.NullKeyword,
-      K.TrueKeyword,
-      K.FalseKeyword,
-      K.PlusPlusToken,
-      K.MinusMinusToken,
-    ].includes(kind) ||
-    (kind >= K.FirstContextualKeyword &&
-      kind <= K.LastContextualKeyword &&
-      kind !== K.AwaitKeyword &&
-      kind !== K.OfKeyword);
-  const scanner = createScanner(true, LanguageVariant.Standard);
-  scanner.setText(text);
-  const tokens = [];
-  const braces = [];
-  for (let kind = scanner.scan(); kind !== K.EndOfFile; kind = scanner.scan()) {
-    if (
-      (kind === K.SlashToken || kind === K.SlashEqualsToken) &&
-      !endsValue(tokens.at(-1)?.kind)
-    )
-      kind = scanner.reScanSlashToken();
-    else if (kind === K.OpenBraceToken) braces.push(false);
-    else if (kind === K.TemplateHead) braces.push(true);
-    else if (kind === K.CloseBraceToken && braces.pop()) {
-      kind = scanner.reScanTemplateToken(false);
-      if (kind === K.TemplateMiddle) braces.push(true);
-    }
-    tokens.push({
-      kind,
-      text: scanner.getTokenText(),
-      value: scanner.getTokenValue(),
-    });
+// Each source's specifiers, kept with the text they were read from, so a
+// process that asks again for an unchanged source does not read it again.
+const specifierMemo = new Map();
+/** The runtime specifiers of each path; with `dynamic` false, those the
+ * module loads when it is itself loaded. */
+function specifiersOf(root, paths, dynamic = true) {
+  const result = new Map();
+  for (const path of paths) {
+    const absolute = join(root, path);
+    const key = `${dynamic ? "all" : "static"}:${absolute}`;
+    const source = readFileSync(absolute, "utf8");
+    const known = specifierMemo.get(key);
+    const specifiers =
+      known?.source === source
+        ? known.specifiers
+        : sourceDialect(path) !== null
+          ? sourceImports(source, { dynamic })
+          : [];
+    specifierMemo.set(key, { source, specifiers });
+    result.set(path, specifiers);
   }
-  return tokens;
-}
-
-const IDENTIFIER = /^[\p{ID_Start}$_][\p{ID_Continue}$\u200c\u200d]*$/u;
-/** The index after the brace group opened at `start`, or -1. */
-const afterGroup = (tokens, start, K) => {
-  for (let j = start, depth = 0; j < tokens.length; j++) {
-    if (tokens[j].kind === K.OpenBraceToken) depth++;
-    else if (tokens[j].kind === K.CloseBraceToken && --depth === 0)
-      return j + 1;
-  }
-  return -1;
-};
-/** The specifier ending a static import clause that begins at `start`: names,
- * commas, `*`, `as` and brace groups, then `from "x"`, or `= require("x")`. */
-function importClauseSource(tokens, start, K) {
-  for (let j = start; j > -1 && j < tokens.length;) {
-    const token = tokens[j];
-    if (
-      j > start &&
-      token.text === "from" &&
-      tokens[j + 1]?.kind === K.StringLiteral
-    )
-      return tokens[j + 1].value;
-    if (token.kind === K.EqualsToken)
-      return tokens[j + 1]?.text === "require" &&
-        tokens[j + 2]?.kind === K.OpenParenToken &&
-        tokens[j + 3]?.kind === K.StringLiteral
-        ? tokens[j + 3].value
-        : undefined;
-    if (token.kind === K.OpenBraceToken) j = afterGroup(tokens, j, K);
-    else if (
-      token.kind === K.CommaToken ||
-      token.kind === K.AsteriskToken ||
-      (IDENTIFIER.test(token.text) &&
-        token.kind !== K.ImportKeyword &&
-        token.kind !== K.ExportKeyword)
-    )
-      j++;
-    else return undefined;
-  }
-  return undefined;
-}
-
-/** Module specifiers a source loads at run time. Skipped: `import type`,
- * `export type`, a type reference `import("x").T` (in code; JSDoc types are
- * comments), and computed specifiers, which name no file. */
-function runtimeSpecifiers(text) {
-  const { SyntaxKind: K } = tokenKinds();
-  const tokens = codeTokens(text);
-  const string = (token) =>
-    token?.kind === K.StringLiteral ||
-    token?.kind === K.NoSubstitutionTemplateLiteral;
-  const found = [];
-  for (let i = 0; i < tokens.length; i++) {
-    const { kind } = tokens[i];
-    if (kind !== K.ImportKeyword && kind !== K.ExportKeyword) continue;
-    // A member or property named import or export is not a declaration.
-    const before = tokens[i - 1]?.kind;
-    if (before === K.DotToken || before === K.QuestionDotToken) continue;
-    const next = tokens[i + 1];
-    if (!next || next.kind === K.ColonToken) continue;
-    if (kind === K.ImportKeyword) {
-      if (next.kind === K.OpenParenToken) {
-        const [, , specifier, after, member, name] = tokens.slice(i);
-        if (!string(specifier)) continue;
-        if (after?.kind === K.CommaToken) found.push(specifier.value);
-        else if (
-          after?.kind === K.CloseParenToken &&
-          !(
-            member?.kind === K.DotToken &&
-            !["then", "catch", "finally"].includes(name?.text)
-          )
-        )
-          found.push(specifier.value);
-        continue;
-      }
-      if (next.kind === K.DotToken) continue; // import.meta
-      if (next.kind === K.StringLiteral) {
-        found.push(next.value);
-        continue;
-      }
-      const third = tokens[i + 2];
-      // `import type` unless `type` is the default binding's name.
-      const typeOnly =
-        next.text === "type" &&
-        !(
-          third?.kind === K.CommaToken ||
-          third?.kind === K.EqualsToken ||
-          (third?.text === "from" && tokens[i + 3]?.kind === K.StringLiteral)
-        );
-      const specifier = importClauseSource(tokens, i + 1, K);
-      if (specifier !== undefined && !typeOnly) found.push(specifier);
-      continue;
-    }
-    // Re-exports: `export * [as name] from "x"` or `export {...} from "x"`.
-    const typeOnly = next.text === "type";
-    let j = typeOnly ? i + 2 : i + 1;
-    if (tokens[j]?.kind === K.OpenBraceToken) j = afterGroup(tokens, j, K);
-    else if (tokens[j]?.kind === K.AsteriskToken) {
-      j++;
-      if (tokens[j]?.text === "as") j += 2;
-    } else continue;
-    if (
-      j > 0 &&
-      tokens[j]?.text === "from" &&
-      tokens[j + 1]?.kind === K.StringLiteral &&
-      !typeOnly
-    )
-      found.push(tokens[j + 1].value);
-  }
-  return found;
+  return result;
 }
 
 /** Repository paths a source imports at run time: relative imports, and
  * `@dotln/<package>` imports at the package's source entry or named leaf. A compiled
  * `dist/(src|test)/x.js` target names its source file; other bare packages
- * are dependencies outside the repository. */
-export function relativeImports(root, path, { sourcePaths = true } = {}) {
-  const text = readFileSync(join(root, path), "utf8");
+ * are dependencies outside the repository. The option `dynamic: false`
+ * leaves out what only an `import()` call loads. */
+export const relativeImports = (root, path, options) =>
+  relativeImportsOf(root, [path], options).get(path);
+
+/** relativeImports for many sources at once, which parses them in one
+ * batch: each path mapped to its imports. */
+export function relativeImportsOf(root, paths, options) {
+  const specifiers = specifiersOf(root, paths, options?.dynamic !== false);
+  return new Map(
+    paths.map((path) => [
+      path,
+      resolvedImports(root, path, specifiers.get(path), options),
+    ]),
+  );
+}
+
+function resolvedImports(root, path, specifiers, { sourcePaths = true } = {}) {
   const found = new Set();
-  for (const spec of runtimeSpecifiers(text)) {
+  for (const spec of specifiers) {
     const workspace = /^@dotln\/([^/]+)(?:\/(.+))?$/u.exec(spec);
     if (workspace) {
       if (!sourcePaths) {
@@ -700,10 +581,12 @@ export function unregisteredEvidenceImports(root, kind) {
     ...evidenceImportExclusions[kind],
   };
   const findings = [];
-  for (const source of sources.filter((path) =>
-    /\.(?:ts|mjs|js|cjs)$/u.test(path),
-  ))
-    for (const target of relativeImports(root, source))
+  const imports = relativeImportsOf(
+    root,
+    sources.filter((path) => /\.(?:ts|mjs|js|cjs)$/u.test(path)),
+  );
+  for (const [source, targets] of imports)
+    for (const target of targets)
       if (!registered.has(target) && !Object.hasOwn(excluded, target))
         findings.push(`${source} imports ${target}`);
   return findings;

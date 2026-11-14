@@ -1,0 +1,9 @@
+{
+  "comparison": "release-history-components",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every release document under docs/releases, as the worktree holds it and at each commit that changed it: the component packages and versions its table rows name",
+  "read": 12,
+  "equal": 12,
+  "differences": {},
+  "examples": []
+}

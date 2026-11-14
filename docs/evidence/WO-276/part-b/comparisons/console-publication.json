@@ -1,0 +1,48 @@
+{
+  "comparison": "console-publication",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the publication audience and status index at every committed revision and in the worktree: each row of its table as the board shows it",
+  "read": 53,
+  "equal": 0,
+  "differences": {
+    "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`": 53
+  },
+  "examples": [
+    {
+      "input": "worktree",
+      "named": "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`",
+      "old": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —",
+      "new": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —"
+    },
+    {
+      "input": "d784e9b79ce2",
+      "named": "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`",
+      "old": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —",
+      "new": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —"
+    },
+    {
+      "input": "0e7a2f7f4c05",
+      "named": "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`",
+      "old": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —",
+      "new": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —"
+    },
+    {
+      "input": "3f65f64be08b",
+      "named": "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`",
+      "old": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —",
+      "new": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —"
+    },
+    {
+      "input": "7bc80a93c449",
+      "named": "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`",
+      "old": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —",
+      "new": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":21,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":22,\"cells\":{\"Section\":\"Mission —"
+    },
+    {
+      "input": "e315fc804b16",
+      "named": "defect of the old reader: its shown text kept the underscores of `_(mostly complete)_` emphasis (plainText removed bold, links and code but not underscore emphasis); the parser's text shows `(mostly complete)`",
+      "old": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":17,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":18,\"cells\":{\"Section\":\"Mission —",
+      "new": "[{\"key\":\"[DotLn — Vision](../product/00-vision.md#dotln--vision)\",\"line\":17,\"cells\":{\"Section\":\"DotLn — Vision\",\"Audiences\":\"everyday-ai-user, software-engineer\",\"Status\":\"vision\"},\"links\":[\"../product/00-vision.md#dotln--vision\"]},{\"key\":\"[Mission — increase the chance of operator flow](../product/00-vision.md#mission--increase-the-chance-of-operator-flow)\",\"line\":18,\"cells\":{\"Section\":\"Mission —"
+    }
+  ]
+}

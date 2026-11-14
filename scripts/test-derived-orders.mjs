@@ -31,7 +31,14 @@ import {
   projectDerivedOrders,
 } from "./lib/derived-orders.mjs";
 import { checkGeneratedSections } from "./lib/derived-contract.mjs";
-import { declaredCriteria } from "./lib/handoff-ledger.mjs";
+import {
+  declaredCriteria,
+  readHandoffLedger,
+  readReportGateClaims,
+} from "./lib/handoff-ledger.mjs";
+import { LIST_UNREAD } from "./lib/work-order-document.mjs";
+import { missionContract } from "./lib/mission-documents.mjs";
+import { parsePlanOrder } from "./lib/plan-subject.mjs";
 import {
   readControl,
   eventsForOrder,
@@ -40,7 +47,7 @@ import {
 } from "./lib/control-store.mjs";
 import { controlFromSources } from "./lib/control-store.mjs";
 import { parseDependencies } from "./lib/dependencies.mjs";
-import { readIndex } from "./work-orders.mjs";
+import { criteriaAdvisories, readIndex } from "./work-orders.mjs";
 import {
   compileLoadout,
   requireCompiled,
@@ -894,5 +901,802 @@ test("criterion ledger excludes an explicit dated retirement while preserving ac
   assert.deepEqual(
     criteria.map((row) => row.id),
     ["1", "3", "4"],
+  );
+});
+
+// Criteria 77 to 80 of WO-276 as the planning pass filed it, byte for byte.
+// The third line of criterion 78 opens with the placeholder <option>, the
+// name of an HTML block element, three spaces in where the item's text
+// starts at four: the parser ends the list there and holds every later line,
+// to the next blank line, as one raw block.
+const WO276_FILED_CRITERIA = [
+  "77. (J1) In a fixture instance whose configuration gives one option a",
+  "   model and an effort, `node scripts/harness.mjs emit` writes that",
+  "   option's worker definition with those two values and `node",
+  "   scripts/harness.mjs check` passes; with the section absent, the",
+  "   emitted worker definitions equal the ones the same tree emits from a",
+  "   configuration that never held it. In the update fixture, an instance",
+  "   that emitted with the section set is shown no worker definition as",
+  "   locally modified by the update plan, and `node scripts/launchpad.mjs",
+  "   verify` reports none as differing.",
+  "78. (J2) In the same fixture, `npm run worker -- review --kind criteria --host",
+  "   claude --order <id> --dry-run` and `npm run plan -- refute --model",
+  "   <option>` each print a launch that names the configured model and",
+  "   effort, and the drive's launch for a phase carries them in its",
+  "   arguments, with `workers.verifierEffort` applied to the verifier's.",
+  "79. (J3) A `workers` section with an unknown key, an option name outside the",
+  "   compiled four, an effort outside the host's levels or a negative price",
+  "   is refused when the configuration loads, naming the key.",
+  "80. (J4) A launch that fails because its model was refused reports the",
+  "   `workers` key that named the model, shown with the fixture launcher's",
+  "   failing double.",
+];
+const criteriaSection = (lines) =>
+  `**Acceptance criteria (all required)**\n\n${lines.join("\n")}\n\n**Non-goals:** none.\n`;
+const unreadList = (line, pattern) => (error) => {
+  assert.equal(error.code, LIST_UNREAD);
+  assert.match(error.message, new RegExp(`\\bline ${line} `, "u"));
+  assert.match(error.message, pattern);
+  return true;
+};
+const RAW_BLOCK = /raw HTML block.*code span.*backslash.*re-wrap/su;
+
+test("WO-276 F52: a criteria list the parser reads as shorter than written is refused, naming the line and the remedy, and never returned shorter", () => {
+  // This order as filed: the reader refuses at the placeholder's line, where
+  // it returned criteria 77 and 78 alone.
+  assert.throws(
+    () => declaredCriteria(criteriaSection(WO276_FILED_CRITERIA)),
+    unreadList(14, RAW_BLOCK),
+  );
+  // Re-wrapped so that no line opens with the tag, as the order itself was,
+  // the same criteria read whole.
+  const rewrapped = [...WO276_FILED_CRITERIA];
+  rewrapped.splice(
+    10,
+    2,
+    "   claude --order <id> --dry-run` and `npm run plan -- refute --model <option>`",
+    "   each print a launch that names the configured model and",
+  );
+  assert.deepEqual(
+    declaredCriteria(criteriaSection(rewrapped)).map(({ id }) => id),
+    ["77", "78", "79", "80"],
+  );
+  // The same class in shapes the failed review did not try: another element's
+  // name, and a paragraph between items, which takes the items after it as
+  // its own text because a list that does not start at one cannot interrupt
+  // a paragraph.
+  for (const [lines, line, pattern] of [
+    [
+      [
+        "10. The page lists each open order with its",
+        "   <legend> and nothing else.",
+        "11. The second criterion holds.",
+        "12. `npm test -- --review` passes.",
+      ],
+      4,
+      RAW_BLOCK,
+    ],
+    [
+      [
+        "1. The first criterion holds.",
+        "",
+        "A note on the list.",
+        "2. The second criterion holds.",
+        "3. `npm test -- --review` passes.",
+      ],
+      6,
+      /criterion 2, which the paragraph that begins on line 5 holds as its text/u,
+    ],
+  ])
+    assert.throws(
+      () => declaredCriteria(criteriaSection(lines)),
+      unreadList(line, pattern),
+    );
+  // A label alone on its line whose paragraph runs on takes the items after
+  // it as its text.
+  assert.throws(
+    () =>
+      declaredCriteria(
+        "**Acceptance criteria (all required)**\n2. The second criterion.\n3. The third.\n",
+      ),
+    unreadList(2, /criterion 2, which the label's own paragraph holds/u),
+  );
+  // A label or a heading the parser reads inside the list, where the block
+  // then ends: a bold label opening a paragraph indented short of a two-digit
+  // item's text, which takes the items after it as its own; a wrapped line
+  // that opens with a number sign, under a two-digit item and under a
+  // one-digit one.
+  for (const [lines, line, kind] of [
+    [
+      [
+        "9. Nine holds.",
+        "10. Ten holds.",
+        "",
+        "   **Check:** the case named for criterion 10.",
+        "11. Eleven holds.",
+        "12. `npm run test:docs` passes.",
+        "13. `npm test -- --review` passes.",
+      ],
+      6,
+      "a label",
+    ],
+    [
+      [
+        "9. Nine holds.",
+        "10. The page lists the",
+        "   # Commands, and refuses a page without it.",
+        "11. Eleven holds.",
+        "12. Twelve holds.",
+      ],
+      5,
+      "a heading",
+    ],
+    [
+      [
+        "1. The page lists the",
+        "  # Commands, and refuses a page without it.",
+        "2. Two holds.",
+        "3. Three holds.",
+      ],
+      4,
+      "a heading",
+    ],
+  ])
+    assert.throws(
+      () => declaredCriteria(criteriaSection(lines)),
+      unreadList(line, new RegExp(`reads as ${kind} inside the list`, "u")),
+    );
+  // What that label or heading leads, to the next label or heading, is read
+  // as well: a wrapped line that opens with a number sign and is followed by
+  // one more wrapped line, which the parser makes a paragraph holding the
+  // items after it, under a two-digit item and under a one-digit one; and a
+  // note between the closing heading or label and the items that go on.
+  for (const [lines, line, kind, goesOn] of [
+    [
+      [
+        "9. Nine holds.",
+        "10. The page lists the",
+        "   # Commands section, and refuses a page",
+        "   without it.",
+        "11. Eleven holds.",
+        "12. `npm run test:docs` passes.",
+        "13. `npm test -- --review` passes.",
+      ],
+      5,
+      "a heading",
+      "criterion 11 on line 7",
+    ],
+    [
+      [
+        "1. The page lists the",
+        "  # Commands section, and refuses a page",
+        "  without it.",
+        "2. `npm run test:docs` passes.",
+        "3. `npm test -- --review` passes.",
+      ],
+      4,
+      "a heading",
+      "criterion 2 on line 6",
+    ],
+    [
+      [
+        "9. Nine holds.",
+        "10. The page lists the",
+        "   # Commands, and refuses a page.",
+        "",
+        "   A note on the page.",
+        "",
+        "11. Eleven holds.",
+        "12. Twelve holds.",
+      ],
+      5,
+      "a heading",
+      "criterion 11 on line 9",
+    ],
+    [
+      [
+        "9. Nine holds.",
+        "10. Ten holds.",
+        "",
+        "   **Check:** the case named for criterion 10.",
+        "",
+        "   A note.",
+        "11. Eleven holds.",
+        "12. Twelve holds.",
+      ],
+      6,
+      "a label",
+      "criterion 11 on line 9",
+    ],
+  ])
+    assert.throws(
+      () => declaredCriteria(criteriaSection(lines)),
+      unreadList(
+        line,
+        new RegExp(`reads as ${kind} inside the list, and ${goesOn}`, "u"),
+      ),
+    );
+  // A label or a heading the author set at the margin between groups of
+  // criteria ends the list there too, and the refusal says so and names the
+  // remedy for a group, not for a wrapped line.
+  for (const [between, kind] of [
+    ["**Part B:**", "a label"],
+    ["### Part B criteria", "a heading"],
+  ])
+    assert.throws(
+      () =>
+        declaredCriteria(
+          criteriaSection([
+            "1. One holds.",
+            "2. Two holds.",
+            "",
+            between,
+            "",
+            "3. Three holds.",
+            "4. Four holds.",
+          ]),
+        ),
+      unreadList(
+        6,
+        new RegExp(
+          `sets ${kind} between the criteria, which ends their list there, and criterion 3 on line 8 goes on after it: the criteria are one numbered list under their label, so name a group in its items' text`,
+          "u",
+        ),
+      ),
+    );
+  // Text that holds no item of the list is the author's and is read past: a
+  // comment between two items, after which the list goes on, and the text a
+  // derived order writes under its criteria (a paragraph, a bulleted list and
+  // a code block) read whole.
+  assert.deepEqual(
+    declaredCriteria(
+      criteriaSection([
+        "1. The first criterion holds.",
+        "<!-- the second criterion was moved to Part B -->",
+        "2. The second criterion holds.",
+      ]),
+    ).map(({ id }) => id),
+    ["1", "2"],
+  );
+  assert.deepEqual(
+    declaredCriteria(
+      '## Acceptance criteria\n\n1. One.\n2. Two.\n\nRequired evidence:\n- a passing case\n- a record\n\nOutput contract (JSON):\n\n    {"type":"object"}\n\n## Non-goals\n\n- none\n',
+    ).map(({ id }) => id),
+    ["1", "2"],
+  );
+  // Unchanged: an early order's criteria written as the label's prose hold no
+  // list, and a heading's list reads as a label's does.
+  assert.equal(
+    declaredCriteria(
+      "**Acceptance criteria:** the scenario runs twice and\nproduces identical traces.\n\n**Non-goals:** none.\n",
+    ),
+    null,
+  );
+  assert.deepEqual(
+    declaredCriteria(
+      "## Acceptance criteria\n\n1. One.\n2. Two.\n\n## Non-goals\n",
+    ).map(({ id }) => id),
+    ["1", "2"],
+  );
+});
+
+test("WO-276 F52: whatever stands between the block's closing label or heading and the criteria that go on, the list is refused, and a later section's own list ends the reading", () => {
+  // The family, generated: how the block can close (a wrapped line the parser
+  // reads as a heading, a label indented short of the item's text, a label
+  // or a heading set at the margin), what can stand after it (nothing, a
+  // note, a second label, a second heading), and how the numbering goes on
+  // (swallowed by a paragraph, or as a list after a blank line). Every one
+  // reads short to the parser; every one is refused, at the closing line,
+  // naming the criterion that goes on.
+  const closings = [
+    [
+      ["   # Commands section, and refuses a page"],
+      5,
+      "reads as a heading inside the list",
+    ],
+    [
+      ["", "   **Check:** the case named for criterion 10."],
+      6,
+      "reads as a label inside the list",
+    ],
+    [["", "**Part B:**"], 6, "sets a label between the criteria"],
+    [["", "### Part B criteria"], 6, "sets a heading between the criteria"],
+  ];
+  const between = [
+    [],
+    ["", "   A note on the page."],
+    ["", "   **Evidence:** the run's log."],
+    ["", "   ## Usage section."],
+  ];
+  const resumptions = [
+    ["   without it.", "11. Eleven holds.", "12. Twelve holds."],
+    ["", "11. Eleven holds.", "12. Twelve holds."],
+  ];
+  let refused = 0;
+  for (const [closing, line, says] of closings)
+    for (const middle of between)
+      for (const goesOn of resumptions) {
+        const lines = [
+          "9. Nine holds.",
+          "10. The page lists the",
+          ...closing,
+          ...middle,
+          ...goesOn,
+        ];
+        const at = lines.indexOf("11. Eleven holds.") + 3;
+        assert.throws(
+          () => declaredCriteria(criteriaSection(lines)),
+          unreadList(
+            line,
+            new RegExp(
+              `${says}.*criterion 11 on line ${at} goes on after it`,
+              "u",
+            ),
+          ),
+          lines.join("\n"),
+        );
+        refused += 1;
+      }
+  assert.equal(refused, 32);
+  // The reviewers' own shapes beside the family: a label followed straight
+  // by a second one; a one-digit item's wrapped heading, a blank line and a
+  // second heading; and a group's label followed by a second label.
+  for (const [lines, line, says] of [
+    [
+      [
+        "9. Nine holds.",
+        "10. Ten holds.",
+        "",
+        "   **Check:** the case named for criterion 10.",
+        "   **Note:** a note.",
+        "11. Eleven holds.",
+        "12. Twelve holds.",
+      ],
+      6,
+      "reads as a label inside the list, and criterion 11 on line 8",
+    ],
+    [
+      [
+        "1. The page lists the",
+        "  # Commands section,",
+        "",
+        "  ## Usage section.",
+        "2. Two holds.",
+        "3. Three holds.",
+      ],
+      4,
+      "reads as a heading inside the list, and criterion 2 on line 7",
+    ],
+    [
+      [
+        "1. One holds.",
+        "2. Two holds.",
+        "",
+        "**Part B:**",
+        "",
+        "**More:**",
+        "",
+        "3. Three holds.",
+        "4. Four holds.",
+      ],
+      6,
+      "sets a label between the criteria, which ends their list there, and criterion 3 on line 10",
+    ],
+  ])
+    assert.throws(
+      () => declaredCriteria(criteriaSection(lines)),
+      unreadList(line, new RegExp(says, "u")),
+    );
+  // A complete list followed by a section with a numbered list of its own,
+  // which starts at one, or by prose with no item of the number that would
+  // come next, is read whole.
+  assert.deepEqual(
+    declaredCriteria(
+      "**Acceptance criteria (all required)**\n\n1. One holds.\n2. Two holds.\n\n**Non-goals:** none.\n\n## Execution plan\n\nThe steps, in order.\n\n1. Build.\n2. Run.\n3. Record.\n",
+    ).map(({ id }) => id),
+    ["1", "2"],
+  );
+  assert.deepEqual(
+    declaredCriteria(
+      "**Acceptance criteria (all required)**\n\n1. One holds.\n2. Two holds.\n\n**Non-goals:** none.\n\nA closing note that runs on\nto 3 lines and ends.\n",
+    ).map(({ id }) => id),
+    ["1", "2"],
+  );
+});
+
+test("WO-276 F52: the handoff, the mission contract and a pass's filed orders meet the same refusal, and a stored receipt's subject still reads the list on", (t) => {
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-criteria-refused-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const workOrderPath = "docs/work-orders/WO-999-fixture.md";
+  const order = `# WO-999 — Fixture (v9.9.9)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** fixture.\n\n${criteriaSection(
+    [
+      "1. The first criterion holds.",
+      "2. The command prints the chosen value as",
+      "<section> and nothing else.",
+      "3. The third criterion holds.",
+      "4. `npm run test:docs` passes.",
+      "5. `npm test -- --review` passes.",
+    ],
+  )}`;
+  write(repo, workOrderPath, order);
+  write(
+    repo,
+    "docs/evidence/WO-999/handoff.md",
+    "**Criterion 1:** met — fixture.\n**Criterion 2:** met — fixture.\nself-review: found 0; fixed 0; recorded 0\n",
+  );
+  const state = { workOrderId: "WO-999", workOrderPath };
+  // An unreadable authority reads as no criteria and is not checked; a list
+  // the reader refuses is not that, and the completion and the claims a
+  // report's met lines make both refuse.
+  assert.throws(
+    () => readHandoffLedger(repo, state),
+    unreadList(13, RAW_BLOCK),
+  );
+  assert.throws(
+    () => readReportGateClaims(repo, state, "docs/evidence/WO-999/handoff.md"),
+    unreadList(13, RAW_BLOCK),
+  );
+  assert.throws(() => missionContract(order), unreadList(13, RAW_BLOCK));
+  // A pass that files or checks the order refuses it by path; a subject
+  // rebuilt from a revision for a receipt filed before reads all five.
+  assert.throws(
+    () => parsePlanOrder(order, workOrderPath, "WO-999", { filing: true }),
+    (error) =>
+      error.message.startsWith(
+        `${workOrderPath}: acceptance criteria: line 13 `,
+      ) && error.cause?.code === LIST_UNREAD,
+  );
+  assert.deepEqual(
+    parsePlanOrder(order, workOrderPath, "WO-999").criteria.map(({ id }) => id),
+    [1, 2, 3, 4, 5].map((n) => `criterion:${n}`),
+  );
+});
+
+test("a criteria list is refused wherever a block holds a line the line reader read as an item, whatever its number, by every reader, and a list that skips a number or prose after a complete list reads as before", (t) => {
+  // The line reader the lifecycle used before the shared parser read every
+  // line that opens a numbered item, to the next label or heading at the
+  // margin, as an item with the number written on it, so a list that skips
+  // a number keeps its identifiers. Where the parser leaves such a line
+  // inside another block, the list is refused whatever the number: a
+  // skipped one, a falling one or a repeated one is an item lost with its
+  // text and the gate it names. Each shape below is one the line reader
+  // read with more items than the parser.
+  const fence = "```";
+  for (const [lines, line, says] of [
+    // A wrapped tag, a wrapped number sign and a label indented short of a
+    // two-digit item's text, each before a skipped number.
+    [
+      [
+        "1. The command prints",
+        "  <option> and the result.",
+        "3. `npm run test:docs` passes.",
+        "4. `npm test -- --review` passes.",
+      ],
+      4,
+      /raw HTML block.*holds criterion 3 on line 5/u,
+    ],
+    [
+      [
+        "1. The command prints",
+        "  # Commands and the result.",
+        "3. `npm run test:docs` passes.",
+        "4. `npm test -- --review` passes.",
+      ],
+      4,
+      /reads as a heading inside the list, and criterion 3 on line 5/u,
+    ],
+    [
+      [
+        "9. Nine holds.",
+        "10. Ten holds.",
+        "",
+        "   **Check:** the fixture.",
+        "12. `npm run test:docs` passes.",
+        "13. `npm test -- --review` passes.",
+      ],
+      6,
+      /reads as a label inside the list, and criterion 12 on line 7/u,
+    ],
+    // A paragraph that takes an item after a skip as its own text, and a
+    // two-digit item's wrapped tag before a skip of three.
+    [
+      [
+        "1. One holds.",
+        "2. Two holds.",
+        "",
+        "A note on the list.",
+        "4. Four holds.",
+        "5. Five holds.",
+      ],
+      7,
+      /criterion 4, which the paragraph that begins on line 6 holds/u,
+    ],
+    [
+      [
+        "10. The page lists each open order with its",
+        "   <legend> and nothing else.",
+        "14. Fourteen holds.",
+        "15. Fifteen holds.",
+      ],
+      4,
+      /raw HTML block.*holds criterion 14 on line 5/u,
+    ],
+    // A swallowed item whose number falls below the last one read, and one
+    // that repeats a number an item holds, with the gate it names.
+    [
+      [
+        "1. One holds.",
+        "3. The command prints",
+        "  <option> and the result.",
+        "2. Two holds.",
+      ],
+      5,
+      /raw HTML block.*holds criterion 2 on line 6/u,
+    ],
+    [
+      [
+        "1. One holds.",
+        "2. The command prints",
+        "  <option> and the result.",
+        "2. `npm test -- --review` passes.",
+      ],
+      5,
+      /raw HTML block.*holds criterion 2 on line 6/u,
+    ],
+    // A wrapped line that opens a fence of backticks or of tildes, which
+    // holds the items after it as code: with the next number, with a skip,
+    // under a two-digit item, and closed again before the last item.
+    ...[
+      [`  ${fence}json fence and nothing else.`, "2. Two holds.", 2],
+      [`  ${fence}json fence and nothing else.`, "3. Three holds.", 3],
+      ["  ~~~ fence and nothing else.", "2. Two holds.", 2],
+    ].map(([wrapped, next, number]) => [
+      [
+        "1. The reply wraps its JSON in a",
+        wrapped,
+        next,
+        "9. `npm test -- --review` passes.",
+      ],
+      4,
+      new RegExp(
+        `fenced code block.*holds criterion ${number} on line 5.*closing fence`,
+        "u",
+      ),
+    ]),
+    [
+      [
+        "10. The reply wraps its JSON in a",
+        `   ${fence}json fence and nothing else.`,
+        "14. Fourteen holds.",
+        "15. Fifteen holds.",
+      ],
+      4,
+      /fenced code block.*holds criterion 14 on line 5/u,
+    ],
+    [
+      [
+        "1. The reply wraps its JSON in a",
+        `  ${fence}json fence, then`,
+        "2. Two holds.",
+        `  ${fence} and nothing else.`,
+        "3. Three holds.",
+      ],
+      4,
+      /fenced code block.*holds criterion 2 on line 5/u,
+    ],
+    // A wrapped heading in the last criterion: the line reader read on to
+    // the next label or heading at the margin, so a note's line there that
+    // opens with any number was an item to it.
+    [
+      [
+        "1. One holds.",
+        "2. The page lists the",
+        "  # Commands section.",
+        "",
+        "A note that wraps onto",
+        "2026. It holds.",
+      ],
+      5,
+      /reads as a heading inside the list, and criterion 2026 on line 8/u,
+    ],
+  ])
+    assert.throws(
+      () => declaredCriteria(criteriaSection(lines)),
+      unreadList(line, says),
+      lines.join("\n"),
+    );
+  // What reads as written, each as the line reader read it: a skip with the
+  // tag escaped, or with a quotation or a bulleted list between the items
+  // (the parser ends each at the item after it); a fence indented into the
+  // item it belongs to; a group's label at the margin after which the
+  // numbering skips, which ended the line reader's list as well (only the
+  // next number after a label at the margin goes on, since prose after the
+  // criteria may open a line with any other); and prose, a comment, a fence
+  // and a later section's list after a complete list, whose lines open with
+  // numbers no criterion holds.
+  const after = (lines, rest) =>
+    `**Acceptance criteria (all required)**\n\n${lines.join("\n")}\n\n${rest}`;
+  for (const [text, ids] of [
+    [
+      criteriaSection([
+        "1. The command prints",
+        "  \\<option> and the result.",
+        "3. `npm run test:docs` passes.",
+        "4. `npm test -- --review` passes.",
+      ]),
+      ["1", "3", "4"],
+    ],
+    [
+      criteriaSection([
+        "1. One holds.",
+        "",
+        "> A quoted note.",
+        "3. Three holds.",
+        "4. Four holds.",
+      ]),
+      ["1", "3", "4"],
+    ],
+    [
+      criteriaSection(["1. One holds.", "- a note on it", "3. Three holds."]),
+      ["1", "3"],
+    ],
+    [
+      criteriaSection([
+        "1. The reply is",
+        "",
+        `   ${fence}json`,
+        "   {}",
+        `   ${fence}`,
+        "",
+        "3. Three holds.",
+      ]),
+      ["1", "3"],
+    ],
+    [
+      criteriaSection([
+        "1. One holds.",
+        "2. Two holds.",
+        "",
+        "**Part B:**",
+        "",
+        "5. Five holds.",
+        "6. Six holds.",
+      ]),
+      ["1", "2"],
+    ],
+    [
+      after(
+        ["1. One.", "2. Two.", "3. Three."],
+        "**Non-goals:** the log keeps only the last\n10. Older entries are pruned by hand.\n",
+      ),
+      ["1", "2", "3"],
+    ],
+    [
+      after(
+        ["1. One.", "2. Two.", "3. Three."],
+        "**Non-goals:** none.\n\n## Background\n\nThe rule was set in the pass of\n2026. It has not changed since.\n",
+      ),
+      ["1", "2", "3"],
+    ],
+    [
+      after(
+        ["1. One.", "2. Two."],
+        "**Non-goals:** none.\n\n## Notes\n\n<!-- a note on\n5. a retired step -->\n",
+      ),
+      ["1", "2"],
+    ],
+    [
+      after(
+        ["1. One.", "2. Two."],
+        "**Non-goals:** none.\n\n## Follow-ups\n\n5. Fifth.\n6. Sixth.\n",
+      ),
+      ["1", "2"],
+    ],
+    [
+      after(
+        ["1. One.", "3. Three."],
+        "**Non-goals:** the list keeps\n2. as a reserved number.\n",
+      ),
+      ["1", "3"],
+    ],
+    [
+      after(
+        ["1. One.", "2. Two.", "3. Three."],
+        `**Non-goals:** none.\n\n## Example\n\n${fence}\n4. a numbered example\n${fence}\n`,
+      ),
+      ["1", "2", "3"],
+    ],
+    [
+      after(
+        ["1. One holds.", "2. The page lists the", "  # Commands section."],
+        "**Non-goals:** none.\n\n## Execution plan\n\n1. Build.\n2. Run.\n",
+      ),
+      ["1", "2"],
+    ],
+    [
+      after(
+        ["1. One holds.", "3. Three holds.", "4. Four holds."],
+        "**Non-goals:** none.\n\n## Execution plan\n\nThe steps, in order.\n\n1. Build.\n2. Run.\n",
+      ),
+      ["1", "3", "4"],
+    ],
+    [
+      after(
+        ["9. Nine holds.", "11. Eleven holds."],
+        "**Non-goals:** none.\n\n## Execution plan\n\n1. Build.\n2. Run.\n",
+      ),
+      ["9", "11"],
+    ],
+  ])
+    assert.deepEqual(
+      declaredCriteria(text).map(({ id }) => id),
+      ids,
+      text,
+    );
+  // Every reader of the list meets the same refusal on an existing order
+  // that skips a number: the handoff (where a judgment of the first item
+  // alone had passed), the claims a report's met lines make, the mission
+  // contract, the index's criteria screen and a pass's filing; for a wrapped
+  // tag and for a wrapped fence. The same order with the tag escaped hands
+  // off with every item judged.
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-criteria-skipped-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const workOrderPath = "docs/work-orders/WO-999-fixture.md";
+  const state = { workOrderId: "WO-999", workOrderPath };
+  const orderWith = (wrapped) =>
+    `# WO-999 — Fixture (v9.9.9)\n\n**Model:** any.\n\n**Effort:** executor high; verifier high; reviewer high.\n\n**Objective:** fixture.\n\n${criteriaSection(
+      [
+        "1. The command prints",
+        `  ${wrapped} and the result.`,
+        "3. `npm run test:docs` passes.",
+        "4. `npm test -- --review` passes.",
+      ],
+    )}`;
+  for (const [wrapped, block] of [
+    ["<option>", "raw HTML block"],
+    [`${fence}json`, "fenced code block"],
+  ]) {
+    const order = orderWith(wrapped);
+    write(repo, workOrderPath, order);
+    write(
+      repo,
+      "docs/evidence/WO-999/handoff.md",
+      "**Criterion 1:** met — fixture.\nself-review: found 0; fixed 0; recorded 0\n",
+    );
+    const swallowed = unreadList(
+      12,
+      new RegExp(`${block}.*criterion 3 on line 13`, "u"),
+    );
+    assert.throws(() => readHandoffLedger(repo, state), swallowed);
+    assert.throws(
+      () =>
+        readReportGateClaims(repo, state, "docs/evidence/WO-999/handoff.md"),
+      swallowed,
+    );
+    assert.throws(() => missionContract(order), swallowed);
+    assert.throws(
+      () => criteriaAdvisories("WO-999", order),
+      (error) => error.cause?.code === LIST_UNREAD,
+    );
+    assert.throws(
+      () => parsePlanOrder(order, workOrderPath, "WO-999", { filing: true }),
+      (error) => error.cause?.code === LIST_UNREAD,
+    );
+  }
+  write(repo, workOrderPath, orderWith("\\<option>"));
+  write(
+    repo,
+    "docs/evidence/WO-999/handoff.md",
+    "**Criterion 1:** met — fixture.\n**Criterion 3:** met — fixture.\n**Criterion 4:** met — fixture.\nself-review: found 0; fixed 0; recorded 0\n",
+  );
+  const ledger = readHandoffLedger(repo, state);
+  assert.deepEqual(ledger.met, ["1", "3", "4"]);
+  assert.deepEqual(ledger.claims.document, ["3"]);
+  assert.deepEqual(ledger.claims.review, ["4"]);
+  assert.deepEqual(
+    missionContract(orderWith("\\<option>")).criteria.map(
+      ({ number }) => number,
+    ),
+    [1, 3, 4],
   );
 });

@@ -1,0 +1,68 @@
+A fresh export's docs/workstreams/README.md: the sentence of its opening that names the layout, then its Layout section whole.
+
+For an
+initiative it also holds a layout (§Layout): the plan as it stands, whose
+planned items are not member orders.
+
+## Layout
+
+For an initiative, the layout is the plan as it stands: what exists, what
+is asked, and the way from one to the other. A planning pass writes or
+revises it before it files anything, and files only the orders the next
+wave needs. It is prose and plain tables, revised in place as waves land.
+No check judges what it says: the index and the plan check read the marked
+block alone, and the document check reads the layout's links and form as it
+does any document's. Its four parts:
+
+- **What exists.** What the instance understands is there today, linking
+  the target's area notes where there are any.
+- **What the initiative asks.** The outcome in the instance's own words.
+- **The way there.** Phases, each with the work it needs as planned items,
+  what each item depends on and which may run side by side. A phase may
+  carry the planner's estimate of orders and spend, with where the figure
+  came from.
+- **What is unknown.** Each open question, with the research that would
+  settle it.
+
+A planned item is a line of the layout and nothing else: it has no
+identifier and no order file, and it is not a member order. It becomes one
+when a pass files it, and only then does it enter the member table and the
+marked block.
+
+A worked example, for an invented outcome (a shop's checkout that takes a
+second currency):
+
+~~~markdown
+## Layout
+
+### What exists
+
+Prices are stored as integer cents with no currency
+([the pricing note](../repositories/shop/pricing.md)); the checkout page and
+the invoice renderer each format them on their own.
+
+### What the initiative asks
+
+A customer can pay in euros or dollars, and every figure they see, from the
+basket to the invoice, is in the currency they chose.
+
+### The way there
+
+| Phase | Planned item                                   | Depends on             | Side by side with |
+| ----- | ---------------------------------------------- | ---------------------- | ----------------- |
+| 1     | Store a currency beside every stored amount    | nothing                | the rate source   |
+| 1     | Choose and wire one source of exchange rates   | the unknown below      | the stored column |
+| 2     | Format amounts in one place, by their currency | the stored currency    | nothing           |
+| 2     | Let the customer choose a currency at checkout | the stored currency    | the formatter     |
+| 3     | Invoices and refunds in the paid currency      | both items of phase 2  | nothing           |
+
+Phase 1 is the next wave: its two items' inputs are known once the rate
+source is chosen. Estimate, from this instance's last six orders of similar
+size in its usage report: three orders for phase 1, five for the rest.
+
+### What is unknown
+
+- Which rate source finance accepts, and how stale a rate may be: a
+  research order that reads the finance policy and reports the two
+  candidates' terms.
+~~~

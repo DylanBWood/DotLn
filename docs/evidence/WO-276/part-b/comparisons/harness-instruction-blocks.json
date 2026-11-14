@@ -1,0 +1,9 @@
+{
+  "comparison": "harness-instruction-blocks",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every committed revision of the root instruction file, and the worktree's: whether it holds the harness's generated block",
+  "read": 34,
+  "equal": 34,
+  "differences": {},
+  "examples": []
+}

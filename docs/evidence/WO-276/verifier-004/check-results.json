@@ -1,0 +1,86 @@
+[
+  {
+    "name": "source-discovery",
+    "exitCode": 0,
+    "startedAt": "2026-11-13T19:44:27.853Z",
+    "finishedAt": "2026-11-13T19:44:28.202Z",
+    "durationMs": 348,
+    "output": [
+      "\u2714 WO-276 criterion B1: the document gate screens a source of every dialect the source reader parses under scripts/ and under a package's src/, leaves the same dialects' tests and fixtures out, and never passes a selected source unread (201.801083ms)",
+      "\u2139 pass 1",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "name": "host-admission",
+    "exitCode": 0,
+    "startedAt": "2026-11-13T19:44:28.412Z",
+    "finishedAt": "2026-11-13T19:44:28.939Z",
+    "durationMs": 527,
+    "output": [
+      "\u2714 host structural check refuses warning and critical samples and reports their actual values (46.672625ms)",
+      "\u2714 a gate shows the file-events daemon's sample at every start, refuses above its limit naming the restart, and a gate inside a running gate stands on that gate (14.489583ms)",
+      "\u2714 a gate tells its host check that it runs inside a running gate only where it validated an inherited lease (287.50225ms)",
+      "\u2714 host structural check refuses a Node outside the root engines range and names both (56.159958ms)",
+      "\u2139 pass 4",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "name": "reader-cache",
+    "exitCode": 0,
+    "startedAt": "2026-11-13T19:44:29.147Z",
+    "finishedAt": "2026-11-13T19:44:30.765Z",
+    "durationMs": 1617,
+    "output": [
+      "\u2714 a coordination directory holds its own process reader whatever directory this process read through first (987.908917ms)",
+      "\u2714 lanes CLI reads live holders and capacity without any registry mutation (502.378542ms)",
+      "\u2139 pass 2",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "name": "capability-history-rerun",
+    "exitCode": 0,
+    "startedAt": "2026-11-13T19:48:53.743Z",
+    "finishedAt": "2026-11-13T19:49:21.079Z",
+    "durationMs": 27336,
+    "output": [
+      "\u2714 WO-139 inherited capability rows can be restored only with exact dated preservation (659.770875ms)",
+      "\u2139 pass 1",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "name": "host-kit-floor",
+    "exitCode": 0,
+    "startedAt": "2026-11-13T19:49:25.742Z",
+    "finishedAt": "2026-11-13T19:49:25.910Z",
+    "durationMs": 168,
+    "output": [
+      "\u2714 WO-276 criterion H4: on a host of 16 GB and twelve processors the host task passes in a kit root, whose gate carries lighter tasks, and refuses in core with the per-lane shortfall; the kit's peak is the suite table's own reading (28.839ms)",
+      "\u2139 pass 1",
+      "\u2139 fail 0"
+    ]
+  },
+  {
+    "name": "feedback",
+    "exitCode": 0,
+    "startedAt": "2026-11-13T19:47:23.885Z",
+    "finishedAt": "2026-11-13T19:47:26.477Z",
+    "durationMs": 2592,
+    "output": [
+      "Live feedback audit docs/evidence/WO-276/feedback-007 judged the current source."
+    ]
+  },
+  {
+    "name": "format",
+    "exitCode": 0,
+    "startedAt": "2026-11-13T19:49:26.144Z",
+    "finishedAt": "2026-11-13T19:49:37.916Z",
+    "durationMs": 11772,
+    "output": [
+      "All matched files use Prettier code style!"
+    ]
+  }
+]

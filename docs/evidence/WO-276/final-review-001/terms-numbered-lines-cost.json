@@ -1,0 +1,30 @@
+[
+  {
+    "reader": "base",
+    "entryLettersAndDigits": 19,
+    "lines": 100,
+    "milliseconds": 2,
+    "findings": 0
+  },
+  {
+    "reader": "candidate",
+    "entryLettersAndDigits": 19,
+    "lines": 100,
+    "milliseconds": 1012,
+    "findings": 0
+  },
+  {
+    "reader": "base",
+    "entryLettersAndDigits": 23,
+    "lines": 100,
+    "milliseconds": 2,
+    "findings": 0
+  },
+  {
+    "reader": "candidate",
+    "entryLettersAndDigits": 23,
+    "lines": 100,
+    "milliseconds": 6868,
+    "findings": 0
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "comparison": "mission-decisions",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every order's decisions file: the decisions the mission capsule carries, id and text",
+  "read": 187,
+  "equal": 185,
+  "differences": {
+    "defect of the old reader: its pattern ended a ```json block at the first ``` anywhere, so a decision whose JSON text quotes ``` in a string was cut short, failed to parse and was dropped (WO-187-D032, WO-187-D039, WO-226-D023); the parser ends a fence only on its own line": 2
+  },
+  "examples": [
+    {
+      "input": "docs/evidence/WO-187/decisions.md",
+      "named": "defect of the old reader: its pattern ended a ```json block at the first ``` anywhere, so a decision whose JSON text quotes ``` in a string was cut short, failed to parse and was dropped (WO-187-D032, WO-187-D039, WO-226-D023); the parser ends a fence only on its own line",
+      "old": "[{\"id\":\"WO-187-D003\",\"text\":\"Amend criterion 6 to make byte headroom a measured goal rather than a hard pass condition; preserve useful guidance and board any ceiling overrun as a follow-up without changing the ceilings.\"},{\"id\":\"WO-187-D004\",\"text\":\"Assign application target v0.66.4, the next patch above the observed release baseline v0.66.3, to the heading and the README version claim.\"},{\"id\":\"",
+      "new": "[{\"id\":\"WO-187-D005\",\"text\":\"Keep the worker pin and fresh self-review instructions. Record the executor's final measured 531-byte ceiling overrun as a follow-up, without a ceiling acceptance or usefulness-reducing edits.\"},{\"id\":\"WO-187-D007\",\"text\":\"Fix all four defects reproduced by the fresh read-only adversary and one defect found in the executor's separate reading. Require every subsequent C"
+    },
+    {
+      "input": "docs/evidence/WO-226/decisions.md",
+      "named": "defect of the old reader: its pattern ended a ```json block at the first ``` anywhere, so a decision whose JSON text quotes ``` in a string was cut short, failed to parse and was dropped (WO-187-D032, WO-187-D039, WO-226-D023); the parser ends a fence only on its own line",
+      "old": "[{\"id\":\"WO-226-D001\",\"text\":\"Record synthetic baseline observations before changing implementation and use the existing harness fixtures for the order's missing test path.\"},{\"id\":\"WO-226-D002\",\"text\":\"Select the existing carried-runtime restore in emitted release-close recovery, retaining its writer lock, active-gate refusal and child deadlines; keep the core build branch.\"},{\"id\":\"WO-226-D003\",\"",
+      "new": "[{\"id\":\"WO-226-D001\",\"text\":\"Record synthetic baseline observations before changing implementation and use the existing harness fixtures for the order's missing test path.\"},{\"id\":\"WO-226-D002\",\"text\":\"Select the existing carried-runtime restore in emitted release-close recovery, retaining its writer lock, active-gate refusal and child deadlines; keep the core build branch.\"},{\"id\":\"WO-226-D003\",\""
+    }
+  ]
+}

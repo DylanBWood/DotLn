@@ -1,0 +1,103 @@
+{
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "sets": [
+    {
+      "set": "tracked shell files",
+      "read": 11,
+      "longerThanTheOldBound": 4,
+      "equal": 5,
+      "different": {
+        "ansi-quote and here-string": 3,
+        "here-string": 3
+      },
+      "examples": [
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "scripts/test-backup-intake.sh"
+        },
+        {
+          "kind": "here-string",
+          "input": "scripts/test-checkpoint.sh"
+        },
+        {
+          "kind": "here-string",
+          "input": "scripts/test-fixture-temp-root.sh"
+        },
+        {
+          "kind": "here-string",
+          "input": "scripts/test-publication.sh"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "scripts/test-resume.sh"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "scripts/test-worktree.sh"
+        }
+      ]
+    },
+    {
+      "set": "Git forms of the surface record",
+      "read": 494,
+      "longerThanTheOldBound": 0,
+      "equal": 494,
+      "different": {},
+      "examples": []
+    },
+    {
+      "set": "generated commands",
+      "read": 20000,
+      "longerThanTheOldBound": 0,
+      "equal": 14342,
+      "different": {
+        "ansi-quote": 3708,
+        "here-string": 1645,
+        "ansi-quote and here-string": 305
+      },
+      "examples": [
+        {
+          "kind": "ansi-quote",
+          "input": "$'it\\'s' cat <<-EOF\n\tbody\n\tEOF\n case $x in a) git add . ;; *) ;; esac ${name:-default} && exec -a name git gc"
+        },
+        {
+          "kind": "here-string",
+          "input": "; git -C dir log --format='%h %s' 2>&1 & grep -Fq x <<<\"$output\" }"
+        },
+        {
+          "kind": "here-string",
+          "input": "if true; then grep -Fq x <<<\"$output\" eval \"git stash list\" x=$(echo \"$(git describe)\") a\\ b )"
+        },
+        {
+          "kind": "here-string",
+          "input": "echo \"a $b c\" grep -Fq x <<<\"$output\" cat <<-EOF\n\tbody\n\tEOF\n echo \"a $b c\" echo \"a $b c\" 2>&1"
+        },
+        {
+          "kind": "ansi-quote",
+          "input": "& `git branch --show-current` $'tab\\there' cat <<'EOF'\nbody $x\nEOF\n VAR=1 OTHER='two words' env git diff echo \"a $b c\""
+        },
+        {
+          "kind": "ansi-quote",
+          "input": "$'tab\\there' exec -a name git gc ( cat <<'EOF'\nbody $x\nEOF\n git status $(git rev-parse HEAD)"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "$'tab\\there' for f in *.md; do { grep -Fq x <<<\"$output\" > out.txt $((1 + 2))"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "$'tab\\there' ! grep -Fq x <<<\"$output\" `git branch --show-current` done > out.txt"
+        },
+        {
+          "kind": "ansi-quote and here-string",
+          "input": "grep -Fq x <<<\"$output\" cat <<EOF\nbody $x\nEOF\n $'it\\'s' bash -c 'git log -1' $((1 + 2)) grep -Fq x <<<\"$output\""
+        }
+      ]
+    }
+  ],
+  "defects": {
+    "ansi-quote": "the old reader took $'...' as a dollar and a single-quoted text, so an escaped quote inside it ended the quote early and an escape kept its backslash",
+    "here-string": "the old reader took a here-string (<<<) as a here-document and read the rest of the text as its body, so every command after it was unread",
+    "ansi-quote and here-string": "both of the defects above in one text"
+  }
+}

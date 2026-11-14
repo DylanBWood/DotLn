@@ -1,0 +1,9 @@
+{
+  "comparison": "front-page-declarations",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order as the worktree holds it and as each commit that changed it held it: the Front page field its leading header declares, or the refusal of a duplicate or malformed one",
+  "read": 1479,
+  "equal": 1479,
+  "differences": {},
+  "examples": []
+}

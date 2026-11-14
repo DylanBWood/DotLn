@@ -1,0 +1,61 @@
+It would replace an entry the kit emits:
+  fragment: {"autoMemoryEnabled":true}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: autoMemoryEnabled would replace the autoMemoryEnabled the kit emits: a fragment only adds
+
+It names a key the merge does not define:
+  fragment: {"env":{"A":"1"}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: unknown key env: the merge defines hooks and permissions
+
+It names a permissions key the merge does not define:
+  fragment: {"permissions":{"defaultMode":"bypassPermissions"}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: unknown key permissions.defaultMode: the merge defines allow, ask, deny
+
+It would remove a list, were null read as removal:
+  fragment: {"permissions":{"deny":null}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: permissions.deny must be an array: a fragment only adds
+
+A hook under PreToolUse:
+  fragment: {"hooks":{"PreToolUse":[{"matcher":"Bash","hooks":[{"type":"command","command":"echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"","timeout":15}]}]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: hooks.PreToolUse: a fragment adds no hook under PreToolUse, where a hook's output can rewrite a call after the kit's guards have judged it
+
+A hook under SubagentStop:
+  fragment: {"hooks":{"SubagentStop":[{"matcher":"Bash","hooks":[{"type":"command","command":"echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"","timeout":15}]}]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: hooks.SubagentStop: a fragment adds no hook under SubagentStop, where the kit itself answers a worker's stop and an added hook's answer can take precedence over it
+
+A hook under UserPromptSubmit:
+  fragment: {"hooks":{"UserPromptSubmit":[{"matcher":"Bash","hooks":[{"type":"command","command":"echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"","timeout":15}]}]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: hooks.UserPromptSubmit: a fragment adds no hook under UserPromptSubmit, where a hook that blocks or fails keeps a prompt from the session, the operator's recovery controls among them
+
+A hook the kit registers itself, registered again:
+  fragment: {"hooks":{"Stop":[{"hooks":[{"type":"command","command":"node \"$CLAUDE_PROJECT_DIR/.claude/hooks/finish.mjs\"","timeout":1}]}]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: hooks.Stop[0].hooks[0].command is a hook the kit registers itself: a fragment adds its own and registers none of the kit's again
+
+A rule the kit emits, in another list:
+  fragment: {"permissions":{"deny":["Bash(node scripts/launchpad.mjs update --publish *)"]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: permissions.deny holds a rule the kit emits under permissions.allow (Bash(node scripts/launchpad.mjs update --publish *)): it would countermand that entry, and a fragment only adds
+
+A rule with a character that cannot be seen:
+  fragment: {"permissions":{"deny":["Bash(extensions/tools/​deploy *)"]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: permissions.deny[0] must be a non-empty string without control or format characters
+
+A hook under an event the kit registers nothing under:
+  fragment: {"hooks":{"Notification":[{"matcher":"Bash","hooks":[{"type":"command","command":"echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"","timeout":15}]}]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: hooks.Notification: a fragment adds hooks under PermissionDenied, PostToolUse, PostToolUseFailure, SessionStart, Stop alone
+
+An entry of another shape than the kit's own:
+  fragment: {"hooks":{"Stop":[{"matcher":["Edit","Write"],"hooks":[{"type":"command","command":"echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"","timeout":15}]}]}}
+  $ node scripts/harness.mjs emit
+  invalid settings fragment in .claude/settings.instance.json: hooks.Stop[0].matcher must be a non-empty string without control or format characters
+
+After each refusal .claude/settings.json holds the bytes it held before.

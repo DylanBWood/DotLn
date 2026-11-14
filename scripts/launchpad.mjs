@@ -13,7 +13,9 @@
 import {
   TOOL_ROOT,
   CONFIG_FILENAME,
+  EXTENSIONS_ROOT,
   ROOT_KEYS,
+  spellsExtensionRoot,
   loadConfig,
   validateConfig,
   defaultDocRelative,
@@ -23,7 +25,7 @@ import {
 import {
   describeTag,
   failureOf,
-  readGitObjects,
+  readGitObjectsInBatches,
   runGit as ordinaryRunGit,
   runGitPathList as ordinaryRunGitPathList,
 } from "./lib/git.mjs";
@@ -36,10 +38,24 @@ import {
   fetchIntoCheckout,
   parseGitHubTarget,
 } from "./lib/github-repository.mjs";
+import { readSettingsFragment } from "./lib/build-overlay.mjs";
 import { formatDuration } from "./lib/duration.mjs";
 import { bootstrapWorktree } from "./bootstrap.mjs";
 import { moveIndex, referencePath } from "./lib/document-moves.mjs";
+import {
+  markdownFields,
+  markdownLinks,
+  markdownNodes,
+  nodeSource,
+  parseMarkdown,
+  replaceMarkerBlocks,
+} from "./lib/markdown-links.mjs";
 import { json, pairedFlags, sha256Hex } from "./lib/helpers.mjs";
+import {
+  judgeGitRuntime,
+  judgeNodeRuntime,
+  readGitVersion,
+} from "./lib/node-engines.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { dispatchSession } from "./lib/dispatch-bound.mjs";
 import { requireOperatorCapture } from "./lib/off-ramps.mjs";
@@ -54,7 +70,8 @@ import {
   hasPackageSources,
   runtimeEntryName,
 } from "../packages/skeleton/src/runtime-inputs.mjs";
-import { checkLocalTerms } from "./lib/terms.mjs";
+import { checkLocalTerms, localTermContextLines } from "./lib/terms.mjs";
+import { VENDORED_RECORD, vendoredProof } from "./lib/vendored-parser.mjs";
 import {
   buildHashOf,
   manifestBuildHash,
@@ -181,6 +198,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/harness-instruction.mjs",
   "scripts/lib/harness.mjs",
   "scripts/lib/helpers.mjs",
+  "scripts/lib/markdown-links.mjs",
   "scripts/lib/node-engines.mjs",
   "scripts/lib/paths.mjs",
   "scripts/lib/process-budget.mjs",
@@ -189,6 +207,8 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/temporary-roots.mjs",
   "scripts/lib/terms.mjs",
   "scripts/lib/validation.mjs",
+  "scripts/lib/vendor/prettier-markdown.mjs",
+  "scripts/lib/work-order-document.mjs",
 ]);
 // Git's own environment never reaches the export's repository or its emit: an
 // inherited GIT_DIR would initialize another repository and leave the export
@@ -227,7 +247,18 @@ export const BUILD_FREE_MODULES = Object.freeze([
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
   "packages/skeleton/src/runtime-inputs.mjs",
+  // The one reader of shell text and the one of JavaScript and TypeScript
+  // source, which the scripts' checks import with no build (WO-276).
+  "packages/skeleton/src/shell-reading.mjs",
+  "packages/skeleton/src/source-reading.mjs",
   "packages/skeleton/src/usage-observation.mjs",
+  // The reading of usage rows by token class and by day, which the meter
+  // and the usage report import with no build (WO-276).
+  "packages/skeleton/src/usage-reading.mjs",
+  // The worker table and the kit's own model list, which the configuration
+  // and every launcher read with no build (WO-276).
+  "packages/skeleton/src/worker-catalog.mjs",
+  "packages/skeleton/src/worker-models.mjs",
   "packages/skeleton/src/writer-teardown.mjs",
 ]);
 
@@ -242,6 +273,10 @@ export const KIT_FILES = Object.freeze({
     ...RUNTIME_PACKAGES.map((name) => `packages/${name}/package.json`),
     "packages/console/uifa-board-v1.schema.json",
     "packages/console/runtime-status-v1.schema.json",
+    // Names the third-party files the scripts tree carries (the pinned
+    // Markdown parser). It travels under either license option, since the
+    // carried files do.
+    "THIRD_PARTY_NOTICES",
   ]),
   excluded: Object.freeze([
     // This core-only history includes a prior kit. Exporting it would nest
@@ -264,6 +299,9 @@ export const KIT_FILES = Object.freeze({
   documents: Object.freeze([
     ["docs", "PLAYBOOK.md"],
     ["docs", "KIT.md"],
+    // The operator's commands page, generated in core from the kit guide's
+    // marked command blocks; `launchpad commands` prints it (WO-275).
+    ["docs", "OPERATOR.md"],
     ["product", "07-execution-guide.md"],
     // The execution guide's cold-start section names the operator reference.
     ["product", "operator-reference.md"],
@@ -287,6 +325,8 @@ export const KIT_TEMPLATE_FILES = Object.freeze([
   "README.client.md",
   "dotln.config.example.json",
   "first-order.template.md",
+  "for-core.template.md",
+  "gitattributes.template",
   "gitignore.template",
   "pending-license.template.md",
   "repository-profile.template.md",
@@ -396,7 +436,7 @@ export function readKitSources(root, commit, { license = "default" } = {}) {
         `kit file must be a regular file at ${commit.slice(0, 12)}: ${path} (${entry.mode} ${entry.type})`,
       );
   }
-  const blobs = readGitObjects(
+  const blobs = readGitObjectsInBatches(
     root,
     [...wanted].map((path) => byPath.get(path).object),
     "blob",
@@ -418,6 +458,13 @@ export function readKitSources(root, commit, { license = "default" } = {}) {
 /** The kit manifest: schema 1, the commit and tag the kit was read at, and
  * every kit file with its SHA-256, sorted by path. Seeds are never listed. */
 export function kitManifest({ commit, tag, files }) {
+  // The reserved root is an instance's own: a manifest that listed a path
+  // under it would make the next update overwrite an owner's file.
+  const reserved = [...files].find(({ path }) => spellsExtensionRoot(path));
+  if (reserved)
+    throw new Error(
+      `a kit manifest lists no path under ${EXTENSIONS_ROOT}/, the instance's own root: ${reserved.path}`,
+    );
   return {
     schemaVersion: KIT_MANIFEST_SCHEMA_VERSION,
     commit,
@@ -835,7 +882,7 @@ const dirtyPinnedInputs = (root, commit) => {
       );
     return { mode: match[1], object: match[2], path: match[3] };
   });
-  const blobs = readGitObjects(
+  const blobs = readGitObjectsInBatches(
     root,
     entries.map((entry) => entry.object),
     "blob",
@@ -938,17 +985,29 @@ const readRuntime = (root) => {
  * over the runtime just built, with the operating contract composed by the
  * rule emitHarness uses. Computed before any write, so the local-terms screen
  * covers it and the spawned emit is judged against it. */
-async function expectedHarnessBundle(root, floor, runtimePackageFiles, hosts) {
+async function expectedHarnessBundle(
+  root,
+  floor,
+  runtimePackageFiles,
+  hosts,
+  workers,
+  settingsFragment,
+) {
   // Imported after the build: a checkout that has never built has no dist for
   // scripts/lib/harness.mjs to load.
   const { composeHarnessInstruction, harnessInstallation } =
     await import("./lib/harness.mjs");
   // The destination's host rows select the profiles, as its own emit will:
   // a host it has not elected or shown has no surface to predict (WO-258).
+  // Its workers section is taken the same way: the definitions its emit
+  // will write from its own configuration are the ones predicted. So is
+  // its settings fragment, which that emit merges into the settings.
   const installation = harnessInstallation({
     runtimeRoot: root,
     runtimePackageFiles,
     features: hosts,
+    workers,
+    settingsFragment,
   });
   const surfaces = new Map();
   for (const file of installation.files)
@@ -1007,6 +1066,8 @@ export async function prepareKit({
   launchpad = TOOL_ROOT,
   preflight = () => {},
   hosts = freshHostFeatures(),
+  workers,
+  settingsFragment,
 } = {}) {
   const root = TOOL_ROOT;
   if (!["default", "none"].includes(license))
@@ -1090,7 +1151,14 @@ export async function prepareKit({
   addKit("dotln.config.example.json", template("dotln.config.example.json"));
   if (license === "none")
     addKit(LICENSE_PENDING, template("pending-license.template.md"));
-  const bundle = await expectedHarnessBundle(root, floor, writes, hosts);
+  const bundle = await expectedHarnessBundle(
+    root,
+    floor,
+    writes,
+    hosts,
+    workers,
+    settingsFragment,
+  );
   // The harness bundle is written by the export's own emit after the kit
   // lands; every surface but the operating contract is a kit file, listed at
   // the bytes that emit must reproduce.
@@ -1108,11 +1176,21 @@ export async function prepareKit({
   addSeed("README.md", template("README.client.md"));
   addSeed("dotln.config.json", exportConfiguration());
   addSeed(".gitignore", template("gitignore.template"));
+  // Git converts no line ending in an instance's tree, so the bytes the
+  // kit's verification hashes are the bytes checked out. A seed: a new
+  // export carries it, the starter refresh adds it where absent and an
+  // instance that has its own keeps it.
+  addSeed(".gitattributes", template("gitattributes.template"));
   addSeed(INSTRUCTION_FILE, floor);
   addSeed(
     "AI-HARNESS-SECURITY.md",
     template("AI-HARNESS-SECURITY.template.md"),
   );
+  // What this instance has learned that core should hear: one file its
+  // final reviews and planning passes write, seeded with the entry form and
+  // no entry; the starter refresh adds it where absent and never rewrites
+  // it (WO-275).
+  addSeed("FOR-CORE.md", template("for-core.template.md"));
   // Root READMEs under instance roots are seeds; their templates stay kit
   // files under scripts/kit, so a convention change reaches a fork there.
   addSeed(
@@ -1204,9 +1282,6 @@ export async function prepareKit({
     throw new Error(
       "the export's seeds differ from exportSeedPaths; declare a new seed there so UPSTREAM.md and the starter refresh name it",
     );
-  // Verification and preview must load without an install. Only export
-  // preparation (which already requires the pinned toolchain) parses Markdown.
-  const { markdownLinks } = await import("./docs-check.mjs");
   const upstream = upstreamDocument(root, commit, {
     tag,
     nearest,
@@ -1227,6 +1302,12 @@ export async function prepareKit({
   // operating contract covers its floor, so the floor seed is not screened
   // twice.
   const surfaces = [];
+  // The carried parser is the pinned package's text: exactly the files the
+  // exported record proves are left out, and a copy that differs from its
+  // recorded hash is screened as any file is.
+  const carried = vendoredProof(
+    writes.find(({ path }) => path === VENDORED_RECORD)?.bytes.toString("utf8"),
+  );
   for (const { path, bytes } of [
     ...writes.filter(({ path }) => path !== INSTRUCTION_FILE),
     ...[...bundle.surfaces].map(([path, contents]) => ({
@@ -1235,6 +1316,7 @@ export async function prepareKit({
     })),
     { path: KIT_MANIFEST, bytes: manifestBytes },
   ]) {
+    if (carried(path, bytes)) continue;
     let text;
     try {
       text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
@@ -1261,6 +1343,7 @@ export async function prepareKit({
       seeds: [...seeds, "AGENTS.md"],
       surfaces: surfaces.length,
       terms: terms.status,
+      termContext: localTermContextLines(terms),
       dirty,
     },
   };
@@ -1423,8 +1506,11 @@ const knownKeys = (value, keys, label) => {
 };
 // A manifest can retain removed kit paths, but cannot claim instance-owned
 // roots, the operating contract, local settings, or an arbitrary destination.
-const kitPath = (path) =>
+/** Whether a path is one of the kit's own, by the allowlist: never a path
+ * under the reserved root, whatever the lists below come to hold. */
+export const kitPath = (path) =>
   contained(path) &&
+  !spellsExtensionRoot(path) &&
   ([
     UPSTREAM,
     LICENSE_PENDING,
@@ -1523,18 +1609,39 @@ export function verifyKit(root = process.cwd()) {
   root = resolve(root);
   const manifest = readPriorManifest(root);
   let differing = 0;
-  for (const entry of manifest.files) {
-    let matches = false;
+  let emitted = 0;
+  // A generated harness surface is the instance's own emit's to write: one
+  // that differs from the manifest because the instance's configuration
+  // resolves to it is verified where the instance's own harness check
+  // passes, which compares every surface with a fresh emit. The check runs
+  // as a child process and only when such a surface differs.
+  const surfaces = harnessSurfaces(root);
+  const harnessCheck = instanceHarnessCheck(root);
+  // Every listed file is compared first. The instance's harness check loads
+  // the carried compiled runtime, so a runtime file that differs is refused
+  // before any of the instance's code runs, whatever the order of the paths.
+  const unmatched = manifest.files.filter((entry) => {
     try {
-      matches = sha256Hex(readDestination(root, entry.path)) === entry.sha256;
+      return sha256Hex(readDestination(root, entry.path)) !== entry.sha256;
     } catch {
       // An unreadable listed file differs just as a changed file does.
+      return true;
     }
-    if (matches) continue;
-    if (/^packages\/[^/]+\/dist\//u.test(entry.path))
-      throw new Error(`kit runtime differs from the manifest: ${entry.path}`);
+  });
+  const runtime = unmatched.find((entry) => COMPILED_RUNTIME.test(entry.path));
+  if (runtime)
+    throw new Error(`kit runtime differs from the manifest: ${runtime.path}`);
+  for (const entry of unmatched) {
+    if (surfaces().has(entry.path) && harnessCheck() === "passes") {
+      emitted++;
+      continue;
+    }
     differing++;
   }
+  if (emitted)
+    console.log(
+      `kit: ${emitted} harness ${emitted === 1 ? "surface" : "surfaces"} written by this instance's own emit, which its harness check accepts`,
+    );
   if (differing)
     console.log(`kit: ${differing} kit files differ from the manifest`);
   console.log(
@@ -1592,6 +1699,77 @@ const readManifest = (bytes, label) => {
   return prior;
 };
 
+/** The surfaces the instance's own emit wrote, read at most once: the paths
+ * its harness manifest lists as installed, and that manifest. */
+const harnessSurfaces = (directory) => {
+  let listed;
+  return () => {
+    if (!listed) {
+      listed = new Set([HARNESS_MANIFEST]);
+      try {
+        for (const { path } of JSON.parse(
+          readDestination(directory, HARNESS_MANIFEST).toString("utf8"),
+        ).installed)
+          if (typeof path === "string") listed.add(path);
+      } catch {
+        /* An unreadable harness manifest lists nothing but itself. */
+      }
+    }
+    return listed;
+  };
+};
+
+// A carried compiled runtime file: a package's built output, which the
+// instance's own harness check loads when it runs.
+const COMPILED_RUNTIME = /^packages\/[^/]+\/dist\//u;
+
+// Why an update's preview does not take a generated surface's bytes for the
+// instance's own emit, by what its harness check answered.
+const HARNESS_CHECK_REASONS = {
+  fails:
+    "the instance's harness check fails, so these bytes are not taken for its own emit; ",
+  unavailable:
+    "the instance's harness check could not run, nothing being installed, so these bytes are not taken for its own emit; ",
+  "runtime-differs":
+    "the instance's harness check was not run, since a carried compiled runtime file differs from what a kit wrote, so these bytes are not taken for its own emit; ",
+};
+
+/** Whether the instance's own harness check passes, asked at most once: the
+ * destination's `node scripts/harness.mjs check` as a child process, with
+ * the destination as its launchpad. `unavailable` where nothing is
+ * installed there to run it. */
+const instanceHarnessCheck = (directory) => {
+  let result;
+  return () => {
+    if (result === undefined) {
+      const script = join(directory, "scripts/harness.mjs");
+      // A check that was itself started by this question does not ask it
+      // again: the harness restores its runtime through the kit verifier,
+      // which asks here.
+      if (
+        process.env.DOTLN_INSTANCE_HARNESS_CHECK ||
+        !existsSync(script) ||
+        !existsSync(join(directory, "node_modules"))
+      )
+        result = "unavailable";
+      else {
+        result =
+          spawnSync(process.execPath, [script, "check"], {
+            cwd: directory,
+            // Neither an inherited launchpad nor inherited Git routing names
+            // another checkout to the instance's check.
+            env: { ...exportEnvironment(), DOTLN_INSTANCE_HARNESS_CHECK: "1" },
+            encoding: "utf8",
+            maxBuffer: 16 * 1024 * 1024,
+          }).status === 0
+            ? "passes"
+            : "fails";
+      }
+    }
+    return result;
+  };
+};
+
 /** Plan the whole update before writing. A prior file the incoming kit
  * still carries must be present, and every present path must be a readable
  * regular file; otherwise the plan refuses as an input failure. A file whose
@@ -1600,14 +1778,58 @@ const readManifest = (bytes, label) => {
  * manifest records the incoming hash. A readable local edit is a refusal
  * retained in the plan. A dropped prior path that is already absent counts as
  * removed, and a path the interrupted update dropped that the incoming kit
- * carries again is added, so a retry completes at any later commit. */
-export function planUpdate(prior, next, directory, pending = null) {
+ * carries again is added, so a retry completes at any later commit.
+ *
+ * A generated harness surface (`generated`: the incoming bundle's surfaces
+ * and the harness manifest) is the one kit file an instance's own command
+ * rewrites: its emit, under its own configuration. Where such a file holds
+ * neither manifest's bytes and the instance's harness check passes, the
+ * bytes are that emit's and the file is planned as re-emitted, replaced and
+ * written again by the emit an update ends with. Where the check fails or
+ * cannot run, it is refused as locally modified, as any kit file is, and
+ * the entry says which. The check is asked only when a plan meets such a
+ * file. */
+export function planUpdate(
+  prior,
+  next,
+  directory,
+  pending = null,
+  {
+    generated = new Set(),
+    harnessCheck = instanceHarnessCheck(directory),
+  } = {},
+) {
   const previous = new Map(prior.files.map((entry) => [entry.path, entry]));
   const following = new Map(next.files.map((entry) => [entry.path, entry]));
   const planned = new Map(
     (pending?.files ?? []).map((entry) => [entry.path, entry.sha256]),
   );
   const plan = [];
+  const surfaces = harnessSurfaces(directory);
+  // The instance's harness check loads the carried compiled runtime, so it
+  // is asked only where every compiled runtime file the prior kit listed
+  // holds bytes a kit wrote (the prior kit's, the incoming kit's or an
+  // interrupted update's): carried compiled code is verified before any of
+  // the instance's code runs. Otherwise a surface is refused as locally
+  // modified with that reason, and the runtime file with its own.
+  const runtimeVerified = [...previous.keys()]
+    .filter((path) => COMPILED_RUNTIME.test(path))
+    .every((path) => {
+      if (!destinationStat(directory, path)) return false;
+      const current = sha256Hex(readDestination(directory, path));
+      return (
+        current === following.get(path)?.sha256 ||
+        current === previous.get(path).sha256 ||
+        current === planned.get(path)
+      );
+    });
+  let listed;
+  const emitted = () => {
+    if (!listed) {
+      listed = surfaces();
+    }
+    return listed;
+  };
   for (const path of [
     ...new Set([...previous.keys(), ...following.keys()]),
   ].sort()) {
@@ -1635,14 +1857,27 @@ export function planUpdate(prior, next, directory, pending = null) {
       entry = incoming
         ? { path, kind: "add" }
         : { path, kind: "remove", absent: true };
-    else if (!kept)
-      entry = {
-        path,
-        kind: "refuse",
-        reason: "locally modified",
-        retained: old,
-      };
-    else entry = { path, kind: incoming ? "replace" : "remove" };
+    else if (!kept) {
+      // The instance's check vouches for the files its own harness manifest
+      // lists, and for that manifest: a generated path it does not list is
+      // judged as any kit file is.
+      const check =
+        incoming && generated.has(path) && emitted().has(path)
+          ? runtimeVerified
+            ? harnessCheck()
+            : "runtime-differs"
+          : null;
+      entry =
+        check === "passes"
+          ? { path, kind: "replace", reEmitted: true }
+          : {
+              path,
+              kind: "refuse",
+              reason: "locally modified",
+              retained: old,
+              ...(check ? { harnessCheck: check } : {}),
+            };
+    } else entry = { path, kind: incoming ? "replace" : "remove" };
     // Byte comparisons distinguish revision changes without altering the
     // mutation kinds or retained hashes the core update applies.
     plan.push({
@@ -1691,7 +1926,10 @@ export function readKitActions(bytes) {
       (!ROOT_KEYS.includes(action.root) ||
         !contained(action.from) ||
         !contained(action.to) ||
-        overlaps(action.from, action.to))
+        overlaps(action.from, action.to) ||
+        // The kit moves no root of its own into the instance's, or out.
+        spellsExtensionRoot(action.from) ||
+        spellsExtensionRoot(action.to))
     )
       throw new Error(`${KIT_ACTIONS}: invalid rename-root ${action.id}`);
     if (
@@ -1705,6 +1943,8 @@ export function readKitActions(bytes) {
           .some((key) =>
             ["__proto__", "prototype", "constructor"].includes(key),
           ) ||
+        // The extensions section is the instance's to write.
+        action.field.split(".")[0] === EXTENSIONS_ROOT ||
         !Object.hasOwn(action, "value"))
     )
       throw new Error(`${KIT_ACTIONS}: invalid add-config-field ${action.id}`);
@@ -1768,6 +2008,7 @@ function planInstanceActions(
         "node_modules",
         ".runtime",
       ].some((reserved) => overlaps(path, reserved)) ||
+      spellsExtensionRoot(path) ||
       kitPath(path) ||
       kitPaths.some((kit) => overlaps(kit, path))
     )
@@ -1941,6 +2182,8 @@ export async function planKitUpdate(
     launchpad,
     license,
     hosts: readHostFeatures(target),
+    workers: loadConfig(target).workers,
+    settingsFragment: readSettingsFragment(target),
     preflight(sources) {
       const carried = new Set([
         ...[...sources.values()]
@@ -1968,7 +2211,9 @@ export async function planKitUpdate(
     if (path !== INSTRUCTION_FILE)
       candidates.set(path, { path, bytes: Buffer.from(contents), mode: 0o644 });
   const actions = readKitActions(candidates.get(KIT_ACTIONS).bytes);
-  const plan = planUpdate(prior, prepared.manifest, target, pending);
+  const plan = planUpdate(prior, prepared.manifest, target, pending, {
+    generated: new Set([HARNESS_MANIFEST, ...prepared.bundle.surfaces.keys()]),
+  });
   const instance = apply
     ? planInstanceActions(target, actions, [
         ...new Set(
@@ -2127,9 +2372,42 @@ const installedBuildHash = (root) => {
   }
 };
 
+/** One line for each floor an incoming revision's package.json declares
+ * that this host does not meet, naming the floor and what this host runs,
+ * or one line saying that file could not be read.
+ * It judges with the functions the host task and the host report call, and
+ * it refuses nothing: an operator may preview on one machine for another. */
+export function unmetIncomingFloors(
+  packageText,
+  { nodeVersion = process.version, gitVersion = readGitVersion() } = {},
+) {
+  let engines;
+  try {
+    // A byte-order mark is no part of the JSON, as the kit's own readers of
+    // this file hold.
+    engines = JSON.parse(packageText.replace(/^\uFEFF/u, "")).engines ?? {};
+  } catch {
+    // The incoming kit's own judges refuse on every host where they cannot
+    // read this file, so the preview says so in place of printing no line.
+    return [
+      "incoming floors not read: the incoming package.json is not JSON this preview can read, and the incoming kit's commands refuse where they cannot read it. Read the revision's package.json before taking it.",
+    ];
+  }
+  const lines = [];
+  if (!judgeNodeRuntime(nodeVersion, engines.node).admitted)
+    lines.push(
+      `incoming floor not met on this host: engines.node ${engines.node}; this host runs Node ${nodeVersion}. The incoming kit's commands refuse below it: run them under a Node that range admits, or take the update on the host that will.`,
+    );
+  if (!judgeGitRuntime(gitVersion, engines.git).admitted)
+    lines.push(
+      `incoming floor not met on this host: engines.git ${engines.git}; this host runs ${gitVersion?.replace(/^git version /u, "Git ") ?? "no Git that could be read"}. The incoming kit's commands refuse below it: put a Git at or above that floor first on PATH, or take the update on the host that has one.`,
+    );
+  return lines;
+}
+
 /** Inspect a fetched starter revision. Git performs no merge, and action
  * results describe the manual work after it, never permission to apply it. */
-export async function previewFromRevision(root, ref) {
+export async function previewFromRevision(root, ref, host = {}) {
   root = resolve(root);
   const prior = readPriorManifest(root);
   const pending = readPendingManifest(root);
@@ -2152,7 +2430,17 @@ export async function previewFromRevision(root, ref) {
   // Its manifest deliberately retains old kit hashes for those edits; the
   // pinned revision's typed metadata is what the operator is taking.
   const actions = readKitActions(blob(KIT_ACTIONS));
-  const plan = planUpdate(prior, incoming, root, pending);
+  // The incoming harness manifest names the surfaces the incoming emit
+  // writes; with itself they are the generated files of this plan.
+  const generated = new Set([HARNESS_MANIFEST]);
+  try {
+    for (const { path } of JSON.parse(blob(HARNESS_MANIFEST).toString("utf8"))
+      .installed)
+      if (typeof path === "string") generated.add(path);
+  } catch {
+    /* An unreadable harness manifest names no surface of its own. */
+  }
+  const plan = planUpdate(prior, incoming, root, pending, { generated });
   const instance = planInstanceActions(
     root,
     actions,
@@ -2172,6 +2460,24 @@ export async function previewFromRevision(root, ref) {
     applied: instance.results,
     optedIn: false,
     manualActions: true,
+    // The incoming floors this host does not meet, read from the incoming
+    // revision's own package.json.
+    floors: unmetIncomingFloors(blob("package.json").toString("utf8"), host),
+    // The instance files a merge of this revision would meet changed on both
+    // sides; a base that cannot be read is said, and refuses nothing here.
+    bothChanged: (() => {
+      try {
+        const head = runGit(root, ["rev-parse", "--verify", "HEAD^{commit}"], {
+          env,
+        });
+        const { base, paths } = changedOnBothSides(root, head, revision, {
+          env,
+        });
+        return { base, paths };
+      } catch (error) {
+        return { unreadable: error.message };
+      }
+    })(),
     priorBuildHash: installedBuildHash(root),
     buildHash: manifestBuildHash(
       blob(HARNESS_MANIFEST),
@@ -2184,17 +2490,37 @@ export async function previewFromRevision(root, ref) {
   };
 }
 
-/** The kit commit a revision's provenance names: UPSTREAM.md's Commit line and
- * the manifest's, which an update moves together. */
-const kitProvenance = (root, revision) => {
+/** The commit UPSTREAM.md's `**Commit:**` field names: the field's whole
+ * value is one code span holding the commit's hex name. Null otherwise. */
+const upstreamCommit = (text) => {
+  const tree = parseMarkdown(text);
+  const field = markdownFields(text, tree).find(
+    (row) => row.label === "Commit",
+  );
+  if (!field) return null;
+  const code = [...markdownNodes(tree)].find(
+    (node) =>
+      node.type === "inlineCode" &&
+      node.position.start.offset >= field.valueStart &&
+      node.position.end.offset <= field.end,
+  );
+  return code &&
+    nodeSource(text, code) === field.value &&
+    /^[0-9a-f]{40,64}$/u.test(code.value)
+    ? code.value
+    : null;
+};
+
+/** The kit commit a revision's provenance names: UPSTREAM.md's Commit field
+ * and the manifest's, which an update moves together. */
+const kitProvenance = (root, revision, options = {}) => {
   const show = (path) =>
     runGit(root, ["show", `${revision}:${path}`], {
+      ...options,
       trim: false,
       onFailure: () => null,
     });
-  const named = /^- \*\*Commit:\*\* `([0-9a-f]{40,64})`$/mu.exec(
-    show(UPSTREAM) ?? "",
-  )?.[1];
+  const named = upstreamCommit(show(UPSTREAM) ?? "");
   let manifest = null;
   try {
     manifest = JSON.parse(show(KIT_MANIFEST) ?? "null")?.commit;
@@ -2204,12 +2530,591 @@ const kitProvenance = (root, revision) => {
   return { named: named ?? null, manifest: manifest ?? null };
 };
 
+const shortCommit = (commit) => commit.slice(0, 12);
+/** A path as one word of a printed Git command: quoted for the shell, and
+ * marked literal where Git would otherwise read it as a pattern, so the
+ * command touches that file and no other. */
+const pathWord = (path) => {
+  const literal = /[*?[\]\\]|^:/u.test(path) ? `:(literal)${path}` : path;
+  return /^[\w./@+-]+$/u.test(literal)
+    ? literal
+    : `'${literal.replaceAll("'", "'\\''")}'`;
+};
+
+/** The instruction file outside its generated blocks. The harness block is
+ * the emit's and the kit block the export's, so an update may move both;
+ * what an instance owns of that file is the rest. */
+const instructionFloor = (text) =>
+  [
+    ["dotln-harness:start", "dotln-harness:end"],
+    ["dotln-kit:start", "dotln-kit:end"],
+  ].reduce(
+    (floor, [opens, closes]) =>
+      replaceMarkerBlocks(floor, opens, closes, () => ""),
+    text,
+  );
+
+/** What a revision holds at each path: its kind and object, or null where
+ * the revision has no such path. The instruction file is read as its floor
+ * (its bytes outside the generated blocks), so that a block the emit or
+ * the kit rewrote is no change of the instance's. */
+const pathStates = (root, revision, paths, options = {}) => {
+  const states = new Map(paths.map((path) => [path, null]));
+  for (const path of paths) {
+    const entry = runGit(
+      root,
+      ["--literal-pathspecs", "ls-tree", "-z", revision, "--", path],
+      { ...options, trim: false },
+    );
+    if (entry === "") continue;
+    // A regular file's executable bit is no part of its bytes: a side that
+    // changed the bit alone changed nothing this rule protects.
+    const state = entry
+      .slice(0, entry.indexOf("\t"))
+      .replace(/^100755 /u, "100644 ");
+    states.set(
+      path,
+      path === INSTRUCTION_FILE && state.startsWith("100")
+        ? `floor ${sha256Hex(
+            instructionFloor(
+              runGit(root, ["show", `${revision}:${path}`], {
+                ...options,
+                trim: false,
+              }),
+            ),
+          )}`
+        : state,
+    );
+  }
+  return states;
+};
+
+/** The files outside the incoming kit's manifest that both sides of an
+ * update changed since their merge base: each differs between the base and
+ * the instance's side and between the base and the starter's, a file both
+ * added among them, and the two sides do not hold the same bytes for it. A
+ * file only the starter changed or added flows in as Git merges it and is
+ * never among them; neither is a kit file, which the manifest's own plan
+ * judges. Where Git names more than one merge base the first is read, and
+ * the result names the base used. A base that cannot be read (a shallow or
+ * grafted clone, or two histories that share no commit) throws, naming
+ * which of the two it is and what to do. `options` reaches
+ * every Git read: the preview passes the environment that keeps an inherited
+ * GIT_DIR from naming another repository. */
+export function changedOnBothSides(root, instance, starter, options = {}) {
+  const base = runGit(root, ["merge-base", instance, starter], {
+    ...options,
+    onFailure: () => null,
+  });
+  if (!base) {
+    const shallow =
+      runGit(root, ["rev-parse", "--is-shallow-repository"], {
+        ...options,
+        onFailure: () => "false",
+      }) === "true";
+    throw new Error(
+      `the update's merge base cannot be read: this clone holds no commit that ${shortCommit(instance)} and the starter's revision ${shortCommit(starter)} share (${shallow ? "a shallow or grafted clone). Fetch the history the clone lacks, by an unshallow fetch from the remote that holds it, and run this again" : "the clone is whole, so the two histories share nothing: an instance whose first commit was its own, or a starter whose history was written again). Without a shared commit nothing tells this instance's changes from the starter's, and this command cannot judge the merge: compare this instance's own files with the commit before the merge by hand, and open the pull request yourself"}`,
+    );
+  }
+  let listed = [];
+  try {
+    listed = JSON.parse(
+      runGit(root, ["show", `${starter}:${KIT_MANIFEST}`], {
+        ...options,
+        trim: false,
+      }),
+    ).files.map(({ path }) => path);
+  } catch {
+    /* A revision with no readable manifest lists no kit file. */
+  }
+  const kit = new Set([KIT_MANIFEST, KIT_MANIFEST_PENDING, ...listed]);
+  const changed = (side) =>
+    new Set(
+      runGitPathList(
+        root,
+        ["diff", "--name-only", "--no-renames", "-z", base, side, "--"],
+        options,
+      ),
+    );
+  const theirs = changed(starter);
+  const candidates = [...changed(instance)]
+    .filter((path) => theirs.has(path) && !kit.has(path))
+    .sort();
+  const [origin, mine, incoming] = [base, instance, starter].map((revision) =>
+    pathStates(root, revision, candidates, options),
+  );
+  return {
+    base,
+    instance,
+    starter,
+    // Each side's state differs from the base's and from the other's: a
+    // file whose bytes moved only inside a generated block is on no list.
+    paths: candidates.filter(
+      (path) =>
+        mine.get(path) !== origin.get(path) &&
+        incoming.get(path) !== origin.get(path) &&
+        mine.get(path) !== incoming.get(path),
+    ),
+    states: mine,
+  };
+}
+
+/** The update's own merge, with the instance's side and the starter's.
+ * `named` is the kit commit HEAD's UPSTREAM.md and manifest name.
+ *
+ * What tells the update's merge from every other merge in the history is
+ * one observation: it is the oldest commit in which a line that holds the
+ * starter's incoming revision meets a line that does not, and its parent
+ * that does not is the instance's side. Later merges on the branch (main
+ * again, another branch, a merge of the branch that made the update's
+ * merge) hold that commit; a merge inside the starter's history is below
+ * the revision. A branch that reaches the revision with no such commit (a
+ * fast-forward) met no commit of the instance's own, and there is nothing
+ * to judge.
+ *
+ * That needs the revision, and which commits are the starter's is not
+ * written in the commits: the starter merges lines of its own, and a merge
+ * of the starter's and a merge of the instance's have one shape and name
+ * their kit commits alike. The fact the commits lack is where a commit
+ * came from. The operator knows it and may say it: `from` names the ref or
+ * the commit the branch merged, the one the preview was given, and is held
+ * only to what a revision must be (this branch holds it, it names `named`,
+ * main does not hold it). Where it is not said, the operator's fetch is
+ * read for it: the revision
+ * is the commit HEAD shares with a ref of the starter's that names `named`
+ * and that neither main nor origin's main holds, a ref of the starter's
+ * being the `main` (or the remote's HEAD) of a remote other than origin,
+ * or any ref under refs/upstream-releases/: the guide's two routes. Any
+ * other branch of another remote is not trusted, since a mirror, a
+ * colleague's fork or a second remote of the instance's holds this
+ * branch's own commits under such a name. Where no ref gives one the
+ * publish is refused, since nothing here can then tell a merge of the
+ * revision from a squash of it or a copy of its files; the refusal names
+ * how to say which commit the revision is.
+ *
+ * Refused as well: a revision that met the instance's lines in two merges
+ * neither of which holds the other, a merge of more than two lines, and an
+ * instance side that names a kit commit neither main nor origin's main
+ * names (a branch that already held another update, or one cut before
+ * main's last), and a commit of the branch whose parent is a commit of the
+ * starter's below the revision that main does not hold (another revision
+ * taken by a road of its own). None has one instance side to judge.
+ *
+ * One shape of what the refs give is refused and `from` asked for: a
+ * commit whose history beyond main holds a merge with one side that main
+ * holds. It is the starter's own merge over a commit this instance already
+ * has, or this branch's update merge as another remote's main holds it, and
+ * the commits do not say which. What the refs still cannot show, stated in
+ * the decision: another remote's main that holds this branch's merge where
+ * the instance's side of it was a commit main never held. `from` says. */
+const updateMerge = (root, named, options, from = null) => {
+  const read = (args, extra = {}) =>
+    runGit(root, args, { ...options, ...extra });
+  const ancestor = (older, newer) =>
+    read(["merge-base", "--is-ancestor", older, newer], {
+      onFailure: () => false,
+    }) !== false;
+  const kitOf = (revision) => {
+    const provenance = kitProvenance(root, revision, options);
+    return provenance.named && provenance.named === provenance.manifest
+      ? provenance.named
+      : null;
+  };
+  const origin = read(
+    ["rev-parse", "--verify", "--quiet", "refs/remotes/origin/main"],
+    { onFailure: () => null },
+  );
+  const lines = [...(origin ? [origin] : []), "main"];
+  const published = (commit) => lines.some((line) => ancestor(commit, line));
+  const heldAbroad = new Map();
+  /** Whether a commit of the starter's history is one the instance's
+   * published lines hold: shared history, and no revision of its own. */
+  const shared = (commit) => {
+    if (!heldAbroad.has(commit)) heldAbroad.set(commit, published(commit));
+    return heldAbroad.get(commit);
+  };
+  // Every ref a fetch from somewhere other than origin left, and of those
+  // the ones read as the starter's without being told.
+  const abroad = read([
+    "for-each-ref",
+    "--format=%(objectname) %(refname)",
+    "refs/remotes",
+    "refs/upstream-releases",
+  ])
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => line.split(" "))
+    .filter(([, ref]) => !ref.startsWith("refs/remotes/origin/"));
+  const fetched = [
+    ...new Set(
+      abroad
+        .filter(
+          ([, ref]) =>
+            ref.startsWith("refs/upstream-releases/") ||
+            /^refs\/remotes\/[^/]+\/(?:main|HEAD)$/u.test(ref),
+        )
+        .map(([tip]) => tip),
+    ),
+  ];
+  const candidates = [
+    ...new Set(
+      fetched
+        .map((tip) =>
+          read(["merge-base", "HEAD", tip], { onFailure: () => null }),
+        )
+        .filter(Boolean),
+    ),
+  ].filter((commit) => kitOf(commit) === named && !published(commit));
+  const revision = from === null ? inferred() : stated(from);
+  return meeting(revision);
+
+  /** The revision the operator names: the ref or the commit this branch
+   * merged, which is what the preview was given. It is held to what a
+   * revision must be and to nothing a ref's place could add. */
+  function stated(name) {
+    const commit = read(
+      [
+        "rev-parse",
+        "--verify",
+        "--quiet",
+        "--end-of-options",
+        `${name}^{commit}`,
+      ],
+      { onFailure: () => null },
+    );
+    if (!commit)
+      throw new Error(
+        `--from names ${name}, which is no commit this clone holds: name the ref or the commit this branch merged`,
+      );
+    if (!ancestor(commit, "HEAD"))
+      throw new Error(
+        `--from names ${shortCommit(commit)}, which this branch does not hold: merge it first, or name the revision this branch did merge`,
+      );
+    if (published(commit))
+      throw new Error(
+        `--from names ${shortCommit(commit)}, which main already holds: it is no incoming revision of the starter's`,
+      );
+    const kit = kitOf(commit);
+    if (kit !== named)
+      throw new Error(
+        `--from names ${shortCommit(commit)}, which names ${kit ? `the kit commit ${shortCommit(kit)}` : "no one kit commit"}, and this branch names ${shortCommit(named)}: name the revision this branch merged`,
+      );
+    // Where a commit came from is what a fetch records: one no fetched ref
+    // holds was made here, by a rebase or a copy of the revision, and is
+    // not the starter's whatever it holds.
+    if (
+      ![...new Set(abroad.map(([tip]) => tip))].some((tip) =>
+        ancestor(commit, tip),
+      )
+    )
+      throw new Error(
+        `--from names ${shortCommit(commit)}, which no ref fetched from a remote other than origin holds: a commit made here, by a rebase or a copy of the revision, is not the starter's. Merge the starter's ref again on a branch cut from main and name that ref`,
+      );
+    return commit;
+  }
+
+  function inferred() {
+    if (!candidates.length)
+      throw new Error(
+        `the starter's incoming revision is not known here: no ref of the starter's (the main of a remote other than origin, or a ref under refs/upstream-releases/) shares with this branch a commit that names the kit commit ${shortCommit(named)}. A revision is taken by a merge of a fetched ref, never by a squash or a copy of its files. Where this branch did merge the revision, say which commit it is and run this again with --from <the ref or the commit it merged>; a branch rebased since no longer holds it, and is merged again from the starter's ref`,
+      );
+    const newest = candidates.find((commit) =>
+      candidates.every((other) => ancestor(other, commit)),
+    );
+    if (!newest)
+      throw new Error(
+        `the starter's incoming revision is ambiguous: ${candidates.map(shortCommit).join(", ")} each name the kit commit ${shortCommit(named)} and none holds the others. Merge one revision of the starter on a branch cut from main, or say which this branch merged with --from <the ref or the commit>`,
+      );
+    // One shape of what the refs give cannot be told from this branch's own
+    // work: a commit whose history, beyond what main holds, has a merge with
+    // one side that main holds. That is a merge of the starter's own over a
+    // commit this instance already has, or this branch's update merge as
+    // another remote's main holds it. The operator says which.
+    const beyond = read([
+      "rev-list",
+      "--parents",
+      newest,
+      ...lines.map((line) => `^${line}`),
+    ])
+      .split("\n")
+      .filter(Boolean)
+      .map((row) => row.split(" "));
+    const unpublished = new Set(beyond.map(([commit]) => commit));
+    const joining = beyond.find(
+      ([, ...parents]) =>
+        parents.length > 1 &&
+        parents.some((parent) => unpublished.has(parent)) &&
+        parents.some((parent) => !unpublished.has(parent)),
+    );
+    if (joining)
+      throw new Error(
+        `the commit ${shortCommit(newest)} that the fetched refs give as the starter's revision holds the merge ${shortCommit(joining[0])}, one side of which main holds: that is a merge of the starter's own over a commit this instance already has, or this branch's own merge as another remote's main holds it, and the commits do not say which. Say which commit this branch merged with --from <the ref or the commit>`,
+      );
+    return newest;
+  }
+
+  function meeting(revision) {
+    // Every commit of HEAD's that the revision does not hold, oldest first,
+    // with whether it holds the revision and whether a meeting of the two
+    // kinds of line is at or below it.
+    const holds = new Map();
+    const below = new Map();
+    const meetings = [];
+    const rows = [];
+    for (const row of read([
+      "rev-list",
+      "--topo-order",
+      "--reverse",
+      "--parents",
+      "HEAD",
+      `^${revision}`,
+    ])
+      .split("\n")
+      .filter(Boolean)) {
+      const [commit, ...parents] = row.split(" ");
+      rows.push({ commit, parents });
+      const holding = (parent) =>
+        parent === revision || holds.get(parent) === true;
+      holds.set(commit, parents.some(holding));
+      const meets = holds.get(commit) && !parents.every(holding);
+      const under = parents.some((parent) => below.get(parent) === true);
+      below.set(commit, meets || under);
+      if (meets && !under) meetings.push({ commit, parents, holding });
+    }
+    if (!meetings.length) return null;
+    if (meetings.length > 1)
+      throw new Error(
+        `the starter's revision ${shortCommit(revision)} meets this instance's own lines in ${meetings.length} merges, none of which holds another (${meetings.map(({ commit }) => shortCommit(commit)).join(", ")}), so no one merge is the update's. Merge the revision once, on a branch cut from main`,
+      );
+    const [{ commit, parents, holding }] = meetings;
+    if (parents.length > 2)
+      throw new Error(
+        `the merge ${shortCommit(commit)} joins ${parents.length} lines where it meets the starter's revision ${shortCommit(revision)}, so it has no one instance side to judge. Take the starter's revision in a merge of its own, on a branch cut from main`,
+      );
+    const merge = {
+      commit,
+      instance: parents.find((parent) => !holding(parent)),
+      starter: parents.find(holding),
+    };
+    const kit = kitOf(merge.instance);
+    if (!lines.some((ref) => kitOf(ref) === kit))
+      throw new Error(
+        `the instance's side of the update's merge ${shortCommit(merge.commit)} is ${shortCommit(merge.instance)}, which names ${kit ? `the kit commit ${shortCommit(kit)}` : "no one kit commit"}, and main does not: this branch already held another update when ${shortCommit(revision)} was merged, local main is behind the remote's, or the branch was cut before main's last update. An update branch takes one revision: bring main up to date, cut a branch from it and merge the revision you mean to take once`,
+      );
+    // A commit of this branch whose parent is a commit of the starter's
+    // history, below the revision, that the instance's published lines do
+    // not hold took another revision of the starter's by a road of its own:
+    // an older revision merged on a branch that joined this one, or a branch
+    // cut from the starter. Its merge is no meeting with this revision, and
+    // would bring starter bytes in unjudged.
+    const other = rows
+      .flatMap(({ commit: child, parents: above }) =>
+        above
+          .filter(
+            (parent) =>
+              parent !== revision && !holds.has(parent) && !shared(parent),
+          )
+          .map((parent) => ({ child, parent })),
+      )
+      .at(0);
+    if (other)
+      throw new Error(
+        `the commit ${shortCommit(other.child)} on this branch has the parent ${shortCommit(other.parent)}, a commit of the starter's below the revision ${shortCommit(revision)} that main does not hold: this branch took another revision of the starter's beside the one it merged. An update branch takes one revision: cut a branch from main and merge the revision you mean to take once`,
+      );
+    return {
+      ...merge,
+      revision,
+      // The instance's published lines by name: where one has moved on from
+      // the instance's side and HEAD has taken it in, its bytes are the
+      // instance's.
+      lines: [
+        ...(origin ? [{ name: "origin/main", commit: origin }] : []),
+        {
+          name: "main",
+          commit: read(["rev-parse", "--verify", "main^{commit}"]),
+        },
+      ],
+    };
+  }
+};
+
+/** The files of an update's merge commit that no longer hold what the
+ * instance had: of the files both sides changed, those whose bytes in the
+ * merge commit differ from the instance's side. */
+export function instanceChangesNotKept(root, merge, options = {}) {
+  const both = changedOnBothSides(root, merge.instance, merge.starter, options);
+  const merged = pathStates(root, merge.commit, both.paths, options);
+  return {
+    ...both,
+    commit: merge.commit,
+    merged,
+    paths: both.paths.filter(
+      (path) => merged.get(path) !== both.states.get(path),
+    ),
+  };
+}
+
+/** Judge the update's merge before a publish. A file both sides changed
+ * must hold the instance's bytes in HEAD itself: the merge commit held
+ * them, or a later commit put them back, which is where the restore this
+ * refusal prints puts them, and nothing since has changed the file again.
+ * A restore that a later commit or a later merge undid is not kept,
+ * whatever bytes the file ended at.
+ *
+ * The instance's bytes are what the instance's own lines say, as far as
+ * HEAD holds them: the merge's instance side, and the newest commit of main
+ * and of origin's main that HEAD has taken in. A line's tip may have moved
+ * on since, and what the branch has not taken in it does not answer for.
+ * Where such a commit holds the instance side, its bytes are the
+ * instance's now, since a branch that holds the instance's later commits
+ * and an older state of the file would take the later change back out of
+ * main. Where the two have parted (the instance side is a commit of the
+ * branch's own), the bytes are those of whichever changed the file since
+ * they parted; a file both changed has no one commit that holds the
+ * instance's bytes, and is set by hand and named by `--take`. Where two
+ * such commits were taken in and neither holds the other, either's bytes
+ * are the instance's. Every commit the refusal prints is printed by its
+ * id, so a branch or a tag of a line's name cannot stand in for it.
+ *
+ * `--take` admits one named file whose bytes in HEAD the operator means to
+ * keep, and is refused for a file that already holds the instance's bytes.
+ * `from` is the revision the operator says the branch merged, or null
+ * where the fetched refs are to say. `named` is the kit commit HEAD's
+ * provenance names. Returns the taken paths; throws naming every other
+ * file, the command that restores it and `--take`. */
+export function judgeUpdateMerge(root, named, takes = [], from = null) {
+  // No inherited variable routes these reads to another repository, and a
+  // path is read as written: `--literal-pathspecs` on the command line holds
+  // whatever the environment says, and a setting that conflicts with it
+  // fails the read, and so the publish, with Git's own message.
+  const options = { env: exportEnvironment() };
+  const merge = updateMerge(root, named, options, from);
+  if (!merge) {
+    if (takes.length)
+      throw new Error(
+        `--take names ${takes.join(", ")}, and this branch holds no update merge to take it from`,
+      );
+    return [];
+  }
+  const judged = instanceChangesNotKept(root, merge, options);
+  const stray = takes.filter((path) => !judged.paths.includes(path));
+  if (stray.length)
+    throw new Error(
+      `--take names ${stray.join(", ")}, which the update's merge ${shortCommit(merge.commit)} did not change against this instance's bytes; it changed ${judged.paths.length ? judged.paths.join(", ") : "none"}`,
+    );
+  const states = (revision) =>
+    pathStates(root, revision, judged.paths, options);
+  const read = (args) =>
+    runGit(root, args, { ...options, onFailure: () => null });
+  const ancestor = (older, newer) =>
+    runGit(root, ["merge-base", "--is-ancestor", older, newer], {
+      ...options,
+      onFailure: () => false,
+    }) !== false;
+  // The newest commit of each published line that HEAD holds, where it adds
+  // anything to the instance side, and of those the ones no other holds.
+  const taken = [
+    ...new Map(
+      merge.lines
+        .map(({ name, commit }) => ({
+          name,
+          commit: read(["merge-base", "HEAD", commit]),
+        }))
+        .filter(({ commit }) => commit && !ancestor(commit, merge.instance))
+        .map((line) => [line.commit, line]),
+    ).values(),
+  ];
+  const tips = taken.filter(
+    (line) =>
+      !taken.some(
+        (other) =>
+          other.commit !== line.commit && ancestor(line.commit, other.commit),
+      ),
+  );
+  const own = (path) => ({
+    state: judged.states.get(path),
+    source: merge.instance,
+  });
+  // For each such commit, what it makes the instance's bytes of a path and
+  // the commit that holds them, or null where no one commit does.
+  const sides = tips.length
+    ? tips.map((tip) => {
+        const at = states(tip.commit);
+        if (ancestor(merge.instance, tip.commit))
+          return {
+            ...tip,
+            wanted: (path) =>
+              at.get(path) === judged.states.get(path)
+                ? own(path)
+                : { state: at.get(path), source: tip.commit },
+          };
+        const parted = read(["merge-base", merge.instance, tip.commit]);
+        const before = parted ? states(parted) : new Map();
+        return {
+          ...tip,
+          wanted: (path) =>
+            at.get(path) === before.get(path)
+              ? own(path)
+              : judged.states.get(path) === before.get(path)
+                ? { state: at.get(path), source: tip.commit }
+                : null,
+        };
+      })
+    : [{ name: null, wanted: own }];
+  const atHead = states("HEAD");
+  const kept = (path) =>
+    sides.some((side) => side.wanted(path)?.state === atHead.get(path));
+  const needless = takes.filter(kept);
+  if (needless.length)
+    throw new Error(
+      `--take names ${needless.join(", ")}, which holds this instance's bytes already: a taken file is one whose merged bytes are kept, and there is nothing of the merge's to keep there`,
+    );
+  const lost = judged.paths.filter(
+    (path) => !takes.includes(path) && !kept(path),
+  );
+  if (lost.length) {
+    const sources = new Map();
+    const byHand = [];
+    for (const path of lost) {
+      const side = sides.find((candidate) => candidate.wanted(path));
+      if (!side) {
+        byHand.push(path);
+        continue;
+      }
+      const { state, source } = side.wanted(path);
+      const key = `${state === null ? "rm" : "checkout"} ${source}`;
+      sources.set(key, [...(sources.get(key) ?? []), path]);
+    }
+    const restore = [...sources]
+      .map(([key, paths]) => {
+        const [verb, source] = key.split(" ");
+        const words = paths.map(pathWord).join(" ");
+        return verb === "rm"
+          ? `git rm -- ${words}`
+          : `git checkout ${source} -- ${words}`;
+      })
+      .join(" && ");
+    // An earlier update that reached main without the starter's commits
+    // leaves a base that names an older kit commit than the instance side.
+    const kitAt = (revision) =>
+      kitProvenance(root, revision, options).named ?? null;
+    const squashed =
+      kitAt(judged.base) !== kitAt(merge.instance)
+        ? ` The base names ${kitAt(judged.base) ? `the kit commit ${shortCommit(kitAt(judged.base))}` : "no kit commit"} and the instance's side names ${kitAt(merge.instance) ? shortCommit(kitAt(merge.instance)) : "none"}: an earlier update reached main without the starter's own commits (a squash merge, or a copy of its files), so a file named here may hold that update's change and no change of this instance's. Where it does, keep the merged bytes with --take.`
+        : "";
+    throw new Error(
+      `the update's merge ${shortCommit(merge.commit)} changed ${lost.length === 1 ? "a file" : `${lost.length} files`} this instance had changed since ${shortCommit(judged.base)}, the base it shares with the starter's revision ${shortCommit(merge.revision)}: ${lost.join(", ")}. An update keeps the instance's bytes for a file both sides changed.${restore ? ` Restore ${sources.size === 1 && [...sources.values()][0].length === 1 ? "it" : "them"} from the instance's side, ${shortCommit(merge.instance)}${[...sources.keys()].some((key) => !key.endsWith(` ${merge.instance}`)) ? ", or from the commit of main this branch holds where main changed the file again" : ""}, and commit: ${restore}.` : ""}${byHand.length ? ` ${byHand.join(", ")} changed on the instance's side of the merge and again on main since the two parted, so no one commit holds this instance's bytes for ${byHand.length === 1 ? "it" : "them"}: set ${byHand.length === 1 ? "it" : "them"} by hand and pass --take.` : ""}${lost.includes(INSTRUCTION_FILE) ? ` Then run node scripts/harness.mjs emit, which writes ${INSTRUCTION_FILE}'s generated block again, and commit that.` : ""}${squashed} For a file whose merged bytes you mean to keep, pass --take <path> instead`,
+    );
+  }
+  return takes;
+}
+
 /** Publish an instance's update branch once it holds the update whole: the
  * merge of the previewed revision, the re-emit and the lineage index, each
  * committed. The helper refuses a dirty tree before this proof runs. */
 async function publishUpdate(
   root,
-  { title, bodyFile, operatorRequest = null },
+  { title, bodyFile, takes = [], from = null, operatorRequest = null },
 ) {
   admitUpdate(root, "update --publish", operatorRequest, (text) =>
     process.stdout.write(text),
@@ -2240,6 +3145,18 @@ async function publishUpdate(
       if (kitProvenance(root, "main").named === head.named)
         throw fail(
           `${branch} carries no update: main already names ${head.named}`,
+        );
+      // The update's own merge: a file both sides changed keeps the
+      // instance's bytes, or is named by --take.
+      let taken;
+      try {
+        taken = judgeUpdateMerge(root, head.named, takes, from);
+      } catch (error) {
+        throw fail(error.message);
+      }
+      for (const path of taken)
+        console.log(
+          `taken: ${path} (the merge's bytes are kept at the operator's word)`,
         );
       for (const [what, script, ...args] of [
         ["the re-emit", "scripts/harness.mjs", "check"],
@@ -2490,6 +3407,8 @@ export function renderUpdatePlan(planned, { preview = false } = {}) {
     `${preview ? "Preview of" : "Updated"} the DotLn kit ${preview ? "at" : "to"} ${planned.commit} in ${planned.destination}.`,
     `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused${planned.revision ? `; ${counts.unchanged} unchanged` : ""}.`,
   ];
+  // Above the file sections: each incoming floor this host does not meet.
+  lines.push(...(planned.floors ?? []));
   if (planned.pruneSummary) lines.push(planned.pruneSummary);
   if (planned.operatorRequest)
     lines.push(
@@ -2509,11 +3428,25 @@ export function renderUpdatePlan(planned, { preview = false } = {}) {
         ? `receipt: would write ${planned.receipt.path}`
         : `receipt: none (${planned.receipt.reason})`,
     );
+  // Before the kit's rows: the instance's own files a merge would meet.
+  if (planned.bothChanged?.unreadable)
+    lines.push(
+      `instance files both sides changed: unknown (${planned.bothChanged.unreadable})`,
+    );
+  else if (planned.bothChanged?.paths.length)
+    lines.push(
+      `instance files both sides changed since their merge base ${shortCommit(planned.bothChanged.base)}, outside the kit's manifest: keep this instance's bytes for each when merging. Git may merge such a file in silence, and update --publish refuses a merge that changed one unless --take names it.`,
+      ...planned.bothChanged.paths.map((path) => `both changed: ${path}`),
+    );
+  else if (planned.bothChanged)
+    lines.push("instance files both sides changed: none");
   for (const entry of planned.plan)
     lines.push(
-      entry.kind === "refuse"
-        ? `refused: ${entry.path} (${entry.reason}; ${entry.retained ? `prior hash retained: ${entry.retained.sha256}` : "remains instance-owned; retained hash: none"}${planned.revision && entry.upstreamUnchanged ? "; unchanged upstream; no merge conflict expected" : ""})`
-        : `${rowKind(entry)}: ${entry.path}`,
+      entry.reEmitted
+        ? `re-emitted: ${entry.path}`
+        : entry.kind === "refuse"
+          ? `refused: ${entry.path} (${entry.reason}; ${HARNESS_CHECK_REASONS[entry.harnessCheck] ?? ""}${entry.retained ? `prior hash retained: ${entry.retained.sha256}` : "remains instance-owned; retained hash: none"}${planned.revision && entry.upstreamUnchanged ? "; unchanged upstream; no merge conflict expected" : ""})`
+          : `${rowKind(entry)}: ${entry.path}`,
     );
   lines.push(
     `Instance-actions note (${new Date().toISOString().slice(0, 10)}): ${planned.manualActions ? "manual after merge" : planned.optedIn ? "opted-in update" : "update without opt-in"}.`,
@@ -2542,13 +3475,38 @@ if (isMainModule(import.meta.url)) {
     const { args, operatorRequest } = takeOperatorRequest(given);
     const updating = args[0] === "--update";
     const [destination, ...rest] = updating ? args.slice(1) : args;
-    const usage = `usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad update --finish [<dir>] [--fetch-timeout <seconds>] | launchpad update --publish --title <title> --body-file <path> | launchpad preview --from <ref> | launchpad verify [<dir>]; an update under a journaled planning or entropy dispatch adds ${UPDATE_REQUEST_FLAGS}`;
+    const usage = `usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad update --finish [<dir>] [--fetch-timeout <seconds>] | launchpad update --publish --title <title> --body-file <path> [--from <revision>] [--take <path>]... | launchpad preview --from <ref> | launchpad verify [<dir>] | launchpad commands; an update under a journaled planning or entropy dispatch adds ${UPDATE_REQUEST_FLAGS}`;
     if (action === "update" && args[0] === "--publish") {
-      const values = pairedFlags(args.slice(1), ["--title", "--body-file"]);
+      // Each --take names one file and --from the revision the branch
+      // merged; the rest are the two paired flags.
+      const takes = [];
+      const others = [];
+      let from = null;
+      for (let at = 1; at < args.length; at++)
+        if (args[at] === "--from") {
+          const revision = args[++at];
+          if (!revision || revision.startsWith("-") || from !== null)
+            throw new Error(usage);
+          from = revision;
+        } else if (args[at] === "--take") {
+          // A file whose name opens with two hyphens is named behind ./,
+          // which is no part of the path compared.
+          const path = args[++at]?.replace(/^\.\//u, "");
+          if (
+            !path ||
+            (args[at].startsWith("--") && !args[at].startsWith("./")) ||
+            takes.includes(path)
+          )
+            throw new Error(usage);
+          takes.push(path);
+        } else others.push(args[at]);
+      const values = pairedFlags(others, ["--title", "--body-file"]);
       if (!values) throw new Error(usage);
       const { url } = await publishUpdate(findLaunchpad(), {
         title: values["--title"],
         bodyFile: values["--body-file"],
+        takes,
+        from,
         operatorRequest,
       });
       console.log(url);
@@ -2577,6 +3535,18 @@ if (isMainModule(import.meta.url)) {
     } else if (action === "verify") {
       if (args.length > 1 || args[0]?.startsWith("--")) throw new Error(usage);
       verifyKit(args[0] ?? process.cwd());
+    } else if (action === "commands") {
+      // The page the kit ships, printed as it is, before any install: it
+      // names the kit's own version, which an instance's README does not,
+      // and printing it needs no Markdown parser.
+      if (args.length) throw new Error(usage);
+      const root = findLaunchpad();
+      const page = docRelative(root, "docs", "OPERATOR.md");
+      if (!existsSync(join(root, page)))
+        throw new Error(
+          `this launchpad carries no operator commands page at ${page}; a kit release that ships it adds it`,
+        );
+      process.stdout.write(readFileSync(join(root, page), "utf8"));
     } else {
       if (action !== "export" || !destination || destination.startsWith("--"))
         throw new Error(usage);
@@ -2619,6 +3589,7 @@ if (isMainModule(import.meta.url)) {
       console.log(
         `local-terms list: ${result.terms}${result.terms === "present" ? ` (${result.surfaces} texts checked)` : "; no text was checked against a local-terms list"}`,
       );
+      for (const line of result.termContext ?? []) console.log(line);
       if (!preview)
         console.log(
           result.receipt.path

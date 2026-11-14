@@ -1,0 +1,9 @@
+{
+  "comparison": "feedback-tap-rows",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every record the feedback audit has written: for each test run it holds, the kept lines that are the named test's result row and, for a run with the mechanism removed, whether a failing row of that name is among them",
+  "read": 216,
+  "equal": 216,
+  "differences": {},
+  "examples": []
+}

@@ -11,7 +11,8 @@ import {
 import { PRIVATE_PATH } from "./private-paths.mjs";
 import { json as prettyJson } from "./helpers.mjs";
 import { runGit, spawnGit, mainWorktree, worktreeHasCheckout } from "./git.mjs";
-import { docPath, docRelative, rootPattern } from "./config.mjs";
+import { docPath, docRelative, loadConfig, rootPattern } from "./config.mjs";
+import { isCoreRoot } from "./harness-runtime.mjs";
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -25,6 +26,12 @@ import {
 import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
+import {
+  localDay,
+  sumUsageClasses,
+  usageClasses,
+  usageReading,
+} from "./usage-reading.mjs";
 import { correctionCounts } from "../../packages/skeleton/src/correction-observation.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
 import {
@@ -35,6 +42,13 @@ import {
 import { completedPhaseAttempts, orderJudgments } from "./control-time.mjs";
 import { projectActor } from "./control-actor.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
+import {
+  markdownHeadings as documentHeadings,
+  markdownJsonBlocks,
+  markdownSections,
+  parseMarkdown,
+} from "./markdown-links.mjs";
+import { readWorkOrder } from "./work-order-document.mjs";
 import {
   readBudgets,
   budgetVerdict,
@@ -78,29 +92,40 @@ const roleForPhase = {
   finalReview: "reviewer",
 };
 
-// GitHub-style fragments include the whole heading, including any title after
-// the stable decision id. Fence contents are never headings.
-export const markdownHeadings = (source) => {
-  const visible = source.replace(
-    /^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm,
-    (match) => match.replace(/[^\n]/g, " "),
-  );
+// Each heading's offset and its GitHub-style fragment, which takes the whole
+// heading, including any title after the stable decision id; a repeated
+// fragment is numbered. The headings are the parser's, so fenced code holds
+// none.
+export const markdownHeadings = (source, tree = parseMarkdown(source)) => {
   const seen = new Map();
-  return [...visible.matchAll(/^#{1,6} (.+?)[ \t]*#*[ \t]*$/gm)].map(
-    (match) => {
-      const stem = match[1]
-        .toLowerCase()
-        .replace(/[^\p{L}\p{N}_\s-]/gu, "")
-        .replace(/\s/g, "-");
-      const ordinal = seen.get(stem) ?? 0;
-      seen.set(stem, ordinal + 1);
-      return {
-        index: match.index,
-        anchor: `${stem}${ordinal ? `-${ordinal}` : ""}`,
-      };
-    },
-  );
+  return documentHeadings(source, tree).map((heading) => {
+    const stem = heading.title
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}_\s-]/gu, "")
+      .replace(/\s/g, "-");
+    const ordinal = seen.get(stem) ?? 0;
+    seen.set(stem, ordinal + 1);
+    return {
+      index: heading.start,
+      anchor: `${stem}${ordinal ? `-${ordinal}` : ""}`,
+    };
+  });
 };
+
+/** A decision file's entries as written: each top-level `json` block's text,
+ * its offset and the fragment of the heading it sits under. readDecisions
+ * and the planning receipts' amendment check read a decision file's blocks
+ * here, so the record's format is read one way. */
+export function decisionBlocks(source) {
+  const tree = parseMarkdown(source);
+  const anchors = markdownHeadings(source, tree);
+  return markdownJsonBlocks(source, tree).map((block) => ({
+    text: block.value,
+    index: block.start,
+    anchor: anchors.find((heading) => heading.index === block.heading?.start)
+      ?.anchor,
+  }));
+}
 
 // Experiment evidence extends the existing decision record, not the runtime
 // schema. Unknown token/effect observations are null, never invented zeros.
@@ -166,8 +191,11 @@ function checkExperiment(entry, path) {
 
 /** The decision ids a persisted direction reading found to name an operator
  * correction in their dispatch without carrying the correction record. The
- * set is read from the record, never parsed out of dispatch prose. */
+ * set is read from the record, never parsed out of dispatch prose. The
+ * record is one of core's own orders' evidence: an instance has none, and a
+ * file of that name under its own order of that number is not read as one. */
 export function persistedCorrectionIds(root) {
+  if (!isCoreRoot(root)) return new Set();
   const relative = docRelative(
     root,
     "evidence",
@@ -327,23 +355,19 @@ export function readDecisions(root, { workOrder } = {}) {
     const source = local ? readDocumentInput(root, path) : readRemote();
     if (local && remote && source !== readRemote())
       throw new Error(`${path}: retained source differs from its moved record`);
-    const headings = markdownHeadings(source);
-    const entries = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)];
+    const entries = decisionBlocks(source);
     if (!entries.length)
       throw new Error(
         `${path}: decision entries must use the documented JSON shape`,
       );
-    for (const match of entries) {
+    for (const block of entries) {
       let entry;
       try {
-        entry = JSON.parse(match[1]);
+        entry = JSON.parse(block.text);
       } catch {
         // Parser messages may quote operator-authored decision text.
-        const heading = headings.findLast(
-          (heading) => heading.index < match.index,
-        );
         const id = /^wo-\d{3}-d\d{3}\b/u
-          .exec(heading?.anchor ?? "")?.[0]
+          .exec(block.anchor ?? "")?.[0]
           ?.toUpperCase();
         throw new Error(`${path}: ${id ?? "decision block"}: invalid JSON`);
       }
@@ -423,10 +447,7 @@ export function readDecisions(root, { workOrder } = {}) {
         );
       const row = { ...entry, workOrder: name, path };
       // Projection metadata cannot alter historic decision/amendment hashes.
-      Object.defineProperty(row, "anchor", {
-        value: headings.findLast((heading) => heading.index < match.index)
-          ?.anchor,
-      });
+      Object.defineProperty(row, "anchor", { value: block.anchor });
       Object.defineProperty(row, "recordSource", { value: source });
       if (remote)
         Object.defineProperty(row, "targetRecord", { value: remote.record });
@@ -457,8 +478,12 @@ export function writeDecisionsIndex(root, { check = false } = {}) {
   const path = docPath(root, "lineage", "decisions-index.md");
   const expected = renderDecisionsIndex(decisions);
   if (check) {
+    // Every row of one file shares its source: parse it once.
+    const headings = new Map();
     for (const row of decisions) {
-      const anchors = markdownHeadings(row.recordSource);
+      if (!headings.has(row.recordSource))
+        headings.set(row.recordSource, markdownHeadings(row.recordSource));
+      const anchors = headings.get(row.recordSource);
       if (
         !row.anchor ||
         !anchors.some((heading) => heading.anchor === row.anchor)
@@ -658,47 +683,93 @@ function hookObservations(root, workOrder, roots = [root]) {
     rows.filter((row) => row.workOrder === workOrder),
   );
 }
+// Every row of the usage ledger, of this checkout and of any other root read
+// beside it.
+const ledgerRows = (root, roots = [root]) =>
+  roots.flatMap((source) => {
+    const path = docRelative(source, "control", "local/process/usage.jsonl");
+    if (source !== root) requireObservationFile(source, path);
+    return jsonl(source, path);
+  });
 function usageRows(root, workOrder, roots = [root]) {
-  return latestUsage(
-    roots.flatMap((source) => {
-      const path = docRelative(source, "control", "local/process/usage.jsonl");
-      if (source !== root) requireObservationFile(source, path);
-      return jsonl(source, path);
-    }),
-    workOrder,
-  );
+  return latestUsage(ledgerRows(root, roots), workOrder);
 }
-// The last recorded observation of a dispatch wins, whatever order the rows are
+// The latest observation of a dispatch wins, whatever order the rows are
 // read in: retained copies are read by name, and preservation's `-10` sorts
-// before `-2`. Rows are ordered by recording time, then by
-// observation cutoff; an undated value counts as earlier than any dated one,
-// and rows equal on both keep the order they were read in.
+// before `-2`. Rows are ordered by the instant each observation counts up
+// to (its cutoff, or its recording time where it names none), then by
+// recording time, as the usage reading orders them
+// (packages/skeleton/src/usage-reading.mjs): two recorders of one session
+// may write out of turn, and the later count is the later observation's.
+// An undated value counts as earlier than any dated one, and rows equal on
+// both keep the order they were read in.
 const dated = (value) => {
   const time = Date.parse(value ?? "");
   return Number.isFinite(time) ? time : -Infinity;
 };
 const byTime = (a, b) => (a === b ? 0 : a - b);
-function latestUsage(parsed, workOrder) {
+// The dispatch a usage row observes: its role, its start, its session (or
+// its ordinal among a role's rows that name none) and its source.
+const usageDispatchKey = (row) =>
+  `${row.role}:${row.startedAt ?? "dispatch"}:${row.sessionKey ?? row.ordinal ?? 0}:${row.observation.source}`;
+// One order's rows in the order their observations were made, less those a
+// later record supersedes.
+const standingUsage = (parsed, workOrder) => {
   const rows = parsed
     .filter((row) => row.workOrder === workOrder)
-    .map((row) => [
-      dated(row.recordedAt),
-      dated(row.observation.observedAt),
-      row,
-    ])
+    .map((row) => {
+      const recorded = dated(row.recordedAt);
+      const observed = dated(row.observation.observedAt);
+      return [observed === -Infinity ? recorded : observed, recorded, row];
+    })
     .sort(([a, x], [b, y]) => byTime(a, b) || byTime(x, y))
     .map(([, , row]) => row);
-  const latest = new Map();
   const superseded = new Set(rows.flatMap((row) => row.supersedes ?? []));
-  for (const row of rows.filter(
-    (row) => !superseded.has(usageRecordIdentity(row)),
-  ))
-    latest.set(
-      `${row.role}:${row.startedAt ?? "dispatch"}:${row.sessionKey ?? row.ordinal ?? 0}:${row.observation.source}`,
-      row,
-    );
+  return rows.filter((row) => !superseded.has(usageRecordIdentity(row)));
+};
+function latestUsage(parsed, workOrder) {
+  const latest = new Map();
+  for (const row of standingUsage(parsed, workOrder))
+    latest.set(usageDispatchKey(row), row);
   return [...latest.values()].map(({ sessionKey, supersedes, ...row }) => row);
 }
+/** Every observation of one order's dispatches, each once and in the order
+ * recorded, with the key of the dispatch it observes (`series`): the rows
+ * `latestUsage` takes the last of. `sessionId` names the session a row
+ * observes whatever source measured it, and a row a session's own record
+ * gave, as against one a launcher took from a worker's result, is marked
+ * `session`. A row that holds no count of the dispatch (a failed
+ * collection, a count of another scope) says nothing a measured row of the
+ * same session does not: it is left out wherever that session has one, and
+ * stands where it has none, so that the session is still seen. */
+function usageSeries(parsed, workOrder) {
+  const seen = new Set();
+  const rows = standingUsage(parsed, workOrder)
+    .filter((row) => {
+      const identity = usageRecordIdentity(row);
+      return !seen.has(identity) && seen.add(identity);
+    })
+    .map(({ sessionKey, supersedes, ...row }) => ({
+      ...row,
+      series: usageDispatchKey({ ...row, sessionKey }),
+      sessionId: `${row.role}:${row.startedAt ?? "dispatch"}:${sessionKey ?? row.ordinal ?? 0}`,
+      session:
+        Boolean(sessionKey) ||
+        /-transcript-/u.test(String(row.observation.source)),
+    }));
+  const measuredSessions = new Set(
+    rows.filter(measuredUsage).map((row) => row.sessionId),
+  );
+  return rows.filter(
+    (row) => measuredUsage(row) || !measuredSessions.has(row.sessionId),
+  );
+}
+/** Whether a usage row holds counters a host reported of the dispatch: a
+ * failed collection holds none, and a count of another scope (a session's
+ * cumulative count, one with no baseline) is of something else. */
+const measuredUsage = (row) =>
+  row.observation?.source !== "unavailable" &&
+  row.observation?.scope === "dispatch";
 
 // `worktree finish` keeps a closed order's usage file in its retained lane,
 // under the collision names preservation gives it (harness-prune.mjs matches
@@ -756,13 +827,194 @@ const orderedRoles = (roles) =>
   [...new Set(roles.filter((role) => typeof role === "string"))].sort(
     (a, b) => roleRank(a) - roleRank(b) || a.localeCompare(b),
   );
+// The role whose completion each attested event records.
+const ATTESTING_ROLE = {
+  ImplementationReady: "executor",
+  RepairCompleted: "executor",
+  VerificationCompleted: "verifier",
+  FinalReviewCompleted: "reviewer",
+};
+/** The model each session of an order attests, by the session its usage
+ * rows observe (`sessionId`, or a row's `series` where it names none). An
+ * attested event (a completion, or a record a role's session made during
+ * its phase) is the record of the session of that role that had started
+ * most recently when the event was recorded, and a session's model is the
+ * one its events name. A session no event of its role falls to, or whose
+ * events name two models, has none: its usage is priced as unknown and
+ * never at another session's model. Rows a launcher recorded from a
+ * worker's result are no session and are given none.
+ * @param {readonly object[]} events the order's control events
+ * @param {readonly {series: string, sessionId?: string, session?: boolean, role: string, startedAt?: string}[]} rows
+ * @returns {Map<string, string>} */
+export function attestedSessionModels(events, rows) {
+  const sessions = new Map();
+  for (const row of rows) {
+    const session = row.sessionId ?? row.series;
+    if (row.session && !sessions.has(session))
+      sessions.set(session, {
+        role: row.role,
+        startedAt: dated(row.startedAt),
+      });
+  }
+  const named = new Map();
+  for (const event of events) {
+    const role = event.recordingSession?.role ?? ATTESTING_ROLE[event.type];
+    const model = event.actor?.model;
+    const at = dated(event.recordedAt);
+    if (
+      !role ||
+      typeof model !== "string" ||
+      !model ||
+      model === "unknown" ||
+      at === -Infinity
+    )
+      continue;
+    let chosen = null;
+    for (const [id, session] of sessions)
+      if (
+        session.role === role &&
+        session.startedAt <= at &&
+        (chosen === null || session.startedAt >= sessions.get(chosen).startedAt)
+      )
+        chosen = id;
+    if (chosen !== null)
+      named.set(chosen, (named.get(chosen) ?? new Set()).add(model));
+  }
+  return new Map(
+    [...named]
+      .filter(([, models]) => models.size === 1)
+      .map(([session, models]) => [session, [...models][0]]),
+  );
+}
+/** The usage ledger as the usage report reads it: every dispatch
+ * observation this checkout holds, of any order it names and of the planning
+ * passes, each with the series of the dispatch it observes and the model
+ * that dispatch's own session attests. An order's rows are the ones the
+ * meter reads: those no later record supersedes, the registered main
+ * checkout's ledger too while the order is in flight, and, for a role the
+ * ledger holds no measured row of, the order's retained usage copies.
+ * Totals that survive only in an order's snapshot name no day, so they are
+ * no row of this reading. */
+export function usageLedgerRows(root) {
+  const control = readControl(root);
+  const inFlight = (workOrder) => {
+    const phase = control.orders.get(workOrder)?.state.phase;
+    return phase !== undefined && !["closed", "withdrawn"].includes(phase);
+  };
+  const own = ledgerRows(root);
+  const roots = observationRoots(root);
+  const every = roots.length > 1 ? ledgerRows(root, roots) : own;
+  const retained = join(root, docRelative(root, "control", "local/retained"));
+  const named = [
+    ...every.map((row) => row?.workOrder),
+    ...(existsSync(retained) && lstatSync(retained).isDirectory()
+      ? readdirSync(retained)
+      : []),
+  ].filter((name) => typeof name === "string" && /^WO-\d{3}$/u.test(name));
+  return [
+    ...[...new Set(named)].sort().flatMap((workOrder) => {
+      const live = usageSeries(inFlight(workOrder) ? every : own, workOrder);
+      const measured = new Set(
+        live.filter(measuredUsage).map((row) => row.role),
+      );
+      // A retained copy is read for a role the ledger measured nothing
+      // of, and then stands in place of that role's unmeasured rows.
+      const kept = usageSeries(
+        retainedUsageCopies(root, workOrder).flatMap((copy) => copy.rows),
+        workOrder,
+      ).filter((row) => !measured.has(row.role));
+      const copied = new Set(kept.map((row) => row.role));
+      const rows = [
+        ...live.filter((row) => measuredUsage(row) || !copied.has(row.role)),
+        ...kept,
+      ];
+      const models = control.orders.has(workOrder)
+        ? attestedSessionModels(eventsForOrder(control, workOrder), rows)
+        : new Map();
+      return rows.map(({ session, sessionId, ...row }) => ({
+        ...row,
+        series: `${workOrder}:${row.series}`,
+        model: models.get(sessionId) ?? null,
+      }));
+    }),
+    ...usageSeries(own, null).map(({ session, sessionId, ...row }) => ({
+      ...row,
+      series: `planning:${row.dispatch ?? ""}:${row.series}`,
+      model: null,
+    })),
+  ];
+}
+/** What this checkout's sessions used on one local calendar day, by the
+ * usage report's own reading of the ledger, so that a line printed from it
+ * and `npm run meta -- --usage` agree. `totalTokens` is what the day's
+ * observations are known to have used: each one's total where its host
+ * reported one, and the classes it reported where it did not. `partial`
+ * says that an observation of the day holds no count or fell, so the day
+ * used at least that much. The estimate is in dollars at the instance's
+ * declared prices, and null where a session of the day ran a model with no
+ * declared price (`unpriced` names each), attests no model (`unattested`)
+ * or holds no count. `pricedUsd` is what the observations that do have an
+ * estimate come to, so a reader knows the least the day cost where the
+ * whole is unknown. Both least amounts are summed an observation at a time
+ * (the reading's `knownTokens` and `knownUsd`): one with no count takes
+ * nothing from what another measured, though both be sessions of one role
+ * of one order. A day with no observation used nothing. */
+export function dayUse(
+  root,
+  {
+    now = new Date(),
+    timeZone,
+    rows = usageLedgerRows(root),
+    prices = loadConfig(root).workers.prices,
+  } = {},
+) {
+  const day = localDay(new Date(now).toISOString(), timeZone);
+  const reading = usageReading(rows, {
+    since: day,
+    ...(timeZone ? { timeZone } : {}),
+    prices,
+  });
+  const entry = reading.byDay.find((row) => row.day === day);
+  const unestimated = (entry?.roles ?? []).filter(
+    (role) => role.estimateUsd === null,
+  );
+  return {
+    day,
+    timeZone: reading.timeZone,
+    totalTokens: entry?.knownTokens ?? 0,
+    partial: Boolean(
+      entry &&
+      (entry.totalTokens === null || entry.unmeasured > 0 || entry.fell > 0),
+    ),
+    estimateUsd: entry ? entry.estimateUsd : 0,
+    pricedUsd: entry?.knownUsd ?? 0,
+    unpriced: [
+      ...new Set(
+        unestimated.flatMap((role) =>
+          role.model !== null && !Object.hasOwn(reading.prices, role.model)
+            ? [role.model]
+            : [],
+        ),
+      ),
+    ].sort(),
+    unattested: unestimated.some((role) => role.model === null),
+  };
+}
 /** Usage totals by role: tokens, cost, commands and steps over the dispatch
- * rows the meter already sums; wall time over every row, as dispatch rows do. */
+ * rows the meter already sums; wall time over every row, as dispatch rows do.
+ * Beside the total stand the four classes that do not overlap (uncached
+ * input, cache read, cache write, output), each the sum of what the rows
+ * reported and `null` where no row reported it. */
 export function usageTotals(rows) {
   return Object.fromEntries(
     orderedRoles(rows.map((row) => row.role)).map((role) => {
       const all = rows.filter((row) => row.role === role),
         dispatch = all.filter((row) => row.observation?.scope === "dispatch");
+      const classes = sumUsageClasses(
+        dispatch.map((row) =>
+          usageClasses(row.observation.usage, row.observation.source),
+        ),
+      );
       return [
         role,
         {
@@ -770,6 +1022,10 @@ export function usageTotals(rows) {
           totalTokens: sumKnown(
             dispatch.map((row) => row.observation.usage?.totalTokens),
           ),
+          uncachedInputTokens: classes.uncachedInput,
+          cacheReadTokens: classes.cacheRead,
+          cacheWriteTokens: classes.cacheWrite,
+          outputTokens: classes.output,
           costUsd: sumKnown(
             dispatch.map((row) => row.observation.usage?.costUsd),
           ),
@@ -985,23 +1241,19 @@ export function planningCaptures(root) {
   const path = docRelative(root, "lineage", "idea-ledger.md");
   if (!existsSync(join(root, path))) return [];
   const ledger = readFileSync(join(root, path), "utf8");
-  const visible = ledger.replace(
-    /^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm,
-    (match) => match.replace(/[^\n]/g, " "),
-  );
-  const headings = [...visible.matchAll(/^## (.+)$/gm)];
   const intake = new RegExp(
     String.raw`${rootPattern(root, "intake")}/[^\s\x60'")]+`,
     "gu",
   );
-  return headings.flatMap((match, index) => {
-    const heading = match[1],
-      date = heading.match(/\b\d{4}-\d{2}-\d{2}\b/u)?.[0];
+  // A pass is a level-two section; its text runs from its heading to the
+  // next heading at that level or above.
+  const sections = markdownSections(ledger).filter(
+    (section) => section.depth === 2,
+  );
+  return sections.flatMap(({ title: heading, start, bodyEnd }) => {
+    const date = heading.match(/\b\d{4}-\d{2}-\d{2}\b/u)?.[0];
     if (!date || !/planning pass/iu.test(heading)) return [];
-    const section = ledger.slice(
-      match.index,
-      headings[index + 1]?.index ?? ledger.length,
-    );
+    const section = ledger.slice(start, bodyEnd);
     return [
       {
         pass: `planning-${createHash("sha256").update(heading).digest("hex").slice(0, 16)}`,
@@ -2229,10 +2481,12 @@ export async function collectMeta(
         path && existsSync(join(root, path))
           ? readFileSync(join(root, path), "utf8")
           : "";
+      // The order's own Cost header field, as the order format's reader
+      // reads it.
       const cost =
-        /^\*\*Cost:\*\*[^\S\r\n]*([\s\S]*?)(?=\n\s*\n|\n\*\*|(?![\s\S]))/m
-          .exec(authority)?.[1]
-          ?.replace(/\s+/g, " ")
+        readWorkOrder(authority)
+          .headerFields("Cost")[0]
+          ?.value.replace(/\s+/g, " ")
           .trim() ?? "";
       const current = reconcileCost(workOrder, cost, checks, now);
       const snapshot =
@@ -2456,7 +2710,7 @@ export function renderMeta(meta) {
     `Drift-to-low-performance — installed cold start (previous edition ${meta.coldStart.comparisonEdition ?? "unknown"}):`,
     ...meta.coldStart.profiles.map(
       (row) =>
-        `${row.skillsRoot}/${row.role}: ${display(row.bytes)} bytes; ceiling ${row.ceiling == null ? "unset" : display(row.ceiling)}; previous ${display(row.previousBytes)}; Δ edition ${display(row.delta)}; last acceptance ${row.lastAcceptance?.date ?? "unknown"}: ${display(row.lastAcceptance?.bytes)} bytes, Δ ${display(row.lastAcceptance?.delta)}${row.lastAcceptance?.cause ? ` (${row.lastAcceptance.cause})` : ""}; ${row.verdict}`,
+        `${row.skillsRoot}/${row.role}: ${display(row.bytes)} bytes; fixed reads ${display(row.fixedReadBytes)} bytes; ceiling ${row.ceiling == null ? "unset" : display(row.ceiling)}; previous ${display(row.previousBytes)}; Δ edition ${display(row.delta)}; last acceptance ${row.lastAcceptance?.date ?? "unknown"}: ${display(row.lastAcceptance?.bytes)} bytes, Δ ${display(row.lastAcceptance?.delta)}${row.lastAcceptance?.cause ? ` (${row.lastAcceptance.cause})` : ""}; ${row.verdict}`,
     ),
     "",
     `Declared supports=${display(meta.declared.supports)}, units=${display(meta.declared.units)}, hooks=${display(meta.declared.hooks)}`,

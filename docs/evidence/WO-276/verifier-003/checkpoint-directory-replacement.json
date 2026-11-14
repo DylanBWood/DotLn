@@ -1,0 +1,25 @@
+{
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "scenario": "Commit component/old.txt, then replace component/ with a normal file before checkpointing",
+  "baseline": {
+    "snapshotSucceeded": true,
+    "replacementPreserved": true
+  },
+  "candidate": {
+    "snapshot": {
+      "error": {
+        "code": "ENOTDIR",
+        "message": "ENOTDIR: not a directory, lstat '<fixture>/component/old.txt'"
+      }
+    },
+    "checkpoint": {
+      "error": {
+        "code": "ENOTDIR",
+        "message": "ENOTDIR: not a directory, lstat '<fixture>/component/old.txt'"
+      }
+    }
+  },
+  "indexBytesUnchanged": true,
+  "workingFilePreserved": true,
+  "limit": "Actual baseline checkpoint module; relative shared utilities rebound to current tree. Local fixture only, no repository state was discarded."
+}

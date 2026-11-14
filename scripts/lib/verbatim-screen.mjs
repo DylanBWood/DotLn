@@ -6,14 +6,20 @@
 // captures word for word,
 // and a run of the window's length that both share names the file, the line
 // and the capture's digest; the words themselves never leave this process.
+// The screen compares words, not addresses: a link's destination, a code
+// span, a URL and a path are each read as one word that no capture holds, so
+// a document's path, however many words its name has, is never a copied run.
 import { createHash } from "node:crypto";
 import { lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { addsLine, readChangedText } from "./branch-changes.mjs";
-import { docPath, loadConfig } from "./config.mjs";
+import { docPath, extensionPath, loadConfig } from "./config.mjs";
 import { runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
+import { isKitRoot } from "./harness-runtime.mjs";
+import { markdownAddressRanges } from "./markdown-links.mjs";
 import { localTermTokens as words } from "./terms.mjs";
+import { provenVendoredFile } from "./vendored-parser.mjs";
 
 /**
  * The window: a run of this many consecutive words shared with a capture is a
@@ -102,8 +108,10 @@ const inside = (parent, child) =>
   child === parent || child.startsWith(`${parent}${sep}`);
 
 /** What the screen reads: Markdown under the document roots or at the
- * repository root, and source under scripts/ and packages' src/. The intake
- * root and the local lane are never committed and never screened. */
+ * repository root, source under scripts/ and packages' src/, and every file
+ * under the reserved root, the instance's own, where it is one of the
+ * screens for what must not leave a repository. The intake root and the
+ * local lane are never committed and never screened. */
 export function verbatimScope(root) {
   const roots = Object.values(loadConfig(root).roots).map((path) =>
     resolve(root, path),
@@ -112,6 +120,7 @@ export function verbatimScope(root) {
   return (path) => {
     const absolute = resolve(root, path);
     if (private_.some((directory) => inside(directory, absolute))) return false;
+    if (extensionPath(path)) return true;
     if (path.endsWith(".md"))
       return (
         dirname(path) === "." ||
@@ -140,25 +149,135 @@ const sameWindow = (left, leftStart, right, rightStart, window) => {
   return true;
 };
 
+// The one word an address is read as. A capture's words are runs of letters
+// and digits, and this is neither, so no window that holds it is ever shared
+// with a capture; it keeps the address's place in the line, so the words on
+// either side of it are not neighbours.
+const ADDRESS = "\u0000address";
+const PATH_PART = "[\\p{L}\\p{N}_.@~+%#=&?:,-]";
+// A URL; a path; or a file name whose stem is itself compound (a hyphen,
+// an underscore or a further dot) before a short extension. A path is a
+// word with a slash that also looks like one: it opens with a slash, a dot
+// or a tilde, holds more than one slash, or has a part that holds a dot, a
+// hyphen or an underscore. Two plain words with a slash between them
+// (`and/or`, a date, a fraction) are words, and so is an abbreviation
+// written as single letters and periods; neither parts a run.
+const URL_SHAPE = /^[a-z][a-z0-9+.-]*:\/\/\S+$/iu;
+const SLASHED = new RegExp(`^${PATH_PART}*(?:/${PATH_PART}+)+/?$`, "u");
+const PATH_LIKE = /^[/.~]|\/.*\/|[._-]/u;
+const COMPOUND_FILE =
+  /^(?=.*[-_.].*\.)[\p{L}\p{N}_@~+-]+(?:[.-][\p{L}\p{N}_@~+-]+)*\.[A-Za-z][A-Za-z0-9]{0,7}$/u;
+const LETTERED_ABBREVIATION = /^(?:\p{L}\.)+\p{L}?$/u;
+const isAddress = (core) =>
+  URL_SHAPE.test(core) ||
+  (SLASHED.test(core) && PATH_LIKE.test(core)) ||
+  (COMPOUND_FILE.test(core) && !LETTERED_ABBREVIATION.test(core));
+// A stretch that holds neither a slash nor a dotted compound holds no
+// address, and is read as plain words.
+const MAY_HOLD_ADDRESS = /\/|[-_.]\S*\.[A-Za-z]/u;
+/** A stretch of a line as words, each with the columns it stands at, and
+ * each URL and path-shaped word read as one address. What wraps a word
+ * (brackets, quotation marks, emphasis marks, closing punctuation) is set
+ * aside before its shape is judged. */
+function addressedWords(text) {
+  const read = [];
+  for (const match of text.matchAll(/\S+/gu)) {
+    const token = match[0];
+    const at = match.index;
+    const core = token
+      .replace(/^[([{<"'\u201c\u2018*_~`]+/u, "")
+      .replace(/[)\]}>"'\u201d\u2019*_~`.,;:!?]+$/u, "");
+    if (isAddress(core)) {
+      read.push({ word: ADDRESS, start: at, end: at + token.length });
+      continue;
+    }
+    // Each word's own columns where the written runs are the compared
+    // words; a token whose folding changes its runs keeps the token's.
+    const folded = words(token);
+    const written = [...token.matchAll(/[\p{L}\p{N}]+/gu)];
+    folded.forEach((word, index) =>
+      read.push(
+        written.length === folded.length
+          ? {
+              word,
+              start: at + written[index].index,
+              end: at + written[index].index + written[index][0].length,
+            }
+          : { word, start: at, end: at + token.length },
+      ),
+    );
+  }
+  return read;
+}
+const stretchWords = (text) =>
+  MAY_HOLD_ADDRESS.test(text)
+    ? addressedWords(text).map(({ word }) => word)
+    : words(text);
+
 /** One line's words, each tagged with the captures whose requested
  * quotation spans hold it: a quotation's span (columns of its JSON string on
  * that line) is cut out and tokenized apart, so a span's edge, a quote
  * character, never splits a word. */
 function lineWords(text, line, spans) {
   if (!spans.length)
-    return words(text).map((word) => ({ word, line, quoted: [] }));
+    return stretchWords(text).map((word) => ({ word, line, quoted: [] }));
   const located = [];
   let at = 0;
   for (const span of [...spans].sort((a, b) => a.start - b.start)) {
-    for (const word of words(text.slice(at, span.start)))
+    for (const word of stretchWords(text.slice(at, span.start)))
       located.push({ word, line, quoted: [] });
-    for (const word of words(text.slice(span.start, span.end)))
+    for (const word of stretchWords(text.slice(span.start, span.end)))
       located.push({ word, line, quoted: [span.captureSha256] });
     at = Math.max(at, span.end);
   }
-  for (const word of words(text.slice(at)))
+  for (const word of stretchWords(text.slice(at)))
     located.push({ word, line, quoted: [] });
   return located;
+}
+
+/** The address ranges of a Markdown document by line: for each line that
+ * holds part of one, the columns it covers there. */
+function addressColumns(text) {
+  const starts = [0];
+  for (let at = text.indexOf("\n"); at >= 0; at = text.indexOf("\n", at + 1))
+    starts.push(at + 1);
+  const columns = new Map();
+  for (const { start, end } of markdownAddressRanges(text)) {
+    let line = starts.findLastIndex((offset) => offset <= start);
+    for (let from = start; from < end; line++) {
+      const next = starts[line + 1] ?? text.length + 1;
+      const to = Math.min(end, next - 1);
+      if (to > from) {
+        if (!columns.has(line + 1)) columns.set(line + 1, []);
+        columns
+          .get(line + 1)
+          .push({ start: from - starts[line], end: to - starts[line] });
+      }
+      from = next;
+    }
+  }
+  return columns;
+}
+
+/** In a kit root, each kit file's bytes as the incoming manifest states
+ * them. A changed file that still equals its entry is the kit's text, which
+ * an update brought in whole, and not this instance's writing. */
+function kitFileHashes(root) {
+  if (!isKitRoot(root)) return new Map();
+  let manifest;
+  try {
+    manifest = JSON.parse(
+      readFileSync(join(root, "KIT-MANIFEST.json"), "utf8"),
+    );
+  } catch {
+    return new Map();
+  }
+  return new Map(
+    (Array.isArray(manifest?.files) ? manifest.files : []).map((entry) => [
+      entry?.path,
+      entry?.sha256,
+    ]),
+  );
 }
 
 /** The windows of the lines a branch touches in each screened file, by the
@@ -168,11 +287,21 @@ function lineWords(text, line, spans) {
 function branchWindows(root, changes, scope, window, quotes) {
   const ids = new Map();
   const windows = new Map();
+  const kit = kitFileHashes(root);
   let screened = 0;
   for (const [path, added] of changes.files) {
     if (!scope(path)) continue;
     if (!lstatSync(join(root, path), { throwIfNoEntry: false })?.isFile())
       continue;
+    if (
+      kit.has(path) &&
+      createHash("sha256")
+        .update(readFileSync(join(root, path)))
+        .digest("hex") === kit.get(path)
+    )
+      continue;
+    // The proven copy of the pinned parser holds nothing a session wrote.
+    if (provenVendoredFile(root, path)) continue;
     const text = readChangedText(root, path);
     if (text === null) continue;
     screened++;
@@ -217,41 +346,31 @@ function branchWindows(root, changes, scope, window, quotes) {
 
 /** The runs the repository already held at the base: a capture that quotes
  * the repository's own text (a pasted section, an error message, a command)
- * does not make that text the operator's. Only the files at the base that
- * hold each run's eight longest words together are read, smallest first and
- * a few at a time, until every run is found. */
+ * does not make that text the operator's. The base tree is read once for all
+ * the runs together: its files are listed with their sizes in one call and
+ * scanned smallest first, a few at a time, until every run is found. */
 function baseRuns(root, base, runs) {
   if (!runs.length) return new Set();
-  const signatures = new Map();
-  for (const run of runs) {
-    const longest = [...new Set(run.split(" "))]
-      .sort((a, b) => b.length - a.length || a.localeCompare(b))
-      .slice(0, 8);
-    signatures.set(longest.join(" "), longest);
-  }
-  const listed = new Set();
-  for (const longest of signatures.values())
-    for (const entry of runGit(
-      root,
-      [
-        ...HOST_GIT_READ,
-        "grep",
-        "-l",
-        "-z",
-        "-I",
-        "-F",
-        "-i",
-        "--all-match",
-        ...longest.flatMap((word) => ["-e", word]),
-        base,
-        "--",
-      ],
-      { trim: false, maxBuffer: 64 * 1024 * 1024, onFailure: () => "" },
-    ).split("\0"))
-      // git grep names each file as <tree>:<path>.
-      if (entry) listed.add(entry.slice(entry.indexOf(":") + 1));
+  const listed = runGit(
+    root,
+    [...HOST_GIT_READ, "ls-tree", "-r", "-l", "-z", base],
+    { trim: false, maxBuffer: 256 * 1024 * 1024 },
+  )
+    .split("\0")
+    .flatMap((entry) => {
+      // Each entry is `<mode> <type> <object> <size>` and, after a tab, the
+      // path; a submodule's entry has no size and holds no words.
+      const tab = entry.indexOf("\t");
+      if (tab < 0) return [];
+      const [, type, object, size] = entry.slice(0, tab).split(/ +/u);
+      return type === "blob" &&
+        Number(size) > 0 &&
+        !BINARY.test(entry.slice(tab + 1))
+        ? [{ name: object, size: Number(size) }]
+        : [];
+    });
   const found = new Set();
-  if (!listed.size) return found;
+  if (!listed.length) return found;
   // Each wanted run by the hash of its word ids; a base file's words are
   // compared through the same ids, and the scan ends once every run is found.
   const ids = new Map();
@@ -266,26 +385,15 @@ function baseRuns(root, base, runs) {
     targets.get(hash).push({ sequence, run });
   }
   const window = runs[0].split(" ").length;
-  const objects = (input, check) =>
-    runGit(
-      root,
-      [...HOST_GIT_READ, "cat-file", check ? "--batch-check" : "--batch"],
-      {
-        raw: true,
-        input: input.join("\n") + "\n",
-        maxBuffer: check ? 64 * 1024 * 1024 : 256 * 1024 * 1024,
-      },
-    ).stdout ?? Buffer.alloc(0);
-  const names = [...listed].map((path) => `${base}:${path}`);
-  const sized = objects(names, true)
-    .toString("utf8")
-    .split("\n")
-    .map((line, index) => ({
-      name: names[index],
-      size: Number(line.split(" ")[2]),
-    }))
-    .filter((row) => row.name && Number.isSafeInteger(row.size))
-    .sort((a, b) => a.size - b.size);
+  const objects = (input) =>
+    runGit(root, [...HOST_GIT_READ, "cat-file", "--batch"], {
+      raw: true,
+      input: input.join("\n") + "\n",
+      maxBuffer: 256 * 1024 * 1024,
+    }).stdout ?? Buffer.alloc(0);
+  const sized = [
+    ...new Map(listed.map((row) => [row.name, row])).values(),
+  ].sort((a, b) => a.size - b.size);
   const scan = (body) => {
     let text;
     try {
@@ -319,7 +427,7 @@ function baseRuns(root, base, runs) {
       batch.push(sized[next].name);
       bytes += sized[next].size;
     }
-    const output = objects(batch, false);
+    const output = objects(batch);
     for (let at = 0; at < output.length;) {
       const end = output.indexOf(10, at);
       if (end < 0) break;
@@ -374,6 +482,54 @@ export function verbatimScreen(
     window,
     quotes,
   );
+  // A link's destination and a code span are addresses too, and only the
+  // Markdown reading says where they stand. A document is parsed when one of
+  // its windows is shared with a capture, and at no other time: a window that
+  // holds a word of such a range is no run, exactly as if the range had been
+  // read as one address from the start.
+  const addressed = new Map();
+  const holdsAddress = (entry) => {
+    if (!entry.path.endsWith(".md")) return false;
+    if (!addressed.has(entry.path)) {
+      const text = readChangedText(root, entry.path);
+      addressed.set(entry.path, {
+        lines: text.split("\n"),
+        columns: addressColumns(text),
+      });
+    }
+    const { lines, columns } = addressed.get(entry.path);
+    if (!columns.size) return false;
+    // The window's words by line, each at its place among that line's words.
+    for (let at = entry.start; at < entry.start + window;) {
+      const { line } = entry.located[at];
+      let first = at;
+      while (first > 0 && entry.located[first - 1].line === line) first--;
+      let end = at;
+      while (end < entry.located.length && entry.located[end].line === line)
+        end++;
+      const ranges = columns.get(line);
+      if (ranges) {
+        const placed = addressedWords(lines[line - 1]);
+        // A line whose words cannot be placed keeps its finding.
+        if (placed.length === end - first)
+          for (
+            let index = at;
+            index < Math.min(end, entry.start + window);
+            index++
+          ) {
+            const word = placed[index - first];
+            if (
+              ranges.some(
+                (range) => word.start < range.end && range.start < word.end,
+              )
+            )
+              return true;
+          }
+      }
+      at = end;
+    }
+    return false;
+  };
   // Each run's text, the places it was added and the captures that hold it.
   const matched = new Map();
   let read = 0;
@@ -400,6 +556,7 @@ export function verbatimScreen(
         []) {
         if (!sameWindow(entry.sequence, entry.start, sequence, start, window))
           continue;
+        if (holdsAddress(entry)) continue;
         const run = key(
           entry.located
             .slice(entry.start, entry.start + window)

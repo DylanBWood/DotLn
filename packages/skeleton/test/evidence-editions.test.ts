@@ -15,6 +15,7 @@ import {
   sameEvidenceSourceContent,
   writeEvidenceFile,
 } from "../src/evidence-editions.mjs";
+import { isCoreRoot, isKitRoot } from "../src/runtime-inputs.mjs";
 
 test("current evidence follows one manifest, independent of active order; explicit historical pins survive", () => {
   const root = createFixtureRoot(join(tmpdir(), "dotln-evidence-edition-"));
@@ -398,5 +399,62 @@ test("immutable evidence admits a component-only bump while source, external dep
     );
   } finally {
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion R1: a root is core's own unless it is a kit root, and a feedback edition numbered as core's first is an edition like any other in a kit root", () => {
+  const core = createFixtureRoot(join(tmpdir(), "dotln-core-root-"));
+  const kit = createFixtureRoot(join(tmpdir(), "dotln-kit-root-"));
+  try {
+    writeFileSync(join(kit, "KIT-MANIFEST.json"), "{}\n");
+    // The predicate: a kit manifest and no package sources make a kit root,
+    // and every other root is core's.
+    assert.equal(isKitRoot(core), false);
+    assert.equal(isCoreRoot(core), true);
+    assert.equal(isKitRoot(kit), true);
+    assert.equal(isCoreRoot(kit), false);
+    // An instance that adds package sources of its own is not told apart
+    // from core: the gap the order's known issue names.
+    const grown = createFixtureRoot(join(tmpdir(), "dotln-grown-root-"));
+    try {
+      writeFileSync(join(grown, "KIT-MANIFEST.json"), "{}\n");
+      mkdirSync(join(grown, "packages/own"), { recursive: true });
+      writeFileSync(join(grown, "packages/own/tsconfig.json"), "{}\n");
+      assert.equal(isCoreRoot(grown), true);
+    } finally {
+      rmSync(grown, { recursive: true, force: true });
+    }
+
+    const edition = (
+      root: string,
+      workOrder: string,
+      revision: string | null,
+    ) => currentEvidence(root, "feedback", { workOrder, revision }).directory;
+    // In core's own root its first feedback edition lives at the order's
+    // evidence root and takes no revision, as before.
+    assert.equal(edition(core, "WO-011", null), "docs/evidence/WO-011");
+    assert.throws(
+      () => edition(core, "WO-011", "002"),
+      /Invalid current-evidence edition: feedback/u,
+    );
+    // In a kit root an order of that number is an order like any other.
+    for (const workOrder of ["WO-011", "WO-998"]) {
+      assert.equal(
+        edition(kit, workOrder, "002"),
+        `docs/evidence/${workOrder}/feedback-002`,
+      );
+      assert.equal(
+        edition(kit, workOrder, null),
+        `docs/evidence/${workOrder}/feedback`,
+      );
+    }
+    // Any other order is the same in both.
+    assert.equal(
+      edition(core, "WO-998", "002"),
+      "docs/evidence/WO-998/feedback-002",
+    );
+  } finally {
+    rmSync(core, { recursive: true, force: true });
+    rmSync(kit, { recursive: true, force: true });
   }
 });

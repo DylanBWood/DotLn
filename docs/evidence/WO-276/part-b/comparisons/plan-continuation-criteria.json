@@ -1,0 +1,9 @@
+{
+  "comparison": "plan-continuation-criteria",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order's numbered criteria in the worktree: the offset at which a disposed criterion's text is found after the acceptance criteria",
+  "read": 261,
+  "equal": 261,
+  "differences": {},
+  "examples": []
+}

@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
+import {
+  inlineSource,
+  markdownCodeBlocks,
+  markdownListItems,
+  markdownNodes,
+  markdownSections,
+  parseMarkdown,
+} from "./lib/markdown-links.mjs";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -23,56 +31,57 @@ const provenance = [
   "operator-directed",
   "operator-authorized",
 ];
+/** The ledger's sections: each level-2 heading with the body under it. The
+ * plan's readers find a planning pass among these same sections. */
+export const ledgerSections = (source, tree = parseMarkdown(source)) =>
+  markdownSections(source, tree).filter((section) => section.depth === 2);
+
 export function inspectLedger(source) {
-  const lines = source.split("\n");
-  const sections = [];
+  // The pinned parser reads the ledger, so a quoted example inside a code
+  // block is never a heading, an entry or a tag.
+  const tree = parseMarkdown(source);
   const errors = [];
   const counts = Object.fromEntries(statuses.map((status) => [status, 0]));
-  let section;
-  let fence;
-  for (const [offset, line] of lines.entries()) {
-    const marker = /^\s{0,3}(`{3,}|~{3,})/.exec(line)?.[1];
-    if (fence) {
-      if (
-        marker?.[0] === fence[0] &&
-        marker.length >= fence.length &&
-        line.trim() === marker
-      )
-        fence = undefined;
-      continue;
-    }
-    if (marker) {
-      fence = marker;
-      // Skipping an example must not join the text on either side into a lead.
-      if (section) section.lines.push({ text: "", line: offset + 1 });
-      continue;
-    }
-    if (line.startsWith("## ")) {
-      section = {
-        heading: line.slice(3),
-        line: offset + 1,
-        lines: [],
-        entries: [],
-        tags: 0,
-      };
-      sections.push(section);
-    } else if (section) section.lines.push({ text: line, line: offset + 1 });
-  }
-  if (fence) errors.push("Unclosed code fence");
-  const header = lines
-    .slice(0, sections[0] ? sections[0].line - 1 : lines.length)
-    .join("\n");
-  const declaration = /(?:^|\n)Statuses: ([\s\S]*?)(?:\n\n|$)/.exec(
-    header,
-  )?.[1];
-  const declared = [...(declaration ?? "").matchAll(/`([^`]+)`/g)].map(
-    (match) => match[1],
+  const sections = ledgerSections(source, tree).map((section) => ({
+    heading: section.title,
+    line: section.line,
+    start: section.start,
+    end: section.bodyEnd,
+    entries: [],
+    tags: 0,
+  }));
+  if (markdownCodeBlocks(source, tree).some((block) => !block.closed))
+    errors.push("Unclosed code fence");
+  // The header is everything above the first section; its Statuses
+  // paragraph declares the lifecycle set in code spans.
+  const declaration = tree.children.find(
+    (node) =>
+      node.type === "paragraph" &&
+      node.position.start.offset < (sections[0]?.start ?? source.length) &&
+      inlineSource(source, node).startsWith("Statuses: "),
   );
+  const declared = declaration
+    ? [...markdownNodes(declaration)]
+        .filter((node) => node.type === "inlineCode")
+        .map((node) => node.value)
+    : [];
   if (JSON.stringify(declared) !== JSON.stringify(statuses))
     errors.push(
       "Statuses declaration differs from the supported lifecycle set",
     );
 
+  const entries = markdownListItems(source, tree);
+  const atMargin = (item) =>
+    item.start === 0 || source[item.start - 1] === "\n";
+  // The inline content of each item's first paragraph, by the item's offset.
+  const leads = new Map(
+    [...markdownNodes(tree)]
+      .filter((node) => node.type === "listItem")
+      .map((node) => [
+        node.position.start.offset,
+        node.children[0]?.type === "paragraph" ? node.children[0].children : [],
+      ]),
+  );
   let previousDate = "9999-99-99";
   let founding = false;
   let previousChat = 12;
@@ -112,29 +121,33 @@ export function inspectLedger(source) {
 
     // Images is a source inventory, not a list of lifecycle-bearing ideas.
     if (reference) continue;
-    let entry;
-    for (const row of current.lines) {
-      if (/^(?:[-*+]|\d+[.)]) /.test(row.text)) {
-        entry = { line: row.line, text: row.text };
-        current.entries.push(entry);
-      } else if (
-        /^ (?:[-*+]|\d+[.)]) /.test(row.text) ||
-        (!entry && /^ {2,3}(?:[-*+]|\d+[.)]) /.test(row.text))
-      ) {
+    // Each item of the section's top-level lists is an idea entry, and it
+    // starts in column one: an indented one is not nested under an entry.
+    const items = entries.filter(
+      (item) => item.start > current.start && item.start < current.end,
+    );
+    for (const item of items)
+      if (!atMargin(item))
         errors.push(
-          `Line ${row.line}: top-level idea entries must start in column one`,
+          `Line ${item.line}: top-level idea entries must start in column one`,
         );
-      } else if (entry) entry.text += `\n${row.text}`;
-    }
+    current.entries = items.filter(atMargin);
     for (const item of current.entries) {
-      // Tags belong to the lead, never a nested bullet or incidental code span.
-      const lead = item.text.split(/\n\s*\n|\n\s+[-*+] /)[0];
-      const marker = /^(?:[-*+]|\d+[.)]) /.exec(lead)[0];
-      const content = lead.slice(marker.length);
-      const title = /^\*\*[\s\S]*?\*\*/.exec(content);
-      const tail = title ? content.slice(title[0].length) : content;
-      const tagRun = /^\s*((?:`[^`\n]+`\s*)+)/.exec(tail)?.[1] ?? "";
-      const tags = [...tagRun.matchAll(/`([^`]+)`/g)].map((match) => match[1]);
+      // Tags belong to the lead, never a nested bullet or incidental code
+      // span: the code spans that open the entry's first paragraph, after its
+      // bold title when it has one.
+      const inline = leads.get(item.start) ?? [];
+      const tags = [];
+      for (const node of inline[0]?.type === "strong"
+        ? inline.slice(1)
+        : inline) {
+        if (node.type === "inlineCode") tags.push(node.value);
+        else if (
+          node.type !== "break" &&
+          (node.type !== "text" || node.value.trim())
+        )
+          break;
+      }
       const lifecycle = tags.filter((tag) => statuses.includes(tag));
       if (!lifecycle.length)
         errors.push(

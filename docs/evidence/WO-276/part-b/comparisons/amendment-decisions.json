@@ -1,0 +1,9 @@
+{
+  "comparison": "amendment-decisions",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every decision a recorded execution amendment names: the decision's record as its committed file holds it, by the hash the amendment binds, with its execution write-backs",
+  "read": 110,
+  "equal": 110,
+  "differences": {},
+  "examples": []
+}

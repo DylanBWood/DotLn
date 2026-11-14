@@ -1,0 +1,9 @@
+{
+  "control": [
+    "docs/repositories/noted/billing.md:1: area note: field commit is missing; it holds the target commit the note was written at, as its full hexadecimal id"
+  ],
+  "parentListError": "EACCES",
+  "profileAndNoteReadable": true,
+  "observed": [],
+  "limit": "Production area-note helper only; complete document scanner with registered profile not exercised, so recorded as follow-up."
+}

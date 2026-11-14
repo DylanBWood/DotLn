@@ -1,0 +1,9 @@
+{
+  "command": "node scripts/terms.mjs branch",
+  "exitCode": 0,
+  "contextLines": 0,
+  "contextLinesRead": 0,
+  "refuseLines": 0,
+  "listPrinted": false,
+  "timing": "After report/decisions authored, before closing document gate; repeated after replacing the zero-count placeholder."
+}

@@ -1,0 +1,39 @@
+{
+  "identity": "46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323",
+  "treeHash": "90c16cbecafa8c37165600bf52e4770add3e9d98",
+  "rowAtTree": {
+    "recordedAt": "2026-11-13T21:53:35.229Z",
+    "sel": "review",
+    "exit": 0,
+    "id": "46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323"
+  },
+  "rowStands": true,
+  "preflightCount": 36,
+  "preflightNotInComplete": [
+    "comment-labels-fixtures",
+    "docs-check-fixtures",
+    "launchpad-docs",
+    "lineage-fixtures",
+    "resident-bind"
+  ],
+  "covering": {
+    "keys": [
+      "codeIdentity",
+      "location",
+      "row",
+      "candidates",
+      "missing"
+    ],
+    "row": null,
+    "missing": [
+      "comment-labels-fixtures",
+      "docs-check-fixtures",
+      "launchpad-docs",
+      "lineage-fixtures",
+      "resident-bind"
+    ],
+    "candidates": 1
+  },
+  "documentRow": null,
+  "documentRefusal": "Handoff document row missing or failed at the current code identity 46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323; run npm run test:docs once after the last document edit, then complete again. The newest standing row (recorded 2026-11-13T22:06:12.684Z, 163.28 s, 29 suites, host-gate:46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323:npm run test:docs) judged another tree: a document changed after it."
+}

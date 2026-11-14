@@ -1,0 +1,9 @@
+{
+  "beforeIndexRead": true,
+  "withdrawalExit": 0,
+  "eventType": "WorkOrderWithdrawn",
+  "hasRepositoryId": false,
+  "hasBaseCommit": false,
+  "indexError": "WO-999: control repository identity differs from records/work-orders/WO-999-fixture.md",
+  "limit": "Real withdrawal CLI in local target fixture, followed by actual index reader; no real order was withdrawn."
+}

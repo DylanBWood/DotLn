@@ -24,7 +24,6 @@ import { codexContinuation } from "../packages/compiler/src/codex-continuation.m
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
   harnessSessionPhase,
-  harnessWorkerWords,
   lowerToHarness,
   operatorMessageClass,
 } from "../packages/compiler/dist/src/index.js";
@@ -142,7 +141,6 @@ async function fixture(run) {
       (prompt) => operatorMessageClass(prompt),
       loadRuntime,
       harnessSessionPhase,
-      (prompt) => harnessWorkerWords(prompt),
     );
   const compact = async () => {
     await hook("PostCompact", { trigger: "auto" });
@@ -246,7 +244,7 @@ test("Codex conversation text does not control compaction recovery", async () =>
 const journalRows = (path) =>
   readFileSync(path, "utf8").trim().split("\n").filter(Boolean).map(JSON.parse);
 
-test("WO-255 a Codex dispatch line journals the worker options it names for the session's launches, and an ordinary message selects nothing", async () =>
+test("WO-276 a Codex dispatch line selects no worker: whatever names close it, the hook journals no selection", async () =>
   fixture(async ({ directory, key, hook }) => {
     for (const prompt of [
       "planning: standard pass, astra",
@@ -255,20 +253,15 @@ test("WO-255 a Codex dispatch line journals the worker options it names for the 
       "use astra for the reviews",
     ])
       await hook("UserPromptSubmit", { prompt });
-    const selected = journalRows(join(directory, `${key}.jsonl`)).filter(
-      (row) => row.typedEvent === "WorkerOptionsSelected",
-    );
+    const rows = journalRows(join(directory, `${key}.jsonl`));
+    assert.ok(rows.length, "the prompts were observed");
     assert.deepEqual(
-      selected.map(({ options, source }) => [options, source]),
-      [
-        [{ codex: "astra" }, "codex-prompt-hook"],
-        [{ claude: "fable" }, "codex-prompt-hook"],
-        [{}, "codex-prompt-hook"],
-      ],
+      rows.filter((row) => row.typedEvent === "WorkerOptionsSelected"),
+      [],
     );
   }));
 
-test("WO-255 a checkout's first Codex dispatch line makes its journal lane and keeps the selection, an ordinary message makes nothing, and no lane is made through a link", async () =>
+test("WO-255 a checkout's first Codex dispatch line makes its journal lane, an ordinary message makes nothing, and no lane is made through a link", async () =>
   fixture(async ({ root, directory, key, hook }) => {
     // A checkout that has never held a journal: no local control lane.
     const local = join(root, "docs/control/local");
@@ -278,11 +271,17 @@ test("WO-255 a checkout's first Codex dispatch line makes its journal lane and k
     await hook("UserPromptSubmit", {
       prompt: "planning: standard pass, astra",
     });
+    // The lane stands and the line was observed in it; nothing was
+    // selected (WO-276).
     assert.deepEqual(
-      journalRows(join(directory, `${key}.jsonl`))
-        .filter((row) => row.typedEvent === "WorkerOptionsSelected")
-        .map(({ options, source }) => [options, source]),
-      [[{ codex: "astra" }, "codex-prompt-hook"]],
+      journalRows(join(directory, `${key}.jsonl`)).map(
+        ({ event, codexPromptObserved, typedEvent }) => [
+          event,
+          codexPromptObserved,
+          typedEvent,
+        ],
+      ),
+      [["UserPromptSubmit", true, undefined]],
     );
     // A local control lane that is a link leads nowhere the hook writes.
     rmSync(local, { recursive: true, force: true });

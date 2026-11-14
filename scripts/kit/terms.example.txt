@@ -1,0 +1,14 @@
+# Example local-terms list. Copy it to docs/control/local/terms.txt,
+# which Git ignores, and replace every entry with your own, one a line.
+# A # at a line's start, or after a space, begins a comment: say what each
+# entry names, above it or after it.
+
+refuse:
+# An internal codename. It must never appear.
+Project Lantern
+# An internal host name.
+build.lantern.example
+
+context:
+# A product name that is also an ordinary word. A stage reads each match.
+Harbor

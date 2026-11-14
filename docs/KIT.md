@@ -83,6 +83,38 @@ runtime produces the same bytes; `check` detects drift against both.
 
 ## First steps
 
+The first command in a new clone is `node scripts/doctor.mjs`, before
+anything is installed: it prints one row for each assumption the kit makes
+of the host, with what it observed, whether the assumption is met, what
+depends on it and the remedy, and it reads and refuses nothing. `--json`
+prints the same rows, and `npm run doctor` runs it once the install is done.
+A fact it cannot read is a row marked `unknown`, which changes no exit
+code: where it cannot read which hosts this instance has on, it says so in
+a row and looks for no elected host's CLI, and a tool that is on the path
+and does not answer for its version is reported found and unread, not
+missing.
+Its output holds versions, counts, sizes and yes or no, and never a host
+name, a user name, a URL or an absolute path, in whatever script a
+directory or an account is named, so it can be pasted into a planning
+dispatch from a managed machine. One limit: where a fact reaches the report
+as the host gave it and holds a path with a space in one of its names, the
+path is withheld up to that space and what follows it is printed, so read a
+report before pasting it. Beside the Node and Git floors
+below, the kit needs a C compiler, which builds the two small helpers every
+gate task starts through (the Command Line Tools or Xcode on macOS, a
+compiler that answers to `cc` elsewhere); the forge's tool, the GitHub CLI
+`gh`, signed in, for a final review's pull request, a release close and an
+update's publish; and, for the instance's own repository, merge commits
+allowed, which release close needs of it (a registered target's repository
+merges by its team's method; see
+[Working as a team on one instance](#working-as-a-team-on-one-instance)).
+The kit is exercised on macOS. It is designed for Linux and
+WSL2 and has not been exercised on either. Native Windows is unsupported:
+run the kit under WSL2 there. An update's preview names each floor of the
+incoming release that this host does not meet (see
+[Taking upstream updates](#taking-upstream-updates), which cites the
+decisions on the report and on the preview).
+
 This kit runs on Node 24.15 or later in the 24 line, or on Node 26:
 `engines.node` in `package.json` reads `^24.15.0 || ^26.0.0`. It needs Git
 2.31.0 or later: `engines.git` reads `>=2.31.0`. The floor rests on two
@@ -112,13 +144,21 @@ cites the floor's decision).
 The kit exports no `.node-version`, so an instance that wants a version manager
 to select a runtime pins its own.
 
+The commands an operator types through this instance's whole cycle, for the
+kit release in hand, are one generated page, [OPERATOR.md](OPERATOR.md), which
+`node scripts/launchpad.mjs commands` prints before any install (see
+[Releases in this instance](#releases-in-this-instance), which cites its
+decision). The steps below say more about the first of them.
+
 To start a private repository from this starter, clone it with no tags and
 keep it as the `upstream` remote that §Taking upstream updates uses:
 
+<!-- operator-commands new-instance: Once per instance, clone the starter into a private repository with the starter kept as `upstream`, then install and check the runtime; the instance runs Claude Code alone, and its first order inspects no other host, until its `dotln.config.json` elects one. -->
 ```sh
 gh repo create <org>/<name> --private
 git clone --no-tags <starter url> <name>
 cd <name>
+node scripts/doctor.mjs
 git remote rename origin upstream
 git config remote.upstream.tagOpt --no-tags
 git remote add origin <private url>
@@ -183,28 +223,106 @@ operator sandbox settings.
    workspace links) to install it again. Until then each hook reports
    `snapshot-missing` once per session and host permissions alone decide.
 4. Register the private local-terms list at `docs/control/local/terms.txt`,
-   one term per line as `[refuse: | review: ]term`; the directory is ignored
-   by Git. A `refuse:` term refuses every outward artifact that carries it;
-   an unmarked or `review:` term is a review item of a target publication,
-   read and confirmed by the reviewer; only those two words before a colon
-   are markers, so a term holding a colon stays a term, and a marker with no
-   term after it refuses naming the line. A present list with no terms is
-   `present` with a count of zero and refuses nothing; an absent list is
-   `unavailable` and refuses publication. WO-001's checklist item 4 registers
-   this list and checks the files that order writes; its criterion 3 records
-   the printed status and a match, where one occurred, fixed before filing
-   (see [Kit files and instance files](#kit-files-and-instance-files) for the
-   pre-drafted order). `npm run terms -- check <paths>`
-   prints `local-terms list: present` or `unavailable`, and in committed text
-   refuses a match of either mode by file, line and mode without printing the
-   term. `npm run test:docs` runs the same screen as its `terms` task over the
-   lines a branch adds against its merge base with `main` (on `main`, what the
-   last merge brought in), advising `local-terms list: unavailable` where no
-   list is registered, and the publish helpers for a planning branch, a kit
-   update and an order branch screen the lines their branch adds the same way
-   before the first push; a malformed list refuses naming its line, never a
-   term (see [Document quality](#document-quality)). Target publication also
-   needs the instance's own
+   one entry a line; the directory is ignored by Git. The list has two
+   classes. A `refuse` entry refuses wherever a screen finds it: in committed
+   text, a publish, an export, a receipt and an outward artifact, naming the
+   file, the line and the mode and never the term. A `context` entry never
+   refuses: each screen that finds one prints the file and the line for the
+   stage at hand to read, and passes. A mode word alone on a line (`refuse:`
+   or `context:`) opens a section whose lines take that mode until the next
+   such line. A line that carries its own marker (`refuse: <entry>`) keeps
+   that mode, a line outside every section with no marker is context,
+   `review:` is read as `context:`, an entry listed in both classes refuses,
+   and a `#` at a line's start, or after a space, begins a comment that runs
+   to the line's end, on a section line and after an entry too. Only those
+   three words before a colon are markers, so an address or a host and port stays the entry it
+   was; a marked line with no letter or digit after its marker is malformed,
+   and the list then refuses naming that line, never a term. An entry is
+   matched as a writer spells it. Its runs of letters and digits are joined
+   across spaces, line breaks (with the next line's quotation, comment or list
+   marker), hyphens and dashes, periods, underscores, apostrophes, slashes and
+   Markdown emphasis or code marks, and across the characters the entry itself
+   carries between its runs. They are joined across nothing else, so letters
+   on either side of a brace, a bracket, a pipe, a backslash, a quotation mark
+   or an operator are never one word.
+
+   The kit ships an example list, `scripts/kit/terms.example.txt`:
+
+   ```text
+   # Example local-terms list. Copy it to docs/control/local/terms.txt,
+   # which Git ignores, and replace every entry with your own, one a line.
+   # A # at a line's start, or after a space, begins a comment: say what each
+   # entry names, above it or after it.
+
+   refuse:
+   # An internal codename. It must never appear.
+   Project Lantern
+   # An internal host name.
+   build.lantern.example
+
+   context:
+   # A product name that is also an ordinary word. A stage reads each match.
+   Harbor
+   ```
+
+   A branch that adds these four lines as `docs/sample.md`:
+
+   ```text
+   The ferry left the harbor at dawn.
+   Harbor 2.1 moves the scheduler to its own service.
+   Ask the Project-Lantern team for the token.
+   m = {a: har}|{bor: b}
+   ```
+
+   is answered by `node scripts/terms.mjs branch` with one refusal on standard
+   error and a nonzero exit:
+
+   ```text
+   FAIL docs/sample.md:3: a local term in refuse mode
+   ```
+
+   and, on standard output, with its status line and two lines to read:
+
+   ```text
+   local-terms list: present; entries: 2 refuse, 1 context; changed files screened: 1; lines found: 1 refuse, 2 context
+   CONTEXT docs/sample.md:1: a local term in context mode
+   CONTEXT docs/sample.md:2: a local term in context mode
+   ```
+
+   The status line gives the list's state, the entries in each class, the
+   files screened and the lines found in each class. Line 3 stops the gate
+   until it changes, hyphen or no hyphen. Lines 1 and 2 stop nothing: the
+   stage reads both, leaves the ferry's harbor as it is and rewords the line
+   that names the product. Line 4 prints nothing, because its letters stand on
+   either side of a brace and a pipe. With the `refuse:` line and the
+   `context:` line removed from the list, all three entries are context: the
+   task prints a `CONTEXT` line for each of lines 1, 2 and 3, prints no `FAIL`
+   and exits zero.
+
+   A present list with no entries is `present` with counts of zero and refuses
+   nothing; an absent list is `unavailable` and refuses publication. WO-001's
+   checklist item 4 registers this list and checks the files that order
+   writes; its criterion 3 records the printed status, a refuse-mode match
+   fixed before filing and each context-mode match read (see
+   [Kit files and instance files](#kit-files-and-instance-files) for the
+   pre-drafted order). `npm run terms -- check <paths>` screens the named
+   files, and `node scripts/terms.mjs branch` the lines a branch adds against
+   its merge base with `main` (on `main`, what the last merge brought in).
+   Each prints the status line and a `CONTEXT` line for each context-mode
+   match, prints a `FAIL` line on standard error for each refuse-mode match,
+   and exits nonzero for a refuse-mode match alone. `npm run test:docs` runs
+   the branch screen as its `terms` task, relays the `CONTEXT` lines when the
+   task passes, and advises `local-terms list: unavailable` where no list is
+   registered. The publish helpers for a planning branch, a kit update and an
+   order branch screen the lines their branch adds the same way before the
+   first push: a refuse-mode match refuses before anything is pushed, and a
+   context-mode match is printed by file and line and the publish proceeds.
+   A stage reads what the screen lists: the executor before its handoff, the
+   verifier, the final reviewer and a planning pass before its publish each
+   run `node scripts/terms.mjs branch`, read every listed line beside the
+   entry it matched, reword a line that names the listed thing, and state how
+   many they read (see [Document quality](#document-quality)). Target
+   publication also needs the instance's own
    `docs/control/outward-vocabulary.json`, whose `reviewTerms` (an array of
    words, possibly empty; the older `terms` key is read as the same list for
    one kit release, with an advisory) are review items too, and an
@@ -228,12 +346,32 @@ operator sandbox settings.
    among them) that an instance order never names, and the publication
    commands apply the instance vocabulary and the local-terms list to the
    outward body themselves.
+
+   A registered repository's profile is its entry and its index. What a
+   session learns about one area of the target is written as an area note
+   beside the profile (`docs/repositories/<id>/<area>.md` for the profile
+   `docs/repositories/<id>.md`), opening with a marked JSON block that
+   names the target paths it covers and the target commit it was written
+   at. The dispatch briefing of every order on that repository prints the
+   profile's path, each note with its paths, its commit and the number of
+   commits on the registered clone's base branch that touched those paths
+   since, or `unknown` where the clone does not hold the commit, and,
+   where the order's header names a workstream, that document with its
+   Rules section. The count is shown and refuses nothing. The
+   [profile convention](repositories/README.md) states the note's form,
+   and [Planning in this instance](#planning-in-this-instance) how a large
+   target is studied area by area.
+
+   <!-- operator-commands register-repository: A planning pass files the registration order (the repository under `repositories` in `dotln.config.json`, its profile, the outward vocabulary and the operator's grant); its executor records the clone, you merge that order before any target order starts, and each target order then runs like any other. -->
+   ```sh
+   npm run worktree -- clone <id> <absolute-path>
+   ```
    The publish applies three checks to the branch, the commits, the title and
    the composed body (the reviewed prose, the generated Change table and the
    target checks): launchpad identifiers (`WO-NNN`, `WO-NNN-DNNN`, `FUP-<16
    hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`, `WS-NNN`) and `refuse:` terms
    refuse, naming the line, the part of the body and, in a Change row, the
-   added path; review words and review-mode terms are listed the same way and
+   added path; review words and context-mode terms are listed the same way and
    the publish refuses until the reviewer, having read them, passes
    `--confirm-terms sha256:<digest>` with the digest the refusal printed; a
    Change row of a path the target's base already held is not reported. The
@@ -245,13 +383,22 @@ operator sandbox settings.
    The session form is `node scripts/worktree.mjs publish
    WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
    <committed-reviewed-body-path> [--confirm-terms sha256:<digest>]` from the
-   launchpad root. Before `npm run resume -- target-records` files the order's
-   records into the target, the reviewer commits the instance records (the
-   order's records and evidence) on the order branch: each filed record's
-   footer names that launchpad commit, at which its relative links resolve once
-   the records branch is published, and the filing refuses while a source or a
-   file it links is uncommitted (see
-   [Releases in this instance](#releases-in-this-instance)). The hook withholds
+   launchpad root. Where the registration files records into the target
+   (`records` is `target`, step 5), before `npm run resume --
+   target-records` files the order's records there the reviewer commits the
+   instance records (the order's records and evidence) on the order branch:
+   each filed record's footer names that launchpad commit, at which its
+   relative links resolve once the records branch is published, and the
+   filing refuses while a source or a file it links is uncommitted (see
+   [Releases in this instance](#releases-in-this-instance)). Where it keeps
+   them in the instance (`records` is `instance`) no records step is
+   offered or owed: the reviewer commits the instance records, the target is
+   published at the reviewed commit, which the publish refuses to leave
+   behind when the target's HEAD differs from it, and the order's own publish
+   carries the records. An order whose records were already filed keeps them
+   in the target whatever the registration now says, and its publish says so
+   (see [Working as a team on one instance](#working-as-a-team-on-one-instance),
+   which cites the decision). The hook withholds
    the `npm run worktree -- publish` form, naming the admitted node spelling.
    Its opt-in `--draft` form at `verified`
    pushes the target's working tree under a draft pull request that the final
@@ -298,8 +445,22 @@ operator sandbox settings.
    other root derives; a root declared on its own stays where it is declared
    when the base moves. A registered repository declares its own `gate`
    (named argv commands with timeouts and plain/review selections) and optional
-   `documentationRoot` (default `docs`); a target order runs that gate and
-   keeps its order, decisions and reports under that root's launchpad layout.
+   `documentationRoot` (default `docs`) and `records`, which says where its
+   orders' records go: `target`, the value when the key is absent, or
+   `instance`. A target order runs that gate. With `target` its order,
+   decisions and reports are filed under that root's launchpad layout in the
+   target, by the records step of step 4; with `instance` they stay in this
+   instance, as a launchpad order's do, and nothing of them is committed in
+   the target. The default suits a repository the instance's owner owns; an
+   instance that works a team's application repository sets `instance`,
+   since the default would file every order's records into the team's
+   repository. The value is read from the instance's `main`, where
+   registrations are merged: an order's status, its briefing and both of
+   its publishes follow it there, whatever the order branch's own copy of
+   the file says. Either way a target order's records never leave the instance
+   for core: what an instance sends core is the block of what stops it, in
+   generic words (§Planning in this instance; the team section cites the
+   decision).
    `drive.sandbox` elects the sandbox a routed run (`drive: WO-NNN`) gets on
    either host: `host` (the default) keeps each host's own policy; `off`
    launches unsandboxed in the form each host documents, `sandbox.enabled
@@ -309,6 +470,9 @@ operator sandbox settings.
    Elect `off` only where this instance's environments are unsandboxed; each
    receipt records the election and, apart from it, what the host applied.
 6. Tell this instance's own session: **Start WO-001 in its own worktree.**
+   WO-001 inspects Claude Code and any other host `dotln.config.json` elects;
+   it looks for no other agent harness or model provider and invokes none
+   (see [Features](#features), which cites the decision).
    The session starts from clean `main` whose export/setup commit is on
    `origin/main`, with the pre-drafted order carrying first release `v0.1.0`:
    `npm run worktree -- start WO-001 docs/work-orders/WO-001-environment-truth.md`.
@@ -333,9 +497,32 @@ operator sandbox settings.
    symlinked as `AGENTS.md`); its generated harness block routes each resume
    phrase to the role skill under `.claude/skills/` or `.agents/skills/`, and
    the generated hooks enforce the compiled refusals where the harness runs
-   them. The operator merges each pull request with a merge commit: release
-   close requires the order's branch in `origin/main`'s history, which a
-   squash or rebase merge rewrites.
+   them. A role's skill holds its own procedure and the shared rules that
+   bind that role, each whole and once; a rule a role's procedure never
+   reaches is not in its skill
+   ([product 07 §Discipline](product/07-execution-guide.md#discipline)).
+   The operator merges each pull request of the instance's own repository
+   with a merge commit: release close requires the order's branch in
+   `origin/main`'s history, which a squash or rebase merge rewrites. A
+   registered target's pull request merges by the method that repository's
+   team uses (§Releases in this instance).
+
+<!-- operator-commands run-order: From clean `main`, start each order in its own worktree with its id and its order's path (the first is `WO-001` at `docs/work-orders/WO-001-environment-truth.md`); in a session opened in that worktree, type each phase's phrase as a message of its own once the phase before it has completed, or type `drive: WO-NNN` in `main` to run the phases in fresh sessions until your merge (product 07's phrase table names each phase). -->
+```sh
+npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md
+```
+
+<!-- operator-commands run-order -->
+```text
+resume: next
+resume: verify
+resume: final review
+```
+
+<!-- operator-commands close-order: Merge the order's pull request with a merge commit, then type this phrase in a session in the instance's `main`: the close updates `main`, publishes the order's tag and Release and cleans up its worktree. -->
+```text
+resume: release close
+```
 
 If an older instance already activated WO-001 on `main`, tell **that instance's
 own session**: **Update from the refreshed starter and recover WO-001 into its
@@ -390,9 +577,13 @@ To read the proposed change before implementation, elect this mode in
 
 Start the work order and say `resume: next`. The executor drafts code in owned
 scratch and gives you three documents under `evidence/WO-NNN/plan-first/` in
-the order's documentation root. For a target order, they live in the target
-repository's configured documentation directory; for a self order, they live
-under this instance's evidence root.
+the order's documentation root. For a self order they live under this
+instance's evidence root. For a target order they follow the repository's
+`records` value (§First steps): with `instance` they live under this
+instance's evidence root too, and with `target`, the value when the key is
+absent, in the target repository's configured documentation directory,
+where they are committed with the change and the target's publish refuses
+their paths, which carry the order's number.
 
 - `plan.md` explains where the change goes, why, the contracts it needs,
   decisions and alternatives, and any question that needs your judgment.
@@ -406,9 +597,10 @@ Read the plan and proposal, then reply in the terminal or append an entry to
 executor answers each new question or correction and regenerates the two
 proposal documents. Terminal replies are paraphrased into the conversation.
 Before carrying your words to a screened document, the executor announces any
-needed transformation in the conversation. Private target conversations stay
-private; a self order's public conversation must itself pass the publication
-screen, which may require you to rephrase an entry.
+needed transformation in the conversation. A conversation kept in a private
+target stays private; one kept in this instance, a self order's or a target
+order's under `records: instance`, must itself pass the publication screen,
+which may require you to rephrase an entry.
 
 Approve the current proposal in ordinary words, such as “Looks good, build it.”
 The executor captures that approval and records `PlanApproved` for the exact
@@ -456,24 +648,29 @@ section accepts named booleans or an election with your own reason:
 An absent section keeps the existing defaults: Tinkerer economy on,
 plan-first, private-destination, desktop-control, auto-update-upstream and
 verbatim-operator-words off, and each host other than Claude off unless this
-instance's record shows it.
+instance's control log attests it.
 Plan-first adds an operator review of the proposed change before
 implementation.
 
-Host support is an election with inference. `host-codex` and `host-copilot`
-are off unless elected, or unless this instance's own committed record shows
-the host: an attestation in its committed control log (`docs/control/resume.jsonl`
-or an order segment under `docs/control/orders/`) whose harness is `codex-cli`
-or `copilot-cli`, or an observed version of that harness in
-`docs/discovery/environment.json`. Claude's surfaces are always emitted; an
-elected or inferred host adds its own (`.codex/` and `.agents/skills/`) and its
-profile in the harness manifest. The table names the source, `elected` or
-`inferred:` with the record's rows, and `--json` adds the attestation counts.
-An election of `false` beside a record that shows the host is respected, and
-the table says what the record shows; a host this instance used only in
-sessions it never attested is elected by hand. The starter's record shows no
-other host, so a clone starts Claude-only
-([decision](evidence/WO-258/decisions.md#wo-258-d003)). `auto-update-upstream` is this instance's
+Host support is an election with one inference. `host-codex` and
+`host-copilot` are off unless elected, or unless this instance's committed
+control log attests the host: a lifecycle attestation in
+`docs/control/resume.jsonl` or an order segment under `docs/control/orders/`
+whose harness is `codex-cli` or `copilot-cli`, a phase the operator ran under
+that host. A discovery record turns no host on: an observed version in
+`docs/discovery/environment.json` shows only that an inspection found the
+host's CLI, and the table names it as showing the host without an election
+([decision](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)). Claude's surfaces are
+always emitted; an elected or inferred host adds its own (`.codex/` and
+`.agents/skills/`) and its profile in the harness manifest. The table names
+the source, `elected` or `inferred:` with the attestation rows, and `--json`
+adds the attestation counts. An election of `false` beside attestations that
+show the host is respected, and the table says what they show; a host this
+instance used only in sessions it never attested is elected by hand. The
+starter's record shows no other host, so a clone starts Claude-only
+([decision](evidence/WO-258/decisions.md#wo-258-d003)), and its first order
+inspects no host it does not elect
+([decision](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)). `auto-update-upstream` is this instance's
 standing opt-out of the rule that no planning or entropy pass takes a newer
 starter release unasked (§Taking upstream updates,
 [decision](evidence/WO-258/decisions.md#wo-258-d005)), and
@@ -544,6 +741,99 @@ the journal contradicts and a digest that is not the message's; the operator
 strikes a rule by removing its entry
 ([decision](evidence/WO-259/decisions.md#wo-259-d008)).
 
+<!-- operator-commands first-pass: In a Claude Code session on the instance's clean `main`, type this phrase as a message of its own: the pass starts its planning branch, files the instance's orders and sequence, refutes them with one background worker and opens the pull request you merge with a merge commit. -->
+```text
+planning: first pass
+```
+
+An order a pass filed that nobody activated leaves the sequence in one of
+three ways, and its file is not simply deleted: the register row allocated
+to it would then name nothing, and the reason would be nowhere. Where another
+order takes its work, its file becomes an umbrella record: an `Umbrella
+record` field in its header and typed `superseded` entries that name the
+successor, which the index lists under Superseded. Where the operator drops
+it, `npm run resume -- withdraw --disposition abandoned --reason <text>
+--capture <path> --capture-hash sha256:<digest> <actor-flags>` withdraws it,
+named with `--work-order` or by its own branch: the withdrawal is the
+order's first event and records its file, the index lists the order as
+withdrawn and the sequence lets it go. Where the operator retires a proposal
+whole, the pass moves its file to `docs/retired/` with its bytes intact and
+a row on that directory's page. A pass that drops its own draft before its
+pull request merges edits its own branch and needs none of the three
+([decision](evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [as built](evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)).
+
+A capture holds the operator's own words. Where a message carries a block
+the operator pasted that a command or another session wrote, the pass keeps
+the block whole in the ignored local planning lane
+(`docs/control/local/plan/`), and the capture names it and its SHA-256; the
+verbatim screen then compares committed text with what the operator wrote
+([decision](evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [as built](evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)).
+
+A worker may continue work it holds. A re-task is still one use, and it is
+admitted for three things: to recheck what the worker found, to carry on the
+research it was given from what it has already read, or to restate in the
+required form a report that was refused for its form, changing no finding.
+The worker writes only to session scratch and the parent stays the sole
+repository writer; a review or a refutation is never continued into a second
+judgment ([decision](evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [as built](evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)).
+
+For an initiative, a body of work larger than one pass can file honestly,
+plan the rolling way: lay it out, file a wave, run it, revise. The layout is
+the Layout section of the initiative's workstream document
+(`docs/workstreams/WS-NNN-<slug>.md`): what exists, linking the target's
+area notes where there are any; what the initiative asks, in this instance's
+own words; the way there, as phases of planned items with what each depends
+on and which may run side by side; and what is unknown, with the research
+that would settle it. A new export's
+[workstreams page](workstreams/README.md) carries the section with a worked
+example; an instance exported earlier keeps its own page and reads the four
+parts here. A planned item is a line of the layout: it has no identifier and
+no order file, it is not a member order, and it becomes one when a pass
+files it. A pass that is handed an initiative writes or revises the layout
+first and files only the orders the next wave needs, the ones whose inputs
+are known; the refuter judges those and the sequence, and no check judges
+what the layout says: the index and the plan check read the workstream's
+marked block alone, and the document check reads the layout's links and form
+as it does any document's. As a wave lands, the next pass revises the layout
+in place and files the next. A phase may carry the planner's estimate of orders and spend, taken
+from this instance's own usage report (`npm run meta -- --usage`) where it
+has orders to read, and says where its figures came from. The team reads the
+layout where it reads the plan: in the instance, or in the target's
+documentation root, where a target-scoped pass publishes a copy among its
+`planning/` files (`npm run plan -- target-publish`, below). How large an
+order may be is this instance's own rule to set: where its operator gives
+one, a pass records it as it records any standing rule (above) and sizes the
+layout's planned items to it
+([decision](evidence/WO-276/decisions.md#wo-276-d093--part-o-begins-on-checkpoint-43-an-initiatives-layout-is-a-section-of-its-workstream-document-planned-items-are-not-orders-and-a-pass-files-the-next-wave-and-the-twenty-seventh-critics-four-points)).
+
+An order may be paced across days. Where this instance states what a day
+may use, `spend.daily` in `docs/control/budgets.json` holds the figure: in
+tokens (`tokens`), in dollars (`usd`, compared with an estimate at the
+prices this instance declares in `dotln.models.json`) or both. A new export
+carries the field with both null; an instance exported earlier adds it. Each
+prompt's facts then carry one line with the day's use so far beside the
+figure. The use is this checkout's sessions by local calendar day, the
+reading `npm run meta -- --usage` prints, every class of token counted, cache
+reads among them; a person working in two checkouts sums by hand. A dollar
+figure on a day that holds a model with no declared price, a session that
+attests no model or one with no count shows the day's tokens and `unknown`
+for the estimate, with what the sessions that do have an estimate come to;
+the day's tokens are likewise the least the day is known to have used, and
+a session with no count takes nothing from what another measured
+([decision](evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names)).
+At or above the figure, by the estimate or by that least amount, the line
+tells the executor to finish the step in hand, write the standing and end
+the turn. It is advisory and refuses nothing. The
+standing is `docs/evidence/WO-NNN/standing.md`, which the executor writes at
+a stop and replaces at the next: the steps of the execution plan done, the
+step in hand and its state, what comes next, and what is undecided. The next
+session's briefing names the file, in the implementation and in a repair
+alike; the phase's completion (`implementation-ready`, or `repair-complete`
+in a repair) removes it; and the hours the order sat are not counted against
+its phase's bound (Owned cleanup
+and retention, below)
+([decision](evidence/WO-276/decisions.md#wo-276-d098--part-p-begins-on-checkpoint-45-the-bound-reads-worked-time-from-the-phases-journals-the-days-figure-is-advisory-and-the-standing-is-a-file-of-its-own-with-the-parts-consumer-map-and-its-two-gates)).
+
 No planning or entropy pass takes a newer starter release or merges upstream;
 only the operator's words in that session do. `node scripts/launchpad.mjs
 update --finish`, `update --publish` and core's `export --update` refuse under
@@ -557,12 +847,31 @@ an update unasked: the hold admits the command, and the session journal's
 admission row names the election instead of a capture
 ([decision](evidence/WO-258/decisions.md#wo-258-d005)).
 
-What this instance sends core is what blocks it. A planning pass here writes
-a block for core only for an item that stops this instance's next order and
-has no working route here, and keeps every other observation in its own
-record; a pass with nothing that blocks sends nothing (operator direction,
-2026-11-09;
-[the pass that recorded it](planning/passes/whole-plan-and-codebase-review-2026-11-09.md)).
+What this instance has learned that core should hear is kept in one file at
+its root, `FOR-CORE.md`, which the export seeds with the form of an entry and
+no entry. Each order's final review appends an entry for what the kit itself
+got wrong or made hard during that order, where it found anything; each
+planning pass reads the file at entry, appends its own entries there, sets
+`answered` on those a release this instance has taken answered, and writes no
+block for core in its planning document. An entry is a second-level heading
+(the date, the order or pass it came from and one line) over a `json` block of
+three fields (`kit`, the kit version; `stopsNextOrder`, `true` or `false`;
+`answered`, `null` or the answering release's version), then generic prose:
+what the kit did, what was expected, the command and its message, and the
+route used meanwhile. `node scripts/docs-check.mjs` and the document gate
+judge each entry's fields and name the entry and the field they refuse; the
+local-terms and private-path screens judge the file as they judge every
+document. Nothing leaves this instance on its own: an instance still asks core
+only for what stops its next order and has no working route here, each entry
+says whether it does, and what to paraphrase to a core planning pass or send
+is the operator's choice (operator direction, 2026-11-09;
+[the pass that recorded it](planning/passes/whole-plan-and-codebase-review-2026-11-09.md);
+[decision](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)).
+
+<!-- operator-commands tell-core: Read the instance's `FOR-CORE.md`, which its final reviews and planning passes write, and paraphrase the entries you choose to a core planning pass or send them yourself; nothing leaves the instance unless you carry it. -->
+```sh
+cat FOR-CORE.md
+```
 
 - `npm run plan -- followups` pages the register; `--export <file>` exports it;
   `--apply <batch.json>` applies dispositions against the revision read.
@@ -597,9 +906,18 @@ record; a pass with nothing that blocks sends nothing (operator direction,
   their `--check` forms check the projections. `index --check` also prints
   `criteria advisory: WO-NNN criterion N: <what matched>` for each active or
   open order's criterion whose wording often marks one of the five defect classes
-  (bookkeeping, later-phase, absent-input, host-behavior, contradiction); it
-  refuses nothing, and the planner screens each criterion against the classes
-  before filing. Run `node scripts/docs-check.mjs`,
+  (bookkeeping, later-phase, absent-input, host-behavior, contradiction); an
+  advisory refuses nothing, and the planner screens each criterion against the
+  classes before filing. An open order whose criteria list the reader cannot
+  read whole is refused by the check, naming the order, the line and the
+  remedy ([decision](evidence/WO-276/decisions.md#wo-276-d175--a-criteria-list-the-parser-reads-as-shorter-than-written-is-refused-by-every-reader-of-it-and-never-returned-shorter)). The rest of an order is read as CommonMark reads it,
+  and there nothing refuses: a wrapped line of the header, of a field's
+  paragraph or of a criterion that opens with a placeholder spelled as an HTML
+  element's name (`<title>`, `<dir>`), with a greater-than sign, or with a
+  hyphen, a plus sign or an asterisk before a space, starts a block, and the
+  fields or the text after it are not read as written. Write such a token in a
+  code span, or keep it off the start of a line
+  ([decision](evidence/WO-276/decisions.md#wo-276-d199--the-block-opener-class-where-a-wrapped-line-opens-a-block-the-moved-readers-return-less-than-the-bases-line-readers-read-in-about-thirty-readers-and-in-no-committed-document-and-the-choice-of-repair-is-the-operators)). Run `node scripts/docs-check.mjs`,
   `npm run publication:check`, `npm run reader -- check` and
   `npm run test:docs` before handing off the planning pass.
 - Release-close reads can be inspected with `npm run release -- check-surfaces
@@ -620,9 +938,13 @@ record; a pass with nothing that blocks sends nothing (operator direction,
   `origin`, opens the pull request against `main` on the repository `origin`'s
   push URL names, ready rather than draft, and prints its URL. A title is a
   gitmoji and a subject, with or without a conventional type, or a conventional
-  type alone, and has no length limit. A listed private term refuses in either
-  mode, because this route has no reviewer's confirmation; so does an absent
-  local-terms list, and so does AI attribution. The public review words pass: a
+  type alone, and has no length limit. A refuse-mode private term refuses, in
+  the title, the body or the lines the branch adds, and so do an absent
+  local-terms list and AI attribution. A context-mode match refuses nothing: the
+  command prints it before the push as a `CONTEXT` line naming the file and
+  line, or `title` or `body` and the line there, and the pass reads each listed
+  line beside the entry it matched before it publishes
+  ([decision](evidence/WO-276/decisions.md#wo-276-d010--where-each-screen-lists-a-context-mode-match-steps-a2-to-a4)). The public review words pass: a
   launchpad's own pull request is about them. This route needs no
   `outward-vocabulary.json`. A retry after a failed create repeats no push and
   adopts the open pull request whose head, branch and base match; that pull
@@ -676,6 +998,25 @@ no purpose. Missing or malformed rule markers and malformed declared purposes
 refuse instead of substituting core's goals. Other planning inputs remain
 separately visible, including an absent critical-path declaration.
 
+A large target is studied an area at a time, each area one research order
+([the execution guide](product/07-execution-guide.md#research-and-guided-operator-work-orders))
+whose deliverable is that area's note beside the target's profile. Choose
+the area by its paths. State in the order's Design what it may read and
+what it may spend (the directories, the wall clock, the tokens where the
+host reports them) and where it stops. Write or revise
+`docs/repositories/<id>/<area>.md`: its block's `paths` and the `commit`
+that was read, each rule the area follows with the file that shows it, the
+exceptions found and what is unknown. Add the note's line to the profile's
+list, and record in the note and in the order's handoff what was not read.
+No step reads the whole target, and no program writes a note from the
+tree. The order's verifier judges the note against the order's method
+criteria; `node scripts/docs-check.mjs` and the document gate judge the
+block's two fields, naming the file and the field they refuse, and nothing
+of the prose; and each later order on that repository is briefed with the
+note and the commits that have touched its paths since, so a role reads
+the notes that cover what it changes and checks an aged rule against the
+code ([decision](evidence/WO-276/decisions.md#wo-276-d086--part-l-as-built-area-notes-beside-a-targets-profile-read-by-the-document-check-and-the-briefing-and-one-sentence-in-three-roles)).
+
 A target-scoped planning pass uses `npm run plan -- target-publish
 <repository-id> --base <commit> --from <directory> --branch docs/<slug>
 --title <title> --body-file <path>`. It publishes only the directory's
@@ -691,6 +1032,16 @@ IDs in `historicalWorkOrders` in `dotln.config.json`. The default is an empty
 list. This affects the historical index and dependency validation; it does
 not invent control closure or inherit core's order IDs.
 
+An instance's order numbers are its own, through the same range as core's.
+Where the kit's code ties a behavior to the number of one of core's orders
+(a sentence in one receipt, the start of the release-note contract, an
+exemption, two one-time continuations, a feedback path, a line on two index
+cards, a known fact of the plan refuter's brief and core's persisted
+correction record), it first asks whether the root is core's own, so an
+instance's order of any number is an order like any other. A receipt page an
+earlier release wrote with core's sentence still reads
+([decision](evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates), [as built](evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules)).
+
 For an operator-authorized scope change, `npm run plan -- amend-order`
 binds only an order in the latest judged planning horizon. The never-judged
 seed WO-001 has no receipt to amend: record the actual authorization and
@@ -699,6 +1050,17 @@ document and lifecycle checks. This supplies no additional authority,
 planning verdict or hold disposition. A required missing planning receipt
 still needs normal planning/refutation; do not create a fictitious pass to
 enable amendment.
+
+Each order's final review appends to the root `FOR-CORE.md`, before its
+closeout checks, one entry for what the kit itself got wrong or made hard
+during that order, where it found anything, in the form §Planning in this
+instance gives; the entry is committed with the reviewed order
+([decision](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)). Each kit release ships
+`docs/OPERATOR.md`, the operator's commands at that release: core generates it
+from the command blocks this guide marks for each step of the cycle, so a
+release that changes a marked block changes the page, while what a release
+changed for an instance stays in its Read before upgrading
+([decision](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)).
 
 The instance owns its root `README.md` and may replace it immediately. Its
 release block is optional: with neither marker present, release preparation
@@ -726,6 +1088,42 @@ links resolve once that branch is published
 least as new as the latest release. It needs no release-notes file; `release prepare
 --local` reports no release and changes no files for that target order.
 
+The two repositories of a target order merge by different rules
+([decision](evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release)). The instance's own repository keeps merge commits, as
+§First steps says, and no check of it changes. A target's repository merges
+as its team sets it: after fetching, the close takes the order as merged
+when the target's base holds the reviewed change as the branch itself (a
+merge commit or a fast-forward), as one commit whose patch equals the
+branch's whole change (a squash) or as a commit of equal patch for each of
+the branch's own commits, in the branch's order, each base commit answering
+for one of them (a rebase), so a commit the base replayed once never answers
+for two of the branch's
+([decision](evidence/WO-276/decisions.md#wo-276-d167--the-closes-rebase-rule-takes-one-base-commit-for-each-of-the-branchs-commits-in-the-branchs-order)). The squash reading is tried first: where one base commit is the
+branch's whole change, the close takes it and does not compare the branch's
+own commits
+([decision](evidence/WO-276/decisions.md#wo-276-d200--follow-ups-on-the-update-plan-and-the-close-a-runtime-file-the-incoming-kit-adds-is-loaded-before-it-is-compared-a-retry-refused-for-a-file-the-kit-dropped-and-a-squash-reading-that-answers-before-the-rebase-rule)). It reads Git alone and asks no forge. A
+base commit counts where Git's patch identity agrees and the commit is the
+reviewed change exactly, file by file: it joins the same blobs, or, where
+the base had changed a file since the branch left it, holds the change
+merged cleanly into that file and nothing else. So the same edit landed
+with other spacing or line endings, or made by someone else at another of
+several identical places in a file, is not taken for the reviewed one. The
+close prints which it found, the base commit
+or commits it matched and how many base commits it read. Where the change
+landed under another patch (a squash edited at merge or carrying other
+people's changes, a base that changed lines beside the change after the
+branch was cut, a rebase that left out a commit of the branch the base
+already held, a base rewritten since), nothing matches and the close
+refuses with the source retained, naming `--merged-as <commit>`: run the
+printed close again with the id of the base commit that carries the change.
+The close checks that the commit is in the fetched base, came after the
+branch left it and touches a path the change touches, prints its subject and
+proceeds; the person naming it takes the judgment that it carries the
+change. `drive: WO-NNN` reads a squash or a rebase as the close does and
+stops for the attended close where the commit has to be named; in a partial
+clone of the target it compares no patches, and its stop names the attended
+close too.
+
 For an unmodified older export missing the first-order version or
 release classification, the instance's own session updates from the refreshed
 starter on the operator's word using the recovery above. The starter supplies
@@ -734,6 +1132,49 @@ release block needs no repair.
 If the instance customized those seeds, its session preserves the edits and
 resolves the update against the operator's instruction, recording the chosen
 values in the order's decisions before release preparation.
+
+## Working as a team on one instance
+
+Several people can share one instance: one of them plans and assigns, and
+each works in a clone of the instance's repository with the target's
+repository cloned beside it. The kit holds no claim or lock on an order, so
+the rest is convention, stated once here
+([decision](evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release)):
+
+- **One person plans.** A planning pass is merged before the next one opens,
+  so two passes never file orders against the same horizon.
+- **An order is assigned before it is activated**, and the assignment is
+  noted where the team reads the plan. A second clone that starts the same
+  order activates it again, and nothing detects that.
+- **One person carries an order** from its activation through its final
+  review and runs its release close. The close re-reads the reviewed gate row
+  against the closing machine's installed runtime and cleans up only that
+  clone's worktrees, so an order in flight stays in the clone that activated
+  it.
+- **One order at a time goes through final review, merge and close**, in the
+  order the planner sets. An order closed while another's review merges
+  cannot integrate again.
+- **The target's draft pull request, opened after verification, is where the
+  planner reads a teammate's change** before its final review. A team's
+  instance registers the team's repository with `records` set to
+  `instance` (§First steps), so the order's decisions and reports are in
+  the instance's own records pull request and never in the target's
+  ([decision](evidence/WO-276/decisions.md#wo-276-d090--part-n-as-built-a-registration-says-whether-its-orders-records-are-filed-into-the-target-or-stay-in-the-instance-mains-value-governs-every-reader-and-a-committed-records-binding-decides-an-order-in-flight)).
+- **Each clone keeps its own** local-terms list, intake and clone map; none
+  of the three is committed.
+
+One at a time, then: the planning pass, an order's activation (once, by the
+person it is assigned to), and the final review, merge and close of each
+order in turn. Executing and verifying different orders in different clones
+runs side by side.
+
+The instance names the people whose commits are its own in
+`contributions.authors`, beside `operatorAuthor`
+(§Kit files and instance files): a commit by a listed author passes the
+sign-off rule without a trailer, and anyone else's still needs one. The two
+repositories merge by different rules: the instance's own with merge
+commits, the target's by its team's method, which the close reads from Git
+(§Releases in this instance).
 
 ## What runs here, and what does not
 
@@ -760,12 +1201,10 @@ brief (the generated worker definition, the reviewer brief from the role text,
 the order and its diff, and for `--recheck <report>` the earlier findings) and
 writes its report and a `.json` record to
 `docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md` (a repair's under
-`repair-<n>/`, and never over an existing report). `--model
-opus|fable|sol|astra` picks one of the operator's four worker options for that
-host; without it the launch takes the option the words closing the
-session's `planning:` or `resume:` line, or closing its phrase before a `;`,
-named (`fable` for Claude, `astra` for Codex), else the host's default (opus,
-sol). `--subject planning` on a `planning/` branch reviews that
+`repair-<n>/`, and never over an existing report). `--model <name>`
+names a worker or a model of this instance's table (`npm run worker -- list`
+prints it) and `--effort <level>` an effort for that one launch; without them
+the launch runs the `default` worker for that host. `--subject planning` on a `planning/` branch reviews that
 branch's planning documents and orders into `planning-<branch>/` (the name
 after `planning/`, any character but a letter, digit, dot, underscore or hyphen
 URL-escaped, so no two branches share it), and
@@ -773,6 +1212,10 @@ URL-escaped, so no two branches share it), and
 the report answers item by item in an `## Items` table; `--target <id> --order
 WO-NNN` reviews a registered target's order on the target's base and worktree;
 `--since <tree>` starts a fresh round 1 over that base in a ladder of its own;
+`--part <letter>` names the part of an order in parts whose criteria are due,
+and the brief tells the worker to judge the order's design frame and that
+part's own text and that the other parts' criteria are not due
+([decision](evidence/WO-276/decisions.md#wo-276-d023--a-review-launch-names-the-part-whose-criteria-are-due));
 and `--dry-run` prints the command line and the brief it would run. A
 consistency report needs its `Traced consumers` table (changed contract,
 consumer, command, result) with a generated pages row and a fixture manifests
@@ -802,8 +1245,18 @@ selection, or `auto` when omitted
 ([decision](evidence/WO-255/decisions.md#wo-255-d042--every-embedded-possible-result-requires-declared-intent)).
 The worker is told a budget of about 30 minutes and 120 tool calls and returns
 what it has as it nears either, well before the hard limits stop it. An
-execution's or repair's reviews run as a ladder with an end: round 1 is three
-reviewers over the whole diff; round 2 is each reviewer whose findings were
+execution's reviews run as a ladder with an end. Its order's header sizes
+round 1 with the line `**Review ladder:**`: `full`, or no line, is three
+reviewers over the whole diff; `combined` is one worker carrying the three
+briefs; `paired` is the three and the one on the same tree, blind to one
+another, whose findings the executor records one by one in the round's
+decision (`roundFindings`) before fixing them. Every brief says what blocks:
+a finding that names the criterion it fails and an input a writer of this
+instance produces, a leak, or behavior `main` had; the executor judges each
+finding by that before acting on it, and a reviewer's label is only the
+reviewer's claim. A fix dispatch runs no ladder: it repairs what its failed
+report names and has that repair read once by one combined worker
+([decision](evidence/WO-276/decisions.md#wo-276-d039--part-c-as-built-the-blocking-rule-in-every-brief-one-review-for-a-fix-the-ladder-line-and-the-paired-record)). Round 2 is each reviewer whose findings were
 fixed confirming those fixes and reviewing the whole change again, a new
 finding admitted only when it breaks an acceptance criterion or a behavior
 `main` had; round 3, only when round 2's
@@ -811,14 +1264,38 @@ fixes changed code, is one combined worker over the remaining delta; then no
 reviewer runs, the executor judges what is left, and the handoff's
 `self-review:` line records the rounds and the unreviewed lines. A round whose
 fixes touch only comments, documentation, formatting, test names or
-regenerated files is skipped, and a repair under fifty changed source lines
-starts at round 3.
-It is the route to a Codex reviewer from a Claude session and to a Claude print
-reviewer from Codex, and needs that CLI installed and signed in. Every worker
+regenerated files is skipped. A repair made inside an execution after a failed
+complete run takes no round: the run that failed judges its own repair, the
+next complete run is started with `--keep-going` so that one run names every
+suite that still fails, and the handoff's review line counts the repair's
+changed lines as unreviewed. An order whose execution plan is divided into
+parts runs its ladder a part at a time: a part's ladder runs when that part's
+steps and write-backs are complete, a part after the first opens it with
+`--since` naming the commit of the checkpoint the part before it ended on, the
+limit of three rounds holds within a part, and a complete run that a part's
+own step names is that step's evidence
+([decision](evidence/WO-276/decisions.md#wo-276-d021--the-role-text-of-steps-a6-a7-a9-a11-a12-and-a15-and-the-installed-roots-bytes)).
+A worker hands back with nothing of its own running. A worker whose stop
+arrives while a background task it started is live is refused once, naming
+each task and the tool that stops it; the tasks are written to the parent
+session's journal, and the facts the parent's next prompt prints name a worker
+that stopped with one still running. `node scripts/harness.mjs evidence --wait`
+awaits a gate run and nothing else: a background task is awaited through the
+host's completion signal
+([decision](evidence/WO-276/decisions.md#wo-276-d015--what-the-host-gives-at-a-workers-stop-and-what-the-hook-reads-of-it-steps-a8-and-a9)).
+The review helper is the route to a Codex reviewer from a Claude session and to
+a Claude print reviewer from Codex, and needs that CLI installed and signed in.
+Codex's command line leaves a background server of its own running when a run
+ends. The kit closes it, and only when no other Codex process is alive to use
+it: when a worker the helper launched on Codex returns, and, for a launch that
+ended some other way, at the next lifecycle dispatch from another host, which
+says what it closed
+([decision](evidence/WO-276/decisions.md#wo-276-d143--the-kit-closes-the-background-server-codex-leaves-running-the-sixteenth-complete-run-is-stopped-for-that-change-the-critics-record-and-clock-are-brought-up-to-date-in-the-repair)).
+Every worker
 use counts against `subagentCap` in `docs/control/budgets.json`: in Claude the
 hook counts each launch, each re-task (a `SendMessage` or a resumed agent) and
-each kit launch by its literal command (`npm run plan -- review` counts
-three), and under Codex the helper counts its own launch;
+each kit launch by its literal command, and under Codex the helper counts
+its own launch;
 `node scripts/harness.mjs usage <session>` prints the counts by host. A
 spawned `dotln-worker` that starts a test-runner gate is refused with
 `DOTLN_WORKER_GATE_REFUSED`; a review worker probes one test with
@@ -828,7 +1305,11 @@ After the first steps above, `npm test`, `npm run test:docs` and
 `npm test -- --review` run inside this instance without package source. Each
 selection first runs the six structural checks: formatting, configuration,
 registrations, declarations, generated artifacts and the host's Node and Git
-runtime and memory pressure; a Node outside `engines.node` or a Git below
+runtime, its memory pressure and, on macOS, the size of its file-events
+daemon, which the host check prints and refuses above 1 GiB with the command
+that restarts it
+([decision](evidence/WO-276/decisions.md#wo-276-d142--a-gate-shows-the-file-events-daemons-size-at-every-start-and-refuses-above-1-gib-after-a-restart-showed-the-daemon-healthy-and-a-measured-comparison-showed-that-where-the-gates-files-are-made-does-not-matter));
+a Node outside `engines.node` or a Git below
 `engines.git` makes the host check run first and nothing else
 ([decision](evidence/WO-260/decisions.md#wo-260-d010--the-git-floor-is-git-2310-and-wo-258-d009-is-superseded)).
 The generated check includes the runtime manifest, active pinned snapshot
@@ -838,7 +1319,11 @@ of `build`. It hashes every
 manifest-listed compiled runtime and test file, and refuses a changed,
 missing or nonregular compiled file by path before the selected suites. Other
 kit-file changes produce one advisory line. Run
-`node scripts/launchpad.mjs verify` directly for the manifest check.
+`node scripts/launchpad.mjs verify` directly for the manifest check: it
+compares every listed file, and refuses a changed compiled runtime file,
+before it asks the instance's own harness check about a generated surface
+that differs, since that check loads the runtime
+([decision](evidence/WO-276/decisions.md#wo-276-d174--kit-verification-and-an-updates-plan-compare-every-carried-compiled-runtime-file-before-any-of-the-instances-code-runs)).
 
 A long gate wall time with short task durations can be host-lane waiting:
 the summary attributes its wait by checkout relation, and
@@ -985,6 +1470,38 @@ Codex the lifecycle commands and the role text carry the same rules. What a
 refusal names, the session can run or say; nothing below asks the operator
 to run a kit command for a state the kit can judge.
 
+- **Which hooks run for a call.** Before a tool call the permission hook and
+  the write observer run for every tool; the writer reservation's hook runs
+  for the tools the tool table (`harnessToolEffects`) maps to a shell command
+  or a write, and the attribution hook for those it maps to a shell command.
+  After a call the read observer runs for every tool, and the lint-directive
+  hook for the tools the table maps to a write. A read or a search therefore
+  starts three hook processes and a shell command, an edit or a write five.
+  How a narrowed hook's matcher is written depends on the hosts that read the
+  settings file. Where each of them was observed to read a matcher that
+  leaves names out (Claude Code 2.1.322 is the one host so observed), the
+  matcher leaves out the names of the other kinds, and a tool the table does
+  not name starts all six hooks. Where one was not, as in an instance that
+  elects Copilot CLI, the matcher lists the names of the hook's kinds, the
+  form every host documents, and a tool the table does not name starts only
+  the three hooks registered for every tool; `.claude/harness-manifest.json`
+  records which form was emitted and why. A target worktree's settings hold
+  the permission hook for every tool, and the writer reservation's and the
+  attribution hook narrowed as for Claude Code
+  ([the excluding form](evidence/WO-276/decisions.md#wo-276-d105--a-units-matcher-is-an-anchored-exclusion-of-the-names-its-kinds-do-not-cover-observed-on-claude-code-documented-and-not-observed-on-copilot-where-the-host-refused-the-run-and-the-units-own-name-tests-stay-as-they-are);
+  [as built, with what a call costs in hooks before and after](evidence/WO-276/decisions.md#wo-276-d106--part-q-as-built-with-both-readings-of-what-a-call-costs-in-hooks);
+  [what a call costs, as corrected](evidence/WO-276/decisions.md#wo-276-d108--part-qs-gates-and-what-changed-after-d106-two-edits-to-a-parser-a-pinned-digest-the-part-had-not-run-and-one-statistic-joined-to-the-wrong-sample)).
+- **The presence heartbeat.** It has no hook of its own. With a resident's
+  store named in `DOTLN_RESIDENT_STORE`, the files of the write observer, the
+  read observer, the session hook (at a prompt) and the finish hook each
+  record it after the hook has answered, under operator control and with the
+  adapter unavailable as well, and a target worktree's permission hook records
+  it after writing its decision. A heartbeat that fails says so on standard
+  error and changes no answer. The hook that carries it takes the heartbeat's
+  time, which grows with the resident's log. A test gate and a bounded probe
+  drop the store's binding, so the hooks a suite runs against its fixtures
+  record nothing in the session's resident; a suite run directly from a shell
+  bound to one still does.
 - **The writer reservation.** One session writes a worktree at a time. A
   session refused by another's reservation may run
   `node scripts/harness.mjs writer --show` to see the holder, and
@@ -1067,6 +1584,13 @@ to run a kit command for a state the kit can judge.
   substitution or a working-directory change is judged by host permissions;
   the hook journals that classification and shows no message. A refused
   command's message is unchanged.
+- **Your own hooks.** A hook of this instance's is added through the
+  committed fragment `.claude/settings.instance.json`, which emit merges
+  after the kit's hooks for its event, and never by editing the generated
+  settings, which a re-emit rewrites. The fragment takes no hook under
+  `PreToolUse`, where the host runs a call such a hook rewrites without
+  showing it to the guards above, nor under `SubagentStop` or
+  `UserPromptSubmit` (§Extending this instance).
 - **A blocked turn.** When only the operator can clear what blocks a session,
   every role's text says to state the block and the one line that clears it
   in a single message and end the turn, since the host holds a `!` command
@@ -1102,23 +1626,38 @@ under `corpus/`, and the three mutation self-test modules under
 bundle under `.claude/` (`.claude/harness-manifest.json` among them), and
 under `.agents/` and `.codex/` for a host the destination elects or its
 record shows (§Features), `package.json`, `package-lock.json`, `dotln.config.example.json`,
-`UPSTREAM.md`, the license files, `docs/product/07-execution-guide.md`,
+`UPSTREAM.md`, the license files, `THIRD_PARTY_NOTICES`, `docs/product/07-execution-guide.md`,
 `docs/product/operator-reference.md`, `docs/product/08-publication-compiler.md`, `docs/PLAYBOOK.md`, this guide
-(`docs/KIT.md`) and
-`docs/publication/implementation-overlay-template.md`. A kit update replaces
+(`docs/KIT.md`), the operator commands page generated from it
+(`docs/OPERATOR.md`) and
+`docs/publication/implementation-overlay-template.md`. Three of the scripts'
+files are another project's, carried byte for byte so that the lifecycle
+reads Markdown before anything is installed: Prettier's Markdown plugin, its
+license and its third-party notices, under `scripts/lib/vendor/`.
+`THIRD_PARTY_NOTICES` at the root names them with their version, and
+`scripts/lib/vendored-parser.json` records the hash of each; the checks of
+this instance's own text leave out exactly the files that record proves, so a
+changed copy is screened as any file is
+([decision](evidence/WO-276/decisions.md#wo-276-d032--the-carried-parser-is-proven-by-recorded-hash-and-left-out-of-the-screens-by-its-bytes)). A kit update replaces
 unmodified kit files; a re-emit regenerates the bundle from
 the runtime. Instance files are yours: `dotln.config.json`, `docs/control/`,
 `docs/work-orders/`, `docs/evidence/`, `docs/verifications/`,
 `docs/final-reviews/`, `docs/workstreams/`, `docs/repositories/`,
-`docs/planning/`, the product overlay and the build overlay, `CLAUDE.md`
+`docs/planning/`, the product overlay and the build overlay, `FOR-CORE.md`
+(seeded once with no entry and never rewritten by a refresh), `CLAUDE.md`
 (its generated harness block is checked by `node scripts/harness.mjs check`
 through the listed harness manifest, changed by an update only through an
 explicitly opted-in phrase action),
-`AI-HARNESS-SECURITY.md`, `README.md`, `.gitignore` and every root README the
+`AI-HARNESS-SECURITY.md`, `README.md`, `.gitignore`, `.gitattributes` (seeded
+once where the instance has none, with the line `* -text` that keeps Git from
+converting the line endings of the files the kit verifies by their bytes; add
+the instance's own attributes under it) and every root README the
 export seeded once, the workstream and repository-profile conventions
 included; their upstream sources stay under `scripts/kit/` for a later
 revision to refresh. The generated `.claude/settings.json`, hooks, skills and
-Codex files are kit files a re-emit rewrites; operator-owned Claude Code
+Codex files are kit files a re-emit rewrites; the hooks and permission rules
+every checkout of this instance should carry go in the committed fragment
+that emit merges (§Extending this instance), and one machine's Claude Code
 settings belong in the ignored `.claude/settings.local.json`, where the
 literal host-rule fallback also writes and removes one target order's rules
 (`.codex/rules/dotln-WO-NNN.rules` is its Codex counterpart). An ignored
@@ -1144,11 +1683,148 @@ and keeps a customized one, naming why in `keptSeeds`; its summary names
 below ([decision](evidence/WO-258/decisions.md#wo-258-d012)).
 
 The optional committed `contributions.operatorAuthor` is one public
-`Name <email>` author identity exempt from contributor sign-off. Omission gives
-no author an exemption. The kit supplies no identity, and local Git identity
-configuration never grants one; changing this declaration is a reviewed instance
-decision. Historical order IDs come from this instance's `historicalWorkOrders`
+`Name <email>` author identity exempt from contributor sign-off, and
+`contributions.authors` lists further ones, each in that form and each
+once: the people whose commits are this instance's own
+([decision](evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release)). A commit by an author in neither needs the sign-off
+trailer, and omitting both gives no author an exemption. A malformed entry
+of the list is refused when the configuration loads, by its index. The kit
+supplies no identity, and local Git identity configuration never grants one;
+changing either declaration is a reviewed instance decision. Historical order IDs come from this instance's `historicalWorkOrders`
 declaration.
+
+**What each worker runs is this instance's to say**
+([decision](evidence/WO-276/decisions.md#wo-276-d077--worker-models-as-redesigned-on-the-operators-direction-models-are-rows-of-data-workers-are-names-an-instance-binds-to-them-one-resolver-and-two-commands-answer-every-launch-and-no-worker-definition-hook-or-sentence-names-a-model)). DotLn names three things. A *model* is a row: the
+provider that launches it (`claude` or `codex`), its exact id, the effort it
+runs at where a launch names none and, for Claude, the model family a
+session's own launch takes. A *worker* is a name bound, for each provider it
+runs on, to a model, or to a model at an effort of its own. A *provider* is a
+launcher the kit has. The kit ships six models (`opus`, `fable` and
+`sonnet` for Claude, `sol`, `astra` and `luna` for Codex) and four workers:
+`default`, which a launch that names nothing and every driven phase runs;
+`advanced`, each provider's stronger model, for work the operator asks it
+for; `verifier`, which a driven independent verification runs; and `judge`,
+which the resident's always-on judge runs where a bind names no model. `npm run worker -- list` prints
+the table this instance has, with what each name runs and where each value was
+written, and `npm run worker -- show <name>` prints what one name runs and how
+this session launches it.
+
+The optional `workers` section of `dotln.config.json` holds this instance's
+workers and nothing else, each a name, an optional `description` and, for a
+provider, a model's name or a model with an effort:
+
+```json
+"workers": {
+  "default": { "claude": "opus", "codex": "sol" },
+  "advanced": { "claude": "fable", "codex": "astra" },
+  "night-review": {
+    "description": "Reviews that run unattended.",
+    "codex": { "model": "astra", "effort": "high" }
+  }
+}
+```
+
+An entry with the name of a kit worker restates only the bindings it writes
+and keeps the others; any other name is a worker of this instance's own, and
+there may be any number. The models live in an optional `dotln.models.json`
+beside the configuration, which is this instance's file and no kit path, so
+an update never touches it:
+
+```json
+{
+  "schemaVersion": 1,
+  "models": {
+    "small": { "provider": "claude", "id": "<the exact id>", "effort": "high", "family": "<the family>" }
+  },
+  "prices": {}
+}
+```
+
+A row adds a model, and a row with a kit model's name replaces the kit's row
+whole, which is how an instance follows a new model id before the kit does.
+Whatever neither file states, the kit's own list supplies
+(`packages/skeleton/src/worker-models.mjs`, the one place the kit names a
+model that a worker runs), so an instance that states nothing launches the kit's defaults.
+
+A name means one thing. A worker with a model's name, a model whose id is
+also a name, two rows of one provider with one id, a binding to a model that
+is not listed or is another provider's, and an effort a provider does not
+take (`low`, `medium`, `high`, `xhigh`, `max`) are refused when the
+configuration loads, naming the entry at fault by its file and key; an id is
+this instance's to get right, in the form a worker definition carries (at
+most 100 lower-case letters, digits, dots and hyphens, beginning with a
+letter). A row may name a provider the kit has no launcher for: it is listed
+as such, held to the same form of id and to an effort of one word, and
+refused where a launch of it would be resolved. A launch takes a worker's
+name, a model's name or a model's exact id (`--model` on `npm run worker --
+review`, `npm run plan -- refute` and `npm run entropy -- review`, with
+`--effort` for that one launch; the refuter's direct form also takes
+`--provider` where a worker runs on several and no session says which), and
+an unknown name is answered with every name the instance has. No code
+matches a word loosely: turning what the operator said into a name is the
+session's judgment over the listing, and it asks where the words fit no entry
+or several. The two files are edited on main or in an order's worktree: a
+planning branch takes documents only, so a planning session that hears the
+operator's choices records them for that edit and does not make it.
+
+After an edit run `node scripts/harness.mjs emit`. The one worker definition
+and the phase definitions under `.claude/agents/` hold what `default` and
+`verifier` resolve to for Claude, the session hook is given the table's
+names (so that a dispatch line may close with them, as in `resume: next
+night-review`), and `node scripts/harness.mjs check` compares them with the
+two files from then on, so a definition emitted from them is neither drift
+nor, to an update or to `node scripts/launchpad.mjs verify`, a local
+modification. No role's text names a model, so none changes. How a launch
+reaches its model is the provider's: the kit's command-line launches (the
+review helper, the refuter, the entropy reviewer, a drive's phases) pass the
+exact id and effort; a Codex session's spawn passes them itself and opens its
+brief with the worker rules `show` prints; a Claude session launches the one
+`dotln-worker` definition, as it stands for the model that definition holds
+and otherwise with the model's family and effort, which the host resolves to
+a model, so `show` marks that launch as not exact and the record carries the
+model the host reports. A model with no family is launched by the kit's
+command only. A launch that fails names where this instance wrote its model.
+The record says what ran: a launch's attestation carries the model id and the
+effort it was given, and a receipt's worker type names the provider's
+launcher (`dotln-worker`, `codex-spawn-agent`); the two per-model types an
+earlier kit recorded still read.
+
+`npm run meta -- --usage` prints what the recorded sessions used, in tokens by
+class (input no cache served, input read from a cache, input written to one,
+and output, which do not overlap), for each order and for each calendar day of
+this machine's own time zone; `--since <YYYY-MM-DD>` bounds the days and
+`--json` prints the same report for a program. It reads every observation in
+this checkout's usage ledger, whichever orders the meter's own pages show, the
+main checkout's too for an order in flight in its own worktree, and, for a
+role of an order whose ledger rows hold no counters or are gone, the usage
+copies retained when the order closed. A session is observed more than once,
+each time counted from its start, so an observation is counted on the day it
+was observed for what it adds to the one before: a session that runs past
+midnight leaves on each day what that day's observations added, as finely as
+it was observed. The hosts' counts only grow, so a later observation of a
+session that counts less than an earlier one means the basis of the
+measurement changed, and the report cannot tell how: it counts the session
+from the fall on (the observation that fell whole on its day, later ones for
+what they add on theirs), so the order's sum is still the last count, and the
+line of every figure the session touches, its earlier days among them, says
+that what it used on each day is not known. The meter and this report order a
+session's observations alike, by when each was made, so a record written out
+of turn changes neither. Totals that survive only in a closed order's snapshot
+name no day and are not in the report. An observation that gave no count of
+the dispatch (a collection that failed, a Copilot session's cumulative count)
+is left out beside a measured one of the same session and otherwise stands on
+its own day, and a line says how many of its observations were such. A class a
+host reports none of reads `unknown`, never zero. The `prices` of `dotln.models.json` map
+a model's exact id to this account's prices for the four classes (`uncachedInput`,
+`cacheRead`, `cacheWrite`, `output`, in US dollars for a million tokens);
+where it names the model a session's own events in the order's log attest, the
+report multiplies each class once by its price and prints the result marked as
+an estimate. For a model with no declared price, and for a session or a kit
+launch whose model no record attests, it prints `unknown`, and so does a sum
+that holds one of them. No price ships in the kit: an account's rates are its
+own and change, an estimate is recomputed from the prices as declared now, and
+a cost the host itself reported stays the figure of record
+([decision](evidence/WO-276/decisions.md#wo-276-d069--part-j-as-built-an-instances-workers-section-decides-what-each-worker-runs-one-resolver-answers-every-reader-and-the-usage-report-gives-tokens-by-class-and-by-day-with-an-estimate-from-the-instances-own-prices)).
 
 **Your orders live here.** `docs/work-orders/` holds the orders this
 instance cuts, `docs/evidence/`, `docs/verifications/` and
@@ -1156,12 +1832,175 @@ instance cuts, `docs/evidence/`, `docs/verifications/` and
 cut them. The first planning pass is this instance's own: `npm run plan --
 start <slug>` cuts its orders from its own sequence; the pre-drafted WO-001
 is the only order the kit seeds, and no order of core's ever arrives in an
-update. WO-001 establishes what this machine and its coding harnesses
-support: it registers the local-terms list and checks the three files it
-writes, its criterion 3 records the printed status and any match fixed
-before filing, and it runs the review ladder every order runs
-([decision](evidence/WO-258/decisions.md#wo-258-d011)). §Planning in this instance names the commands a planning pass runs
+update. WO-001 establishes what this machine and the hosts it elects
+support: it registers the local-terms list and checks the four files it
+writes, its criterion 3 records the printed status, a refuse-mode match fixed
+before filing and each context-mode match read, and it runs the review ladder
+every order runs
+([the order](evidence/WO-258/decisions.md#wo-258-d011);
+[the two classes](evidence/WO-276/decisions.md#wo-276-d008--the-lists-two-classes-and-the-runs-a-match-joins-across-step-a1)). §Planning in this instance names the commands a planning pass runs
 here and the seeds it reads.
+
+## Extending this instance
+
+The kit runs none of your tools and does not learn what they are. It gives
+them a place it will never touch, a committed way to add hooks and permission
+rules, a section of the configuration and three outputs to read
+([decision](evidence/WO-276/decisions.md#wo-276-d074--part-k-as-built-one-root-that-is-the-instances-by-guarantee-a-settings-fragment-that-only-adds-and-takes-no-pretooluse-hook-and-what-the-host-was-observed-to-do)).
+
+**One root is yours by guarantee: `extensions/`.** No kit file is under it
+and none will be: the kit's manifest refuses a path there, under any letter
+case, since a file system that ignores case holds `Extensions/` as the same
+directory; an update plans nothing there; emit writes nothing there; no
+document root and no declared kit action may name it. The format task leaves
+it out, and so do the kit's document checks (links, kinds, entry points, the
+pattern screen), its structural checks and its comment check. An order whose
+every change lies under it, with the order's own documents and records, owes
+no kit suite: the closeout selection prints the document gate alone and says
+why, and the order's criteria name the command that tests your tool. A path
+anywhere else carries no such promise, since a later release may add a file
+beside yours and the kit's checks walk whole trees.
+
+Some things still read the root. The three screens for what must not leave a
+repository do: the local-terms screen, the verbatim screen, and the
+private-path screen, which reads every file there, Markdown by the rule for
+a document and any other file for a home directory's path. And what follows
+an order's whole change follows it there: its checkpoints, the review of its
+change, and the gate's record of the tree and of the code it ran on, so an
+edit under the root after a complete run is a change to this repository's
+code, and an order that still owes that run pays it again.
+
+A tool you already keep elsewhere keeps working. What breaks is only what
+this section rules out: a file of yours at a path a later release claims, a
+hook written into the generated settings, a skill or agent named `dotln-…`.
+Moving a tool under the root is your choice.
+
+**Your hooks and permission rules are a committed fragment,
+`.claude/settings.instance.json`.** `node scripts/harness.mjs emit` merges
+it into the `.claude/settings.json` it writes and `check` compares the
+merged text, so an update plans the merged settings as this instance's own
+emit and `node scripts/launchpad.mjs verify` counts them as written by it.
+A target worktree's bundle takes the fragment as it stands when that bundle
+is written, at the worktree's start, and its check compares the bundle with
+what was installed then: after editing the fragment, `node
+scripts/harness.mjs emit --target <worktree>` writes a standing worktree's
+bundle again. The merge only adds: your hooks follow the kit's for their
+event, your rules follow the kit's in their list, and every entry the kit
+emits stays as emitted. With the fragment removed, emit writes the bytes it
+writes for an instance that never had one.
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hooks/after-edit.mjs\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": { "deny": ["Bash(extensions/tools/deploy *)"] }
+}
+```
+
+- What it may hold. `hooks`, under `PermissionDenied`, `PostToolUse`,
+  `PostToolUseFailure`, `SessionStart` and `Stop`, the events at which the
+  kit registers a hook of its own and only observes; each group a `matcher`
+  string where it has one and its `hooks`; each hook a `type` of
+  `command`, its `command` and a `timeout` in whole seconds where it has
+  one. `permissions`, as `allow`, `ask` and `deny` lists of rules. Emit
+  refuses anything else and names the key: a key the kit emits, which the
+  fragment would replace (`autoMemoryEnabled`, `attribution`); a key the
+  merge does not define (`env`, `disableAllHooks`,
+  `permissions.defaultMode`, a hook's `async`); `null` where a list
+  belongs; a hook the kit registers itself, registered again; a rule the
+  kit emits, written into another list, where it would countermand the
+  kit's; and a command or a rule that holds a character a reader cannot see.
+  A wider rule of your own that covers one of the kit's allow rules is your
+  tightening and is taken. The shape is the kit's own entries' and no wider
+  because the file is the kit's too: the host is documented to drop a
+  settings file's other hooks over one malformed entry.
+- No hook under `PreToolUse`, `SubagentStop` or `UserPromptSubmit`, the
+  three events where an added hook's output could stand in for an answer of
+  the kit's. On Claude Code 2.1.322 a `PreToolUse` hook that returns a
+  rewritten input has the rewritten call run, and the kit's guards are shown
+  only the call as it was first asked, so a hook there could turn an
+  admitted call into a refused one unseen. At `SubagentStop` the kit itself
+  refuses a worker's stop while its tasks run, and the host's documentation
+  gives an added hook's `continue: false` precedence over that. A
+  `UserPromptSubmit` hook that blocks or fails keeps a prompt from the
+  session, `analysis:` and `operator override:` among them. A refusal of
+  your own is a `permissions.deny` rule. The ignored
+  `.claude/settings.local.json`, which emit does not merge, has the same
+  powers on the same host: a `PreToolUse` hook there that rewrites a call
+  runs a call no guard of the kit's judged, so write none that does.
+- What an added rule or hook cannot do. A call a kit guard refuses stays
+  refused beside an `allow` rule and beside a hook that allows it, and a
+  call a deny rule names stays refused beside an `allow` rule: the host
+  resolves several answers deny first, as its documentation says. Runs of
+  the host showed both, the second with a deny rule added through the
+  fragment; the decision this section links names them.
+- In a target worktree the project directory is the target, where
+  `extensions/` is not. A command that names a file of this instance
+  reaches it through `DOTLN_LAUNCHPAD`, which a driven session's
+  environment carries and an attended session has where you export it; the
+  spelling above runs in both places.
+- You own the tests of what you register. A hook that fails or is slow fails
+  or slows every call it is registered for, and no kit suite runs it.
+- An instance that elects no compiled harness has no emitted settings for
+  a fragment to join; one it keeps all the same must still be a regular
+  file. What belongs to one machine still belongs in the ignored local file.
+
+**Your tools' settings live under `extensions` in `dotln.config.json`.**
+The section must be an object. The kit returns it as written when it loads
+the configuration and reads nothing in it, and no declared kit action adds a
+field there.
+
+**What a tool may read.** Three outputs are the ones to build on, and a
+release that changes one says so in its Read before upgrading:
+
+- the control log, by default `docs/control/orders/WO-NNN.jsonl`: one JSON
+  object a line, each carrying `schemaVersion`, which a reader checks before it
+  trusts the rest;
+- `npm run resume -- status --json`: an object whose first key is
+  `schemaVersion`; with `--all`, an array whose every element carries it,
+  and which is empty, carrying none, where there is no order;
+- the usage report, `npm run meta -- --usage --json` (§Kit files and
+  instance files).
+
+A tool that imports another kit module by path depends on a file the next
+release may move. A wider surface waits for a tool that needs one, named in
+an entry to core.
+
+**Where each kind of extension goes.**
+
+- Skills, agents and commands: beside the generated ones, under any name that
+  does not begin `dotln-`, the names emit owns.
+- Standing rules: in `CLAUDE.md`, outside the generated block.
+- Dependencies: in a package of your own under `extensions/`, with its own
+  lockfile, never in the kit's `package.json`, which an update replaces.
+- Tests: named by the order that changes them, in its criteria, by a
+  command that is not the kit's own. A criterion that holds the words `npm
+  test` claims this repository's complete run, whatever directory the
+  command is meant for; `npm --prefix extensions test`, or the test file
+  itself, names yours.
+- A target's checks: in its registration's gate (`repositories.<id>.gate`).
+- A tool that prepares planning input: it writes outside the intake root,
+  which is single-copy source that the words screen reads, and the planning
+  dispatch names its file.
+
+**What you send core is what blocks you.** §Planning in this instance gives
+the rule. `FOR-CORE.md` holds every difficulty the kit gave this instance,
+each entry saying whether it stops the next order; what an instance asks core
+for is only what does stop it and has no working route here. A gap you built
+a tool around has a route: its entry stays in the file, with `stopsNextOrder`
+false, and is not sent.
 
 ## Taking upstream updates
 
@@ -1182,13 +2021,14 @@ retry controls remain the same.
 Preview before every update. From a clean DotLn core checkout at the commit
 you want to take, with its pinned dependencies installed, run:
 
+<!-- operator-commands aside: core's own update of the starter, not an instance's -->
 ```sh
 node scripts/launchpad.mjs export --update /absolute/path/to/starter --preview
 node scripts/launchpad.mjs export --update /absolute/path/to/starter
 ```
 
 The preview and update share one plan. Each kit path is listed as `replace`,
-`add`, `remove`, or `refused`. A refusal names the local edit or instance-owned
+`add`, `remove`, `refused` or `re-emitted`. A refusal names the local edit or instance-owned
 collision and the prior manifest hash retained (none for a collision).
 `replace` includes files whose bytes already match. The preview also names
 the incoming core commit and tag, the declared runtime build snapshot before
@@ -1214,7 +2054,20 @@ only when unchanged. Locally edited files are refused and keep their prior
 manifest hashes, including dropped files, so a repeat update refuses them
 again. A new kit path occupied by an instance file is also refused and stays
 outside the manifest. Resolve these files by hand and review the update
-before committing it.
+before committing it. One kind of kit file is rewritten by the instance's own
+command, its emit: a generated harness surface (a surface the incoming emit
+writes, or the harness manifest). Where such a file holds neither manifest's
+bytes, the plan asks the instance's own `node scripts/harness.mjs check`, as
+a child process and only then, and only where every compiled runtime file
+the prior kit listed holds bytes a kit wrote, since the check loads that
+runtime. Where the check passes, the bytes are that
+emit's: the row reads `re-emitted: <path>`, the file is replaced, and the
+emit the update ends with writes it again under the instance's
+configuration. Where the check fails, nothing is installed there to run it
+or a compiled runtime file differs, so that it was not run, the file is
+refused as locally modified and the row says which
+([decision](evidence/WO-276/decisions.md#wo-276-d065--part-i-as-built-an-updates-merge-keeps-the-instances-bytes-the-preview-lists-the-files-both-sides-changed-a-surface-the-instances-emit-wrote-is-re-emitted-and-every-spelling-of-a-worker-launch-counts);
+[the runtime first](evidence/WO-276/decisions.md#wo-276-d174--kit-verification-and-an-updates-plan-compare-every-carried-compiled-runtime-file-before-any-of-the-instances-code-runs)).
 
 **Editing a kit file is choosing the true-fork path.** While its bytes differ
 from both its prior manifest hash and the incoming kit, every update lists
@@ -1228,6 +2081,52 @@ before the next update, or keep the fork and take nothing more for that file.
 Instance files are yours and are outside the kit-file refusal list;
 explicitly opted-in instance actions have their own checks below.
 
+**Sort the local-terms list before taking v1.0.0 or a later release.** From
+v1.0.0 an entry with no marker no longer stops a gate, a publish or an
+export: it is a context entry, which every screen lists by file and line for
+the stage at hand to read, and passes. Before the release is taken, the list's
+owner puts each entry that must never appear under a `refuse:` line, or marks
+it `refuse:` on its own line (§First steps shows both classes and the shipped
+example). Until then a stage's reading of the listed lines is all that stands
+between such an entry and a commit
+([decision](evidence/WO-276/decisions.md#wo-276-d008--the-lists-two-classes-and-the-runs-a-match-joins-across-step-a1)).
+
+**Run the index once after taking v1.0.0, and start a resident through its
+launcher.** From v1.0.0 the work-order index keeps what it observed in two
+records, `docs/control/release-history.json` and
+`docs/control/workstream-observations.json`, and commits no record of the
+orders' cards. Run `npm run work-orders -- index` once after the update and
+commit the two records with the regenerated pages; until then `npm run
+work-orders -- index --check` fails naming that command. A resident is
+started with `node scripts/resident.mjs`, the line `node
+scripts/resident-bind.mjs` prints: the launcher hands it the documents a
+mission check judges and the work-order cards. One started through the
+package's own entry holds a mission check with no judgment and reports its
+work orders unavailable, naming the launcher in both
+([decision](evidence/WO-276/decisions.md#wo-276-d033--what-this-part-changes-in-the-ported-readers-one-build-free-source-reader-no-committed-cards-one-parse-a-document);
+[the recorded hold](evidence/WO-276/decisions.md#wo-276-d170--a-resident-that-holds-no-reader-of-mission-documents-records-the-checks-failure-as-documents-unread-and-the-hold-names-the-launcher)).
+
+**What else v1.0.0 changes for an instance.** The role roots and the worker
+definitions are generated: the emit on the update branch rewrites them, and
+nothing is asked of the instance. A host that only a discovery record showed
+is off: elect it under `features` in `dotln.config.json` and run `node
+scripts/harness.mjs emit` to keep its surfaces. A seeded first order that has
+not run keeps its old text; take its authority, capability checklist,
+deliverables and second and third criteria from
+`scripts/kit/first-order.template.md`. The release seeds `.gitattributes`
+where the instance has none; a clone whose line endings Git had already
+converted runs `git add --renormalize .` once and commits what it changes.
+The seeded repository-profile and workstream pages changed: the instance
+keeps its own and finds the new text in this guide and in
+`scripts/kit/repository-profile.template.md` and
+`scripts/kit/workstream.template.md`. `npm run resume -- status --json`
+prints `schemaVersion` as its first key. This release also changes rows of
+the features page, which the instance renders from its own configuration, so
+the update branch runs `npm run sync` after the emit and the lineage index,
+as the steps below do
+([what the update section owes](evidence/WO-276/decisions.md#wo-276-d163--follow-ups-in-standing-documents-sentences-the-kit-guides-update-section-is-said-to-carry-and-does-not-a-seeds-check-that-names-three-files-of-four-dated-accounts-a-stale-synopsis-and-four-passages-that-still-call-the-teammate-ready-rung-10);
+[the rehearsed update](evidence/WO-276/decisions.md#wo-276-d164--the-second-reading-the-files-the-first-sixteen-readers-left-unread-and-an-update-from-the-previous-releases-kit-add-one-blocking-finding-three-readers-under-criterion-25-and-nineteen-follow-ups)).
+
 Inside an instance, its own session takes a starter update on the operator's
 word, never on a planning or entropy pass's own initiative (§Planning in this
 instance): under a journaled `planning:` or `ideation:` dispatch or a pending
@@ -1236,15 +2135,18 @@ and `update --publish` refuse unless the operator's in-session request is
 recorded with `--operator-request --capture <ignored intake file>
 --capture-hash sha256:<digest>`, or unless the instance elects
 `features.auto-update-upstream`, its standing opt-out of that rule
-([decision](evidence/WO-258/decisions.md#wo-258-d005)). The starter is Claude-only: an instance whose
-record shows Codex or Copilot sees that host's surfaces as `remove` rows in
-the preview and in the merge, and the re-emit on the update branch writes
-them back ([decision](evidence/WO-258/decisions.md#wo-258-d004)). It previews the revision with that revision's own launchpad, run from a
+([decision](evidence/WO-258/decisions.md#wo-258-d005)). The starter is Claude-only: an instance that has
+Codex or Copilot on, by an election or by its attestations, sees that host's
+surfaces as `remove` rows in the preview and in the merge, and the re-emit on
+the update branch writes them back ([decision](evidence/WO-258/decisions.md#wo-258-d004)); a host that only a
+discovery record showed is off from v1.0.0 on, and its surfaces stay
+removed until the instance elects it ([decision](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)). It previews the revision with that revision's own launchpad, run from a
 temporary detached worktree under the ignored `.runtime/` directory. The
 instance's launchpad knows only the kit paths of its export and refuses a
 manifest naming a later one; the incoming launchpad knows every path it
 ships. This example names the starter remote `upstream`:
 
+<!-- operator-commands take-release: On your word in a plain session in `main`, never in a planning pass, read the release's Read before upgrading, preview the starter's revision, take it on a `chore/` branch through its own pull request, merge that with a merge commit and finish in `main`. -->
 ```sh
 git config remote.upstream.tagOpt --no-tags
 git fetch --no-tags upstream
@@ -1252,6 +2154,30 @@ git worktree add --detach .runtime/upstream-preview upstream/main
 node .runtime/upstream-preview/scripts/launchpad.mjs preview --from upstream/main
 git worktree remove .runtime/upstream-preview
 ```
+
+The preview prints, above its file sections, one line for each floor the
+incoming release's `package.json` declares (`engines.node`, `engines.git`)
+that this host does not meet, naming the floor and what this host runs; with
+both met it prints no such line. It still prints its plan and refuses
+nothing, since a preview may be read on one machine for another; the
+incoming tree's own `node scripts/doctor.mjs` gives that release's whole
+host report ([decision](evidence/WO-276/decisions.md#wo-276-d060--part-h-as-built-the-host-report-a-kit-roots-host-check-sized-to-its-carried-tasks-the-previews-floor-lines-the-compilers-failure-and-the-attributes-seed);
+how the report marks a fact it cannot read and what it withholds:
+[decision](evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names)).
+
+Before the kit's rows the preview lists the instance's own files that a merge
+of the revision would meet changed on both sides: each file outside the
+incoming manifest that this instance and the starter have both changed since
+their merge base, or both added with different bytes. Each is a `both
+changed: <path>` row under a line that names the base and says to keep this
+instance's bytes when merging; with none it prints `instance files both sides
+changed: none`, and where the clone holds no shared commit it says the base
+cannot be read. Git may merge such a file in silence or stop on a conflict.
+Either way the instance's bytes are the ones the merge keeps, and a closed
+order's text is restored, never merged. A file only the starter changed or
+added flows in as Git merges it and is not listed. The kit's own rows follow
+the from-core plan above, the `re-emitted:` row among them
+([decision](evidence/WO-276/decisions.md#wo-276-d065--part-i-as-built-an-updates-merge-keeps-the-instances-bytes-the-preview-lists-the-files-both-sides-changed-a-surface-the-instances-emit-wrote-is-re-emitted-and-every-spelling-of-a-worker-launch-counts)).
 
 Set `remote.upstream.tagOpt` once so later ordinary fetches also omit tags.
 An explicit `git fetch upstream --tags` overrides `remote.upstream.tagOpt
@@ -1263,6 +2189,7 @@ the local release commands exclude annotated tags with the starter's recorded
 message. To preview a named starter release, fetch it into a non-tag ref and
 use that ref for both the detached worktree and the preview revision:
 
+<!-- operator-commands aside: a named starter release's preview, the alternative to the step's preview of the starter's main -->
 ```sh
 git fetch --no-tags upstream refs/tags/v0.85.0:refs/upstream-releases/v0.85.0
 git worktree add --detach .runtime/upstream-preview refs/upstream-releases/v0.85.0
@@ -1282,8 +2209,9 @@ whose incoming manifest hash equals its prior hash says `unchanged upstream;
 no merge conflict expected`. These are conservative manifest comparisons,
 not a prediction of Git's exact merge conflicts: Git can merge some edits,
 and a starter's own edits can differ from its retained manifest hashes.
-Files outside the manifests are outside the preview, including instance
-files a Git merge might change.
+Of the files outside the manifests the preview lists those both sides
+changed, above; any other instance file a merge changes is one the starter
+alone changed.
 Declared instance actions are assessed as manual work after the merge;
 `apply` on an action-plan row is hypothetical and performs nothing. An action
 that cannot fit this instance is listed as `cannot apply` with its reason;
@@ -1299,16 +2227,64 @@ The update reaches the instance's `main` through its own update pull request,
 so a later order's pull request carries only that order's commits. From clean
 `main`, the session creates a `chore/<slug>` branch (for example
 `chore/starter-update`), merges the previewed revision into it (a fast-forward
-when `main` has no commits of its own), runs `node
-scripts/harness.mjs emit` and `node scripts/lineage.mjs index`, and commits
-the regenerated bytes on that update branch. This includes a lineage index
-missing from an older export. It publishes the branch with
-`node scripts/launchpad.mjs update --publish --title <title> --body-file <path>`.
+when `main` has no commits of its own), keeps this instance's bytes for each
+file the preview listed as changed on both sides, runs `node
+scripts/harness.mjs emit`, `node scripts/lineage.mjs index` and `npm run
+sync`, and commits the regenerated bytes on that update branch. This
+includes a lineage index missing from an older export, and the derived
+pages a release changes, which the instance's first document gate otherwise
+fails naming the sync. It publishes the branch with
+`node scripts/launchpad.mjs update --publish --from <revision> --title <title>
+--body-file <path>`.
 That command refuses on `main`, off a `chore/<slug>` branch and with uncommitted
 changes, and until the update is whole: `UPSTREAM.md` and `KIT-MANIFEST.json`
 name one commit, neither the one they named where the branch left `main` nor the
 one `main` names now, and `node scripts/harness.mjs check` and
-`node scripts/lineage.mjs index --check` pass. It then does what `plan publish`
+`node scripts/lineage.mjs index --check` pass.
+
+The publish also judges the update's own merge, before any push: the oldest
+commit in which a line that holds the starter's revision meets one of this
+instance's that does not, wherever on the branch it stands. `--from
+<revision>` says which revision the branch merged, the ref or commit the
+preview was given, and the command below passes it; the commit must be one
+a fetch from a remote other than `origin` left a ref for, since a commit made
+here by a rebase or a copy is not the starter's. Without `--from` the publish
+reads the fetch for the revision: the starter remote's `main` (`upstream/main`
+above; the `main` of any remote but `origin`) or a ref under
+`refs/upstream-releases/`. Another branch of another remote is not read as
+the starter's unless `--from` names it, since a mirror or a colleague's fork
+holds this branch's own commits under such a name; and where the refs give a
+commit whose own history joins a line `main` holds, which is either the
+starter's own merge or this branch's merge as another remote holds it, the
+publish asks for `--from`. A revision neither route names is refused. So are
+a squash or a copy of its files, a rebased update branch, a merge that joins
+more than two lines, a revision merged in two places and a second revision
+of the starter's on one branch, however it arrived; each refusal says what
+to do.
+
+A file both sides changed must hold this instance's bytes at the branch's
+tip: the merge commit held them, or a later commit put them back and nothing
+has changed the file since. Otherwise the publish refuses, naming each file,
+the `git checkout <commit> -- <path>` command that restores it and `--take
+<path>`, which admits one named file whose merged bytes you mean to keep; a
+publish prints each as `taken: <path>`. Merging `main` into the branch
+afterwards does not change the commit judged. This instance's bytes are then
+those of the newest commit of `main`, or of `origin`'s `main`, that the
+branch holds, where that commit changed the file again; the restore names
+that commit by its id, and a later commit of `main` the branch has not taken
+in changes nothing. A file that the branch's own side of the merge and `main`
+have both changed since has no one commit to restore from: the refusal says
+so, and the file is set by hand and taken. Where an earlier update reached
+`main` by a squash merge, `main` holds none of the starter's commits and the
+base is older than that update, so its changes read as this instance's; the
+refusal says that too, and such a file is taken. A clone too shallow to hold
+the merge base is refused with that cause and the fetch that mends it; a
+whole clone whose history shares no commit with the starter's is refused as
+that, since nothing then tells this instance's changes from the starter's
+([decision](evidence/WO-276/decisions.md#wo-276-d065--part-i-as-built-an-updates-merge-keeps-the-instances-bytes-the-preview-lists-the-files-both-sides-changed-a-surface-the-instances-emit-wrote-is-re-emitted-and-every-spelling-of-a-worker-launch-counts),
+[its later judgment](evidence/WO-276/decisions.md#wo-276-d068--the-thirteenth-critic-the-sixth-attack-on-part-i-and-rolling-review-21-judged-the-publish-takes-the-revision-it-is-told-and-the-instances-bytes-are-those-of-the-commits-the-branch-holds)).
+
+The publish then does what `plan publish`
 does (§Planning in this instance): it lints the title and body, pushes the branch
 to `origin`, opens a pull request against `main` and prints its URL. The operator
 reviews and merges with a merge commit, so `main` keeps the starter's history
@@ -1325,6 +2301,24 @@ or fetch past its bound, ten minutes unless `--fetch-timeout <seconds>` says
 otherwise, is refused with the checkout unchanged and prints the by-hand finish:
 `git fetch origin main`, `git merge --ff-only origin/main` and `node
 scripts/bootstrap.mjs`.
+
+<!-- operator-commands take-release -->
+```sh
+git switch -c chore/starter-update
+git merge upstream/main
+node scripts/harness.mjs emit
+node scripts/lineage.mjs index
+npm run sync
+git add -A
+git commit -m "Take the starter update"
+node scripts/launchpad.mjs update --publish --from upstream/main --title "<title>" --body-file <path>
+```
+
+<!-- operator-commands take-release -->
+```sh
+git switch main
+node scripts/launchpad.mjs update --finish
+```
 Bootstrap prepares local dependencies and harness files without generating
 the tracked lineage index on main. A `.runtime/upstream-preview` left by an interrupted
 preview holds only a detached checkout: the session removes it with `git
@@ -1343,6 +2337,7 @@ from an older revision. `UPSTREAM.md` takes the new provenance when it is
 unmodified. The export's original license posture is retained. After a
 from-core update, also run inside its destination:
 
+<!-- operator-commands aside: the starter's re-emit after core's update of it -->
 ```sh
 node scripts/harness.mjs emit
 ```
@@ -1355,8 +2350,11 @@ an order naming a destination alone does not grant it.
 
 ## Opting in to instance actions
 
-By default, updates leave instance files byte-identical and only print the
-actions for you to carry out. To apply the kit's declared mechanical actions,
+By default, a from-core update (`export --update`) leaves instance files
+byte-identical and only prints the actions for you to carry out; a starter
+update taken by a Git merge can change an instance file that both sides
+changed, which [Taking upstream updates](#taking-upstream-updates) covers
+([decision](evidence/WO-276/decisions.md#wo-276-d065--part-i-as-built-an-updates-merge-keeps-the-instances-bytes-the-preview-lists-the-files-both-sides-changed-a-surface-the-instances-emit-wrote-is-re-emitted-and-every-spelling-of-a-worker-launch-counts)). To apply the kit's declared mechanical actions,
 set `"kit": { "applyInstanceActions": true }` in the instance's
 `dotln.config.json` (schema `"version": 1`) and pass `--apply` to the update
 command. Both are required. With either absent, no instance action runs;
@@ -1520,6 +2518,15 @@ repositories. Creator teardown waits only for a gate that can read its ledger.
 
 Every role's `dispatches` entry in `docs/control/budgets.json` carries
 `wallClockMs` and `completeRuns`; missing keys and null disable that bound.
+`wallClockMs` bounds the time a phase worked, not the time since its
+dispatch: a gap in the journals of the phase's sessions that begins at a
+turn's end and is longer than ten minutes counts for nothing, a tool call
+counts from its start to its end however long it runs, and every other span
+counts, so an order paused overnight is not refused the next morning for the
+hours it sat. The standing prints the worked time and, where the two differ,
+the elapsed time beside it. A phase on a host whose tool calls reach no hook
+(Codex) leaves nothing in its journal while it works and reads elapsed time
+([decision](evidence/WO-276/decisions.md#wo-276-d102--the-attack-on-steps-p1-and-p6-six-findings-tool-rows-name-their-call-so-a-calls-rows-pair-exactly-a-host-that-journals-no-tool-call-reads-elapsed-time-and-a-dispatch-names-an-order-by-its-line)).
 `dispatches.executor.repair` overrides the executor's bounds for `resume: fix`.
 The kit exports `local-median` for implementation, verification, final review
 and repair. Each consumer derives max(4 times its own completed phase median,
@@ -1541,7 +2548,7 @@ selections consume no run; admitted failures and interruptions do. Reads, listin
 reproductions stay available. Use `analysis:` for diagnosis. When the operator
 authorizes proceeding in ordinary language, interpret the conversation context,
 capture the actual words and context in ignored intake, and run
-`npm run resume -- accept-overrun <wallClockMs|completeRuns>
+`npm run resume -- accept-overrun <wallClockMs|completeRuns|subagentCap>
 --ceiling <value> --reason <text> --capture <path> --capture-hash sha256:<digest>
 <actor-flags>` yourself with your actual actor attestation. The executor can
 record that authorization while keeping its writer. No exact phrase, session
@@ -1551,6 +2558,13 @@ An operator may also authorize a run for as long as needed before it begins,
 in ordinary language. Record `--ceiling unlimited` for both `wallClockMs` and
 `completeRuns` with that capture. Null acceptance ceilings lift those two
 limits until the current phase completes; they preserve timing and run counts.
+`subagentCap` is the third metric, for an operator who authorizes more workers
+for one dispatch: its base is the budgets file's top-level `subagentCap`, its
+ceiling a whole number or `unlimited`, and the hook, the usage readback, the
+review helper's own count and a driven session's ceiling all read the accepted
+cap for that dispatch, so no session edits `docs/control/budgets.json` for one
+order and another order's dispatch still reads the file's value
+([decision](evidence/WO-276/decisions.md#wo-276-d016--a-cap-accepted-for-one-dispatch-is-read-by-every-counter-of-that-dispatch-step-a11)).
 The extension applies
 only to the current order activation and phase, changes no verdict, and is
 projected by `status --json`. The meter and `plan failures` show stops,
@@ -1626,7 +2640,14 @@ declared `entryPoints` list replaces the defaults, so an instance that
 declares one lists its front page there under the kit's id `front-page`.
 `npm run test:docs` refuses an entry point that names a record, the front
 page excepted since it may link one, and reports a standing document no
-entry point, link or program reaches. `npm run plan -- documents` adds the read census from this
+entry point, link or program reaches. The same command screens this
+instance's scripts as it screens the kit's: a non-test source under
+`scripts/` or `packages/*/src/` that reads a heading, a fence, a table row, a
+list item, a bold field label or JSON text with a pattern of its own is
+refused by file and line, with the shared reader to call
+(`scripts/lib/markdown-links.mjs`, or `JSON.parse`); the exceptions are the
+ones `scripts/lib/markdown-screen.mjs` names
+([decision](evidence/WO-276/decisions.md#wo-276-d031--part-b-begins-on-part-as-checkpoint-and-is-ported-from-the-earlier-worktree-whose-choices-are-restated-here)). `npm run plan -- documents` adds the read census from this
 instance's session journals over the last five releases (a lower bound: Codex
 reads are unobserved); a standing document nobody reaches and nobody read is
 red-tagged by `plan start`, and the next planning pass removes it or folds it
@@ -1646,6 +2667,13 @@ text capture under this checkout's ignored intake root, and a run of twelve
 consecutive words both hold fails by file, line and the capture's digest,
 never the words; a run the repository already held is its own text, and a
 checkout with no capture prints `verbatim screen: no captures`. The screen
+compares words, not addresses: a link target, a code span, a URL and a path
+each count as one word that no capture holds, so a line that links a document
+a capture also names is no finding, and in an instance a changed file whose
+bytes equal the incoming kit manifest's entry is the kit's text and is not
+screened
+([decision](evidence/WO-276/decisions.md#wo-276-d019--the-verbatim-screen-compares-words-and-reads-the-base-tree-once-step-a14)).
+The screen
 reads every text file under the intake root as the operator's words, so that
 root holds the operator's messages and nothing a session or a tool writes for
 itself: a session's drafts and a tool's output go under the ignored
@@ -1662,9 +2690,20 @@ advise instead of failing
 ([decision](evidence/WO-259/decisions.md#wo-259-d006)).
 
 The same gate's `terms` task screens the lines a branch adds with the private
-local-terms list, failing by file, line and mode without printing the term,
-and the publish helpers screen a branch's committed change the same way before
-their first push ([decision](evidence/WO-259/decisions.md#wo-259-d009)).
+local-terms list, whose two classes §First steps describes. A refuse-mode match
+fails by file, line and mode without printing the term. A context-mode match
+fails nothing: the task prints it as a `CONTEXT` line naming the file and line,
+the gate relays those lines when the task passes, and the stage at hand (the
+executor before its handoff, the verifier, the final reviewer, a planning pass
+before its publish) runs `node scripts/terms.mjs branch`, reads each listed
+line beside the entry it matched, rewords a line that names the listed thing
+and states how many it read. A reused row of the document gate prints no task
+output, so a stage reads the lines from that command and not from a reused
+row. The publish helpers screen a branch's committed change the same way
+before their first push
+([the screen](evidence/WO-259/decisions.md#wo-259-d009);
+[the two classes and what a match joins across](evidence/WO-276/decisions.md#wo-276-d008--the-lists-two-classes-and-the-runs-a-match-joins-across-step-a1);
+[where each screen lists a match](evidence/WO-276/decisions.md#wo-276-d010--where-each-screen-lists-a-context-mode-match-steps-a2-to-a4)).
 
 Artifacts follow their declared contract and check, never the preceding
 instance's shape. Writing guidance identifies the contract, meaning the document sections

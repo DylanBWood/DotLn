@@ -1,0 +1,108 @@
+{
+  "what": "Where a hand-wrapped line opens with what CommonMark reads as the start of a block, which of the readers this order moved onto the shared parser return less than the base's line reader read, and whether they refuse. Each row is the base's reader (main, 0097fcac6, from an archive) run beside the candidate's on the same text. Three review workers measured the families on 2026-11-14 between 18:10 and 18:34 UTC; the reviewer ran again the rows marked so. The probes and the workers' reports are in the ignored local lane under docs/control/local/reviews/WO-276/final-review-002/.",
+  "openers": {
+    "tagOfABlockElement": "a line that opens with a tag whose name is an HTML block element, as a placeholder such as <title>, <dir>, <base>, <summary>, <option> or <section> is spelled: a raw HTML block that runs to the next blank line",
+    "blockToItsClosingTag": "a line that opens with <pre>, <script>, <style>, <textarea> or an unclosed comment: a raw HTML block that runs to its closing tag, across blank lines",
+    "quotationOrListMarker": "a line that opens with a greater-than sign, or with a hyphen, a plus sign, an asterisk or `1.` before a space: a quotation or a list item, whose later lines are its lazy continuation",
+    "setextUnderline": "a line of hyphens or equals signs straight under text: the text becomes a heading",
+    "fence": "a line that opens with three backticks or tildes: a fenced code block to its closing fence"
+  },
+  "recordHoldsNoInstance": {
+    "orders": "1,196 revisions of every order in main's history read equally in header and criteria, but for one named difference and this order as filed (history-differential.json); a worker's reading of 1,590 revisions and the 273 working orders agrees",
+    "decisions": "3,974 decisions read equally",
+    "followUpSources": "1,500 sources read equally but for two re-keyed candidates the register already disposes",
+    "pullRequestBodies": "433 stored bodies read equally",
+    "releaseNotes": "212 stored notes read equally",
+    "objectives": "538 Objective and Non-goals readings of the 269 orders read equally",
+    "nearInstances": "three committed orders hold a wrapped line that opens with such a placeholder inside a list item, where it is harmless (WO-083 line 457, WO-263 line 280, WO-266 line 255), and this order as filed held one that ended its criteria list, which FINAL-001 found and the repair now refuses"
+  },
+  "rows": [
+    {
+      "document": "work order",
+      "reader": "the leading header's fields (readWorkOrderHeader; parseHeader, parseRepositoryDeclaration, parseWorkstreamDeclaration, umbrellaNotice, targetReleaseNotesSource)",
+      "openers": ["tagOfABlockElement", "quotationOrListMarker"],
+      "candidate": "silent: every field written after the line, to the header's blank line, is not read",
+      "base": "reads every field",
+      "then": "the index shows the track unknown and no dependency; a target order's Repository declaration is absent, so activation records it as the launchpad's own (scripts/resume.mjs, the WorkOrderActivated event); an Umbrella record's notice is absent, so activation of a superseded order is admitted; Target release notes reads objective where the order wrote reviewed, so the publish asks for no reviewed notes and the close publishes the objective",
+      "loudInstead": "Release classification, Model and Effort refuse where they are missing; a typed dependency block stands after a blank line and is read",
+      "ranBy": "reviewer (header-block-openers.mjs) and worker S1",
+      "designSaysSo": "Part B, third design item: a field inside a quotation, a list item or a code block is an example"
+    },
+    {
+      "document": "work order",
+      "reader": "a field read by its paragraph: the Preflight suites (readPreflightSuites), the Cost line, the Objective and Non-goals a release publishes (fieldProse in scripts/release.mjs)",
+      "openers": ["tagOfABlockElement", "quotationOrListMarker", "setextUnderline", "fence"],
+      "candidate": "silent: the field's text ends at the line",
+      "base": "joins every line to the blank line",
+      "then": "a handoff with no complete row owes focused rows only for the suites named before the line; a target's Release body and the release manifest's payoff and limitations carry the Objective and Non-goals cut at the line",
+      "ranBy": "reviewer (header-block-openers.mjs; worker S3's objective probe run again: 15 of 20 openers differ, 538 corpus readings equal) and workers S1 and S3",
+      "designSaysSo": "Part B known issue: a field's value ends at its paragraph or the next label"
+    },
+    {
+      "document": "work order",
+      "reader": "a criterion's text (declaredCriteria), where the item's wrapped lines are indented short of its text, as items numbered ten and above are in three committed orders (504 such lines)",
+      "openers": ["quotationOrListMarker", "setextUnderline"],
+      "candidate": "silent: the list keeps its items, so nothing refuses, and the item's text ends at the line",
+      "base": "joins every wrapped line",
+      "then": "the gate the criterion names after the line is not claimed (criterionGateClaims), a defect record hashes the shorter text, and a mission check judges it",
+      "example": "this order's criterion 11 with its second line opened by a hyphen: 367 characters and a claim of the plain gate at the base, 61 characters and no claim here",
+      "loudInstead": "a tag of a block element on such a line is refused by line (refuseUnreadList)",
+      "ranBy": "reviewer (worker S1's reproduction run again) and worker S1"
+    },
+    {
+      "document": "verification or final-review report",
+      "reader": "the criterion lines (criterionJudgments)",
+      "openers": ["blockToItsClosingTag", "setextUnderline", "tagOfABlockElement"],
+      "candidate": "silent: a judgment inside the block, or the one a setext underline turns into a heading, is not read; a block element's tag hides only a judgment in its own paragraph",
+      "base": "reads every judgment line",
+      "then": "a pass recorded over a report whose text holds an unmet line is not refused, since no result asks for a line for every criterion; a hidden met line drops its gate claim",
+      "loudInstead": "the executor's handoff refuses a criterion with no line; a fail whose only unmet line is hidden is refused; a hidden standing-defect line is refused",
+      "ranBy": "reviewer (worker S1's report-layout probe run again) and worker S1",
+      "note": "120 committed reports judge something unmet and none holds such a line"
+    },
+    {
+      "document": "decisions file",
+      "reader": "the decision records (readDecisions, decisionBlocks) and each decision's section in the document check",
+      "openers": ["blockToItsClosingTag", "fence", "tagOfABlockElement", "setextUnderline"],
+      "candidate": "silent: a block to its closing tag, or a tilde fence, in one decision's prose hides every later decision; a block element's tag on a prose line written straight above a decision's fence or heading, with no blank line, loses that decision or reads it under the one before; a setext underline moves a decision's anchor",
+      "base": "matched every json fence and every heading by line",
+      "then": "the hidden decision is in no index, its follow-up is not harvested, and the document check's reading of its dispatch, its quotation fields and its round findings does not reach it",
+      "loudInstead": "a first decision hidden whole refuses the file",
+      "ranBy": "reviewer (worker S2's probe run again: 34 of 76 cases differ) and workers S2 and S3"
+    },
+    {
+      "document": "pull-request body",
+      "reader": "the soft-wrap and shape checks (githubBodyProfileFailures, pullRequestBodyShapeFailures, withMeterBlockLast)",
+      "openers": ["tagOfABlockElement", "fence"],
+      "candidate": "admits a soft-wrapped line that opens with a block element's tag, which the base refused as a wrap; with an unclosed fence in the prose the meter block reads as code, so the shape check passes and each preparation appends another meter",
+      "base": "refuses the wrap; keeps one meter",
+      "ranBy": "worker S3"
+    },
+    {
+      "document": "planning documents",
+      "reader": "follow-up candidates (collectFollowupSources); the planning subject's Objective, Non-goals and thesis sections; the vision's exclusions; the idea ledger's entries; a pass document's marked blocks; the execution plan's paths",
+      "openers": ["tagOfABlockElement", "blockToItsClosingTag", "setextUnderline", "fence"],
+      "candidate": "silent: a candidate list whose item continues on a line at the margin keeps one of three candidates; a section or a clause is cut or swallows the next label; a tilde fence above a marked block reads it as absent",
+      "base": "reads each by line",
+      "then": "a candidate never registered is never harvested, and a registered one is minted again; the subject a refuter judges holds less than the order says; the rules-recorded check has nothing to check",
+      "ranBy": "reviewer (worker S2's follow-up probe run again: 21 silent differences) and worker S2"
+    },
+    {
+      "document": "kit pages and instance files",
+      "reader": "the operator page's marked blocks (readMarkedBlocks), a FOR-CORE.md entry's block (forCoreFailures), the publication check's headings, a role root's section range",
+      "openers": ["tagOfABlockElement", "fence", "setextUnderline"],
+      "candidate": "silent: a marker under such a line drops its block from the page with no fault; the entry after such a line is not checked; a heading is dropped; a measured range is shorter",
+      "base": "no counterpart for the first two, which this order adds; read by line for the others",
+      "ranBy": "worker S3"
+    }
+  ],
+  "sameOnBothSides": [
+    "the release notes' five sections (36 cases, 212 notes and their mutations)",
+    "the outward lint's rendered view",
+    "the sequence, which refuses any other block on both sides",
+    "a consistency report's Traced consumers table",
+    "an area note's block, which a stray fence refuses",
+    "the actor attestation and the self-review line, whose readers are unchanged",
+    "every block opened at a list item's own indentation, which the parser keeps inside the item"
+  ]
+}

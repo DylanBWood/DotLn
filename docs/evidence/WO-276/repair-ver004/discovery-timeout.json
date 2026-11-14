@@ -1,0 +1,31 @@
+{
+  "scope": "Operator-deferred reliability follow-up; not claimed repaired in WO-276",
+  "failure": {
+    "runRecordedAt": "2026-11-13T20:53:20.256Z",
+    "test": "WO-119 default npm checks honor lifecycle scripts and package environment",
+    "durationMs": 5007.073084,
+    "testFile": "packages/skeleton/test/discovery.test.ts",
+    "implementation": "packages/skeleton/src/discovery.ts",
+    "assertion": "not ok 79 - WO-119 default npm checks honor lifecycle scripts and package environment\n  ---\n  duration_ms: 5007.073084\n  type: 'test'\n  location: 'packages/skeleton/dist/test/discovery.test.js:351:1'\n  failureType: 'testCodeFailure'\n  error: 'discovery: check did not complete within its bound'\n  code: 'ERR_TEST_FAILURE'\n  stack: |-\n    fail (packages/skeleton/dist/src/discovery.js:11:11)\n    Object.checks (packages/skeleton/dist/src/discovery.js:273:21)\n    observe (packages/skeleton/dist/src/discovery.js:404:26)\n    discover (packages/skeleton/dist/src/discovery.js:158:12)\n    Test.fn (packages/skeleton/dist/test/discovery.test.js:362:22)\n    node:internal/test_runner/test:1377:18\n    Channel.runStores (node:diagnostics_channel:211:12)\n    TestContext.testFn (node:internal/test_runner/test:1374:51)\n    Test.runInAsyncScope (node:async_hooks:226:14)\n    Test.run (node:internal/test_runner/test:1402:25)\n  ...",
+    "source": "saved skeleton task output from the first complete run of the VER-004 repair; checkout prefixes normalized to repository-relative paths"
+  },
+  "isolatedRerun": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-119 default npm checks honor lifecycle scripts and package environment' packages/skeleton/dist/test/discovery.test.js",
+    "recordedAt": "2026-11-13T20:53:48.647Z",
+    "exitCode": 0,
+    "testsPassed": 1,
+    "testDurationMs": 1453,
+    "source": "D150 and the executor command result"
+  },
+  "completeRerun": {
+    "command": "npm test -- --review --keep-going",
+    "recordedAt": "2026-11-13T21:53:35.229Z",
+    "exitCode": 0,
+    "suitesPassed": 48,
+    "freshTasks": 125,
+    "skeleton": "passed"
+  },
+  "cause": "Unknown. The failure reached the existing 5000 ms subprocess bound; the generic error does not preserve the child error, signal or partial output. Contention has not been established.",
+  "requiredOutcome": "Identify the child operation and cause, reproduce it under controlled conditions, and fix it while preserving real npm lifecycle/environment semantics and confinement. A retry-only pass is insufficient.",
+  "disposition": "Deferred by the operator to the follow-up generated from WO-276-D151."
+}

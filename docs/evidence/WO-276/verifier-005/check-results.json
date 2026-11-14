@@ -1,0 +1,46 @@
+{
+  "source": "This verifier's completed bounded executions",
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-codex-background.mjs",
+      "finishedAt": "2026-11-13T22:01:12.160Z",
+      "exitCode": 0,
+      "testsPassed": 2,
+      "testsFailed": 0,
+      "durationMs": 98
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-276/verifier-005/cleanup-probes.mjs <session-scratch> docs/evidence/WO-276/verifier-005/cleanup-probes.json",
+      "finishedAt": "2026-11-13T22:01:25.818Z",
+      "exitCode": 0,
+      "casesPassed": 34,
+      "casesFailed": 0,
+      "durationMs": 65,
+      "result": "docs/evidence/WO-276/verifier-005/cleanup-probes.json"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-276/part-b/comparisons/readers.mjs siblings-manifest-hashes",
+      "finishedAt": "2026-11-13T22:01:52.447Z",
+      "exitCode": 0,
+      "inputsRead": 41,
+      "equal": 41,
+      "differences": {},
+      "durationMs": 1124,
+      "scope": "Current siblings registry and every committed revision that changed it; actual baseline and candidate field readers. No --write flag was used, so the earlier comparison record is preserved."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "finishedAt": "2026-11-13T22:02:15.172Z",
+      "exitCode": 0,
+      "durationMs": 12294,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "checkLifecycleWhitespace(process.cwd()) from scripts/lib/lifecycle-evidence.mjs, run under the bounded wrapper",
+      "finishedAt": "2026-11-13T22:03:19.227Z",
+      "exitCode": 0,
+      "durationMs": 440,
+      "result": "Lifecycle whitespace check passed, including untracked files through the canonical temporary-index check."
+    }
+  ]
+}

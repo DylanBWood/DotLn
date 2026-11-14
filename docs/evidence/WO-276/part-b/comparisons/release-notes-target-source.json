@@ -1,0 +1,9 @@
+{
+  "comparison": "release-notes-target-source",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: the Release body source its Target release notes header names",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

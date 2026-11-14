@@ -1,0 +1,13 @@
+# node scripts/launchpad.mjs update --publish --title <title> --body-file <path>, in the update fixture.
+# The update's merge is 580ac9c28ad0; the instance's side is b67e95c548be; the starter's revision is 56e0c82870d5.
+## 1. The merge as Git made it (the budgets merged in silence, the first order settled with the starter's bytes): exit 1
+error: update --publish refused: the update's merge 580ac9c28ad0 changed 2 files this instance had changed since 5dfa76aec527, the base it shares with the starter's revision 56e0c82870d5: docs/control/budgets.json, docs/work-orders/WO-001-environment-truth.md. An update keeps the instance's bytes for a file both sides changed. Restore them from the instance's side, b67e95c548be, and commit: git checkout b67e95c548bec02ac7038623a66b79f7868f6ed0 -- docs/control/budgets.json docs/work-orders/WO-001-environment-truth.md. For a file whose merged bytes you mean to keep, pass --take <path> instead
+
+## 2. A merge commit that holds the instance's bytes for both files: exit 0
+Pushed chore/starter-update-evidence-kept at 39bc69e1a62265a9df8780a2351c2dbb5c4e56ba and opened https://github.invalid/dotln-fixture/instance/pull/7 on github.invalid/dotln-fixture/instance.
+https://github.invalid/dotln-fixture/instance/pull/7
+
+## 3. With --take docs/control/budgets.json and the first order restored: exit 0
+taken: docs/control/budgets.json (the merge's bytes are kept at the operator's word)
+Pushed chore/starter-update-evidence at a28d3bfa9e5d7c251b8abf1d5b7b0717c31e1cd4 and opened https://github.invalid/dotln-fixture/instance/pull/7 on github.invalid/dotln-fixture/instance.
+https://github.invalid/dotln-fixture/instance/pull/7

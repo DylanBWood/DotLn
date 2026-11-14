@@ -29,7 +29,13 @@ import {
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { defaultRoots, loadConfig } from "./lib/config.mjs";
+import {
+  EXTENSIONS_ROOT,
+  defaultRoots,
+  extensionPath,
+  spellsExtensionRoot,
+  loadConfig,
+} from "./lib/config.mjs";
 import { describeTag, spawnGit } from "./lib/git.mjs";
 import { measureColdStarts } from "./lib/process-budget.mjs";
 import {
@@ -38,12 +44,23 @@ import {
   KIT_FILES,
   TEST_FIXTURE_TREES,
   TEST_SUPPORT_FILES,
+  kitManifest,
+  kitPath,
+  readKitActions,
 } from "./launchpad.mjs";
 import { licenseHashes } from "./license-surfaces.mjs";
 import { gateCodeIdentity, readGateChecks } from "./lib/gate-evidence.mjs";
-import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  hasPackageSources,
+  isKitRoot,
+} from "../packages/skeleton/src/runtime-inputs.mjs";
 import { namedStarterSeed } from "./lib/starter-seeds.mjs";
 import { markdownLinks } from "./docs-check.mjs";
+import {
+  markdownNodes,
+  markdownSection,
+  parseMarkdown,
+} from "./lib/markdown-links.mjs";
 import { suites, STRUCTURAL_TASKS } from "./test-runner.mjs";
 
 import {
@@ -54,6 +71,7 @@ import {
   HARNESS_MANIFEST,
   synthetic,
   syntheticHash,
+  syntheticTerm,
   planted,
   marker,
   plantedText,
@@ -85,6 +103,12 @@ import {
   exported,
   root,
 } from "./lib/launchpad-fixture.mjs";
+import {
+  THIRD_PARTY_NOTICES,
+  VENDORED,
+  VENDORED_RECORD,
+  vendoredProof,
+} from "./lib/vendored-parser.mjs";
 
 test("[document] the kit owns its complete guide and the front page is a pinned instance seed", () => {
   const guide = readFileSync(join(kit, "docs/KIT.md"), "utf8");
@@ -100,9 +124,11 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
       "Features",
       "Planning in this instance",
       "Releases in this instance",
+      "Working as a team on one instance",
       "What runs here, and what does not",
       "Attestations",
       "Kit files and instance files",
+      "Extending this instance",
       "Taking upstream updates",
       "Opting in to instance actions",
       "Owned cleanup and retention",
@@ -111,6 +137,24 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
     ],
   );
   assert.doesNotMatch(guide, /DOTLN-RELEASE-(?:BEGIN|END)/u);
+  // The guide shows the kit's example local-terms list, its sample and the
+  // two streams the terms task prints for it as the kit's own files hold
+  // them, so the guide cannot drift from what the task does.
+  const shown = new Set(
+    [...markdownNodes(parseMarkdown(guide))]
+      .filter((node) => node.type === "code")
+      .map((node) => `${node.value}\n`),
+  );
+  for (const path of [
+    "scripts/kit/terms.example.txt",
+    "scripts/fixtures/terms-example/sample.md",
+    "scripts/fixtures/terms-example/expected-stdout.txt",
+    "scripts/fixtures/terms-example/expected-stderr.txt",
+  ])
+    assert.ok(
+      shown.has(readFileSync(join(kit, path), "utf8")),
+      `the guide shows ${path} as the kit holds it`,
+    );
   // Changing this seed rewrites each unedited starter copy once. Name that
   // migration in the changing order's decisions and release's Read before upgrading.
   assert.equal(
@@ -157,6 +201,95 @@ test("WO-254 criterion 5: the exported instance's operator record says a standin
     ),
     record,
   );
+});
+
+test("WO-276 criterion L1: a fresh export's repository profile page states the index, the area-note convention with the block's two fields, the observation-order sentence and the agent-skills section, and its worked note is one the shared reader takes", async () => {
+  const profile = readFileSync(
+    join(kit, "docs/repositories/README.md"),
+    "utf8",
+  );
+  assert.match(profile, /^## Area notes$/mu);
+  assert.match(profile, /The profile is the entry and the index/u);
+  for (const stated of [
+    "`paths`: the target paths the note covers",
+    "`commit`: the target commit the note was written at",
+    "An observation order authors the profile of an established repository",
+    "<!-- dotln-area-note:start -->",
+  ])
+    assert.ok(profile.includes(stated), stated);
+  assert.match(profile, /^## Agent skills$/mu);
+  assert.doesNotMatch(profile, /dotln-discovery/u);
+  const { readAreaNote } = await import("./lib/area-notes.mjs");
+  const worked = readAreaNote(
+    profile.split("~~~markdown\n").at(-1).split("\n~~~")[0],
+  );
+  assert.deepEqual(worked.failures, []);
+  assert.deepEqual(worked.paths, ["src/pricing/", "test/pricing/"]);
+  // The page itself is no note: its example stands inside a code fence.
+  assert.equal(readAreaNote(profile).paths, null);
+});
+
+test("WO-276 criterion O1: a fresh export's workstreams page carries the layout section with its four parts and says that planned items are not member orders, its worked example names no order, and its template places the layout before the member table", () => {
+  const page = readFileSync(join(kit, "docs/workstreams/README.md"), "utf8");
+  const flat = (value) => value.replace(/\s+/gu, " ");
+  assert.ok(
+    flat(page.split("\n## ")[0]).includes(
+      "For an initiative it also holds a layout (§Layout): the plan as it stands, whose planned items are not member orders.",
+    ),
+    "the page's opening",
+  );
+  // The section itself, a heading of the page and none inside a fence.
+  const layout = markdownSection(page, "Layout", { depths: [2] });
+  assert.ok(layout, "the page has a Layout section");
+  const parts = [
+    "What exists",
+    "What the initiative asks",
+    "The way there",
+    "What is unknown",
+  ];
+  for (const part of parts)
+    assert.ok(layout.body.includes(`- **${part}.**`), part);
+  assert.ok(
+    flat(layout.body).includes(
+      "A planned item is a line of the layout and nothing else: it has no identifier and no order file, and it is not a member order.",
+    ),
+    "planned items are not member orders",
+  );
+  const fences = layout.body.split("~~~markdown\n");
+  assert.equal(fences.length, 2, "one worked example");
+  const worked = fences[1].split("\n~~~")[0];
+  const headings = (source) =>
+    [...source.matchAll(/^(#{2,3}) (.+)$/gmu)].map(
+      ([, marks, title]) => `${marks} ${title}`,
+    );
+  assert.deepEqual(headings(worked), [
+    "## Layout",
+    ...parts.map((part) => `### ${part}`),
+  ]);
+  // Its planned items are lines of a table: no order id, no marked block.
+  assert.match(worked, /^\| Phase \| Planned item +\| Depends on/mu);
+  assert.doesNotMatch(worked, /WO-(?:\d|N)|dotln-workstream/u);
+  // The page's template, the last fence, holds the layout's skeleton before
+  // the member table, and its marked block is as it was.
+  const template = page.split("~~~markdown\n").at(-1).split("\n~~~")[0];
+  const outline = headings(template);
+  assert.deepEqual(
+    outline.slice(
+      outline.indexOf("## Layout"),
+      outline.indexOf("## Member orders") + 1,
+    ),
+    ["## Layout", ...parts.map((part) => `### ${part}`), "## Member orders"],
+  );
+  assert.match(template, /<!-- dotln-workstream:start -->/u);
+});
+
+test("WO-276 criterion O3: a fresh export's planner root carries the layout sentence, and its executor's root does not", () => {
+  const sentence =
+    "For a dispatch that describes an initiative, write or revise the workstream document's Layout section first";
+  const root = (role) =>
+    readFileSync(join(kit, `.claude/skills/dotln-${role}/SKILL.md`), "utf8");
+  assert.ok(root("planner").includes(sentence));
+  assert.ok(!root("executor").includes(sentence));
 });
 
 // Reads core's seeds, instruction and first order to classify them, which a
@@ -445,6 +578,13 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "scripts/kit/gitignore.template",
     "scripts/kit/workstream.template.md",
     "scripts/kit/repository-profile.template.md",
+    // The example local-terms list and the sample and outputs its case
+    // compares travel with the scripts, so an owner sees what each class
+    // does before writing a list.
+    "scripts/kit/terms.example.txt",
+    "scripts/fixtures/terms-example/sample.md",
+    "scripts/fixtures/terms-example/expected-stdout.txt",
+    "scripts/fixtures/terms-example/expected-stderr.txt",
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/compiler/src/attribution.mjs",
     "packages/kernel/package.json",
@@ -459,6 +599,7 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "docs/product/08-publication-compiler.md",
     "docs/PLAYBOOK.md",
     "docs/KIT.md",
+    "docs/OPERATOR.md",
     "docs/publication/implementation-overlay-template.md",
     "package.json",
     "package-lock.json",
@@ -479,10 +620,12 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     .filter((path) => !listed.has(path))
     .sort();
   assert.deepEqual(unlisted, [
+    ".gitattributes",
     ".gitignore",
     "AGENTS.md",
     "AI-HARNESS-SECURITY.md",
     "CLAUDE.md",
+    "FOR-CORE.md",
     "KIT-MANIFEST.json",
     "README.md",
     "docs/README.md",
@@ -843,6 +986,34 @@ test("the exported instance checks runtime, coordination records and explicit di
   // every shipped platform fixture for its ordinary review.
   git(destination, ["branch", "-m", "instance"]);
   assert.equal(hasPackageSources(destination), false);
+  // Files of the instance's own under the reserved root, each of a kind a
+  // check of the kit's judges anywhere else: a script that makes a temporary
+  // directory, a source the formatter would rewrite, a package with its
+  // lockfile, and a JSON Lines file. Committed as an instance commits its
+  // tools, so every selection below runs with them in the tree (WO-276
+  // criterion K2).
+  const instanceOwn = {
+    "extensions/tools/scratch.mjs":
+      'import { mkdtempSync } from "node:fs";\nimport { tmpdir } from "node:os";\nimport { join } from "node:path";\nexport const scratchRoot = () => mkdtempSync(join(tmpdir(), "instance-tool-"));\n',
+    "extensions/tools/unformatted.mjs":
+      "export const   rows = {a:1,b:[1,2 ,3]}\n",
+    "extensions/package.json":
+      '{ "name": "instance-tools", "private": true, "version": "0.0.0" }\n',
+    "extensions/package-lock.json": `${JSON.stringify({ name: "instance-tools", version: "0.0.0", lockfileVersion: 3, requires: true, packages: { "": { name: "instance-tools", version: "0.0.0" } } })}\n`,
+    "extensions/data/rows.jsonl": '{"row":1}\n{"row":2}\n',
+  };
+  for (const [path, contents] of Object.entries(instanceOwn)) {
+    mkdirSync(dirname(join(destination, path)), { recursive: true });
+    writeFileSync(join(destination, path), contents);
+  }
+  git(destination, ["add", "extensions"]);
+  git(destination, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "the instance's own tools",
+  ]);
   assert.ok(existsSync(join(destination, "node_modules/typescript")));
   const nestedCase = join(destination, ".runtime/nested-runner.test.mjs");
   mkdirSync(dirname(nestedCase), { recursive: true });
@@ -1066,6 +1237,27 @@ test("the exported instance checks runtime, coordination records and explicit di
     });
   }
   assert.deepEqual([...ran].sort(), inventory);
+  // With the instance's own files in the tree every selection above passed.
+  // Its emit and its check pass too, it is still a kit root, and no task
+  // rewrote a file under the reserved root or left one beside them.
+  for (const action of ["emit", "check"])
+    ok(
+      run(process.execPath, ["scripts/harness.mjs", action], {
+        cwd: destination,
+      }),
+      `harness ${action} beside the instance's own root`,
+    );
+  assert.equal(isKitRoot(destination), true);
+  for (const [path, contents] of Object.entries(instanceOwn))
+    assert.equal(readFileSync(join(destination, path), "utf8"), contents, path);
+  assert.deepEqual(
+    git(destination, ["ls-files", "--others", "--", "extensions"]).stdout,
+    "",
+  );
+  assert.equal(
+    git(destination, ["status", "--porcelain", "--", "extensions"]).stdout,
+    "",
+  );
   // The document check the gate ran reports no unbound standing document, so
   // a first planning pass red-tags none of the seeds (WO-258 criterion 6).
   const documents = ok(
@@ -1299,7 +1491,8 @@ test("WO-075 criterion 2: harness check passes inside the export and refuses a o
   const hooks = manifest.files
     .map(({ path }) => path)
     .filter((path) => /^\.(?:claude|codex)\/hooks\/.*\.mjs$/u.test(path));
-  assert.ok(hooks.length >= 14, `${hooks.length} hooks`);
+  // Twelve since the presence hooks left every bundle (WO-276 criterion Q1).
+  assert.ok(hooks.length >= 12, `${hooks.length} hooks`);
   const snapshot = harnessManifestOf(kit).profiles[0].profile.runtime.snapshot;
   assert.match(snapshot, /^\.runtime\/harness\/[0-9a-f]{16}$/u);
   // The scanner itself rejects the compiler's absolute forms (WO-049's
@@ -1387,7 +1580,7 @@ test("WO-075 criterion 2: harness check passes inside the export and refuses a o
 // Reads core's installed CLAUDE.md, skills and budgets, which a product task
 // may not read: the document gate runs this case (test-runner's launchpad-docs
 // row), the product gate skips it.
-test("WO-258 criterion 1: an export with no election and no host in its record emits Claude's surfaces only; an election, an attestation or an observed version adds Codex's, and turning it off removes them", () => {
+test("WO-258 criterion 1: an export with no election and no host in its record emits Claude's surfaces only; an election or an attestation adds Codex's, an observed version alone adds no host (WO-275 criterion 2), and turning it off removes them", () => {
   const hostPaths = (root) =>
     [".codex", ".agents"].filter((path) => existsSync(join(root, path)));
   // The fresh export itself: nothing under .codex or .agents, Claude's
@@ -1438,7 +1631,6 @@ test("WO-258 criterion 1: an export with no election and no host in its record e
     ".codex/config.toml",
     ".codex/hooks.json",
     ".codex/hooks/continuation.mjs",
-    ".codex/agents/dotln-worker-astra.toml",
     ".agents/skills/dotln-executor/SKILL.md",
   ];
   const assertCodex = (label) => {
@@ -1488,24 +1680,45 @@ test("WO-258 criterion 1: an export with no election and no host in its record e
     /^\| host-codex \| instance \| false \| true \| inferred: docs\/control\/resume\.jsonl attestations \|/u,
   );
   rmSync(join(clone, "docs/control/resume.jsonl"));
-  // An observed codex-cli version in the export's discovery record.
+  // Observed codex-cli and copilot-cli versions in the export's discovery
+  // record, with no election and no attestation, turn no host on (WO-275
+  // criterion 2): the emit writes Claude's surfaces alone, and the inventory
+  // names the record as showing each host without an election.
   writeFileSync(
     join(clone, "docs/discovery/environment.json"),
     JSON.stringify({
       effortReadbackProbe: {
-        harnesses: {
-          "codex-cli": {
-            versions: [{ classification: "observed", value: "0.153.4" }],
-          },
-        },
+        harnesses: Object.fromEntries(
+          ["codex-cli", "copilot-cli"].map((harness) => [
+            harness,
+            { versions: [{ classification: "observed", value: "0.153.4" }] },
+          ]),
+        ),
       },
     }) + "\n",
   );
-  assertCodex("observed");
+  emit();
+  assert.deepEqual(hostPaths(clone), [], "a discovery record alone");
+  assert.deepEqual(profiles(), ["claude-code"]);
+  ok(harness(clone, "check"), "a discovery record alone: check");
   render();
+  const shownWithoutElection =
+    "default \\(docs\\/discovery\\/environment\\.json observed versions show the host without an election; a discovery record turns no host on\\)";
   assert.match(
     codexRow(),
-    /^\| host-codex \| instance \| false \| true \| inferred: docs\/discovery\/environment\.json observed versions \|/u,
+    new RegExp(
+      `^\\| host-codex \\| instance \\| false \\| false \\| ${shownWithoutElection} \\|`,
+      "u",
+    ),
+  );
+  assert.match(
+    readFileSync(join(clone, "docs/control/FEATURES.md"), "utf8")
+      .split("\n")
+      .find((line) => line.startsWith("| host-copilot |")),
+    new RegExp(
+      `^\\| host-copilot \\| instance \\| false \\| false \\| ${shownWithoutElection} \\|`,
+      "u",
+    ),
   );
 });
 
@@ -1582,9 +1795,14 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
       "packages/skeleton/src/gate-deadlines.mjs",
       "packages/skeleton/src/gate-evidence.mjs",
       "packages/skeleton/src/runtime-inputs.mjs",
+      "packages/skeleton/src/shell-reading.mjs",
+      "packages/skeleton/src/source-reading.mjs",
       "packages/skeleton/src/temporary-root-records.mjs",
       "packages/skeleton/src/test-selection.mjs",
       "packages/skeleton/src/usage-observation.mjs",
+      "packages/skeleton/src/usage-reading.mjs",
+      "packages/skeleton/src/worker-catalog.mjs",
+      "packages/skeleton/src/worker-models.mjs",
       "packages/skeleton/src/writer-teardown.mjs",
       "packages/skeleton/test/control-beacon-cli.fixture-inputs.json",
     ],
@@ -1774,6 +1992,118 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
   }
 });
 
+test("WO-276 criterion K1: no path the kit's manifest lists lies under extensions/, the kit-path predicate answers false for a path there, and a manifest whose file list names one is refused by that path", () => {
+  const manifest = manifestOf(kit);
+  assert.equal(EXTENSIONS_ROOT, "extensions");
+  assert.deepEqual(
+    manifest.files.filter(({ path }) => extensionPath(path)),
+    [],
+  );
+  // The predicate holds for the kit's own paths and for none under the
+  // reserved root, whatever the path looks like.
+  for (const path of ["scripts/launchpad.mjs", "docs/KIT.md", "package.json"])
+    assert.equal(kitPath(path), true, path);
+  for (const path of [
+    "extensions",
+    "extensions/tools/report.mjs",
+    "extensions/scripts/launchpad.mjs",
+    "extensions/package.json",
+    "extensions/.claude/hooks/own.mjs",
+  ]) {
+    assert.equal(extensionPath(path), true, path);
+    assert.equal(spellsExtensionRoot(path), true, path);
+    assert.equal(kitPath(path), false, path);
+  }
+  // One directory with the root where the file system ignores case: the
+  // kit ships no path under such a spelling, and no exemption follows from
+  // one, the path not being the root's as Git holds it.
+  for (const path of [
+    "Extensions/tools/report.mjs",
+    "EXTENSIONS",
+    // A long s, which such a file system folds to the plain letter.
+    "exten\u017fions/tools/report.mjs",
+  ]) {
+    assert.equal(spellsExtensionRoot(path), true, path);
+    assert.equal(kitPath(path), false, path);
+    assert.equal(extensionPath(path), false, path);
+  }
+  for (const path of ["extensions-of-mine/a.mjs", "scripts/extensions/a.mjs"]) {
+    assert.equal(extensionPath(path), false, path);
+    assert.equal(spellsExtensionRoot(path), false, path);
+  }
+  // The kit's own declared actions move no root into the instance's, or
+  // out of it, and add no field to the section that is the instance's.
+  const declared = (action) =>
+    Buffer.from(
+      JSON.stringify({
+        schemaVersion: 1,
+        actions: [{ id: "a1", date: "2026-11-11", ...action }],
+      }),
+    );
+  for (const [action, expected] of [
+    [
+      {
+        kind: "rename-root",
+        root: "evidence",
+        from: "docs/evidence",
+        to: "extensions/evidence",
+      },
+      /invalid rename-root a1/u,
+    ],
+    [
+      {
+        kind: "rename-root",
+        root: "evidence",
+        from: "Extensions/evidence",
+        to: "docs/evidence",
+      },
+      /invalid rename-root a1/u,
+    ],
+    [
+      { kind: "add-config-field", field: "extensions.ownerTool", value: 1 },
+      /invalid add-config-field a1/u,
+    ],
+    [
+      { kind: "add-config-field", field: "extensions", value: {} },
+      /invalid add-config-field a1/u,
+    ],
+  ])
+    assert.throws(
+      () => readKitActions(declared(action)),
+      expected,
+      JSON.stringify(action),
+    );
+  assert.equal(
+    readKitActions(
+      declared({
+        kind: "rename-root",
+        root: "evidence",
+        from: "docs/evidence",
+        to: "records/evidence",
+      }),
+    ).length,
+    1,
+  );
+  // An export builds its manifest here: a file list that names such a path
+  // is refused before any manifest exists.
+  const listed = { commit: manifest.commit, tag: manifest.tag };
+  assert.throws(
+    () =>
+      kitManifest({
+        ...listed,
+        files: [
+          ...manifest.files,
+          { path: "extensions/tools/report.mjs", sha256: "0".repeat(64) },
+        ],
+      }),
+    /a kit manifest lists no path under extensions\/, the instance's own root: extensions\/tools\/report\.mjs/u,
+  );
+  assert.deepEqual(
+    kitManifest({ ...listed, files: manifest.files }).files,
+    manifest.files,
+  );
+});
+
 test("WO-074 criterion 3: the export holds no planted instance material and the manifest lists no instance path", () => {
   const needles = [...Object.keys(planted).map(marker), syntheticHash];
   for (const path of files(kit)) {
@@ -1825,7 +2155,7 @@ test("WO-074 criterion 3: the local-terms check runs over every exported text an
   );
   assert.doesNotMatch(
     exported.stdout + exported.stderr,
-    new RegExp(synthetic.trim(), "u"),
+    new RegExp(syntheticTerm, "u"),
   );
   try {
     // Unavailable: no list, and the summary says no text was checked.
@@ -1849,15 +2179,15 @@ test("WO-074 criterion 3: the local-terms check runs over every exported text an
       /^local-terms list: present \(\d+ texts checked\)$/mu,
     );
     assert.ok(existsSync(emptyTarget), "an empty list refuses nothing");
-    // Malformed: a mode marker with no term refuses naming the line, before
-    // any write.
-    writeFileSync(termsPath, "refuse:\n");
+    // Malformed: a line with no letter or digit refuses naming the line,
+    // before any write. A mode word alone on a line opens a section.
+    writeFileSync(termsPath, "refuse: ---\n");
     const malformedTarget = join(scratch, "kit-malformed-list");
     const malformed = runExport(malformedTarget);
     assert.equal(malformed.status, 1);
     assert.match(
       malformed.stderr,
-      /local-terms list line 1: a mode marker with no term/u,
+      /local-terms list line 1: no term on the line/u,
     );
     assert.ok(!existsSync(malformedTarget), "a refused export writes nothing");
     // Both kit guidance and the instance seed are screened. Report the file
@@ -1876,19 +2206,37 @@ test("WO-074 criterion 3: the local-terms check runs over every exported text an
         /this\s*source\s*prepares/iu,
       ],
     ]) {
-      writeFileSync(termsPath, `${term}\n`);
+      writeFileSync(termsPath, `refuse: ${term}\n`);
       const matchTarget = join(scratch, `kit-match-${name}`);
       const matched = runExport(matchTarget);
       assert.equal(matched.status, 1);
       assert.match(matched.stderr, /local-terms list present; refused \[/u);
       assert.match(matched.stderr, location);
+      assert.match(matched.stderr, /"mode":"refuse"/u);
       assert.doesNotMatch(matched.stderr + matched.stdout, redaction);
       assert.ok(!existsSync(matchTarget), "a refused export writes nothing");
+      // The same entry with no marker is context: the export proceeds and
+      // lists each match by file and line, never by the term (WO-276).
+      writeFileSync(termsPath, `${term}\n`);
+      const listedTarget = join(scratch, `kit-context-${name}`);
+      const listed = ok(runExport(listedTarget), "export with a context match");
+      assert.match(
+        listed.stdout,
+        /^local-terms list: present \(\d+ texts checked\)\nCONTEXT /mu,
+      );
+      assert.match(
+        listed.stdout,
+        name === "guide"
+          ? /^CONTEXT docs\/KIT\.md:\d+(?:-\d+)?: a local term in context mode/mu
+          : /^CONTEXT README\.md:\d+(?:-\d+)?: a local term in context mode/mu,
+      );
+      assert.doesNotMatch(listed.stderr + listed.stdout, redaction);
+      assert.ok(existsSync(listedTarget), "a context match refuses nothing");
     }
     // A term in the emitted role skills is refused before any write too, and
     // the refusal names a bundle path: the bundle is screened at the bytes
     // the export's emit reproduces.
-    writeFileSync(termsPath, "fail-conservative-correction\n");
+    writeFileSync(termsPath, "refuse: fail-conservative-correction\n");
     const bundleTarget = join(scratch, "kit-bundle-match");
     const bundleMatched = runExport(bundleTarget);
     assert.equal(bundleMatched.status, 1);
@@ -1942,6 +2290,79 @@ test("WO-074 criterion 4: the license files are core's pinned bytes and manifest
   const bad = runExport(join(scratch, "kit-bad-license"), ["--license", "mit"]);
   assert.equal(bad.status, 1);
   assert.match(bad.stderr, /usage: launchpad export <dir> \[--license none\]/u);
+});
+
+test("WO-276 criterion B3: with no node_modules and no built output a fresh export checks its index, activates its first order, verifies itself and previews an update, each reaching its own answer", () => {
+  const bare = join(scratch, "kit-bare");
+  ok(runExport(bare), "export for the bare run");
+  for (const name of RUNTIME_PACKAGES)
+    rmSync(join(bare, "packages", name, "dist"), {
+      recursive: true,
+      force: true,
+    });
+  rmSync(join(bare, "node_modules"), { recursive: true, force: true });
+  rmSync(join(bare, ".runtime"), { recursive: true, force: true });
+  configureRepository(bare);
+  git(bare, ["add", "."]);
+  git(bare, ["-c", "maintenance.auto=false", "commit", "-qm", "bare export"]);
+  // Each command reaches its own answer: no module fails to load. The
+  // activation writes the index and the two records of what it observed, so
+  // the index check after it passes; verify and the update preview name the
+  // runtime file this copy lacks, which is their judgment and not a crash.
+  const answers = {};
+  for (const [name, args] of [
+    [
+      "activate",
+      [
+        "scripts/resume.mjs",
+        "activate",
+        "WO-001",
+        "docs/work-orders/WO-001-environment-truth.md",
+      ],
+    ],
+    ["index", ["scripts/work-orders.mjs", "index", "--check"]],
+    ["verify", ["scripts/launchpad.mjs", "verify"]],
+    ["preview", ["scripts/launchpad.mjs", "preview", "--from", "HEAD"]],
+  ]) {
+    const result = run(process.execPath, args, { cwd: bare });
+    assert.doesNotMatch(
+      result.stdout + result.stderr,
+      /ERR_MODULE_NOT_FOUND|Cannot find (?:module|package)|ERR_UNSUPPORTED_DIR_IMPORT/u,
+      `${name} loads with nothing installed and nothing built`,
+    );
+    answers[name] = result;
+  }
+  assert.equal(answers.activate.status, 0, answers.activate.stderr);
+  assert.match(answers.activate.stdout, /^Activated WO-001\.$/mu);
+  assert.equal(answers.index.status, 0, answers.index.stderr);
+  assert.equal(answers.verify.status, 1);
+  assert.match(
+    answers.verify.stderr,
+    /^error: kit runtime differs from the manifest: packages\/[a-z]+\/dist\//mu,
+  );
+  assert.equal(answers.preview.status, 1);
+  assert.match(
+    answers.preview.stderr,
+    /^error: cannot read regular file: .*\/packages\/[a-z]+\/dist\//mu,
+  );
+});
+
+test("WO-276 criterion B5: a fresh export holds the carried parser, its license, its notices and THIRD_PARTY_NOTICES, manifest-listed and proven by the record it carries", () => {
+  const listed = new Set(manifestOf(kit).files.map(({ path }) => path));
+  const proof = vendoredProof(readFileSync(join(kit, VENDORED_RECORD), "utf8"));
+  for (const [copy] of VENDORED) {
+    assert.ok(listed.has(copy), `${copy} is manifest-listed`);
+    assert.equal(proof(copy, readFileSync(join(kit, copy))), true, copy);
+    assert.deepEqual(
+      readFileSync(join(kit, copy)),
+      readFileSync(join(repository, copy)),
+      copy,
+    );
+  }
+  assert.ok(listed.has(VENDORED_RECORD));
+  assert.ok(listed.has(THIRD_PARTY_NOTICES));
+  const notices = readFileSync(join(kit, THIRD_PARTY_NOTICES), "utf8");
+  for (const [copy] of VENDORED) assert.ok(notices.includes(copy), copy);
 });
 
 test("WO-074 design: an export from a work tree that differs from HEAD carries the commit and says so", () => {
@@ -2267,7 +2688,7 @@ test("WO-075 design: a TypeScript module under a runtime package's sources trave
   const module = "packages/skeleton/src/planted-module.ts";
   writeFileSync(
     join(source, module),
-    `export const plantedTerm = "${synthetic.trim()}";\n`,
+    `export const plantedTerm = "${syntheticTerm}";\n`,
   );
   git(source, ["add", module]);
   git(source, [
@@ -2286,7 +2707,7 @@ test("WO-075 design: a TypeScript module under a runtime package's sources trave
       refused.stderr,
       /"file":"packages\/skeleton\/dist\/src\/planted-module\.js"/u,
     );
-    assert.doesNotMatch(refused.stderr, new RegExp(synthetic.trim(), "u"));
+    assert.doesNotMatch(refused.stderr, new RegExp(syntheticTerm, "u"));
     assert.ok(!existsSync(target), "a refused export writes nothing");
   } finally {
     git(source, ["reset", "-q", "--hard", "HEAD~1"]);

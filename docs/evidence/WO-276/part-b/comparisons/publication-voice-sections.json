@@ -1,0 +1,24 @@
+{
+  "comparison": "publication-voice-sections",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the dual-voice sample, as the worktree holds it and as each commit that changed it held it: the section under each of the two voices' headings",
+  "read": 2,
+  "equal": 0,
+  "differences": {
+    "defect of the old reader: its search for the text of the next second-level heading ended the first voice's section one line break short of that heading, leaving out the blank line the section holds; the worktree reads the section the parser bounds, and the product links the check reads from each section are the same": 2
+  },
+  "examples": [
+    {
+      "input": "docs/publication/dual-voice-sample.md",
+      "named": "defect of the old reader: its search for the text of the next second-level heading ended the first voice's section one line break short of that heading, leaving out the blank line the section holds; the worktree reads the section the parser bounds, and the product links the check reads from each section are the same",
+      "old": "[\"\\n\\nWhen an AI helper says “done,” treat that as a request to check the work, not as\\nthe check itself. Look for the strongest evidence the task can provide: for\\nexample, a passing test, a visible result, or an independently reviewed\\nartifact. The summary should lead you back to the source and show what was left\\nout, so you can inspect the mechanics before trusting a consequential result.\\n\\n",
+      "new": "[\"\\n\\nWhen an AI helper says “done,” treat that as a request to check the work, not as\\nthe check itself. Look for the strongest evidence the task can provide: for\\nexample, a passing test, a visible result, or an independently reviewed\\nartifact. The summary should lead you back to the source and show what was left\\nout, so you can inspect the mechanics before trusting a consequential result.\\n\\n"
+    },
+    {
+      "input": "docs/publication/dual-voice-sample.md@039788a7047c631117f756117009fbd59ab19540",
+      "named": "defect of the old reader: its search for the text of the next second-level heading ended the first voice's section one line break short of that heading, leaving out the blank line the section holds; the worktree reads the section the parser bounds, and the product links the check reads from each section are the same",
+      "old": "[\"\\n\\nWhen an AI helper says “done,” treat that as a request to check the work, not as\\nthe check itself. Look for the strongest evidence the task can provide: for\\nexample, a passing test, a visible result, or an independently reviewed\\nartifact. The summary should lead you back to the source and show what was left\\nout, so you can inspect the mechanics before trusting a consequential result.\\n\\n",
+      "new": "[\"\\n\\nWhen an AI helper says “done,” treat that as a request to check the work, not as\\nthe check itself. Look for the strongest evidence the task can provide: for\\nexample, a passing test, a visible result, or an independently reviewed\\nartifact. The summary should lead you back to the source and show what was left\\nout, so you can inspect the mechanics before trusting a consequential result.\\n\\n"
+    }
+  ]
+}

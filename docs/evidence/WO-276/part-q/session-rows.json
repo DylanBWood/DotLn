@@ -1,0 +1,52 @@
+{
+  "note": "Readings from one session's own journal in this checkout, before and after the instant the part's hooks were installed at. promptHook: the session hook's own timing rows at a prompt. authorship: the snapshot the observers take before and after a shell command, an edit or a write, over this worktree's changed and untracked files. hooksBeforeACall: for each call with two or more timed hooks before it, the span from the earliest start to the latest end, the sum of the hooks' durations, the longest, and the spread of their starts. Milliseconds, counts and bytes.",
+  "instant": "2026-11-12T17:34:40.613Z",
+  "promptHook": {
+    "before": {
+      "rows": 31,
+      "medianMs": 220
+    },
+    "after": {
+      "rows": 3,
+      "medianMs": 283
+    }
+  },
+  "authorship": {
+    "before": {
+      "snapshots": 1493,
+      "medianMs": 131,
+      "medianFiles": 576,
+      "medianBytes": 30551944,
+      "medianFilesRead": 576,
+      "medianBytesRead": 30551944,
+      "snapshotsThatReadNothing": 0
+    },
+    "after": {
+      "snapshots": 269,
+      "medianMs": 105,
+      "medianFiles": 602,
+      "medianBytes": 31094769,
+      "medianFilesRead": 0,
+      "medianBytesRead": 0,
+      "snapshotsThatReadNothing": 226
+    }
+  },
+  "hooksBeforeACall": {
+    "before": {
+      "calls": 598,
+      "medianHooks": 4,
+      "medianSpanMs": 232,
+      "medianSumMs": 624,
+      "medianLongestMs": 230,
+      "medianStartSpreadMs": 2
+    },
+    "after": {
+      "calls": 144,
+      "medianHooks": 4,
+      "medianSpanMs": 207,
+      "medianSumMs": 617,
+      "medianLongestMs": 205,
+      "medianStartSpreadMs": 1
+    }
+  }
+}

@@ -226,7 +226,21 @@ hand-written store: `node scripts/resident-bind.mjs WO-NNN --surface <path>...
 (the model and effort default per transport; product 06) reads the canonical control state and the worktree the order is being worked
 in, writes a store under the launchpad's ignored control lane whose
 `mission-check` actor is aimed at that worktree, and prints the launch,
-presence, status and `DOTLN_RESIDENT_STORE` lines for it.
+presence, status and `DOTLN_RESIDENT_STORE` lines for it. The launch line runs
+`node scripts/resident.mjs --store <dir> --policy <id> [--tick <ms> | --once]`:
+the same resident as `dotln resident`, whose CLI adapter holds the
+repository's reader of the documents a mission check judges. The package
+reads no Markdown, so a mission check under `dotln resident` is held with no
+judgment: its failure is recorded as `documents-unread`, and the hold's
+reason names `scripts/resident.mjs` as the way to start a resident that can
+judge
+([decision](../../docs/evidence/WO-276/decisions.md#wo-276-d031--part-b-begins-on-part-as-checkpoint-and-is-ported-from-the-earlier-worktree-whose-choices-are-restated-here);
+[the recorded refusal](../../docs/evidence/WO-276/decisions.md#wo-276-d170--a-resident-that-holds-no-reader-of-mission-documents-records-the-checks-failure-as-documents-unread-and-the-hold-names-the-launcher)).
+A check whose order holds a criteria list the reader cannot read whole is
+held the same way: its failure is recorded as `contract-unreadable`, and the
+hold's reason names `npm run work-orders -- index --check`, which names the
+line and the remedy
+([decision](../../docs/evidence/WO-276/decisions.md#wo-276-d178--the-ladders-first-round-eleven-findings-from-three-reviewers-five-of-them-in-a-criterions-class-each-closed-as-its-class-with-a-case)).
 `node scripts/resident-bind.mjs --check <store>` compares that store's binding
 record with canonical state and with every field of the store's own declared
 mission source, names every mismatch and refuses a launch line for a stale one;
@@ -394,8 +408,8 @@ effort and transport. An unavailable model fails closed and leaves its command
 pending. The following stores live under the gitignored `/.runtime/` root:
 
 ```sh
-DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/claude --transport claude-cli-print --model claude-sonnet-5 --effort high --beacons
-DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/codex --transport codex-cli-exec --model gpt-6-sol --effort xhigh --beacons
+DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/claude --transport claude-cli-print --model <model> --effort <level> --beacons
+DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/codex --transport codex-cli-exec --model <model> --effort <level> --beacons
 ```
 
 Successful stdout is one six-field JSON envelope. Raw harness output is bounded
@@ -437,7 +451,7 @@ capability probe are reproducible commands:
 
 ```sh
 npm run probe:workers -- --sandbox
-DOTLN_LIVE_WORKERS=1 npm run test:workers:live -- --claude-model claude-sonnet-5 --codex-model gpt-6-sol --evidence .runtime/live-evidence.json --kill-first
+DOTLN_LIVE_WORKERS=1 npm run test:workers:live -- --claude-model <model> --codex-model <model> --evidence .runtime/live-evidence.json --kill-first
 ```
 
 Create `.runtime` before using the live gate's evidence path if no demo has done
@@ -785,11 +799,11 @@ capsule through an existing CLI transport, in an empty Git mount with model
 file tools disabled. It does not receive this session's implementation narrative.
 
 ```sh
-DOTLN_LIVE_WORKERS=1 npm run dotln -- feedback-audit --store .runtime/feedback-audit --transport claude-cli-print --model claude-sonnet-5 --effort max
+DOTLN_LIVE_WORKERS=1 npm run dotln -- feedback-audit --store .runtime/feedback-audit --transport claude-cli-print --model <model> --effort <level>
 npm run evidence:feedback -- --record-selfhost .runtime/feedback-audit
 ```
 
-The root evidence command selects the feedback edition in [`docs/evidence/current.json`](../../docs/evidence/current.json). A compiler or declared source change can require a replacement edition; previous receipts remain historical bytes. The [actor board](../console/README.md) reads the same edition by default and pins it as its `selfhost` fixture case, because the reactor refuses an earlier edition's verifier stream as persisted compilation drift. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
+The root evidence command selects the feedback edition in [`docs/evidence/current.json`](../../docs/evidence/current.json). A compiler or declared source change can require a replacement edition; previous receipts remain historical bytes. The [actor board](../console/README.md) keeps a fixed copy of one edition as its recorded `selfhost` fixture case, so its expected pages do not move when a newer edition is selected; its property checks read the selected edition as well, so the console is still exercised against the live evidence. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
 
 Use an unused store for a new source revision. Reusing the same store resumes
 only the same source, policy, and verifier selection; an already saved audit or
@@ -844,11 +858,13 @@ permission settings decide execution; emission changes no host setting. The CLI 
 new saved builds need explicit adapter declarations and observed profiles.
 
 The Codex contributor profile also emits `.codex/hooks.json`, a comment-only
-project config, a source-only continuation hook and the opt-in custom agent
-`.codex/agents/dotln-worker-astra.toml` (`gpt-6-astra` at `max`). After
-compaction the hook restores the saved work order and can request one
-immediate continuation if that same owned task remains unfinished; on a
-`resume:` or `planning:` line it journals the worker options the line names. It
+project config and a source-only continuation hook. It emits no agent file: a
+Codex spawn takes its model and effort from the launch that `npm run worker
+-- show <name>` prints, and opens its brief with the worker rules printed
+there. After compaction the hook restores the saved work order and can
+request one immediate continuation if that same owned task remains
+unfinished; a `resume:` or `planning:` line makes the session's journal lane
+in a checkout that has none, and selects no worker. It
 preserves explicit pause/recovery controls and does not dispatch or release a
 writer. Review native hook trust with `/hooks`;
 the checked Codex CLI 0.155.0 loads linked-worktree definitions from the root
@@ -1053,8 +1069,10 @@ node scripts/reactor-identity.mjs --check
 After building, run `node packages/skeleton/dist/src/discovery-cli.js <canonical-target>`
 from the launchpad, optionally followed by a target-relative profile path.
 `discover(worktree, conventions)` is also available from `discovery.ts`.
-The default profile is `.dotln/discovery.json`; a Markdown profile uses one
-fenced `dotln-discovery` JSON block. Its fields are:
+The default profile is `.dotln/discovery.json`; a declared profile is a JSON
+file of the same shape, and a Markdown profile is refused
+([decision](../../docs/evidence/WO-276/decisions.md#wo-276-d031--part-b-begins-on-part-as-checkpoint-and-is-ported-from-the-earlier-worktree-whose-choices-are-restated-here)). Its fields
+are:
 
 - `checks`: at most one `lint` and one `test`, each with absolute `argv` and
   target-relative file `paths` defining observed scope.

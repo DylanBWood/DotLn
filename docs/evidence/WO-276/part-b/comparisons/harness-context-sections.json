@@ -1,0 +1,9 @@
+{
+  "comparison": "harness-context-sections",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every heading of the floor, skills, agents and product, architecture, planning and decision documents, and every anchor a work order cites: the lines of the section it opens",
+  "read": 1927,
+  "equal": 1927,
+  "differences": {},
+  "examples": []
+}

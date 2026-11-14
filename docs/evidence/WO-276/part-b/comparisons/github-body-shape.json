@@ -1,0 +1,9 @@
+{
+  "comparison": "github-body-shape",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every stored pull-request body, as stored and as published: its heading, its prose before the process-meter block and what follows that block",
+  "read": 442,
+  "equal": 442,
+  "differences": {},
+  "examples": []
+}

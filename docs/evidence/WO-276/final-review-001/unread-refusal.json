@@ -1,0 +1,7 @@
+{
+  "holdReason": "mission check <episode> returned no judgment (profile-refused)",
+  "eventLogNamesTheLauncher": false,
+  "runtimeStatusNamesTheLauncher": false,
+  "statusCommandNamesTheLauncher": false,
+  "auditCommandNamesTheLauncher": false
+}

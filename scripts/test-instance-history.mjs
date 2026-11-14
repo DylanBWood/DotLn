@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import {
   createFixtureRoot,
   removeTemporaryPath as rmSync,
@@ -24,12 +25,14 @@ import {
 const fixture = join(TOOL_ROOT, "scripts/fixtures/instance-with-history");
 const events = (root, path) =>
   readFileSync(join(root, path), "utf8").trim().split("\n").map(JSON.parse);
+// The index command's own output holds the workstream observation.
 const snapshot = (root) =>
   JSON.parse(
-    readFileSync(join(root, "docs/work-orders/README.md"), "utf8")
-      .split("\n")
-      .find((line) => line.startsWith("<!-- dotln-workstreams: "))
-      .slice("<!-- dotln-workstreams: ".length, -4),
+    execFileSync(
+      process.execPath,
+      [join(root, "scripts/work-orders.mjs"), "index", "--json"],
+      { cwd: root, encoding: "utf8", maxBuffer: 64_000_000 },
+    ),
   );
 
 // The control supplies older reader files in the scratch core; both arms

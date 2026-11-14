@@ -1,0 +1,112 @@
+{
+  "checkpoint": [
+    {
+      "shape": "directory-to-file",
+      "expected": "component",
+      "preserved": true,
+      "indexUnchanged": true,
+      "checkpointMatches": true
+    },
+    {
+      "shape": "directory-to-link",
+      "expected": "component",
+      "preserved": true,
+      "indexUnchanged": true,
+      "checkpointMatches": true
+    },
+    {
+      "shape": "nested-directory-to-file",
+      "expected": "component/deep",
+      "preserved": true,
+      "indexUnchanged": true,
+      "checkpointMatches": true
+    },
+    {
+      "shape": "ignored-file",
+      "expected": "plain.txt",
+      "preserved": true,
+      "indexUnchanged": true,
+      "checkpointMatches": true
+    },
+    {
+      "shape": "case-rename",
+      "expected": "PLAIN.txt",
+      "preserved": true,
+      "indexUnchanged": true,
+      "checkpointMatches": true
+    },
+    {
+      "shape": "file-to-directory",
+      "expected": "plain.txt/new.txt",
+      "preserved": true,
+      "indexUnchanged": true,
+      "checkpointMatches": true
+    }
+  ],
+  "discovery": [
+    {
+      "path": "scripts/.js",
+      "selected": true,
+      "findings": 1
+    },
+    {
+      "path": "packages/example/src/.ts",
+      "selected": true,
+      "findings": 1
+    },
+    {
+      "path": "scripts/line\nbreak.mjs",
+      "selected": true,
+      "findings": 1
+    },
+    {
+      "path": "packages/example/src/.tsx",
+      "selected": true,
+      "findings": 1
+    },
+    {
+      "path": "scripts/nested/.cjs",
+      "selected": true,
+      "findings": 1
+    },
+    {
+      "path": "scripts/reader.mts",
+      "selected": true,
+      "findings": 1
+    }
+  ],
+  "cleanup": [
+    {
+      "name": "ended-session",
+      "liveSession": false,
+      "signalledPids": [
+        300,
+        200
+      ],
+      "liveProcessSignalled": false,
+      "message": "Closed 2 Codex background-server processes that an ended Codex session left running (300, 200); no Codex session was alive to use them."
+    },
+    {
+      "name": "live-standalone-cli",
+      "liveSession": true,
+      "signalledPids": [],
+      "liveProcessSignalled": false,
+      "message": ""
+    },
+    {
+      "name": "live-packaged-cli",
+      "liveSession": true,
+      "signalledPids": [],
+      "liveProcessSignalled": false,
+      "message": ""
+    },
+    {
+      "name": "live-packaged-interactive",
+      "liveSession": true,
+      "signalledPids": [],
+      "liveProcessSignalled": false,
+      "message": ""
+    }
+  ],
+  "limits": "Synthetic local repositories and process rows. Cleanup signals are recorded by a stub; no host process is signalled."
+}

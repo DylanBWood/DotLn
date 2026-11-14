@@ -108,16 +108,20 @@ export const readJsonFile = (path, { rawErrors = false } = {}) => {
   return parseJson(source, path, { rawErrors });
 };
 
+/** The document roots that hold work orders: the catalog and its derived
+ * child. Every reader of the orders enumerates these, and so does a cache
+ * that watches what such a reader reads. */
+export const WORK_ORDER_AUTHORITY_ROOTS = ["workOrders", "derivedWorkOrders"];
+
 export const workOrderAuthorityPath = (
   root,
   workOrderId,
   workOrderPath,
   { requireFile = true } = {},
 ) => {
-  const authorityRoots = [
-    docPath(root, "workOrders"),
-    docPath(root, "derivedWorkOrders"),
-  ];
+  const authorityRoots = WORK_ORDER_AUTHORITY_ROOTS.map((key) =>
+    docPath(root, key),
+  );
   const authorityRoot = authorityRoots.find((directory) =>
     resolve(root, workOrderPath ?? "").startsWith(`${directory}${sep}`),
   );
@@ -141,7 +145,7 @@ export const workOrderAuthorityPath = (
  * symlink while discovering authority files. The derived child is scanned once. */
 export const workOrderAuthorityFiles = (root) => {
   const files = new Set();
-  for (const key of ["workOrders", "derivedWorkOrders"]) {
+  for (const key of WORK_ORDER_AUTHORITY_ROOTS) {
     const directory = docPath(root, key);
     if (!existsSync(directory)) continue;
     if (

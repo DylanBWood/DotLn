@@ -1,0 +1,36 @@
+{
+  "fixture": {
+    "squash": {
+      "ms": 60.42,
+      "by": "squash",
+      "baseCommitsRead": 2
+    },
+    "rebase": {
+      "ms": 95.59,
+      "by": "rebase",
+      "baseCommitsRead": 3
+    },
+    "merge": {
+      "ms": 17.53,
+      "by": "ancestor",
+      "baseCommitsRead": 0
+    },
+    "none": {
+      "ms": 80.81,
+      "by": null,
+      "baseCommitsRead": 2
+    }
+  },
+  "longerBase": {
+    "ms": 150.06,
+    "by": "squash",
+    "baseCommitsRead": 301,
+    "patchBytes": 392559
+  },
+  "longerBaseChangedOnBothSides": {
+    "ms": 183.07,
+    "by": "squash",
+    "baseCommitsRead": 301,
+    "patchBytes": 393006
+  }
+}

@@ -133,6 +133,26 @@ const completeActor = (actor) =>
   ["harness", "harnessVersion", "model", "effort", "source"].every((key) =>
     offRampText(actor[key]),
   );
+// A file an event names: a relative path of plain segments.
+/** The registered repository an event binds an order to: its id and its
+ * base commit together or neither, the id a registered one (never `self`,
+ * which an order declares by naming none) and the commit a full object id. */
+const requireRepositoryIdentity = (event, line) => {
+  if (
+    (event.repositoryId === undefined) !== (event.baseCommit === undefined) ||
+    (event.repositoryId !== undefined &&
+      (event.repositoryId === "self" ||
+        !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u.test(event.repositoryId) ||
+        !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(event.baseCommit)))
+  )
+    throw new Error(`invalid registered repository identity at line ${line}`);
+};
+const orderFilePath = (value) =>
+  typeof value === "string" &&
+  value !== "" &&
+  !value.startsWith("/") &&
+  !value.includes("\\") &&
+  value.split("/").every((part) => part && part !== "." && part !== "..");
 const offRampEvent = (event, at) => {
   const refuse = (detail) => {
     throw new Error(`invalid ${event.type} ${detail} at line ${at}`);
@@ -152,9 +172,15 @@ const offRampEvent = (event, at) => {
   switch (event.type) {
     case "DispatchBoundAccepted":
       if (
-        !["wallClockMs", "completeRuns"].includes(event.metric) ||
+        !["wallClockMs", "completeRuns", "subagentCap"].includes(
+          event.metric,
+        ) ||
         (event.ceiling !== null &&
           (!Number.isFinite(event.ceiling) || event.ceiling < 0)) ||
+        // A cap counts uses: a whole number or none.
+        (event.metric === "subagentCap" &&
+          event.ceiling !== null &&
+          !Number.isSafeInteger(event.ceiling)) ||
         ![
           "active",
           "needs-fix",
@@ -397,17 +423,7 @@ const scanControl = (events, visit) => {
           throw new Error(
             `allocated authority path differs at line ${index + 1}`,
           );
-        if (
-          (event.repositoryId === undefined) !==
-            (event.baseCommit === undefined) ||
-          (event.repositoryId !== undefined &&
-            (event.repositoryId === "self" ||
-              !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u.test(event.repositoryId) ||
-              !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(event.baseCommit)))
-        )
-          throw new Error(
-            `invalid registered repository identity at line ${index + 1}`,
-          );
+        requireRepositoryIdentity(event, index + 1);
         Object.assign(state, {
           workOrderId: event.workOrderId,
           workOrderPath: event.workOrderPath,
@@ -763,6 +779,27 @@ const scanControl = (events, visit) => {
       }
       case "WorkOrderWithdrawn":
         offRampEvent(event, index + 1);
+        // A filed order withdrawn before any activation: this is its first
+        // event, and it names the order and its file as an activation would,
+        // so the order is one the log knows.
+        // It also carries the registered repository the file declares,
+        // which an activation would have bound: every reader that compares
+        // an order's file with what the log knows of it (the index among
+        // them) then finds a target order's identity, withdrawn or not.
+        // A row that names no file, or none that is a plain path, folds
+        // as it did before such a withdrawal existed, and the path and the
+        // repository of a row that follows an activation are not read: a
+        // log that folded still folds. A segment refuses such a first event
+        // where it is read.
+        if (!state.workOrderId && orderFilePath(event.workOrderPath)) {
+          requireRepositoryIdentity(event, index + 1);
+          Object.assign(state, {
+            workOrderId: event.workOrderId,
+            workOrderPath: event.workOrderPath,
+            repositoryId: event.repositoryId,
+            baseCommit: event.baseCommit,
+          });
+        }
         Object.assign(state, {
           phase: "withdrawn",
           withdrawal: {
@@ -1005,13 +1042,28 @@ export const foldSegments = (
         throw new Error(
           `${path}: foreign workOrderId at ordinal ${index + 1}; expected ${id}`,
         );
+      // A segment opens with the event that makes its order known: an
+      // activation, an allocation, or the withdrawal of an order that was
+      // filed and never activated, which names the order's file.
       if (
         index === 0 &&
         !["WorkOrderActivated", "WorkOrderIdentityAllocated"].includes(
           event.type,
+        ) &&
+        !(
+          event.type === "WorkOrderWithdrawn" &&
+          event.workOrderPath !== undefined
         )
       )
         throw new Error(`${path}: expected activation at ordinal 1`);
+      if (
+        index === 0 &&
+        event.type === "WorkOrderWithdrawn" &&
+        !orderFilePath(event.workOrderPath)
+      )
+        throw new Error(
+          `${path}: invalid WorkOrderWithdrawn workOrderPath at ordinal 1`,
+        );
     }
     if (locations.has(id))
       throw new Error(

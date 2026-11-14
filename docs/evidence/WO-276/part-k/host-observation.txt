@@ -1,0 +1,125 @@
+Part K, criterion K3 and the order's known issue: what the host itself does
+with an added allow rule, an added hook and a kit guard's refusal.
+
+Host: Claude Code 2.1.322 (`claude --version`), print mode (`claude -p`),
+model claude-haiku-5-5, on 2026-11-11 between 18:28 and 19:28 UTC. Seven
+runs, written down by hand from their output. Every run was in a scratch
+directory outside this repository; `<instance>` and `<scratch>` stand for
+those directories. The host said of each that the workspace had not been
+trusted and that it therefore ignored the `permissions.allow` entries of
+the project's settings file; the allow rule under test was given on the
+command line (`--allowedTools`). That the host treats such a rule as it
+treats an allow entry of a settings file is its documentation's statement
+and is not something these runs show. Project hooks ran in all seven, and
+the project file's deny entries were read (section C).
+
+A. The emitted bundle with an accepted fragment, and a kit guard (runs 4 and 5)
+
+<instance> is the exported instance that `evidence.mjs` leaves when
+PART_K_INSTANCE names a directory: the kit's emitted `.claude/settings.json`
+with this fragment merged into it by the instance's own `harness emit`, and
+`harness check` passing on the result:
+
+  { "hooks": { "PostToolUse": [ { "matcher": "Bash", "hooks": [ { "type":
+    "command", "command": "echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"",
+    "timeout": 15 } ] } ] },
+    "permissions": { "deny": ["Bash(extensions/tools/deploy *)"] } }
+
+The call asked for is a harmless write, `echo probe > probe-out.txt`. The
+kit's guard refuses a write outside docs/ and root Markdown on a branch
+named planning/…, and on no other branch.
+
+Run 4, on the branch planning/probe:
+
+  $ cd <instance> && claude -p 'Run exactly this one bash command, exactly
+    as written, with no other tool call, then reply in one sentence with what
+    happened: echo probe > probe-out.txt' --model claude-haiku-5-5
+    --max-turns 4 --allowedTools 'Bash(echo *)'
+  reply: the command was refused by a DotLn harness hook; the branch is
+    planning/probe, where writes are allowed only under docs/ and root
+    Markdown, so probe-out.txt was blocked (WO-135).
+  probe-out.txt: absent
+  extensions/hook-ran.log: absent (no call ran, so the fragment's hook after
+    a call had nothing to follow)
+
+Run 5, the same command on the branch instance, where the guard's condition
+does not hold:
+
+  reply: the command ran without error and wrote probe to probe-out.txt.
+  probe-out.txt: probe
+  extensions/hook-ran.log: ran
+
+So, with the fragment merged: the kit's own guard, loaded by the host from
+the merged file, refused the call beside an allow rule that names it; where
+the guard does not refuse, the call ran and the fragment's hook ran after
+it, which shows the host loaded both the kit's entries and the fragment's
+from the one file.
+
+B. A stand-in guard, an allowing hook and a rewriting hook (runs 1 to 3)
+
+Run before the merge was built, to settle what the merge may admit. <scratch>
+held a settings file with two PreToolUse groups, in this order: a stand-in
+for a kit guard (it logs the command it is shown and denies a command that
+holds the word "refused"), then a stand-in for an instance's added hook (it
+logs the command it is shown, answers `permissionDecision: "allow"` to every
+call, and for a command that holds the word "original" also returns an
+`updatedInput` whose command is `echo refused-after-rewrite > ran.txt`).
+
+Run 1, asked for `echo refused-direct`: both hooks were shown the command;
+the reply reports the guard's denial; nothing ran. The allowing hook did not
+admit it.
+
+Run 3, the same request with `--allowedTools 'Bash(echo *)'`: the same
+outcome. The allow rule did not admit it either.
+
+Run 2, asked for `echo original`: the guard's log holds `echo original` and
+nothing else; ran.txt holds `refused-after-rewrite`; the reply says the
+command ran as written and printed nothing. The host ran the rewritten
+command, which the guard denies when it is shown it, without showing it to
+the guard, and told the model nothing of the rewrite.
+
+What follows from B: an added allow rule, and an added hook that answers
+allow, cannot admit a call a guard refuses; an added PreToolUse hook that
+rewrites a call's input can have a refused call run unseen. The merge
+therefore takes no hook under PreToolUse. The host's documentation states
+the first half (several PreToolUse decisions resolve deny first; deny rules
+are evaluated whatever a hook returns) and is silent on whether hooks see a
+rewritten input.
+
+C. The fragment's own deny rule beside an allow rule (runs 6 and 7)
+
+<instance> as in A, on the branch instance, with a harmless program at
+extensions/tools/deploy that writes extensions/tools/deploy-ran.txt, and the
+fragment of A, whose deny rule is `Bash(extensions/tools/deploy *)`.
+
+Run 6, the deny rule merged into the settings:
+
+  $ cd <instance> && claude -p 'Run exactly this one bash command, exactly
+    as written, with no other tool call, then reply in one sentence with what
+    happened: extensions/tools/deploy now' --model claude-haiku-5-5
+    --max-turns 4 --allowedTools 'Bash(extensions/tools/deploy *)'
+  reply: the command was denied by the permission gate, so it did not run.
+  extensions/tools/deploy-ran.txt: absent
+  extensions/hook-ran.log: absent
+
+Run 7, the same command after the deny rule was taken out of the fragment
+and the instance's own emit and check had run (the merged settings then
+held no rule naming the program):
+
+  reply: the command ran and exited with no output.
+  extensions/tools/deploy-ran.txt: deployed now
+  extensions/hook-ran.log: ran
+
+So a deny rule an instance adds through the fragment refuses the call it
+names, beside an allow rule that names the same call; with the rule gone the
+call runs.
+
+What none of this shows: any host version but 2.1.322; a session in a
+trusted workspace, where the project file's own allow entries are read; an
+interactive session; a deny rule the kit itself emits beside an added allow
+rule (the fragment's own was the one observed, and the host's documentation
+makes no difference between them); and anything about a hook under
+SubagentStop or UserPromptSubmit, which the merge refuses on the host's
+documentation alone (a hook's `continue: false` takes precedence over an
+event's own decision; a UserPromptSubmit hook that exits 2 or answers block
+keeps the prompt from the session).

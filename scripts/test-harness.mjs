@@ -22,12 +22,16 @@ const releaseCloseCommand =
   ((main, order, mode = "--publish") =>
     `${shellQuote(process.execPath)} ${shellQuote(join(main, "scripts/release.mjs"))} close ${order} ${mode}`);
 import { materialCloseCommand } from "./lib/worktree-material.mjs";
-import { initializeSubagentCounter } from "../packages/skeleton/dist/src/subagent-budget.js";
+import {
+  drivenWorkerContext,
+  initializeSubagentCounter,
+} from "../packages/skeleton/dist/src/subagent-budget.js";
 import { write, json, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import "./test-fixture-temporary.mjs";
 import "./test-temporary-roots.mjs";
-import test from "node:test";
+import test from "./lib/test-shards.mjs";
 import { pruneHarness, pruneInventory } from "./lib/harness-prune.mjs";
+import { ResidentStore } from "../packages/skeleton/dist/src/resident-store.js";
 import { reconcileWorktreeMaterial } from "./lib/intake-reconciliation.mjs";
 import "./test-target-harness.mjs";
 import "./test-observed-facts.mjs";
@@ -76,6 +80,7 @@ import {
   outsideWriteEffect,
   fnv1a64,
   OPERATOR_QUESTION_CONTEXT,
+  HARNESS_REFUSALS,
   desktopControlDenyRules,
 } from "../packages/compiler/dist/src/index.js";
 import {
@@ -85,8 +90,15 @@ import {
   defaultContributorSupportIds,
   contributorWithSupports,
   contributorOutsideAuthority,
+  sharedRules,
 } from "../packages/skeleton/dist/src/loadouts/contributor.js";
 import {
+  KIT_MODELS,
+  KIT_WORKERS,
+} from "../packages/skeleton/src/worker-models.mjs";
+import { readHostFeatures } from "./lib/features.mjs";
+import {
+  feedbackUnitToolKinds,
   personalFeedbackUnits,
   retainedFeedbackUnitsV1,
 } from "../packages/skeleton/dist/src/loadouts/feedback.js";
@@ -107,6 +119,7 @@ import {
   harnessFeedbackFacts,
   harnessHostProcess,
   harnessOutputs,
+  OUTPUT_STATE_TICK_MS,
   harnessProcessAlive,
   harnessWriterView,
   harnessSessionScratch,
@@ -129,6 +142,7 @@ import {
   checkHarness,
   decodeBuildOverlay,
   emitHarness,
+  FRAGMENT_HOOK_EVENTS,
   harnessInstallation,
   harnessInstructionBlock,
   composeHarnessInstruction,
@@ -137,6 +151,7 @@ import {
   provenRuntimeSnapshot,
   readBuildOverlay,
   RUNTIME_SNAPSHOT_RECORD,
+  SETTINGS_FRAGMENT,
   runtimePackageInventory,
   runtimeSnapshotContent,
   runtimeSnapshotPath,
@@ -175,6 +190,7 @@ import {
   LIVE_GATE_READ_LIST,
   shellDiagnostics,
   shellGuidance,
+  harnessToolEffects,
 } from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -229,7 +245,15 @@ const control = {
   phase: "active",
   latestVerdict: null,
 };
-function fixture() {
+// A host is on only by an election or an attestation, never by an observed
+// version (WO-275), so a test that reads the Codex or Copilot surfaces elects
+// both hosts in its configuration, as an instance does.
+const HOST_ELECTIONS = Object.freeze({
+  "host-codex": true,
+  "host-copilot": true,
+});
+
+function fixture({ hosts = false } = {}) {
   const root = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-harness-test-")),
   );
@@ -321,8 +345,9 @@ function fixture() {
     cpSync(join(sourceRoot, path), join(root, path));
   }
   write(root, "docs/control/fixture-status.json", json(control));
-  // The fixture's own record shows every host, as this repository's does, so
-  // its emit installs the complete bundle whatever a test elects (WO-258).
+  // The fixture's own record shows every host's observed versions, as this
+  // repository's does. Since WO-275 that turns no host on: a test that needs
+  // the Codex or Copilot surfaces elects the host in its configuration.
   write(
     root,
     "docs/discovery/environment.json",
@@ -368,6 +393,12 @@ function fixture() {
     ],
     fixtureGitOptions,
   );
+  if (hosts)
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, features: HOST_ELECTIONS }),
+    );
   emitHarness(root);
   return root;
 }
@@ -377,6 +408,17 @@ const input = (root, event, extra = {}) => ({
   hook_event_name: event,
   ...extra,
 });
+
+/** A shared rule of the role roots, by its record's identifier: its text and
+ * the roles whose roots hold it. A case that reads a rule through these
+ * follows the record and pins no sentence. */
+const sharedRule = (id) => {
+  const rule = sharedRules.find((row) => row.id === id);
+  assert.ok(rule, `no shared rule ${id}`);
+  return rule;
+};
+const sharedRuleText = (id) => sharedRule(id).text;
+const sharedRuleRoles = (id) => sharedRule(id).roles;
 
 test("generated JavaScript harness surfaces agree with the repository format policy", () => {
   const paths = harnessInstallation()
@@ -1828,14 +1870,17 @@ const stopUnits = new Set([
 ]);
 
 test("feature elections change executor equipment while absent and default-on emit identical roots", () => {
-  const root = fixture();
+  const root = fixture({ hosts: true });
   try {
     emitHarness(root);
     const before = installedOverlayBytes(root);
     write(
       root,
       "dotln.config.json",
-      json({ version: 1, features: { "tinkerer-economy": true } }),
+      json({
+        version: 1,
+        features: { ...HOST_ELECTIONS, "tinkerer-economy": true },
+      }),
     );
     emitHarness(root);
     assert.deepEqual(installedOverlayBytes(root), before);
@@ -1843,14 +1888,16 @@ test("feature elections change executor equipment while absent and default-on em
     write(
       root,
       "dotln.config.json",
-      json({ version: 1, features: { "tinkerer-economy": false } }),
+      json({
+        version: 1,
+        features: { ...HOST_ELECTIONS, "tinkerer-economy": false },
+      }),
     );
     emitHarness(root);
     checkHarness(root);
     const off = installedOverlayBytes(root);
     for (const skills of [".agents", ".claude"]) {
       const executor = `${skills}/skills/dotln-executor/SKILL.md`;
-      assert.doesNotMatch(off[executor], /Tinkerer — Economy:/u);
       assert.ok(
         Buffer.byteLength(off[executor]) < Buffer.byteLength(before[executor]),
       );
@@ -2447,7 +2494,7 @@ test("elected desktop control preserves descendant and router refusals", () => {
 });
 
 test("desktop control emit and check follow configuration and every role carries the rule", () => {
-  const root = fixture();
+  const root = fixture({ hosts: true });
   try {
     const cli = (action) =>
       spawnSync(process.execPath, ["scripts/harness.mjs", action], {
@@ -2481,7 +2528,10 @@ test("desktop control emit and check follow configuration and every role carries
       write(
         root,
         "dotln.config.json",
-        json({ version: 1, features: { "desktop-control": election } }),
+        json({
+          version: 1,
+          features: { ...HOST_ELECTIONS, "desktop-control": election },
+        }),
       );
       check(false);
       const emitted = cli("emit");
@@ -2497,72 +2547,21 @@ test("desktop control emit and check follow configuration and every role carries
         );
       } else assert.deepEqual(denies(), initial);
     }
+    // Every root, the router's among them, holds the rule once, as its
+    // record holds it (WO-251 put it in every root; WO-276 keeps it there).
     for (const file of harnessInstallation().files.filter((file) =>
       file.path.endsWith("SKILL.md"),
-    )) {
-      const text = readFileSync(join(root, file.path), "utf8");
-      assert.match(
-        text,
-        /Browser verification uses a browser the session launches:/,
+    ))
+      assert.equal(
+        readFileSync(join(root, file.path), "utf8")
+          .split("\n")
+          .filter((line) => line === sharedRuleText("browser-verification"))
+          .length,
+        1,
         file.path,
       );
-      assert.match(
-        text,
-        /DOM and accessibility tree through the Playwright MCP snapshot/,
-        file.path,
-      );
-      assert.match(text, /screenshot and read it as an image/, file.path);
-      assert.match(
-        text,
-        /features.desktop-control \(off by default\).*explicitly requests.*this session/,
-        file.path,
-      );
-    }
   } finally {
     removeFixture(root, { recursive: true });
-  }
-});
-
-test("WO-252 every emitted role root gives the prune to the session that needs it and the operator its command only after a recorded host denial, the router running none, and release close removes undeclared output from the launchpad session", () => {
-  const roots = harnessInstallation().files.filter((file) =>
-    file.path.endsWith("/SKILL.md"),
-  );
-  for (const role of ["release-close", "router"])
-    for (const host of [".claude", ".agents"])
-      assert.ok(
-        roots.some(
-          (file) => file.path === `${host}/skills/dotln-${role}/SKILL.md`,
-        ),
-        `${host} ${role}`,
-      );
-  for (const file of roots) {
-    // Every root names the command and the one fallback; only a writing
-    // session runs it, so the read-only router names the phase session.
-    assert.match(
-      file.contents,
-      /`node scripts\/harness\.mjs prune --apply`[^\n]*only after a recorded host denial of that exact command/u,
-      file.path,
-    );
-    if (file.path.includes("/dotln-router/")) {
-      assert.match(
-        file.contents,
-        /The router runs no prune: the phase session it launches runs `node scripts\/harness\.mjs prune --apply` itself under host permissions and records its receipt, handing the operator the printed command only after a recorded host denial of that exact command\./u,
-        file.path,
-      );
-      assert.doesNotMatch(file.contents, /prune --apply` yourself/u, file.path);
-      continue;
-    }
-    assert.match(
-      file.contents,
-      /run `node scripts\/harness\.mjs prune --apply` yourself under host permissions and record its receipt; hand the operator the printed command only after a recorded host denial of that exact command/u,
-      file.path,
-    );
-    if (file.path.includes("/dotln-release-close/"))
-      assert.match(
-        file.contents,
-        /removed from this launchpad session by the target's path, never by a session or writer in the target/u,
-        file.path,
-      );
   }
 });
 
@@ -2947,21 +2946,16 @@ test("WO-254 every emitted role root carries the question's two pathways and the
         ),
         `${host} ${role}`,
       );
-  for (const file of roots) {
-    const text = file.contents.replace(/\s+/gu, " ");
-    assert.ok(
-      text.includes(
-        "An operator message that ends in a question mark is a smell, never a stop or a rule: answer it in your next message one of two ways, with the evidence, why the current course is right or what the question changes in your reading and what you will now do differently, and keep working; a message that also asks for an action, pausing, stopping or waiting included, is a request whatever its grammar, so do it. A question is not a waiver.",
-      ),
-      `${file.path} carries the two pathways`,
-    );
-    assert.ok(
-      text.includes(
-        "When only the operator can clear what blocks this session, say so once: state the block and the one line that clears it in a single message, then end your turn, because the host holds a `!` command the operator types until the turn ends.",
-      ),
-      `${file.path} carries the blocked-turn sentence`,
-    );
-  }
+  // Each rule once in every root, the router's among them, as its record
+  // holds it: the hook delivers the same text for Claude.
+  for (const file of roots)
+    for (const id of ["question-pathways", "blocked-turn"])
+      assert.equal(
+        file.contents.split("\n").filter((line) => line === sharedRuleText(id))
+          .length,
+        1,
+        `${file.path} holds ${id}`,
+      );
 });
 
 test("WO-254 the three host-decided shell advisories are journaled without a systemMessage while a refused command's advisory is still shown", () => {
@@ -3369,6 +3363,11 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
       "--dry-run",
       "--publish --material 'docs/control/local/fixture=preserve'",
       `--publish --material ${shellQuote("docs/control/local/fixture's=preserve")} --material 'docs/control/local/second=disposable'`,
+      // A target's merged commit named last, as the close's refusal prints
+      // the command to run again (WO-276, Part M).
+      "--publish --merged-as 0123abc",
+      `--dry-run --merged-as ${"a".repeat(40)}`,
+      "--publish --material 'docs/control/local/fixture=preserve' --merged-as 0123abcd",
     ]) {
       const response = permission(`${helper} ${suffix}`);
       assert.equal(response?.permissionDecision, "allow", suffix);
@@ -3385,6 +3384,15 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
       `${helper} --publish && true`,
       `${helper} --publish --material $(echo fixture)=preserve`,
       `${helper} --publish --material 'fixture=preserve'; true`,
+      // The named commit is an id and the last word: no revision
+      // expression, no option, nothing after it and no second one.
+      `${helper} --publish --merged-as HEAD`,
+      `${helper} --publish --merged-as 0123ABC`,
+      `${helper} --publish --merged-as 0123abc --force`,
+      `${helper} --publish --merged-as 0123abc; true`,
+      `${helper} --publish --merged-as 0123abc --merged-as 0123abd`,
+      `${helper} --merged-as 0123abc --publish`,
+      `${helper} --merged-as 0123abc`,
     ])
       assert.notEqual(
         permission(command)?.permissionDecision,
@@ -4403,11 +4411,24 @@ test("WO-146 three contributors share unique outputs while workers remain explic
       desktopTools.map((name) => [name, "desktop"]),
     );
     for (const name of desktopTools) delete profile.tools[name];
+    // The kinds of tool each unit's facts read, by which its hook's matcher
+    // is built, are the loadout's one declaration on every profile.
+    assert.deepEqual(profile.unitToolKinds, feedbackUnitToolKinds);
+    delete profile.unitToolKinds;
+    // A worker's bundle takes the matcher form its own host was observed to
+    // read: Claude Code's worker carries the observation of a matcher that
+    // leaves names out, and Codex's, which registers no tool hook, none.
+    assert.equal(
+      profile.matcherExclusion?.available,
+      profile.harness === "claude-code" ? true : undefined,
+      profile.harness,
+    );
+    delete profile.matcherExclusion;
   }
   assert.equal(
     createHash("sha256").update(JSON.stringify(workers)).digest("hex"),
     "9f41bb7cb0176f0b8e73bd9fe760ef628259e69b4ebdbb28fa0a621bd4dba6fb",
-    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return, re-task and desktop tools",
+    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return, re-task and desktop tools, units' tool kinds and matcher observation",
   );
   const installation = harnessInstallation();
   assert.equal(
@@ -4689,7 +4710,497 @@ test("WO-139 generated permission, observer, Stop and usage share the root subag
   }
 });
 
-test("WO-250 every use counts: a message, a resumed agent and a helper launch one each, a plan review three, a dry run none; usage reads them by host and the twenty-first is refused", () => {
+// The cap an operator states for one dispatch is a recorded acceptance: the
+// hook, the usage readback and the lifecycle read it from the order's control
+// record, and the budgets file keeps the value every other dispatch reads.
+test("WO-276 an accepted subagent cap admits the twenty-first worker of its dispatch and refuses past the accepted cap, usage prints it, another order's dispatch reads the budgets file's value, and an unlimited acceptance refuses no launch", async () => {
+  const root = fixture();
+  try {
+    const dispatch = (session, workOrder) => {
+      beginHarnessSession(root, session, "executor");
+      const file = join(
+        root,
+        `docs/control/local/harness/${sha256(session)}.json`,
+      );
+      const startedAt = new Date().toISOString();
+      write(
+        root,
+        `docs/control/local/harness/${sha256(session)}.json`,
+        json({
+          ...JSON.parse(readFileSync(file, "utf8")),
+          role: "executor",
+          intent: "resume: next",
+          workOrder,
+          startedAt,
+          // The dispatch this session is bound to is what a bound reads.
+          boundDispatch: {
+            role: "executor",
+            intent: "resume: next",
+            workOrder,
+            startedAt,
+            phaseBoundary: "fixture",
+          },
+        }),
+      );
+    };
+    dispatch("synthetic-session", "WO-999");
+    const permission = await fixtureHook(root, "permissions");
+    const launch = (id, session = "synthetic-session") =>
+      permission({
+        ...input(root, "PreToolUse", {
+          tool_name: "Agent",
+          tool_use_id: id,
+          tool_input: { subagent_type: "dotln-worker", prompt: "Review." },
+        }),
+        session_id: session,
+      });
+    const reason = (result) =>
+      result.hookSpecificOutput?.permissionDecisionReason ?? "";
+    for (let use = 1; use <= 20; use += 1)
+      assert.equal(allowed(await launch(`use-${use}`)), true, `use ${use}`);
+    // At the budgets file's value the refusal names the acceptance route.
+    assert.match(
+      reason(await launch("refused-at-20")),
+      /DOTLN_SUBAGENT_CAP_REFUSED: count 20, cap 20;.*accept-overrun subagentCap --ceiling <n\|unlimited>.*never by editing the budgets file/u,
+    );
+    const segment = join(root, "docs/control/orders/WO-999.jsonl");
+    const accept = (ceiling) =>
+      appendFileSync(
+        segment,
+        `${JSON.stringify({
+          type: "DispatchBoundAccepted",
+          workOrderId: "WO-999",
+          phase: "active",
+          metric: "subagentCap",
+          ceiling,
+          reason: "the operator states a cap for this dispatch",
+          capture: "docs/intake/operator.md",
+          captureHash: `sha256:${"a".repeat(64)}`,
+          actor: {
+            harness: "claude-code",
+            harnessVersion: "fixture",
+            model: "fixture",
+            effort: "max",
+            source: "self-reported",
+          },
+        })}\n`,
+      );
+    // A drive's worker holds the limits its drive launched it with; what the
+    // operator accepts after that is read from the order's log at each use.
+    write(
+      root,
+      "docs/control/local/drives/worker.json",
+      json({
+        schemaVersion: 1,
+        root,
+        directory: join(root, "docs/control/local/drives"),
+        session: "drive-session",
+        worker: "drive-worker",
+        role: "executor",
+        workOrder: "WO-999",
+        cap: 20,
+        ceiling: 80,
+      }),
+    );
+    const inheritedDriven = process.env.DOTLN_DRIVEN_WORKER;
+    process.env.DOTLN_DRIVEN_WORKER = join(
+      root,
+      "docs/control/local/drives/worker.json",
+    );
+    const drivenLimits = () => {
+      const { cap, ceiling } = drivenWorkerContext();
+      return [cap, ceiling];
+    };
+    assert.deepEqual(drivenLimits(), [20, 80]);
+    accept(40);
+    assert.deepEqual(
+      drivenLimits(),
+      [40, 160],
+      "a cap accepted after the worker began reaches its next admission",
+    );
+    const standingBefore = measureHarnessUsage(root, "synthetic-session");
+    for (let use = 21; use <= 40; use += 1)
+      assert.equal(allowed(await launch(`use-${use}`)), true, `use ${use}`);
+    assert.match(reason(await launch("refused-at-40")), /count 40, cap 40;/u);
+    const row = measureHarnessUsage(root, "synthetic-session").subagents;
+    assert.equal(row.count, 40);
+    assert.equal(row.cap, 40);
+    assert.equal(row.remaining, 0);
+    const usage = spawnSync(
+      process.execPath,
+      ["scripts/harness.mjs", "usage", "synthetic-session"],
+      {
+        cwd: root,
+        env: { ...process.env, DOTLN_LAUNCHPAD: "" },
+        encoding: "utf8",
+      },
+    );
+    assert.equal(usage.status, 0, usage.stderr);
+    assert.match(usage.stdout, /cap 40, remaining 0/u);
+    // The acceptance is the order's dispatch's: another order's dispatch, in
+    // the same checkout, reads the budgets file's value.
+    dispatch("other-session", "WO-998");
+    assert.equal(measureHarnessUsage(root, "other-session").subagents.cap, 20);
+    assert.equal(allowed(await launch("other-1", "other-session")), true);
+    // The dispatch's wall-clock standing reads as it did before the cap.
+    assert.deepEqual(
+      measureHarnessUsage(root, "synthetic-session").dispatchStanding
+        ?.acceptance ?? null,
+      standingBefore.dispatchStanding?.acceptance ?? null,
+    );
+    accept(null);
+    assert.deepEqual(drivenLimits(), [null, null]);
+    for (const id of ["use-41", "use-42", "use-43"])
+      assert.equal(allowed(await launch(id)), true, id);
+    assert.equal(
+      measureHarnessUsage(root, "synthetic-session").subagents.cap,
+      null,
+    );
+    // A control record that cannot be read grants nothing: the budgets
+    // file's value is the cap again.
+    appendFileSync(segment, "not a control event\n");
+    assert.equal(
+      measureHarnessUsage(root, "synthetic-session").subagents.cap,
+      20,
+    );
+    // The same for a drive's worker: the limits it was launched with stand.
+    assert.deepEqual(drivenLimits(), [20, 80]);
+    if (inheritedDriven === undefined) delete process.env.DOTLN_DRIVEN_WORKER;
+    else process.env.DOTLN_DRIVEN_WORKER = inheritedDriven;
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+// The host's question dialog stays every role's to use (the operator's
+// direction of 2026-11-10 struck its refusal from WO-276): a dispatched role
+// is admitted as an undispatched session and a planner are, and no refusal
+// names the dialog.
+test("WO-276 the host's question dialog is admitted to every dispatched role, as at the base, and no refusal row names it", () => {
+  const root = fixture();
+  try {
+    const ask = (session) =>
+      invoke(root, "permissions", {
+        ...input(root, "PreToolUse", {
+          tool_name: "AskUserQuestion",
+          tool_use_id: `ask-${session}`,
+          tool_input: { questions: [] },
+        }),
+        session_id: session,
+      });
+    for (const role of [
+      "executor",
+      "verifier",
+      "reviewer",
+      "release-close",
+      "planner",
+    ]) {
+      beginHarnessSession(root, `session-${role}`, role);
+      const result = ask(`session-${role}`);
+      assert.equal(allowed(result), true, role);
+      assert.doesNotMatch(JSON.stringify(result), /REFUSED/u, role);
+    }
+    assert.equal(allowed(ask("session-with-no-dispatch")), true);
+    assert.ok(
+      HARNESS_REFUSALS.every(
+        (row) => !/question|dialog/iu.test(`${row.id} ${row.clause}`),
+      ),
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+// A worker hands back with nothing of its own running. The hook cannot see
+// what a worker says it stopped; it sees what the host lists as live at the
+// stop and which call started each task.
+test("WO-276 a worker's stop is refused once while a background task it started is live, journaled under the worker's key and named in the parent's next facts; the session's own task and an empty list refuse nothing", async () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const observer = await fixtureHook(root, "read-observer");
+    const finished = await fixtureHook(root, "agent-finished");
+    const worker = { agent_id: "worker-1", agent_type: "dotln-worker" };
+    const started = (id, task, agent = {}) =>
+      observer(
+        input(root, "PostToolUse", {
+          tool_name: "Bash",
+          tool_use_id: id,
+          tool_input: { command: "sleep 600", run_in_background: true },
+          tool_response: { backgroundTaskId: task },
+          ...agent,
+        }),
+      );
+    await started("call-parent", "shell-parent");
+    await started("call-worker", "shell-worker", worker);
+    const task = (id, status = "running") => ({
+      id,
+      type: "shell",
+      status,
+      description: "sleep 600",
+      name: "a background shell",
+    });
+    const stop = (tasks, extra = {}) =>
+      finished({
+        ...input(root, "SubagentStop", worker),
+        stop_hook_active: false,
+        ...(tasks ? { background_tasks: tasks } : {}),
+        ...extra,
+      });
+    const stops = () => wo178Rows(root).flatMap((row) => row.workerStop ?? []);
+    // The host lists the session's tasks, the stopping worker among them
+    // under its own agent id (the subagent-stop probe): that entry is the
+    // worker, never a task it left running.
+    const itself = {
+      id: "worker-1",
+      type: "subagent",
+      status: "running",
+      description: "a review",
+      agent_type: "dotln-worker",
+    };
+    // Nothing of the worker's is live: an empty list, a list the host did
+    // not give, the worker's own entry alone, the session's own task alone
+    // and a finished task of its own.
+    assert.deepEqual(await stop([]), {});
+    assert.deepEqual(await stop(undefined), {});
+    assert.deepEqual(await stop([itself]), {});
+    assert.deepEqual(stops(), [], "a stop with nothing live is not recorded");
+    assert.deepEqual(await stop([task("shell-parent")]), {});
+    assert.deepEqual(await stop([task("shell-worker", "completed")]), {});
+    assert.deepEqual(
+      stops().map((row) => [row.refused, row.tasks.map((t) => t.owner)]),
+      [[false, ["other"]]],
+      "a stop with only another actor's task is recorded and refuses nothing",
+    );
+    // The worker's own live task refuses the stop once, naming the task and
+    // the tool that stops it, and never the session's task beside it.
+    const refused = await stop([
+      task("shell-parent"),
+      itself,
+      task("shell-worker"),
+    ]);
+    assert.equal(refused.decision, "block");
+    assert.match(
+      refused.reason,
+      /^DOTLN_WORKER_TASKS_RUNNING: this worker started a background task that is still running: shell shell-worker\. Stop it with the host's task-stop tool \(TaskStop with that task id\), then hand back/u,
+    );
+    assert.doesNotMatch(refused.reason, /shell-parent|subagent|worker-1/u);
+    const recorded = stops().at(-1);
+    assert.equal(recorded.agent, sha256("worker-1"));
+    assert.equal(recorded.agentType, "dotln-worker");
+    assert.equal(recorded.refused, true);
+    assert.equal(recorded.reentry, false);
+    assert.deepEqual(recorded.tasks, [
+      {
+        key: sha256("shell-parent"),
+        type: "shell",
+        status: "running",
+        owner: "other",
+      },
+      {
+        key: sha256("shell-worker"),
+        type: "shell",
+        status: "running",
+        owner: "worker",
+      },
+    ]);
+    // The journal keeps digests: no host identifier, description or name.
+    assert.doesNotMatch(
+      readFileSync(
+        join(
+          root,
+          `docs/control/local/harness/${sha256("synthetic-session")}.jsonl`,
+        ),
+        "utf8",
+      ),
+      /shell-worker|shell-parent|worker-1|sleep 600|a background shell|a review/u,
+    );
+    // The re-entry is admitted and recorded: refusing again would hold the
+    // worker until the operator interrupts.
+    assert.deepEqual(
+      await stop([itself, task("shell-worker")], { stop_hook_active: true }),
+      {},
+    );
+    assert.deepEqual(
+      [
+        stops().at(-1).refused,
+        stops().at(-1).reentry,
+        stops()
+          .at(-1)
+          .tasks.map((row) => row.owner),
+      ],
+      [false, true, ["worker"]],
+    );
+    // The parent's next prompt names the worker and its task, whether or not
+    // the host held the worker.
+    const facts = () =>
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt: "continue the order" }),
+      ).hookSpecificOutput.additionalContext;
+    const named = new RegExp(
+      `Worker dotln-worker ${sha256("worker-1").slice(0, 8)} stopped at \\S+ with 1 background task of its own still running: task \\d+ \\(shell\\)\\. Its claim to have stopped them is not this observation`,
+      "u",
+    );
+    assert.match(facts(), named);
+    // A task no journaled call started cannot be attributed: it refuses
+    // nothing and is recorded for the parent to read.
+    const other = { agent_id: "worker-2", agent_type: "dotln-worker" };
+    assert.deepEqual(
+      await finished({
+        ...input(root, "SubagentStop", other),
+        stop_hook_active: false,
+        background_tasks: [task("shell-unseen")],
+      }),
+      {},
+    );
+    assert.deepEqual(
+      stops()
+        .at(-1)
+        .tasks.map((row) => row.owner),
+      ["unknown"],
+    );
+    assert.match(
+      facts(),
+      new RegExp(
+        `Worker dotln-worker ${sha256("worker-2").slice(0, 8)} stopped at \\S+ while 1 running task could not be attributed: a task \\(shell\\)`,
+        "u",
+      ),
+    );
+    // Once the worker's task is observed stopped, the worker is no longer
+    // listed.
+    await observer(
+      input(root, "PostToolUse", {
+        tool_name: "TaskStop",
+        tool_use_id: "call-stop",
+        tool_input: { task_id: "shell-worker" },
+        tool_response: { task_id: "shell-worker" },
+      }),
+    );
+    assert.doesNotMatch(facts(), named);
+    // A malformed list is refused as input, never read as an empty one.
+    assert.equal(
+      decodeHarnessInput({
+        ...input(root, "SubagentStop", worker),
+        background_tasks: "shell-worker",
+      }).code,
+      "EXPECTED_ARRAY",
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+// A lifecycle worker keeps a session state and a journal of its own, whose
+// phase is the worker's. Its stop is still the parent's to read.
+test("WO-276 a lifecycle worker's stop is filed under its parent's scope: the parent's next facts name the worker though its own phase differs, and the session's own task beside it is not the worker's", async () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "router", false, "WO-999");
+    const observer = await fixtureHook(root, "read-observer");
+    const finished = await fixtureHook(root, "agent-finished");
+    const worker = { agent_id: "lifecycle-1", agent_type: "dotln-executor" };
+    await observer(
+      input(root, "PostToolUse", {
+        tool_name: "Bash",
+        tool_use_id: "call-parent",
+        tool_input: { command: "sleep 600", run_in_background: true },
+        tool_response: { backgroundTaskId: "shell-parent" },
+      }),
+    );
+    // The worker's own start, as the observer journals it: in the worker's
+    // journal, keyed by the session and the agent, with the starter's digest.
+    const at = new Date().toISOString();
+    write(
+      root,
+      `docs/control/local/harness/${sha256(JSON.stringify(["synthetic-session", "lifecycle-1"]))}.jsonl`,
+      `${JSON.stringify({
+        recordedAt: at,
+        event: "PostToolUse",
+        tool: "Bash",
+        role: "executor",
+        workOrder: "WO-999",
+        phase: "implementation",
+        backgroundTask: {
+          key: sha256("shell-worker"),
+          state: "dispatched",
+          dispatchedAt: at,
+          startedBy: sha256("lifecycle-1"),
+          observedAt: at,
+        },
+      })}\n`,
+    );
+    const task = (id) => ({ id, type: "shell", status: "running" });
+    // The worker holds the worktree's writer while it works.
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          input(root, "PreToolUse", {
+            tool_name: "Bash",
+            tool_input: { command: "echo work" },
+            ...worker,
+          }),
+        ),
+      ),
+      true,
+    );
+    assert.equal(harnessWriterView(root).agentId, sha256("lifecycle-1"));
+    const refused = await finished({
+      ...input(root, "SubagentStop", worker),
+      stop_hook_active: false,
+      background_tasks: [
+        task("shell-parent"),
+        { id: "lifecycle-1", type: "subagent", status: "running" },
+        task("shell-worker"),
+      ],
+    });
+    assert.equal(refused.decision, "block");
+    assert.match(refused.reason, /shell shell-worker/u);
+    assert.doesNotMatch(refused.reason, /shell-parent/u);
+    // A refused stop leaves the worker at work, and the writer with it
+    // (rolling review 10): the reservation ends with the stop admitted.
+    assert.equal(harnessWriterView(root).agentId, sha256("lifecycle-1"));
+    const parentRows = wo178Rows(root);
+    const stop = parentRows.findLast((row) => row.workerStop);
+    assert.deepEqual(
+      stop.workerStop.tasks.map((row) => row.owner),
+      ["other", "worker"],
+      "the session's own task is another's, read from the parent's journal",
+    );
+    // The row carries the parent's scope, which is what the parent's facts
+    // read by.
+    const parentScope = parentRows.find((row) => row.backgroundTask);
+    assert.equal(stop.phase, parentScope.phase);
+    assert.equal(stop.workOrder, parentScope.workOrder);
+    const facts = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "continue the drive" }),
+    ).hookSpecificOutput.additionalContext;
+    assert.match(
+      facts,
+      new RegExp(
+        `Worker dotln-executor ${sha256("lifecycle-1").slice(0, 8)} stopped at \\S+ with 1 background task of its own still running: `,
+        "u",
+      ),
+    );
+    // The stop the host makes again is admitted, and ends the reservation.
+    const ended = await finished({
+      ...input(root, "SubagentStop", worker),
+      stop_hook_active: true,
+      background_tasks: [task("shell-worker")],
+    });
+    assert.equal(ended.decision, undefined);
+    assert.equal(harnessWriterView(root).reserved, false);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-250 every use counts: a message, a resumed agent and a helper launch one each, a dry run and a planner's review none; usage reads them by host and the twenty-first is refused", () => {
   const root = fixture();
   try {
     beginHarnessSession(root, "synthetic-session", "executor");
@@ -4746,30 +5257,47 @@ test("WO-250 every use counts: a message, a resumed agent and a helper launch on
         "npm run worker -- review --kind criteria --host codex --dry-run",
         5,
       ],
-      ["plan", "npm run plan -- review", 8],
-      ["node-plan", "node scripts/refute-plan.mjs review --host codex", 11],
+      // The plan command has no review, and the hook counts none for its
+      // words (WO-276, Part F): the parked order that adds one brings its
+      // count with it.
+      ["plan", "npm run plan -- review", 5],
+      ["node-plan", "node scripts/refute-plan.mjs review --host codex", 5],
+      // A launch that names no host is counted and attributed to none.
+      ["no-host", "npm run worker -- review --kind design", 6],
       // The same launch inside the bounded wrapper, or past Node's options.
       [
         "wrapped",
         "node scripts/harness.mjs bounded -- npm run worker -- review --kind criteria --host codex",
-        12,
+        7,
       ],
       [
         "node-option",
         "node --no-warnings scripts/worker.mjs review --kind design --host claude",
-        13,
+        8,
+      ],
+      // npm's own flag before the script's name, and between the name and
+      // the separator (WO-276 criterion I3): each is the plain launch.
+      [
+        "npm-flag-before",
+        "npm run --silent worker -- review --kind criteria --host codex",
+        9,
+      ],
+      [
+        "npm-flag-after",
+        "npm run worker --silent -- review --kind criteria --host codex",
+        10,
       ],
     ]) {
       admit(pre(id, "Bash", { command, description: "fixture" }));
       assert.equal(uses().count, count, command);
     }
     const row = uses();
-    assert.equal(row.launched, 11);
+    assert.equal(row.launched, 8);
     assert.equal(row.retasked, 2);
     assert.deepEqual(row.launchedByHost, {
       claude: 3,
-      codex: 5,
-      unattributed: 3,
+      codex: 4,
+      unattributed: 1,
     });
     const usage = spawnSync(
       process.execPath,
@@ -4783,9 +5311,9 @@ test("WO-250 every use counts: a message, a resumed agent and a helper launch on
     assert.equal(usage.status, 0, usage.stderr);
     assert.equal(
       JSON.parse(usage.stdout).workers,
-      "workers: launched 11 (claude 3, codex 5, unattributed 3), re-tasked 2, cap 20, remaining 7",
+      "workers: launched 8 (claude 3, codex 4, unattributed 1), re-tasked 2, cap 20, remaining 10",
     );
-    for (let index = 14; index <= 20; index++)
+    for (let index = 11; index <= 20; index++)
       assert.equal(
         allowed(
           admit(
@@ -4817,7 +5345,7 @@ test("WO-250 every use counts: a message, a resumed agent and a helper launch on
     assert.equal(uses().count, 20);
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
-      /Subagents: 20\/20 uses \(launched 18: claude 3, codex 12, unattributed 3; re-tasked 2\)/,
+      /Subagents: 20\/20 uses \(launched 18: claude 3, codex 14, unattributed 1; re-tasked 2\)/,
     );
   } finally {
     removeFixture(root, { recursive: true, force: true });
@@ -4928,11 +5456,12 @@ test("WO-250 a gate or a kit launch is found by its script's path whatever Node 
     ),
     { uses: 1, host: "claude" },
   );
-  assert.deepEqual(
+  assert.equal(
     kitWorkerLaunch(
       "npm run harness -- bounded -- node --stack-size 4000 scripts/refute-plan.mjs review --host codex",
     ),
-    { uses: 3, host: "codex" },
+    null,
+    "the plan command launches no reviewer",
   );
   assert.equal(
     kitWorkerLaunch(
@@ -4941,10 +5470,299 @@ test("WO-250 a gate or a kit launch is found by its script's path whatever Node 
     null,
     "recording a returned report launches nothing",
   );
+  // One launch, however npm's own flags are placed: npm takes a flag before
+  // `run`, before the script's name, or between the name and the separator,
+  // and a flag with a value takes the next word (WO-276 criterion I3).
+  for (const command of [
+    "npm run worker -- review --kind design --host codex",
+    "npm run --silent worker -- review --kind design --host codex",
+    "npm run worker --silent -- review --kind design --host codex",
+    "npm --silent run worker -- review --kind design --host codex",
+    "npm run -s worker -- review --kind design --host codex",
+    "npm run worker -s -- review --kind design --host codex",
+    "npm run worker --loglevel silent -- review --kind design --host codex",
+    "npm run worker --silent --loglevel error -- review --kind design --host codex",
+    "node scripts/worker.mjs review --kind design --host codex",
+    // npm's other names for the verb, and flags outside the short list of
+    // those known to take a value.
+    "npm run-script worker -- review --kind design --host codex",
+    "npm rum worker -- review --kind design --host codex",
+    "npm urn worker -- review --kind design --host codex",
+    "npm run worker --script-shell /bin/sh -- review --kind design --host codex",
+    "npm --script-shell /bin/sh run worker -- review --kind design --host codex",
+    "npm run --script-shell /bin/sh worker -- review --kind design --host codex",
+    "npm run worker --color always -- review --kind design --host codex",
+    "npm --prefix /x run -w a worker -- review --kind design --host codex",
+    // A separator before the verb or the script's name ends npm's flags:
+    // npm 11 hands the script every later word as written.
+    "npm run -- worker review --kind design --host codex",
+    "npm -- run worker review --kind design --host codex",
+    "npm run-script -- worker review --kind design --host codex",
+    // A unique abbreviation of the verb or of its alias, and its camel-case
+    // spelling: npm 11 resolves each to run.
+    "npm run-s worker -- review --kind design --host codex",
+    "npm run- worker -- review --kind design --host codex",
+    "npm ur worker -- review --kind design --host codex",
+    "npm runScript worker -- review --kind design --host codex",
+    "npm runS worker -- review --kind design --host codex",
+    // Node's own runner of a package script.
+    "node --run worker -- review --kind design --host codex",
+    "node --run=worker -- review --kind design --host codex",
+  ])
+    assert.deepEqual(
+      kitWorkerLaunch(command),
+      { uses: 1, host: "codex" },
+      command,
+    );
+  // With no separator npm keeps every flag for itself, the helper's own
+  // among them: the launch is counted and no host is read from it.
+  for (const command of [
+    "npm run worker review --kind design --host codex",
+    "npm run worker --silent review --kind design --host codex",
+    "npm run worker review --dry-run",
+    "npm run worker --script-shell sh review",
+    "npm run worker --tag latest review",
+    "npm run worker --include dev review",
+    // A flag whose value is spelled as the script's name.
+    "npm run --tag worker worker -- review",
+  ])
+    assert.deepEqual(
+      kitWorkerLaunch(command),
+      { uses: 1, host: "unattributed" },
+      command,
+    );
+  // Behind the separator the same word is the helper's own, and the
+  // helper reads the last host it is given.
+  assert.deepEqual(kitWorkerLaunch("npm run worker -- review --help"), {
+    uses: 1,
+    host: "unattributed",
+  });
+  assert.deepEqual(
+    kitWorkerLaunch("npm run worker -- review --host claude --host codex"),
+    { uses: 1, host: "codex" },
+  );
+  // What launches none stays none: a dry run the helper receives, another
+  // subcommand, another script, and a word that only resembles the script.
+  for (const command of [
+    "npm run worker --silent -- review --kind design --host codex --dry-run",
+    "npm run worker --silent -- record --kind design --from f",
+    "npm run plan --silent -- review",
+    "npm run --silent harness -- usage worker review",
+    "npm run worker --silent --",
+    "npm run worker --loglevel review",
+    // A word that is no flag's value is the script's own first argument.
+    "npm run worker record -- review",
+    "npm run worker --silent record -- review",
+    // Another npm command, however its words fall.
+    "npm install run worker",
+    "npm --silent exec run worker -- review",
+    "npm exec -- run worker review",
+    "npm run workers -- review",
+    // Behind the first separator a dry run reaches the helper, and a second
+    // separator is the helper's first word, which it refuses with its usage,
+    // as it does from Node's own command line.
+    "npm run-script -- worker review --dry-run",
+    "npm run -- worker -- review",
+    "npm run worker -- -- review",
+    "node scripts/worker.mjs -- review --kind design --host codex",
+    // npm 11 prints its help or its version at these and runs no script.
+    "npm run worker --help -- review",
+    "npm run worker -h -- review",
+    "npm run worker --usage -- review",
+    "npm run worker --version -- review",
+    "npm run worker -v -- review",
+    "npm --help run worker -- review",
+    // Short for more than one of npm's commands, or no spelling of one.
+    "npm ru worker -- review",
+    "npm r worker -- review",
+    "npm RUN worker -- review",
+    "npm run_script worker -- review",
+    // Node's runner hands a script nothing that stands before a separator.
+    "node --run worker review",
+    "node --run worker -- -- review",
+    "node --run workers -- review",
+  ])
+    assert.equal(kitWorkerLaunch(command), null, command);
+});
+
+test("WO-276 (the fourteenth critic, the second attack on Part J): the review worker's gate refusal and the launch count read a package manager's line the same way, so each listed spelling npm, pnpm, yarn, Node or Corepack runs a gate or a launch by is the gate or the launch", () => {
+  const worker = { agent_id: "dotln-worker-1", agent_type: "dotln-worker" };
+  const shell = (command) => ({
+    hook_event_name: "PreToolUse",
+    cwd: "/",
+    session_id: "s",
+    tool_name: "Bash",
+    tool_input: { command },
+    ...worker,
+  });
+  // Each of these starts the runner: npm's other names for `run` and for
+  // its test command, a flag wherever npm takes one, a separator before the
+  // verb or the name, the commands that install and then test, Node's own
+  // script runner, Corepack in front of npm, and any of them behind the
+  // bounded wrapper, itself under any spelling.
+  for (const command of [
+    "npm test",
+    "npm run test",
+    "npm run-script test",
+    "npm rum test:docs",
+    "npm urn test:machinery",
+    "npm runScript test:full",
+    "npm run-s test",
+    "npm --silent t",
+    "npm tes",
+    "npm ts -- --only harness-fixtures",
+    "npm tst --loglevel error",
+    "npm -- test",
+    "npm run -- test --only harness-fixtures",
+    "npm --script-shell /bin/sh run test",
+    "npm run --tag latest test:docs",
+    "npm it",
+    "npm install-test",
+    "npm installT",
+    "npm cit",
+    "npm sit",
+    "npm install-ci-test",
+    "npm clean-install-test",
+    "node --run test",
+    "node --run=test:docs",
+    "node --run test -- --only harness-fixtures",
+    "corepack npm test",
+    "corepack npm@11.19.1 run test -- --review",
+    "corepack npm@11 t",
+    "npm run harness -- bounded -- npm t",
+    "npm run-script harness -- bounded -- npm run-script test",
+    "node --run harness -- bounded -- npm test",
+    "node scripts/harness.mjs bounded -- node --run test",
+    "node scripts/harness.mjs bounded -- corepack npm test",
+    // pnpm and yarn run the same package scripts, by `run`, by the
+    // script's bare name and by pnpm's own words for its test command,
+    // alone or behind Corepack (the second attack on Part J).
+    "pnpm test",
+    "pnpm t",
+    "pnpm tst -- --only harness-fixtures",
+    "pnpm run test",
+    "pnpm run-script test:docs",
+    "pnpm test:machinery",
+    "pnpm --silent test",
+    "pnpm --filter . test",
+    "pnpm it",
+    "pnpm install-test",
+    "yarn test",
+    "yarn run test",
+    "yarn test:docs",
+    "yarn --silent run test:full",
+    "yarnpkg test",
+    "corepack pnpm test",
+    "corepack yarn test",
+    "corepack pnpm@9.1.2 run test",
+    "pnpm run harness bounded -- npm test",
+    "yarn harness bounded -- yarn test",
+    "node scripts/harness.mjs bounded -- pnpm test",
+    // However many of the manager's flags take a value, and a manager
+    // running Node or another manager as a program (the third attack on
+    // Part J).
+    "pnpm --dir . --filter . test",
+    "pnpm -C . -C . test",
+    "pnpm --filter . --reporter silent test",
+    "corepack pnpm --dir . --dir . test",
+    "yarn --cwd . --cwd . test",
+    "yarn --cwd . --cwd . run test",
+    "pnpm --dir . --filter . run test:docs",
+    "yarn node scripts/test-runner.mjs",
+    "pnpm node scripts/test-runner.mjs --review",
+    "pnpm exec node scripts/target-gate.mjs WO-250",
+    "yarn npm test",
+    "pnpm --dir . node --run test",
+    // Wide on purpose: a word that may be a flag's value and spells the
+    // test command is read as the command.
+    "pnpm --filter test list",
+    // `run` runs a program where no script has the name, and a command
+    // in a workspace is a command (the fourth attack on Part J).
+    "yarn run node scripts/test-runner.mjs",
+    "yarn run -T node scripts/test-runner.mjs",
+    "pnpm run node scripts/test-runner.mjs --review",
+    "yarn workspace dotln test",
+    "yarn workspaces foreach -A run test",
+  ])
+    assert.ok(reviewWorkerGate(shell(command)), command);
+  // None of these starts it: npm printing its help or its version, another
+  // script or command, a word that only resembles a verb, Corepack's own
+  // commands, and a single test under the wrapper.
+  for (const command of [
+    "npm test --help",
+    "npm -v test",
+    "npm run lint",
+    "npm run-script build",
+    "npm run tests",
+    "npm te",
+    "npm i",
+    "npm install test",
+    "npm ci",
+    "npm clean-install",
+    "npm install-clean",
+    "node --run lint",
+    "node --run build -- test",
+    "corepack enable",
+    "corepack prepare npm@11.19.1 --activate",
+    "corepack npm run lint",
+    "npm run-script harness -- bounded -- node --test --test-name-pattern x scripts/test-x.mjs",
+    "node --run harness -- bounded -- node --test --test-name-pattern x scripts/test-x.mjs",
+    "node --run harness -- usage test",
+    "pnpm install",
+    "pnpm add test",
+    "pnpm run lint",
+    "pnpm lint",
+    "pnpm run build test",
+    "yarn install",
+    "yarn add test",
+    "yarn run lint",
+    "yarn build",
+    "pnpm run harness bounded -- node --test --test-name-pattern x scripts/test-x.mjs",
+    "pnpm --dir . --filter . lint",
+    "yarn --cwd . --cwd . run build",
+    "yarn node scripts/check-publication.mjs",
+    "pnpm node --test --test-name-pattern x scripts/test-x.mjs",
+    "yarn run node scripts/check-publication.mjs",
+    "yarn workspace dotln lint",
+    "yarn workspaces list",
+  ])
+    assert.equal(reviewWorkerGate(shell(command)), null, command);
+  // Corepack in front of npm is the same launch, counted once.
+  for (const command of [
+    "corepack npm run worker -- review --kind design --host codex",
+    "corepack npm@11.19.1 run-script worker -- review --kind design --host codex",
+    "node scripts/harness.mjs bounded -- corepack npm run worker -- review --kind design --host codex",
+    "node --run harness -- bounded -- npm run worker -- review --kind design --host codex",
+    "pnpm run worker review --kind design --host codex",
+    "pnpm worker review --kind design --host codex",
+    "pnpm run worker -- review --kind design --host codex",
+    "yarn worker review --kind design --host codex",
+    "yarn run worker review --kind design --host codex",
+    "corepack yarn worker review --kind design --host codex",
+    "pnpm --dir . --filter . worker review --kind design --host codex",
+    "yarn --cwd . --cwd . worker review --kind design --host codex",
+    "corepack pnpm -C . -C . run worker review --kind design --host codex",
+    "yarn node scripts/worker.mjs review --kind design --host codex",
+  ])
+    assert.deepEqual(
+      kitWorkerLaunch(command),
+      { uses: 1, host: "codex" },
+      command,
+    );
+  for (const command of [
+    "corepack enable npm",
+    "corepack npm run worker -- review --dry-run",
+    "corepack use npm@11.19.1",
+    "pnpm run worker review --dry-run",
+    "pnpm run worker record --kind design --from f",
+    "yarn workers review",
+    "pnpm add worker review",
+  ])
+    assert.equal(kitWorkerLaunch(command), null, command);
 });
 
 test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is detected", () => {
-  const root = fixture();
+  const root = fixture({ hosts: true });
   beginHarnessSession(root, "synthetic-session", "executor");
   const options = { runtimeRoot: root };
   const modulePath = "packages/skeleton/dist/src/subagent-budget.js";
@@ -6256,7 +7074,12 @@ process.exitCode = result.exitCode;
         if (finished) await finished;
         removeFixture(root, { recursive: true, force: true });
       }
-      const measuredMs = { runner: 10_600, evidence: 8_400, entry: 16_400 }[
+      // Each mode's matrix measured alone on the development host. The
+      // runner's was 10.6 s when first measured and 15.7 s on 2026-11-12,
+      // while the other two modes hold their first figures, so the growth is
+      // in what the runner mode alone does (it starts the test runner). What
+      // in that path grew is not established: the figure is provisional.
+      const measuredMs = { runner: 15_700, evidence: 8_400, entry: 16_400 }[
         mode
       ];
       assert.ok(
@@ -6426,7 +7249,12 @@ function parity(root, name, payload, expected, state = session) {
     for (const { policy, fact } of requests)
       feedbackBoundary(policy, fact, () => {});
   } catch (error) {
-    assert.ok(error instanceof FeedbackRefused);
+    // Anything but the boundary's own refusal is a failure of the boundary's
+    // inputs, and the case names it.
+    assert.ok(
+      error instanceof FeedbackRefused,
+      `${name}: the boundary threw something other than its refusal: ${error?.stack ?? error}`,
+    );
     verdict = false;
   }
   assert.equal(verdict, expected, `${name} host fact expectation`);
@@ -6830,6 +7658,100 @@ test("WO-132 inherited outputs add no reads; invalid deliveries advise without c
   }
 });
 
+// The check on role text is regeneration (WO-276): the command refuses a
+// committed skill root that differs from the emitted one and names it, in
+// either skill directory, so no stored copy of earlier roots is needed.
+test("a skill root edited by hand makes harness check fail naming that root", () => {
+  // The Codex root is installed only where the host is elected.
+  const root = fixture({ hosts: true });
+  try {
+    const cli = (action) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", action], {
+        cwd: root,
+        env: { ...process.env, DOTLN_LAUNCHPAD: "" },
+        encoding: "utf8",
+      });
+    // The copied command owns its own runtime inventory; establish the
+    // bundle through it before judging drift.
+    const emitted = cli("emit");
+    assert.equal(emitted.status, 0, emitted.stdout + emitted.stderr);
+    assert.equal(cli("check").status, 0);
+    for (const path of [
+      ".claude/skills/dotln-executor/SKILL.md",
+      ".agents/skills/dotln-planner/SKILL.md",
+    ]) {
+      const file = join(root, path);
+      const committed = readFileSync(file, "utf8");
+      writeFileSync(
+        file,
+        committed.replace(/\n$/u, "\nA sentence added by hand.\n"),
+      );
+      const drifted = cli("check");
+      assert.equal(drifted.status, 1, drifted.stdout + drifted.stderr);
+      assert.ok(
+        drifted.stderr.includes(`harness drift: ${path}`),
+        drifted.stderr,
+      );
+      writeFileSync(file, committed);
+      assert.equal(cli("check").status, 0);
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-276 criterion A4: harness check lists a context-mode match in a generated surface by file and line and passes, and refuses a refuse-mode match naming the file, the line and the mode and never the entry", () => {
+  const root = fixture();
+  try {
+    const cli = (action) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", action], {
+        cwd: root,
+        env: { ...process.env, DOTLN_LAUNCHPAD: "" },
+        encoding: "utf8",
+      });
+    const emitted = cli("emit");
+    assert.equal(emitted.status, 0, emitted.stdout + emitted.stderr);
+    // A word the generated executor root carries, whatever its prose says:
+    // the longest word of lower-case letters in it.
+    const surface = ".claude/skills/dotln-executor/SKILL.md";
+    const word = readFileSync(join(root, surface), "utf8")
+      .match(/(?<![\w-])[a-z]{8,}(?![\w-])/gu)
+      .reduce((longest, each) =>
+        each.length > longest.length ? each : longest,
+      );
+    const place = surface.replaceAll(".", "\\.").replaceAll("/", "\\/");
+    write(root, "docs/control/local/terms.txt", `context:\n${word}\n`);
+    const listed = cli("check");
+    assert.equal(listed.status, 0, listed.stdout + listed.stderr);
+    assert.match(
+      listed.stdout,
+      /^harness check: \d+ generated surfaces; local-terms list: present$/mu,
+    );
+    assert.match(
+      listed.stdout,
+      new RegExp(
+        `^CONTEXT ${place}:\\d+(?:-\\d+)?: a local term in context mode`,
+        "mu",
+      ),
+    );
+    write(root, "docs/control/local/terms.txt", `refuse:\n${word}\n`);
+    const refused = cli("check");
+    assert.equal(refused.status, 1, refused.stdout);
+    assert.match(
+      refused.stderr,
+      new RegExp(
+        `local-terms list present; refused \\[.*\\{"file":"${place}","line":\\d+,"endLine":\\d+,"count":\\d+,"mode":"refuse"\\}`,
+        "u",
+      ),
+    );
+    assert.doesNotMatch(refused.stdout, /^harness check:/mu);
+    for (const text of [listed.stdout, listed.stderr, refused.stderr])
+      assert.doesNotMatch(text, new RegExp(word, "iu"));
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement", () => {
   const root = fixture();
   const outside = realpathSync(
@@ -7063,8 +7985,7 @@ test("WO-076 identity replacement, two unequips and a newly equipped switch reac
     const body = Object.values(installedOverlayBytes(root)).join("\n");
     for (const id of ["process-cost", "communication-intent"])
       assert.ok(!manifest.origin.ids.includes(id), `${id} is absent`);
-    assert.doesNotMatch(body, /Process Cost:|Intent to Act:/);
-    assert.match(body, /Observation: Report the finding/);
+    assert.ok(manifest.origin.ids.includes("communication-observation"));
     assert.match(body, /Instance identity: Instance curator/);
     for (const text of [
       ...identity.dispositions,
@@ -7360,22 +8281,25 @@ test("WO-076 closed overlay schema rejects nested keys, malformed grants and swi
 });
 
 test("WO-054 Codex installation preserves unowned configuration before any bundle write", () => {
-  const root = fixture();
+  const root = fixture({ hosts: true });
   try {
     const manifestPath = join(root, ".claude/harness-manifest.json");
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-    // Every Codex file the bundle owned becomes unowned, its generated
-    // custom agents included, so the second emit starts from none of them.
+    // Every Codex file the bundle owned becomes unowned, so the second emit
+    // starts from none of them. The kit emits no Codex agent definition: a
+    // Codex spawn takes its model from the launch.
     const codexFiles = manifest.installed
       .map((file) => file.path)
       .filter((path) => path.startsWith(".codex/"));
-    for (const path of [
-      ".codex/config.toml",
-      ".codex/hooks.json",
-      ".codex/hooks/continuation.mjs",
-      ".codex/agents/dotln-worker-astra.toml",
-    ])
-      assert.ok(codexFiles.includes(path), path);
+    assert.deepEqual(
+      [...codexFiles].sort(),
+      [
+        ".codex/config.toml",
+        ".codex/hooks.json",
+        ".codex/hooks/continuation.mjs",
+      ],
+      "the Codex files the bundle owns",
+    );
     manifest.installed = manifest.installed.filter(
       (file) => !file.path.startsWith(".codex/"),
     );
@@ -7409,11 +8333,62 @@ test("WO-054 Codex installation preserves unowned configuration before any bundl
   }
 });
 
+test("WO-276 criterion G2: a host that only a discovery record shows is off, so the check names the drift of the surfaces an earlier emit wrote for it and the next emit removes them, an operator's own file beside them kept", () => {
+  const root = fixture({ hosts: true });
+  try {
+    const owned = () =>
+      JSON.parse(
+        readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+      ).installed.map((file) => file.path);
+    const ofOtherHosts = (path) => /^\.(?:codex|agents)\//u.test(path);
+    const others = owned().filter(ofOtherHosts);
+    assert.ok(others.length > 5, `${others.length} surfaces of other hosts`);
+    write(root, ".codex/unrelated.toml", "# The operator's own.\n");
+    // The instance takes a kit whose discovery record turns no host on: its
+    // configuration elects none, its control log attests none, and its
+    // record still shows both (the fixture's does).
+    write(root, "dotln.config.json", json({ version: 1 }));
+    assert.deepEqual(readHostFeatures(root), {
+      "host-codex": false,
+      "host-copilot": false,
+    });
+    let drift;
+    try {
+      checkHarness(root);
+    } catch (error) {
+      drift = error.message;
+    }
+    assert.match(drift ?? "", /^harness drift: /u);
+    emitHarness(root);
+    assert.ok(checkHarness(root).files > 10);
+    for (const path of others) assert.ok(!existsSync(join(root, path)), path);
+    assert.ok(!owned().some(ofOtherHosts));
+    assert.ok(
+      !existsSync(join(root, ".agents")),
+      "a directory the emit emptied leaves with its files",
+    );
+    assert.equal(
+      readFileSync(join(root, ".codex/unrelated.toml"), "utf8"),
+      "# The operator's own.\n",
+    );
+    // An election brings the host's surfaces back at the next emit.
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, features: { "host-codex": true } }),
+    );
+    emitHarness(root);
+    assert.ok(owned().some((path) => path.startsWith(".codex/")));
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term", () => {
   const root = fixture();
   try {
     assert.equal(termsCheck(root, ["CLAUDE.md"]).status, "unavailable");
-    write(root, "docs/control/local/terms.txt", "SyntheticForbidden\n");
+    write(root, "docs/control/local/terms.txt", "refuse: SyntheticForbidden\n");
     write(root, "public.md", "Ordinary text\nSYNTHETIC-forbidden\n");
     assert.throws(
       () => termsCheck(root, ["public.md"]),
@@ -7629,24 +8604,24 @@ test("WO-187 harness check covers the spawned-worker model and effort pins", () 
   const root = fixture();
   try {
     emitHarness(root);
-    for (const [name, model] of [
-      ["dotln-worker", "claude-opus-5-5"],
-      ["dotln-worker-fable", "claude-fable-5-1"],
-      ...["executor", "verifier", "reviewer", "release-close"].map((role) => [
-        `dotln-${role}`,
-        "claude-opus-5-5",
-      ]),
+    const pinned = KIT_MODELS[KIT_WORKERS.default.claude];
+    for (const name of [
+      "dotln-worker",
+      ...["executor", "verifier", "reviewer", "release-close"].map(
+        (role) => `dotln-${role}`,
+      ),
     ]) {
       const agent = join(root, `.claude/agents/${name}.md`);
       const original = readFileSync(agent, "utf8");
       checkHarness(root);
       for (const [before, after] of [
-        [`model: ${model}`, "model: inherit"],
-        ["effort: xhigh", "effort: low"],
-        ...(name === "dotln-worker" || name === "dotln-worker-fable"
+        [`model: ${pinned.id}`, "model: inherit"],
+        [`effort: ${pinned.effort}`, "effort: low"],
+        ...(name === "dotln-worker"
           ? []
           : [[`skills: ["${name}"]`, 'skills: ["wrong-skill"]']]),
       ]) {
+        assert.ok(original.includes(before), `${name}: ${before}`);
         writeFileSync(agent, original.replace(before, after));
         assert.throws(
           () => checkHarness(root),
@@ -7656,165 +8631,363 @@ test("WO-187 harness check covers the spawned-worker model and effort pins", () 
       }
     }
     checkHarness(root);
-    const installed = harnessInstallation();
-    for (const role of [
-      "executor",
-      "verifier",
-      "reviewer",
-      "release-close",
-      "planner",
-      "refuter",
-    ]) {
-      const text = installed.files.find(
-        (file) => file.path === `.claude/skills/dotln-${role}/SKILL.md`,
-      ).contents;
-      assert.ok(
-        text.includes("dotln-worker` (claude-opus-5-5, xhigh)"),
-        `${role} prose agrees with the generated general worker pin`,
-      );
-    }
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
 });
 
-test("WO-255 the generated dotln-worker-astra Codex agent sits beside dotln-worker-fable with its pinned model and effort, and a changed pin is drift", () => {
-  const root = fixture();
+test("WO-276 no worker definition and no sentence of a role's text is tied to a model: the emitted tree holds the one worker and the four phase definitions, and the roles send a launch to the worker table by command", () => {
+  const root = fixture({ hosts: true });
   try {
     emitHarness(root);
-    assert.ok(existsSync(join(root, ".claude/agents/dotln-worker-fable.md")));
+    checkHarness(root);
+    assert.deepEqual(readdirSync(join(root, ".claude/agents")).sort(), [
+      "dotln-executor.md",
+      "dotln-release-close.md",
+      "dotln-reviewer.md",
+      "dotln-verifier.md",
+      "dotln-worker.md",
+    ]);
     assert.ok(
-      !existsSync(join(root, ".claude/agents/dotln-worker-astra.md")),
-      "no Claude agent type names a Codex model",
+      !existsSync(join(root, ".codex/agents")),
+      "a Codex spawn takes its model from the launch, and no definition",
     );
-    const agent = join(root, ".codex/agents/dotln-worker-astra.toml");
-    const original = readFileSync(agent, "utf8");
-    for (const line of [
-      'name = "dotln-worker-astra"',
-      'model = "gpt-6-astra"',
-      'model_reasoning_effort = "max"',
-    ])
-      assert.ok(original.split("\n").includes(line), line);
-    assert.match(
-      original,
-      /only when the operator's planning: or resume: dispatch line names Astra \(astra\)/u,
+    // The roots, the instruction files and the hooks' added text name no
+    // model: not an id the kit lists, and not a model's name.
+    const installed = harnessInstallation({ features: HOST_ELECTIONS });
+    const texts = installed.files.filter(
+      (file) =>
+        /(?:^|\/)SKILL\.md$/u.test(file.path) ||
+        ["CLAUDE.md", "AGENTS.md"].includes(file.path),
     );
-    checkHarness(root);
-    for (const [before, after] of [
-      ['model = "gpt-6-astra"', 'model = "gpt-6.1-sol"'],
-      ['model_reasoning_effort = "max"', 'model_reasoning_effort = "low"'],
-    ]) {
-      writeFileSync(agent, original.replace(before, after));
-      assert.throws(
-        () => checkHarness(root),
-        /harness drift: \.codex\/agents\/dotln-worker-astra\.toml/,
-      );
-      writeFileSync(agent, original);
+    assert.ok(texts.length > 10, "the role roots of both hosts");
+    const words = new RegExp(
+      `\\b(?:${Object.keys(KIT_MODELS).join("|")})\\b`,
+      "iu",
+    );
+    for (const file of texts) {
+      for (const model of Object.values(KIT_MODELS))
+        assert.ok(
+          !file.contents.includes(model.id),
+          `${file.path}: ${model.id}`,
+        );
+      assert.doesNotMatch(file.contents, words, file.path);
     }
-    checkHarness(root);
-    const installed = harnessInstallation();
-    for (const role of [
-      "executor",
-      "verifier",
-      "reviewer",
-      "release-close",
-      "planner",
-      "refuter",
-    ])
-      assert.ok(
-        installed.files
-          .find((file) => file.path === `.claude/skills/dotln-${role}/SKILL.md`)
-          .contents.includes("Codex `dotln-worker-astra` (gpt-6-astra, max)"),
-        `${role} names the Astra opt-in`,
-      );
+    // Every role that launches workers reads the table by command.
+    for (const role of sharedRuleRoles("worker-launch")) {
+      const skill = installed.files.find(
+        (file) => file.path === `.claude/skills/dotln-${role}/SKILL.md`,
+      ).contents;
+      for (const command of [
+        "`npm run worker -- list`",
+        "`npm run worker -- show <name> [--provider <provider>] [--effort <level>]`",
+      ])
+        assert.ok(skill.includes(command), `${role}: ${command}`);
+    }
+    assert.ok(
+      installed.files
+        .find((file) => file.path === ".claude/skills/dotln-router/SKILL.md")
+        .contents.includes(
+          "Each phase runs the instance's `default` worker for the selected host and an independent verification its `verifier` worker",
+        ),
+    );
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
 });
 
-test("WO-255 a dispatch line's worker words are journaled for the session's launches, a dispatch naming none returns to the defaults, and an ordinary message selects nothing", async () => {
-  const root = fixture();
-  const keys = [
-    "CODEX_THREAD_ID",
-    "CLAUDE_CODE_SESSION_ID",
-    "CLAUDE_SESSION_ID",
-  ];
-  const saved = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+test("WO-276 criterion J1: an instance's named workers and its models file decide what each emitted worker definition holds and what a driven phase runs, check passes on what the instance's own files resolve to and refuses a definition changed by hand or a table changed with no emit, and with neither stated the emitted bytes are the ones an instance that never held them emits", async () => {
+  const drive = await import("./lib/drive-session.mjs");
+  const root = fixture({ hosts: true });
+  // The drive checks the launchpad's bundle against the launchpad's own
+  // runtime before it defines a phase: emitted so for the question, and
+  // as the rest of this case reads it afterwards.
+  const phaseDefinition = async (launchpad, role, host) => {
+    emitHarness(launchpad, { runtimeRoot: launchpad });
+    try {
+      return await drive.phaseDefinition(launchpad, role, host);
+    } finally {
+      emitHarness(launchpad);
+    }
+  };
   try {
-    const context = (prompt) =>
-      invoke(root, "session", input(root, "UserPromptSubmit", { prompt }))
-        .hookSpecificOutput?.additionalContext ?? "";
-    const selected = () =>
-      wo178Rows(root).filter(
-        (row) => row.typedEvent === "WorkerOptionsSelected",
+    const paths = [
+      ".claude/agents/dotln-worker.md",
+      ".claude/agents/dotln-executor.md",
+      ".claude/agents/dotln-verifier.md",
+      ".claude/hooks/session.mjs",
+      ".claude/skills/dotln-executor/SKILL.md",
+      ".claude/skills/dotln-router/SKILL.md",
+      ".agents/skills/dotln-executor/SKILL.md",
+    ];
+    const emitted = () =>
+      Object.fromEntries(
+        paths.map((path) => [path, readFileSync(join(root, path), "utf8")]),
       );
-    assert.match(
-      context("planning: standard pass, astra"),
-      /this dispatch line selects the opt-in worker astra for Codex launches; `npm run worker -- review --host` with that host and `npm run plan -- refute` \(directly for this session's own host, with `--transport` for the other\) take it when a launch names no --model\./u,
-    );
-    assert.deepEqual(
-      selected().map(({ options, source }) => [options, source]),
-      [[{ codex: "astra" }, "claude-prompt-hook"]],
-    );
-    // The session's own Codex launches take it; its Claude launches keep
-    // their default.
-    for (const key of keys) delete process.env[key];
-    process.env.CLAUDE_CODE_SESSION_ID = "synthetic-session";
-    const { resolveWorkerOption } = await import("./lib/worker-launch.mjs");
-    const option = async (host) => {
-      const { name, model, effort, selection } = await resolveWorkerOption(
+    const configure = (workers, models) => {
+      write(
         root,
-        host,
+        "dotln.config.json",
+        json({
+          version: 1,
+          features: HOST_ELECTIONS,
+          ...(workers === undefined ? {} : { workers }),
+        }),
       );
-      return { name, model, effort, selection };
+      if (models === undefined)
+        rmSync(join(root, "dotln.models.json"), { force: true });
+      else write(root, "dotln.models.json", json(models));
     };
-    assert.deepEqual(await option("codex"), {
-      name: "astra",
-      model: "gpt-6-astra",
-      effort: "max",
-      selection: "dispatch-word",
-    });
-    assert.equal((await option("claude")).name, "opus");
-    // A lifecycle phrase may carry the word; it still resolves its role.
-    assert.match(
-      context("resume: status fable"),
-      /selects the opt-in worker fable for Claude launches/u,
+    const pin = (path, files = emitted()) =>
+      files[path]
+        .split("\n")
+        .filter((line) => /^(?:model|effort): /u.test(line));
+    const kit = {
+      default: KIT_MODELS[KIT_WORKERS.default.claude],
+      verifier: KIT_WORKERS.verifier.claude,
+    };
+    // Neither stated, and both stating nothing: the same bytes, which hold
+    // the kit's default worker and its verifier.
+    const never = emitted();
+    configure({}, { schemaVersion: 1, models: {}, prices: {} });
+    emitHarness(root);
+    assert.deepEqual(emitted(), never);
+    checkHarness(root);
+    assert.deepEqual(pin(".claude/agents/dotln-worker.md"), [
+      `model: ${kit.default.id}`,
+      `effort: ${kit.default.effort}`,
+    ]);
+    assert.deepEqual(pin(".claude/agents/dotln-verifier.md"), [
+      `model: ${KIT_MODELS[kit.verifier.model].id}`,
+      `effort: ${kit.verifier.effort}`,
+    ]);
+    // The default worker bound to another of the kit's models: the one
+    // worker definition and the phases hold it, the verifier keeps its own
+    // binding, and no sentence of a role's text changes.
+    configure({ default: { claude: "fable" } });
+    // The definitions on disk are the kit's still: drift, until this
+    // instance's own emit writes what its table resolves to.
+    assert.throws(() => checkHarness(root), /harness drift: /u);
+    emitHarness(root);
+    checkHarness(root);
+    const rebound = emitted();
+    for (const path of [
+      ".claude/agents/dotln-worker.md",
+      ".claude/agents/dotln-executor.md",
+    ])
+      assert.deepEqual(
+        pin(path, rebound),
+        [`model: ${KIT_MODELS.fable.id}`, `effort: ${KIT_MODELS.fable.effort}`],
+        path,
+      );
+    assert.equal(
+      rebound[".claude/agents/dotln-verifier.md"],
+      never[".claude/agents/dotln-verifier.md"],
     );
-    assert.equal((await option("claude")).name, "fable");
-    assert.equal((await option("codex")).name, "sol");
-    // A dispatch line naming none returns to the defaults, and an ordinary
-    // message names nothing.
-    assert.doesNotMatch(context("resume: status"), /opt-in worker/u);
-    context("could the reviews use astra?");
-    assert.deepEqual(
-      selected().map(({ options }) => options),
-      [{ codex: "astra" }, { claude: "fable" }, {}],
+    for (const path of paths.filter((name) => name.endsWith("SKILL.md")))
+      assert.equal(rebound[path], never[path], path);
+    assert.equal(
+      rebound[".claude/hooks/session.mjs"],
+      never[".claude/hooks/session.mjs"],
+      "the names a dispatch line may close with are the same",
     );
-    assert.equal((await option("claude")).name, "opus");
-    // Only the words that close the line select: a model named mid-line as
-    // a topic selects nothing, while a closing word keeps its full stop.
-    context("planning: standard pass on why fable reviews were slow");
-    context("resume: status; run the reviewers on astra.");
-    context("planning: standard pass, fable and astra");
-    // A lifecycle phrase's suffix still selects when direction follows it.
-    context("resume: status astra; keep the reviews short");
-    context("planning: refute fable; then publish");
+    // A model and two workers of the instance's own.
+    configure(
+      {
+        default: { claude: "haiku" },
+        verifier: { claude: { model: "haiku", effort: "max" } },
+        night: { codex: { model: "astra", effort: "medium" } },
+      },
+      {
+        schemaVersion: 1,
+        models: {
+          haiku: { provider: "claude", id: "model-a", effort: "high" },
+        },
+      },
+    );
+    emitHarness(root);
+    checkHarness(root);
+    const configured = emitted();
+    for (const path of [
+      ".claude/agents/dotln-worker.md",
+      ".claude/agents/dotln-executor.md",
+    ])
+      assert.deepEqual(
+        pin(path, configured),
+        ["model: model-a", "effort: high"],
+        path,
+      );
+    assert.deepEqual(pin(".claude/agents/dotln-verifier.md", configured), [
+      "model: model-a",
+      "effort: max",
+    ]);
+    for (const path of paths.filter((name) => name.endsWith("SKILL.md")))
+      assert.equal(configured[path], never[path], path);
+    // The session hook is given the instance's names, so a dispatch line
+    // that closes on one still resolves its role.
+    const names = JSON.parse(
+      /"workerNames": (\[[^\]]*\])/u.exec(
+        configured[".claude/hooks/session.mjs"],
+      )[1],
+    );
+    assert.deepEqual(names, [
+      ...Object.keys(KIT_WORKERS),
+      "night",
+      ...Object.keys(KIT_MODELS),
+      "haiku",
+    ]);
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: "night-dispatch",
+        prompt: "resume: status night and haiku; go",
+      }),
+    );
+    assert.equal(
+      JSON.parse(
+        readFileSync(
+          join(
+            root,
+            "docs/control/local/harness",
+            `${sha256("night-dispatch")}.json`,
+          ),
+          "utf8",
+        ),
+      ).role,
+      "executor",
+    );
+    // A definition changed by hand is drift against the instance's values.
+    const agent = join(root, ".claude/agents/dotln-worker.md");
+    writeFileSync(
+      agent,
+      configured[".claude/agents/dotln-worker.md"].replace(
+        "model: model-a",
+        `model: ${kit.default.id}`,
+      ),
+    );
+    assert.throws(
+      () => checkHarness(root),
+      /harness drift: \.claude\/agents\/dotln-worker\.md/u,
+    );
+    writeFileSync(agent, configured[".claude/agents/dotln-worker.md"]);
+    checkHarness(root);
+    // The drive's phases run the same workers and name where the instance
+    // wrote each model; the helper a phase's session launches holds what
+    // the emitted definition of its name holds.
+    const place =
+      "dotln.models.json#models.haiku and dotln.config.json#workers";
+    const executor = await phaseDefinition(root, "executor", "claude");
     assert.deepEqual(
-      selected()
-        .slice(3)
-        .map(({ options }) => options),
       [
-        {},
-        { codex: "astra" },
-        { claude: "fable", codex: "astra" },
-        { codex: "astra" },
-        { claude: "fable" },
+        executor.definition.model,
+        executor.definition.effort,
+        executor.helpers["dotln-worker"].model,
+        executor.helpers["dotln-worker"].effort,
+        executor.modelKey,
       ],
+      ["model-a", "high", "model-a", "high", `${place}.default.claude`],
     );
+    const verifier = await phaseDefinition(root, "verifier", "claude");
+    assert.deepEqual(
+      [
+        verifier.definition.model,
+        verifier.definition.effort,
+        verifier.helpers["dotln-worker"].effort,
+        verifier.modelKey,
+      ],
+      ["model-a", "max", "high", `${place}.verifier.claude`],
+    );
+    // On Codex the instance stated nothing: the kit's default and the
+    // kit's verifier, and no place of the instance's to name.
+    for (const [role, worker] of [
+      ["executor", KIT_WORKERS.default.codex],
+      ["verifier", KIT_WORKERS.verifier.codex],
+    ]) {
+      const phase = await phaseDefinition(root, role, "codex");
+      const model = typeof worker === "string" ? worker : worker.model;
+      assert.deepEqual(
+        [phase.definition.model, phase.definition.effort, phase.modelKey],
+        [
+          KIT_MODELS[model].id,
+          typeof worker === "string" ? KIT_MODELS[model].effort : worker.effort,
+          null,
+        ],
+        role,
+      );
+    }
+    // A table changed with no emit is drift: here the kit's own model
+    // given another id in the models file, which the verifier's definition
+    // of the kit would hold.
+    configure(undefined, {
+      schemaVersion: 1,
+      models: {
+        opus: {
+          provider: "claude",
+          id: "model-b",
+          effort: "xhigh",
+          family: "opus",
+        },
+      },
+    });
+    assert.throws(
+      () => checkHarness(root),
+      /harness drift: \.claude\/agents\/dotln-/u,
+    );
+    emitHarness(root);
+    checkHarness(root);
+    assert.deepEqual(pin(".claude/agents/dotln-worker.md"), [
+      "model: model-b",
+      "effort: xhigh",
+    ]);
+    // Both removed: the first bytes again.
+    configure(undefined);
+    emitHarness(root);
+    assert.deepEqual(emitted(), never);
   } finally {
-    for (const [key, value] of Object.entries(saved))
-      if (value === undefined) delete process.env[key];
-      else process.env[key] = value;
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 a dispatch line that closes on a worker's or a model's name still resolves its role, and the hook selects and adds nothing for it", () => {
+  const root = fixture();
+  try {
+    const dispatch = (session, prompt) => {
+      const output = invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { session_id: session, prompt }),
+      );
+      const path = join(
+        root,
+        "docs/control/local/harness",
+        `${sha256(session)}.json`,
+      );
+      return {
+        context: output.hookSpecificOutput?.additionalContext ?? "",
+        role: existsSync(path)
+          ? JSON.parse(readFileSync(path, "utf8")).role
+          : undefined,
+        rows: existsSync(path.replace(/\.json$/u, ".jsonl"))
+          ? readFileSync(path.replace(/\.json$/u, ".jsonl"), "utf8")
+          : "",
+      };
+    };
+    for (const [session, prompt, role] of [
+      ["plain", "resume: status", "executor"],
+      ["model", "resume: status fable", "executor"],
+      ["versioned", "resume: status fable 5.2 and astra", "executor"],
+      ["worker", "resume: status advanced; keep the reviews short", "executor"],
+      // A word that is no name of the table leaves the line prose.
+      ["prose", "resume: status later", undefined],
+      ["topic", "could the reviews use astra?", undefined],
+    ]) {
+      const seen = dispatch(session, prompt);
+      assert.equal(seen.role, role, prompt);
+      assert.doesNotMatch(seen.context, /selects the worker/u, prompt);
+      assert.ok(!seen.rows.includes("WorkerOptionsSelected"), prompt);
+    }
+  } finally {
     removeFixture(root, { recursive: true, force: true });
   }
 });
@@ -12613,12 +13786,6 @@ test("WO-246 the emitted settings allow the three publish helpers by their node 
       ...desktopControlDenyRules,
     ].sort(),
   );
-  // Each role that publishes names the spelling the rule admits.
-  const planner = harnessInstallation().files.find((file) =>
-    file.path.endsWith(".claude/skills/dotln-planner/SKILL.md"),
-  ).contents;
-  assert.ok(planner.includes("node scripts/refute-plan.mjs publish"));
-  assert.ok(planner.includes("npm run plan -- publish"));
 });
 
 test("WO-246 a fork's clone refuses a gh pull-request or issue command that names no repository, naming origin, and admits every form that names one", () => {
@@ -13477,9 +14644,7 @@ test("WO-133 stale generated hooks emit once per session/cause, retain every row
       })),
       settings.hooks.UserPromptSubmit.map((row) => ({
         ...row,
-        hooks: row.hooks
-          .filter((hook) => !hook.command.includes("/presence-"))
-          .map(({ timeout, ...hook }) => hook),
+        hooks: row.hooks.map(({ timeout, ...hook }) => hook),
       })),
     );
     assert.ok(
@@ -13487,10 +14652,7 @@ test("WO-133 stale generated hooks emit once per session/cause, retain every row
         row.hooks.every((hook) => hook.timeout === 15),
       ),
     );
-    assert.doesNotMatch(
-      JSON.stringify(settings.hooks.SessionStart),
-      /presence-/,
-    );
+    assert.doesNotMatch(JSON.stringify(settings.hooks), /presence-/);
     assert.deepEqual(invoke(root, "session", input(root, "SessionStart")), {});
     const hooks = [
       "permissions",
@@ -13735,21 +14897,6 @@ test("WO-141 generated prompt and repeated Stop deliver facts and a single defer
   } finally {
     removeFixture(root, { recursive: true });
   }
-});
-
-test("WO-142 B17 generated executor, verifier and reviewer text boards up unfixed defects", () => {
-  const files = harnessInstallation().files;
-  for (const harness of [".claude", ".agents"])
-    for (const role of ["executor", "verifier", "reviewer"]) {
-      const path = `${harness}/skills/dotln-${role}/SKILL.md`;
-      const file = files.find((file) => file.path === path);
-      assert.ok(file, path);
-      assert.match(
-        file.contents,
-        /defect met and not fixed.*decisions\.md with a named follow-up.*structured decision JSON `followup` string.*`reopens` object.*cited by the report/,
-      );
-      assert.match(file.contents, /fix it within the boy-scout bound/);
-    }
 });
 
 test("WO-142 D1 prune previews without writes, preserves live files and keeps deleted-lane byte proofs", async () => {
@@ -14353,6 +15500,35 @@ test("WO-142 D1 malformed installed manifests never establish absent snapshot ow
         .map((row) => row.path),
       [".runtime/harness/bbbbbbbbbbbbbbbb"],
     );
+    // A manifest written while a target's bundle held the presence hook is
+    // still an installation's (WO-276 step Q3 keeps the path); one naming a
+    // hook no bundle installed is not, and nothing is offered for removal.
+    for (const [hook, snapshots] of [
+      ["presence-pretooluse", [".runtime/harness/bbbbbbbbbbbbbbbb"]],
+      ["presence-stop", []],
+    ]) {
+      write(
+        root,
+        targetPath,
+        JSON.stringify({
+          installed: [
+            { path: "CLAUDE.local.md", hash: "fnv1a64:aaaaaaaaaaaaaaaa" },
+            {
+              path: `.claude/hooks/${hook}.mjs`,
+              hash: "fnv1a64:cccccccccccccccc",
+            },
+            { path: targetPath, hash: "fnv1a64:bbbbbbbbbbbbbbbb" },
+          ],
+        }),
+      );
+      assert.deepEqual(
+        (await pruneHarness(root)).candidates
+          .filter((row) => row.kind === "snapshot")
+          .map((row) => row.path),
+        snapshots,
+        hook,
+      );
+    }
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
@@ -19004,6 +20180,21 @@ test("dispatch-bound hooks refuse expensive starts, preserve diagnostic reads an
           command: "npm --silent run harness -- bounded -- node -e 0",
         },
       },
+      // The other spellings npm, Node and Corepack start the same work by
+      // (WO-276, the fourteenth critic).
+      ...[
+        "npm run-script test -- --review",
+        "npm t",
+        "npm -- test",
+        "npm it",
+        "node --run test",
+        "corepack npm test -- --review",
+        "pnpm test",
+        "yarn run test",
+        "corepack pnpm test",
+        "npm run-script harness -- bounded -- node -e 0",
+        "node --run harness -- bounded -- node -e 0",
+      ].map((command) => ({ tool_name: "Bash", tool_input: { command } })),
     ]) {
       const result = await permission(input(root, "PreToolUse", extra));
       assert.equal(
@@ -19028,6 +20219,14 @@ test("dispatch-bound hooks refuse expensive starts, preserve diagnostic reads an
       "npm run harness -- bounded -- npm test -- --only skeleton",
       "npm --silent run harness -- bounded -- npm test -- --only skeleton",
       "node scripts/resume.mjs status --json",
+      "npm run-script test -- --only skeleton",
+      "npm t -- --only skeleton",
+      "node --run test -- --only skeleton",
+      "corepack npm test -- --only skeleton",
+      "pnpm test --only skeleton",
+      "yarn test --only skeleton",
+      "node --run harness -- bounded -- npm t -- --only skeleton",
+      "npm test --help",
     ])
       assert.notEqual(
         (
@@ -20858,5 +22057,1532 @@ test("WO-258 the publishing close of the recorded order consumes the phrase kept
     );
   } finally {
     removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion K3: emit merges the instance's settings fragment into the settings it writes, adding its hook after the kit's and its rule to the kit's list, and check compares the merged text; with the fragment removed emit writes the bytes it writes with none; and a fragment that would replace or remove an emitted entry, or names a key the merge does not define, is refused by emit naming the key", () => {
+  const root = fixture();
+  const settingsFile = join(root, ".claude/settings.json");
+  const manifestFile = join(root, ".claude/harness-manifest.json");
+  const fragment = (value) => write(root, SETTINGS_FRAGMENT, json(value));
+  const guards = () =>
+    Object.fromEntries(
+      readdirSync(join(root, ".claude/hooks")).map((name) => [
+        name,
+        readFileSync(join(root, ".claude/hooks", name), "utf8"),
+      ]),
+    );
+  try {
+    const bare = readFileSync(settingsFile, "utf8");
+    const bareManifest = readFileSync(manifestFile, "utf8");
+    const bareGuards = guards();
+    const kit = JSON.parse(bare);
+    const hook = {
+      matcher: "Edit|Write",
+      hooks: [
+        {
+          type: "command",
+          command: 'node "$CLAUDE_PROJECT_DIR/extensions/hooks/after-edit.mjs"',
+          timeout: 30,
+        },
+      ],
+    };
+    const rule = "Bash(extensions/tools/deploy *)";
+    assert.equal(kit.permissions.deny.includes(rule), false);
+    fragment({ hooks: { PostToolUse: [hook] }, permissions: { deny: [rule] } });
+    // The settings on disk are the kit's alone: drift, until this instance's
+    // own emit writes the merged text.
+    assert.throws(
+      () => checkHarness(root),
+      /harness drift: \.claude\/settings\.json/u,
+    );
+    emitHarness(root);
+    checkHarness(root);
+    const merged = JSON.parse(readFileSync(settingsFile, "utf8"));
+    // Every entry the kit emits without the fragment, in its place.
+    assert.deepEqual(Object.keys(merged), Object.keys(kit));
+    for (const key of Object.keys(kit))
+      if (!["hooks", "permissions"].includes(key))
+        assert.deepEqual(merged[key], kit[key], key);
+    assert.deepEqual(Object.keys(merged.hooks), Object.keys(kit.hooks));
+    for (const [event, groups] of Object.entries(kit.hooks))
+      assert.deepEqual(
+        merged.hooks[event].slice(0, groups.length),
+        groups,
+        event,
+      );
+    assert.deepEqual(merged.permissions.allow, kit.permissions.allow);
+    assert.deepEqual(
+      merged.permissions.deny.slice(0, kit.permissions.deny.length),
+      kit.permissions.deny,
+    );
+    // And both of the fragment's, the hook after the kit's for its event.
+    assert.deepEqual(merged.hooks.PostToolUse, [
+      ...kit.hooks.PostToolUse,
+      hook,
+    ]);
+    assert.deepEqual(merged.permissions.deny, [...kit.permissions.deny, rule]);
+    // The guards themselves are the bytes they were.
+    assert.deepEqual(guards(), bareGuards);
+    // A rule the kit already emits is held once; a new list is added.
+    fragment({
+      permissions: {
+        deny: [kit.permissions.deny[0], rule, rule],
+        ask: ["WebFetch"],
+      },
+    });
+    emitHarness(root);
+    checkHarness(root);
+    const again = JSON.parse(readFileSync(settingsFile, "utf8"));
+    assert.deepEqual(again.permissions.deny, [...kit.permissions.deny, rule]);
+    assert.deepEqual(again.permissions.ask, ["WebFetch"]);
+    assert.deepEqual(again.hooks, kit.hooks);
+    // A fragment that adds nothing, and no fragment: the bytes emitted with
+    // none, the manifest's among them.
+    for (const empty of [{}, { hooks: {}, permissions: {} }, null]) {
+      if (empty) fragment(empty);
+      else removeFixture(join(root, SETTINGS_FRAGMENT), { force: true });
+      emitHarness(root);
+      checkHarness(root);
+      assert.equal(readFileSync(settingsFile, "utf8"), bare);
+      assert.equal(readFileSync(manifestFile, "utf8"), bareManifest);
+    }
+    // Refused by emit, naming the key, before anything is written.
+    const group = { hooks: [{ type: "command", command: "true" }] };
+    for (const [value, expected] of [
+      // It would replace an entry the kit emits.
+      [
+        { autoMemoryEnabled: true },
+        /autoMemoryEnabled would replace the autoMemoryEnabled the kit emits/u,
+      ],
+      [{ attribution: { commit: "x" } }, /attribution would replace/u],
+      // A key the merge does not define.
+      [{ env: { A: "1" } }, /unknown key env: the merge defines/u],
+      [{ disableAllHooks: true }, /unknown key disableAllHooks/u],
+      [
+        { permissions: { defaultMode: "bypassPermissions" } },
+        /unknown key permissions\.defaultMode/u,
+      ],
+      // It would remove what the kit emits, were null read as removal.
+      [{ hooks: { Stop: null } }, /hooks\.Stop must be an array/u],
+      [{ permissions: { deny: null } }, /permissions\.deny must be an array/u],
+      [{ hooks: null }, /hooks must be an object/u],
+      // A hook where its output could stand in for an answer of the kit's
+      // (a rewritten call; a worker's stop the kit blocks) or keep the
+      // operator's words from the session, and an event the kit registers
+      // nothing under.
+      [
+        { hooks: { PreToolUse: [group] } },
+        /hooks\.PreToolUse: a fragment adds no hook under PreToolUse/u,
+      ],
+      [
+        { hooks: { SubagentStop: [group] } },
+        /hooks\.SubagentStop: a fragment adds no hook under SubagentStop, where the kit itself answers a worker's stop/u,
+      ],
+      [
+        { hooks: { UserPromptSubmit: [group] } },
+        /hooks\.UserPromptSubmit: a fragment adds no hook under UserPromptSubmit, .* the operator's recovery controls among them/u,
+      ],
+      // A second registration of a hook that is the kit's, with a timeout
+      // of the fragment's choosing.
+      [
+        {
+          hooks: {
+            Stop: [
+              {
+                hooks: [
+                  {
+                    type: "command",
+                    command: kit.hooks.Stop[0].hooks[0].command,
+                    timeout: 1,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        /hooks\.Stop\[0\]\.hooks\[0\]\.command is a hook the kit registers itself/u,
+      ],
+      // The kit's own rule in another list, which would countermand it.
+      [
+        { permissions: { deny: [rule, kit.permissions.allow[0]] } },
+        /permissions\.deny holds a rule the kit emits under permissions\.allow /u,
+      ],
+      [
+        { permissions: { ask: [kit.permissions.allow[0]] } },
+        /permissions\.ask holds a rule the kit emits under permissions\.allow /u,
+      ],
+      [
+        { permissions: { allow: [kit.permissions.deny[0]] } },
+        /permissions\.allow holds a rule the kit emits under permissions\.deny /u,
+      ],
+      // A character a reader of the committed file cannot see: a rule that
+      // reads as one thing and matches another, a command likewise.
+      [
+        { permissions: { deny: ["Bash(extensions/tools/\u200bdeploy *)"] } },
+        /permissions\.deny\[0\] must be a non-empty string without control or format characters/u,
+      ],
+      [
+        {
+          hooks: {
+            Stop: [{ hooks: [{ type: "command", command: "echo \u202e x" }] }],
+          },
+        },
+        /hooks\.Stop\[0\]\.hooks\[0\]\.command must be a non-empty string without control or format characters/u,
+      ],
+      [
+        {
+          hooks: {
+            Stop: [{ hooks: [{ type: "command", command: "echo\u0085x" }] }],
+          },
+        },
+        /without control or format characters/u,
+      ],
+      [
+        { hooks: { PermissionRequest: [group] } },
+        /hooks\.PermissionRequest: a fragment adds hooks under /u,
+      ],
+      // The key as JSON holds it, an own property a literal cannot write.
+      [
+        JSON.parse(
+          '{"hooks":{"__proto__":[{"hooks":[{"type":"command","command":"true"}]}]}}',
+        ),
+        /hooks\.__proto__: a fragment adds hooks under /u,
+      ],
+      [JSON.parse('{"__proto__":{"hooks":{}}}'), /unknown key __proto__/u],
+      // An entry of another shape than the kit's own: the host is documented
+      // to drop a file's other hooks over a matcher that is an array.
+      [
+        { hooks: { Stop: [{ matcher: ["Edit"], hooks: group.hooks }] } },
+        /hooks\.Stop\[0\]\.matcher must be a non-empty string/u,
+      ],
+      [
+        { hooks: { Stop: [{ hooks: [] }] } },
+        /hooks\.Stop\[0\]\.hooks names no hook/u,
+      ],
+      [
+        { hooks: { Stop: [{ hooks: [{ type: "http", command: "x" }] }] } },
+        /hooks\.Stop\[0\]\.hooks\[0\]\.type must be "command"/u,
+      ],
+      [
+        {
+          hooks: {
+            Stop: [{ hooks: [{ type: "command", command: "x", async: true }] }],
+          },
+        },
+        /unknown key hooks\.Stop\[0\]\.hooks\[0\]\.async/u,
+      ],
+      [
+        {
+          hooks: {
+            Stop: [
+              { hooks: [{ type: "command", command: "x", timeout: "15" }] },
+            ],
+          },
+        },
+        /timeout must be a whole number of seconds/u,
+      ],
+      [
+        { hooks: { Stop: [{ if: "x", hooks: group.hooks }] } },
+        /unknown key hooks\.Stop\[0\]\.if/u,
+      ],
+      [
+        { permissions: { deny: ["Bash(rm"] } },
+        /permissions\.deny\[0\] is not a permission rule/u,
+      ],
+      [
+        { permissions: { allow: [7] } },
+        /permissions\.allow\[0\] must be a non-empty string/u,
+      ],
+      [[], /root must be an object/u],
+    ]) {
+      fragment(value);
+      assert.throws(
+        () => emitHarness(root),
+        (error) =>
+          error.message.startsWith(
+            `invalid settings fragment in ${SETTINGS_FRAGMENT}: `,
+          ) && expected.test(error.message),
+        JSON.stringify(value),
+      );
+      assert.throws(() => checkHarness(root), /invalid settings fragment/u);
+      assert.equal(readFileSync(settingsFile, "utf8"), bare);
+    }
+    write(root, SETTINGS_FRAGMENT, "{ not json");
+    assert.throws(() => emitHarness(root), /root must be JSON/u);
+    // Read as a regular file and never through a link.
+    removeFixture(join(root, SETTINGS_FRAGMENT), { force: true });
+    write(root, "elsewhere.json", json({ permissions: { deny: [rule] } }));
+    symlinkSync(join(root, "elsewhere.json"), join(root, SETTINGS_FRAGMENT));
+    assert.throws(
+      () => emitHarness(root),
+      /it must be a regular file inside the launchpad/u,
+    );
+    assert.equal(readFileSync(settingsFile, "utf8"), bare);
+    removeFixture(join(root, SETTINGS_FRAGMENT), { force: true });
+    // A caller that names no fragment, with null, has none merged whatever
+    // the root holds, by emit and by check alike; the root's own check then
+    // names the difference. The command reaches both that way when it
+    // writes to another root than the launchpad.
+    fragment({ permissions: { deny: [rule] } });
+    emitHarness(root, { settingsFragment: null });
+    checkHarness(root, { settingsFragment: null });
+    assert.equal(readFileSync(settingsFile, "utf8"), bare);
+    assert.throws(
+      () => checkHarness(root),
+      /harness drift: \.claude\/settings\.json/u,
+    );
+    removeFixture(join(root, SETTINGS_FRAGMENT), { force: true });
+    // The events a fragment may add under are the ones the kit registers a
+    // hook under itself, save the three where an added hook's output could
+    // stand in for the kit's answer or keep a prompt from the session.
+    assert.deepEqual(
+      [...FRAGMENT_HOOK_EVENTS].sort(),
+      Object.keys(kit.hooks)
+        .filter(
+          (event) =>
+            !["PreToolUse", "SubagentStop", "UserPromptSubmit"].includes(event),
+        )
+        .sort(),
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion K3 (the order's known issue): with a fragment that adds an allow rule and a hook for a call a guard refuses, the guard is the one emitted without it and still refuses the call", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const refused = input(root, "PreToolUse", {
+      tool_name: "Bash",
+      tool_use_id: "gate-1",
+      tool_input: { command: "npm test -- --only resume", description: "x" },
+      agent_id: "dotln-worker-1",
+      agent_type: "dotln-worker",
+    });
+    const reason = () =>
+      String(
+        invoke(root, "permissions", refused).hookSpecificOutput
+          ?.permissionDecisionReason ?? "",
+      );
+    assert.match(reason(), /^DOTLN_WORKER_GATE_REFUSED: /u);
+    const guard = readFileSync(
+      join(root, ".claude/hooks/permissions.mjs"),
+      "utf8",
+    );
+    const before = JSON.parse(
+      readFileSync(join(root, ".claude/settings.json"), "utf8"),
+    );
+    write(
+      root,
+      SETTINGS_FRAGMENT,
+      json({
+        permissions: { allow: ["Bash(npm test *)", "Bash"] },
+        hooks: {
+          PostToolUse: [
+            { matcher: "Bash", hooks: [{ type: "command", command: "true" }] },
+          ],
+        },
+      }),
+    );
+    emitHarness(root);
+    checkHarness(root);
+    const after = JSON.parse(
+      readFileSync(join(root, ".claude/settings.json"), "utf8"),
+    );
+    // The guard's registration and its program are what they were, and the
+    // kit's deny rules all stand beside the added allow rules.
+    assert.deepEqual(after.hooks.PreToolUse, before.hooks.PreToolUse);
+    assert.deepEqual(after.permissions.deny, before.permissions.deny);
+    assert.equal(
+      readFileSync(join(root, ".claude/hooks/permissions.mjs"), "utf8"),
+      guard,
+    );
+    assert.match(reason(), /^DOTLN_WORKER_GATE_REFUSED: /u);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion P2: a prompt's facts carry the day's use beside a declared figure, the stopping advisory at or above it and unknown for a dollar estimate no price can make; with no figure they are the facts printed before", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    // The day's reading is the usage report's, loaded from the root's scripts.
+    cpSync(
+      join(sourceRoot, "packages/skeleton/src"),
+      join(root, "packages/skeleton/src"),
+      { recursive: true },
+    );
+    const template = JSON.parse(
+      readFileSync(join(sourceRoot, "scripts/kit/budgets.template.json")),
+    );
+    const declare = (spend) =>
+      write(
+        root,
+        "docs/control/budgets.json",
+        JSON.stringify(
+          spend === undefined
+            ? (({ spend: _none, ...rest }) => rest)(template)
+            : { ...template, spend },
+        ),
+      );
+    const observedAt = new Date().toISOString();
+    write(
+      root,
+      "docs/control/local/process/usage.jsonl",
+      JSON.stringify({
+        workOrder: "WO-999",
+        role: "executor",
+        startedAt: observedAt,
+        durationMs: 1000,
+        sessionKey: "day-session",
+        recordedAt: observedAt,
+        observation: {
+          source: "claude-transcript-message-usage",
+          scope: "dispatch",
+          observedAt,
+          usage: {
+            inputTokens: 1000,
+            cachedInputTokens: 400,
+            cacheWriteInputTokens: 50,
+            outputTokens: 200,
+            totalTokens: 1650,
+          },
+        },
+      }) + "\n",
+    );
+    const facts = () =>
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt: "continue the work" }),
+      ).hookSpecificOutput.additionalContext;
+    const day = (text) =>
+      text.split("\n").filter((line) => line.startsWith("Day's use"));
+    // The lines beside the day's, with their instants and durations set
+    // aside: what the facts were before a figure could be declared.
+    const others = (text) =>
+      text
+        .split("\n")
+        .filter((line) => !line.startsWith("Day's use"))
+        .map((line) =>
+          line
+            .replace(/\d{4}-\d{2}-\d{2}T[\d:.]+Z/gu, "<instant>")
+            .replace(/\d+ ms/gu, "<duration>"),
+        );
+    // No figure: the key absent, and both fields null as the kit seeds them.
+    declare(undefined);
+    const before = facts();
+    assert.deepEqual(day(before), []);
+    assert.match(before, /^Observed facts at /mu);
+    declare({ daily: { tokens: null, usd: null } });
+    assert.deepEqual(day(facts()), []);
+    // Below the figure: the day's use and the figure.
+    declare({ daily: { tokens: 2_000_000 } });
+    const below = facts();
+    assert.deepEqual(day(below).length, 1);
+    assert.match(
+      day(below)[0],
+      /^Day's use \(\d{4}-\d{2}-\d{2}, local calendar day\): 1650 tokens of a daily figure of 2000000 tokens\.$/u,
+    );
+    assert.deepEqual(others(below), others(before));
+    // At or above it: the stopping advisory.
+    declare({ daily: { tokens: 1650 } });
+    assert.match(
+      day(facts())[0],
+      /1650 tokens of a daily figure of 1650 tokens\. The daily figure is reached: finish the step in hand, write the standing and end the turn\. This is advisory and refuses nothing\.$/u,
+    );
+    // A dollar figure and a day no price can estimate: the tokens, and
+    // unknown for the estimate.
+    declare({ daily: { usd: 5 } });
+    assert.match(
+      day(facts())[0],
+      /: 1650 tokens, estimate unknown \(a session of the day attests no model\) against a daily figure of \$5\.00\.$/u,
+    );
+    // A figure the loader refuses is one line that names its field, and the
+    // prompt keeps its other facts.
+    declare({ daily: { tokens: -1 } });
+    const refused = facts();
+    assert.deepEqual(day(refused), [
+      "Day's use: unknown (Invalid budget: spend.daily.tokens).",
+    ]);
+    assert.deepEqual(others(refused), others(before));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("a tool call's start rows and end rows carry one identifier of the call, a digest of the host's, and a row of a call the host does not identify carries none", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    write(root, "fixture.ts", "export const value = 1;\n");
+    const call = (use) => ({
+      tool_name: "Read",
+      tool_input: { file_path: join(root, "fixture.ts") },
+      ...(use ? { tool_use_id: use } : {}),
+    });
+    const rows = () =>
+      readFileSync(
+        join(
+          root,
+          "docs/control/local/harness",
+          `${sha256("synthetic-session")}.jsonl`,
+        ),
+        "utf8",
+      )
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line));
+    invoke(root, "write-observer", input(root, "PreToolUse", call("use-1")));
+    invoke(
+      root,
+      "read-observer",
+      input(root, "PostToolUse", {
+        ...call("use-1"),
+        tool_response: { type: "text", file: { content: "" } },
+      }),
+    );
+    invoke(root, "write-observer", input(root, "PreToolUse", call("use-2")));
+    invoke(root, "write-observer", input(root, "PreToolUse", call()));
+    const tool = rows().filter((row) => row.tool === "Read");
+    const expected = sha256("use-1").slice(0, 16);
+    const starts = tool.filter((row) => row.event === "PreToolUse");
+    const ends = tool.filter((row) => row.event === "PostToolUse");
+    assert.ok(starts.length >= 3 && ends.length >= 1);
+    // The first call's rows, start and end, name the same call.
+    assert.ok(starts.some((row) => row.call === expected));
+    assert.ok(ends.length && ends.every((row) => row.call === expected));
+    // Another call names another, the host's identifier is in no row, and a
+    // call the host did not identify names none.
+    assert.ok(starts.some((row) => row.call === sha256("use-2").slice(0, 16)));
+    assert.ok(starts.some((row) => row.call === undefined));
+    assert.doesNotMatch(JSON.stringify(tool), /use-1|use-2/u);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("a router begun by the command is bound by its drive's line: a second session of the same drive keeps the first one's start and a drive of another order shares none", () => {
+  const root = fixture();
+  try {
+    const bound = (session) =>
+      JSON.parse(
+        readFileSync(
+          join(root, "docs/control/local/harness", `${sha256(session)}.json`),
+          "utf8",
+        ),
+      ).boundDispatch;
+    beginHarnessSession(root, "router-one", "router", false, "WO-999");
+    const first = bound("router-one");
+    assert.equal(first.role, "router");
+    assert.equal(first.intent, "drive: WO-999");
+    assert.equal(first.workOrder, null);
+    beginHarnessSession(root, "router-two", "router", false, "WO-999");
+    assert.equal(bound("router-two").startedAt, first.startedAt);
+    beginHarnessSession(root, "router-three", "router", false, "WO-998");
+    const other = bound("router-three");
+    assert.equal(other.intent, "drive: WO-998");
+    assert.ok(Date.parse(other.startedAt) >= Date.parse(first.startedAt));
+    assert.notEqual(other.intent, first.intent);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// What a host starts for one tool call: every hook the settings register
+// under the event whose matcher admits the tool's name, one process each.
+// A group with no matcher admits every tool. A host reads a matcher either as
+// a pattern searched for in the name or as one the whole name must match; the
+// emitted matchers carry their own anchors, so the two readings agree on
+// them, and this helper takes the second.
+const registeredHooks = (root, event, tool) => {
+  const settings = JSON.parse(
+    readFileSync(join(root, ".claude/settings.json"), "utf8"),
+  );
+  return (settings.hooks[event] ?? []).flatMap((group) =>
+    group.matcher === undefined ||
+    new RegExp(`^(?:${group.matcher})$`, "u").test(tool)
+      ? group.hooks.map((hook) => ({
+          event,
+          hook: /\/hooks\/([a-z-]+)\.mjs/u.exec(hook.command)[1],
+          matcher: group.matcher ?? null,
+        }))
+      : [],
+  );
+};
+// With a file named in the environment, a case that counts what the hooks
+// call or read adds its counts there under its own name, as the timing case
+// writes its timings: the order's evidence of both.
+const recordHookCounts = (section, counts) => {
+  const out = process.env.DOTLN_HOOK_COUNTS;
+  if (!out) return;
+  const held = existsSync(out) ? JSON.parse(readFileSync(out, "utf8")) : {};
+  writeFileSync(out, json({ ...held, [section]: counts }));
+};
+// The fixed sequence the hooks are timed on: a read, a search, a shell
+// command, an edit and a write, with the file the edit and the write change.
+const timedSequence = (root) => {
+  const file = join(root, "fixture.ts");
+  return [
+    {
+      tool: "Read",
+      input: { file_path: file },
+      response: () => ({ type: "text", file: { filePath: file } }),
+    },
+    {
+      tool: "Grep",
+      input: { pattern: "value", path: root },
+      response: () => ({ mode: "files_with_matches", filenames: [] }),
+    },
+    {
+      tool: "Bash",
+      input: { command: "true" },
+      response: () => ({ stdout: "", stderr: "" }),
+    },
+    {
+      tool: "Edit",
+      input: { file_path: file, old_string: "1", new_string: "2" },
+      response: () => {
+        const originalFile = readFileSync(file, "utf8");
+        writeFileSync(file, `${originalFile}// edited\n`);
+        return { filePath: file, originalFile };
+      },
+    },
+    {
+      tool: "Write",
+      input: { file_path: file, content: "export const value = 1;\n" },
+      response: () => {
+        const originalFile = readFileSync(file, "utf8");
+        writeFileSync(file, "export const value = 1;\n");
+        return { type: "update", filePath: file, originalFile };
+      },
+    },
+  ];
+};
+
+test("each hook the settings register for a tool starts for a read, a search, a shell command, an edit and a write, and a call the narrowed hooks do not start for still leaves its start and end rows", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    write(root, "fixture.ts", "export const value = 1;\n");
+    // With a file named in the environment the sequence runs ten times and
+    // the timings are written there, for the before and after readings of
+    // what a tool call costs; without one it runs once.
+    const out = process.env.DOTLN_HOOK_TIMINGS;
+    const iterations = out ? 10 : 1;
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      `${sha256("synthetic-session")}.jsonl`,
+    );
+    const rows = () =>
+      existsSync(journal)
+        ? readFileSync(journal, "utf8")
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => JSON.parse(line))
+        : [];
+    const started = new Map();
+    const calls = [];
+    let processes = 0;
+    let use = 0;
+    for (let iteration = 0; iteration < iterations; iteration += 1)
+      for (const step of timedSequence(root)) {
+        use += 1;
+        const id = `timed-use-${use}`;
+        const call = { tool: step.tool, processes: 0, wallMs: 0 };
+        for (const event of ["PreToolUse", "PostToolUse"]) {
+          const payload = input(root, event, {
+            tool_name: step.tool,
+            tool_input: step.input,
+            tool_use_id: id,
+            ...(event === "PostToolUse"
+              ? { tool_response: step.response() }
+              : {}),
+          });
+          for (const registered of registeredHooks(root, event, step.tool)) {
+            const before = rows().length;
+            const from = performance.now();
+            const run = spawnSync(
+              process.execPath,
+              [join(root, `.claude/hooks/${registered.hook}.mjs`)],
+              {
+                cwd: root,
+                env: process.env,
+                input: JSON.stringify(payload),
+                encoding: "utf8",
+                timeout: deadlineLimit(1000, 20_000),
+              },
+            );
+            const wallMs = performance.now() - from;
+            assert.equal(
+              run.status,
+              0,
+              `${registered.hook} for ${step.tool}: ${run.stderr}`,
+            );
+            processes += 1;
+            call.processes += 1;
+            call.wallMs += wallMs;
+            const key = `${event} ${registered.hook}`;
+            const entry = started.get(key) ?? {
+              ...registered,
+              tools: new Set(),
+              wallMs: [],
+              timingMs: [],
+            };
+            entry.tools.add(step.tool);
+            entry.wallMs.push(wallMs);
+            for (const row of rows().slice(before))
+              if (typeof row.hookTiming?.durationMs === "number")
+                entry.timingMs.push(row.hookTiming.durationMs);
+            started.set(key, entry);
+          }
+        }
+        calls.push(call);
+      }
+    // Every hook registered for a tool event started for a tool of the
+    // sequence.
+    const settings = JSON.parse(
+      readFileSync(join(root, ".claude/settings.json"), "utf8"),
+    );
+    for (const event of ["PreToolUse", "PostToolUse"])
+      for (const group of settings.hooks[event] ?? [])
+        for (const hook of group.hooks) {
+          const name = /\/hooks\/([a-z-]+)\.mjs/u.exec(hook.command)[1];
+          assert.ok(started.has(`${event} ${name}`), `${event} ${name}`);
+        }
+    // Each call left a start row and an end row that name it, whichever
+    // hooks started for its tool: the reading of worked time pairs them.
+    const journalRows = rows();
+    for (let index = 1; index <= use; index += 1) {
+      const call = sha256(`timed-use-${index}`).slice(0, 16);
+      const of = journalRows.filter((row) => row.call === call);
+      assert.ok(
+        of.some((row) => row.event === "PreToolUse"),
+        `a start row for call ${index}`,
+      );
+      assert.ok(
+        of.some((row) => row.event === "PostToolUse"),
+        `an end row for call ${index}`,
+      );
+    }
+    if (out) {
+      const median = (values) =>
+        values.length
+          ? Math.round(
+              [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)],
+            )
+          : null;
+      const total = (values) =>
+        Math.round(values.reduce((sum, value) => sum + value, 0));
+      const byTool = Object.fromEntries(
+        [...new Set(calls.map((call) => call.tool))].map((tool) => {
+          const of = calls.filter((call) => call.tool === tool);
+          return [
+            tool,
+            {
+              calls: of.length,
+              processesACall: of[0].processes,
+              wallMsACallMedian: median(of.map((call) => call.wallMs)),
+            },
+          ];
+        }),
+      );
+      writeFileSync(
+        out,
+        `${JSON.stringify(
+          {
+            note: "The hooks the harness fixture's own settings register, started as a host starts them (one process for each registration whose matcher admits the tool) for a read, a search, a shell command, an edit and a write, each ten times. wallMs is the process's wall time as the case measured it; timingMs is the hook's own timing row in the session journal, which a hook that writes none leaves empty. Milliseconds.",
+            node: process.version,
+            calls: calls.length,
+            processes,
+            wallMs: total(calls.map((call) => call.wallMs)),
+            byTool,
+            hooks: [...started.values()].map((entry) => ({
+              event: entry.event,
+              hook: entry.hook,
+              matcher: entry.matcher,
+              tools: [...entry.tools],
+              starts: entry.wallMs.length,
+              wallMsTotal: total(entry.wallMs),
+              wallMsMedian: median(entry.wallMs),
+              timingRows: entry.timingMs.length,
+              timingMsMedian: median(entry.timingMs),
+            })),
+          },
+          null,
+          2,
+        )}\n`,
+      );
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criteria Q1 and Q2: the attribution hook and the lint-directive hook are registered for no table name of a kind they do not judge, for every name the table does not hold where the only host was observed to read a matcher that leaves names out and for the listed names alone where another host is elected, and each refusal is made under the names the unit judges as before", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const starts = (event, hook, tool) =>
+      registeredHooks(root, event, tool).some((row) => row.hook === hook);
+    const kindOf = (name) => harnessToolEffects[name];
+    const names = Object.keys(harnessToolEffects).filter(
+      (name) => !name.endsWith("*"),
+    );
+    // The attribution hook: every name of the shell kind and any name the
+    // table does not hold; no name of another kind.
+    for (const name of names)
+      assert.equal(
+        starts("PreToolUse", "no-attribution", name),
+        kindOf(name) === "shell",
+        `no-attribution for ${name}`,
+      );
+    // The lint-directive hook: the write kind alone, and unknown names.
+    for (const name of names)
+      assert.equal(
+        starts("PostToolUse", "no-lint-type-disables-as-fixes", name),
+        kindOf(name) === "write",
+        `no-lint-type-disables-as-fixes for ${name}`,
+      );
+    // The writer hook: the two kinds its facts read.
+    for (const name of names)
+      assert.equal(
+        starts("PreToolUse", "concurrent-work-requires-worktrees", name),
+        ["shell", "write"].includes(kindOf(name)),
+        `concurrent-work-requires-worktrees for ${name}`,
+      );
+    // This checkout's only host is Claude Code, which was observed to read a
+    // matcher that leaves names out: a name the table does not hold starts
+    // each narrowed hook, as every name did.
+    for (const unknown of ["SomethingNew", "mcp__other__tool"]) {
+      assert.ok(starts("PreToolUse", "no-attribution", unknown), unknown);
+      assert.ok(
+        starts("PostToolUse", "no-lint-type-disables-as-fixes", unknown),
+        unknown,
+      );
+      assert.ok(
+        starts("PreToolUse", "concurrent-work-requires-worktrees", unknown),
+        unknown,
+      );
+    }
+    // A checkout that elects the other hosts shares its settings file with
+    // one not observed to read such a matcher, so each narrowed hook's
+    // matcher lists the names of its kinds: the table's names start the same
+    // hooks, and a name the table does not hold starts only the hooks
+    // registered for every tool.
+    const elected = fixture({ hosts: true });
+    try {
+      const startsThere = (event, hook, tool) =>
+        registeredHooks(elected, event, tool).some((row) => row.hook === hook);
+      const narrowedHooks = [
+        ["PreToolUse", "no-attribution"],
+        ["PostToolUse", "no-lint-type-disables-as-fixes"],
+        ["PreToolUse", "concurrent-work-requires-worktrees"],
+      ];
+      for (const [event, hook] of narrowedHooks) {
+        for (const name of names)
+          assert.equal(
+            startsThere(event, hook, name),
+            starts(event, hook, name),
+            `${hook} for ${name} where another host is elected`,
+          );
+        for (const unknown of ["SomethingNew", "mcp__other__tool"])
+          assert.ok(!startsThere(event, hook, unknown), `${hook}: ${unknown}`);
+        const matcher = JSON.parse(
+          readFileSync(join(elected, ".claude/settings.json"), "utf8"),
+        ).hooks[event].find((group) =>
+          group.hooks.some((row) => row.command.includes(`/${hook}.mjs`)),
+        ).matcher;
+        // The list holds no lookahead and no anchor: names and bars alone.
+        assert.match(matcher, /^[A-Za-z0-9_.-]+(?:\|[A-Za-z0-9_.-]+)*$/u, hook);
+      }
+      for (const tool of ["Read", "Bash", "Edit", "SomethingNew"]) {
+        assert.ok(startsThere("PreToolUse", "permissions", tool), tool);
+        assert.ok(startsThere("PreToolUse", "write-observer", tool), tool);
+        assert.ok(startsThere("PostToolUse", "read-observer", tool), tool);
+      }
+      checkHarness(elected);
+    } finally {
+      rmSync(elected, { recursive: true, force: true });
+    }
+    // A name under a prefix the table holds for the desktop kind starts
+    // neither narrowed hook.
+    const prefixed = Object.keys(harnessToolEffects).find((name) =>
+      name.endsWith("*"),
+    );
+    if (prefixed) {
+      const tool = `${prefixed.slice(0, -1)}click`;
+      assert.ok(!starts("PreToolUse", "no-attribution", tool), tool);
+      assert.ok(
+        !starts("PostToolUse", "no-lint-type-disables-as-fixes", tool),
+        tool,
+      );
+    }
+    // The hooks every tool still starts, so every call is judged and leaves
+    // its rows.
+    for (const tool of ["Read", "Bash", "Edit", "SomethingNew"]) {
+      assert.ok(starts("PreToolUse", "permissions", tool), tool);
+      assert.ok(starts("PreToolUse", "write-observer", tool), tool);
+      assert.ok(starts("PostToolUse", "read-observer", tool), tool);
+    }
+    // No presence hook is registered for any event and none is installed:
+    // the hooks above carry the heartbeat.
+    assert.doesNotMatch(
+      JSON.stringify(
+        JSON.parse(readFileSync(join(root, ".claude/settings.json"), "utf8"))
+          .hooks,
+      ),
+      /presence-/u,
+    );
+    assert.deepEqual(
+      readdirSync(join(root, ".claude/hooks")).filter((name) =>
+        name.startsWith("presence-"),
+      ),
+      [],
+    );
+    // The attribution refusal, in the words it had: under each name of the
+    // shell kind the unit judges, and decided as before under the kind's
+    // other names and under a name the table does not hold, where the hook
+    // starts and the unit reads no command.
+    const commit = (tool, message) =>
+      invoke(
+        root,
+        "no-attribution",
+        input(root, "PreToolUse", {
+          tool_name: tool,
+          tool_input: { command: `git commit -m '${message}'` },
+        }),
+      );
+    // The generated hook names the unit's verdict and leaves the call to
+    // the host's permissions, as it did. It shows one advisory once in a
+    // session, so each verdict is read from the row the hook journals.
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      `${sha256("synthetic-session")}.jsonl`,
+    );
+    const advisories = () =>
+      readFileSync(journal, "utf8")
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line))
+        .filter((row) => typeof row.advisory === "string");
+    const verdict =
+      "DotLn advisory: no-attribution: AI attribution footer or trailer; host permissions decide.";
+    for (const tool of ["Bash", "exec_command"]) {
+      const before = advisories().length;
+      commit(tool, "Generated by AI");
+      const made = advisories().slice(before);
+      assert.deepEqual(
+        made.map((row) => [row.tool, row.advisory]),
+        [[tool, verdict]],
+        tool,
+      );
+      commit(tool, "A useful change");
+      assert.equal(advisories().length, before + 1, tool);
+    }
+    for (const tool of [
+      "Monitor",
+      "write_stdin",
+      "functions.exec",
+      "SomethingNew",
+    ]) {
+      const before = advisories().length;
+      commit(tool, "Generated by AI");
+      assert.equal(advisories().length, before, tool);
+    }
+    // The lint-directive refusal the same way: under Edit and Write, and as
+    // before under the write kind's other names and an unknown name.
+    const before = readFileSync(join(root, "fixture.ts"), "utf8");
+    const edited = (tool) => {
+      write(root, "fixture.ts", `// @ts-ignore\n${before}`);
+      try {
+        return invoke(
+          root,
+          "no-lint-type-disables-as-fixes",
+          input(root, "PostToolUse", {
+            tool_name: tool,
+            tool_input: { file_path: join(root, "fixture.ts") },
+            tool_response: { originalFile: before },
+          }),
+        );
+      } finally {
+        write(root, "fixture.ts", before);
+      }
+    };
+    for (const tool of ["Edit", "Write"]) {
+      const count = advisories().length;
+      edited(tool);
+      const made = advisories().slice(count);
+      assert.equal(made.length, 1, `${tool}: ${JSON.stringify(made)}`);
+      assert.equal(made[0].tool, tool);
+      assert.match(
+        made[0].advisory,
+        /no-lint-type-disables-as-fixes: new lint\/type suppression comment/u,
+        tool,
+      );
+    }
+    for (const tool of ["NotebookEdit", "apply_patch", "SomethingNew"]) {
+      const count = advisories().length;
+      edited(tool);
+      assert.equal(advisories().length, count, tool);
+    }
+    checkHarness(root);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion Q2: with a store named each of the four events records one heartbeat from a hook that already runs for it, under operator control and with the adapter unavailable too, no other event records one, and a heartbeat that fails changes no hook's answer", () => {
+  const stores = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-heartbeat-")),
+  );
+  const roots = [];
+  try {
+    const store = join(stores, "presence");
+    const notAStore = join(stores, "a-file");
+    writeFileSync(notAStore, "a regular file, where a store is a directory\n");
+    const log = () =>
+      existsSync(store) ? new ResidentStore(store).read() : "";
+    const heartbeats = () =>
+      log()
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line))
+        .filter(
+          (event) =>
+            event.type === "OperatorPresenceObserved" &&
+            event.payload.signal.kind === "heartbeat",
+        )
+        .map((event) => [
+          event.payload.signal.event,
+          event.payload.signal.sessionId,
+          event.payload.stamp?.episodeId ?? null,
+        ]);
+    // One session's events in a fresh checkout: its start, a prompt, a read
+    // (a tool the narrowed hooks do not start for), a shell command, a
+    // refused call, the events that carry no heartbeat, and the stop. Every
+    // hook the settings register for an event runs, as the host runs them.
+    // Operator control is kept by session id outside the checkout, so each
+    // run is a session of its own.
+    const session = (
+      id,
+      environment,
+      { prompt = "continue", prepare, after = [] } = {},
+    ) => {
+      const root = fixture();
+      roots.push(root);
+      beginHarnessSession(root, id, "executor");
+      write(root, "fixture.ts", "export const value = 1;\n");
+      prepare?.(root);
+      const file = join(root, "fixture.ts");
+      const worker = { agent_id: "worker-1", agent_type: "dotln-worker" };
+      const read = { tool_name: "Read", tool_input: { file_path: file } };
+      const shell = {
+        tool_name: "Bash",
+        tool_input: { command: "echo DO_NOT_STORE_TOOL" },
+      };
+      const events = [
+        ["SessionStart", {}],
+        ["UserPromptSubmit", { prompt }],
+        ["PreToolUse", { ...read, tool_use_id: "use-1" }],
+        [
+          "PostToolUse",
+          {
+            ...read,
+            tool_use_id: "use-1",
+            tool_response: { type: "text", file: { filePath: file } },
+          },
+        ],
+        ["PreToolUse", { ...shell, tool_use_id: "use-2" }],
+        [
+          "PostToolUse",
+          {
+            ...shell,
+            tool_use_id: "use-2",
+            tool_response: { stdout: "DO_NOT_STORE_TOOL\n", stderr: "" },
+          },
+        ],
+        [
+          "PreToolUse",
+          {
+            tool_name: "mcp__computer-use__screenshot",
+            tool_input: {},
+            tool_use_id: "use-3",
+          },
+        ],
+        [
+          "PermissionDenied",
+          { ...shell, reason: "fixture denial", tool_use_id: "use-4" },
+        ],
+        [
+          "PostToolUseFailure",
+          { ...shell, tool_use_id: "use-5", error: "Exit code 1" },
+        ],
+        ["SubagentStop", { ...worker, stop_hook_active: false }],
+        ["Stop", {}],
+        ...after,
+      ];
+      const made = [];
+      for (const [event, extra] of events) {
+        const before = heartbeats().length;
+        const hooks = registeredHooks(root, event, extra.tool_name ?? "");
+        assert.ok(hooks.length > 0, event);
+        for (const { hook } of hooks) {
+          const run = spawnSync(
+            process.execPath,
+            [join(root, `.claude/hooks/${hook}.mjs`)],
+            {
+              cwd: root,
+              env: {
+                ...process.env,
+                DOTLN_RESIDENT_STORE: undefined,
+                DOTLN_RESIDENT_EPISODE_ID: undefined,
+                ...environment,
+              },
+              input: JSON.stringify(
+                input(root, event, { ...extra, session_id: id }),
+              ),
+              encoding: "utf8",
+              timeout: deadlineLimit(1000, 20_000),
+            },
+          );
+          assert.equal(run.status, 0, `${hook} at ${event}: ${run.stderr}`);
+          const response = JSON.parse(run.stdout);
+          made.push({
+            event,
+            tool: extra.tool_name ?? null,
+            hook,
+            // The path the hook took, where its message names one.
+            path: /operator-control/u.test(response.systemMessage ?? "")
+              ? "control"
+              : /built adapter unavailable/u.test(response.systemMessage ?? "")
+                ? "delegated"
+                : null,
+            // What a response decides, and the fields it holds.
+            keys: Object.keys(response).sort(),
+            decision: response.decision ?? null,
+            continues: response.continue ?? null,
+            permission: response.hookSpecificOutput?.permissionDecision ?? null,
+            unavailable: /presence heartbeat unavailable/u.test(run.stderr),
+          });
+        }
+        made.at(-1).recorded = heartbeats().slice(before);
+      }
+      return made;
+    };
+    const decisions = (made) =>
+      made.map(({ unavailable, recorded, path, ...decided }) => decided);
+    const recorded = (made) => made.flatMap((row) => row.recorded ?? []);
+    // One heartbeat for each call of the four events, whichever tool it is
+    // and whether or not the call is refused; none for the other events.
+    const each = (id, episode = null, more = []) =>
+      [
+        "UserPromptSubmit",
+        "PreToolUse",
+        "PostToolUse",
+        "PreToolUse",
+        "PostToolUse",
+        "PreToolUse",
+        "Stop",
+        ...more,
+      ].map((event) => [event, id, episode]);
+
+    // No store named: nothing is recorded and no store appears.
+    const plain = session("heartbeat-plain", {});
+    assert.equal(existsSync(store), false);
+    assert.ok(plain.every((row) => !row.unavailable));
+    // The refused call is refused, so the comparisons below hold a refusal.
+    assert.deepEqual(
+      plain
+        .filter((row) => row.permission === "deny")
+        .map((row) => [row.tool, row.hook]),
+      [["mcp__computer-use__screenshot", "permissions"]],
+    );
+
+    // A store named.
+    const bound = session("heartbeat-bound", { DOTLN_RESIDENT_STORE: store });
+    assert.deepEqual(recorded(bound), each("heartbeat-bound"));
+    assert.ok(bound.every((row) => !row.unavailable));
+    assert.deepEqual(decisions(bound), decisions(plain));
+
+    // Under operator control every hook answers before the runtime is loaded,
+    // and the heartbeat is still recorded, the prompt that enters the mode
+    // included; an episode's stamp rides with it.
+    for (const mode of ["analysis", "operator override"]) {
+      const id = `heartbeat-${mode.replaceAll(" ", "-")}`;
+      const controlled = session(
+        id,
+        {
+          DOTLN_RESIDENT_STORE: store,
+          DOTLN_RESIDENT_EPISODE_ID: "fixture-episode",
+        },
+        {
+          prompt: `${mode}: explain DO_NOT_STORE_PROMPT`,
+          // The mode is left again, so that it outlives no session here.
+          after: [["UserPromptSubmit", { prompt: `${mode}: off` }]],
+        },
+      );
+      assert.deepEqual(
+        recorded(controlled),
+        each(id, "fixture-episode", ["UserPromptSubmit"]),
+        mode,
+      );
+      // The hooks that carry the heartbeat answered from operator control.
+      assert.deepEqual(
+        controlled
+          .filter(
+            (row) =>
+              ["write-observer", "read-observer", "finish"].includes(
+                row.hook,
+              ) && row.path !== "control",
+          )
+          .map((row) => [row.event, row.hook, row.path]),
+        [],
+        mode,
+      );
+      assert.ok(
+        controlled.every((row) => row.permission !== "deny"),
+        `${mode}: the hooks stand aside`,
+      );
+    }
+
+    // With the adapter unavailable a hook delegates to the host, and its file
+    // still records the heartbeat.
+    const delegated = session(
+      "heartbeat-delegated",
+      { DOTLN_RESIDENT_STORE: store },
+      {
+        prepare: (root) => {
+          for (const name of readdirSync(join(root, ".claude/hooks"))) {
+            const path = join(root, ".claude/hooks", name);
+            writeFileSync(
+              path,
+              readFileSync(path, "utf8").replaceAll(
+                "dist/src/harness-host.js",
+                "dist/src/no-such-adapter.js",
+              ),
+            );
+          }
+        },
+      },
+    );
+    assert.deepEqual(recorded(delegated), each("heartbeat-delegated"));
+    assert.ok(delegated.every((row) => row.permission !== "deny"));
+    assert.ok(
+      delegated.some((row) => row.path === "delegated"),
+      "the adapter was unavailable to the hooks",
+    );
+
+    // Neither a prompt's text nor a tool's arguments or output enter the log.
+    assert.doesNotMatch(log(), /DO_NOT_STORE/u);
+
+    // A heartbeat that fails says so once for each call it would have
+    // recorded, from the hook that carries it, and every hook answers as it
+    // does with no store named.
+    const count = heartbeats().length;
+    const broken = session("heartbeat-plain", {
+      DOTLN_RESIDENT_STORE: notAStore,
+    });
+    assert.equal(heartbeats().length, count);
+    assert.deepEqual(
+      broken
+        .filter((row) => row.unavailable)
+        .map((row) => [row.event, row.hook]),
+      [
+        ["UserPromptSubmit", "session"],
+        ["PreToolUse", "write-observer"],
+        ["PostToolUse", "read-observer"],
+        ["PreToolUse", "write-observer"],
+        ["PostToolUse", "read-observer"],
+        ["PreToolUse", "write-observer"],
+        ["Stop", "finish"],
+      ],
+    );
+    assert.deepEqual(decisions(broken), decisions(plain));
+  } finally {
+    for (const root of roots) rmSync(root, { recursive: true, force: true });
+    rmSync(stores, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion Q3: on a planning branch a read asks Git for no branch, a write outside the admitted paths is refused in the words it had, and a tool the table does not hold is asked the branch as a write is", () => {
+  const root = fixture();
+  const bin = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-git-count-")),
+  );
+  const sessionId = `wo276-q4-${root}`;
+  try {
+    beginHarnessSession(root, sessionId, "planner");
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-04-fixture"],
+      fixtureGitOptions,
+    );
+    // The stand-in Git notes each call's arguments and runs the real one.
+    const realGit = execFileSync("which", ["git"], { encoding: "utf8" }).trim();
+    const log = join(bin, "git-calls.jsonl");
+    writeFileSync(
+      join(bin, "git"),
+      `#!${process.execPath}\nconst {spawnSync}=require('node:child_process');const fs=require('node:fs');const args=process.argv.slice(2);fs.appendFileSync(${JSON.stringify(log)},JSON.stringify(args)+String.fromCharCode(10));const r=spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});process.exit(r.status??1);\n`,
+    );
+    chmodSync(join(bin, "git"), 0o700);
+    const environment = { PATH: `${bin}:${process.env.PATH}` };
+    const gitCalls = () =>
+      existsSync(log)
+        ? readFileSync(log, "utf8")
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => JSON.parse(line))
+        : [];
+    const branchCalls = () =>
+      gitCalls().filter((args) => args.includes("symbolic-ref")).length;
+    // One tool call as the host makes it: every hook the settings register
+    // for the tool before the call, each with the stand-in Git first on the
+    // path. Returns what each hook answered and the Git calls they made.
+    const call = (tool, args, response) => {
+      const all = gitCalls().length;
+      const branch = branchCalls();
+      // The hooks before the call and, where the call's response is given,
+      // the hooks after it.
+      const answers = [
+        "PreToolUse",
+        ...(response ? ["PostToolUse"] : []),
+      ].flatMap((event) =>
+        registeredHooks(root, event, tool).map(({ hook }) => ({
+          hook,
+          answer: invoke(
+            root,
+            hook,
+            input(root, event, {
+              session_id: sessionId,
+              tool_name: tool,
+              tool_input: args,
+              ...(event === "PostToolUse" ? { tool_response: response } : {}),
+            }),
+            false,
+            environment,
+          ),
+        })),
+      );
+      return {
+        answers,
+        git: gitCalls().length - all,
+        branch: branchCalls() - branch,
+      };
+    };
+
+    // A read and a search: Git is called (the stand-in is the one the hooks
+    // find) and never for the branch.
+    const counted = {};
+    const count = (name, made) => {
+      counted[name] = {
+        hooks: made.answers.map(({ hook }) => hook),
+        gitCalls: made.git,
+        branchCalls: made.branch,
+      };
+      return made;
+    };
+    for (const [tool, args, response] of [
+      [
+        "Read",
+        { file_path: "scripts/harness.mjs" },
+        {
+          type: "text",
+          file: { filePath: join(root, "scripts/harness.mjs") },
+        },
+      ],
+      [
+        "Grep",
+        { pattern: "value", path: root },
+        { mode: "files_with_matches", filenames: [] },
+      ],
+    ]) {
+      const made = count(
+        `${tool} (a read), before and after the call`,
+        call(tool, args, response),
+      );
+      assert.deepEqual(
+        made.answers.map(({ hook }) => hook),
+        ["permissions", "write-observer", "read-observer"],
+        tool,
+      );
+      assert.ok(made.answers.length > 0, tool);
+      for (const { hook, answer } of made.answers)
+        assert.equal(allowed(answer), true, `${tool}: ${hook}`);
+      assert.ok(made.git > 0, `${tool}: the hooks reach the stand-in Git`);
+      assert.equal(made.branch, 0, tool);
+    }
+
+    // A write outside docs/ and root Markdown: each hook asks the branch once
+    // and refuses with the message of the tree this part began on.
+    const refused = count(
+      "Write to scripts/new.mjs (refused)",
+      call("Write", { file_path: "scripts/new.mjs" }),
+    );
+    assert.equal(refused.branch, refused.answers.length);
+    for (const { hook, answer } of refused.answers)
+      assert.equal(
+        answer.hookSpecificOutput?.permissionDecisionReason,
+        "DOTLN_HARNESS_REFUSED: planning branch write to scripts/new.mjs (repository path scripts/new.mjs) is outside docs/ and root Markdown (WO-135). Use operator override: for authorized recovery.",
+        hook,
+      );
+    // An admitted write is asked the branch too, and allowed.
+    const admitted = count(
+      "Write to docs/new.json (admitted)",
+      call("Write", { file_path: "docs/new.json" }),
+    );
+    assert.equal(admitted.branch, admitted.answers.length);
+    for (const { hook, answer } of admitted.answers)
+      assert.equal(allowed(answer), true, hook);
+
+    // A name the table does not hold is not known to write nothing: it counts
+    // as a write, so each hook asks the branch as it did before this part.
+    assert.equal(harnessToolEffects.SomethingNew, undefined);
+    const unknown = count(
+      "SomethingNew (a name the table does not hold)",
+      call("SomethingNew", { file_path: "scripts/new.mjs" }),
+    );
+    assert.ok(unknown.answers.length > 0);
+    assert.equal(unknown.branch, unknown.answers.length);
+    recordHookCounts("planning branch: Git calls a tool call makes", counted);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(bin, { recursive: true, force: true });
+  }
+});
+
+test("WO-276 criterion Q4: two authorship snapshots with no file changed between them read no file's bytes the second time, a changed file is read alone, a file written within the tick is read again, and every hash is the one a full read records", async () => {
+  const root = fixture();
+  const id = `wo276-q5-${root}`;
+  const settle = () =>
+    new Promise((resolve) => setTimeout(resolve, OUTPUT_STATE_TICK_MS + 250));
+  try {
+    beginHarnessSession(root, id, "executor");
+    write(root, "one.ts", "export const one = 1;\n");
+    write(root, "two.ts", "export const two = 2;\n");
+    write(root, "docs/three.md", "# Three\n\nA document.\n");
+    const key = sha256(id);
+    const journal = join(root, "docs/control/local/harness", `${key}.jsonl`);
+    const state = join(root, "docs/control/local/harness", `${key}.json`);
+    // One snapshot: the observer's hook for a shell command, before the call
+    // (the write observer) or after it (the read observer). Returns what the
+    // hook recorded of the snapshot and the hashes the session now holds.
+    let use = 0;
+    const taken = [];
+    const snapshot = (event) => {
+      if (event === "PreToolUse") use += 1;
+      invoke(
+        root,
+        event === "PreToolUse" ? "write-observer" : "read-observer",
+        input(root, event, {
+          session_id: id,
+          tool_name: "Bash",
+          tool_input: { command: "true" },
+          tool_use_id: `snapshot-use-${use}`,
+          ...(event === "PostToolUse"
+            ? { tool_response: { stdout: "", stderr: "" } }
+            : {}),
+        }),
+      );
+      const recorded = readFileSync(journal, "utf8")
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line))
+        .filter((row) => row.authorship)
+        .at(-1).authorship;
+      const { durationMs, ...counts } = recorded;
+      taken.push(counts);
+      return {
+        ...recorded,
+        hashes: JSON.parse(readFileSync(state, "utf8")).beforeOutputs,
+      };
+    };
+    // What a read of every output records, with no cache.
+    const full = () =>
+      Object.fromEntries(
+        harnessOutputs(root).map(({ path, hash }) => [path, hash]),
+      );
+    const size = (path) => readFileSync(join(root, path)).length;
+
+    // The files' times lie more than a tick behind the first snapshot.
+    await settle();
+    const first = snapshot("PreToolUse");
+    assert.ok(first.files >= 3, JSON.stringify(first));
+    // With nothing kept yet, every output is read.
+    assert.equal(first.filesRead, first.files);
+    assert.equal(first.bytesRead, first.bytes);
+    assert.deepEqual(first.hashes, full());
+
+    // Nothing changed: no file's bytes are read, and the record is the same.
+    const second = snapshot("PostToolUse");
+    assert.equal(second.filesRead, 0, JSON.stringify(second));
+    assert.equal(second.bytesRead, 0);
+    assert.equal(second.files, first.files);
+    assert.equal(second.bytes, first.bytes);
+    assert.deepEqual(second.hashes, first.hashes);
+
+    // One file changes: it alone is read, and its hash is a full read's.
+    write(root, "one.ts", "export const one = 100;\n");
+    const third = snapshot("PreToolUse");
+    assert.equal(third.filesRead, 1, JSON.stringify(third));
+    assert.equal(third.bytesRead, size("one.ts"));
+    assert.deepEqual(third.hashes, full());
+    assert.notEqual(third.hashes["one.ts"], first.hashes["one.ts"]);
+
+    // That file was written within the tick of the entry now kept for it, so
+    // its unchanged state is not trusted yet: it is read again, alone.
+    const fourth = snapshot("PostToolUse");
+    assert.equal(fourth.filesRead, 1, JSON.stringify(fourth));
+    assert.equal(fourth.bytesRead, size("one.ts"));
+
+    // A rewrite of the same size is seen: the times it leaves differ, or lie
+    // within the tick, and the hash recorded is the new content's.
+    const before = size("two.ts");
+    write(root, "two.ts", "export const two = 7;\n");
+    assert.equal(size("two.ts"), before);
+    const fifth = snapshot("PreToolUse");
+    assert.deepEqual(fifth.hashes, full());
+    assert.notEqual(fifth.hashes["two.ts"], first.hashes["two.ts"]);
+    assert.equal(fifth.filesRead, 2, JSON.stringify(fifth));
+
+    // A tick later both are read once more, on entries made within the tick
+    // of their writes, and then no longer.
+    await settle();
+    const sixth = snapshot("PostToolUse");
+    assert.equal(sixth.filesRead, 2, JSON.stringify(sixth));
+    const seventh = snapshot("PreToolUse");
+    assert.equal(seventh.filesRead, 0, JSON.stringify(seventh));
+    assert.equal(seventh.bytesRead, 0);
+    assert.deepEqual(seventh.hashes, full());
+
+    // A deleted output leaves the record, and a new one is read.
+    rmSync(join(root, "docs/three.md"));
+    write(root, "four.ts", "export const four = 4;\n");
+    const eighth = snapshot("PostToolUse");
+    assert.deepEqual(eighth.hashes, full());
+    assert.equal(eighth.hashes["docs/three.md"], undefined);
+    assert.equal(eighth.filesRead, 1, JSON.stringify(eighth));
+    assert.equal(eighth.bytesRead, size("four.ts"));
+    const steps = [
+      "nothing kept yet",
+      "nothing changed",
+      "one file changed",
+      "that file, written within the tick",
+      "a second file rewritten at the same size",
+      "a tick later",
+      "nothing changed",
+      "one file deleted and one added",
+    ];
+    recordHookCounts(
+      "authorship snapshots: files and bytes read",
+      taken.map((counts, index) => ({ snapshot: steps[index], ...counts })),
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
 });

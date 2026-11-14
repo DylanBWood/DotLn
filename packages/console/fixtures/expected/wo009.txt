@@ -570,8 +570,7 @@ available: packages/console/fixtures/wo009.events.jsonl#worker-status
 available: packages/console/fixtures/wo009.events.jsonl#audit-projections
 available: store:wo009-demo
 unavailable: control:canonical-segments — Source not supplied
-unavailable: docs/work-orders/README.md — Source not supplied
-unavailable: docs/work-orders/HISTORY.md — Source not supplied
+unavailable: work-orders:index--json — Source not supplied
 unavailable: resume:status--json — Source not supplied
 unavailable: worktree:constellation — Source not supplied
 unavailable: release:list — Source not supplied

@@ -41,6 +41,10 @@ import {
   withFixture,
   closeOrder,
   commitInstanceRecords,
+  plannedRecordsOrder,
+  reviewedRecordsOrder,
+  publishRecordsTarget,
+  publishRecordsOrder,
   publicationSetup,
   launchpadCommands,
   fixtureForgeUrl,
@@ -53,7 +57,7 @@ test("publication setup applies listed-term refusals under a configured control 
       publicationSetup(f);
       assert.deepEqual(
         checkLocalTerms(f.main, [{ name: "body.md", text: "Reviewed text." }]),
-        { status: "present", terms: 1 },
+        { status: "present", terms: 1, refuse: 1, context: 0, findings: [] },
       );
       assert.throws(
         () =>
@@ -867,6 +871,467 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     for (const row of event.records)
       assert.ok(existsSync(join(f.clone, row.path)));
   }));
+
+// Part N: where a target order's records go is its registration's. The
+// fixture's order with a reviewed change, a passing final review and its
+// instance records committed, under the registration value given.
+// The order's four records, where the records step files them in the
+// target and where they are in the instance. Named here, not by the reader
+// the lifecycle uses.
+const RECORDS_IN_TARGET = [
+  "docs/work-orders/WO-999-fixture.md",
+  "docs/evidence/WO-999/decisions.md",
+  "docs/verifications/WO-999/VER-001.md",
+  "docs/final-reviews/WO-999/FINAL-001.md",
+];
+const RECORDS_IN_INSTANCE = [
+  "records/work-orders/WO-999-fixture.md",
+  "records/evidence/WO-999/decisions.md",
+  "records/verifications/WO-999/VER-001.md",
+  "records/final-reviews/WO-999/FINAL-001.md",
+];
+const offered = (f) =>
+  JSON.parse(f.ok(f.resume(["status", "--json"]))).legalNextActions;
+
+test("WO-276 criterion N2: with the repository registered instance, an order past its final review is offered no records step, the step is refused naming the setting, and the target is published at the reviewed commit with none of the order's records in its tree", () =>
+  withFixture((f) => {
+    const { reviewed, passed, planFirst } = reviewedRecordsOrder(f, "instance");
+    assert.equal(
+      planFirst,
+      join(f.orderRoot, "records/evidence/WO-999/plan-first"),
+    );
+    assert.match(
+      passed,
+      /repositories\.target\.records keeps them in this instance, so no records step is owed and the target is published at the reviewed commit\./u,
+    );
+    assert.doesNotMatch(passed, /target-records/u);
+    assert.ok(!offered(f).includes("target-records"), offered(f).join(", "));
+    const step = f.resume(["target-records", ...actorArgs]);
+    assert.notEqual(step.status, 0);
+    assert.match(
+      step.stderr,
+      /target-records refused: repositories\.target\.records is "instance", so WO-999's records stay in this instance/u,
+    );
+    assert.equal(git(f.target, "rev-parse", "HEAD"), reviewed);
+    // The value is main's, where both publishes read it. A registration
+    // that changes there to target before any record is filed offers the
+    // step again; the order worktree's own copy of the file, which may lag
+    // main or run ahead of it, changes nothing.
+    const registered = readFileSync(join(f.main, "dotln.config.json"), "utf8");
+    const asTarget = registered.replace(
+      '"records":"instance"',
+      '"records":"target"',
+    );
+    assert.notEqual(asTarget, registered);
+    write(f.main, "dotln.config.json", asTarget);
+    assert.ok(offered(f).includes("target-records"));
+    write(f.main, "dotln.config.json", registered);
+    assert.ok(!offered(f).includes("target-records"));
+    write(f.orderRoot, "dotln.config.json", asTarget);
+    assert.ok(!offered(f).includes("target-records"));
+    write(f.orderRoot, "dotln.config.json", registered);
+    // A commit after the reviewed one is refused, with both ways out.
+    write(f.target, "after-review.txt", "Not reviewed.\n");
+    git(f.target, "add", "-A");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "fix: after the review",
+    );
+    const moved = publishRecordsTarget(f);
+    assert.notEqual(moved.status, 0);
+    assert.match(
+      moved.stderr,
+      /differs from the reviewed commit [0-9a-f]+; repositories\.target\.records keeps this order's records in the instance, so nothing follows the reviewed commit\. Review the changed target before publication; if the commit after it is a records commit made while the key was "target", set the key back and rerun the records step, or return the target branch to the reviewed commit/u,
+    );
+    git(f.target, "reset", "-q", "--hard", reviewed);
+    const target = publishRecordsTarget(f);
+    assert.equal(target.status, 0, target.stderr || target.stdout);
+    const origin = join(f.base, "target.git");
+    assert.equal(
+      git(origin, "rev-parse", "refs/heads/fix/preserve-reviewed-text"),
+      reviewed,
+    );
+    const published = git(
+      origin,
+      "ls-tree",
+      "-r",
+      "--name-only",
+      "refs/heads/fix/preserve-reviewed-text",
+    ).split("\n");
+    assert.ok(published.includes("reviewed.txt"));
+    assert.deepEqual(
+      published.filter((file) => /WO-999/u.test(file)),
+      [],
+    );
+    for (const record of RECORDS_IN_TARGET)
+      assert.ok(!published.includes(record), record);
+    // The order's own publish proceeds with no records binding, says where
+    // the records are, and its branch on the instance's origin holds the
+    // order's text, its decisions and its two reports.
+    const order = publishRecordsOrder(f);
+    assert.equal(order.status, 0, `${order.stdout}\n${order.stderr}`);
+    assert.ok(
+      order.stdout.includes(
+        'WO-999: target order records no release; its records are in this instance (repositories.target.records is "instance") and this pull request publishes them.',
+      ),
+      order.stdout,
+    );
+    const instance = git(
+      join(f.base, "launchpad.git"),
+      "ls-tree",
+      "-r",
+      "--name-only",
+      "refs/heads/wo-999",
+    ).split("\n");
+    for (const record of RECORDS_IN_INSTANCE)
+      assert.ok(instance.includes(record), record);
+  }));
+
+// The fixture keeps its documents under records/, and the gate's code
+// identity sets documents aside by the name docs/ or by Git's
+// documentation mark. Every other case of this file runs with the root
+// marked; this one leaves the mark out, as an instance does that moves a
+// root and marks nothing, and holds what it meets.
+test("WO-276 Part N (the twenty-seventh critic): where the instance's document root is moved and carries no documentation mark, an order's records commits count as a change of code, and the order's own publish is refused for want of a test row at the new identity with nothing pushed", () =>
+  withFixture((f) => {
+    reviewedRecordsOrder(f, "instance", { documentationMark: false });
+    const target = publishRecordsTarget(f);
+    assert.equal(target.status, 0, `${target.stdout}\n${target.stderr}`);
+    const refused = publishRecordsOrder(f);
+    assert.notEqual(refused.status, 0);
+    assert.match(
+      refused.stderr,
+      /WO-999 has no recorded passing reviewer npm test row/u,
+    );
+    assert.equal(
+      spawnGit([
+        "--git-dir",
+        join(f.base, "launchpad.git"),
+        "rev-parse",
+        "--verify",
+        "--quiet",
+        "refs/heads/wo-999",
+      ]).status,
+      1,
+      "nothing was pushed",
+    );
+  }));
+
+test("WO-276 Part N (the attack pass): with records kept in the instance, a reviewed target change that adds one of the order's record paths is refused by name, and a record path the target's base already held is left alone", () => {
+  // The base already holds a file at one of the order's record paths, as a
+  // target does that received this order's records in an earlier cycle or
+  // another instance's under the same number: the change does not touch it,
+  // and the publish proceeds.
+  withFixture(
+    (f) => {
+      const { reviewed } = reviewedRecordsOrder(f, "instance");
+      const published = publishRecordsTarget(f);
+      assert.equal(published.status, 0, published.stderr);
+      assert.equal(
+        git(
+          join(f.base, "target.git"),
+          "rev-parse",
+          "refs/heads/fix/preserve-reviewed-text",
+        ),
+        reviewed,
+      );
+    },
+    {
+      baseFiles: {
+        "docs/evidence/WO-999/decisions.md":
+          "# Decisions\n\nAn earlier cycle's.\n",
+      },
+    },
+  );
+  withFixture((f) => {
+    reviewedRecordsOrder(f, "instance", {
+      reviewedFiles: {
+        "reviewed.txt": "Reviewed change.\n",
+        "docs/evidence/WO-999/decisions.md": "# Decisions\n\nCopied here.\n",
+      },
+    });
+    const refused = publishRecordsTarget(f);
+    assert.notEqual(refused.status, 0);
+    assert.match(
+      refused.stderr,
+      /the reviewed target change holds this order's records \(docs\/evidence\/WO-999\/decisions\.md\), and repositories\.target\.records keeps them in the instance; remove them from the target change and review it again, or set the key to "target" and run the records step/u,
+    );
+    assert.equal(
+      spawnGit([
+        "--git-dir",
+        join(f.base, "target.git"),
+        "rev-parse",
+        "--verify",
+        "--quiet",
+        "refs/heads/fix/preserve-reviewed-text",
+      ]).status,
+      1,
+      "nothing was pushed",
+    );
+  });
+});
+
+test("WO-276 criterion N2: with records kept in the instance, a reviewed change that deletes a record path the target's base held is published, since its tree holds no record there, and a change that deletes one such path and edits another is refused naming the edited path alone", () => {
+  const earlier = {
+    "docs/evidence/WO-999/decisions.md": "# Decisions\n\nAn earlier cycle's.\n",
+    "docs/verifications/WO-999/VER-001.md":
+      "# Verification\n\nAn earlier cycle's.\n",
+  };
+  const heldAt = (f, commit) =>
+    git(f.target, "ls-tree", "-r", "--name-only", commit)
+      .split("\n")
+      .filter((path) => RECORDS_IN_TARGET.includes(path));
+  // The reviewed change removes both of the earlier cycle's records beside
+  // an ordinary product file: nothing of the order's is filed in the target.
+  withFixture(
+    (f) => {
+      const { reviewed } = reviewedRecordsOrder(f, "instance", {
+        removedFiles: Object.keys(earlier),
+      });
+      assert.deepEqual(heldAt(f, `${reviewed}^`), Object.keys(earlier));
+      assert.deepEqual(heldAt(f, reviewed), []);
+      const published = publishRecordsTarget(f);
+      assert.equal(published.status, 0, published.stderr);
+      assert.equal(
+        git(
+          join(f.base, "target.git"),
+          "rev-parse",
+          "refs/heads/fix/preserve-reviewed-text",
+        ),
+        reviewed,
+      );
+    },
+    { baseFiles: earlier },
+  );
+  // One removed and one edited: the edited record is in the reviewed tree
+  // and is refused by name; the removed one is not named.
+  withFixture(
+    (f) => {
+      reviewedRecordsOrder(f, "instance", {
+        reviewedFiles: {
+          "reviewed.txt": "Reviewed change.\n",
+          "docs/verifications/WO-999/VER-001.md":
+            "# Verification\n\nRewritten here.\n",
+        },
+        removedFiles: ["docs/evidence/WO-999/decisions.md"],
+      });
+      const refused = publishRecordsTarget(f);
+      assert.notEqual(refused.status, 0);
+      assert.match(
+        refused.stderr,
+        /the reviewed target change holds this order's records \(docs\/verifications\/WO-999\/VER-001\.md\), and repositories\.target\.records keeps them in the instance/u,
+      );
+      assert.equal(
+        spawnGit([
+          "--git-dir",
+          join(f.base, "target.git"),
+          "rev-parse",
+          "--verify",
+          "--quiet",
+          "refs/heads/fix/preserve-reviewed-text",
+        ]).status,
+        1,
+        "nothing was pushed",
+      );
+    },
+    { baseFiles: earlier },
+  );
+});
+
+test("WO-276 Part N (the twenty-sixth critic): with plan-first elected, a plan approved under one registration value stands when main's value then changes; its documents stay where the order's own checkout put them; the records step and both publishes follow main; and documents kept in the target are refused by the target publish with the change or without it", () => {
+  const publishedHead = (f) =>
+    git(
+      join(f.base, "target.git"),
+      "rev-parse",
+      "refs/heads/fix/preserve-reviewed-text",
+    );
+  const inTarget = (f) => join(f.target, "docs/evidence/WO-999/plan-first");
+  const inInstance = (f) =>
+    join(f.orderRoot, "records/evidence/WO-999/plan-first");
+  // Kept in the instance throughout: nothing of the plan is in the reviewed
+  // change, and both publishes proceed at the reviewed commit.
+  withFixture((f) => {
+    const order = plannedRecordsOrder(f, {
+      before: "instance",
+      after: "instance",
+    });
+    assert.equal(order.directory, inInstance(f));
+    assert.ok(order.approvalStood);
+    assert.deepEqual(
+      git(f.target, "ls-tree", "-r", "--name-only", order.reviewed).split("\n"),
+      ["reviewed.txt", "source.txt"],
+    );
+    const target = publishRecordsTarget(f);
+    assert.equal(target.status, 0, target.stderr);
+    assert.equal(publishedHead(f), order.reviewed);
+    const records = publishRecordsOrder(f);
+    assert.equal(records.status, 0, `${records.stdout}\n${records.stderr}`);
+  });
+  // Approved under instance, main then target: the documents stay in the
+  // instance, the approval stands, the step is offered and both publishes
+  // proceed at the records commit.
+  withFixture((f) => {
+    const order = plannedRecordsOrder(f, {
+      before: "instance",
+      after: "target",
+    });
+    assert.equal(order.directory, inInstance(f));
+    assert.ok(order.approvalStood);
+    assert.match(order.passed, /target-records <actor flags>/u);
+    assert.ok(offered(f).includes("target-records"));
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    commitInstanceRecords(f, "docs: the moved records' removal");
+    const filed = git(f.target, "rev-parse", "HEAD");
+    const target = publishRecordsTarget(f);
+    assert.equal(target.status, 0, target.stderr);
+    assert.equal(publishedHead(f), filed);
+    const records = publishRecordsOrder(f);
+    assert.equal(records.status, 0, `${records.stdout}\n${records.stderr}`);
+  });
+  // Documents kept in the target, as a plan made under target keeps them:
+  // they are committed with the reviewed change, and the target publish
+  // refuses their paths by the identifier rule, with main's value changed
+  // to instance after the approval and with it unchanged alike. The
+  // approval stands in both, and the order's own publish proceeds.
+  for (const after of ["instance", undefined])
+    withFixture((f) => {
+      const order = plannedRecordsOrder(f, { before: undefined, after });
+      assert.equal(order.directory, inTarget(f));
+      assert.ok(order.approvalStood, String(after));
+      assert.equal(offered(f).includes("target-records"), after === undefined);
+      if (after === undefined) {
+        f.ok(f.resume(["target-records", ...actorArgs]));
+        commitInstanceRecords(f, "docs: the moved records' removal");
+      }
+      const target = publishRecordsTarget(f);
+      assert.notEqual(target.status, 0, String(after));
+      assert.match(
+        target.stderr,
+        /outward lint: pr-body refused: identifier\.launchpad: WO-999 \(line \d+, Change table, path docs\/evidence\/WO-999\/plan-first\/conversation\.md\)/u,
+        String(after),
+      );
+      const records = publishRecordsOrder(f);
+      assert.equal(records.status, 0, `${records.stdout}\n${records.stderr}`);
+    });
+});
+
+test("WO-276 criteria N3 and N4: with the repository registered target the order is offered the records step, both publishes refuse without it and proceed with it at the records commit; and records already filed are published from the target after the registration changes to instance, the order's publish saying so", () => {
+  // The order with its records filed into the target: the records commit.
+  const filed = (f) => {
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    commitInstanceRecords(f, "docs: the moved records' removal");
+    return git(f.target, "rev-parse", "HEAD");
+  };
+  const publishedHead = (f) =>
+    git(
+      join(f.base, "target.git"),
+      "rev-parse",
+      "refs/heads/fix/preserve-reviewed-text",
+    );
+  withFixture((f) => {
+    const { reviewed, passed, planFirst } = reviewedRecordsOrder(f, "target");
+    assert.equal(planFirst, join(f.target, "docs/evidence/WO-999/plan-first"));
+    assert.match(passed, /target-records <actor flags>/u);
+    assert.ok(offered(f).includes("target-records"), offered(f).join(", "));
+    // An order branch whose own copy of the registration says instance,
+    // against main's target, is still offered the step both publishes
+    // require: there is no state in which neither value publishes.
+    const ownCopy = readFileSync(
+      join(f.orderRoot, "dotln.config.json"),
+      "utf8",
+    );
+    write(
+      f.orderRoot,
+      "dotln.config.json",
+      ownCopy.replace('"records":"target"', '"records":"instance"'),
+    );
+    assert.ok(offered(f).includes("target-records"));
+    write(f.orderRoot, "dotln.config.json", ownCopy);
+    // The records action reads main's registration or refuses: with a main
+    // configuration that does not load, nothing is filed into the target.
+    const mainCopy = readFileSync(join(f.main, "dotln.config.json"), "utf8");
+    write(f.main, "dotln.config.json", "{ not a configuration");
+    const unread = f.resume(["target-records", ...actorArgs]);
+    write(f.main, "dotln.config.json", mainCopy);
+    assert.notEqual(unread.status, 0);
+    assert.match(
+      unread.stderr,
+      /target-records refused: where WO-999's records go could not be read from main's registration \(.+\); nothing was filed/u,
+    );
+    assert.equal(git(f.target, "rev-parse", "HEAD"), reviewed);
+    const target = publishRecordsTarget(f);
+    assert.notEqual(target.status, 0);
+    assert.match(
+      target.stderr,
+      /WO-999 has no committed TargetRecordsCommitted/u,
+    );
+    const order = publishRecordsOrder(f);
+    assert.notEqual(order.status, 0);
+    assert.match(
+      order.stderr,
+      /WO-999: committed control has no TargetRecordsCommitted/u,
+    );
+    const records = filed(f);
+    assert.notEqual(records, reviewed);
+    assert.ok(!offered(f).includes("target-records"));
+    const withRecords = publishRecordsTarget(f);
+    assert.equal(withRecords.status, 0, withRecords.stderr);
+    assert.equal(publishedHead(f), records);
+    const published = git(
+      join(f.base, "target.git"),
+      "ls-tree",
+      "-r",
+      "--name-only",
+      records,
+    ).split("\n");
+    for (const record of RECORDS_IN_TARGET)
+      assert.ok(published.includes(record), record);
+    const orderWithRecords = publishRecordsOrder(f);
+    assert.equal(
+      orderWithRecords.status,
+      0,
+      `${orderWithRecords.stdout}\n${orderWithRecords.stderr}`,
+    );
+    assert.ok(
+      orderWithRecords.stdout.includes(
+        `WO-999: target order records no release; records live in target at ${records}.\n`,
+      ),
+      orderWithRecords.stdout,
+    );
+  });
+  // Criterion N4: filed under the default, then the registration changes.
+  withFixture((f) => {
+    reviewedRecordsOrder(f);
+    const records = filed(f);
+    f.config.repositories.target.records = "instance";
+    write(f.main, "dotln.config.json", JSON.stringify(f.config));
+    git(f.main, "add", "-A");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: keep this repository's records in the instance",
+    );
+    git(f.main, "push", "-q", "origin", "main");
+    const target = publishRecordsTarget(f);
+    assert.equal(target.status, 0, target.stderr);
+    assert.equal(publishedHead(f), records);
+    const order = publishRecordsOrder(f);
+    assert.equal(order.status, 0, `${order.stdout}\n${order.stderr}`);
+    assert.ok(
+      order.stdout.includes(
+        `WO-999: target order records no release; records live in target at ${records}. repositories.target.records is now "instance": this order's records were already filed into the target at that commit and are published from there.\n`,
+      ),
+      order.stdout,
+    );
+  });
+});
 
 test("target records refuse missing review, dirty targets and destination collisions without losing inputs", () =>
   withFixture((f) => {
@@ -2294,7 +2759,7 @@ test("WO-227 criteria 2 to 4: a target publication checks private terms on kit p
     );
     assert.match(
       pending.stderr,
-      /vocabulary\.local: review \(line \d+, Change table\)/u,
+      /vocabulary\.local: context \(line \d+, Change table\)/u,
     );
     assert.match(pending.stderr, /path fixtures\/launchpad-board\.json/u);
     assert.doesNotMatch(
@@ -2401,8 +2866,13 @@ test("a private match spanning three Change rows refuses before draft publicatio
       return result;
     };
     let digest;
-    for (const marker of ["refuse: ", "review: ", ""]) {
-      writeFileSync(termsFile, `${original}\n${marker}0 bridge md 1 0 day\n`);
+    // The entry carries the pipes that part the table's cells: a run on
+    // either side of a pipe is one word only for such an entry (WO-276).
+    for (const marker of ["refuse: ", "context: ", "review: ", ""]) {
+      writeFileSync(
+        termsFile,
+        `${original}\n${marker}0 | bridge.md | 1 | 0 | day\n`,
+      );
       const result = refused(
         draft(),
         marker.startsWith("refuse")

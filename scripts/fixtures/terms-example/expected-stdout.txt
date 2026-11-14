@@ -1,0 +1,3 @@
+local-terms list: present; entries: 2 refuse, 1 context; changed files screened: 1; lines found: 1 refuse, 2 context
+CONTEXT docs/sample.md:1: a local term in context mode
+CONTEXT docs/sample.md:2: a local term in context mode

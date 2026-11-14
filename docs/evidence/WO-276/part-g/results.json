@@ -1,0 +1,58 @@
+{
+  "what": "Part G's comparisons over a fresh export made by the launchpad tests' fixture from a commit of a copy of this working tree, before any install; and two timings on this host.",
+  "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-276/part-g/exported.mjs",
+  "seeds": {
+    "first-order.exported.txt": {
+      "from": "docs/work-orders/WO-001-environment-truth.md",
+      "bytes": 6898,
+      "otherHarnessOrProviderNames": [],
+      "namesClaudeCode": true,
+      "namesElection": true
+    },
+    "AI-HARNESS-SECURITY.exported.txt": {
+      "from": "AI-HARNESS-SECURITY.md",
+      "bytes": 2901,
+      "otherHarnessOrProviderNames": [],
+      "namesClaudeCode": true,
+      "namesElection": true
+    }
+  },
+  "page": {
+    "guideFaults": [],
+    "markedBlocks": 10,
+    "blocksByStep": {
+      "new-instance": 1,
+      "first-pass": 1,
+      "run-order": 2,
+      "close-order": 1,
+      "take-release": 3,
+      "register-repository": 1,
+      "tell-core": 1
+    },
+    "pageHoldsEveryBlockInTheCyclesOrder": true,
+    "versionNamed": "v0.123.0",
+    "commandExit": 0,
+    "commandPrintsThePage": true,
+    "commandPrintsEveryBlockInOrder": true
+  },
+  "generatedCheck": {
+    "checkMs": 11,
+    "exits": {
+      "current": 0,
+      "stale": 1,
+      "regenerated": 0,
+      "unmarked": 1
+    }
+  },
+  "forCore": {
+    "exportedEqualsTemplate": true,
+    "failures": {
+      "the file as seeded, with no entry": 0,
+      "an entry of the stated form": 0,
+      "an entry that lacks a field": 1,
+      "an entry with a value outside its set": 1,
+      "an entry whose block is no JSON": 1
+    },
+    "fiveJudgmentsMs": 4
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "criterion": "25",
+  "requirement": "Each moved reader retains an old/new comparison over committed documents or sources.",
+  "scope": "Part B inventory, schema-2 coverage map, comparison driver and individual comparison artifacts; no runtime mismatch is asserted.",
+  "readers": [
+    {
+      "source": "scripts/lib/planning-followups.mjs",
+      "reader": "collectFollowupSources",
+      "coverage": {
+        "readers": [
+          {
+            "reader": "collectFollowupSources",
+            "none": "its output is the committed generated page docs/planning/followups.json, which npm run meta -- --check regenerates and compares: a changed reading changes the page"
+          }
+        ]
+      },
+      "committedInputCount": 87,
+      "inputExamples": [
+        "docs/planning/README.md",
+        "docs/planning/beacon-usefulness-checkpoint.md",
+        "docs/planning/budget-window-work-order-ladders.md"
+      ],
+      "exclusions": "archive and refutations directories, as markdownFiles excludes them"
+    },
+    {
+      "source": "scripts/lib/release-history.mjs",
+      "reader": "historicalComponents; orderLinks",
+      "coverage": {
+        "readers": [
+          {
+            "reader": "the order titles and components of the roadmap's release block",
+            "none": "its output is the committed generated page docs/product/06-roadmap.md (its release block), which the document check regenerates and compares: a changed reading changes the page"
+          }
+        ]
+      },
+      "committedInputCount": 3,
+      "inputExamples": [
+        "docs/releases/README.md",
+        "docs/releases/v0.2.0-notes.md",
+        "docs/releases/v0.2.0.md"
+      ]
+    },
+    {
+      "source": "scripts/lineage.mjs",
+      "reader": "inspectLedger",
+      "coverage": {
+        "readers": [
+          {
+            "reader": "inspectLedger",
+            "none": "its output is the committed generated page docs/lineage/README.md, which the lineage index check regenerates and compares: a changed reading changes the page"
+          }
+        ]
+      },
+      "committedInputCount": 1,
+      "inputExamples": [
+        "docs/lineage/idea-ledger.md"
+      ]
+    },
+    {
+      "source": "scripts/siblings.mjs",
+      "reader": "manifestHashes",
+      "coverage": {
+        "readers": [
+          {
+            "reader": "the entries of the siblings registry",
+            "none": "its output is the committed generated page docs/siblings/README.md, which the siblings check regenerates and compares: a changed reading changes the page"
+          }
+        ]
+      },
+      "committedInputCount": 1,
+      "inputExamples": [
+        "docs/siblings/README.md"
+      ]
+    }
+  ],
+  "additionalReleaseInputs": "All committed work-order documents supply titles through orderLinks.",
+  "siblingsCheckLimit": "checkRegistry returns immediately when expected === actual, before manifestHashes reads either registry."
+}

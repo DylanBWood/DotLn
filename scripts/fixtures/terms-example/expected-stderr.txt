@@ -1,0 +1,1 @@
+FAIL docs/sample.md:3: a local term in refuse mode

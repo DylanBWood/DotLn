@@ -1,0 +1,19 @@
+{
+  "what": "Read-only checks the final review ran at the candidate it judged, on 2026-11-13 between 22:59 and 23:03 UTC, each exit 0. None is a gate run and none records a gate row.",
+  "checks": [
+    { "command": "npm run worktree -- integrate WO-276", "result": "took in nothing: the worktree is not behind main; HEAD, main and origin/main are 0097fcac608bcaa24c51c8b6d6020fc2382ea141" },
+    { "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs declarations", "result": "exit 0" },
+    { "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs generated", "result": "exit 0" },
+    { "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs git-surface", "result": "exit 0" },
+    { "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs host", "result": "exit 0; host memory normal; file-events daemon 19120128 bytes against the limit of 1073741824" },
+    { "command": "node scripts/harness.mjs check", "result": "exit 0; 37 generated surfaces" },
+    { "command": "node scripts/harness.mjs bounded -- node scripts/feedback-evidence.mjs --check", "result": "exit 0; the live feedback audit of edition 007 judged the current source" },
+    { "command": "node scripts/docs-check.mjs", "result": "exit 0; 0 failures; the verbatim screen read 274 changed files against 68 captures and found 0 shared runs" },
+    { "command": "npm run publication:check", "result": "exit 0" },
+    { "command": "npm run work-orders -- index --check", "result": "exit 0; both pages current" },
+    { "command": "npm run plan -- check", "result": "exit 0; 20 preflight advisories" },
+    { "command": "npm run format:check", "result": "exit 0" },
+    { "command": "git diff --check HEAD", "result": "exit 0" },
+    { "command": "node scripts/terms.mjs branch", "result": "exit 0; list present; 0 refuse entries and 9 context entries; 819 changed files screened; 0 refuse lines and 0 context lines found" }
+  ]
+}

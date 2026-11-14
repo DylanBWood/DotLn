@@ -1,4 +1,4 @@
-import test from "node:test";
+import test from "./lib/test-shards.mjs";
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -1881,16 +1881,21 @@ test("temporary declarations honor relocated documents and intake", (t) => {
     "records/intake",
   ])
     mkdirSync(join(root, directory), { recursive: true });
+  // A script under the reserved root is the instance's own: a path literal
+  // in a kit file that names it brings it no rule of the kit's.
+  mkdirSync(join(root, "extensions/tools"), { recursive: true });
   writeFileSync(
     join(root, "packages/example/test/entry.test.ts"),
     [
       'await import(pathToFileURL(join(process.cwd(), "records/evidence/fixture.mjs")).href);',
       'const privateInput = "records/intake/private.mjs";',
+      'const instanceTool = "extensions/tools/scratch.mjs";',
     ].join("\n"),
   );
   for (const path of [
     "records/evidence/fixture.mjs",
     "records/intake/private.mjs",
+    "extensions/tools/scratch.mjs",
   ])
     writeFileSync(
       join(root, path),

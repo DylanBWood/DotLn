@@ -1,0 +1,2402 @@
+[
+  {
+    "id": "1",
+    "criterion": "(A1) With a list that holds one entry under `refuse:`, one under `context:`, one marked `review:` and one unmarked line above both sections, and a branch that adds a line carrying each, `node scripts/terms.mjs branch` prints one `FAIL` line on standard error, for the refuse entry, and three `CONTEXT` lines on standard output, each naming a file and a line and none naming a term, and exits nonzero; with the refuse entry's line removed from the branch it exits zero and prints the three; its status line gives the count of entries in each class; and the document gate's passing terms task relays the three `CONTEXT` lines. Check: the terms-task cases of `npm test -- --only runner-fixtures`.",
+    "prior": {
+      "criterionId": "1",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 1:** met. (A1) The two-mode contract stands; the repaired terms matcher preserves it, and the complete runner-fixtures row covers the stream/status cases.",
+      "paragraph": "**Criterion 1:** met. (A1) The two-mode contract stands; the repaired terms matcher preserves it, and the complete runner-fixtures row covers the stream/status cases."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "2",
+    "criterion": "(A2) An entry listed under both sections refuses; a mode word alone on a line opens a section and is no entry; and a list written before this order, of unmarked lines and `refuse:`-marked lines, reads its unmarked lines as context and its marked lines as refuse. Check: the list cases of `npm test -- --only plan-refutation`.",
+    "prior": {
+      "criterionId": "2",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 2:** met. (A2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 2:** met. (A2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "3",
+    "criterion": "(A3) An entry of three letters is not matched by three single letters that stand on either side of a brace, a pipe and a backslash, and is matched when the same letters are separated by a hyphen, by a period, by a space and by a line break; a two-word entry is matched when a line break and the next line's quotation marker stand between its words; and an entry that is an address with an at sign, and one that is a host and port, each match their own spelling. Check: the same cases.",
+    "prior": {
+      "criterionId": "3",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 3:** met. (A3) The original separator cases stand. The independent numbered-line probe now finishes with no findings, and the repair bounds the search by entry prefixes and visited states.",
+      "paragraph": "**Criterion 3:** met. (A3) The original separator cases stand. The independent numbered-line probe now finishes with no findings, and the repair bounds the search by entry prefixes and visited states."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "4",
+    "criterion": "(A4) With a context-mode match and no refuse-mode match in what each screens, `node scripts/harness.mjs check`, the kit export, `node scripts/refute-plan.mjs publish`, `node scripts/launchpad.mjs update --publish` and `node scripts/worktree.mjs publish` against a fixture's bare origin, `npm run plan -- followups --apply`, `npm run plan -- receipt` and the entropy receipt each proceed and print the match's file and line; with a refuse-mode match each refuses before any write or push, naming the file, the line and the mode and not the term. A context-mode match in a pull request's title or body is listed by the two launchpad publishes and refuses neither.",
+    "prior": {
+      "criterionId": "4",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 4:** met. (A4) Publication callers retain their original mode behavior. The terms matcher repair changes search cost; the current complete and document coverage retain the eight caller cases.",
+      "paragraph": "**Criterion 4:** met. (A4) Publication callers retain their original mode behavior. The terms matcher repair changes search cost; the current complete and document coverage retain the eight caller cases."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "5",
+    "criterion": "(A5) A target publish with a context-mode match in its composed body waits for `--confirm-terms` and proceeds with it, as before this part. Check: the review-mode case of `npm test -- --only target-publish`.",
+    "prior": {
+      "criterionId": "5",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 5:** met. (A5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 5:** met. (A5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "6",
+    "criterion": "(A6) Every installed executor, verifier and reviewer root says to run `node scripts/terms.mjs branch`, to read the lines it lists in context mode and to state the count read, and the installed planner roots say so of the planning publish; every installed lifecycle root says that `evidence --wait` awaits a gate run and that a correction's record is a decision of kind `correction`; the installed worker definitions say that a worker stops what it started before it hands back; and `node scripts/harness.mjs check` shows the installed roots equal the emitted ones. The verifier reads the installed roots.",
+    "prior": {
+      "criterionId": "6",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 6:** met. (A6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 6:** met. (A6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "7",
+    "criterion": "(A7) No installed executor root says that a repair after a failed complete run takes a review round or names a fifty-line figure for one; every installed executor root says that such a repair's lines are counted as unreviewed, that the run after a failed run is started with `--keep-going`, and that an order in parts runs its ladder a part at a time, a part after the first opening it with `--since`. The verifier reads the installed roots, and `node scripts/harness.mjs check` shows them equal to the emitted ones.",
+    "prior": {
+      "criterionId": "7",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 7:** met. (A7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 7:** met. (A7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "8",
+    "criterion": "(A8) Given a subagent-stop input that lists a live background task the stopping worker started, the hook refuses once, naming the task, writes it to the parent's journal with the worker's id, and admits the re-entry; the facts printed at the parent's next prompt name that worker and its task; with an empty list, and with a list that holds only a task the parent started, the stop is admitted. Check: the cases of `npm test -- --only harness-fixtures`. What the host did with the refusal is in `docs/evidence/WO-276/part-a/subagent-stop-probe.json`, and where the host did not hold the worker the journal rows and the parent's facts are the delivered behavior.",
+    "prior": {
+      "criterionId": "8",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 8:** met. (A8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 8:** met. (A8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "9",
+    "criterion": "(A9) Struck on the operator's direction of 2026-11-10 (decision WO-276-D012): the hook does not refuse `AskUserQuestion`. A session dispatched as executor, verifier, reviewer, release-close or planner is admitted the host's question dialog as at the base, and the refusal table holds no row for it. Check: the case of `npm test -- --only harness-fixtures`.",
+    "prior": {
+      "criterionId": "9",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 9:** met. (A9) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 9:** met. (A9) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "10",
+    "criterion": "(A10) After `npm run resume -- accept-overrun subagentCap --ceiling 40 --reason <text>` with its capture and actor flags, the hook admits a twenty-first subagent in that dispatch and refuses a forty-first, `node scripts/harness.mjs usage <session>` prints forty as the cap, and a dispatch of another order reads the budgets file's value; with `--ceiling unlimited` no launch is refused for the cap, and the dispatch's wall-clock standing reads as it did before the acceptance.",
+    "prior": {
+      "criterionId": "10",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 10:** met. (A10) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 10:** met. (A10) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "11",
+    "criterion": "(A11) A completion whose `--harness-version` differs from the version the hook recorded for the session is refused, naming the recorded version; one that agrees, and one in a root whose harness state records no observation, complete as before this part. Check: the cases beside the effort-readback case in `scripts/test-off-ramps.mjs` (`npm test -- --only resume`).",
+    "prior": {
+      "criterionId": "11",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 11:** met. (A11) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 11:** met. (A11) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "12",
+    "criterion": "(A12) The spawned host guard reports the process title this part gives it. Check: the case in `scripts/test-host-guard.test.mjs`.",
+    "prior": {
+      "criterionId": "12",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 12:** met. (A12) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 12:** met. (A12) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "13",
+    "criterion": "(A13) A branch line that links a document whose path is fourteen words long, where a capture names the same path, is no finding; the same line with twelve of a capture's own words beside the link is one; and in a kit root a changed file whose bytes equal the incoming manifest's entry is not screened while the same file with one line changed is. Check: the verbatim cases of `npm test -- --only docs-check-fixtures`.",
+    "prior": {
+      "criterionId": "13",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 13:** met. (A13) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 13:** met. (A13) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "14",
+    "criterion": "(A14) `packages/skeleton/fixtures/` holds no `*role-baseline*.json`, `scripts/check-role-oracle.mjs` is absent, the structural phase lists no `role-oracle` task, and with a committed skill root changed by hand `node scripts/harness.mjs check` fails naming that root.",
+    "prior": {
+      "criterionId": "14",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 14:** met. (A14) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 14:** met. (A14) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "15",
+    "criterion": "(A15) The kit guide and product 07 state the two classes, the stage's reading, the repair after a failed run, the ladder of an order in parts, the worker's hand-back, the cap's acceptance, the checkpoint and the verbatim screen's words in the sections step A17 names, or in the section step F6 creates where that step moved the paragraph; each section but §First steps links this order's decisions, and §First steps links §Document quality. The kit guide §Taking upstream updates says what an unmarked entry does from this release and what its owner moves under `refuse:`. The verifier reads the named sections; `npm run test:docs` judges their links and form.",
+    "prior": {
+      "criterionId": "15",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 15:** met. (A15) The named guide and execution-rule passages retain the two modes and stage duties. The repair corrects context-mode wording and updates the seed-file count; the document row judges links and form.",
+      "paragraph": "**Criterion 15:** met. (A15) The named guide and execution-rule passages retain the two modes and stage duties. The repair corrects context-mode wording and updates the seed-file count; the document row judges links and form."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "16",
+    "criterion": "(A16) A fresh export holds `scripts/kit/terms.example.txt`; with that file as the list and the sample of this part's design as a branch's added lines, `node scripts/terms.mjs branch` prints on standard error the `FAIL` line the design shows and on standard output, under its status line, the two `CONTEXT` lines, and exits nonzero; with the two section lines removed from the list it prints three `CONTEXT` lines and no `FAIL` and exits zero; and the kit guide §First steps shows the example list, the sample and those lines. The verifier compares the guide's blocks with the kit's files. Check: the example case of `npm test -- --only runner-fixtures`.",
+    "prior": {
+      "criterionId": "16",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 16:** met. (A16) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 16:** met. (A16) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "17",
+    "criterion": "(A17) With an active order and an uncommitted change in its worktree, `npm run resume -- checkpoint` prints a new ref under `refs/dotln/checkpoint/` for that order and its commit id, the commit holding the change, tracked and untracked, and appends no control event, so `npm run resume -- status` reads as before it. Check: the case of `npm test -- --only resume`.",
+    "prior": {
+      "criterionId": "17",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 17:** met. (A17) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 17:** met. (A17) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "18",
+    "criterion": "(B1) No non-test source under `scripts/` or `packages/*/src/` reads Markdown syntax or JSON text by pattern outside the reader modules, the screen's own module, and the readers and patterns the screen names with their reasons; `node scripts/docs-check.mjs` passes on this repository and fails, naming the file, the line and the reader to call, on a source line that reads a fence, a heading, a table row, a list item, a bold field label, a marker comment or JSON text by pattern. Check: the screen's cases of `npm test -- --only docs-check-fixtures`.",
+    "prior": {
+      "criterionId": "18",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 18:** met. (B1) The shared-reader screen and exceptions remain in force. The repair keeps order-list recognition in the reader module; the current docs-check cases and closing document row cover the screen.",
+      "paragraph": "**Criterion 18:** met. (B1) The shared-reader screen and exceptions remain in force. The repair keeps order-list recognition in the reader module; the current docs-check cases and closing document row cover the screen."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "19",
+    "criterion": "(B2) No file under `packages/` imports Prettier, and no source parses a page a command generates: `docs/work-orders/README.md` and `docs/work-orders/HISTORY.md` carry no data comment, `npm run work-orders -- index --check` and the roadmap block's check pass with `docs/control/release-history.json` and `docs/control/workstream-observations.json` present and fail naming the command that writes one when it is missing, the index check passes for a workstream with a target and no target checkout, `npm run work-orders -- index --json` prints the cards the pages show, and the repository holds no committed record of the orders' cards.",
+    "prior": {
+      "criterionId": "19",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 19:** met. (B2) The index still derives cards from source records, with no committed card cache. Card-source reads now precede the owner lock; the independent presence probe and current coverage preserve the index contract.",
+      "paragraph": "**Criterion 19:** met. (B2) The index still derives cards from source records, with no committed card cache. Card-source reads now precede the owner lock; the independent presence probe and current coverage preserve the index contract."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "20",
+    "criterion": "(B3) In a copy of the scripts with no `node_modules` and no built output, activating an order, `npm run work-orders -- index --check`, `node scripts/launchpad.mjs verify` and `node scripts/launchpad.mjs preview --from <revision>` load and run. Check: the cases step B2 adds to `npm test -- --only launchpad` and `npm test -- --only work-orders-fixtures`.",
+    "prior": {
+      "criterionId": "20",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 20:** met. (B3) The build-free entry contract remains. The independently rerun verification-order probe refuses changed compiled runtime before executing instance code; the current launchpad cases cover the missing-installation copy.",
+      "paragraph": "**Criterion 20:** met. (B3) The build-free entry contract remains. The independently rerun verification-order probe refuses changed compiled runtime before executing instance code; the current launchpad cases cover the missing-installation copy."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "21",
+    "criterion": "(B4) A work order whose body quotes a header field, or lists one in a list item, takes its repository, its workstream and its other header fields from its leading header alone; the reader parses a document once when several fields are read from it; and each parser case step B3 names passes. Check: the cases of steps B3 and B4.",
+    "prior": {
+      "criterionId": "21",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 21:** met. (B4) Header fields and parse sharing retain their contract. The dollar-fields reproduction reads the classification field and both values correctly; the neutralization and header cases are covered by the current rows. F1 concerns acceptance-list reading, outside these named header cases.",
+      "paragraph": "**Criterion 21:** met. (B4) Header fields and parse sharing retain their contract. The dollar-fields reproduction reads the classification field and both values correctly; the neutralization and header cases are covered by the current rows. F1 concerns acceptance-list reading, outside these named header cases."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "22",
+    "criterion": "(B5) `scripts/lib/vendor/prettier-markdown.mjs`, the license and the notices beside it equal the installed package's files byte for byte, the generated check fails naming the file after one byte of any of them changes, a copy changed by one byte is screened by the terms task as any added file is, a fresh export holds the three files and `THIRD_PARTY_NOTICES`, and `docs/LEGAL.md` names the copy.",
+    "prior": {
+      "criterionId": "22",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 22:** met. (B5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 22:** met. (B5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "23",
+    "criterion": "(B6) `packages/skeleton/src/source-reading.mjs` is the only module under `scripts/` and `packages/*/src/`, tests aside, that imports TypeScript's reading interfaces, and importing it loads no TypeScript; reading the literals and import specifiers of a batch of sources starts no process, by the case that counts process starts; and a syntax tree for a batch of three sources starts one.",
+    "prior": {
+      "criterionId": "23",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 23:** met. (B6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 23:** met. (B6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "24",
+    "criterion": "(B7) `packages/skeleton/src/harness-host.ts`, `scripts/lib/git-surface.mjs` and `packages/skeleton/src/harness-command.ts` hold no shell lexer but the one module's, and every refusal case of `npm test -- --only harness-fixtures` that passed at the tree this part began on passes unchanged at the checkpoint this part ended on.",
+    "prior": {
+      "criterionId": "24",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 24:** met. (B7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 24:** met. (B7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "25",
+    "criterion": "(B8) `docs/evidence/WO-276/part-b/` holds the inventory and, for each reader that moved, its comparison over the committed documents or sources it reads, with every difference named as a defect of the old reader or as fixed; the verifier re-runs one comparison of its choice.",
+    "prior": {
+      "criterionId": "25",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 25:** met. (B8) The inventory and expanded coverage map name the moved readers, including FINAL-001 F7. The independent comparison run and its named-difference summary are retained in verifier-006; the required comparison has been rerun.",
+      "paragraph": "**Criterion 25:** met. (B8) The inventory and expanded coverage map name the moved readers, including FINAL-001 F7. The independent comparison run and its named-difference summary are retained in verifier-006; the required comparison has been rerun."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "26",
+    "criterion": "(B9) A live feedback self-host episode recorded under this order judges the feedback sources as the candidate holds them: `npm run evidence:feedback -- --check` passes.",
+    "prior": {
+      "criterionId": "26",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 26:** met. (B9) The feedback check at the repaired candidate passes against live edition 009; the retained episode is evidence of that source, not a new live episode by this verifier.",
+      "paragraph": "**Criterion 26:** met. (B9) The feedback check at the repaired candidate passes against live edition 009; the retained episode is evidence of that source, not a new live episode by this verifier."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "27",
+    "criterion": "(B10) Product 07, the kit guide and `docs/LEGAL.md` state the rule, the screen, the record and the carried parser in the sections step B12 names, each linking this order's decisions. The verifier reads the named sections; `npm run test:docs` judges their links and form.",
+    "prior": {
+      "criterionId": "27",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 27:** met. (B10) The guide, execution guide and legal copy retain the shared-reader, screen, observation-record and carried-parser rules. The changed paragraphs were read with their implementation; document checks judge the links and form.",
+      "paragraph": "**Criterion 27:** met. (B10) The guide, execution guide and legal copy retain the shared-reader, screen, observation-record and carried-parser rules. The changed paragraphs were read with their implementation; document checks judge the links and form."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "28",
+    "criterion": "(B11) A resident started through the package's own entry refuses a mission check, naming `scripts/resident.mjs`, and reports its work orders unavailable; one started through the launcher runs the mission check and reads an order's card after that order's file changes; and a Markdown discovery profile is refused by name. Check: the cases of `npm test -- --only skeleton` and `npm test -- --only resident-bind`.",
+    "prior": {
+      "criterionId": "28",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 28:** met. (B11) The package-entry reproduction now records a documents-unread hold whose reason and audit name scripts/resident.mjs. The current skeleton and resident-bind coverage holds the launcher, card-refresh and discovery clauses.",
+      "paragraph": "**Criterion 28:** met. (B11) The package-entry reproduction now records a documents-unread hold whose reason and audit name scripts/resident.mjs. The current skeleton and resident-bind coverage holds the launcher, card-refresh and discovery clauses."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "29",
+    "criterion": "(C1) `npm run worker -- review --kind criteria --host claude --order WO-276 --dry-run`, and the same for `design` and `consistency` and, with `--round 1`, for `combined`, each prints a brief that carries the admission rule's sentence, and a `--round 2 --recheck <report> --dry-run` brief carries it too. In the review-worker case whose worker returns a criteria report with a disposition outside the three admitted, the lane holds that report under a name that marks it refused, the refusal line names its path, and the round has no recorded report.",
+    "prior": {
+      "criterionId": "29",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 29:** met. (C1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 29:** met. (C1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "30",
+    "criterion": "(C2) Every installed executor root under `.claude/skills/` and `.agents/skills/` carries the judgment rule, and no installed root carries the clause `Fix or record every finding`. The verifier reads the installed roots, and `node scripts/harness.mjs check` shows them equal to the emitted ones.",
+    "prior": {
+      "criterionId": "30",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 30:** met. (C2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 30:** met. (C2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "31",
+    "criterion": "(C3) Every installed executor root states that a fix dispatch repairs the class its failed report names and runs one combined review over the repair's change since the tree that report judged, and no installed root says that a fix runs three round-one reviewers. It is judged as criterion C2 is.",
+    "prior": {
+      "criterionId": "31",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 31:** met. (C3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 31:** met. (C3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "32",
+    "criterion": "(C4) Every installed executor root states the three sizes of round one and that a paired round's reviewers are blind to one another. `npm run work-orders -- index --check` passes on an order whose header carries the line with each of the three values and shows the value on that order's card, refuses any other value on an open order naming the order and the line, passes an open order whose header has no such line, which runs the full ladder, and passes a closed order's file whatever its line holds.",
+    "prior": {
+      "criterionId": "32",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 32:** met. (C4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 32:** met. (C4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "33",
+    "criterion": "(C5) In the document fixture, `node scripts/docs-check.mjs` passes a current decision record whose `roundFindings` holds one entry of each class, fails naming the decision and the field on an entry whose class or finder is not an admitted value, and passes a record with no such array.",
+    "prior": {
+      "criterionId": "33",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 33:** met. (C5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 33:** met. (C5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "34",
+    "criterion": "(C6) Given a fixture of two paired orders whose decisions hold `roundFindings`, `npm run plan -- failures` reports for each and in sum the findings of each class found by the combined worker alone, by the three kinds alone and by both, with each order's first verification verdict; an order that does not declare `paired` contributes nothing to that table.",
+    "prior": {
+      "criterionId": "34",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 34:** met. (C6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 34:** met. (C6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "35",
+    "criterion": "(C7) Product 07 §Verification review and attack and the kit guide's ladder paragraph state the round-one rule, the fix dispatch's one review, the header line and the paired record, in that section or in the one step F6 creates where that step moved a paragraph, and link this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "35",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 35:** met. (C7) The review and repair rules remain in the installed roots and named guide sections. This repair changes neither the three round-one choices nor the fix-dispatch rule; current generated/document coverage stands.",
+      "paragraph": "**Criterion 35:** met. (C7) The review and repair rules remain in the installed roots and named guide sections. This repair changes neither the three round-one choices nor the fix-dispatch rule; current generated/document coverage stands."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "36",
+    "criterion": "(C9) In the review-worker case whose planning brief is split into two batches under a capture, a second batch that returns no `## Items` table does not refuse the round when the merged report carries the table; and where the merged report is refused, the lane holds the first batch's report and the refused one, each under a name that says which it is, and the refusal line names both paths.",
+    "prior": {
+      "criterionId": "36",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 36:** met. (C9) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 36:** met. (C9) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "37",
+    "criterion": "(D1) In `scripts/test-runner.test.mjs`'s ordering case, `expandSuiteTasks` returns the exclusive rows adjacent to one another, ahead of a heavy row that changed since the last gate when an exclusive row carries that lead too, and behind a heavy row that failed last when no exclusive row failed. Check: `npm test -- --only runner-fixtures`.",
+    "prior": {
+      "criterionId": "37",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 37:** met. (D1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 37:** met. (D1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "38",
+    "criterion": "(D2) `expandSuiteTasks` returns one task for each shard of the `harness-fixtures` row, the row declares more than one shard unless the decisions name each case title that failed when shards ran together and the three runs that showed it, the scheduling case admits those tasks together with no task that is neither exclusive nor light beside them, and with no shard named in the environment `node --test --test-name-pattern <title> scripts/test-harness.mjs` runs the named case. Check: `npm test -- --only runner-fixtures`.",
+    "prior": {
+      "criterionId": "38",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 38:** met. (D2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 38:** met. (D2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "39",
+    "criterion": "(D3) `npm test -- --only harness-fixtures` passes, and the evidence lists the titles declared by every file the row loads, the imported files included, beside the titles the shard tasks ran, each title run once and the two lists equal, taken at the tree this part ended on.",
+    "prior": {
+      "criterionId": "39",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 39:** met. (D3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 39:** met. (D3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "40",
+    "criterion": "(D4) The expanded `target-worktree` group lists the close file's task first, and `npm test -- --only target-worktree` passes.",
+    "prior": {
+      "criterionId": "40",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 40:** met. (D4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 40:** met. (D4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "41",
+    "criterion": "(D5) `docs/evidence/WO-276/part-d/before.json` and `after.json` each hold a passing fresh complete review row's timeline, from trees that differ only in the files this part changes; in the after row no task that is neither exclusive nor light starts between the start of the first exclusive row and the start of the last.",
+    "prior": {
+      "criterionId": "41",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 41:** met. (D5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 41:** met. (D5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "42",
+    "criterion": "(D6) Each of `harness-fixtures`, `process-debt` and `worktree-integration` either shows at least one light peer beside it in a comparison row, cited in the decisions, or no longer declares `overlap`.",
+    "prior": {
+      "criterionId": "42",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 42:** met. (D6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 42:** met. (D6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "43",
+    "criterion": "(D7) In the case of `scripts/test-runner.test.mjs` that builds the gate rows the conditions reading takes, with one fresh passing complete row of the review selection and none of the plain selection, the reading reports that row as the complete run's sample with its selection named, and reports no per-task row for a task name the row does not hold. Check: `npm test -- --only runner-fixtures`.",
+    "prior": {
+      "criterionId": "43",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 43:** met. (D7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 43:** met. (D7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "44",
+    "criterion": "(D8) Product 07 §Preflight before the full gate states the exclusive rows' shared priority, the shards and the target-worktree file order and links this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "44",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 44:** met. (D8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 44:** met. (D8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "45",
+    "criterion": "(E1) `scripts/fixtures/` holds neither registry and no file under `scripts/` or `packages/` names one; a fixture suite file whose top-level registrations declare one title twice fails the duplicate-title case, naming the file and the title, and one that repeats a title only inside a nested case or a fixture's text passes; `npm test -- --only runner-fixtures` passes.",
+    "prior": {
+      "criterionId": "45",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 45:** met. (E1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 45:** met. (E1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "46",
+    "criterion": "(E2) `scripts/test-target-publish.mjs` holds no per-case time bound, and `npm test -- --only target-publish` passes.",
+    "prior": {
+      "criterionId": "46",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 46:** met. (E2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 46:** met. (E2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "47",
+    "criterion": "(E3) With a newer feedback edition selected than the one the self-host case reads, the `console-fixtures` artifact that sync and the structural phase check is current and `packages/console/fixtures/expected/selfhost.*` keep their bytes, where at the base that check fails naming the selected edition; and `packages/console/test/board.test.ts` holds a case that loads the edition `currentEvidence` selects and applies the property checks to it with no byte comparison. `npm test -- --only console` and `npm test -- --only sync-fixtures` pass.",
+    "prior": {
+      "criterionId": "47",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 47:** met. (E3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 47:** met. (E3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "48",
+    "criterion": "(E4) `docs/evidence/WO-276/part-e/wordings.json` lists every wording the four statement cases of `scripts/test-vertical.mjs` iterate at this order's base, which the verifier compares with that file at the base commit; each is a row of the table in `packages/skeleton/test/vertical-judgment.test.ts` with the statement role and assertion kind it supplies and the classification kind and rule it expects from `baselineClass` and `baselineStoryClass`; `scripts/test-vertical.mjs` keeps one end-to-end case for each statement class and outcome; and `npm test -- --only skeleton` and `npm test -- --only vertical` pass.",
+    "prior": {
+      "criterionId": "48",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 48:** met. (E4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 48:** met. (E4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "49",
+    "criterion": "(E5) Product 07 states that case titles are checked for duplicates and not against a registry, and links this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "49",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 49:** met. (E5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 49:** met. (E5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "50",
+    "criterion": "(F1) For every role but the router, whose root this part leaves as it is, and for both skill roots, the emitted root holds exactly once each shared rule whose record names that role and holds no shared rule whose record does not, by the case that derives both from the rule records. Check: `npm test -- --only skeleton`.",
+    "prior": {
+      "criterionId": "50",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 50:** met. (F1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 50:** met. (F1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "51",
+    "criterion": "(F2) `docs/evidence/WO-276/part-f/` holds the rule-by-role table with a reason in every cell: for a rule a role keeps, the command, phase or host of that role's procedure that the rule governs, and for a rule a role loses, that the role reaches none. The rule records equal the table, by the case of criterion F1, and a rule whose command a role can be configured to reach, as the dispatch bounds of the planner, the refuter and release close can, stays with that role.",
+    "prior": {
+      "criterionId": "51",
+      "met": false,
+      "defectiveBy": 10,
+      "defectClass": "contradiction",
+      "evidence": true,
+      "line": "**Criterion 51:** unmet, defective (contradiction) by 10. (F2) The required product-suite placement conflicts with its protected evidence-table input. The earlier independent contradiction analysis and unchanged protection rule stand.",
+      "paragraph": "**Criterion 51:** unmet, defective (contradiction) by 10. (F2) The required product-suite placement conflicts with its protected evidence-table input. The earlier independent contradiction analysis and unchanged protection rule stand."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "52",
+    "criterion": "(F3) With a committed skill root changed by hand, `node scripts/harness.mjs check` fails naming that root; `packages/skeleton/fixtures/` holds no `*role-baseline*.json`, `scripts/check-role-oracle.mjs` is absent, and the structural phase lists no `role-oracle` task.",
+    "prior": {
+      "criterionId": "52",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 52:** met. (F3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 52:** met. (F3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "53",
+    "criterion": "(F4) No installed root names `npm run plan -- review`, and the hook counts no worker use for that command.",
+    "prior": {
+      "criterionId": "53",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 53:** met. (F4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 53:** met. (F4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "54",
+    "criterion": "(F5) The installed planner roots name no skill to load for the refutation, and `npm run plan -- refute` prints the parent's steps, naming `npm run plan -- receipt`, with the prompt. The installed refuter roots still carry the refuter's procedure.",
+    "prior": {
+      "criterionId": "54",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 54:** met. (F5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 54:** met. (F5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "55",
+    "criterion": "(F6) In product 07, the section the verifier's and the reviewer's `Read:` lines name does not contain the review helper's `--kind` flags, the section that holds them is a second-level section of its own that the first links, and the installed planner roots name the ideation section only for an `ideation:` entry. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "55",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 55:** met. (F6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 55:** met. (F6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "56",
+    "criterion": "(F7) `npm run meta` prints, for each role, its installed bytes and the bytes of the fixed reads its root names, and the planner's second number includes §Operator-opened planning pass and the sequence.",
+    "prior": {
+      "criterionId": "56",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 56:** met. (F7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 56:** met. (F7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "57",
+    "criterion": "(G1) A fresh export's first order and security seed name no agent harness or model provider other than Claude Code, permit no invocation of a harness, and say that another host is inspected only when the instance's configuration elects it. The seed case refuses a first order that holds either phrase of step G1, and the verifier reads both seeds.",
+    "prior": {
+      "criterionId": "57",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 57:** met. (G1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 57:** met. (G1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "58",
+    "criterion": "(G2) With a discovery record that holds observed versions of `codex-cli` and `copilot-cli`, no election and no attestation, the feature inventory reports both hosts off, naming the discovery record as showing each without an election, and the emit writes Claude's surfaces alone; with an attestation under a host it reports that host inferred, as at the base; and, at the checkpoint this part ended on, this repository's emitted surfaces are the bytes the tree this part began on emits.",
+    "prior": {
+      "criterionId": "58",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 58:** met. (G2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 58:** met. (G2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "59",
+    "criterion": "(G3) `docs/OPERATOR.md` in a fresh export names the kit's version and holds, in the cycle's order, every command block the kit guide marks, byte for byte; `node scripts/launchpad.mjs commands` prints the same blocks there before any install; after a marked block of the kit guide changes in a scratch copy, the generated check fails naming the page until it is regenerated; and a fenced shell block of the kit guide that carries neither a step's marker nor the marker that sets it aside fails that check naming its line.",
+    "prior": {
+      "criterionId": "59",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 59:** met. (G3) The kit guide and generated operator page now include the sync step after emit and lineage in the update recipe; their changed text was checked against the command flow and current generation evidence.",
+      "paragraph": "**Criterion 59:** met. (G3) The kit guide and generated operator page now include the sync step after emit and lineage in the update recipe; their changed text was checked against the command flow and current generation evidence."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "60",
+    "criterion": "(G4) A fresh export holds `FOR-CORE.md` equal to its template; the starter refresh adds it to a starter that lacks it and leaves an instance's own file byte-identical; `node scripts/docs-check.mjs` passes an entry of the stated form and fails, naming the entry and the field, on an entry that lacks a field or holds a value outside its set.",
+    "prior": {
+      "criterionId": "60",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 60:** met. (G4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 60:** met. (G4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "61",
+    "criterion": "(G5) The emitted reviewer root says that a final review appends to `FOR-CORE.md` what the kit got wrong or made hard during the order, and the emitted planner root says that a pass reads the file at entry, writes its own entries there and writes no block for core in its document, each where the root holds the file. The verifier reads the installed roots, and `node scripts/harness.mjs check` shows them equal to the emitted ones.",
+    "prior": {
+      "criterionId": "61",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 61:** met. (G5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 61:** met. (G5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "62",
+    "criterion": "(G6) The kit guide's four sections and product 07's item state the hosts, the page and the file as steps G1 to G5 leave them, each linking this order's decisions; §First steps, a reader entry point, links §Releases in this instance, which carries the link. The verifier reads the named sections; `npm run test:docs` judges their links and form.",
+    "prior": {
+      "criterionId": "62",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 62:** met. (G6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 62:** met. (G6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "63",
+    "criterion": "(H1) In the export fixture, before any install and with no compiled runtime loaded, `node scripts/doctor.mjs` prints one row for each assumption of Part H's second design item with its observed value, its verdict, the behavior that depends on it and a remedy, and `--json` prints the same rows.",
+    "prior": {
+      "criterionId": "63",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 63:** met. (H1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 63:** met. (H1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "64",
+    "criterion": "(H2) With a Node below `engines.node`, a Git below `engines.git` and a compiler that fails all injected at once, the rows report all three unmet in one run and the command exits 1; with every assumption met it exits 0; a fact the command cannot read is reported unknown and does not change the exit code; and with a Node below the floor injected and `scripts/lib/host-doctor.mjs` replaced in the fixture by a file that fails to load, the command still prints the Node row with the floor and exits 1.",
+    "prior": {
+      "criterionId": "64",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 64:** met. (H2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 64:** met. (H2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "65",
+    "criterion": "(H3) With a host name, a user name, a home directory and an origin URL injected, no output of the command, table or JSON, contains any of the four, a host name of any kind or an absolute path.",
+    "prior": {
+      "criterionId": "65",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 65:** met. (H3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 65:** met. (H3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "66",
+    "criterion": "(H4) In a kit root, the host task passes on an injected host of 16 GB and twelve logical processors; in core, the same injected host is refused with the per-lane shortfall it names today.",
+    "prior": {
+      "criterionId": "66",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 66:** met. (H4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 66:** met. (H4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "67",
+    "criterion": "(H5) In the update fixture, `node <incoming>/scripts/launchpad.mjs preview --from <revision>` prints a line naming the floor and this host's version when the incoming `engines.git` is above the running Git, and the same for Node; with both floors met it prints no such line; in both cases it prints its plan.",
+    "prior": {
+      "criterionId": "67",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 67:** met. (H5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 67:** met. (H5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "68",
+    "criterion": "(H6) With a compiler that cannot be run, the error raised when a suite first needs the lock helper names the compiler tried and the platform's remedy.",
+    "prior": {
+      "criterionId": "68",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 68:** met. (H6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 68:** met. (H6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "69",
+    "criterion": "(H7) A fresh export holds a `.gitattributes` equal to the template; the starter refresh adds it to a starter that lacks it and leaves a starter's own file byte-identical.",
+    "prior": {
+      "criterionId": "69",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 69:** met. (H7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 69:** met. (H7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "70",
+    "criterion": "(H8) The kit guide §First steps names the command, the compiler, the forge tool, the merge policy and the three host statements, and §Taking upstream updates names the preview's floor lines and links this order's decisions, §First steps linking that section. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "70",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 70:** met. (H8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 70:** met. (H8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "71",
+    "criterion": "(H9) In the export fixture, which elects no host and holds no attestation, with stand-in `codex` and `copilot` commands first on the path that record every invocation, `node scripts/doctor.mjs` prints the Claude CLI's row alone and runs neither stand-in; with `features.host-codex` elected it prints that host's row as well and runs that stand-in's version query alone.",
+    "prior": {
+      "criterionId": "71",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 71:** met. (H9) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 71:** met. (H9) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "72",
+    "criterion": "(I1) In the update fixture, with a seeded order and `docs/control/budgets.json` changed by both the instance and the incoming revision since their merge base and a merge commit that carries Git's merged bytes for both, `node scripts/launchpad.mjs update --publish --title <title> --body-file <path>` refuses before any push, naming both paths, the restore command and `--take`. After the merge commit holds the instance's bytes for both paths, the same command proceeds. With `--take` naming one of the two and the other restored, it proceeds and prints the taken path. A file only the incoming revision changed, a file only it added and a kit file the incoming manifest lists are never named. With `main` merged into the update branch after the update's own merge, the same commit is judged, the same paths are named and the restore command names the instance's side.",
+    "prior": {
+      "criterionId": "72",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 72:** met. (I1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 72:** met. (I1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "73",
+    "criterion": "(I2) In the same fixture, `node <incoming>/scripts/launchpad.mjs preview --from <revision>` lists both paths in the section step I2 adds and lists none of the files criterion I1 says are never named.",
+    "prior": {
+      "criterionId": "73",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 73:** met. (I2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 73:** met. (I2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "74",
+    "criterion": "(I3) The hook counts one use for each of `npm run worker -- review`, `npm run --silent worker -- review`, `npm run worker --silent -- review` and `node scripts/worker.mjs review`.",
+    "prior": {
+      "criterionId": "74",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 74:** met. (I3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 74:** met. (I3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "75",
+    "criterion": "(I4) The kit guide states steps I1 and I2 in the sections step I4 names, each linking this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "75",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 75:** met. (I4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 75:** met. (I4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "76",
+    "criterion": "(I6) In the update fixture, an instance whose harness manifest differs from the prediction because its own emit wrote it, and whose `node scripts/harness.mjs check` passes, is shown `re-emitted:` for that file by the update plan and the preview and is refused nothing; the same file edited by hand is refused as locally modified, as before this part; and a preview that meets no such surface runs with nothing installed.",
+    "prior": {
+      "criterionId": "76",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 76:** met. (I6) The update plan checks carried runtime before asking the instance harness to recognize emitted surfaces. The generated-surface contract remains covered by the current launchpad update cases and the independent verification-order probe.",
+      "paragraph": "**Criterion 76:** met. (I6) The update plan checks carried runtime before asking the instance harness to recognize emitted surfaces. The generated-surface contract remains covered by the current launchpad update cases and the independent verification-order probe."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "77",
+    "criterion": "(J1) In a fixture instance whose models file adds a model and whose configuration binds `default` to it for Claude, `node scripts/harness.mjs emit` writes the worker definition and the phase definitions with that model's id and effort and `node scripts/harness.mjs check` passes; a table changed with no emit is reported as drift; with neither stated, the emitted files equal the ones the same tree emits from an instance that never held them. No emitted worker definition is named for a model, and no role's text holds a model's id or a model's name. In the update fixture, an instance that emitted with both set is shown no worker definition as locally modified by the update plan, and `node scripts/launchpad.mjs verify` reports none as differing.",
+    "prior": {
+      "criterionId": "77",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 77:** met. (J1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 77:** met. (J1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "78",
+    "criterion": "(J2) In the same fixture, `npm run worker -- review --kind criteria --host claude --order <id> --dry-run` and `npm run plan -- refute --model <name>` each print a launch that names the configured model and effort, `npm run worker -- show <name>` prints what a name runs with this session's launch of it, and the drive's launch for a phase carries `default`'s model and effort in its arguments and `verifier`'s for the verifier's. Forty workers an instance names, several on one model, each resolve on their own; a launch that names none runs `default`.",
+    "prior": {
+      "criterionId": "78",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 78:** met. (J2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 78:** met. (J2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "79",
+    "criterion": "(J3) A `workers` section or a models file with an unknown key, a binding to an unlisted model, a name that would mean two things, an effort outside its provider's levels or a negative price is refused when the configuration loads, naming the file and the key.",
+    "prior": {
+      "criterionId": "79",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 79:** met. (J3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 79:** met. (J3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "80",
+    "criterion": "(J4) A launch that fails because its model was refused reports where the instance wrote the model, shown with the fixture launcher's failing double.",
+    "prior": {
+      "criterionId": "80",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 80:** met. (J4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 80:** met. (J4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "81",
+    "criterion": "(J5) An order's `meta.json` written from usage rows holds uncached input, cache read, cache write and output per role beside the total, and holds `null` for a class no row reported. For a Claude usage row and for a Codex usage row with the same counters, the four classes of each sum to that host's total, so no token is in two classes.",
+    "prior": {
+      "criterionId": "81",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 81:** met. (J5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 81:** met. (J5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "82",
+    "criterion": "(J6) `npm run meta -- --usage` prints tokens by class for each order and for each local calendar day, an observation counted on the day it was observed; with the instance's `prices` naming the attested model it also prints an estimate marked as one; for a model with no declared price it prints `unknown` in place of the estimate.",
+    "prior": {
+      "criterionId": "82",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 82:** met. (J6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 82:** met. (J6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "83",
+    "criterion": "(J7) The kit guide and the example configuration state the section, the models file, the two commands and the report and link this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "83",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 83:** met. (J7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 83:** met. (J7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "84",
+    "criterion": "(K1) No path the kit's manifest lists lies under `extensions/`, the kit-path predicate answers false for a path there, and an export whose file list names one is refused naming the path.",
+    "prior": {
+      "criterionId": "84",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 84:** met. (K1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 84:** met. (K1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "85",
+    "criterion": "(K2) In the export fixture with these files under `extensions/` (a script that creates a temporary directory, a source file the formatter would rewrite, a `package.json` with its lockfile, and a JSON Lines file), `npm test`, `node scripts/harness.mjs emit` and `node scripts/harness.mjs check` all pass, and the instance remains a kit root.",
+    "prior": {
+      "criterionId": "85",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 85:** met. (K2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 85:** met. (K2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "86",
+    "criterion": "(K3) With `.claude/settings.instance.json` declaring one hook and one permission rule, emit writes a `.claude/settings.json` that holds every entry the kit emits without it and both of the fragment's, and check passes; with the fragment removed, emit writes the bytes the same tree emits with no fragment; a fragment that would remove or replace an emitted entry, or that names a key the merge does not define, is refused by emit naming the key. A target worktree's emitted settings hold the fragment's hook and rule as the launchpad's do, and in the update fixture the merged settings are not shown as locally modified by the update plan nor as differing by `node scripts/launchpad.mjs verify`.",
+    "prior": {
+      "criterionId": "86",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 86:** met. (K3) The instance-fragment contract is unchanged; the update verification repair preserves recognition of valid emitted settings while refusing changed runtime before asking the harness. Current launchpad and harness rows stand.",
+      "paragraph": "**Criterion 86:** met. (K3) The instance-fragment contract is unchanged; the update verification repair preserves recognition of valid emitted settings while refusing changed runtime before asking the harness. Current launchpad and harness rows stand."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "87",
+    "criterion": "(K4) A `dotln.config.json` whose `extensions` is an object loads with that object returned as written, and one whose `extensions` is not an object is refused naming the section.",
+    "prior": {
+      "criterionId": "87",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 87:** met. (K4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 87:** met. (K4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "88",
+    "criterion": "(K5) `npm run resume -- status --json` prints a `schemaVersion`.",
+    "prior": {
+      "criterionId": "88",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 88:** met. (K5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 88:** met. (K5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "89",
+    "criterion": "(K6) An order whose change lies only under `extensions/` is classified by the closeout selection as owing no kit suite.",
+    "prior": {
+      "criterionId": "89",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 89:** met. (K6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 89:** met. (K6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "90",
+    "criterion": "(K7) The kit guide has the section step K6 names, stating the guarantee, the fragment, the configuration section, the listed outputs and each placement rule, and linking this order's decisions; product 07 states the release rule. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "90",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 90:** met. (K7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 90:** met. (K7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "91",
+    "criterion": "(L1) A fresh export's `docs/repositories/README.md` states the index, the area-note convention with the block's fields, the observation-order sentence and the agent-skills section.",
+    "prior": {
+      "criterionId": "91",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 91:** met. (L1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 91:** met. (L1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "92",
+    "criterion": "(L2) In the document fixture, `node scripts/docs-check.mjs` passes a note whose block lists paths and a commit, fails naming the file and the field on a note whose block lacks either, and passes a profile that has no directory.",
+    "prior": {
+      "criterionId": "92",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 92:** met. (L2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 92:** met. (L2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "93",
+    "criterion": "(L3) In the target fixture with a profile, two area notes and an order whose header names a workstream that has rules, the execution, verification and final-review briefings each print the profile's path, both notes with their paths and commits, and the workstream document's path.",
+    "prior": {
+      "criterionId": "93",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 93:** met. (L3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 93:** met. (L3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "94",
+    "criterion": "(L4) In the same fixture, after two commits in the registered clone touch one note's paths, the briefing prints two for that note and zero for the other; with a note whose commit the clone does not hold it prints `unknown` for that note and the briefing completes.",
+    "prior": {
+      "criterionId": "94",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 94:** met. (L4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 94:** met. (L4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "95",
+    "criterion": "(L5) The emitted roots of the executor, the verifier and the reviewer carry step L4's sentence, by the rule-record case of the skeleton suite (`npm test -- --only skeleton`), and `node scripts/harness.mjs check` shows the installed roots equal the emitted ones.",
+    "prior": {
+      "criterionId": "95",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 95:** met. (L5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 95:** met. (L5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "96",
+    "criterion": "(L6) The kit guide states the convention, the briefing's lines and the recipe, product 12's sentence agrees with the briefing, and each links this order's decisions, §First steps through §Planning in this instance. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "96",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 96:** met. (L6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 96:** met. (L6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "97",
+    "criterion": "(M1) In the target close fixture, with the order's whole change placed on the base as one new commit and the order branch not an ancestor of the base, the close proceeds and prints the base commit it matched; with each of the branch's commits replayed onto the base it proceeds likewise; with a merge commit it proceeds as today.",
+    "prior": {
+      "criterionId": "97",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 97:** met. (M1) The merger reads both histories in topological order and assigns a distinct increasing base match to each branch commit; original ancestry, squash and rebase cases remain covered at this identity.",
+      "paragraph": "**Criterion 97:** met. (M1) The merger reads both histories in topological order and assigns a distinct increasing base match to each branch commit; original ancestry, squash and rebase cases remain covered at this identity."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "98",
+    "criterion": "(M2) In the same fixture, with a base that does not hold the change, the close refuses with the source retained and its message names `--merged-as`; with `--merged-as` naming a commit in the fetched base it proceeds and prints that commit; with `--merged-as` naming a commit that is not in the base it refuses naming the commit.",
+    "prior": {
+      "criterionId": "98",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 98:** met. (M2) The independent repeat/revert/reapply probe now returns merged:false with no base commits matched. The existing target-close cases retain source-preservation and explicit merged-as checks.",
+      "paragraph": "**Criterion 98:** met. (M2) The independent repeat/revert/reapply probe now returns merged:false with no base commits matched. The existing target-close cases retain source-preservation and explicit merged-as checks."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "99",
+    "criterion": "(M3) With `contributions.authors` listing two identities, a commit by either passes the sign-off rule without a trailer, a commit by a third author fails without one and passes with one, and a malformed entry is refused when the configuration loads, naming its index.",
+    "prior": {
+      "criterionId": "99",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 99:** met. (M3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 99:** met. (M3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "100",
+    "criterion": "(M4) The kit guide states the team conventions, the two repositories' merge methods and the author list, and links this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "100",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 100:** met. (M4) The team-conventions paragraph now states one ordered base match per branch commit and names the omitted-already-upstream rebase case as needing merged-as. Its linked decision and current document row stand.",
+      "paragraph": "**Criterion 100:** met. (M4) The team-conventions paragraph now states one ordered base match per branch commit and names the omitted-already-upstream rebase case as needing merged-as. Its linked decision and current document row stand."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "101",
+    "criterion": "(M6) For a target order whose close record holds a publication outcome of `not-attempted`, a declared target policy, a target outcome of `published`, a clean cleanup with the branch deleted and the target removed, `npm run resume -- status` reports the order released and the drive routes no further step; with the target outcome `prepared` it routes to the release close; and a `no-release` close routes as before this part.",
+    "prior": {
+      "criterionId": "101",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 101:** met. (M6) Released-order routing is unchanged by this repair; the shared close proof now uses the repaired merge matcher, with current target-worktree coverage.",
+      "paragraph": "**Criterion 101:** met. (M6) Released-order routing is unchanged by this repair; the shared close proof now uses the repaired merge matcher, with current target-worktree coverage."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "102",
+    "criterion": "(N1) A registration with `records` set to `instance` or `target` loads, one with any other value is refused naming the key, and one without the key behaves as `target`.",
+    "prior": {
+      "criterionId": "102",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 102:** met. (N1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 102:** met. (N1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "103",
+    "criterion": "(N2) In the target fixture with a repository registered `instance`, an order that has passed its final review is offered no `target-records` step, `npm run resume -- target-records` is refused naming the setting, and the order's publish and the target's publish both proceed. The target's published head is the commit the final review bound and its tree holds none of the paths `targetRecordSources` names for the order; the instance's records branch holds the order's text, decisions and reports.",
+    "prior": {
+      "criterionId": "103",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 103:** met. (N2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 103:** met. (N2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "104",
+    "criterion": "(N3) In the same fixture with the repository registered `target`, the same order is offered the step, both publishes refuse without it and proceed with it, and the published head is the records commit, as at the base.",
+    "prior": {
+      "criterionId": "104",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 104:** met. (N3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 104:** met. (N3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "105",
+    "criterion": "(N4) An order whose records were filed into the target under `target` publishes them after its registration changes to `instance`, and the order publish prints that its records are in the target at that commit.",
+    "prior": {
+      "criterionId": "105",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 105:** met. (N4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 105:** met. (N4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "106",
+    "criterion": "(N5) With plan-first elected, a target order's plan-first directory is under the instance's evidence root where its repository is registered `instance`, and under the target's documentation root where it is registered `target`.",
+    "prior": {
+      "criterionId": "106",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 106:** met. (N5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 106:** met. (N5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "107",
+    "criterion": "(N6) The index card of each order in criteria N2 and N3 says where its records are.",
+    "prior": {
+      "criterionId": "107",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 107:** met. (N6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 107:** met. (N6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "108",
+    "criterion": "(N7) The installed reviewer roots state the records step as the registration's, and each root that carries the plan-first sentence names the registration's value; the verifier reads them, and `node scripts/harness.mjs check` shows the installed roots equal the emitted ones.",
+    "prior": {
+      "criterionId": "108",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 108:** met. (N7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 108:** met. (N7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "109",
+    "criterion": "(N8) The kit guide states the key, its two values and the value an instance working a team's application repository sets, and links this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "109",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 109:** met. (N8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 109:** met. (N8) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "110",
+    "criterion": "(O1) A fresh export's `docs/workstreams/README.md` carries the layout section with its four parts and the statement that planned items are not member orders.",
+    "prior": {
+      "criterionId": "110",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 110:** met. (O1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 110:** met. (O1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "111",
+    "criterion": "(O2) In an instance fixture, a workstream document whose layout names planned items with no order files passes `npm run work-orders -- index --check` and `npm run plan -- check`, and a member added to the marked block without an order file is refused as at the base.",
+    "prior": {
+      "criterionId": "111",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 111:** met. (O2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 111:** met. (O2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "112",
+    "criterion": "(O3) The emitted planner root carries step O3's sentence, by the rule-record case of the skeleton suite (`npm test -- --only skeleton`), and `node scripts/harness.mjs check` shows the installed roots equal the emitted ones.",
+    "prior": {
+      "criterionId": "112",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 112:** met. (O3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 112:** met. (O3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "113",
+    "criterion": "(O4) The kit guide §Planning in this instance states the rolling way of planning and where the layout lives, and links this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "113",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 113:** met. (O4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 113:** met. (O4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "114",
+    "criterion": "(P1) With journal rows that show two spans of activity half an hour long and twenty hours apart, the gap beginning at a turn's end row, the dispatch standing reports one hour of wall-clock for the phase and a bounded probe is admitted under an eight-hour bound; with rows that show nine hours of unbroken activity it is refused with the message the bound gives before this part; with one tool call whose start and end rows are fifty minutes apart, the fifty minutes are counted; the standing also reports the elapsed time since the dispatch began.",
+    "prior": {
+      "criterionId": "114",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 114:** met. (P1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 114:** met. (P1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "115",
+    "criterion": "(P2) With a daily figure declared and the day's recorded use below it, the facts printed at a prompt carry the day's use and the figure; with the use at or above it they also carry the stopping advisory; with a dollar figure and a model that has no declared price they carry the day's tokens and print `unknown` for the estimate; with no figure declared they are the facts printed before this part.",
+    "prior": {
+      "criterionId": "115",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 115:** met. (P2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 115:** met. (P2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "116",
+    "criterion": "(P3) A `spend.daily` that is not an object of the two admitted fields, or that holds a negative number, is refused when the budgets load, naming the field.",
+    "prior": {
+      "criterionId": "116",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 116:** met. (P3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 116:** met. (P3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "117",
+    "criterion": "(P4) The emitted executor root carries the stopping rule, by the rule-record case of the skeleton suite (`npm test -- --only skeleton`), and `node scripts/harness.mjs check` shows the installed roots equal the emitted ones; with an active order that has a `standing.md` beside its evidence the execution briefing names it, and without one it prints as at the base; `implementation-ready` removes the file, prints that it did, and completes as at the base.",
+    "prior": {
+      "criterionId": "117",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 117:** met. (P4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 117:** met. (P4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "118",
+    "criterion": "(P5) The kit guide and product 07 state the figure, the line a session is shown, the standing and the bound's reading, each linking this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "118",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 118:** met. (P5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 118:** met. (P5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "119",
+    "criterion": "(P7) With the journal of an earlier planner session two days old in the lane and the same dispatch line, a new planner session's standing starts at its own dispatch and counts no complete run made before it; an executor redispatched in the same phase of one order keeps the earlier start, as before this part.",
+    "prior": {
+      "criterionId": "119",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 119:** met. (P7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 119:** met. (P7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "120",
+    "criterion": "(Q1) The emitted `.claude/settings.json` registers the attribution hook and the lint-directive hook for no tool name that `harnessToolEffects` maps to a kind step Q1 found that hook does not judge, and for a name the table does not hold wherever the host's matcher can express that, registers no presence hook for any event, and `node scripts/harness.mjs check` passes; `.claude/hooks/` holds no presence hook file; and the settings emitted for a target worktree hold the same.",
+    "prior": {
+      "criterionId": "120",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 120:** met. (Q1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 120:** met. (Q1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "121",
+    "criterion": "(Q2) Every refusal case of `npm test -- --only harness-fixtures` that passes at the tree this part began on, Part A's subagent-stop cases among them, passes unchanged at the checkpoint this part ended on, the attribution refusal fires for a shell command under each tool name that maps to its kind, the heartbeat's cases pass for each of the four events with a store named in the environment, and for a tool the two narrowed hooks no longer run for, the session journal holds the rows for the call's start and end that it holds before this part, which Part P's reading of worked time takes.",
+    "prior": {
+      "criterionId": "121",
+      "met": false,
+      "defectiveBy": 11,
+      "defectClass": "contradiction",
+      "evidence": true,
+      "line": "**Criterion 121:** unmet, defective (contradiction) by 11. (Q2) Universal shell-alias attribution conflicts with preserving the prior refusal set. The earlier parity evidence and unchanged implementation stand.",
+      "paragraph": "**Criterion 121:** unmet, defective (contradiction) by 11. (Q2) Universal shell-alias attribution conflicts with preserving the prior refusal set. The earlier parity evidence and unchanged implementation stand."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "122",
+    "criterion": "(Q3) For a read on a planning branch the hooks make no `git symbolic-ref` call, counted through the suite's stand-in Git, and a write outside the admitted paths on a planning branch is refused with the message it has before this part.",
+    "prior": {
+      "criterionId": "122",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 122:** met. (Q3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 122:** met. (Q3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "123",
+    "criterion": "(Q4) Two authorship snapshots with no file changed between them read no file's bytes the second time; after one file changes, the second snapshot reads that file alone and records the hash a full read records.",
+    "prior": {
+      "criterionId": "123",
+      "met": false,
+      "defectiveBy": 12,
+      "defectClass": "contradiction",
+      "evidence": true,
+      "line": "**Criterion 123:** unmet, defective (contradiction) by 12. (Q4) The unconditional zero-read clause conflicts with the required recent-write safeguard. The earlier settled-cache and conservative-fallback evidence stand.",
+      "paragraph": "**Criterion 123:** unmet, defective (contradiction) by 12. (Q4) The unconditional zero-read clause conflicts with the required recent-write safeguard. The earlier settled-cache and conservative-fallback evidence stand."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "124",
+    "criterion": "(Q5) `docs/evidence/WO-276/part-q/before.json` and `after.json` hold the timing rows of the same sequence, and the decisions state both readings.",
+    "prior": {
+      "criterionId": "124",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 124:** met. (Q5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 124:** met. (Q5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "125",
+    "criterion": "(Q6) The kit guide §Hooks states which hooks run for which tools and links this order's decisions. The verifier reads the named section; `npm run test:docs` judges its links and form.",
+    "prior": {
+      "criterionId": "125",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 125:** met. (Q6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 125:** met. (Q6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "126",
+    "criterion": "(R1) In a kit-root fixture, an order numbered as each of core's named orders is activated, receipted, closed and indexed as an order of any other number is: its receipt carries no added sentence, its passing final review leaves the release-note contract as it was, and its index card carries no added line; in core's own root each site behaves as before this part and `npm run plan -- check` re-renders every committed receipt byte for byte.",
+    "prior": {
+      "criterionId": "126",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 126:** met. (R1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 126:** met. (R1) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "127",
+    "criterion": "(R2) `npm run resume -- withdraw --disposition abandoned` with a reason and a capture, for an order that has a file and no event, appends the withdrawal; `npm run work-orders -- index --check` then passes with the order absent from the sequence and lists it as withdrawn; and the same command for an identifier with no file is refused as before this part.",
+    "prior": {
+      "criterionId": "127",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 127:** met. (R2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 127:** met. (R2) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "128",
+    "criterion": "(R3) A batch that re-disposes a row allocated to an order whose file the same change removes applies when the state it produces names only filed orders, and a batch whose result still names an absent order is refused naming the row, with nothing written.",
+    "prior": {
+      "criterionId": "128",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 128:** met. (R3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 128:** met. (R3) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "129",
+    "criterion": "(R4) After a receipt with no hold and one known issue, a repair of the named order's Cost line and `npm run plan -- dispose <receipt> <known-issue id> <reason>` leave `npm run plan -- check` passing; without the disposition the check fails as before this part; and every committed receipt's stored holds check as they did.",
+    "prior": {
+      "criterionId": "129",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 129:** met. (R4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 129:** met. (R4) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "130",
+    "criterion": "(R5) For an open order in the sequence whose execution plan names a file among a machinery suite's declared sources and whose Preflight field does not name that suite, `npm run plan -- check` prints a `preflight advisory` naming the order, the suite and the file and exits as it would without it; an order whose Preflight names the suite prints none, and no advisory names a structural or a generated row.",
+    "prior": {
+      "criterionId": "130",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 130:** met. (R5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 130:** met. (R5) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "131",
+    "criterion": "(R6) Each installed root whose role the re-task rule's record names, the planner's among them, carries the rule as this part states it, by the rule-record case of the skeleton suite (`npm test -- --only skeleton`); the installed planner roots carry the capture rule and the sentence on the preflight advisory, which the verifier reads there; and `node scripts/harness.mjs check` shows the installed roots equal the emitted ones.",
+    "prior": {
+      "criterionId": "131",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 131:** met. (R6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 131:** met. (R6) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "132",
+    "criterion": "(R7) The kit guide and product 07 state the routes, the advisory, the known issue's disposition and the capture rule in the sections step R7 names, each linking this order's decisions. The verifier reads the named sections; `npm run test:docs` judges their links and form.",
+    "prior": {
+      "criterionId": "132",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 132:** met. (R7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome.",
+      "paragraph": "**Criterion 132:** met. (R7) The corresponding earlier criterion evidence is retained, with the current gate coverage and the shared-reader verification above; this repair introduces no separate change to the required outcome."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  },
+  {
+    "id": "133",
+    "criterion": "(Z1) `npm test -- --review`, `npm test` and `npm run test:docs` pass.",
+    "prior": {
+      "criterionId": "133",
+      "met": true,
+      "evidence": true,
+      "line": "**Criterion 133:** met. (Z1) The standing complete review row at code identity bdf0da6a025a supplies the product-test claims; the closing document row is consumed at filing. Passing gates do not negate the independent F1 regression.",
+      "paragraph": "**Criterion 133:** met. (Z1) The standing complete review row at code identity bdf0da6a025a supplies the product-test claims; the closing document row is consumed at filing. Passing gates do not negate the independent F1 regression."
+    },
+    "basis": [
+      "VER-006",
+      "verifier-007/repair-inventory.json",
+      "verifier-007/subject-gates.json",
+      "verifier-007/reader-probe.json",
+      "verifier-007/corpus-comparison.json"
+    ]
+  }
+]

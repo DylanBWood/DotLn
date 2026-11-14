@@ -1,0 +1,10 @@
+{
+  "base": {
+    "refusal": "kit runtime differs from the manifest: packages/skeleton/dist/src/a.js",
+    "instanceCodeRanBeforeTheRefusal": false
+  },
+  "candidate": {
+    "refusal": "kit runtime differs from the manifest: packages/skeleton/dist/src/a.js",
+    "instanceCodeRanBeforeTheRefusal": true
+  }
+}

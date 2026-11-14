@@ -1,0 +1,90 @@
+{
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "results": [
+    {
+      "name": "ordinary",
+      "baseline": {
+        "accepted": true
+      },
+      "candidate": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "list",
+      "baseline": {
+        "accepted": true
+      },
+      "candidate": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "quote",
+      "baseline": {
+        "accepted": true
+      },
+      "candidate": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "fence",
+      "baseline": {
+        "accepted": false,
+        "error": "planning pass needs a receipt matching the current subject: only an appended execution-record section is an execution update"
+      },
+      "candidate": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "own-field",
+      "baseline": {
+        "accepted": false,
+        "error": "planning pass needs a receipt matching the current subject: only an appended execution-record section is an execution update"
+      },
+      "candidate": {
+        "accepted": false,
+        "error": "planning pass needs a receipt matching the current subject: only an appended execution-record section is an execution update"
+      }
+    },
+    {
+      "name": "digit-emphasis",
+      "baseline": {
+        "accepted": true
+      },
+      "candidate": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "code-emphasis",
+      "baseline": {
+        "accepted": true
+      },
+      "candidate": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "continuing-emphasis",
+      "baseline": {
+        "accepted": true
+      },
+      "candidate": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "nested-quote",
+      "baseline": {
+        "accepted": true
+      },
+      "candidate": {
+        "accepted": true
+      }
+    }
+  ],
+  "limit": "Actual old/current private helper exported from scratch copies; relative imports bound to current shared modules. No whole continuation lifecycle run."
+}

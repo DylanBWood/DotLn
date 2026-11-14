@@ -620,6 +620,90 @@ test("target briefings name a missing repository throughout dispatch and print l
     assert.match(verification, /^Handoff evidence: /mu);
     assert.doesNotMatch(verification, /Closeout checks owed/u);
   });
+  // A self order whose every change is the instance's own, paths under the
+  // reserved root with its documents and records, owes no kit suite: an
+  // instance's order for its own tool is a launchpad order (WO-276
+  // criterion K6). Anything else beside them keeps the complete run.
+  withFixture((f) => {
+    const order = (criteria) =>
+      `# WO-999 — self fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Acceptance criteria (all required)**\n\n${criteria.map((line, index) => `${index + 1}. ${line}`).join("\n")}\n`;
+    const own = [
+      "`node extensions/tools/report.test.mjs` passes.",
+      "`npm run test:docs` passes.",
+    ];
+    write(f.main, f.order, order(own));
+    // A tool the instance already holds at the order's base, for the case
+    // of an order that removes it.
+    write(f.main, "extensions/old/tool.mjs", "export const old = 1;\n");
+    git(f.main, "add", "-A");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Self order fixture with criteria",
+    );
+    git(f.main, "push", "-q", "origin", "main");
+    f.start();
+    const selection = () =>
+      printedSelection(
+        f.ok(f.resume(["briefing"], {}, f.orderRoot)),
+        "Closeout checks owed as the order stands",
+      );
+    const complete = {
+      checks: ["complete run", "document gate"],
+      reason:
+        "The complete launchpad run is owed because this is a launchpad order, and the complete run is its own repository's gate.",
+    };
+    // With no change under the root, the order is any launchpad order.
+    assert.deepEqual(selection(), complete);
+    // Removing a tool, its directory with it, is a change under the root
+    // like any other (rolling review 30).
+    rmSync(join(f.orderRoot, "extensions"), { recursive: true });
+    assert.deepEqual(selection(), {
+      checks: ["document gate"],
+      reason:
+        "No complete launchpad run is owed because paths under extensions/ are the instance's own and owe no kit suite (extensions/old/tool.mjs); the order's criteria name what tests them; its other launchpad changes are documents and records, and the paths main's merge adopted are main's, gated there.",
+    });
+    git(f.orderRoot, "checkout", "--", "extensions");
+    assert.deepEqual(selection(), complete);
+    write(
+      f.orderRoot,
+      "extensions/tools/report.mjs",
+      "export const local = 1;\n",
+    );
+    assert.deepEqual(selection(), {
+      checks: ["document gate"],
+      reason:
+        "No complete launchpad run is owed because paths under extensions/ are the instance's own and owe no kit suite (extensions/tools/report.mjs); the order's criteria name what tests them; its other launchpad changes are documents and records, and the paths main's merge adopted are main's, gated there.",
+    });
+    // The helper prints the same selection.
+    const helper = f.ok(
+      f.call(f.orderRoot, f.orderRoot, "worktree", ["integrate", "WO-999"]),
+    );
+    assert.deepEqual(printedSelection(helper, "Owed by this order").checks, [
+      "document gate",
+    ]);
+    // Launchpad source beside it, or a path that only resembles the root.
+    for (const path of [
+      "scripts/lib/fixture-local.mjs",
+      "extensions-of-mine/tool.mjs",
+    ]) {
+      write(f.orderRoot, path, "export const local = 1;\n");
+      assert.deepEqual(selection(), complete, path);
+      rmSync(
+        join(
+          f.orderRoot,
+          path.split("/")[0] === "scripts" ? path : "extensions-of-mine",
+        ),
+        { recursive: true },
+      );
+    }
+    // A criterion that names npm test claims what only that run shows.
+    write(f.orderRoot, f.order, order([...own, "`npm test` passes."]));
+    assert.deepEqual(selection(), complete);
+  });
 });
 
 test("WO-210 target final review binds clean commits through both launchpad routes and refuses without recording", () => {
@@ -974,7 +1058,7 @@ test("WO-072 criterion 1: declared target base, governed ignored bundle and conv
     assert.equal(existsSync(join(f.target, "later.txt")), false);
     assert.equal(
       checkTargetHarness(f.target, { runtimeRoot: f.main }).files,
-      7,
+      6,
     );
     assert.equal(git(f.target, "status", "--porcelain"), "");
     for (const [file, args] of [
@@ -1624,7 +1708,7 @@ test("preparation retry resumes the recorded pair after bootstrap or harness fai
       assert.equal(git(f.orderRoot, "rev-parse", "HEAD"), launchpadHead);
       assert.equal(
         checkTargetHarness(f.target, { runtimeRoot: f.main }).files,
-        7,
+        6,
       );
       assert.equal(readTargetStart(f.main, "WO-999"), undefined);
       const events = readFileSync(
@@ -2192,6 +2276,35 @@ test("closeout checks follow the repositories a target order changed, and its br
     );
     rmSync(join(f.orderRoot, "scripts/lib/fixture-local.mjs"));
 
+    // A change that lies only under the reserved root is the instance's
+    // own: it owes no kit suite, and the selection says why (WO-276
+    // criterion K6). Beside a machinery edit the run is owed as before.
+    write(
+      f.orderRoot,
+      "extensions/tools/report.mjs",
+      "export const local = 1;\n",
+    );
+    write(f.orderRoot, "extensions/package.json", '{ "private": true }\n');
+    selected = readers();
+    assert.deepEqual(selected.checks, documentOnly);
+    assert.match(
+      selected.reason,
+      /^No complete launchpad run is owed because paths under extensions\/ are the instance's own and owe no kit suite \(extensions\/package\.json, extensions\/tools\/report\.mjs\); the order's criteria name what tests them; its other launchpad changes are documents and records/u,
+    );
+    write(
+      f.orderRoot,
+      "scripts/lib/fixture-local.mjs",
+      "export const local = 1;\n",
+    );
+    selected = readers();
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /because paths under extensions\/ are the instance's own and owe no kit suite .*; launchpad machinery changed \(scripts\/lib\/fixture-local\.mjs\)\.$/u,
+    );
+    rmSync(join(f.orderRoot, "scripts/lib/fixture-local.mjs"));
+    rmSync(join(f.orderRoot, "extensions"), { recursive: true });
+
     // An unreadable registration keeps it, with the uncertainty named.
     const configFile = join(f.orderRoot, "dotln.config.json");
     const configured = readFileSync(configFile);
@@ -2323,3 +2436,216 @@ test("closeout checks follow the repositories a target order changed, and its br
       "an earlier resolution stays the order's",
     );
   }));
+
+/** The area-note fixture: a profile, notes beside it and a workstream the
+ * order declares, committed on the launchpad's main before the order starts. */
+const withAreaNotes = (f, notes) => {
+  const profile = "records/repositories/target.md";
+  f.config.repositories.target.profile = profile;
+  write(f.main, "dotln.config.json", JSON.stringify(f.config));
+  write(f.main, profile, "# target — profile\n");
+  for (const [name, block] of Object.entries(notes))
+    write(
+      f.main,
+      `records/repositories/target/${name}.md`,
+      `# target — ${name}\n\n<!-- dotln-area-note:start -->\n${JSON.stringify(block)}\n<!-- dotln-area-note:end -->\n\nA rule, with the file that shows it.\n`,
+    );
+  write(
+    f.main,
+    "records/workstreams/WS-001-fixture.md",
+    `# WS-001 — fixture: one outcome\n\n## Rules\n\nEvery member keeps the fixture's rule.\n\n<!-- dotln-workstream:start -->\n${JSON.stringify({ id: "WS-001", members: [{ workOrderId: "WO-999", repositoryId: "target" }], edges: [] })}\n<!-- dotln-workstream:end -->\n`,
+  );
+  write(
+    f.main,
+    f.order,
+    `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${f.baseCommit}\n**Workstream:** WS-001\n`,
+  );
+  git(f.main, "add", "-A");
+  git(
+    f.main,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "Profile, area notes and workstream",
+  );
+  git(f.main, "push", "-q", "origin", "main");
+  return profile;
+};
+
+test("WO-276 criteria L3 and L4: a target order's execution, verification and final-review briefings print the profile's path, each area note with its paths, its commit and the commits of the base branch that touched those paths since, and the order's workstream document; a commit the clone does not hold prints unknown and the briefing completes", () =>
+  withFixture((f) => {
+    const profile = withAreaNotes(f, {
+      billing: { paths: ["billing/"], commit: f.baseCommit },
+      shared: { paths: ["shared/", "source.txt"], commit: f.baseCommit },
+    });
+    f.mapClone();
+    f.start();
+    const line = (name, paths, commit, since) =>
+      `- ${join(f.orderRoot, `records/repositories/target/${name}.md`)}: paths ${paths.map((path) => JSON.stringify(path)).join(", ")}; commit ${commit}; commits since: ${since}`;
+    const names = (briefing, counts) => {
+      assert.ok(
+        briefing.includes(
+          `and the registered profile ${join(f.orderRoot, profile)}.`,
+        ),
+        briefing,
+      );
+      assert.ok(
+        briefing.includes(
+          line("billing", ["billing/"], f.baseCommit, counts.billing),
+        ),
+        briefing,
+      );
+      assert.ok(
+        briefing.includes(
+          line(
+            "shared",
+            ["shared/", "source.txt"],
+            f.baseCommit,
+            counts.shared,
+          ),
+        ),
+        briefing,
+      );
+      assert.ok(
+        briefing.includes(
+          `workstream WS-001: ${join(f.orderRoot, "records/workstreams/WS-001-fixture.md")}, whose section Rules (line 3)`,
+        ),
+        briefing,
+      );
+    };
+    // Criterion L3: the three briefings. The clone's base branch is one
+    // commit past the notes' commit, and that commit touched neither note's
+    // paths.
+    const fresh = { billing: 0, shared: 0 };
+    names(f.ok(f.resume(["next"])), fresh);
+    f.ok(
+      f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]),
+    );
+    f.ok(f.resume(["implementation-ready", ...actorArgs]));
+    names(f.ok(f.resume(["verify"])), fresh);
+    write(
+      f.orderRoot,
+      "records/verifications/WO-999/VER-001.md",
+      `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+    );
+    f.ok(f.resume(["verification-result", "pass", ...actorArgs]));
+    names(f.ok(f.resume(["final-review"])), fresh);
+    // Criterion L4: two commits in the registered clone touch one note's
+    // paths, and the briefing counts two for it and none for the other.
+    for (const number of [1, 2]) {
+      write(f.clone, `billing/invoice-${number}.txt`, "an invoice\n");
+      git(f.clone, "add", "-A");
+      git(
+        f.clone,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        `feat: invoice ${number}`,
+      );
+    }
+    names(f.ok(f.resume(["briefing"])), { billing: 2, shared: 0 });
+    // A note written at a commit the clone does not hold, and one whose
+    // block cannot be read: each is printed as such and the briefing
+    // completes.
+    const absent = "f".repeat(40);
+    write(
+      f.orderRoot,
+      "records/repositories/target/absent.md",
+      `# target — absent\n\n<!-- dotln-area-note:start -->\n${JSON.stringify({ paths: ["absent/"], commit: absent })}\n<!-- dotln-area-note:end -->\n`,
+    );
+    write(
+      f.orderRoot,
+      "records/repositories/target/broken.md",
+      "# target — broken\n\nNo block.\n",
+    );
+    const aged = f.ok(f.resume(["briefing"]));
+    names(aged, { billing: 2, shared: 0 });
+    assert.ok(
+      aged.includes(line("absent", ["absent/"], absent, "unknown")),
+      aged,
+    );
+    assert.ok(
+      aged.includes(
+        `- ${join(f.orderRoot, "records/repositories/target/broken.md")}: its block cannot be read (the document check names the field)`,
+      ),
+      aged,
+    );
+  }));
+
+test("WO-276 criterion L3: a target order with no profile, with a profile and no note, and with no workstream is briefed with what it has and nothing else", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    const bare = f.ok(f.resume(["next"]));
+    assert.match(bare, /repositories\.target declares no profile\./u);
+    assert.doesNotMatch(bare, /Area notes of|workstream WS-/u);
+    const profile = "records/repositories/target.md";
+    writeFileSync(
+      join(f.orderRoot, "dotln.config.json"),
+      JSON.stringify({
+        ...f.config,
+        repositories: {
+          target: { ...f.config.repositories.target, profile },
+        },
+      }),
+    );
+    write(f.orderRoot, profile, "# target — profile\n");
+    const indexed = f.ok(f.resume(["briefing"]));
+    assert.ok(
+      indexed.includes(
+        `and the registered profile ${join(f.orderRoot, profile)}.`,
+      ),
+      indexed,
+    );
+    assert.doesNotMatch(indexed, /Area notes of|workstream WS-/u);
+  }));
+
+test("WO-276 criterion L4 (the count): only a commit's id is counted from, and a clone whose history cannot answer, shallow or partial, gives unknown and starts no transfer", async () => {
+  const { commitsSince, countableClone } = await import("./lib/area-notes.mjs");
+  withFixture((f) => {
+    const revision = "refs/heads/main";
+    const note = (commit) => ({ paths: ["later.txt"], commit });
+    // The fixture's clone holds its whole history: one commit since the
+    // base touched later.txt.
+    assert.equal(countableClone(f.clone), f.clone);
+    assert.equal(commitsSince(f.clone, revision, note(f.baseCommit)), 1);
+    // A tree's id and a blob's are no commit, though the clone holds them.
+    for (const object of ["HEAD^{tree}", "HEAD:later.txt"])
+      assert.equal(
+        commitsSince(
+          f.clone,
+          revision,
+          note(git(f.clone, "rev-parse", object)),
+        ),
+        "unknown",
+        object,
+      );
+    // No time left is no count.
+    assert.equal(
+      commitsSince(f.clone, revision, note(f.baseCommit), { timeoutMs: 0 }),
+      "unknown",
+    );
+    // A shallow clone's history stops short, and a partial clone would
+    // fetch to answer: neither is counted from.
+    const origin = join(f.base, "target.git");
+    git(origin, "config", "uploadpack.allowFilter", "true");
+    const shallow = join(f.base, "shallow");
+    git(f.base, "clone", "-q", "--depth", "1", `file://${origin}`, shallow);
+    assert.equal(countableClone(shallow), null);
+    const partial = join(f.base, "partial");
+    git(
+      f.base,
+      "clone",
+      "-q",
+      "--filter=tree:0",
+      "--no-checkout",
+      `file://${origin}`,
+      partial,
+    );
+    assert.equal(countableClone(partial), null);
+    assert.equal(countableClone(join(f.base, "absent")), null);
+    assert.equal(countableClone(undefined), null);
+  });
+});

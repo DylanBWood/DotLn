@@ -14,7 +14,13 @@
 // an input it cannot read keeps the complete run and says why.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { docRelative, loadConfig, rootPattern } from "./config.mjs";
+import {
+  EXTENSIONS_ROOT,
+  docRelative,
+  extensionPath,
+  loadConfig,
+  rootPattern,
+} from "./config.mjs";
 import { eventsForOrder, readControl } from "./control-store.mjs";
 import { runGit, runGitPathList } from "./git.mjs";
 import { criterionGateClaims, declaredCriteria } from "./handoff-ledger.mjs";
@@ -40,10 +46,12 @@ export async function loadCloseoutRunner() {
   }
 }
 
-/** The runner's declarations when `order` (an id or its control state) is a
- * target order, the only kind whose launchpad paths the selection
- * classifies; a launchpad order's selection reads none, so its readers never
- * load the runner module. */
+/** The runner's declarations when the selection will classify `order`'s
+ * launchpad paths (`order` is an id or its control state): for a target
+ * order, and for a launchpad order that changes a path under the reserved
+ * root, since only such a change can spare it the complete run. Any other
+ * launchpad order's selection reads none, so its readers never load the
+ * runner module. */
 export async function closeoutRunnerFor(root, order) {
   let state = order;
   try {
@@ -53,7 +61,15 @@ export async function closeoutRunnerFor(root, order) {
     // An unreadable control record makes the selection uncertain by itself.
     return undefined;
   }
-  return state?.repositoryId ? loadCloseoutRunner() : undefined;
+  if (state?.repositoryId) return loadCloseoutRunner();
+  // A launchpad order's paths are classified only where one of them lies
+  // under the reserved root, a deleted one among them: only such a change
+  // can spare the order the complete run. A change that cannot be read
+  // loads nothing, and the order then owes the run as any does.
+  const workOrder = typeof order === "string" ? order : order?.workOrderId;
+  return closeoutChanges(root, workOrder).paths.some(extensionPath)
+    ? loadCloseoutRunner()
+    : undefined;
 }
 
 // Files a record root holds as documents. Any other file under a record root
@@ -117,6 +133,11 @@ function classifier(root, workOrder, runner) {
   return (path) => {
     if (gateInputs.has(path) || edition.test(path))
       return { kind: "machinery", why: "a record the gates read as input" };
+    // The reserved root is the instance's own: nothing the kit builds, tests
+    // or reads as a record lives there (no document root may), so a change
+    // there owes no kit suite.
+    if (extensionPath(path))
+      return { kind: "instance", why: "the instance's own root" };
     if (kit?.has(path)) return { kind: "machinery", why: "a kit file" };
     if (CODE_ROOT.test(path) || HOST_ROOT.test(path))
       return { kind: "machinery", why: "launchpad source" };
@@ -292,9 +313,10 @@ export function closeoutScope(root, order, { runner, receipt } = {}) {
   } catch (error) {
     uncertain(`the selection failed: ${error.message}`);
   }
+  // Written after the instance's own paths where the selection named any.
   if (scope.launchpad === "document")
     scope.reasons.push(
-      "the order's launchpad changes are documents and records, and the paths main's merge adopted are main's, gated there",
+      `${scope.reasons.length ? "its other" : "the order's"} launchpad changes are documents and records, and the paths main's merge adopted are main's, gated there`,
     );
   return scope;
 }
@@ -339,14 +361,67 @@ function select(root, order, scope, { owe, uncertain, runner, receipt }) {
     uncertain(error.message);
   }
   const repositoryId = state.repositoryId ?? declaration?.id;
-  if (!repositoryId) {
-    owe(
-      "this is a launchpad order, and the complete run is its own repository's gate",
-    );
-    return;
-  }
   const criteria = declaredCriteria(text);
   const ids = (criteria ?? []).map(({ id }) => id);
+  // The order's launchpad changes by kind, or null where they cannot be
+  // read or classified, each cause told to `unsure`.
+  const classified = (unsure) => {
+    const changes = closeoutChanges(root, workOrder, { receipt });
+    for (const cause of changes.uncertain) unsure(cause);
+    // loadCloseoutRunner returns a suite table or an error. A runner that
+    // imports with no table, or an empty one, declares no inputs to classify
+    // against, so it is uncertain too.
+    const hasSuites = Array.isArray(runner?.suites) && runner.suites.length > 0;
+    if (!runner) unsure("the runner's suite declarations were not loaded");
+    else if (!hasSuites)
+      unsure(
+        `the runner's suite declarations cannot be read: ${runner.error ?? "the runner exports no suite table"}`,
+      );
+    if (changes.uncertain.length || !hasSuites) return null;
+    let classify;
+    try {
+      classify = classifier(root, workOrder, runner);
+    } catch (error) {
+      unsure(`the launchpad paths cannot be classified: ${error.message}`);
+      return null;
+    }
+    const kinds = (paths) => {
+      const sorted = { machinery: [], unknown: [], instance: [] };
+      for (const path of paths) sorted[classify(path).kind]?.push(path);
+      return sorted;
+    };
+    return {
+      changed: kinds(changes.paths),
+      resolved: kinds(changes.conflicts),
+    };
+  };
+  // Said, not owed: the reader of the selection sees why these paths bring
+  // no suite, and that the order's own criteria name whatever tests them.
+  const instanceReason = ({ changed, resolved }) =>
+    `${summary(`paths under ${EXTENSIONS_ROOT}/ are the instance's own and owe no kit suite`, [...changed.instance, ...resolved.instance])}; the order's criteria name what tests them`;
+  if (!repositoryId) {
+    // A launchpad order owes the complete run, its own repository's gate,
+    // save one whose every change is the instance's own: paths under the
+    // reserved root with the documents and records that go with them, and
+    // no criterion that names npm test. Anything unread keeps the run.
+    const claims = criteria && criterionGateClaims(criteria, ids, {});
+    const kinds =
+      claims && !claims.review.length && !claims.plain.length
+        ? classified(() => {})
+        : null;
+    if (
+      kinds?.changed.instance.length &&
+      ![kinds.changed, kinds.resolved].some(
+        ({ machinery, unknown }) => machinery.length || unknown.length,
+      )
+    )
+      scope.reasons.push(instanceReason(kinds));
+    else
+      owe(
+        "this is a launchpad order, and the complete run is its own repository's gate",
+      );
+    return;
+  }
   const claims = criterionGateClaims(criteria, ids, { repositoryId });
   target(repositoryId, !criteria || claims.review.length ? "review" : "plain");
   if (declared && declaration?.id !== state.repositoryId)
@@ -383,32 +458,11 @@ function select(root, order, scope, { owe, uncertain, runner, receipt }) {
     owe(
       `${named.length === 1 ? "criterion" : "criteria"} ${named.join(", ")} ${named.length === 1 ? "names" : "name"} npm test`,
     );
-  const changes = closeoutChanges(root, workOrder, { receipt });
-  for (const cause of changes.uncertain) uncertain(cause);
-  // loadCloseoutRunner returns a suite table or an error. A runner that
-  // imports with no table, or an empty one, declares no inputs to classify
-  // against, so it is uncertain too.
-  const hasSuites = Array.isArray(runner?.suites) && runner.suites.length > 0;
-  if (!runner) uncertain("the runner's suite declarations were not loaded");
-  else if (!hasSuites)
-    uncertain(
-      `the runner's suite declarations cannot be read: ${runner.error ?? "the runner exports no suite table"}`,
-    );
-  if (changes.uncertain.length || !hasSuites) return;
-  let classify;
-  try {
-    classify = classifier(root, workOrder, runner);
-  } catch (error) {
-    uncertain(`the launchpad paths cannot be classified: ${error.message}`);
-    return;
-  }
-  const kinds = (paths) => {
-    const sorted = { machinery: [], unknown: [] };
-    for (const path of paths) sorted[classify(path).kind]?.push(path);
-    return sorted;
-  };
-  const changed = kinds(changes.paths),
-    resolved = kinds(changes.conflicts);
+  const kinds = classified(uncertain);
+  if (!kinds) return;
+  const { changed, resolved } = kinds;
+  if (changed.instance.length || resolved.instance.length)
+    scope.reasons.push(instanceReason(kinds));
   if (changed.machinery.length)
     owe(summary("launchpad machinery changed", changed.machinery));
   if (resolved.machinery.length)

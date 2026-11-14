@@ -1,0 +1,340 @@
+{
+  "observedAt": "2026-11-13T22:01:04.029619+00:00",
+  "baseline": "refs/dotln/checkpoint/WO-276/77",
+  "subject": "refs/dotln/checkpoint/WO-276/82",
+  "subjectPathCount": 9347,
+  "repairChanges": [
+    {
+      "path": "docs/control/current.md",
+      "before": {
+        "mode": "100644",
+        "blob": "6f258b3d41449dbb6412940784409d7a52a49dc1"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "1c40d36f9f4a5a2c532da1fbae8109968f8dc4bc"
+      }
+    },
+    {
+      "path": "docs/control/orders/WO-276.jsonl",
+      "before": {
+        "mode": "100644",
+        "blob": "b926999cb1cdfb451b667a52036d2a83e0c4a8dc"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "4c7a8085c6cab13cd192146d388beb4c270fccd9"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/decisions.md",
+      "before": {
+        "mode": "100644",
+        "blob": "a5cc7627bf59570fe9f6f13234d51ab741ad7e23"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "725c45362e51681f6ad2f722b091b53255f6bda0"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/handoff.md",
+      "before": {
+        "mode": "100644",
+        "blob": "2cf1c689ea91fb5dffbef695b17c19a2f6db9f90"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "c19dc34ab5cb51a407d6a5038bc31f18fd932b0a"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/meta.json",
+      "before": {
+        "mode": "100644",
+        "blob": "93a98f0a84ed9d87d341ab1849675429499912b5"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "df4c504abe0b88234406700541a9f32e755f69ed"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/repair-ver004/closing-gates.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "1097f4c1d5dbe45231629387ea2b775443effef3"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/repair-ver004/discovery-timeout.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "bb85f1faaef71af86be9520f3eec71808731807c"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/repair-ver004/independent-probes.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "d5868f0ea89ff06b179b47e80e284d82d5ce0007"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/repair-ver004/process.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "5bfa3eb3cf77677954ac3c838fc55de36ad5cae4"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/standing.md",
+      "before": {
+        "mode": "100644",
+        "blob": "1449cdd263328d38613cb00553204e54b76ca282"
+      },
+      "subject": null
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/check-results.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "9eb77b84dc25dd589ba11d9326d205fa5b9b5b0c"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/closing-gates.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "b714a0345603900e64c5f0be32ea68fc1fa3b55b"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/comparison-rerun.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "ce7173073b03b482ec0f0752f7d99ed9b0a54bed"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/independent-probes.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "8948c4db2aa0070851df2df58c16d55328c18aca"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/independent-probes.mjs",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "3b16a247a1fbb8def2e548872a2c03f865e1f68d"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/local-cli-admission.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "d20a4873df047b756af21b58998ccdeb29b21305"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/local-cli-admission.mjs",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "450a86f5b6f08c630d32cb520b92c7089e7f2284"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/probes.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "e87b573866ed22913ed70fe62810008e40109673"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/process-failures.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "515802d0236e0f1192229dcb8d1d3287f4d746d2"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/repair-diff.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "11bb7504c747a32110c0412b375f61275ac42cc5"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/subject-gates.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "aa268441d0de546627012e70a9969c865ef12994"
+      }
+    },
+    {
+      "path": "docs/evidence/WO-276/verifier-004/terms-review.json",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "9a8d126cfaf9ca2a4017752a9f07bd9b2d1768d0"
+      }
+    },
+    {
+      "path": "docs/lineage/decisions-index.md",
+      "before": {
+        "mode": "100644",
+        "blob": "7c4acd87845987c40d22d505df96b59017387932"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "931079e0e0d4b7e18acd73371e0795205f87cdcb"
+      }
+    },
+    {
+      "path": "docs/planning/followups.json",
+      "before": {
+        "mode": "100644",
+        "blob": "8cb3f8adfa401dd595b739411f731d6ecdd96a64"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "9e836d2046f2a9e0fc4393475477eb618e75032e"
+      }
+    },
+    {
+      "path": "docs/product/07-execution-guide.md",
+      "before": {
+        "mode": "100644",
+        "blob": "51177dd3b2d70bad322784f9035cc969a0afcb57"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "bf6e11de8e921d2eb27d113da4886c514aedc5c3"
+      }
+    },
+    {
+      "path": "docs/publication/software-engineer-toc.md",
+      "before": {
+        "mode": "100644",
+        "blob": "6139bdedb23ce30e811c3a47922d04984d1e0b07"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "5342700d3b3314e04044dfd1e131d54374d36177"
+      }
+    },
+    {
+      "path": "docs/verifications/WO-276/VER-004.md",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "d704e9c3e2bc9fc24d538c4232aadec2d2f8162d"
+      }
+    },
+    {
+      "path": "docs/work-orders/README.md",
+      "before": {
+        "mode": "100644",
+        "blob": "235e7515c9ec341c2df53197a1f2113fcb1e43a9"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "ac88c17f3716eea178dd903c37e2a9cb03bcea51"
+      }
+    },
+    {
+      "path": "scripts/lib/codex-background.mjs",
+      "before": {
+        "mode": "100644",
+        "blob": "499761a8b78f5fdbdd79645cb3ca77f1b2728bb0"
+      },
+      "subject": {
+        "mode": "100644",
+        "blob": "d144baddd0e3c981f3b1111c3fef15fb3a32cd26"
+      }
+    },
+    {
+      "path": "scripts/test-codex-background.mjs",
+      "before": null,
+      "subject": {
+        "mode": "100644",
+        "blob": "3b5590e63339efc3331fb86e40a4ae66da68aa22"
+      }
+    },
+    {
+      "path": "scripts/test-resume.sh",
+      "before": {
+        "mode": "100755",
+        "blob": "5d4d0ab60ff11d569c0f484a31088c2cd5e7e0e7"
+      },
+      "subject": {
+        "mode": "100755",
+        "blob": "e49c0759dae0a63242944b52404226e56977f01c"
+      }
+    }
+  ],
+  "changedSinceSubject": [
+    {
+      "path": "docs/control/current.md",
+      "subject": {
+        "mode": "100644",
+        "blob": "1c40d36f9f4a5a2c532da1fbae8109968f8dc4bc"
+      },
+      "current": {
+        "mode": "100644",
+        "blob": "8da00aca76dd03b84b1e091ed782f6def83d8653"
+      }
+    },
+    {
+      "path": "docs/control/orders/WO-276.jsonl",
+      "subject": {
+        "mode": "100644",
+        "blob": "4c7a8085c6cab13cd192146d388beb4c270fccd9"
+      },
+      "current": {
+        "mode": "100644",
+        "blob": "f6dce687698041251184314c7d9375fe6f77d2ed"
+      }
+    },
+    {
+      "path": "docs/work-orders/README.md",
+      "subject": {
+        "mode": "100644",
+        "blob": "ac88c17f3716eea178dd903c37e2a9cb03bcea51"
+      },
+      "current": {
+        "mode": "100644",
+        "blob": "b3043986de01d16813f9f3237d020e25f2ad6a80"
+      }
+    }
+  ],
+  "missingSinceSubject": [],
+  "newSinceSubject": [],
+  "method": "Hash current bytes, including untracked files, as Git blobs; compare modes. A plain git diff against a checkpoint misreports its untracked files as deletions.",
+  "indexOnlyRemovedPaths": [
+    ".claude/agents/dotln-worker-fable.md",
+    ".claude/hooks/presence-posttooluse.mjs",
+    ".claude/hooks/presence-pretooluse.mjs",
+    ".claude/hooks/presence-stop.mjs",
+    ".claude/hooks/presence-userpromptsubmit.mjs",
+    ".codex/agents/dotln-worker-astra.toml",
+    "scripts/fixtures/launchpad-cases.json",
+    "scripts/fixtures/target-worktree-cases.json"
+  ]
+}

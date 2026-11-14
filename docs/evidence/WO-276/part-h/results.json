@@ -1,0 +1,72 @@
+{
+  "what": "Part H's observations on this host and on injected hosts.",
+  "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-276/part-h/evidence.mjs",
+  "thisHost": {
+    "exitCode": 0,
+    "rows": 11,
+    "verdicts": {
+      "node": "met",
+      "git": "met",
+      "compiler": "met",
+      "lane-memory": "met",
+      "symlinks": "met",
+      "line-endings": "met",
+      "forge": "met",
+      "platform": "met",
+      "agent-claude": "reported",
+      "agent-codex": "reported",
+      "agent-copilot": "reported"
+    }
+  },
+  "injected": {
+    "every assumption met": {
+      "exitCode": 0,
+      "unmet": [],
+      "unknown": []
+    },
+    "a Node below the floor, a Git below the floor and a compiler that fails, at once": {
+      "exitCode": 1,
+      "unmet": [
+        "node",
+        "git",
+        "compiler"
+      ],
+      "unknown": []
+    },
+    "two facts that cannot be read": {
+      "exitCode": 0,
+      "unmet": [],
+      "unknown": [
+        "line-endings",
+        "forge"
+      ]
+    },
+    "a Node below the floor and a library that cannot be loaded": {
+      "exitCode": 1,
+      "unmet": [
+        "node"
+      ],
+      "unknown": [
+        "modules"
+      ]
+    }
+  },
+  "hostTask": {
+    "kitRoot": 0,
+    "core": 1
+  },
+  "preview": {
+    "met": {
+      "exitCode": 0,
+      "floorLines": 0,
+      "previewMs": 268
+    },
+    "unmet": {
+      "exitCode": 0,
+      "floorLines": 2,
+      "previewMs": 269
+    },
+    "floorReadingMs": 6.1,
+    "floorReading": "unmetIncomingFloors over the incoming package.json, one git --version among it"
+  }
+}

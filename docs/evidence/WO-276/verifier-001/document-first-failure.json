@@ -1,0 +1,10 @@
+{
+  "command": "npm run test:docs",
+  "exitCode": 1,
+  "cause": "verifier-authored draft decision dispatch fields lacked a canonical control prefix",
+  "failures": [
+    "[docs-check] FAIL docs/evidence/WO-276/decisions.md#WO-276-D123: dispatch needs a control prefix and at most 240 characters of paraphrase on one line",
+    "[docs-check] FAIL docs/evidence/WO-276/decisions.md#WO-276-D124: dispatch needs a control prefix and at most 240 characters of paraphrase on one line"
+  ],
+  "disposition": "D125 corrects the two draft fields; rerun the document gate."
+}

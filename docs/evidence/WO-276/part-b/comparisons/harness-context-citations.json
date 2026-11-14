@@ -1,0 +1,25 @@
+{
+  "comparison": "harness-context-citations",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: the files and sections its Cites block names, each resolved",
+  "read": 269,
+  "equal": 267,
+  "differences": {
+    "defect of the old reader: the Cites block ended only at a literal **Objective: label, which this order does not write (it has **Original objective:**), so the block was never read; the order reader reads it to the next label, and it then refuses a cited section 06-roadmap.md no longer has": 1,
+    "defect of the old reader: the Cites block ran past two later labelled paragraphs (Usefulness correction, Authorized expansion) to the Objective and read their decision links as citations; the order reader stops at the next label": 1
+  },
+  "examples": [
+    {
+      "input": "docs/work-orders/WO-006-publication-bootstrap.md",
+      "named": "defect of the old reader: the Cites block ended only at a literal **Objective: label, which this order does not write (it has **Original objective:**), so the block was never read; the order reader reads it to the next label, and it then refuses a cited section 06-roadmap.md no longer has",
+      "old": "threw: Work order has no resolvable Cites block",
+      "new": "threw: Unresolved required section: Work-order navigation and identity"
+    },
+    {
+      "input": "docs/work-orders/WO-235-no-artifact-shaped-by-its-predecessor.md",
+      "named": "defect of the old reader: the Cites block ran past two later labelled paragraphs (Usefulness correction, Authorized expansion) to the Objective and read their decision links as citations; the order reader stops at the next label",
+      "old": "threw: Unresolved cited file: ../evidence/WO-235/decisions.md",
+      "new": "[\"packages/skeleton/src/harness-host.ts\",\"packages/skeleton/src/loadouts/contributor.ts\",\"packages/skeleton/src/document-quality.ts\",\"scripts/lib/reader-profiles.mjs\",\"scripts/lib/github-body.mjs\",\"scripts/refute-plan.mjs\",\"scripts/lib/planning-document.mjs\",\"scripts/docs-check.mjs\",\"scripts/lib/handoff-ledger.mjs\"]"
+    }
+  ]
+}

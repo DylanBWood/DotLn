@@ -1,0 +1,9 @@
+{
+  "comparison": "runtime-status-orders",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "the generated index page (base) and the index command's record of the same tree (worktree): each active or open order with its phase, dependency state and verdict",
+  "read": 1,
+  "equal": 1,
+  "differences": {},
+  "examples": []
+}

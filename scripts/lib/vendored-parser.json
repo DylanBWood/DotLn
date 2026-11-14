@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "package": "prettier",
+  "version": "3.9.6",
+  "files": {
+    "scripts/lib/vendor/prettier-markdown.mjs": "73f4bb011f35ad5dcdb66e39017de3e2f445c6dacbf6ceb1d7fda3fdd97c5005",
+    "scripts/lib/vendor/prettier-LICENSE": "b0f2417199889f1c0d28ec4e0244eacf1a15de5819d61f641dd7d8f45153ac9c",
+    "scripts/lib/vendor/prettier-THIRD-PARTY-NOTICES.md": "ed5d4b7a970a10f85a80a730a3086cf59bf3dbb0bd3c5aa5f900da1b54fdfcac"
+  }
+}

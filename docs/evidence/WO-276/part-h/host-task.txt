@@ -1,0 +1,11 @@
+# The host task (checkHost) on an injected host of 16 GB and twelve logical processors.
+## In a kit root: exit 0
+Node runtime v26.9.0 is inside package.json engines.node ^24.15.0 || ^26.0.0.
+Git 2.55.0 is at or above package.json engines.git >=2.31.0.
+Host memory: normal; pressure=1; swapBytes=0; physicalBytes=17179869184; source=injected
+Per-lane memory budget 1431655765 bytes covers measured task peak RSS 602734592 bytes (6 host lanes)
+## In core: exit 1
+Node runtime v26.9.0 is inside package.json engines.node ^24.15.0 || ^26.0.0.
+Git 2.55.0 is at or above package.json engines.git >=2.31.0.
+Host memory: normal; pressure=1; swapBytes=0; physicalBytes=17179869184; source=injected
+Per-lane memory budget 1431655765 bytes is below measured task peak RSS 1509638144 bytes (6 host lanes); memory.gateShare must be at least 0.527236 to admit this peak at 6 lanes; set it in docs/control/budgets.json after judging the shared host budget, then retry

@@ -246,32 +246,48 @@ test("host rows are elections inferred on from the instance's own committed reco
     "records/control/resume.jsonl": 1,
     "records/control/orders/": 1,
   });
-  // The discovery record's observed version counts; an untested one does not.
-  const discovery = (classification) =>
+  // The discovery record's observed version turns no host on (WO-275): an
+  // inspection that found a CLI is not the operator using it. The inventory
+  // names the record as showing the host without an election.
+  const discovery = (classification, harnesses = ["copilot-cli"]) =>
     write(
       root,
       "docs/discovery/environment.json",
       json({
         effortReadbackProbe: {
-          harnesses: {
-            "copilot-cli": {
-              versions: [{ classification, value: "1.0.86" }],
-            },
-          },
+          harnesses: Object.fromEntries(
+            harnesses.map((harness) => [
+              harness,
+              { versions: [{ classification, value: "1.0.86" }] },
+            ]),
+          ),
         },
       }),
     );
   discovery("untested");
   assert.equal(readFeatures(root)["host-copilot"], false);
-  discovery("observed");
-  assert.equal(readFeatures(root)["host-copilot"], true);
+  assert.equal(row("host-copilot").source, "default");
+  discovery("observed", ["codex-cli", "copilot-cli"]);
+  assert.equal(readFeatures(root)["host-copilot"], false);
+  assert.deepEqual(readHostFeatures(root), {
+    "host-codex": true,
+    "host-copilot": false,
+  });
+  assert.equal(row("host-copilot").value, false);
   assert.equal(
     row("host-copilot").source,
-    "inferred: docs/discovery/environment.json observed versions",
+    "default (docs/discovery/environment.json observed versions show the host without an election; a discovery record turns no host on)",
+  );
+  assert.equal(row("host-copilot").record.observedVersions, true);
+  // An attested host stays inferred from its attestations alone, as before.
+  assert.equal(
+    row("host-codex").source,
+    "inferred: records/control/resume.jsonl attestations; records/control/orders/ attestations",
   );
   // A malformed record shows nothing rather than failing the reader.
   write(root, "docs/discovery/environment.json", "not JSON");
   assert.equal(readFeatures(root)["host-copilot"], false);
+  assert.equal(row("host-copilot").source, "default");
   // An election of false beside a record that shows the host is respected,
   // and the inventory says what the record shows; an election of true needs
   // no record.

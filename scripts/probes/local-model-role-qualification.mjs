@@ -22,6 +22,11 @@ import { performance } from "node:perf_hooks";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { isMainModule } from "../lib/paths.mjs";
 import { TOOL_ROOT } from "../lib/config.mjs";
+import {
+  markdownHeadings,
+  markdownTables,
+  parseMarkdown,
+} from "../lib/markdown-links.mjs";
 
 export const ROOT = TOOL_ROOT;
 export const FIXTURE_PATH = join(
@@ -39,6 +44,8 @@ export const PINNED_LOCAL = {
   runtimeVersion: "2.38.0",
 };
 export const DEFAULT_ENDPOINT = "http://127.0.0.1:1234";
+// The remote baseline of the dated WO-138 qualification records, which
+// this probe regenerates: it keeps the model those records measured.
 export const DEFAULT_REMOTE_MODEL = "gpt-5.6-sol";
 export const EPISODE_TIMEOUT_MS = 120_000;
 export const BASELINE_REPEATS = 5;
@@ -94,13 +101,16 @@ export function fixture() {
   return JSON.parse(readFileSync(FIXTURE_PATH, "utf8"));
 }
 
-function requireLine(source, pattern, label) {
-  const matches = source.split("\n").filter((line) => pattern.test(line));
+/** The one table row whose first cell is `name`, as its source line. */
+function requireRow(source, tree, name, label) {
+  const matches = markdownTables(source, tree)
+    .flatMap((table) => table.rows)
+    .filter((row) => row.cells[0] === name);
   if (matches.length !== 1)
     throw new Error(
       `T1 source needs one ${label} row; observed ${matches.length}`,
     );
-  return matches[0];
+  return source.split("\n")[matches[0].line - 1];
 }
 
 function requireExcerpt(source, pattern, label) {
@@ -112,9 +122,12 @@ function requireExcerpt(source, pattern, label) {
 export function t1Input() {
   const config = fixture().t1;
   const source = readFileSync(join(ROOT, config.source), "utf8");
-  const criteria = source
-    .split("\n")
-    .filter((line) => /^### AC[1-6] —/u.test(line));
+  const tree = parseMarkdown(source);
+  // Each criterion's level-three heading, as its source line.
+  const lines = source.split("\n");
+  const criteria = markdownHeadings(source, tree)
+    .filter(({ depth, title }) => depth === 3 && /^AC[1-6] —/u.test(title))
+    .map(({ line }) => lines[line - 1]);
   if (criteria.length !== 6)
     throw new Error(
       `T1 source needs six criterion headings; observed ${criteria.length}`,
@@ -160,11 +173,11 @@ export function t1Input() {
       },
       {
         rowId: "receipt-gate",
-        text: requireLine(source, /^\| Canonical gate \|/u, "canonical gate"),
+        text: requireRow(source, tree, "Canonical gate", "canonical gate"),
       },
       {
         rowId: "receipt-dependencies",
-        text: requireLine(source, /^\| Dependencies \|/u, "dependency"),
+        text: requireRow(source, tree, "Dependencies", "dependency"),
       },
       ...criteria.map((text, index) => ({
         rowId: `criterion-${index + 1}`,

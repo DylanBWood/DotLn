@@ -1,0 +1,9 @@
+{
+  "comparison": "generated-pages",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every Markdown document under docs/ and at the root: whether a line outside code and outside a marker block says a command wrote the page",
+  "read": 2425,
+  "equal": 2425,
+  "differences": {},
+  "examples": []
+}

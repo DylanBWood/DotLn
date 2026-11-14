@@ -153,7 +153,7 @@ const close = (order) => {
   assert.equal(statusOf(order).phase, "closed");
   ok(node(order.root, "work-orders", ["index"], order.target));
   const member = streamSnapshot(
-    readFileSync(join(order.root, "docs/work-orders/README.md"), "utf8"),
+    node(order.root, "work-orders", ["index", "--json"], order.target).stdout,
   ).workstreams[0].members.find((member) => member.workOrderId === order.id);
   assert.equal(member.phase, "closed");
   assert.equal(member.verdict, "pass");
@@ -342,7 +342,7 @@ test("WO-080 D2 cross repository: client proceeds against the pinned contract fi
     { version: 1, optionalField: true },
   );
   const stream = streamSnapshot(
-    readFileSync(join(client.root, "docs/work-orders/README.md"), "utf8"),
+    node(client.root, "work-orders", ["index", "--json"], client.target).stdout,
   ).workstreams[0];
   assert.deepEqual(stream.edges, [
     { from: "WO-302", to: "WO-301", relation: "contract-fixture" },

@@ -1,0 +1,90 @@
+[
+  {
+    "id": "node",
+    "assumption": "Node is inside the range package.json engines.node declares",
+    "observed": "Node v26.9.0",
+    "verdict": "met",
+    "dependsOn": "every script of the kit, the gate and the hooks",
+    "remedy": "none"
+  },
+  {
+    "id": "git",
+    "assumption": "Git is at or above the floor package.json engines.git declares",
+    "observed": "Git 2.55.0",
+    "verdict": "met",
+    "dependsOn": "worktrees, updates and every Git read the scripts make",
+    "remedy": "none"
+  },
+  {
+    "id": "compiler",
+    "assumption": "a C compiler builds the kit's host helpers",
+    "observed": "the lock helper compiled",
+    "verdict": "met",
+    "dependsOn": "the lock every gate task starts through, and the gate's memory reader",
+    "remedy": "none"
+  },
+  {
+    "id": "lane-memory",
+    "assumption": "one gate lane's memory budget covers the largest task this root's gate carries",
+    "observed": "16 logical processors, 48.0 GiB of memory, 8 lanes of 3.0 GiB each",
+    "verdict": "met",
+    "dependsOn": "the host task of every gate, which refuses a lane too small for its heaviest task",
+    "remedy": "none"
+  },
+  {
+    "id": "symlinks",
+    "assumption": "this account can create a symbolic link",
+    "observed": "a symbolic link was created",
+    "verdict": "met",
+    "dependsOn": "the workspace links an install makes and the instruction file's second name",
+    "remedy": "none"
+  },
+  {
+    "id": "line-endings",
+    "assumption": "Git converts no line ending of a kit file in this clone",
+    "observed": "core.autocrlf unset; 0 of 8866 tracked kit files open to conversion",
+    "verdict": "met",
+    "dependsOn": "the kit's verification, which hashes its files' bytes",
+    "remedy": "none"
+  },
+  {
+    "id": "forge",
+    "assumption": "the origin is a forge the publish helpers accept, and the forge's tool is installed",
+    "observed": "a GitHub-form origin (HOST/OWNER/REPO), one target for fetch and push; gh found (2.98.0)",
+    "verdict": "met",
+    "dependsOn": "final review's push and pull request, release close's tag and Release, and an update's publish",
+    "remedy": "none"
+  },
+  {
+    "id": "platform",
+    "assumption": "the platform is one the kit runs on",
+    "observed": "macOS, which the kit is exercised on",
+    "verdict": "met",
+    "dependsOn": "every command",
+    "remedy": "none"
+  },
+  {
+    "id": "agent-claude",
+    "assumption": "the agent CLI of Claude Code, every instance's host",
+    "observed": "found (2.1.322)",
+    "verdict": "reported",
+    "dependsOn": "sessions on that host; reported and never judged",
+    "remedy": "none"
+  },
+  {
+    "id": "agent-codex",
+    "assumption": "the agent CLI of Codex, a host this instance has on",
+    "observed": "found (0.167.0)",
+    "verdict": "reported",
+    "dependsOn": "sessions on that host; reported and never judged",
+    "remedy": "none"
+  },
+  {
+    "id": "agent-copilot",
+    "assumption": "the agent CLI of Copilot, a host this instance has on",
+    "observed": "found (1.0.94)",
+    "verdict": "reported",
+    "dependsOn": "sessions on that host; reported and never judged",
+    "remedy": "none"
+  }
+]

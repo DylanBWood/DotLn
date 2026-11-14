@@ -17,7 +17,11 @@ import { invalidResultDetail } from "./verification-protocol.js";
 import { FakeVerificationTransport } from "./verification-fake.js";
 import { runFeedbackSelfhost } from "./feedback-selfhost.js";
 import { harnessControl } from "./harness-host.js";
-import { ResidentHost } from "./resident-host.js";
+import {
+  parseResidentArguments,
+  runResident,
+  verticalBridge,
+} from "./resident-launch.js";
 import { interruptionCheckpoint } from "./host-interruption.js";
 import { recordPresence, answerHandoff } from "./resident-store.js";
 import {
@@ -35,11 +39,6 @@ const derivedOrders = () =>
   );
 const intentProse = command === "intent" ? args.shift() : undefined;
 const verticalIssue = command === "vertical" ? args.shift() : undefined;
-const verticalBridge = () =>
-  import(
-    new URL("../../../../scripts/lib/vertical-runtime.mjs", import.meta.url)
-      .href
-  );
 const presenceAction = command === "presence" ? args.shift() : undefined;
 const handoffAction = command === "handoff" ? args.shift() : undefined;
 const options = new Map<string, string>();
@@ -181,71 +180,8 @@ try {
     });
     console.log("Human handoff answer recorded");
   } else if (command === "resident") {
-    if (
-      !options.get("--policy") ||
-      [...options.keys()].some(
-        (key) => !["--store", "--policy", "--tick"].includes(key),
-      ) ||
-      [...switches].some((key) => key !== "--once") ||
-      (switches.has("--once") && options.has("--tick"))
-    )
-      throw new Error(
-        "usage: dotln resident --store <directory> --policy <id> [--tick <ms> | --once]",
-      );
-    const abort = new AbortController();
-    const stop = () => abort.abort();
-    process.once("SIGINT", stop);
-    process.once("SIGTERM", stop);
-    // A closed terminal stops the resident in order, so it can interrupt the
-    // console commands it started in their own process groups.
-    process.once("SIGHUP", stop);
-    try {
-      const { findLaunchpad, docPath } = await import(
-        new URL("../../../../scripts/lib/config.mjs", import.meta.url).href
-      );
-      let commandRoot = resolve(
-        process.env["DOTLN_LAUNCHPAD"] ?? process.cwd(),
-      );
-      let workOrderIndexPath: string | undefined;
-      let workOrderIndexError:
-        | import("./runtime-status-contract.js").WorkOrderSourceReason
-        | undefined;
-      try {
-        commandRoot = findLaunchpad();
-        try {
-          workOrderIndexPath = docPath(commandRoot, "workOrders", "README.md");
-        } catch {
-          workOrderIndexError = "configuration-invalid";
-        }
-      } catch {
-        workOrderIndexError = "launchpad-unavailable";
-      }
-      const vertical = existsSync(join(directory, "vertical.json"))
-        ? (await verticalBridge()).createVerticalEntry({
-            directory: resolve(directory),
-            configuration: (await verticalBridge()).readVerticalConfiguration(
-              resolve(directory),
-              commandRoot,
-            ),
-          }).resident
-        : undefined;
-      await new ResidentHost({
-        directory,
-        policyId: options.get("--policy")!,
-        commandRoot,
-        ...(vertical ? { vertical } : {}),
-        ...(workOrderIndexPath === undefined ? {} : { workOrderIndexPath }),
-        ...(workOrderIndexError === undefined ? {} : { workOrderIndexError }),
-      }).run({
-        once: switches.has("--once"),
-        tickMs: Number(options.get("--tick") ?? 1000),
-        signal: abort.signal,
-      });
-    } finally {
-      process.removeListener("SIGINT", stop);
-      process.removeListener("SIGTERM", stop);
-      process.removeListener("SIGHUP", stop);
-    }
+    // The resident command's options are read where the launch is shared.
+    await runResident(parseResidentArguments(process.argv.slice(3)));
   } else if (command === "status") {
     if (options.size !== 1 || [...switches].some((key) => key !== "--json"))
       throw new Error("status accepts only --store and --json");

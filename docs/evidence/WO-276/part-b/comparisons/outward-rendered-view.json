@@ -1,0 +1,84 @@
+{
+  "comparison": "outward-rendered-view",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every stored pull-request body and release-notes document: the text GitHub shows, folded, with the source span of each character",
+  "read": 434,
+  "equal": 420,
+  "differences": {
+    "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same": 14
+  },
+  "examples": [
+    {
+      "input": "docs/final-reviews/WO-003/PR.md",
+      "named": "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same",
+      "sameWordsAndSpans": true,
+      "sameTextOnceLineIndentRemoved": true,
+      "firstTextDifference": 657,
+      "old": "\"ee lifecycle helper (scripts/worktree.mjs): guarded start /\\n  publish / finish with real-git integration tests.\\n- intake\"",
+      "new": "\"ee lifecycle helper (scripts/worktree.mjs): guarded start /\\npublish / finish with real-git integration tests.\\n- intake b\"",
+      "firstSpanDifference": 657,
+      "oldSpan": "677-678 678-679 679-680",
+      "newSpan": "679-680 680-681 681-682"
+    },
+    {
+      "input": "docs/final-reviews/WO-004/PR.md",
+      "named": "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same",
+      "sameWordsAndSpans": true,
+      "sameTextOnceLineIndentRemoved": true,
+      "firstTextDifference": 146,
+      "old": "\"vironment truth addendum (docs/discovery/): the gaps wo-001\\n  deliberately deferred, closed with observed evidence — bot\"",
+      "new": "\"vironment truth addendum (docs/discovery/): the gaps wo-001\\ndeliberately deferred, closed with observed evidence — both \"",
+      "firstSpanDifference": 146,
+      "oldSpan": "152-153 153-154 154-155",
+      "newSpan": "154-155 155-156 156-157"
+    },
+    {
+      "input": "docs/final-reviews/WO-005/PR.md",
+      "named": "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same",
+      "sameWordsAndSpans": true,
+      "sameTextOnceLineIndentRemoved": true,
+      "firstTextDifference": 361,
+      "old": "\"lity rows (kernel event loop, cadence, authorization guard,\\n  store/replay, continuations, walking-skeleton vertical, co\"",
+      "new": "\"lity rows (kernel event loop, cadence, authorization guard,\\nstore/replay, continuations, walking-skeleton vertical, comp\"",
+      "firstSpanDifference": 361,
+      "oldSpan": "371-372 372-373 373-374",
+      "newSpan": "373-374 374-375 375-376"
+    },
+    {
+      "input": "docs/final-reviews/WO-006/PR.md",
+      "named": "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same",
+      "sameWordsAndSpans": true,
+      "sameTextOnceLineIndentRemoved": true,
+      "firstTextDifference": 497,
+      "old": "\"ion bootstrap (docs/publication/): an audience/status index\\n  covering all 134 blueprint headings, the base outline and \"",
+      "new": "\"ion bootstrap (docs/publication/): an audience/status index\\ncovering all 134 blueprint headings, the base outline and im\"",
+      "firstSpanDifference": 497,
+      "oldSpan": "511-512 512-513 513-514",
+      "newSpan": "513-514 514-515 515-516"
+    },
+    {
+      "input": "docs/final-reviews/WO-007/PR.md",
+      "named": "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same",
+      "sameWordsAndSpans": true,
+      "sameTextOnceLineIndentRemoved": true,
+      "firstTextDifference": 294,
+      "old": "\"record schema version 1 (packages/skeleton/src/audit.ts): a\\n  discriminated reference envelope over the canonical event \"",
+      "new": "\"record schema version 1 (packages/skeleton/src/audit.ts): a\\ndiscriminated reference envelope over the canonical event lo\"",
+      "firstSpanDifference": 294,
+      "oldSpan": "302-303 303-304 304-305",
+      "newSpan": "304-305 305-306 306-307"
+    },
+    {
+      "input": "docs/final-reviews/WO-012/PR.md",
+      "named": "defect of the old reader: its rendered view kept whitespace GitHub does not show (a list item's continuation-line indentation; the one-space padding of a double-backtick code span); the words and every word's source span are the same",
+      "sameWordsAndSpans": true,
+      "sameTextOnceLineIndentRemoved": true,
+      "firstTextDifference": 268,
+      "old": "\"ree --name-only c-quote any path containing non-ascii bytes\\n  (default core.quotepath=true). all three consumers compare\"",
+      "new": "\"ree --name-only c-quote any path containing non-ascii bytes\\n(default core.quotepath=true). all three consumers compared \"",
+      "firstSpanDifference": 268,
+      "oldSpan": "280-281 281-282 282-283",
+      "newSpan": "282-283 283-284 284-285"
+    }
+  ]
+}

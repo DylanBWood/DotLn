@@ -540,4 +540,13 @@ test("WO-142 TypeScript 7 comment batches preserve snapshot boundaries and escap
     feedbackSourcesComments([{ path: "same.ts", source: "// replacement" }]),
     [[" replacement"]],
   );
+  // TypeScript 7.0.2's scanner returns an empty token that never advances
+  // for a `#` followed by a blank; the reader steps over it rather than
+  // spinning, so text such as a Markdown heading in a source still ends.
+  assert.deepEqual(
+    feedbackSourcesComments([
+      { path: "same.ts", source: "# not a comment\n// after" },
+    ]),
+    [[" after"]],
+  );
 });

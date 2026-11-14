@@ -1,0 +1,57 @@
+{
+  "prior": "714f8945cce6f84c529f47639d0d52f0afbd20e4",
+  "subject": "6caac43e0583a7f46300e1738a360b67fad12433",
+  "main": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "comparedPaths": 9437,
+  "implementation": [
+    "scripts/lib/work-order-document.mjs",
+    "scripts/test-derived-orders.mjs"
+  ],
+  "changed": [
+    "docs/control/current.md",
+    "docs/control/orders/WO-276.jsonl",
+    "docs/evidence/WO-276/decisions.md",
+    "docs/evidence/WO-276/handoff.md",
+    "docs/evidence/WO-276/meta.json",
+    "docs/evidence/WO-276/verifier-006/check-results.json",
+    "docs/evidence/WO-276/verifier-006/closing-gates.json",
+    "docs/evidence/WO-276/verifier-006/comparison-summary.json",
+    "docs/evidence/WO-276/verifier-006/criteria-gap.json",
+    "docs/evidence/WO-276/verifier-006/criteria-gap.mjs",
+    "docs/evidence/WO-276/verifier-006/criterion-carry.json",
+    "docs/evidence/WO-276/verifier-006/gap-corpus.json",
+    "docs/evidence/WO-276/verifier-006/process-failures.json",
+    "docs/evidence/WO-276/verifier-006/punctuation.json",
+    "docs/evidence/WO-276/verifier-006/punctuation.mjs",
+    "docs/evidence/WO-276/verifier-006/repair-inventory.json",
+    "docs/evidence/WO-276/verifier-006/reproductions.json",
+    "docs/evidence/WO-276/verifier-006/subject-gates.json",
+    "docs/evidence/WO-276/verifier-006/terms-review.json",
+    "docs/lineage/decisions-index.md",
+    "docs/planning/followups.json",
+    "docs/product/07-execution-guide.md",
+    "docs/publication/software-engineer-toc.md",
+    "docs/verifications/WO-276/VER-006.md",
+    "docs/work-orders/README.md",
+    "scripts/lib/work-order-document.mjs",
+    "scripts/test-derived-orders.mjs"
+  ],
+  "different": [
+    {
+      "file": "docs/control/current.md",
+      "contentChanged": true,
+      "modeChanged": false
+    },
+    {
+      "file": "docs/control/orders/WO-276.jsonl",
+      "contentChanged": true,
+      "modeChanged": false
+    },
+    {
+      "file": "docs/work-orders/README.md",
+      "contentChanged": true,
+      "modeChanged": false
+    }
+  ],
+  "added": []
+}

@@ -1,0 +1,23 @@
+{
+  "no dollar figure": {
+    "classificationFieldsNow": 1,
+    "costNow": "one session.",
+    "costAtBase": "one session.",
+    "trackNow": "machinery",
+    "trackAtBase": "machinery"
+  },
+  "a dollar figure in one field": {
+    "classificationFieldsNow": 1,
+    "costNow": "about $5 of tokens.",
+    "costAtBase": "about $5 of tokens.",
+    "trackNow": "machinery",
+    "trackAtBase": "machinery"
+  },
+  "a dollar figure in two fields": {
+    "classificationFieldsNow": 0,
+    "costNow": "about $5 of tokens. **Release classification:** minor. A run costs $6 more.",
+    "costAtBase": "about $5 of tokens.",
+    "trackNow": "machinery",
+    "trackAtBase": "machinery"
+  }
+}

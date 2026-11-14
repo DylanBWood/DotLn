@@ -190,8 +190,8 @@ WO-076 lock refresh (2026-10-12, `node scripts/check-publication.mjs --print-loc
 | [Application version pending — Launchpad and cross-repository workstreams](../product/06-roadmap.md#application-version-pending--launchpad-and-cross-repository-workstreams)                                   | everyday-ai-user, software-engineer | planned     |
 | [Application version pending — Pattern workshop v1](../product/06-roadmap.md#application-version-pending--pattern-workshop-v1)                                                                                 | everyday-ai-user, software-engineer | planned     |
 | [Application version pending — Source-to-deliverable vertical](../product/06-roadmap.md#application-version-pending--source-to-deliverable-vertical)                                                           | everyday-ai-user, software-engineer | planned     |
-| [v1.0.0 — Teammate-ready](../product/06-roadmap.md#v100--teammate-ready)                                                                                                                                       | everyday-ai-user, software-engineer | planned     |
-| [Post-1.0 horizons](../product/06-roadmap.md#post-10-horizons)                                                                                                                                                 | everyday-ai-user, software-engineer | vision      |
+| [v2.0.0 — Teammate-ready](../product/06-roadmap.md#v200--teammate-ready)                                                                                                                                       | everyday-ai-user, software-engineer | planned     |
+| [Post-2.0 horizons](../product/06-roadmap.md#post-20-horizons)                                                                                                                                                 | everyday-ai-user, software-engineer | vision      |
 
 The `v0.2.1` row reflects the repository's tagged, independently reviewed state.
 Its roadmap prose retains time-indexed pre-close history and must not be misread
@@ -221,6 +221,7 @@ as a current blocked verdict.
 | [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |
 | [Preflight before the full gate](../product/07-execution-guide.md#preflight-before-the-full-gate) | software-engineer | specified |
 | [Verification review and attack](../product/07-execution-guide.md#verification-review-and-attack) | software-engineer | implemented |
+| [Review helper and round reports](../product/07-execution-guide.md#review-helper-and-round-reports) | software-engineer | implemented |
 | [Model-specific notes](../product/07-execution-guide.md#model-specific-notes)                                                                                | software-engineer                   | specified   |
 
 ## 08 — Publication compiler

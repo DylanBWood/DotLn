@@ -1,0 +1,9 @@
+{
+  "comparison": "publication-coverage",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "docs/publication/audience-status-index.md against the numbered product documents: the rows the coverage check reads and the failures it names",
+  "read": 1,
+  "equal": 1,
+  "differences": {},
+  "examples": []
+}

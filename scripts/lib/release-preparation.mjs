@@ -1,3 +1,4 @@
+import { markdownComments } from "./markdown-links.mjs";
 import { docRelative, loadConfig, validReleaseDisplayName } from "./config.mjs";
 import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import {
@@ -17,6 +18,7 @@ import {
   semver,
   strictVersionsIn,
 } from "./release-records.mjs";
+import { readWorkOrder } from "./work-order-document.mjs";
 
 // The heading an order carries until its target is assigned.
 export const activationPlaceholder = "(version assigned at activation)";
@@ -60,10 +62,15 @@ export function integrationPreparationRefusal(root, workOrderId, receipt) {
     return "its pending integration names no checkpoint";
   let stubbed = false;
   try {
-    stubbed = readFileSync(
-      join(root, docRelative(root, "evidence", `${workOrderId}/decisions.md`)),
-      "utf8",
-    ).includes(`<!-- integration ${receipt.checkpointRef} -->`);
+    stubbed = markdownComments(
+      readFileSync(
+        join(
+          root,
+          docRelative(root, "evidence", `${workOrderId}/decisions.md`),
+        ),
+        "utf8",
+      ),
+    ).some(({ text }) => text === `integration ${receipt.checkpointRef}`);
   } catch {
     // An absent or unreadable record holds no stub; the plan judges the path.
   }
@@ -142,24 +149,35 @@ export function planReleasePreparation(
         "release prepare requires contained regular source files",
       );
   const [authority, readme] = paths.map((path) => readFileSync(path, "utf8"));
-  const heading = authority.split("\n", 1)[0];
-  const versions = strictVersionsIn(heading);
+  // The heading is the order's title. Its bytes are found by the reader's
+  // offsets, shifted past a byte-order mark the reader does not count, so a
+  // retime rewrites the version and leaves every other byte as written.
+  const order = readWorkOrder(authority);
+  const title = order.title?.title ?? "";
+  const versions = strictVersionsIn(title);
   const unassigned =
-    versions.length === 0 && heading.trimEnd().endsWith(activationPlaceholder);
-  if (!unassigned && (versions.length !== 1 || !semver(versions[0])))
+    versions.length === 0 && title.endsWith(activationPlaceholder);
+  if (
+    !order.title ||
+    (!unassigned && (versions.length !== 1 || !semver(versions[0])))
+  )
     throw new Error(
       `release prepare requires exactly one strict version in the work-order heading, or the ${activationPlaceholder} placeholder`,
     );
+  const mark = authority.length - order.source.length;
+  const headingStart = mark + order.title.start;
+  const headingEnd = mark + order.title.end;
+  const heading = authority.slice(headingStart, headingEnd);
   const previous = unassigned ? undefined : versions[0];
   if (repairClaim && (unassigned || latest !== undefined))
     throw new Error(
       "release surface sync needs an already assigned target and never retimes it",
     );
-  const declarations = [
-    ...authority.matchAll(/^\*\*Release classification:\*\*[^\n]*$/gm),
-  ];
-  const declared = declarations[0]?.[0].match(
-    /^\*\*Release classification:\*\*\s*(patch|minor|major)\./,
+  // The classification is the header's one Release classification field;
+  // its own line opens with the class and a period.
+  const declarations = order.headerFields("Release classification");
+  const declared = /^\s*(patch|minor|major)\./u.exec(
+    declarations[0]?.lineValue ?? "",
   );
   if (declarations.length !== 1 || !declared)
     throw new Error(
@@ -310,8 +328,9 @@ export function planReleasePreparation(
       `(?<![A-Za-z0-9._+\\-])${version.replaceAll(".", "\\.")}(?![A-Za-z0-9._+\\-])`,
       "u",
     );
+  const placeholderAt = heading.lastIndexOf(activationPlaceholder);
   const newHeading = unassigned
-    ? `${heading.trimEnd().slice(0, -activationPlaceholder.length)}(${target})`
+    ? `${heading.slice(0, placeholderAt)}(${target})${heading.slice(placeholderAt + activationPlaceholder.length)}`
     : heading.replace(boundary(previous), target);
   // Whatever spacing or wording surrounded the claim, the block is rewritten
   // as the one generated line.
@@ -378,7 +397,10 @@ export function planReleasePreparation(
     {
       path: authorityPath,
       before: authority,
-      after: newHeading + authority.slice(heading.length),
+      after:
+        authority.slice(0, headingStart) +
+        newHeading +
+        authority.slice(headingEnd),
     },
     ...(carriesClaim
       ? [{ path: paths[1], before: readme, after: lines.join("\n") }]

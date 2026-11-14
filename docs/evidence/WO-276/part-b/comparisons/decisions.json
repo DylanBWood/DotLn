@@ -1,0 +1,9 @@
+{
+  "comparison": "decisions",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every structured decision of every order's decisions file, by its identifier: the record as the lifecycle reads it",
+  "read": 3908,
+  "equal": 3908,
+  "differences": {},
+  "examples": []
+}

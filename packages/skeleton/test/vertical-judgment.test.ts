@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import {
+  compileStoryContract,
+  decodeSourceBundle,
   resolveSourceSpan,
   type SourceBundle,
   type StoryStatementClass,
@@ -22,6 +24,7 @@ import {
   RetryableTriageError,
 } from "../src/vertical-judgment-host.js";
 import {
+  baselineClass,
   baselineStoryClass,
   decodeBaselineAssessment,
 } from "../src/vertical.js";
@@ -552,4 +555,214 @@ test("WO-112 discussion by anyone but the reporter is never offered to the model
           ?.text === injected,
     ),
   );
+});
+
+/** The statement wordings, one row for each wording and each of its roles:
+ * the role the row supplies for the statement, the assertion kind it
+ * supplies for it, and the classification kind and rule expected of
+ * `baselineClass` (`rule`) and of `baselineStoryClass` (`storyRule`). The
+ * end-to-end file iterated these through the whole loop until WO-276 (Part
+ * E), which keeps there one case for each statement class and outcome; the
+ * order's evidence lists them as they stood and compares them with these
+ * rows. A wording is here because its words once misled a reading of the
+ * sentence: a failure told as a requirement, a negation that names no
+ * failure, a status number that is a count. The judgment reads what is
+ * supplied and never the words, which is what each row shows. */
+const STATEMENT_WORDINGS: readonly {
+  readonly roles: readonly StoryStatementClass[];
+  readonly assertion: "existing-failure" | "no-existing-failure";
+  readonly kind: "defect" | "new";
+  readonly rule: "active-existing-failure-assertion";
+  readonly storyRule: "supplied-assertion-judgments";
+  readonly wordings: readonly string[];
+}[] = [
+  {
+    roles: ["current-behavior observation", "requirement"],
+    assertion: "existing-failure",
+    kind: "defect",
+    rule: "active-existing-failure-assertion",
+    storyRule: "supplied-assertion-judgments",
+    wordings: [
+      "The endpoint returns status: 500",
+      "The response status = 500",
+      "HTTP status: 500",
+      "Login isn't actually working",
+      "Login isn't yet working",
+      "Login is not currently working",
+      "The gateway returns HTTP code=503",
+      "Search isn\u2019t reliably working",
+      "Errors are thrown",
+      "The parser doesn't throw errors yet uploads fail",
+      "The response status is 500",
+      "The server returns a 502 Bad Gateway",
+      "The endpoint is returning 500",
+      "Login is not always working",
+      "Login hasn't been working",
+      "The export has been broken since v2",
+      "The HTTP code had consistently been 429",
+      "Users have been seeing 504 Gateway Timeout",
+      "Login hadn't often been working",
+      "The result has remained quite clearly incorrect",
+      "The endpoint is returning 429 Too Many Requests",
+      "The result is consistently and visibly broken",
+      "The response status is `500`",
+      "Login has not, actually, been working",
+      "Login has not (consistently and reliably) been working",
+      "Login hasn't, for several days, been working",
+      "Uploads fail for files larger than 10 MB",
+    ],
+  },
+  {
+    roles: ["requirement"],
+    assertion: "existing-failure",
+    kind: "defect",
+    rule: "active-existing-failure-assertion",
+    storyRule: "supplied-assertion-judgments",
+    wordings: [
+      "Saving a document throws a TypeError",
+      "The export endpoint returns HTTP 500",
+      "The image decoder cannot parse JPEGs",
+      "Login can\u2019t complete",
+      "The importer didn\u2019t finish",
+    ],
+  },
+  {
+    roles: ["current-behavior observation"],
+    assertion: "existing-failure",
+    kind: "defect",
+    rule: "active-existing-failure-assertion",
+    storyRule: "supplied-assertion-judgments",
+    wordings: [
+      "Login isn't working",
+      "Users see a 404 on the settings page",
+      "This should be fixed, uploads fail for large files",
+      "The API gives a 503 error",
+    ],
+  },
+  {
+    roles: ["requirement"],
+    assertion: "no-existing-failure",
+    kind: "new",
+    rule: "active-existing-failure-assertion",
+    storyRule: "supplied-assertion-judgments",
+    wordings: [
+      "No errors are thrown",
+      "No error is ever thrown",
+      "No errors are yet thrown",
+      "The parser doesn't yet throw exceptions",
+      "The build has not yet failed",
+      "The endpoint cannot fail",
+      "The parser can't throw errors",
+      "The parser doesn't throw errors",
+      "The parser cannot yet throw errors",
+      "Show an error message when the upload exceeds 10 MB",
+      "Add retry when the upload fails",
+      "The response status is not 500",
+      "The result has not been broken",
+      "The endpoint is returning 500 rows per page",
+      "Login is not only working but working reliably",
+      'The API is not returning 500 "Internal Server Error"',
+      "The output has not (ever) been wrong",
+      "The result has not (consistently and visibly) been wrong",
+      "The result is not, in any way, broken",
+    ],
+  },
+  // No end-to-end case walked an observation of healthy behavior; the
+  // assertion decides it as it decides the others.
+  {
+    roles: ["current-behavior observation"],
+    assertion: "no-existing-failure",
+    kind: "new",
+    rule: "active-existing-failure-assertion",
+    storyRule: "supplied-assertion-judgments",
+    wordings: ["The settings page returns 200"],
+  },
+];
+
+test("WO-276 criterion E4: each statement wording passes the source screen, compiles to one statement of the role supplied and is judged by the assertion supplied, whatever its words say", () => {
+  const suffix = ": make `fixture.txt` contain changed by synthetic worker.";
+  const failures: string[] = [];
+  let rows = 0;
+  for (const entry of STATEMENT_WORDINGS)
+    for (const wording of entry.wordings)
+      for (const role of entry.roles) {
+        rows++;
+        const text = `${wording}${suffix}`;
+        try {
+          // The path a story takes to its judgment: the screen, the
+          // contract, the supplied assessment, the two classifications.
+          const decoded = decodeSourceBundle(
+            {
+              ...bundle,
+              sections: [
+                section("title", "Repair `fixture.txt`."),
+                section("body", text),
+              ],
+            },
+            { allowedHosts: ["github.com"] },
+          );
+          assert.ok(decoded.ok, "the source screen refuses the wording");
+          const [heading] = decoded.bundle.sections;
+          const contract = compileStoryContract(
+            decoded.bundle,
+            decoded.bundle.sections.map((part) => ({
+              span: part.span,
+              class: part === heading ? ("requirement" as const) : role,
+              rationale: "The row supplies the statement's role.",
+            })),
+          );
+          assert.deepEqual(contract.openDecisions, []);
+          const judged = contract.statements.filter(
+            (statement) => statement.text === text,
+          );
+          assert.equal(judged.length, 1, "the wording is one statement");
+          const [statement] = judged;
+          assert.equal(statement!.class, role);
+          const assessment = {
+            schemaVersion: 1,
+            contractId: contract.contractId,
+            producer: { kind: "operator", name: "the table's annotation" },
+            assertions: contract.statements
+              .filter(
+                (each) =>
+                  each.status === "active" && each.class !== "non-requirement",
+              )
+              .map((each) => ({
+                statementId: each.statementId,
+                kind:
+                  "sectionId" in each.span && each.span.sectionId === "title"
+                    ? "no-existing-failure"
+                    : entry.assertion,
+                rationale: "The row supplies the assertion's kind.",
+              })),
+          };
+          const named = entry.kind === "defect" ? [statement!.statementId] : [];
+          const classed = baselineClass(contract, undefined, assessment);
+          assert.deepEqual(
+            [
+              classed.kind,
+              classed.source.rule,
+              classed.source.statementIds,
+              classed.findings,
+            ],
+            [entry.kind, entry.rule, named, []],
+          );
+          const story = baselineStoryClass(contract, assessment);
+          assert.deepEqual(
+            [
+              story.kind,
+              story.source.rule,
+              story.source.statementIds,
+              story.findings,
+            ],
+            [entry.kind, entry.storyRule, named, []],
+          );
+        } catch (error) {
+          failures.push(
+            `${wording} (${role}, ${entry.assertion}): ${error instanceof Error ? error.message : String(error)}`,
+          );
+        }
+      }
+  assert.deepEqual(failures, []);
+  assert.ok(rows > 0, "the table holds no row");
 });

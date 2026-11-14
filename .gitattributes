@@ -40,3 +40,10 @@
 /docs/evidence/**/*.tap -whitespace
 /docs/evidence/**/*.log -whitespace
 /corpus/manifests/runs/*.log -whitespace
+/docs/control/release-history.json dotln-generated
+/docs/control/workstream-observations.json dotln-generated
+# The pinned Markdown parser, its license and its notices are another
+# project's files, copied by a command. The marks are for a forge's diff and
+# language views. No screen reads them: a screen leaves out a carried file
+# only when scripts/lib/vendored-parser.mjs proves its bytes.
+/scripts/lib/vendor/** linguist-vendored linguist-generated

@@ -1,10 +1,14 @@
+import { markdownMarkerBlocks } from "./markdown-links.mjs";
 import { currentPath, moveIndex } from "./document-moves.mjs";
 import { docRelative } from "./config.mjs";
 import {
   historicalDependencyIds,
   historicalDependencyIdsAt,
   parseDependencies,
+  umbrellaNotice,
 } from "./dependencies.mjs";
+import { readWorkOrder } from "./work-order-document.mjs";
+import { isCoreRoot } from "./harness-runtime.mjs";
 
 const seedFile = (root) =>
   docRelative(root, "planning", "critical-path-2026-09-08.json");
@@ -39,11 +43,28 @@ const canonical = (entries, reasons) =>
       .sort((a, b) => a.workOrderId.localeCompare(b.workOrderId)),
   );
 
+/** An order's text without its standalone dependencies block, taking the
+ * line break before the block and the one after it, or the text as it is
+ * where it holds no such block written on lines of its own. */
+const withoutStandaloneBlock = (text) => {
+  const [standalone] = markdownMarkerBlocks(
+    text,
+    "dotln-dependencies:start",
+    "dotln-dependencies:end",
+  );
+  const ending = standalone && /^\r?\n/u.exec(text.slice(standalone.end))?.[0];
+  return standalone && ending && text[standalone.start - 1] === "\n"
+    ? `${text.slice(0, standalone.start - 1)}${text.slice(standalone.end + ending.length)}`
+    : text;
+};
+
 // This one-time continuation only transcribes the reviewed WO-043 migration.
 // It cannot change an existing typed block or authorize a later relation edit.
 export function dependencyMigration(root, judged, original, read) {
   const seedPath = seedFile(root);
-  const authority = judged.orders.find(
+  // The migration is core's, authorized by one of its own orders: an
+  // instance's order of that number authorizes none.
+  const authority = (isCoreRoot(root) ? judged.orders : []).find(
     ({ workOrderId, criteria }) =>
       workOrderId === "WO-043" &&
       criteria.some(({ text }) =>
@@ -92,10 +113,11 @@ export function dependencyMigration(root, judged, original, read) {
         ...entry,
         ...(entry.relation === "planning-deferral" ? { until: to } : {}),
       }));
-    const umbrella = before.match(
-      /^\*\*Umbrella record[^\n]+(?:\n(?!\n)[^\n]+)*/mu,
-    )?.[0];
-    if (umbrella) {
+    // The reviewed umbrella notice is the order's Umbrella record field, the
+    // one the index reads; its text names the successors.
+    const notice = umbrellaNotice(readWorkOrder(before));
+    if (notice) {
+      const umbrella = notice.value;
       refuse(
         umbrella.includes("superseded whole"),
         "needs a whole-umbrella notice",
@@ -136,10 +158,7 @@ export function dependencyMigration(root, judged, original, read) {
       canonical(next.entries, reasons) === canonical(expected, reasons),
       `does not transcribe the reviewed relations in ${path}`,
     );
-    const source = after.replace(
-      /\n<!-- dotln-dependencies:start -->\r?\n[\s\S]*?\r?\n<!-- dotln-dependencies:end -->\r?\n/u,
-      "",
-    );
+    const source = withoutStandaloneBlock(after);
     refuse(source !== after, `needs the standalone migration block in ${path}`);
     return { source, migrated: true };
   };

@@ -89,6 +89,17 @@ export function isKitRoot(root) {
   return !hasPackageSources(root);
 }
 
+/** Whether a root is core's own: the repository the kit is cut from, which
+ * is any root that is not a kit root. A few behaviors of the kit's code are
+ * tied to the number of one of core's orders; each asks this first, so that
+ * an instance's order of the same number is an order like any other. An
+ * instance that adds package sources of its own is not told apart from core,
+ * as it is not by isKitRoot.
+ * @param {string} root */
+export function isCoreRoot(root) {
+  return !isKitRoot(root);
+}
+
 /** Declared workspaces own runtime inputs. A minimal snapshot without a
  * lockfile discovers only regular package directories holding a manifest.
  * @param {string} root */

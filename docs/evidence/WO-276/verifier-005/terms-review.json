@@ -1,0 +1,12 @@
+{
+  "command": "node scripts/terms.mjs branch",
+  "exitCode": 0,
+  "refuseEntries": 0,
+  "contextEntries": 9,
+  "changedFilesScreened": 819,
+  "refuseLines": 0,
+  "contextLines": 0,
+  "contextLinesRead": 0,
+  "listPrinted": false,
+  "scope": "After the report, decisions and metadata generation; before the closing document gate"
+}

@@ -352,7 +352,8 @@ function installedPins(worktrees) {
           }
         } else {
           // Target manifests contain only their installed path/hash inventory;
-          // the launchpad receipt below owns the runtime pin.
+          // the launchpad receipt below owns the runtime pin. The presence
+          // hook's path stays for a manifest written while a bundle held one.
           const paths = new Set([
             "CLAUDE.local.md",
             ".claude/target-worker-manifest.json",

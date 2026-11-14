@@ -1,0 +1,97 @@
+{
+  "comparison": "execution-plan-paths",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: the paths its Execution plan names in code spans, which the advisory for a target order's paths reads",
+  "read": 269,
+  "equal": 241,
+  "differences": {
+    "defect of the old reader: it paired backticks by its own rule and not Markdown's. Step 6 writes an escaped backtick inside a code span (line 178), where Markdown escapes nothing, so by Markdown's rule the pairing shifts for the rest of the item and the two paths lost (lines 178 and 182) stand outside any code span, as the rendered page shows them; the old pattern's pairing reported them as spans": 1,
+    "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it": 26,
+    "defect of the old reader: its pattern ended the Execution plan only at a label with a colon or at a line that opens with a number sign, so it ran through the Acceptance criteria label (line 3009), which carries no colon, to the Preflight label (line 3741); the eleven paths lost are code spans of the criteria and the fields after them (lines 3146 to 4008), which are no part of the plan": 1
+  },
+  "examples": [
+    {
+      "input": "docs/work-orders/WO-189-front-page.md",
+      "named": "defect of the old reader: it paired backticks by its own rule and not Markdown's. Step 6 writes an escaped backtick inside a code span (line 178), where Markdown escapes nothing, so by Markdown's rule the pairing shifts for the rest of the item and the two paths lost (lines 178 and 182) stand outside any code span, as the rendered page shows them; the old pattern's pairing reported them as spans",
+      "gained": [],
+      "lost": [
+        "scripts/release.mjs",
+        "scripts/test-release-preparation.mjs"
+      ],
+      "reordered": false
+    },
+    {
+      "input": "docs/work-orders/WO-192-router-drives-an-order.md",
+      "named": "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it",
+      "gained": [
+        "tool_input.prompt"
+      ],
+      "lost": [],
+      "reordered": false
+    },
+    {
+      "input": "docs/work-orders/WO-196-the-handoff-is-one-command.md",
+      "named": "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it",
+      "gained": [
+        "scripts/test-runner.test.mjs"
+      ],
+      "lost": [],
+      "reordered": false
+    },
+    {
+      "input": "docs/work-orders/WO-201-export-runs-core-suites.md",
+      "named": "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it",
+      "gained": [
+        "launchpad.starter"
+      ],
+      "lost": [],
+      "reordered": false
+    },
+    {
+      "input": "docs/work-orders/WO-206-source-writer-object-store-protection.md",
+      "named": "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it",
+      "gained": [
+        "source-change-host.test.ts"
+      ],
+      "lost": [],
+      "reordered": false
+    },
+    {
+      "input": "docs/work-orders/WO-210-instance-orders-reach-release-close.md",
+      "named": "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it",
+      "gained": [
+        "docs/evidence/WO-210/handoff.md"
+      ],
+      "lost": [],
+      "reordered": false
+    },
+    {
+      "input": "docs/work-orders/WO-234-a-dispatch-cannot-run-away.md",
+      "named": "defect of the old reader: its pattern could not match a code span that wraps onto a second line, and took that span's closing backtick for the opening of the next, so the spans after it on that line were paired wrongly and the paths among them went unread; each path gained is a code span on a line that holds an odd number of backticks before it",
+      "gained": [
+        "packages/skeleton/fixtures/wo234-role-baseline.json"
+      ],
+      "lost": [],
+      "reordered": false
+    },
+    {
+      "input": "docs/work-orders/WO-276-the-queue-lands-as-one-order.md",
+      "named": "defect of the old reader: its pattern ended the Execution plan only at a label with a colon or at a line that opens with a number sign, so it ran through the Acceptance criteria label (line 3009), which carries no colon, to the Preflight label (line 3741); the eleven paths lost are code spans of the criteria and the fields after them (lines 3146 to 4008), which are no part of the plan",
+      "gained": [],
+      "lost": [
+        "docs/work-orders/README.md",
+        "docs/work-orders/HISTORY.md",
+        "after.json",
+        "engines.node",
+        "engines.git",
+        "features.host-codex",
+        "docs/control/budgets.json",
+        ".claude/settings.json",
+        "contributions.authors",
+        "docs/workstreams/README.md",
+        "standing.md"
+      ],
+      "reordered": false
+    }
+  ]
+}

@@ -11,14 +11,17 @@ import { criterionJudgments } from "./lib/off-ramps.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import {
+  chmodSync,
   cpSync,
   existsSync,
   mkdirSync,
   readdirSync,
   readFileSync,
   realpathSync,
+  renameSync,
   rmSync,
   statSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
@@ -1281,6 +1284,96 @@ assert.deepEqual(
 );
 assert.equal(projected.blocking.length, 1);
 
+// A filed order that was never activated is withdrawn by its first event:
+// the event names the order's file, the log then knows the order as
+// withdrawn, and an identifier with no file is refused as any unknown order
+// is (WO-276 criterion R2).
+const unactivated = "docs/work-orders/WO-151-unactivated.md";
+const unactivatedText =
+  "# WO-151 — never activated\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** none.\n";
+writeFileSync(join(root, unactivated), unactivatedText);
+assert.deepEqual(events("WO-151"), []);
+const abandonment = capture(
+  "abandon",
+  "Operator: drop WO-151; it was never started.\n",
+);
+const abandon = (id) => [
+  "withdraw",
+  "--disposition",
+  "abandoned",
+  "--reason",
+  "set aside before it began",
+  ...abandonment,
+  ...operator,
+  "--work-order",
+  id,
+];
+refuse(/unknown work order WO-152/, abandon("WO-152"));
+assert.deepEqual(events("WO-152"), []);
+pass(abandon("WO-151"));
+{
+  const [first, ...rest] = events("WO-151");
+  assert.deepEqual(rest, []);
+  assert.equal(first.type, "WorkOrderWithdrawn");
+  assert.equal(first.workOrderPath, unactivated);
+  assert.equal(first.disposition, "abandoned");
+  assert.equal(
+    first.orderHash,
+    `sha256:${createHash("sha256").update(unactivatedText).digest("hex")}`,
+  );
+  const dropped = status("WO-151");
+  assert.equal(dropped.phase, "withdrawn");
+  assert.equal(dropped.withdrawal.disposition, "abandoned");
+  assert.equal(dropped.withdrawal.ordinal, 1);
+  assert.deepEqual(dropped.legalNextActions, ["activate"]);
+  // Withdrawn, it is left as any withdrawn order is, and not withdrawn twice.
+  const unchanged = call([
+    "activate",
+    "WO-151",
+    unactivated,
+    "--work-order",
+    "WO-151",
+  ]);
+  assert.notEqual(unchanged.status, 0);
+  assert.match(
+    unchanged.stderr,
+    /activate requires a changed order revision .* is unchanged/,
+  );
+  const twice = call(abandon("WO-151"));
+  assert.notEqual(twice.status, 0);
+  assert.match(twice.stderr, /withdraw is not legal in phase withdrawn/);
+  assert.equal(events("WO-151").length, 1);
+  // The order the session works on is as it was.
+  assert.equal(status().phase, "withdrawn");
+}
+
+// On its own branch the order needs no --work-order: the branch selects it,
+// as it selects a new order at its activation.
+{
+  const own = "docs/work-orders/WO-153-on-its-branch.md";
+  writeFileSync(join(root, own), unactivatedText.replace("WO-151", "WO-153"));
+  assert.equal(
+    spawnGit(["-C", root, "checkout", "-q", "-b", "wo-153"], { env: baseEnv })
+      .status,
+    0,
+  );
+  try {
+    pass(abandon("WO-153").slice(0, -2));
+    const [only, ...none] = events("WO-153");
+    assert.deepEqual(none, []);
+    assert.equal(only.type, "WorkOrderWithdrawn");
+    assert.equal(only.workOrderPath, own);
+    assert.equal(status("WO-153").phase, "withdrawn");
+  } finally {
+    assert.equal(
+      spawnGit(["-C", root, "checkout", "-q", "wo-099"], { env: baseEnv })
+        .status,
+      0,
+    );
+  }
+  assert.equal(status().phase, "withdrawn");
+}
+
 // Only a changed revision with a dated reactivation note leaves withdrawn.
 refuse(/activate requires a changed order revision .* is unchanged/, [
   "activate",
@@ -1293,6 +1386,19 @@ refuse(/activate requires a changed order revision .* has no new note/, [
   "WO-099",
   authority,
 ]);
+// A note a quotation or a list item shows is an example: it changes the
+// revision and reopens nothing (WO-276, rolling review 7, F6).
+for (const example of ["> ", "- "]) {
+  writeFileSync(
+    join(root, authority),
+    `${authorityText}\n${example}**Reactivation (${new Date().toISOString().slice(0, 10)}):** an example.\n`,
+  );
+  refuse(/activate requires a changed order revision .* has no new note/, [
+    "activate",
+    "WO-099",
+    authority,
+  ]);
+}
 writeFileSync(
   join(root, authority),
   `${authorityText}\n**Reactivation (2000-01-01):** too early.\n`,
@@ -1366,7 +1472,43 @@ ledger(
   ],
   "WO-101",
 );
-on101(["implementation-ready", ...agentFlags]);
+// The standing file of an order in execution: an active order's briefing
+// names it while it exists and prints as before without it, and
+// implementation-ready removes it and says so.
+const standing101 = "docs/evidence/WO-101/standing.md";
+assert.ok(!nextBriefing101.includes("standing.md"), nextBriefing101);
+// A briefing's lines with the instant of its facts set aside, so that two
+// prints of one briefing compare.
+const briefingLines = (briefing) =>
+  briefing
+    .replace(/^Observed facts at \S+: /mu, "Observed facts at <instant>: ")
+    .split("\n");
+// The briefing printed again, as a later session's is, with no file yet.
+const withoutStanding101 = on101(["next"]);
+assert.ok(!withoutStanding101.includes("standing.md"), withoutStanding101);
+writeFileSync(
+  join(root, standing101),
+  "# WO-101 standing\n\nStep 2 in hand.\n",
+);
+const standingLine101 = `\nStanding: ${standing101} holds where this order's execution stood at its last stop (the steps done, the step in hand, what comes next and what is undecided). Read it before the order's steps; implementation-ready removes it.`;
+const standingBriefing101 = on101(["next"]);
+assert.ok(
+  standingBriefing101.includes(`.md.${standingLine101}\n`),
+  standingBriefing101,
+);
+assert.deepEqual(
+  briefingLines(standingBriefing101.replace(standingLine101, "")),
+  briefingLines(withoutStanding101),
+  "the briefing is the one printed without a file but for the standing line",
+);
+const ready101 = on101(["implementation-ready", ...agentFlags]);
+assert.ok(
+  ready101.includes(
+    ` Removed ${standing101}, the standing file of the execution now complete.`,
+  ),
+  ready101,
+);
+assert.ok(!existsSync(join(root, standing101)));
 const unmetOrdinal = events("WO-101").length;
 assert.deepEqual(events("WO-101").at(-1).unmetCriteria, ["2"]);
 assert.deepEqual(status("WO-101").unmetCriteria, [
@@ -1948,6 +2090,24 @@ assert.ok(
   ),
   fixBriefing102,
 );
+// The standing file in a repair, which is the executor's phase too: the
+// repair's briefing names it while it exists, and repair-complete removes
+// it and says so.
+const standing102 = "docs/evidence/WO-102/standing.md";
+assert.ok(!fixBriefing102.includes("standing.md"), fixBriefing102);
+// The repair's briefing printed again, as a later session's is, with no
+// file yet: a repair in hand prints it through the briefing action.
+const withoutStanding102 = on("WO-102")(["briefing"]);
+assert.ok(!withoutStanding102.includes("standing.md"), withoutStanding102);
+writeFileSync(join(root, standing102), "# WO-102 standing\n\nRepair step 1.\n");
+const standingLine102 = `\nStanding: ${standing102} holds where this order's execution stood at its last stop (the steps done, the step in hand, what comes next and what is undecided). Read it before the order's steps; repair-complete removes it.`;
+const standingBriefing102 = on("WO-102")(["briefing"]);
+assert.ok(standingBriefing102.includes(standingLine102), standingBriefing102);
+assert.deepEqual(
+  briefingLines(standingBriefing102.replace(standingLine102, "")),
+  briefingLines(withoutStanding102),
+  "the repair's briefing is the one printed without a file but for the standing line",
+);
 ledger(allMet, "WO-102");
 const cannotStart = call([
   "repair-complete",
@@ -1956,6 +2116,13 @@ const cannotStart = call([
   "WO-102",
 ]);
 assert.equal(cannotStart.status, 0, cannotStart.stderr);
+assert.ok(
+  cannotStart.stdout.includes(
+    ` Removed ${standing102}, the standing file of the execution now complete.`,
+  ),
+  cannotStart.stdout,
+);
+assert.ok(!existsSync(join(root, standing102)));
 assert.match(
   cannotStart.stderr,
   /^Advisory: Review selection unavailable \(scripts\/test-runner\.mjs is absent\); the npm test -- --review claim of criterion 3 stands on the plain npm test row \(recorded [^,]+, 0\.00 s, 3 suites, host-gate:absent-runner:npm test\)\.$/m,
@@ -2326,6 +2493,751 @@ process.stdout.write("off-ramp fixtures passed\n");
   }
 }
 
+// A session attests what it runs (WO-276). The hook records the version of
+// the executable a Claude Code session runs; a completion that states
+// another is refused naming the recorded one, one that agrees records, and
+// one from a session whose harness state holds no observation records the
+// stated value as before.
+{
+  const versionOrder = (id) => {
+    const path = `docs/work-orders/${id}-version.md`;
+    writeFileSync(
+      join(root, path),
+      authorityText.replace(
+        "WO-099 — off-ramp fixture",
+        `${id} — version fixture`,
+      ),
+    );
+    pass(["activate", id, path, "--work-order", id]);
+    ledger(
+      [
+        "**Criterion 1:** met. The fixture holds.",
+        "**Criterion 2:** met. The fixture holds.",
+      ],
+      id,
+    );
+  };
+  const sessionState = (session, state) => {
+    const directory = join(root, "docs/control/local/harness");
+    mkdirSync(directory, { recursive: true });
+    writeFileSync(
+      join(
+        directory,
+        `${createHash("sha256").update(session).digest("hex")}.json`,
+      ),
+      JSON.stringify(state),
+    );
+  };
+  const claude = (version) => [
+    "--harness",
+    "claude-code",
+    "--harness-version",
+    version,
+    "--model",
+    "fixture.model/alpha",
+    "--effort",
+    "xhigh",
+    "--source",
+    "claude-session-readback",
+  ];
+  sessionState("version-observed", {
+    versionObservation: { value: "9.8.7", channel: "fixture" },
+  });
+  sessionState("version-unobserved", {});
+  const observed = {
+    CLAUDE_EFFORT: "xhigh",
+    CLAUDE_CODE_SESSION_ID: "version-observed",
+  };
+  versionOrder("WO-131");
+  refuseOn(
+    "WO-131",
+    /this Claude Code session runs 9\.8\.7, the version its hook observed; attest --harness-version 9\.8\.7 rather than 9\.8\.6/,
+    ["implementation-ready", ...claude("9.8.6")],
+    observed,
+  );
+  // Another harness's attestation is not this session's version.
+  on("WO-131")(
+    [
+      "override-record",
+      "--bypassed",
+      "none",
+      "--effects",
+      "none",
+      "--reason",
+      "fixture",
+      ...agentFlags,
+    ],
+    observed,
+  );
+  on("WO-131")(["implementation-ready", ...claude("9.8.7")], observed);
+  assert.equal(events("WO-131").at(-1).type, "ImplementationReady");
+  assert.equal(events("WO-131").at(-1).actor.harnessVersion, "9.8.7");
+  // The session line of a briefing prints the observed version.
+  assert.match(
+    on("WO-131")(["status"], observed),
+    /Harness version 9\.8\.7, as the session's hook observed it; attest that version\./,
+  );
+  versionOrder("WO-132");
+  const unobserved = {
+    CLAUDE_EFFORT: "xhigh",
+    CLAUDE_CODE_SESSION_ID: "version-unobserved",
+  };
+  on("WO-132")(["implementation-ready", ...claude("9.8.6")], unobserved);
+  assert.equal(events("WO-132").at(-1).actor.harnessVersion, "9.8.6");
+  assert.doesNotMatch(on("WO-132")(["status"], unobserved), /Harness version/);
+  // A version the hook could read only from the executable on the path is
+  // not what the session runs: the stated version stands (WO-276, the attack
+  // on Part A).
+  sessionState("version-on-path", {
+    versionObservation: { value: "9.8.7", channel: "PATH" },
+  });
+  versionOrder("WO-136");
+  const onPath = {
+    CLAUDE_EFFORT: "xhigh",
+    CLAUDE_CODE_SESSION_ID: "version-on-path",
+  };
+  on("WO-136")(["implementation-ready", ...claude("9.8.6")], onPath);
+  assert.equal(events("WO-136").at(-1).actor.harnessVersion, "9.8.6");
+  assert.doesNotMatch(on("WO-136")(["status"], onPath), /Harness version/);
+  console.log(
+    "a completion attests the Claude Code version the hook observed, or the stated one where none was observed",
+  );
+}
+
+// A recovery checkpoint of an open order's worktree appends no event (WO-276):
+// the commit holds the working tree, tracked and untracked, and status reads
+// as before it. What Git tracks is kept whatever an ignore rule says of its
+// path and whatever the index is told to assume of it, and an ignore rule
+// leaves out untracked files alone.
+{
+  const id = "WO-133";
+  const path = `docs/work-orders/${id}-checkpoint.md`;
+  writeFileSync(
+    join(root, path),
+    authorityText.replace(
+      "WO-099 — off-ramp fixture",
+      `${id} — checkpoint fixture`,
+    ),
+  );
+  pass(["activate", id, path, "--work-order", id]);
+  writeFileSync(
+    join(root, "scripts/lib/duration.mjs"),
+    `${readFileSync(join(root, "scripts/lib/duration.mjs"), "utf8")}\n// A tracked file changed in the worktree.\n`,
+  );
+  writeFileSync(join(root, "untracked-note.md"), "An untracked file.\n");
+  // An ignore rule written after these files were tracked: the changed
+  // tracked file, a file added to the index by force and never committed,
+  // and a file that was never tracked. A fourth file is in the index and
+  // gone from the working tree.
+  const stage = (...args) =>
+    assert.equal(
+      spawnGit(["-C", root, ...args], { encoding: "utf8", env: baseEnv })
+        .status,
+      0,
+      args.join(" "),
+    );
+  const exclude = join(root, ".git/info/exclude");
+  const excluded = existsSync(exclude) ? readFileSync(exclude, "utf8") : null;
+  mkdirSync(join(root, ".git/info"), { recursive: true });
+  writeFileSync(
+    exclude,
+    `${excluded ?? ""}\nscripts/lib/duration.mjs\nforced-note.md\nignored-note.md\n`,
+  );
+  writeFileSync(join(root, "forced-note.md"), "Tracked by force.\n");
+  writeFileSync(join(root, "ignored-note.md"), "Never tracked.\n");
+  writeFileSync(join(root, "removed-note.md"), "Staged, then removed.\n");
+  stage("add", "-f", "forced-note.md", "removed-note.md");
+  rmSync(join(root, "removed-note.md"));
+  // Two tracked files Git is told not to look at, each changed after it was
+  // told: one it is to assume unchanged and one it is to skip.
+  const assumed = "scripts/lib/paths.mjs";
+  const skipped = "scripts/lib/helpers.mjs";
+  stage("update-index", "--assume-unchanged", assumed);
+  stage("update-index", "--skip-worktree", skipped);
+  for (const file of [assumed, skipped])
+    writeFileSync(
+      join(root, file),
+      `${readFileSync(join(root, file), "utf8")}\n// Changed where Git was told not to look.\n`,
+    );
+  const indexBefore = spawnGit(["-C", root, "ls-files", "-s"], {
+    encoding: "utf8",
+    env: baseEnv,
+  }).stdout;
+  const before = {
+    status: on(id)(["status", "--json"]),
+    events: events(id).length,
+    refs: spawnGit(
+      [
+        "-C",
+        root,
+        "for-each-ref",
+        "--format=%(refname)",
+        `refs/dotln/checkpoint/${id}/`,
+      ],
+      { encoding: "utf8", env: baseEnv },
+    ).stdout,
+  };
+  const printed = on(id)(["checkpoint"]);
+  const [, ref, sha] =
+    /^Recorded recovery checkpoint (refs\/dotln\/checkpoint\/WO-133\/\d+) at ([0-9a-f]{40,64}) for WO-133; no event appended\./mu.exec(
+      printed,
+    ) ?? [];
+  assert.ok(ref && sha, printed);
+  assert.ok(!before.refs.split("\n").includes(ref), "the ref is new");
+  const git = (...args) =>
+    spawnGit(["-C", root, ...args], { encoding: "utf8", env: baseEnv }).stdout;
+  assert.equal(git("rev-parse", ref).trim(), sha);
+  assert.match(
+    git("show", "--format=", `${ref}:scripts/lib/duration.mjs`),
+    /A tracked file changed in the worktree\./,
+  );
+  assert.equal(
+    git("show", "--format=", `${ref}:untracked-note.md`),
+    "An untracked file.\n",
+  );
+  assert.equal(
+    git("show", "--format=", `${ref}:forced-note.md`),
+    "Tracked by force.\n",
+  );
+  const held = git("ls-tree", "-r", "--name-only", ref).split("\n");
+  assert.ok(!held.includes("ignored-note.md"), "an ignored untracked file");
+  assert.ok(!held.includes("removed-note.md"), "a file the tree lost");
+  for (const file of [assumed, skipped])
+    assert.match(
+      git("show", "--format=", `${ref}:${file}`),
+      /Changed where Git was told not to look\./,
+      file,
+    );
+  assert.equal(git("ls-files", "-s"), indexBefore, "the index is untouched");
+  stage("update-index", "--no-assume-unchanged", assumed);
+  stage("update-index", "--no-skip-worktree", skipped);
+  stage("checkout", "-q", "--", assumed, skipped);
+  stage("rm", "-q", "--cached", "forced-note.md", "removed-note.md");
+  rmSync(join(root, "forced-note.md"));
+  rmSync(join(root, "ignored-note.md"));
+  if (excluded === null) rmSync(exclude);
+  else writeFileSync(exclude, excluded);
+  assert.equal(events(id).length, before.events, "no event is appended");
+  assert.equal(on(id)(["status", "--json"]), before.status);
+  // Only an open order has a worktree to checkpoint, and the action takes
+  // no argument.
+  refuseOn(id, /usage: resume checkpoint \[--work-order WO-NNN\]/, [
+    "checkpoint",
+    "now",
+  ]);
+  spawnGit(["-C", root, "checkout", "-q", "--", "scripts/lib/duration.mjs"], {
+    env: baseEnv,
+  });
+  rmSync(join(root, "untracked-note.md"));
+  console.log(
+    "a recovery checkpoint holds the working tree and appends no event",
+  );
+}
+
+// A tracked path whose place in the working tree changed shape went with it,
+// and the snapshot holds what stands there now. A directory that became a
+// file or a link takes its tracked files with it, whatever an ignore rule
+// says of the old paths or of what replaced them; one that became a
+// repository of its own is held by that repository's commit, or, where a
+// rule ignores it, by the files Git tracks beneath it; a file that became a
+// directory gives way to the files under it; and a rename by case alone
+// leaves one name. A path that cannot be read is an error, never a file
+// taken for lost.
+{
+  const { workingTree, createCheckpoint } = await import(
+    pathToFileURL(join(root, "scripts/lib/checkpoint.mjs"))
+  );
+  const shapes = join(parent, "checkpoint-shapes");
+  let made = 0;
+  // A repository that tracks a file in a directory, one two directories
+  // down and one at the root, with `change` made after the commit.
+  const snapshot = (change) => {
+    const repo = join(shapes, String(made++));
+    mkdirSync(join(repo, "component"), { recursive: true });
+    mkdirSync(join(repo, "deep/er"), { recursive: true });
+    const git = (...args) => {
+      const run = spawnGit(["-C", repo, ...args], {
+        encoding: "utf8",
+        env: baseEnv,
+      });
+      assert.equal(run.status, 0, `${args.join(" ")}: ${run.stderr}`);
+      return run.stdout;
+    };
+    git("init", "-q");
+    git("config", "user.name", "fixture");
+    git("config", "user.email", "fixture@example.invalid");
+    writeFileSync(join(repo, "component/old.txt"), "old\n");
+    writeFileSync(join(repo, "deep/er/leaf.txt"), "leaf\n");
+    writeFileSync(join(repo, "plain.txt"), "plain\n");
+    git("add", "-A");
+    git("-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture");
+    change(repo, git);
+    const index = readFileSync(join(repo, ".git/index"));
+    const tree = workingTree(repo);
+    assert.deepEqual(
+      readFileSync(join(repo, ".git/index")),
+      index,
+      "the index is untouched",
+    );
+    return {
+      repo,
+      git,
+      tree,
+      // Each entry as its mode and its path.
+      entries: git("ls-tree", "-r", tree)
+        .trim()
+        .split("\n")
+        .map(
+          (line) => `${line.slice(0, 6)} ${line.slice(line.indexOf("\t") + 1)}`,
+        ),
+    };
+  };
+  const replace = (repo, path, text) => {
+    rmSync(join(repo, path), { recursive: true });
+    writeFileSync(join(repo, path), text);
+  };
+  const elsewhere = (repo) => {
+    mkdirSync(join(repo, "elsewhere"));
+    writeFileSync(join(repo, "elsewhere/old.txt"), "elsewhere\n");
+    rmSync(join(repo, "component"), { recursive: true });
+    symlinkSync("elsewhere", join(repo, "component"));
+  };
+  const exclude = (repo, rule) =>
+    writeFileSync(join(repo, ".git/info/exclude"), `${rule}\n`);
+  // A rename that changes only the case of a name, made in two steps so
+  // that it is a rename on a volume that folds case too.
+  const recase = (repo, from, to) => {
+    renameSync(join(repo, from), join(repo, `${from}.moving`));
+    renameSync(join(repo, `${from}.moving`), join(repo, to));
+  };
+  // Whether this volume answers for a name in another case.
+  mkdirSync(shapes, { recursive: true });
+  writeFileSync(join(shapes, "case-probe"), "");
+  const foldsCase = existsSync(join(shapes, "CASE-PROBE"));
+  const untouched = ["100644 deep/er/leaf.txt", "100644 plain.txt"];
+  for (const [name, change, expected] of [
+    [
+      "a directory that became a file",
+      (repo) => replace(repo, "component", "replacement\n"),
+      ["100644 component", ...untouched],
+    ],
+    [
+      "a directory two levels above a tracked file that became a file",
+      (repo) => replace(repo, "deep", "replacement\n"),
+      ["100644 component/old.txt", "100644 deep", "100644 plain.txt"],
+    ],
+    [
+      "a directory whose tracked files a rule ignores, which became a file",
+      (repo) => {
+        exclude(repo, "/component/");
+        replace(repo, "component", "replacement\n");
+      },
+      ["100644 component", ...untouched],
+    ],
+    [
+      "a directory that became a file a rule ignores",
+      (repo) => {
+        replace(repo, "component", "replacement\n");
+        exclude(repo, "/component");
+      },
+      untouched,
+    ],
+    [
+      "a directory that became a link to one holding the same name",
+      elsewhere,
+      [
+        "120000 component",
+        "100644 deep/er/leaf.txt",
+        "100644 elsewhere/old.txt",
+        "100644 plain.txt",
+      ],
+    ],
+    [
+      "a directory that became such a link, which a rule ignores",
+      (repo) => {
+        elsewhere(repo);
+        exclude(repo, "/component");
+      },
+      [
+        "100644 deep/er/leaf.txt",
+        "100644 elsewhere/old.txt",
+        "100644 plain.txt",
+      ],
+    ],
+    [
+      "a directory that became a link to a file",
+      (repo) => {
+        rmSync(join(repo, "component"), { recursive: true });
+        symlinkSync("plain.txt", join(repo, "component"));
+      },
+      ["120000 component", ...untouched],
+    ],
+    [
+      "a directory that became a link to nothing",
+      (repo) => {
+        rmSync(join(repo, "component"), { recursive: true });
+        symlinkSync("nowhere", join(repo, "component"));
+      },
+      ["120000 component", ...untouched],
+    ],
+    [
+      "a directory that became a repository of its own",
+      (repo, git) => {
+        git("-C", "component", "init", "-q");
+        git("-C", "component", "add", "-A");
+        git(
+          "-C",
+          "component",
+          "-c",
+          "user.name=fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-q",
+          "-m",
+          "inner",
+        );
+      },
+      ["160000 component", ...untouched],
+    ],
+    [
+      "a file that became a directory",
+      (repo) => {
+        rmSync(join(repo, "plain.txt"));
+        mkdirSync(join(repo, "plain.txt"));
+        writeFileSync(join(repo, "plain.txt/inner.txt"), "inner\n");
+      },
+      [
+        "100644 component/old.txt",
+        "100644 deep/er/leaf.txt",
+        "100644 plain.txt/inner.txt",
+      ],
+    ],
+    [
+      // The rule the shapes above must not loosen: a tracked file a rule has
+      // come to match is kept as the working tree holds it.
+      "a tracked file a rule ignores, under a directory that stayed",
+      (repo) => {
+        exclude(repo, "old.txt");
+        writeFileSync(join(repo, "component/old.txt"), "changed\n");
+      },
+      ["100644 component/old.txt", ...untouched],
+    ],
+    [
+      // A rule that ignores the repository leaves no commit entry to stand
+      // for it, so the files Git tracks beneath it are kept as files.
+      "a directory that became a repository of its own, which a rule ignores",
+      (repo, git) => {
+        git("-C", "component", "init", "-q");
+        git("-C", "component", "add", "-A");
+        git(
+          "-C",
+          "component",
+          "-c",
+          "user.name=fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-q",
+          "-m",
+          "inner",
+        );
+        exclude(repo, "/component/");
+      },
+      ["100644 component/old.txt", ...untouched],
+    ],
+    [
+      // A rename leaves one name, the new one, whether or not the volume
+      // tells the two names apart: where it folds case the old name still
+      // answers, and it is not added back beside the new.
+      "a file renamed by case alone",
+      (repo) => recase(repo, "plain.txt", "PLAIN.txt"),
+      [
+        "100644 PLAIN.txt",
+        "100644 component/old.txt",
+        "100644 deep/er/leaf.txt",
+      ],
+    ],
+    [
+      "a directory renamed by case alone",
+      (repo) => recase(repo, "component", "Component"),
+      ["100644 Component/old.txt", ...untouched],
+    ],
+    [
+      // The one file such a rename can leave under its old name: a tracked
+      // file a rule ignores is added by the name Git tracks, which a volume
+      // that folds case still answers for. Where the volume tells the names
+      // apart the old one is gone and the new one is ignored.
+      "a tracked file a rule ignores, renamed by case alone",
+      (repo) => {
+        exclude(repo, "plain.txt\nPLAIN.txt");
+        recase(repo, "plain.txt", "PLAIN.txt");
+      },
+      foldsCase
+        ? ["100644 component/old.txt", ...untouched]
+        : ["100644 component/old.txt", "100644 deep/er/leaf.txt"],
+    ],
+  ]) {
+    const { entries } = snapshot(change);
+    assert.deepEqual(entries, expected, name);
+  }
+  // The replacement's own bytes are what the snapshot and a checkpoint hold.
+  const replaced = snapshot((repo) =>
+    replace(repo, "component", "replacement\n"),
+  );
+  assert.equal(
+    replaced.git("show", "--format=", `${replaced.tree}:component`),
+    "replacement\n",
+  );
+  const kept = snapshot((repo) => {
+    exclude(repo, "old.txt");
+    writeFileSync(join(repo, "component/old.txt"), "changed\n");
+  });
+  assert.equal(
+    kept.git("show", "--format=", `${kept.tree}:component/old.txt`),
+    "changed\n",
+  );
+  const { checkpointRef, checkpointSha } = createCheckpoint(
+    replaced.repo,
+    "checkpoint",
+    "WO-133",
+    { hookless: true },
+  );
+  assert.equal(
+    replaced.git("rev-parse", `${checkpointRef}^{tree}`).trim(),
+    replaced.tree,
+  );
+  assert.equal(replaced.git("rev-parse", checkpointRef).trim(), checkpointSha);
+  // A directory nothing may enter: the tracked file under it cannot be read,
+  // which is an error and never a file the working tree lost. The owner of
+  // every file enters any directory, so that account has no such case.
+  if (process.getuid?.() !== 0) {
+    const locked = join(shapes, "locked");
+    mkdirSync(join(locked, "component"), { recursive: true });
+    const git = (...args) =>
+      assert.equal(
+        spawnGit(["-C", locked, ...args], { encoding: "utf8", env: baseEnv })
+          .status,
+        0,
+        args.join(" "),
+      );
+    git("init", "-q");
+    writeFileSync(join(locked, "component/old.txt"), "old\n");
+    git("add", "-A");
+    git("-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture");
+    chmodSync(join(locked, "component"), 0o000);
+    try {
+      assert.throws(() => workingTree(locked), /EACCES|Permission denied/u);
+    } finally {
+      chmodSync(join(locked, "component"), 0o755);
+    }
+  }
+  rmSync(shapes, { recursive: true, force: true });
+  console.log(
+    "a snapshot follows a tracked path whose place changed shape and raises what it cannot read",
+  );
+}
+
+// Codex's command line leaves its own background server running when a run
+// ends, and the operator had to close it by hand twice. The kit closes it
+// when no other Codex process is alive: where a worker it launched on Codex
+// ends, and at a dispatch from another host. A fixture never reaches the
+// host's processes, though its dispatch runs with the session's variables
+// removed.
+{
+  const {
+    TEMPORARY_ROOT_RECORD,
+    closeLeftoverCodexServers,
+    inTemporaryRoot,
+    leftoverCodexServers,
+    processCommands,
+  } = await import(
+    pathToFileURL(join(root, "scripts/lib/codex-background.mjs")).href
+  );
+  const { TEMPORARY_OWNER_FILE } =
+    await import("../packages/skeleton/src/temporary-root-records.mjs");
+  assert.equal(TEMPORARY_ROOT_RECORD, TEMPORARY_OWNER_FILE);
+
+  const home = "/Users/someone";
+  // The three command lines are the ones this host showed on 2026-11-13,
+  // with the home changed.
+  const release = `${home}/.codex/packages/app-server-daemon/releases/0.169.0-aarch64-apple-darwin/bin`;
+  const daemon = {
+    pid: 300,
+    ppid: 1,
+    command: `${release}/codex app-server daemon pid-update-loop`,
+  };
+  const server = {
+    pid: 200,
+    ppid: 300,
+    command: `${release}/codex app-server --listen unix:// --analytics-default-enabled`,
+  };
+  const helper = {
+    pid: 100,
+    ppid: 200,
+    command: `${release}/codex-code-mode-host --listen grpc+stdio://`,
+  };
+  // Processes that only mention Codex: a script and a document named for
+  // it, a path through its directory, a search for the word.
+  const bystanders = [
+    { pid: 1, ppid: 0, command: "/sbin/launchd" },
+    {
+      pid: 11,
+      ppid: 1,
+      command: "/usr/bin/node /work/scripts/codex-background-report.mjs",
+    },
+    { pid: 12, ppid: 1, command: "/usr/bin/vim notes-on-codex.md" },
+    { pid: 13, ppid: 1, command: `/bin/ls ${home}/.codex/packages` },
+    { pid: 14, ppid: 1, command: "/usr/bin/grep -r codex ." },
+  ];
+  const leftovers = [helper, server, daemon];
+  // The daemon that keeps the server is ended first, whatever the order
+  // of the process table.
+  assert.deepEqual(
+    leftoverCodexServers([...bystanders, ...leftovers], home).map(
+      (row) => row.pid,
+    ),
+    [300, 100, 200],
+  );
+  assert.deepEqual(leftoverCodexServers(bystanders, home), []);
+  // Any other Codex process may be using the server: a run of the command
+  // line and the helper it starts beside the server's packages (both as
+  // this host showed them during a worker's run), one installed under
+  // another name, the application, another user's server.
+  for (const alive of [
+    "codex -a never exec --ephemeral --ignore-user-config --sandbox read-only -",
+    `${home}/.codex/packages/standalone/releases/0.167.2-aarch64-apple-darwin/bin/codex-code-mode-host`,
+    "/opt/homebrew/bin/codex exec --ephemeral -",
+    "/opt/homebrew/lib/node_modules/@openai/codex/vendor/codex-aarch64-apple-darwin exec -",
+    `${home}/.codex/bin/codex-linux-sandbox --`,
+    "/Applications/Codex.app/Contents/MacOS/Codex",
+    "/Applications/Codex Beta.app/Contents/Resources/codex app-server",
+    "/Users/another/.codex/packages/app-server-daemon/releases/0.167.2/codex app-server",
+    "/usr/local/bin/CODEX resume",
+  ])
+    assert.deepEqual(
+      leftoverCodexServers(
+        [...bystanders, ...leftovers, { pid: 900, ppid: 1, command: alive }],
+        home,
+      ),
+      [],
+      alive,
+    );
+  // Another home's packages are not this user's leftovers.
+  assert.deepEqual(leftoverCodexServers(leftovers, "/Users/another"), []);
+
+  const project = "/Users/someone/project";
+  const nowhere = join(root, "no-temporary-directory");
+  const closing = (options) => {
+    const ended = [];
+    const said = closeLeftoverCodexServers({
+      repository: project,
+      env: {},
+      rows: [...bystanders, ...leftovers],
+      home,
+      temporary: nowhere,
+      kill: (pid) => ended.push(pid),
+      ...options,
+    });
+    return { ended, said };
+  };
+  const closed = closing();
+  assert.deepEqual(closed.ended, [300, 100, 200]);
+  assert.equal(
+    closed.said,
+    "Closed 3 Codex background-server processes that an ended Codex session left running (300, 100, 200); no Codex session was alive to use them.",
+  );
+  assert.equal(
+    closing({ rows: [daemon] }).said,
+    "Closed 1 Codex background-server process that an ended Codex session left running (300); no Codex session was alive to use it.",
+  );
+  // A process that is already gone is not reported as closed, and the
+  // others are still ended.
+  const gone = [];
+  assert.match(
+    closeLeftoverCodexServers({
+      repository: project,
+      env: {},
+      rows: leftovers,
+      home,
+      temporary: nowhere,
+      kill: (pid) => {
+        if (pid === 300)
+          throw Object.assign(new Error("gone"), { code: "ESRCH" });
+        gone.push(pid);
+      },
+    }),
+    /^Closed 2 Codex background-server processes .*\(100, 200\)/u,
+  );
+  assert.deepEqual(gone, [100, 200]);
+  assert.equal(
+    closing({
+      kill: () => {
+        throw new Error("not permitted");
+      },
+    }).said,
+    "",
+  );
+  assert.deepEqual(closing({ rows: bystanders }), { ended: [], said: "" });
+  // Under a Codex host, in a gate and in a gate's child it does nothing.
+  for (const name of ["CODEX_THREAD_ID", "DOTLN_GATE_CHILD", "DOTLN_TEMP_GATE"])
+    assert.deepEqual(closing({ env: { [name]: "1" } }), {
+      ended: [],
+      said: "",
+    });
+  // A fixture's repository stands in a temporary root, and a dispatch there
+  // does nothing with the session's variables removed: by the record its
+  // root holds, and by the system's temporary directory.
+  assert.ok(existsSync(join(parent, TEMPORARY_OWNER_FILE)));
+  assert.equal(inTemporaryRoot(root, nowhere), true);
+  assert.deepEqual(closing({ repository: root, env: baseEnv }), {
+    ended: [],
+    said: "",
+  });
+  assert.equal(
+    inTemporaryRoot("/elsewhere/tmp/fixture/repository", "/elsewhere/tmp"),
+    true,
+  );
+  assert.equal(inTemporaryRoot("/elsewhere/tmp", "/elsewhere/tmp"), true);
+  assert.equal(
+    inTemporaryRoot("/elsewhere/tmp-kept/repository", "/elsewhere/tmp"),
+    false,
+  );
+  assert.equal(inTemporaryRoot(project, "/elsewhere/tmp"), false);
+  assert.deepEqual(
+    closing({
+      repository: "/elsewhere/tmp/fixture",
+      temporary: "/elsewhere/tmp",
+    }),
+    { ended: [], said: "" },
+  );
+
+  // The process table is read as pid, parent and the whole command line; a
+  // table that cannot be read is no rows, and nothing is closed.
+  assert.deepEqual(
+    processCommands({
+      execFile: () =>
+        `    1     0 /sbin/launchd\n  300     1 ${daemon.command}\n\nnot a row\n`,
+    }),
+    [{ pid: 1, ppid: 0, command: "/sbin/launchd" }, daemon],
+  );
+  assert.deepEqual(
+    processCommands({
+      execFile: () => {
+        throw new Error("ps unavailable");
+      },
+    }),
+    [],
+  );
+  console.log(
+    "leftover Codex background servers are closed only when no Codex process is alive, and never from a fixture",
+  );
+}
+
 // A dispatch extension is an operator-captured act, independent of a result.
 {
   const id = "WO-108";
@@ -2455,6 +3367,66 @@ process.stdout.write("off-ramp fixtures passed\n");
   assert.equal(event.phase, "active");
   assert.match(event.captureHash, /^sha256:/u);
   assert.equal(status(id).boundAcceptances.length, 4);
+  // The subagent cap is a third metric (WO-276): a whole number above the
+  // cap the dispatch already runs under, or unlimited. Its acceptance is the
+  // dispatch's, and the wall-clock standing reads as it did before it.
+  const { dispatchStanding, dispatchSubagentCap } = await import(
+    pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs"))
+  );
+  const standingRows = () => {
+    const { elapsedMs, ...rest } = dispatchStanding(root, {
+      sessionKey: key,
+      now: Date.parse("2040-01-01T00:00:00.000Z"),
+    });
+    return rest;
+  };
+  const standingBeforeCap = standingRows();
+  const capFlags = (ceiling) => [
+    "accept-overrun",
+    "subagentCap",
+    "--ceiling",
+    ceiling,
+    "--reason",
+    "operator states a cap for this dispatch",
+    ...captureFlags,
+    ...agentFlags,
+  ];
+  assert.equal(dispatchSubagentCap(root, 20, { sessionKey: key }), 20);
+  refuseOn(
+    id,
+    /accept-overrun subagentCap requires a whole-number --ceiling or unlimited/,
+    capFlags("40.5"),
+  );
+  refuseOn(
+    id,
+    /accept-overrun must extend subagentCap beyond its current value unknown and bound 20/,
+    capFlags("20"),
+  );
+  on(id)(capFlags("40"), { CLAUDE_CODE_SESSION_ID: "bound-executor" });
+  assert.equal(events(id).at(-1).metric, "subagentCap");
+  assert.equal(events(id).at(-1).ceiling, 40);
+  assert.equal(dispatchSubagentCap(root, 20, { sessionKey: key }), 40);
+  assert.deepEqual(standingRows(), standingBeforeCap);
+  assert.deepEqual(
+    status(id)
+      .boundAcceptances.map(({ metric, ceiling, phase }) => ({
+        metric,
+        ceiling,
+        phase,
+      }))
+      .at(-1),
+    { metric: "subagentCap", ceiling: 40, phase: "active" },
+  );
+  refuseOn(
+    id,
+    /must extend subagentCap beyond its current value unknown and bound 40/,
+    capFlags("30"),
+  );
+  on(id)(capFlags("unlimited"));
+  assert.equal(events(id).at(-1).ceiling, null);
+  assert.equal(dispatchSubagentCap(root, 20, { sessionKey: key }), null);
+  assert.deepEqual(standingRows(), standingBeforeCap);
+  assert.equal(status(id).boundAcceptances.length, 6);
   assert.equal(event.recordingSession.role, "executor");
   assert.deepEqual(event.actor, agent);
   assert.equal(status(id).phase, "active");
@@ -2509,6 +3481,105 @@ process.stdout.write("off-ramp fixtures passed\n");
     "wallClockMs",
     ...flags,
   ]);
+}
+
+// An extension is compared with the phase's worked time, not with the time
+// since its dispatch: a phase begun twenty-one hours ago that worked one hour
+// takes a twelve-hour ceiling over its eight-hour bound, which the elapsed
+// time alone would refuse, and the refusal that follows names the worked
+// value.
+{
+  const id = "WO-111";
+  gateOrder(id);
+  const budgetsPath = join(root, "docs/control/budgets.json");
+  const budgetsBefore = readFileSync(budgetsPath, "utf8");
+  const budgets = JSON.parse(
+    readFileSync(join(scripts, "kit/budgets.template.json"), "utf8"),
+  );
+  const hour = 60 * 60 * 1000;
+  budgets.dispatches.executor.wallClockMs = 8 * hour;
+  writeFileSync(budgetsPath, JSON.stringify(budgets));
+  // The order was activated twenty-two hours ago and dispatched an hour later.
+  const startMs = Date.now() - 21 * hour;
+  writeFileSync(
+    segmentPath(id),
+    readFileSync(segmentPath(id), "utf8")
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const event = JSON.parse(line);
+        return JSON.stringify(
+          event.type === "WorkOrderActivated"
+            ? { ...event, recordedAt: new Date(startMs - hour).toISOString() }
+            : event,
+        );
+      })
+      .join("\n") + "\n",
+  );
+  const key = createHash("sha256").update("worked-executor").digest("hex");
+  writeFileSync(
+    join(root, `docs/control/local/harness/${key}.json`),
+    JSON.stringify({
+      role: "executor",
+      intent: "resume: next",
+      workOrder: id,
+      startedAt: new Date(startMs).toISOString(),
+    }),
+  );
+  // Half an hour of calls, a turn's end, twenty hours, half an hour of calls.
+  const minute = 60 * 1000;
+  const row = (offset, event, tool) =>
+    JSON.stringify({
+      recordedAt: new Date(startMs + offset * minute).toISOString(),
+      event,
+      ...(tool ? { tool } : {}),
+    });
+  const calls = (from) =>
+    [0, 5, 10, 15, 20, 25].flatMap((offset) => [
+      row(from + offset, "PreToolUse", "Bash"),
+      row(from + offset + 4, "PostToolUse", "Bash"),
+    ]);
+  writeFileSync(
+    join(root, `docs/control/local/harness/${key}.jsonl`),
+    [
+      row(0, "UserPromptSubmit"),
+      ...calls(0),
+      row(30, "Stop"),
+      row(20 * 60 + 30, "UserPromptSubmit"),
+      ...calls(20 * 60 + 30),
+    ].join("\n") + "\n",
+  );
+  const { dispatchStanding } = await import(
+    pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs"))
+  );
+  const before = dispatchStanding(root, { sessionKey: key });
+  assert.ok(before.elapsedMs >= 21 * hour, "the phase began 21 hours ago");
+  assert.ok(
+    before.workedMs >= hour && before.workedMs < hour + 5 * minute,
+    `one hour worked: ${before.workedMs}`,
+  );
+  assert.equal(before.state, "within");
+  const worked = (ceiling) => [
+    "accept-overrun",
+    "wallClockMs",
+    "--ceiling",
+    String(ceiling),
+    "--reason",
+    "operator extension over worked time",
+    ...capture("worked-extension", "Operator: extend this fixture bound.\n"),
+    ...agentFlags,
+  ];
+  // Twelve hours is below the elapsed twenty-one and above the worked one.
+  on(id)(worked(12 * hour), { CLAUDE_CODE_SESSION_ID: "worked-executor" });
+  assert.equal(events(id).at(-1).type, "DispatchBoundAccepted");
+  assert.equal(events(id).at(-1).ceiling, 12 * hour);
+  refuseOn(
+    id,
+    /accept-overrun must extend wallClockMs beyond its current value 1 h 0 min and bound 12 h 0 min/,
+    worked(12 * hour),
+    { CLAUDE_CODE_SESSION_ID: "worked-executor" },
+  );
+  writeFileSync(budgetsPath, budgetsBefore);
 }
 
 // A captured conversational authorization is recorded by the stopped executor

@@ -1,16 +1,18 @@
-# WO-276 — The queue lands as one order: the repairs WO-275's execution called for, one reader for each format the sources read, the fifteen queued orders as parts, and the instance's asks, under one activation, one verification, one final review and one release (version assigned at activation)
+# WO-276 — The queue lands as one order: the repairs WO-275's execution called for, one reader for each format the sources read, the fifteen queued orders as parts, and the instance's asks, under one activation, one verification, one final review and one release (v1.0.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
 **Track:** machinery
 **Review ladder:** paired
-**Release classification:** minor. Refusals relaxed: a context entry of
+**Release classification:** major. The class follows the release's name,
+v1.0.0, which the operator gave it (WO-276-D073); by its content it is the
+minor release the rest of this line describes. Refusals relaxed: a context entry of
 the private list stops no gate, publish or export; an order filed and
 never activated can be withdrawn; a register batch is judged on the
 state it produces; a known issue can be disposed. Refusals added by
 Parts A and B: a worker's stop while a background task it started is
-live, once; the question dialog in a dispatched role; a completion that
+live, once; a completion that
 attests a Claude Code version other than the one the hook observed; a
 source that reads Markdown or JSON by pattern, in the document check; a
 mission check in a resident started without its launcher; a Markdown
@@ -32,7 +34,7 @@ re-minted by `npm run sync` at that part's end; and the complete review
 run is made three times by design, Part D's comparison pair and the
 order's own, in place of fifteen orders' runs. Part A adds two sections
 and a join rule in `scripts/lib/terms.mjs` and a listing in each of its
-callers, two refusals in the hooks, one acceptance metric, one version
+callers, one refusal in the hooks, one acceptance metric, one version
 comparison, one `checkpoint` action and an example list in the kit, and
 removes two sentences of the executor's text, sixty-two baseline
 fixtures and their checker. Part B adds the shared Markdown readers, the
@@ -59,8 +61,8 @@ meets a generated surface it cannot otherwise explain; one read of every
 open order's steps in `npm run plan -- check`; and what the records
 state, each measured by its part. Removes these states: an order stopped
 by an ordinary word on a private list; a repair after a failed run
-waiting on a review; a worker that hands back with shells running; a
-session held by a question dialog; an order writing a reader of its own;
+waiting on a review; a worker that hands back with shells running;
+an order writing a reader of its own;
 fifteen activations, verifications, final reviews and release closes
 where one of each is enough. This order's own execution: unknown until
 its handoff records it. For scale, WO-275's execution, which is Part G
@@ -141,8 +143,7 @@ were owed first. When it closes, an ordinary word on a private list
 stops nothing and an entry listed under `refuse:` still stops
 everything; a repair that
 the failed run itself proves restarts that run; a worker cannot hand
-back with shells running and a dispatched role cannot wait on a
-question dialog; no source reads a format with a reader of its own; the
+back with shells running; no source reads a format with a reader of its own; the
 instance's asks of 2026-11-10 that core can meet are met in the kit, and
 the pass document answers the rest; and every outcome
 the fifteen records state for an instance on the operator's work
@@ -313,6 +314,24 @@ machine holds.
   comparison and once after Part R, that last one started with
   `--keep-going`; the document gate is run before it and again after the
   handoff is written.
+- A part is kept light, on the operator's direction of 2026-11-10 given
+  during this order's execution (decision WO-276-D027): the order pays
+  one gate, one verification and one final review, and a part that paid
+  its own would buy nothing over the orders it replaces. A part is not
+  held until all of its suites pass, since the parts after it change the
+  same code and stale its rows. It ends on spot checks of what it
+  changed (the cases of its steps under the bounded wrapper), the few
+  suites of its Preflight line that judge its change most directly, each
+  read as it ends, and the two document screens. The suites a part does
+  not run are judged by the order's complete run of step Z2, and a
+  failure met there is repaired there. A part takes one review launch, a
+  combined worker over the part's change, and more only where the
+  executor judges the part's risk or a finding warrants it; once Part
+  C's rules are in the candidate they say what that launch is. The full
+  review ladder is run once, over the whole change, after Part R and
+  before the complete run of step Z2, in the form the executor's text
+  gives at that moment (decision WO-276-D028). Where this item and an
+  item above it differ, this item is the instruction.
 - A judged feedback source is followed by its episode. `npm run sync`
   and the `generated` structural task refuse a tree whose judged
   feedback sources (`FEEDBACK_SOURCE_PATHS` in
@@ -437,15 +456,11 @@ machine holds.
   is a stop continuation, as the session's own stop advice is, and takes
   no row in the refusal table. `node scripts/harness.mjs evidence
   --wait` awaits a gate run and nothing else, and the role text says so.
-- A dispatched role does not open the host's question dialog. In an
-  execution, a repair, a verification, a final review and a release
-  close the dialog is refused, naming the route the role text already
-  gives: decide and record, or state in one message what only the
-  operator can clear and continue with what does not depend on it.
-  `analysis:` and `operator override:` admit it, and a planning or
-  ideation pass is not judged. Rejected: a sentence alone (the axis is
-  the record: the role text already said not to ask, and the dialog held
-  a session for an hour and a half with nothing else moving).
+- Struck on the operator's direction of 2026-11-10, given during this
+  order's execution (decision WO-276-D012): the refusal of the host's
+  question dialog to a dispatched role. The dialog stays every role's to
+  use, as at the base; step A10 is not performed, and criterion A9
+  states what holds.
 - What an operator authorizes for one dispatch is a recorded acceptance.
   `accept-overrun` takes `subagentCap` as it takes the two bounds, its
   base the budgets file's top-level value, and the hook, the usage
@@ -1043,33 +1058,69 @@ against the cap.
 
 Outcome: The owner of an instance decides which model and effort
 each worker and each driven phase runs by editing the instance's own
-configuration, and reads after an order, and across a day, what it used in
+files, names as many workers as the instance needs, asks for any of them
+in plain words, and reads after an order, and across a day, what it used in
 tokens by class and, from prices the instance declares, in dollars.
 
-- The configuration states what each option runs. `workers.options` may
-  give any of the four option names a `model` and an `effort`;
-  `workers.defaults` may name which option is a host's default;
-  `workers.verifierEffort` may set the effort of a driven verification.
-  The compiled table supplies whatever the instance does not state, and
-  one resolver returns the result to every reader, so the emitted
-  definitions, the review helper, the refuter launch, the entropy reviewer
-  and the drive cannot disagree. Rejected: letting an instance add option
-  names (the axis is surface: the `--model` grammar, the receipts and the
-  role text name four options, and an instance needs to change what an
-  option runs, not how many there are). Rejected: reading an environment
-  variable (the axis is the record: the configuration is committed and
-  reviewed, and `harness check` can compare the emitted files with it).
+- What a worker runs is one table of data. A model is a row: the provider
+  that launches it, its exact id, the effort it runs at where a launch
+  names none and, where a provider's own launch takes one, a family. A
+  worker is a name bound, for each provider it runs on, to a model or to a
+  model at an effort of its own. A provider is a launcher the kit has,
+  with what is particular to it in one adapter. The kit's rows are data in
+  one build-free module, the one place the kit names a model that a worker
+  runs: the four models the operator named for workers and the two the
+  resident's judge already ran, and four workers, `default` (what a
+  launch that names nothing and every driven phase runs), `advanced`
+  (each provider's stronger model), `verifier` (a driven independent
+  verification) and `judge` (what the resident's always-on judge runs
+  where a bind names no model). An instance adds or replaces models in an
+  optional
+  `dotln.models.json` beside its configuration, a row of a kit model's
+  name replacing the kit's row whole, and names workers under `workers`
+  in `dotln.config.json`, any number of them, an entry of a kit worker's
+  name restating only the bindings it writes. One resolver over the
+  merged table answers every reader, so the emitted definitions, the
+  review helper, the refuter launch, the entropy reviewer and the drive
+  cannot disagree. Rejected: a worker definition for each model (the axis
+  is change: models and efforts change faster than a kit releases, and
+  each such definition tied a name in the role text, a file, a dispatch
+  word and a hook to one model). Rejected: a fixed set of option names
+  (the axis is use: an instance needs many workers and must be able to
+  name them). Rejected: reading an environment variable (the axis is the
+  record: the files are committed and reviewed, and `harness check` can
+  compare the emitted files with them).
+- A name means one thing. Models and workers share one namespace, an id
+  is never also a name, and one id is one model of a provider; what would
+  be ambiguous is refused when the configuration loads, naming the file
+  and the key, and an unknown name is answered with every name the
+  instance has. No code matches a word loosely: a session maps the
+  operator's plain words to a name by its own judgment over `npm run
+  worker -- list`, uses `default` where they name none, and asks where
+  they fit no entry or several.
+- A launch is the provider's to make. `npm run worker -- show <name>`
+  prints what a name runs and how this session launches it. The kit's
+  command-line launches pass the exact id and effort; a Codex session's
+  spawn passes them itself, with the worker's standing rules at the head
+  of its brief; a Claude session launches the one generated worker
+  definition, by the model's family where the model is not the one the
+  definition holds, which the host resolves and the launch therefore does
+  not call exact. No role's text, hook or definition's name holds a model,
+  and a dispatch line selects nothing: the session hook is given the
+  table's names only to tell where a lifecycle phrase ends.
 - The record says what ran. A launch's attestation carries the model id
-  and effort it was given, as today; the receipt's worker type is the
-  option's, unchanged.
+  and effort it was given, as today; a receipt's worker type names the
+  provider's launcher, and the two per-model types an earlier kit recorded
+  still read.
 - A value the kit cannot judge is the instance's to get right. The kit
-  validates the section's shape, the option names and the effort against
-  the levels its launchers accept; it does not hold a list of model ids.
-  A launch that fails names the configuration key the model came from.
+  validates the shape of both files, the names, the bindings and each
+  effort against the levels its provider's launches take; it holds its own
+  models as defaults and no list of what an account offers. A launch that
+  fails names where the instance wrote the model.
 - An emitted surface is judged as emitted. The manifest's prediction, the
-  update plan and `verifyKit` take the resolved `workers` values as they
-  take the host elections today, so a worker definition emitted from the
-  instance's configuration is neither a local modification nor a
+  update plan and `verifyKit` take the instance's workers and models as
+  they take the host elections today, so a worker definition emitted from
+  the instance's own files is neither a local modification nor a
   difference.
 - The meter keeps four classes that do not overlap: uncached input, cache
   read, cache write and output, derived for each usage source from what
@@ -1079,8 +1130,9 @@ tokens by class and, from prices the instance declares, in dollars.
   calendar day, taking each observation on the day it was observed, and
   `npm run meta -- --usage` prints that reading by order and by day;
   Part P's prompt line calls the same reading.
-- Dollars are an estimate from the instance's own prices. `workers.prices`
-  maps a model id to its prices for the four classes; with it the report
+- Dollars are an estimate from the instance's own prices. `prices` in
+  `dotln.models.json` maps a model's exact id to its prices for the four
+  classes; with it the report
   multiplies and prints an estimate, labeled as one, and a `costUsd` the
   host reported stays the figure of record. No price ships in the kit: an
   account's rates are its own and change. Rejected: a price table in the
@@ -1601,17 +1653,10 @@ numbered within their part.
    before it hands back. Check: `npm test -- --only harness-fixtures`,
    `npm test -- --only harness-probe`, `npm test -- --only skeleton` and
    `npm test -- --only compiler`.
-10. (A10) `packages/skeleton/src/harness-host.ts` (the permission branch,
-    beside the router's refusals) and `packages/compiler/src/harness.ts`
-    (`HARNESS_REFUSALS`): refuse the `AskUserQuestion` tool for a session
-    whose dispatched role is executor, verifier, reviewer or
-    release-close, outside `analysis:` and `operator override:`, with a
-    refusal that names the role text's route; one row in the refusal
-    table, its count and provenance following it. A root that passes its
-    cold-start ceiling by that clause is accepted under product 07's
-    standing route and the decisions record it. Check: `npm test --
-    --only harness-fixtures`, `npm test -- --only compiler` and `npm
-    test -- --only process-debt`.
+10. (A10) Struck on the operator's direction of 2026-11-10 (decision
+    WO-276-D012) and not performed: no refusal of the `AskUserQuestion`
+    tool is added, and the refusal table gains no row for it. Check: the
+    case of criterion A9.
 11. (A11) `scripts/resume.mjs` (`accept-overrun` and its usage line),
     `scripts/lib/control.mjs` (the acceptance's admitted metrics),
     `scripts/lib/dispatch-bound.mjs` (`effectiveDispatchLimits`, whose
@@ -1684,8 +1729,8 @@ numbered within their part.
     on a match), §What runs here, and what does not (the sentence that a
     repair under fifty changed source lines starts at round three goes;
     an order in parts runs its ladder a part at a time; a worker hands
-    back with nothing of its own running; the dialog a dispatched role
-    is refused) and §Owned cleanup and retention (`accept-overrun` takes
+    back with nothing of its own running) and §Owned cleanup and
+    retention (`accept-overrun` takes
     `subagentCap`). In product 07: §Workflow closeout and releases and
     §Discipline (the outward-artifacts paragraph's sentence that every
     listed term refuses in committed text; the sentence that sync
@@ -2429,42 +2474,62 @@ numbered within their part.
 
 *Part J — Models and usage (the record WO-266).*
 
-1. (J1) `scripts/lib/config.mjs` (`SECTION_KEYS`, `validateConfig`): admit a
-   `workers` section with `options` (keys among the compiled table's four
-   names, each with an optional `model` text and an optional `effort`
-   among the levels that option's host accepts), `defaults` (host to
-   option name), `verifierEffort` and `prices` (model id to four
-   non-negative numbers), refusing an unknown key by name. Check:
-   `npm test -- --only configuration-root`.
-2. (J2) `scripts/lib/worker-launch.mjs`: one exported resolver that returns the
-   options, the host defaults, the phase pins and the verifier effort for
-   a root, the configuration's values over the compiled table's; its
-   existing option readers and `TRANSPORT_DEFAULTS`' callers use it.
-   Check: the review-worker cases (`node scripts/harness.mjs bounded --
-   node --test scripts/test-review-worker.mjs`).
-3. (J3) `scripts/lib/harness.mjs` (emit and check) with
-   `packages/compiler/src/harness.ts` (the worker definitions): the
-   emitted worker definitions carry the resolved model and effort, and
-   check compares against the resolved values. `scripts/launchpad.mjs`
-   (`planKitUpdate` and `prepareKit` pass the destination's `workers`
-   section to `expectedHarnessBundle`, as they pass its host elections;
-   `verifyKit` counts a generated harness surface that the instance's
-   `harness check` accepts as verified, running `node
+1. (J1) `packages/skeleton/src/worker-models.mjs` and
+   `packages/skeleton/src/worker-catalog.mjs` (new, build-free;
+   `scripts/launchpad.mjs` `BUILD_FREE_MODULES`, the evidence sources
+   and each fixture-input declaration that copies the configuration
+   module gain them): the kit's models and workers as data, and the one
+   interface over them (the merged table, the resolution of a name, the
+   listing, and each provider's adapter with its session launch).
+   `scripts/lib/config.mjs` (`validateConfig`, `loadConfig`): admit a
+   `workers` section of named workers, read the optional
+   `dotln.models.json` (`schemaVersion`, `models`, `prices`), judge
+   the two as one table, and refuse an unknown key, a binding to an
+   unlisted model, a name that would mean two things, an effort outside
+   its provider's levels and a negative price, naming the file and the
+   key. Check: `npm test -- --only configuration-root`.
+2. (J2) `scripts/lib/worker-launch.mjs`: the table for a root and one
+   exported resolution of a launch (the worker or model a launch names,
+   else `default`, on a provider, with an effort for that launch alone);
+   `TRANSPORT_DEFAULTS`' host rows come from the adapters.
+   `scripts/worker.mjs`: `list [--json]` and `show <name> [--provider
+   <provider>] [--effort <level>]`, neither of which launches. Check:
+   the review-worker cases (`node scripts/harness.mjs bounded -- node
+   --test scripts/test-review-worker.mjs`).
+3. (J3) `packages/skeleton/src/loadouts/contributor.ts` with
+   `packages/compiler/src/harness.ts`, `packages/skeleton/src/harness-host.ts`,
+   `packages/compiler/src/codex-continuation.mjs` and
+   `scripts/lib/harness.mjs` (emit and check): the one worker definition
+   and the phase definitions hold what `default` and `verifier` resolve
+   to for Claude, and check compares against the resolved values; no
+   definition is emitted for a model, and an emit retires the two an
+   earlier kit wrote; the worker-launch rule and the router's sentence
+   name no model and send a session to the two commands; the session
+   hook's configuration carries the table's names, the dispatch reader
+   takes a closing run of them as the end of the phrase, and neither
+   prompt hook journals or adds a selection. `scripts/launchpad.mjs`
+   (`planKitUpdate` and `prepareKit` pass the destination's workers
+   and models to `expectedHarnessBundle`, as they pass its host
+   elections; `verifyKit` counts a generated harness surface that the
+   instance's `harness check` accepts as verified, running `node
    scripts/harness.mjs check` as a child process, and only when such a
    surface differs from the manifest, so that `verifyKit` stays
    synchronous for the callers that do not await it; `EMIT_CLOSURE`
-   gains each module the emit now imports): the emitted definitions are
-   neither refused as locally modified, which step I5's `re-emitted`
-   kind settles in the update plan, nor reported as differing. Check:
-   `npm test -- --only harness-fixtures`, `npm test -- --only compiler`
-   and `npm test -- --only launchpad`.
-4. (J4) `scripts/lib/review-worker.mjs`, `scripts/refute-plan.mjs` (`refute
-   --model`), `scripts/lib/entropy-review.mjs` and
-   `scripts/lib/drive-session.mjs`: each takes its model and effort from
-   the resolver, and a failed launch's message names the `workers` key the
-   model came from. Check: `npm test -- --only plan-refutation` and
-   `npm test -- --only harness-fixtures`, whose row runs the drive's
-   cases.
+   gains each module under `scripts/` the emit now imports): the emitted
+   definitions are neither refused as locally modified, which step I5's
+   `re-emitted` kind settles in the update plan, nor reported as
+   differing. Check: `npm test -- --only harness-fixtures`, `npm test --
+   --only compiler` and `npm test -- --only launchpad`.
+4. (J4) `scripts/lib/review-worker.mjs` (`--model <name>`, `--effort
+   <level>`), `scripts/refute-plan.mjs` (`refute --model <name>`
+   prints what `show` prints; `--effort` with a transport),
+   `scripts/lib/entropy-review.mjs` and `scripts/lib/drive-session.mjs`
+   (a phase runs `default`, a verification `verifier`): each takes its
+   model and effort from the resolution, and a failed launch's message
+   names where the instance wrote the model. A refutation receipt reads
+   a fixed set of worker types. Check: `npm test -- --only
+   plan-refutation` and `npm test -- --only harness-fixtures`, whose
+   row runs the drive's cases.
 5. (J5) `packages/skeleton/src/usage-observation.mjs` (`fields` and
    what it feeds): derive uncached input, cache read, cache write and
    output as four classes that do not overlap, for a Claude source and
@@ -2482,8 +2547,8 @@ numbered within their part.
    `npm test -- --only process-debt`.
 6. (J6) `scripts/meta.mjs` and `scripts/lib/meta.mjs`: `--usage
    [--since <date>]` prints, by order and by the local calendar day of
-   each observation, the tokens by class and role and, where
-   `workers.prices` names the attested model, an estimate in dollars
+   each observation, the tokens by class and role and, where the
+   instance's `prices` name the attested model, an estimate in dollars
    marked as an estimate, each class multiplied once by its own price.
    `--usage` reads and prints only, returning before the pages `npm run
    meta` writes; under it `--since` takes a local calendar date; and
@@ -2491,13 +2556,16 @@ numbered within their part.
    Check: `npm test -- --only process-debt`.
 7. (J7) Write-backs, each replacing the sentence now wrong and
    linking this order's decisions: the kit guide §Kit files and instance
-   files (what an instance configures: the `workers` section, what each
-   key changes and that the record states the model that ran; the usage
-   report and that prices are the instance's);
-   `scripts/kit/dotln.config.example.json` (the section, with no model
-   id and no price filled in); product 07 §Model-specific notes (the
-   table is the default an instance may restate);
-   `docs/evidence/WO-276/decisions.md`.
+   files (what an instance configures: a model, a worker and a provider,
+   the `workers` section and the models file, the two commands, how a
+   launch reaches its model on each provider and that the record states
+   the model that ran; the usage report and that prices are the
+   instance's); `scripts/kit/dotln.config.example.json` (a default and an
+   advanced worker for each provider, with no model id and no price
+   filled in); product 07 §Model-specific notes (the one table and how a
+   session finds and launches a worker), with the passages of product 07
+   and `docs/AI-HARNESS-SECURITY.md` that named an option or a pinned
+   model; `docs/evidence/WO-276/decisions.md`.
 
 *Part K — Extensions (the record WO-267).*
 
@@ -3005,12 +3073,12 @@ numbered within their part.
    `docs/evidence/WO-276/part-a/subagent-stop-probe.json`, and where the
    host did not hold the worker the journal rows and the parent's facts
    are the delivered behavior.
-9. (A9) For a session dispatched as executor, verifier, reviewer or
-   release-close the hook refuses `AskUserQuestion`, naming the route;
-   under `analysis:` and under `operator override:` it admits it; and a
-   planner's session is admitted. Check: the cases of `npm test --
-   --only harness-fixtures`; the refusal table's count agrees in every
-   installed root and in the root instruction file.
+9. (A9) Struck on the operator's direction of 2026-11-10 (decision
+   WO-276-D012): the hook does not refuse `AskUserQuestion`. A session
+   dispatched as executor, verifier, reviewer, release-close or planner
+   is admitted the host's question dialog as at the base, and the
+   refusal table holds no row for it. Check: the case of `npm test --
+   --only harness-fixtures`.
 10. (A10) After `npm run resume -- accept-overrun subagentCap --ceiling 40
     --reason <text>` with its capture and actor flags, the hook admits a
     twenty-first subagent in that dispatch and refuses a forty-first,
@@ -3040,7 +3108,7 @@ numbered within their part.
     by hand `node scripts/harness.mjs check` fails naming that root.
 15. (A15) The kit guide and product 07 state the two classes, the
    stage's reading, the repair after a failed run, the ladder of an
-   order in parts, the worker's hand-back, the refused dialog, the cap's
+   order in parts, the worker's hand-back, the cap's
    acceptance, the checkpoint and the verbatim screen's words in the
    sections step A17 names, or in the section step F6 creates where that
    step moved the paragraph; each section but §First steps links this
@@ -3393,26 +3461,33 @@ numbered within their part.
    the same file edited by hand is refused as locally modified, as
    before this part; and a preview that meets no such surface runs with
    nothing installed.
-77. (J1) In a fixture instance whose configuration gives one option a
-   model and an effort, `node scripts/harness.mjs emit` writes that
-   option's worker definition with those two values and `node
-   scripts/harness.mjs check` passes; with the section absent, the
-   emitted worker definitions equal the ones the same tree emits from a
-   configuration that never held it. In the update fixture, an instance
-   that emitted with the section set is shown no worker definition as
+77. (J1) In a fixture instance whose models file adds a model and whose
+   configuration binds `default` to it for Claude, `node
+   scripts/harness.mjs emit` writes the worker definition and the phase
+   definitions with that model's id and effort and `node
+   scripts/harness.mjs check` passes; a table changed with no emit is
+   reported as drift; with neither stated, the emitted files equal the
+   ones the same tree emits from an instance that never held them. No
+   emitted worker definition is named for a model, and no role's text
+   holds a model's id or a model's name. In the update fixture, an
+   instance that emitted with both set is shown no worker definition as
    locally modified by the update plan, and `node scripts/launchpad.mjs
    verify` reports none as differing.
 78. (J2) In the same fixture, `npm run worker -- review --kind criteria --host
-   claude --order <id> --dry-run` and `npm run plan -- refute --model
-   <option>` each print a launch that names the configured model and
-   effort, and the drive's launch for a phase carries them in its
-   arguments, with `workers.verifierEffort` applied to the verifier's.
-79. (J3) A `workers` section with an unknown key, an option name outside the
-   compiled four, an effort outside the host's levels or a negative price
-   is refused when the configuration loads, naming the key.
-80. (J4) A launch that fails because its model was refused reports the
-   `workers` key that named the model, shown with the fixture launcher's
-   failing double.
+   claude --order <id> --dry-run` and `npm run plan -- refute --model <name>`
+   each print a launch that names the configured model and effort, `npm
+   run worker -- show <name>` prints what a name runs with this session's
+   launch of it, and the drive's launch for a phase carries `default`'s
+   model and effort in its arguments and `verifier`'s for the
+   verifier's. Forty workers an instance names, several on one model,
+   each resolve on their own; a launch that names none runs `default`.
+79. (J3) A `workers` section or a models file with an unknown key, a binding
+   to an unlisted model, a name that would mean two things, an effort
+   outside its provider's levels or a negative price is refused when the
+   configuration loads, naming the file and the key.
+80. (J4) A launch that fails because its model was refused reports where the
+   instance wrote the model, shown with the fixture launcher's failing
+   double.
 81. (J5) An order's `meta.json` written from usage rows holds uncached input,
    cache read, cache write and output per role beside the total, and holds
    `null` for a class no row reported. For a Claude usage row and for a
@@ -3420,11 +3495,12 @@ numbered within their part.
    that host's total, so no token is in two classes.
 82. (J6) `npm run meta -- --usage` prints tokens by class for each order and for
    each local calendar day, an observation counted on the day it was
-   observed; with `workers.prices` naming the attested model it also
+   observed; with the instance's `prices` naming the attested model it also
    prints an estimate marked as one; for a model with no declared price it
    prints `unknown` in place of the estimate.
-83. (J7) The kit guide and the example configuration state the section and the
-   report and link this order's decisions. The verifier reads the
+83. (J7) The kit guide and the example configuration state the section, the
+   models file, the two commands and the report and link this order's
+   decisions. The verifier reads the
    named section; `npm run test:docs` judges its links and form.
 84. (K1) No path the kit's manifest lists lies under `extensions/`, the kit-path
    predicate answers false for a path there, and an export whose file
@@ -3599,7 +3675,7 @@ numbered within their part.
    no presence hook file; and the settings emitted for a target worktree
    hold the same.
 121. (Q2) Every refusal case of `npm test -- --only harness-fixtures`
-   that passes at the tree this part began on, Part A's dialog and
+   that passes at the tree this part began on, Part A's
    subagent-stop cases among them, passes unchanged at the checkpoint
    this part ended on, the attribution refusal fires for a shell command
    under each tool name that maps to its kind, the heartbeat's cases
@@ -3685,16 +3761,16 @@ and their steps follow.
 
 - Part A: `npm test -- --only plan-refutation` for steps A1, A3, A4 and
   A11; `npm test -- --only outward-lint` for step A1; `npm test --
-  --only harness-fixtures` for steps A1, A4, A5, A9, A10 and A11; `npm
+  --only harness-fixtures` for steps A1, A4, A5, A9 and A11; `npm
   test -- --only runner-fixtures` for steps A2 and A5; `npm test --
   --only launchpad` for steps A3 and A4; `npm test -- --only
   target-worktree` for steps A1, A3 and A4; `npm test -- --only
-  launchpad-planning` for steps A1 to A4, A9 to A11 and A16, whose files
+  launchpad-planning` for steps A1 to A4, A9, A11 and A16, whose files
   its declared sources hold; `npm test -- --only harness-context` for
-  steps A4 and A11; `npm test -- --only process-debt` for steps A4 to A7
-  and A10; `npm test -- --only adjacent-queue` for step A4; `npm test --
+  steps A4 and A11; `npm test -- --only process-debt` for steps A4 to
+  A7; `npm test -- --only adjacent-queue` for step A4; `npm test --
   --only skeleton` and `npm test -- --only compiler` for steps A6, A7,
-  A9, A10, A11 and A15; `npm test -- --only sync-fixtures` for step A5;
+  A9, A11 and A15; `npm test -- --only sync-fixtures` for step A5;
   `npm test -- --only harness-probe` for steps A8 and A9; `npm test --
   --only resume` for steps A11, A12 and A16, and `npm test -- --only
   checkpoint` for step A16; `npm test -- --only docs-check-fixtures` for
@@ -3871,7 +3947,7 @@ and their steps follow.
 
 - Part A: under `docs/evidence/WO-276/part-a/`: the terms task's two streams for
   criterion A1's two branches and for the example of criterion A16;
-  `subagent-stop-probe.json`; the refusal of criterion A9; the usage
+  `subagent-stop-probe.json`; the usage
   readback of criterion A10; the `docs-check` task's two timings; each
   root's installed bytes before and after this part.
 - Part B: under `docs/evidence/WO-276/part-b/`: `inventory.json`; the comparisons
@@ -3999,10 +4075,11 @@ and their steps follow.
   a description and a name). The decoder starts from that shape, step A8
   confirms it on the host in use, and a host version that changes it is
   recorded as the reopening observation.
-- A refused question dialog leaves a role that will not decide with one
-  route, a message and a stopped turn; the role text already gives it,
-  and a role that stops there twice in one phase is the observation the
-  next pass reads.
+- The refusal of the question dialog was struck on the operator's
+  direction of 2026-11-10 (decision WO-276-D012). What WO-275's
+  execution showed, a session that waited on a dialog with nothing else
+  moving, has no mechanism in this order; that decision boards it for
+  the next pass with the operator's direction on questions.
 - The process table of a platform that does not show a set title shows
   the guard as it does today; the decisions record what `ps` prints on
   this host.
@@ -4431,6 +4508,21 @@ and their steps follow.
   message, with a double standing in for the host.
 - An attended session's own model and effort are the operator's choice in
   the host and are attested, not configured here.
+- A Claude session's own launch of a model other than the one the worker
+  definition holds names a model family, which the host resolves. That
+  the family resolves to the row's id was observed on Claude Code 2.1.322
+  only; on another version the launch may run another model of the
+  family, so the launch is printed as not exact and the record carries
+  the model the host reports.
+- Between an edit of either file and the next emit, `npm run worker --
+  show` judges a Claude session's launch against the table's default and
+  not against the worker definition as emitted, so it can print as exact a
+  launch that still runs the earlier model; `node scripts/harness.mjs
+  check` reports that drift. A receipt filed now still admits the two
+  retired worker types. Both are left, with a follow-up (D078).
+- A planning branch takes documents only, so neither file is written in a
+  planning session: the choices an operator states there are recorded for
+  an edit on main or in an order's worktree.
 - The live smoke check pins a host version and a model of its own
   (`scripts/harness-live-smoke.mjs`); it reads the resolver after this
   part only if the executor finds that a bounded change, and is recorded
@@ -4774,8 +4866,14 @@ WO-183, WO-088, WO-091, WO-096, WO-014).
   session; restoring an instance's own file automatically; a sub-root the words screen leaves
   out; a sentence in every role's text; a refusal of a fetch; the route of a
   released order.
-- Part J: a list of model identifiers or prices in the kit; a new
-  option name; a refusal when spending passes a figure; pacing or a weekly
+- Part J: prices in the kit; a model or a provider beyond those the kit
+  already launched (the four models the operator named, the resident
+  judge's two, and the two providers); reading from the table the model a
+  script keeps to regenerate a dated record; writing the two files in a
+  planning session, whose branch takes documents only; a kind of worker
+  or a cadence as data, and a command that launches any kind; matching a
+  word to a name in code; a refusal when spending passes a figure; pacing
+  or a weekly
   cap; the review ladder's size, which Part C lets an order declare; the
   model of an attended session.
 - Part K: a loader, an adapter interface or a registry of an
@@ -4822,8 +4920,7 @@ nothing, and that the refuse class is the owner's choice entry by entry;
 that the narrower join rule applies to a refuse entry as to a context
 one; that the carried parser's proven copy may be left out of the words
 screens by its bytes; that a repair made after a failed run needs no
-review before the run restarts; that a dispatched role should be unable
-to open the question dialog; that `plan target-publish` keeps refusing a
+review before the run restarts; that `plan target-publish` keeps refusing a
 context match in its branch, commit, title or body until an instance
 reports one held there; that a part is reviewed and checkpointed
 when it ends and the order is reviewed nowhere as a whole; that the

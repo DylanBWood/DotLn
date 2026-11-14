@@ -123,20 +123,33 @@ export function gatePerformanceConditions(
     )
     .sort((a, b) => Date.parse(a.recordedAt) - Date.parse(b.recordedAt));
   const source = ["FUP-e96221b106cd136a"];
-  const plain = rows.filter(
+  // A complete run is a fresh passing gate of the plain or the review
+  // selection. The lifecycle makes review runs, so a reading of plain rows
+  // alone goes without samples; each sample says which selection it is.
+  const selectionOf = (row) =>
+    row.gateSelection === "plain" || row.gateSelection === "review"
+      ? row.gateSelection
+      : !row.gateSelection &&
+          machinerySuites.length > 0 &&
+          Array.isArray(row.requiredSuites) &&
+          row.requiredSuites.length > 0 &&
+          !row.requiredSuites.some((name) => machinerySuites.includes(name))
+        ? "plain"
+        : null;
+  const complete = rows.filter(
     (row) =>
       completePassingRow(row) &&
       row.executionMode !== "reused" &&
       !row.reused &&
       !(row.taskTimeline ?? row.cases ?? []).some((task) => task.reused) &&
-      (row.gateSelection === "plain" ||
-        (!row.gateSelection &&
-          machinerySuites.length > 0 &&
-          Array.isArray(row.requiredSuites) &&
-          row.requiredSuites.length > 0 &&
-          !row.requiredSuites.some((name) => machinerySuites.includes(name)))),
+      selectionOf(row),
   );
-  const samples = plain.map((row) => row.durationMs / 1000);
+  const sampleRows = complete.map((row) => ({
+    recordedAt: row.recordedAt,
+    selection: selectionOf(row),
+    value: row.durationMs / 1000,
+  }));
+  const samples = sampleRows.map((row) => row.value);
   const result = [
     {
       id: "plain-gate",
@@ -144,15 +157,25 @@ export function gatePerformanceConditions(
       unit: "s",
       threshold: 360,
       method:
-        "thirty-day median of fresh complete plain gates; legacy product-only selections inferred from required suites",
+        "thirty-day median of fresh complete gates of the plain and the review selection, each sample labeled with its selection; legacy product-only selections inferred from required suites",
       value: samples.length ? median(samples) : null,
       samples: samples.length,
+      sampleRows,
       holds: samples.length ? median(samples) > 360 : null,
       ...(samples.length
         ? {}
-        : { unavailable: "no fresh complete plain rows in thirty days" }),
+        : {
+            unavailable:
+              "no fresh complete rows of the plain or the review selection in thirty days",
+          }),
     },
   ];
+  // A per-task row is read for a task the newest complete row holds: a task
+  // a later change renamed or removed has no present to compare with.
+  const newest = complete.at(-1);
+  const current = new Set(
+    (newest?.taskTimeline ?? newest?.cases ?? []).map((task) => task.name),
+  );
   const tasks = new Map();
   for (const row of rows)
     for (const task of row.taskTimeline ?? row.cases ?? []) {
@@ -174,6 +197,7 @@ export function gatePerformanceConditions(
       tasks.set(task.name, history);
     }
   for (const [name, history] of [...tasks]
+    .filter(([name]) => current.has(name))
     .sort((a, b) => b[1].at(-1).durationMs - a[1].at(-1).durationMs)
     .slice(0, 5)) {
     const latest = history.at(-1),

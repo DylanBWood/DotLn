@@ -2,56 +2,37 @@
 import { readFileSync } from "node:fs";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { containedRegularFile, isMainModule } from "./lib/paths.mjs";
-import { checkLocalTerms, localTermModes } from "./lib/terms.mjs";
+import { localTermFindings } from "./lib/terms.mjs";
 import {
   lintOutwardArtifact,
   outwardArtifactKinds,
 } from "./lib/outward-lint.mjs";
 
-// The checker throws redacted file/line-range/count/mode diagnostics.
-// Whitelist that shape; filesystem/configuration exceptions never reach
-// outward output. Matches of review-mode terms are the publication's review
-// items; one refuse-mode match refuses.
+// The private list's matches in the artifact, redacted to a line range, a
+// count and a mode. Matches of context-mode terms are the publication's
+// review items; one refuse-mode match refuses. A list that cannot be read is
+// an error, never a passing check, and no filesystem or configuration
+// exception reaches outward output.
 const observeLocalTerms = (root, text) => {
+  let result;
   try {
-    return checkLocalTerms(root, [{ name: "artifact", text }]);
-  } catch (error) {
-    const prefix = "local-terms list present; refused ";
-    if (error.message?.startsWith(prefix)) {
-      try {
-        const rows = JSON.parse(error.message.slice(prefix.length));
-        if (
-          Array.isArray(rows) &&
-          rows.length &&
-          rows.every(
-            (row) =>
-              row.file === "artifact" &&
-              Number.isInteger(row.line) &&
-              row.line > 0 &&
-              Number.isInteger(row.endLine) &&
-              row.endLine >= row.line &&
-              Number.isInteger(row.count) &&
-              row.count > 0 &&
-              localTermModes.includes(row.mode),
-          )
-        )
-          return {
-            status: rows.every((row) => row.mode === "review")
-              ? "review"
-              : "refused",
-            findings: rows.map(({ line, endLine, count, mode }) => ({
-              line,
-              endLine,
-              count,
-              mode,
-            })),
-          };
-      } catch {
-        // An unexpected diagnostic is an error, never a successful check.
-      }
-    }
+    result = localTermFindings(root, [{ name: "artifact", text }]);
+  } catch {
     return { status: "error" };
   }
+  const { findings, ...status } = result;
+  if (!findings?.length) return status;
+  return {
+    status: findings.some((row) => row.mode === "refuse")
+      ? "refused"
+      : "review",
+    findings: findings.map(({ line, endLine, count, mode }) => ({
+      line,
+      endLine,
+      count,
+      mode,
+    })),
+  };
 };
 
 // Every occurrence of each exempt string as a span of the text: the lint
@@ -92,7 +73,7 @@ export function checkOutwardArtifact(
   },
 ) {
   const exempt = exemptSpans(text, exemptText);
-  // Align line endings with checkLocalTerms, which recognizes LF and CRLF.
+  // Align line endings with the terms reader, which recognizes LF and CRLF.
   const localTerms = observeLocalTerms(root, text.replace(/\r\n?|\n/g, "\n"));
   return lintOutwardArtifact({
     kind,

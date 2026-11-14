@@ -1,0 +1,9 @@
+{
+  "comparison": "findings-blocks",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every filed verification and final-review report: its findings block, read or the cause it cannot be",
+  "read": 673,
+  "equal": 673,
+  "differences": {},
+  "examples": []
+}

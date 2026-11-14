@@ -1,0 +1,2487 @@
+{
+  "what": "A fresh complete review run's gate row, for the comparison of WO-276 Part D (steps D1 and D6).",
+  "note": "The control: the third attempt, on the tree of checkpoint 12, on a host with no other gate, reviewer or critic running; the fixture warm-up, process-debt and runner-fixtures ran directly before it.",
+  "command": "npm test -- --review --fresh --keep-going",
+  "row": {
+    "startedAt": "2026-11-11T03:20:23.073Z",
+    "recordedAt": "2026-11-11T04:14:38.787Z",
+    "wallMs": 3255714,
+    "wall": "0 h 54 min",
+    "exitCode": 0,
+    "executed": true,
+    "gateSelection": "review",
+    "executionMode": "forced-fresh",
+    "freshReason": "requested",
+    "treeHash": "09ea57d8504ec6e0cb3bb325a9b9057dd6bb3395",
+    "codeIdentity": "31951c615b48ffa8254800a8213f2dcae86ee524ddef57014933a19678df00a3",
+    "requiredSuites": 47,
+    "freshSuites": null,
+    "reusedSuites": null,
+    "unrunSuites": 0,
+    "stopped": false,
+    "failureKind": null,
+    "memoryFailure": false,
+    "tasks": 139,
+    "tasksReused": 0,
+    "tasksFailed": [],
+    "slotCapacity": 8
+  },
+  "scheduledFirst": "scheduled first: configuration-root (changed on this branch), evidence-sources (changed on this branch), harness-context (changed on this branch), harness-fixtures (changed on this branch), harness-probe (changed on this branch), launchpad-planning (changed on this branch), plan-refutation (changed on this branch), process-debt (changed on this branch), registrations (changed on this branch), runner-fixtures (changed on this branch), sync-fixtures (changed on this branch)",
+  "readings": {
+    "atMostThreeTasksMs": 2170396,
+    "atMostThreeTasks": "0 h 36 min",
+    "hookSuiteSpanMs": 659670,
+    "hookSuiteSpan": "0 h 11 min",
+    "hookSuiteTasks": [
+      "harness-fixtures"
+    ],
+    "exclusiveOrder": [
+      "harness-fixtures",
+      "sync-fixtures",
+      "process-debt",
+      "worktree-integration"
+    ],
+    "betweenExclusiveStarts": [],
+    "lightPeersBeside": {
+      "worktree-integration": [],
+      "harness-fixtures": [
+        "release:prepare",
+        "release-preparation",
+        "release:case:preflight",
+        "release:case:surfaces",
+        "release:case:surfaces_local_snapshot",
+        "release:case:prepare_independent",
+        "release:case:license_surfaces",
+        "release:case:surfaces_committed_readme",
+        "release:case:surfaces_lower",
+        "release:case:surfaces_first",
+        "release:case:surfaces_component",
+        "release:case:surfaces_non_source",
+        "release:case:surfaces_new_component",
+        "release:case:surfaceclose",
+        "release:case:surfaceclose_linked",
+        "release:case:bodyclose",
+        "release:case:dirty",
+        "release:case:unreachable",
+        "release:case:derived",
+        "release:case:settings_scope",
+        "release:case:nonmain",
+        "release:case:divergence",
+        "release:case:malformed",
+        "release:case:missinggh",
+        "release:case:unauthenticated",
+        "release:case:splitorigin",
+        "release:case:lower",
+        "release:case:failures",
+        "release:case:cadence_missing",
+        "release:case:cadence_inconsistent",
+        "release:case:conflict",
+        "release:case:localconflict",
+        "release:case:nestedtag",
+        "release:case:prepare",
+        "release:case:missinglocalprevious",
+        "release:case:pushfail",
+        "release:case:refrecovery",
+        "release:case:createrecovery",
+        "release:case:submodule_force",
+        "release:case:malformed_material",
+        "release:case:stale_helpers",
+        "release:case:runtime_refresh",
+        "release:case:success",
+        "release:case:custom_identity",
+        "release:case:edition",
+        "release:case:firstrelease",
+        "release:case:cached_evidence",
+        "release:case:composed_evidence",
+        "release:case:concurrent",
+        "release:case:material",
+        "release:case:close_completion",
+        "release:case:close_sealed",
+        "release:case:close_leftover",
+        "release:case:close_retry_paths",
+        "release:case:close_receipt_recovery",
+        "release:case:starter_refresh",
+        "github-body",
+        "outward-lint",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "beacon-portability",
+        "checkpoint",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "console",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "launchpad:file:test-launchpad-seeds.mjs"
+      ],
+      "process-debt": []
+    },
+    "launchpadTasks": [
+      [
+        "launchpad:file:test-launchpad-seeds.mjs",
+        13441
+      ],
+      [
+        "launchpad:file:test-launchpad-update.mjs",
+        510905
+      ],
+      [
+        "launchpad:file:test-launchpad-export.mjs",
+        329244
+      ]
+    ]
+  },
+  "timeline": [
+    {
+      "name": "format",
+      "startedAt": "2026-11-11T03:20:25.627Z",
+      "finishedAt": "2026-11-11T03:20:36.913Z",
+      "durationMs": 11081,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "configuration-root",
+      "startedAt": "2026-11-11T03:20:36.923Z",
+      "finishedAt": "2026-11-11T03:20:46.654Z",
+      "durationMs": 9006,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "registrations",
+      "startedAt": "2026-11-11T03:20:46.663Z",
+      "finishedAt": "2026-11-11T03:20:47.586Z",
+      "durationMs": 725,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "declarations",
+      "startedAt": "2026-11-11T03:20:47.595Z",
+      "finishedAt": "2026-11-11T03:20:49.445Z",
+      "durationMs": 1692,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "runtime",
+      "startedAt": "2026-11-11T03:20:49.530Z",
+      "finishedAt": "2026-11-11T03:20:49.561Z",
+      "durationMs": 29,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "harness",
+      "startedAt": "2026-11-11T03:20:49.561Z",
+      "finishedAt": "2026-11-11T03:20:49.898Z",
+      "durationMs": 337,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "meta",
+      "startedAt": "2026-11-11T03:20:49.898Z",
+      "finishedAt": "2026-11-11T03:21:03.797Z",
+      "durationMs": 13899,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "lineage",
+      "startedAt": "2026-11-11T03:21:03.797Z",
+      "finishedAt": "2026-11-11T03:21:04.292Z",
+      "durationMs": 495,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "index",
+      "startedAt": "2026-11-11T03:21:04.292Z",
+      "finishedAt": "2026-11-11T03:21:10.168Z",
+      "durationMs": 5876,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "release-surfaces",
+      "startedAt": "2026-11-11T03:21:10.168Z",
+      "finishedAt": "2026-11-11T03:21:15.095Z",
+      "durationMs": 4927,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "siblings",
+      "startedAt": "2026-11-11T03:21:15.095Z",
+      "finishedAt": "2026-11-11T03:21:19.856Z",
+      "durationMs": 4761,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "vendored-parser",
+      "startedAt": "2026-11-11T03:21:19.856Z",
+      "finishedAt": "2026-11-11T03:21:19.899Z",
+      "durationMs": 43,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "operator-commands",
+      "startedAt": "2026-11-11T03:21:19.899Z",
+      "finishedAt": "2026-11-11T03:21:20.036Z",
+      "durationMs": 137,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "authority-evidence",
+      "startedAt": "2026-11-11T03:21:20.036Z",
+      "finishedAt": "2026-11-11T03:21:20.983Z",
+      "durationMs": 947,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "artifact-evidence",
+      "startedAt": "2026-11-11T03:21:20.983Z",
+      "finishedAt": "2026-11-11T03:21:21.264Z",
+      "durationMs": 281,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "verification-evidence",
+      "startedAt": "2026-11-11T03:21:21.264Z",
+      "finishedAt": "2026-11-11T03:21:22.658Z",
+      "durationMs": 1394,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "feedback-evidence",
+      "startedAt": "2026-11-11T03:21:22.658Z",
+      "finishedAt": "2026-11-11T03:21:25.589Z",
+      "durationMs": 2931,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "harness-evidence",
+      "startedAt": "2026-11-11T03:21:25.589Z",
+      "finishedAt": "2026-11-11T03:21:26.302Z",
+      "durationMs": 713,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "console-fixtures",
+      "startedAt": "2026-11-11T03:21:26.302Z",
+      "finishedAt": "2026-11-11T03:21:26.870Z",
+      "durationMs": 568,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "baseline-fingerprints",
+      "startedAt": "2026-11-11T03:21:26.870Z",
+      "finishedAt": "2026-11-11T03:21:27.479Z",
+      "durationMs": 609,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "publication",
+      "startedAt": "2026-11-11T03:21:27.479Z",
+      "finishedAt": "2026-11-11T03:21:28.283Z",
+      "durationMs": 804,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "git-surface",
+      "startedAt": "2026-11-11T03:21:28.518Z",
+      "finishedAt": "2026-11-11T03:21:30.510Z",
+      "durationMs": 1796,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "host",
+      "startedAt": "2026-11-11T03:21:30.521Z",
+      "finishedAt": "2026-11-11T03:21:30.884Z",
+      "durationMs": 145,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "build",
+      "startedAt": "2026-11-11T03:21:30.893Z",
+      "finishedAt": "2026-11-11T03:21:31.922Z",
+      "durationMs": 818,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "isolated",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "harness-context",
+      "startedAt": "2026-11-11T03:21:31.932Z",
+      "finishedAt": "2026-11-11T03:21:32.659Z",
+      "durationMs": 458,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "resume",
+      "startedAt": "2026-11-11T03:21:31.932Z",
+      "finishedAt": "2026-11-11T03:24:46.436Z",
+      "durationMs": 193137,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-context"
+      ]
+    },
+    {
+      "name": "harness-fixtures",
+      "startedAt": "2026-11-11T03:24:46.447Z",
+      "finishedAt": "2026-11-11T03:35:46.117Z",
+      "durationMs": 635411,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": true,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 6,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "release:prepare",
+      "startedAt": "2026-11-11T03:24:46.448Z",
+      "finishedAt": "2026-11-11T03:24:48.197Z",
+      "durationMs": 1420,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures"
+      ]
+    },
+    {
+      "name": "release-preparation",
+      "startedAt": "2026-11-11T03:24:46.448Z",
+      "finishedAt": "2026-11-11T03:24:51.468Z",
+      "durationMs": 4270,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:prepare"
+      ]
+    },
+    {
+      "name": "release:case:preflight",
+      "startedAt": "2026-11-11T03:24:48.206Z",
+      "finishedAt": "2026-11-11T03:24:48.791Z",
+      "durationMs": 356,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release-preparation"
+      ]
+    },
+    {
+      "name": "release:case:surfaces",
+      "startedAt": "2026-11-11T03:24:48.802Z",
+      "finishedAt": "2026-11-11T03:24:59.904Z",
+      "durationMs": 10801,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release-preparation"
+      ]
+    },
+    {
+      "name": "release:case:surfaces_local_snapshot",
+      "startedAt": "2026-11-11T03:24:51.479Z",
+      "finishedAt": "2026-11-11T03:24:53.488Z",
+      "durationMs": 1700,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:surfaces"
+      ]
+    },
+    {
+      "name": "release:case:prepare_independent",
+      "startedAt": "2026-11-11T03:24:53.498Z",
+      "finishedAt": "2026-11-11T03:24:59.522Z",
+      "durationMs": 5711,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:surfaces"
+      ]
+    },
+    {
+      "name": "release:case:license_surfaces",
+      "startedAt": "2026-11-11T03:24:59.534Z",
+      "finishedAt": "2026-11-11T03:25:12.236Z",
+      "durationMs": 12404,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:surfaces"
+      ]
+    },
+    {
+      "name": "release:case:surfaces_committed_readme",
+      "startedAt": "2026-11-11T03:24:59.917Z",
+      "finishedAt": "2026-11-11T03:25:02.359Z",
+      "durationMs": 2128,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:license_surfaces"
+      ]
+    },
+    {
+      "name": "release:case:surfaces_lower",
+      "startedAt": "2026-11-11T03:25:02.366Z",
+      "finishedAt": "2026-11-11T03:25:04.523Z",
+      "durationMs": 1850,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:license_surfaces"
+      ]
+    },
+    {
+      "name": "release:case:surfaces_first",
+      "startedAt": "2026-11-11T03:25:04.538Z",
+      "finishedAt": "2026-11-11T03:25:06.207Z",
+      "durationMs": 1371,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:license_surfaces"
+      ]
+    },
+    {
+      "name": "release:case:surfaces_component",
+      "startedAt": "2026-11-11T03:25:06.215Z",
+      "finishedAt": "2026-11-11T03:25:09.453Z",
+      "durationMs": 2920,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:license_surfaces"
+      ]
+    },
+    {
+      "name": "release:case:surfaces_non_source",
+      "startedAt": "2026-11-11T03:25:09.461Z",
+      "finishedAt": "2026-11-11T03:25:11.169Z",
+      "durationMs": 1391,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:license_surfaces"
+      ]
+    },
+    {
+      "name": "release:case:surfaces_new_component",
+      "startedAt": "2026-11-11T03:25:11.177Z",
+      "finishedAt": "2026-11-11T03:25:12.998Z",
+      "durationMs": 1516,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:license_surfaces"
+      ]
+    },
+    {
+      "name": "release:case:surfaceclose",
+      "startedAt": "2026-11-11T03:25:12.244Z",
+      "finishedAt": "2026-11-11T03:25:19.235Z",
+      "durationMs": 6650,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:surfaces_new_component"
+      ]
+    },
+    {
+      "name": "release:case:surfaceclose_linked",
+      "startedAt": "2026-11-11T03:25:13.006Z",
+      "finishedAt": "2026-11-11T03:25:15.962Z",
+      "durationMs": 2638,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:surfaceclose"
+      ]
+    },
+    {
+      "name": "release:case:bodyclose",
+      "startedAt": "2026-11-11T03:25:15.969Z",
+      "finishedAt": "2026-11-11T03:25:18.399Z",
+      "durationMs": 2136,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:surfaceclose"
+      ]
+    },
+    {
+      "name": "release:case:dirty",
+      "startedAt": "2026-11-11T03:25:18.407Z",
+      "finishedAt": "2026-11-11T03:25:25.094Z",
+      "durationMs": 6386,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:surfaceclose"
+      ]
+    },
+    {
+      "name": "release:case:unreachable",
+      "startedAt": "2026-11-11T03:25:19.243Z",
+      "finishedAt": "2026-11-11T03:25:23.331Z",
+      "durationMs": 3767,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:dirty"
+      ]
+    },
+    {
+      "name": "release:case:derived",
+      "startedAt": "2026-11-11T03:25:23.338Z",
+      "finishedAt": "2026-11-11T03:25:29.279Z",
+      "durationMs": 5643,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:dirty"
+      ]
+    },
+    {
+      "name": "release:case:settings_scope",
+      "startedAt": "2026-11-11T03:25:25.101Z",
+      "finishedAt": "2026-11-11T03:25:29.576Z",
+      "durationMs": 4179,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:derived"
+      ]
+    },
+    {
+      "name": "release:case:nonmain",
+      "startedAt": "2026-11-11T03:25:29.590Z",
+      "finishedAt": "2026-11-11T03:25:31.214Z",
+      "durationMs": 1306,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:settings_scope"
+      ]
+    },
+    {
+      "name": "release:case:divergence",
+      "startedAt": "2026-11-11T03:25:29.592Z",
+      "finishedAt": "2026-11-11T03:25:31.508Z",
+      "durationMs": 1557,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:nonmain"
+      ]
+    },
+    {
+      "name": "release:case:malformed",
+      "startedAt": "2026-11-11T03:25:31.518Z",
+      "finishedAt": "2026-11-11T03:25:33.325Z",
+      "durationMs": 1510,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:divergence"
+      ]
+    },
+    {
+      "name": "release:case:missinggh",
+      "startedAt": "2026-11-11T03:25:31.519Z",
+      "finishedAt": "2026-11-11T03:25:36.850Z",
+      "durationMs": 4960,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:malformed"
+      ]
+    },
+    {
+      "name": "release:case:unauthenticated",
+      "startedAt": "2026-11-11T03:25:33.332Z",
+      "finishedAt": "2026-11-11T03:25:35.889Z",
+      "durationMs": 2259,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:missinggh"
+      ]
+    },
+    {
+      "name": "release:case:splitorigin",
+      "startedAt": "2026-11-11T03:25:35.900Z",
+      "finishedAt": "2026-11-11T03:25:37.528Z",
+      "durationMs": 1324,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:missinggh"
+      ]
+    },
+    {
+      "name": "release:case:lower",
+      "startedAt": "2026-11-11T03:25:36.858Z",
+      "finishedAt": "2026-11-11T03:25:39.691Z",
+      "durationMs": 2535,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:splitorigin"
+      ]
+    },
+    {
+      "name": "release:case:failures",
+      "startedAt": "2026-11-11T03:25:37.537Z",
+      "finishedAt": "2026-11-11T03:25:41.300Z",
+      "durationMs": 3463,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:lower"
+      ]
+    },
+    {
+      "name": "release:case:cadence_missing",
+      "startedAt": "2026-11-11T03:25:39.698Z",
+      "finishedAt": "2026-11-11T03:25:42.588Z",
+      "durationMs": 2592,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:failures"
+      ]
+    },
+    {
+      "name": "release:case:cadence_inconsistent",
+      "startedAt": "2026-11-11T03:25:41.308Z",
+      "finishedAt": "2026-11-11T03:25:46.688Z",
+      "durationMs": 5085,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:cadence_missing"
+      ]
+    },
+    {
+      "name": "release:case:conflict",
+      "startedAt": "2026-11-11T03:25:42.596Z",
+      "finishedAt": "2026-11-11T03:25:45.147Z",
+      "durationMs": 2252,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:cadence_inconsistent"
+      ]
+    },
+    {
+      "name": "release:case:localconflict",
+      "startedAt": "2026-11-11T03:25:45.159Z",
+      "finishedAt": "2026-11-11T03:25:47.566Z",
+      "durationMs": 2102,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:cadence_inconsistent"
+      ]
+    },
+    {
+      "name": "release:case:nestedtag",
+      "startedAt": "2026-11-11T03:25:46.695Z",
+      "finishedAt": "2026-11-11T03:25:49.095Z",
+      "durationMs": 2110,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:localconflict"
+      ]
+    },
+    {
+      "name": "release:case:prepare",
+      "startedAt": "2026-11-11T03:25:47.574Z",
+      "finishedAt": "2026-11-11T03:25:51.272Z",
+      "durationMs": 3403,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:nestedtag"
+      ]
+    },
+    {
+      "name": "release:case:missinglocalprevious",
+      "startedAt": "2026-11-11T03:25:49.103Z",
+      "finishedAt": "2026-11-11T03:25:52.926Z",
+      "durationMs": 3500,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:prepare"
+      ]
+    },
+    {
+      "name": "release:case:pushfail",
+      "startedAt": "2026-11-11T03:25:51.284Z",
+      "finishedAt": "2026-11-11T03:25:55.200Z",
+      "durationMs": 3607,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:missinglocalprevious"
+      ]
+    },
+    {
+      "name": "release:case:refrecovery",
+      "startedAt": "2026-11-11T03:25:52.933Z",
+      "finishedAt": "2026-11-11T03:25:59.063Z",
+      "durationMs": 5825,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:pushfail"
+      ]
+    },
+    {
+      "name": "release:case:createrecovery",
+      "startedAt": "2026-11-11T03:25:55.207Z",
+      "finishedAt": "2026-11-11T03:26:11.827Z",
+      "durationMs": 16316,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:refrecovery"
+      ]
+    },
+    {
+      "name": "release:case:submodule_force",
+      "startedAt": "2026-11-11T03:25:59.071Z",
+      "finishedAt": "2026-11-11T03:26:05.059Z",
+      "durationMs": 5663,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:createrecovery"
+      ]
+    },
+    {
+      "name": "release:case:malformed_material",
+      "startedAt": "2026-11-11T03:26:05.068Z",
+      "finishedAt": "2026-11-11T03:26:06.681Z",
+      "durationMs": 1308,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:createrecovery"
+      ]
+    },
+    {
+      "name": "release:case:stale_helpers",
+      "startedAt": "2026-11-11T03:26:06.690Z",
+      "finishedAt": "2026-11-11T03:26:17.335Z",
+      "durationMs": 10273,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:createrecovery"
+      ]
+    },
+    {
+      "name": "release:case:runtime_refresh",
+      "startedAt": "2026-11-11T03:26:11.835Z",
+      "finishedAt": "2026-11-11T03:26:38.233Z",
+      "durationMs": 25170,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:stale_helpers"
+      ]
+    },
+    {
+      "name": "release:case:success",
+      "startedAt": "2026-11-11T03:26:17.347Z",
+      "finishedAt": "2026-11-11T03:26:42.639Z",
+      "durationMs": 24914,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:runtime_refresh"
+      ]
+    },
+    {
+      "name": "release:case:custom_identity",
+      "startedAt": "2026-11-11T03:26:38.244Z",
+      "finishedAt": "2026-11-11T03:26:46.094Z",
+      "durationMs": 7532,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:success"
+      ]
+    },
+    {
+      "name": "release:case:edition",
+      "startedAt": "2026-11-11T03:26:42.649Z",
+      "finishedAt": "2026-11-11T03:26:56.636Z",
+      "durationMs": 13650,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:custom_identity"
+      ]
+    },
+    {
+      "name": "release:case:firstrelease",
+      "startedAt": "2026-11-11T03:26:46.103Z",
+      "finishedAt": "2026-11-11T03:26:51.423Z",
+      "durationMs": 4995,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:edition"
+      ]
+    },
+    {
+      "name": "release:case:cached_evidence",
+      "startedAt": "2026-11-11T03:26:51.436Z",
+      "finishedAt": "2026-11-11T03:27:02.094Z",
+      "durationMs": 10332,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:edition"
+      ]
+    },
+    {
+      "name": "release:case:composed_evidence",
+      "startedAt": "2026-11-11T03:26:56.648Z",
+      "finishedAt": "2026-11-11T03:27:06.306Z",
+      "durationMs": 9270,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:cached_evidence"
+      ]
+    },
+    {
+      "name": "release:case:concurrent",
+      "startedAt": "2026-11-11T03:27:02.103Z",
+      "finishedAt": "2026-11-11T03:27:26.945Z",
+      "durationMs": 24436,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:composed_evidence"
+      ]
+    },
+    {
+      "name": "release:case:material",
+      "startedAt": "2026-11-11T03:27:06.314Z",
+      "finishedAt": "2026-11-11T03:28:18.978Z",
+      "durationMs": 71452,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:concurrent"
+      ]
+    },
+    {
+      "name": "release:case:close_completion",
+      "startedAt": "2026-11-11T03:27:26.958Z",
+      "finishedAt": "2026-11-11T03:27:40.582Z",
+      "durationMs": 13274,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:material"
+      ]
+    },
+    {
+      "name": "release:case:close_sealed",
+      "startedAt": "2026-11-11T03:27:40.590Z",
+      "finishedAt": "2026-11-11T03:27:51.561Z",
+      "durationMs": 10615,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:material"
+      ]
+    },
+    {
+      "name": "release:case:close_leftover",
+      "startedAt": "2026-11-11T03:27:51.570Z",
+      "finishedAt": "2026-11-11T03:28:53.173Z",
+      "durationMs": 60758,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:material"
+      ]
+    },
+    {
+      "name": "release:case:close_retry_paths",
+      "startedAt": "2026-11-11T03:28:18.989Z",
+      "finishedAt": "2026-11-11T03:28:26.205Z",
+      "durationMs": 6817,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:close_leftover"
+      ]
+    },
+    {
+      "name": "release:case:close_receipt_recovery",
+      "startedAt": "2026-11-11T03:28:26.219Z",
+      "finishedAt": "2026-11-11T03:29:07.078Z",
+      "durationMs": 40330,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:close_leftover"
+      ]
+    },
+    {
+      "name": "release:case:starter_refresh",
+      "startedAt": "2026-11-11T03:28:53.181Z",
+      "finishedAt": "2026-11-11T03:29:27.022Z",
+      "durationMs": 33230,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:close_receipt_recovery"
+      ]
+    },
+    {
+      "name": "github-body",
+      "startedAt": "2026-11-11T03:29:07.086Z",
+      "finishedAt": "2026-11-11T03:29:07.631Z",
+      "durationMs": 297,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:starter_refresh"
+      ]
+    },
+    {
+      "name": "outward-lint",
+      "startedAt": "2026-11-11T03:29:07.641Z",
+      "finishedAt": "2026-11-11T03:29:08.985Z",
+      "durationMs": 1083,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:starter_refresh"
+      ]
+    },
+    {
+      "name": "license-fixtures",
+      "startedAt": "2026-11-11T03:29:08.994Z",
+      "finishedAt": "2026-11-11T03:29:49.344Z",
+      "durationMs": 39981,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "release:case:starter_refresh"
+      ]
+    },
+    {
+      "name": "publication-fixtures",
+      "startedAt": "2026-11-11T03:29:27.030Z",
+      "finishedAt": "2026-11-11T03:29:29.392Z",
+      "durationMs": 2083,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "license-fixtures"
+      ]
+    },
+    {
+      "name": "backup-intake",
+      "startedAt": "2026-11-11T03:29:29.404Z",
+      "finishedAt": "2026-11-11T03:29:30.115Z",
+      "durationMs": 455,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "license-fixtures"
+      ]
+    },
+    {
+      "name": "beacon-portability",
+      "startedAt": "2026-11-11T03:29:30.123Z",
+      "finishedAt": "2026-11-11T03:29:31.752Z",
+      "durationMs": 1251,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "license-fixtures"
+      ]
+    },
+    {
+      "name": "checkpoint",
+      "startedAt": "2026-11-11T03:29:31.762Z",
+      "finishedAt": "2026-11-11T03:29:42.338Z",
+      "durationMs": 10082,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "license-fixtures"
+      ]
+    },
+    {
+      "name": "work-orders-fixtures",
+      "startedAt": "2026-11-11T03:29:42.347Z",
+      "finishedAt": "2026-11-11T03:30:21.056Z",
+      "durationMs": 37121,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "license-fixtures"
+      ]
+    },
+    {
+      "name": "siblings-fixtures",
+      "startedAt": "2026-11-11T03:29:49.353Z",
+      "finishedAt": "2026-11-11T03:30:04.480Z",
+      "durationMs": 14844,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "work-orders-fixtures"
+      ]
+    },
+    {
+      "name": "kernel",
+      "startedAt": "2026-11-11T03:30:04.488Z",
+      "finishedAt": "2026-11-11T03:30:05.338Z",
+      "durationMs": 575,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "work-orders-fixtures"
+      ]
+    },
+    {
+      "name": "compiler",
+      "startedAt": "2026-11-11T03:30:05.346Z",
+      "finishedAt": "2026-11-11T03:30:06.654Z",
+      "durationMs": 1048,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "work-orders-fixtures"
+      ]
+    },
+    {
+      "name": "console",
+      "startedAt": "2026-11-11T03:30:06.664Z",
+      "finishedAt": "2026-11-11T03:30:32.852Z",
+      "durationMs": 25671,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "work-orders-fixtures"
+      ]
+    },
+    {
+      "name": "adjacent-queue",
+      "startedAt": "2026-11-11T03:30:21.066Z",
+      "finishedAt": "2026-11-11T03:30:22.383Z",
+      "durationMs": 1018,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "console"
+      ]
+    },
+    {
+      "name": "derived-orders",
+      "startedAt": "2026-11-11T03:30:22.390Z",
+      "finishedAt": "2026-11-11T03:30:33.307Z",
+      "durationMs": 10463,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "console"
+      ]
+    },
+    {
+      "name": "portfolio",
+      "startedAt": "2026-11-11T03:30:33.320Z",
+      "finishedAt": "2026-11-11T03:31:09.953Z",
+      "durationMs": 36086,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "derived-orders"
+      ]
+    },
+    {
+      "name": "codex-continuation",
+      "startedAt": "2026-11-11T03:30:33.322Z",
+      "finishedAt": "2026-11-11T03:30:43.855Z",
+      "durationMs": 10031,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "portfolio"
+      ]
+    },
+    {
+      "name": "authority-grants",
+      "startedAt": "2026-11-11T03:30:43.864Z",
+      "finishedAt": "2026-11-11T03:30:44.370Z",
+      "durationMs": 243,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures",
+        "portfolio"
+      ]
+    },
+    {
+      "name": "launchpad:file:test-launchpad-seeds.mjs",
+      "startedAt": "2026-11-11T03:31:09.961Z",
+      "finishedAt": "2026-11-11T03:31:24.519Z",
+      "durationMs": 13441,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": true,
+      "loadClass": "shared",
+      "reservedSlots": 2,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "harness-fixtures"
+      ]
+    },
+    {
+      "name": "sync-fixtures",
+      "startedAt": "2026-11-11T03:35:46.137Z",
+      "finishedAt": "2026-11-11T03:42:26.971Z",
+      "durationMs": 399425,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": true,
+      "light": false,
+      "loadClass": "isolated",
+      "reservedSlots": 8,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "process-debt",
+      "startedAt": "2026-11-11T03:42:26.981Z",
+      "finishedAt": "2026-11-11T03:45:05.048Z",
+      "durationMs": 150321,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": true,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 6,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "worktree-integration",
+      "startedAt": "2026-11-11T03:45:05.068Z",
+      "finishedAt": "2026-11-11T03:52:29.864Z",
+      "durationMs": 408809,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": true,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 6,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "harness-probe",
+      "startedAt": "2026-11-11T03:52:29.883Z",
+      "finishedAt": "2026-11-11T03:53:50.317Z",
+      "durationMs": 76145,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources"
+      ]
+    },
+    {
+      "name": "evidence-sources",
+      "startedAt": "2026-11-11T03:52:29.883Z",
+      "finishedAt": "2026-11-11T03:54:40.981Z",
+      "durationMs": 101570,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning"
+      ]
+    },
+    {
+      "name": "plan-refutation",
+      "startedAt": "2026-11-11T03:52:29.883Z",
+      "finishedAt": "2026-11-11T03:56:20.711Z",
+      "durationMs": 219495,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe"
+      ]
+    },
+    {
+      "name": "runner-fixtures",
+      "startedAt": "2026-11-11T03:52:29.883Z",
+      "finishedAt": "2026-11-11T03:56:28.742Z",
+      "durationMs": 230771,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation"
+      ]
+    },
+    {
+      "name": "launchpad-planning",
+      "startedAt": "2026-11-11T03:52:29.883Z",
+      "finishedAt": "2026-11-11T04:00:18.209Z",
+      "durationMs": 460751,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": []
+    },
+    {
+      "name": "release:case:meter_shape",
+      "startedAt": "2026-11-11T03:52:29.884Z",
+      "finishedAt": "2026-11-11T03:52:35.363Z",
+      "durationMs": 4600,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "worktree",
+      "startedAt": "2026-11-11T03:52:29.884Z",
+      "finishedAt": "2026-11-11T03:56:45.588Z",
+      "durationMs": 254355,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures"
+      ]
+    },
+    {
+      "name": "skeleton",
+      "startedAt": "2026-11-11T03:52:29.884Z",
+      "finishedAt": "2026-11-11T04:01:48.131Z",
+      "durationMs": 551592,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree"
+      ]
+    },
+    {
+      "name": "release:case:criterion_records",
+      "startedAt": "2026-11-11T03:52:35.387Z",
+      "finishedAt": "2026-11-11T03:52:38.208Z",
+      "durationMs": 2307,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:unrepaired_retraction",
+      "startedAt": "2026-11-11T03:52:38.222Z",
+      "finishedAt": "2026-11-11T03:52:40.697Z",
+      "durationMs": 1946,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:worktree_retraction",
+      "startedAt": "2026-11-11T03:52:40.712Z",
+      "finishedAt": "2026-11-11T03:52:43.639Z",
+      "durationMs": 2429,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:routed_after_preparation",
+      "startedAt": "2026-11-11T03:52:43.688Z",
+      "finishedAt": "2026-11-11T03:52:50.633Z",
+      "durationMs": 6336,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:journal_failure",
+      "startedAt": "2026-11-11T03:52:50.642Z",
+      "finishedAt": "2026-11-11T03:53:00.272Z",
+      "durationMs": 8723,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:close_foreign_tag",
+      "startedAt": "2026-11-11T03:53:00.308Z",
+      "finishedAt": "2026-11-11T03:53:07.650Z",
+      "durationMs": 6824,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:close_overlap",
+      "startedAt": "2026-11-11T03:53:07.710Z",
+      "finishedAt": "2026-11-11T03:53:16.450Z",
+      "durationMs": 7866,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:close_compact",
+      "startedAt": "2026-11-11T03:53:16.486Z",
+      "finishedAt": "2026-11-11T03:54:06.790Z",
+      "durationMs": 46290,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "release:case:removal_inventory",
+      "startedAt": "2026-11-11T03:53:50.353Z",
+      "finishedAt": "2026-11-11T03:53:53.963Z",
+      "durationMs": 2479,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "release:case:close_compact"
+      ]
+    },
+    {
+      "name": "release:case:close_real_writer",
+      "startedAt": "2026-11-11T03:53:53.986Z",
+      "finishedAt": "2026-11-11T03:54:42.486Z",
+      "durationMs": 47035,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "release:case:close_compact"
+      ]
+    },
+    {
+      "name": "release:case:stale_compiler",
+      "startedAt": "2026-11-11T03:54:06.912Z",
+      "finishedAt": "2026-11-11T03:54:55.132Z",
+      "durationMs": 45618,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "release:case:close_real_writer"
+      ]
+    },
+    {
+      "name": "release:case:pending_dispatch",
+      "startedAt": "2026-11-11T03:54:42.551Z",
+      "finishedAt": "2026-11-11T03:54:56.810Z",
+      "durationMs": 13058,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "release:case:close_real_writer",
+        "release:case:stale_compiler"
+      ]
+    },
+    {
+      "name": "release:case:git_floor",
+      "startedAt": "2026-11-11T03:54:42.562Z",
+      "finishedAt": "2026-11-11T03:54:52.497Z",
+      "durationMs": 8932,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "release:case:stale_compiler",
+        "release:case:pending_dispatch"
+      ]
+    },
+    {
+      "name": "target-publish",
+      "startedAt": "2026-11-11T03:54:55.155Z",
+      "finishedAt": "2026-11-11T03:57:51.773Z",
+      "durationMs": 175864,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "release:case:stale_compiler",
+        "release:case:pending_dispatch"
+      ]
+    },
+    {
+      "name": "target-worktree:file:test-target-worktree-start.mjs",
+      "startedAt": "2026-11-11T03:54:55.160Z",
+      "finishedAt": "2026-11-11T03:59:27.575Z",
+      "durationMs": 250008,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "release:case:pending_dispatch",
+        "target-publish"
+      ]
+    },
+    {
+      "name": "target-worktree:file:test-target-worktree-publish.mjs",
+      "startedAt": "2026-11-11T03:54:56.845Z",
+      "finishedAt": "2026-11-11T04:00:10.611Z",
+      "durationMs": 297692,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "plan-refutation",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "target-publish",
+        "target-worktree:file:test-target-worktree-start.mjs"
+      ]
+    },
+    {
+      "name": "workstream-pilot",
+      "startedAt": "2026-11-11T03:56:28.758Z",
+      "finishedAt": "2026-11-11T03:57:32.439Z",
+      "durationMs": 60770,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "runner-fixtures",
+        "worktree",
+        "skeleton",
+        "target-publish",
+        "target-worktree:file:test-target-worktree-start.mjs",
+        "target-worktree:file:test-target-worktree-publish.mjs"
+      ]
+    },
+    {
+      "name": "instance-history",
+      "startedAt": "2026-11-11T03:56:28.760Z",
+      "finishedAt": "2026-11-11T03:58:47.838Z",
+      "durationMs": 136739,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "worktree",
+        "skeleton",
+        "target-publish",
+        "target-worktree:file:test-target-worktree-start.mjs",
+        "target-worktree:file:test-target-worktree-publish.mjs",
+        "workstream-pilot"
+      ]
+    },
+    {
+      "name": "vertical:file:test-vertical.mjs:statements",
+      "startedAt": "2026-11-11T03:57:32.453Z",
+      "finishedAt": "2026-11-11T04:03:55.013Z",
+      "durationMs": 382120,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 2,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "skeleton",
+        "target-publish",
+        "target-worktree:file:test-target-worktree-start.mjs",
+        "target-worktree:file:test-target-worktree-publish.mjs",
+        "instance-history"
+      ]
+    },
+    {
+      "name": "vertical:file:test-vertical.mjs:workflow",
+      "startedAt": "2026-11-11T03:58:47.851Z",
+      "finishedAt": "2026-11-11T04:03:27.223Z",
+      "durationMs": 278933,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 2,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "skeleton",
+        "target-worktree:file:test-target-worktree-start.mjs",
+        "target-worktree:file:test-target-worktree-publish.mjs",
+        "vertical:file:test-vertical.mjs:statements"
+      ]
+    },
+    {
+      "name": "target-worktree:file:test-target-worktree-close.mjs",
+      "startedAt": "2026-11-11T03:59:27.629Z",
+      "finishedAt": "2026-11-11T04:11:05.682Z",
+      "durationMs": 683953,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "skeleton",
+        "target-worktree:file:test-target-worktree-publish.mjs",
+        "vertical:file:test-vertical.mjs:statements",
+        "vertical:file:test-vertical.mjs:workflow"
+      ]
+    },
+    {
+      "name": "target-worktree:file:test-target-worktree-release.mjs",
+      "startedAt": "2026-11-11T04:00:18.222Z",
+      "finishedAt": "2026-11-11T04:03:35.851Z",
+      "durationMs": 193476,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "skeleton",
+        "vertical:file:test-vertical.mjs:statements",
+        "vertical:file:test-vertical.mjs:workflow",
+        "target-worktree:file:test-target-worktree-close.mjs"
+      ]
+    },
+    {
+      "name": "vertical:file:test-vertical-judgment.mjs",
+      "startedAt": "2026-11-11T04:01:48.146Z",
+      "finishedAt": "2026-11-11T04:10:30.374Z",
+      "durationMs": 520311,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 2,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "vertical:file:test-vertical.mjs:statements",
+        "vertical:file:test-vertical.mjs:workflow",
+        "target-worktree:file:test-target-worktree-close.mjs",
+        "target-worktree:file:test-target-worktree-release.mjs"
+      ]
+    },
+    {
+      "name": "vertical:file:test-vertical.recovery.mjs",
+      "startedAt": "2026-11-11T04:03:27.235Z",
+      "finishedAt": "2026-11-11T04:09:02.445Z",
+      "durationMs": 332674,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 2,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "vertical:file:test-vertical.mjs:statements",
+        "target-worktree:file:test-target-worktree-close.mjs",
+        "target-worktree:file:test-target-worktree-release.mjs",
+        "vertical:file:test-vertical-judgment.mjs"
+      ]
+    },
+    {
+      "name": "browser-evidence",
+      "startedAt": "2026-11-11T04:03:35.865Z",
+      "finishedAt": "2026-11-11T04:04:01.814Z",
+      "durationMs": 25485,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "vertical:file:test-vertical.mjs:statements",
+        "target-worktree:file:test-target-worktree-close.mjs",
+        "vertical:file:test-vertical-judgment.mjs",
+        "vertical:file:test-vertical.recovery.mjs"
+      ]
+    },
+    {
+      "name": "launchpad:file:test-launchpad-update.mjs",
+      "startedAt": "2026-11-11T04:03:55.029Z",
+      "finishedAt": "2026-11-11T04:12:35.706Z",
+      "durationMs": 510905,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 2,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "target-worktree:file:test-target-worktree-close.mjs",
+        "vertical:file:test-vertical-judgment.mjs",
+        "vertical:file:test-vertical.recovery.mjs",
+        "browser-evidence"
+      ]
+    },
+    {
+      "name": "launchpad:file:test-launchpad-export.mjs",
+      "startedAt": "2026-11-11T04:09:02.456Z",
+      "finishedAt": "2026-11-11T04:14:36.503Z",
+      "durationMs": 329244,
+      "exitCode": 0,
+      "reused": false,
+      "exclusive": false,
+      "light": false,
+      "loadClass": "shared",
+      "reservedSlots": 2,
+      "slotCapacity": 8,
+      "concurrentAtStart": [
+        "target-worktree:file:test-target-worktree-close.mjs",
+        "vertical:file:test-vertical-judgment.mjs",
+        "launchpad:file:test-launchpad-update.mjs"
+      ]
+    }
+  ]
+}

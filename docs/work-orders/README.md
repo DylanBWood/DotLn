@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-276] — The queue lands as one order · **queued**
+- [x] [WO-276] — The queue lands as one order · **final-reviewed**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -29,30 +29,11 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 None.
 
-<!-- dotln-workstreams: {"workstreams":[]} -->
-
 ## Active
 
 None.
 
 ## Open
-
-### WO-276
-
-[WO-276 — The queue lands as one order: the repairs WO-275's execution called for, one reader for each format the sources read, the fifteen queued orders as parts, and the instance's asks, under one activation, one verification, one final review and one release (version assigned at activation)](WO-276-the-queue-lands-as-one-order.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-072: control-closed; WO-080: control-closed; WO-202: control-closed; WO-210: control-closed; WO-213: control-closed; WO-221: control-closed; WO-222: control-closed; WO-227: control-closed; WO-234: control-closed; WO-236: control-closed; WO-250: control-closed; WO-255: control-closed; WO-258: control-closed; WO-259: control-closed; WO-260: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-276-the-queue-lands-as-one-order.md](WO-276-the-queue-lands-as-one-order.md)
 
 ### WO-244
 
@@ -149,6 +130,7 @@ None.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Track: machinery
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-088-phrase-table-single-source.md](WO-088-phrase-table-single-source.md)
 
 ### WO-091

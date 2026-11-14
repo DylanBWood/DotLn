@@ -3,7 +3,7 @@ import {
   recordCodexDispatch,
 } from "../packages/skeleton/dist/src/harness-host.js";
 import { operationalFailures, failureWindow } from "./lib/plan-failures.mjs";
-import test from "node:test";
+import test from "./lib/test-shards.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -24,6 +24,9 @@ import {
   dispatchEvents,
   dispatchBoundResult,
   recordBoundStop,
+  activationSubagentCap,
+  dispatchSubagentCap,
+  effectiveDispatchLimits,
 } from "./lib/dispatch-bound.mjs";
 import { readBudgets } from "./lib/process-budget.mjs";
 import { boundedCommand } from "./lib/bounded-command.mjs";
@@ -172,6 +175,82 @@ test("as-needed authorization removes both bounds early, preserves counters, and
       events: events.map((event) => ({ ...event, phase: "verifying" })),
     }).state,
     "exceeded",
+  );
+});
+
+test("an accepted subagent cap reaches its own dispatch alone, never falls below the budgets file's value and leaves the wall-clock standing as it was", (t) => {
+  const { root, budgets } = fixture(t);
+  const accepted = (ceiling, extra = {}) => ({
+    type: "DispatchBoundAccepted",
+    workOrderId: "WO-999",
+    phase: "active",
+    metric: "subagentCap",
+    ceiling,
+    ...extra,
+  });
+  const cap = (events, base = 20, session = id) =>
+    dispatchSubagentCap(root, base, { session, events });
+  assert.equal(cap([]), 20);
+  assert.equal(cap([accepted(40)]), 40);
+  assert.equal(cap([accepted(40), accepted(30)]), 40);
+  assert.equal(cap([accepted(40), accepted(null)]), null, "unlimited");
+  assert.equal(cap([accepted(5)]), 20, "an acceptance never lowers the cap");
+  assert.equal(cap([accepted(40)], null), null, "a disabled cap stays so");
+  // The acceptance is the dispatch's: another phase's, or one made before
+  // this phase last completed, does not reach it.
+  assert.equal(cap([accepted(40, { phase: "verifying" })]), 20);
+  assert.equal(cap([accepted(40), { type: "ImplementationReady" }]), 20);
+  // A session that dispatched no order reads the base, whatever is recorded.
+  assert.equal(cap([accepted(40)], 20, "a-session-with-no-journal"), 20);
+  // The same fold answers the lifecycle, from the budgets file's top-level
+  // value and not from a role's row.
+  assert.equal(
+    effectiveDispatchLimits(
+      { ...budgets, subagentCap: 7 },
+      "executor",
+      "active",
+      [accepted(9)],
+    ).subagentCap,
+    9,
+  );
+  assert.equal(
+    effectiveDispatchLimits(budgets, "verifier", "active", []).subagentCap,
+    budgets.subagentCap === undefined ? 20 : budgets.subagentCap,
+  );
+  // A drive spans an order's phases, so it reads every acceptance of the
+  // activation.
+  assert.equal(
+    activationSubagentCap(20, [accepted(40, { phase: "verifying" })]),
+    40,
+  );
+  assert.equal(activationSubagentCap(20, [accepted(null)]), null);
+  assert.equal(activationSubagentCap(20, []), 20);
+  // The standing is the two bounds': its rows, its state and its line read
+  // as they did before the cap was accepted.
+  const standing = (events) =>
+    dispatchStanding(root, {
+      session: id,
+      now: Date.parse(start) + 500,
+      events,
+      gates: [],
+    });
+  for (const events of [[accepted(40)], [accepted(null)]]) {
+    assert.deepEqual(standing(events), standing([]));
+    assert.equal(
+      dispatchStandingLine(standing(events)),
+      dispatchStandingLine(standing([])),
+    );
+  }
+  // With no bound set, an unlimited cap does not make the standing read as
+  // an unlimited bound.
+  const unset = JSON.parse(JSON.stringify(budgets));
+  unset.dispatches.executor.wallClockMs = null;
+  unset.dispatches.executor.completeRuns = null;
+  write(root, "docs/control/budgets.json", JSON.stringify(unset));
+  assert.equal(standing([accepted(null)]).state, "unset");
+  assert.match(
+    standing([]).routes,
+    /accept-overrun <wallClockMs\|completeRuns\|subagentCap>/u,
   );
 });
 
@@ -332,6 +411,10 @@ test("configured lifecycle roots share the installed journal lane and preserve t
     "scripts/lib/git.mjs",
     "scripts/lib/temporary-roots.mjs",
     "packages/skeleton/src/temporary-root-records.mjs",
+    // The configuration reader validates its `workers` section against the
+    // worker table, so a copied reader needs the table's two modules.
+    "packages/skeleton/src/worker-catalog.mjs",
+    "packages/skeleton/src/worker-models.mjs",
   ])
     write(root, file, readFileSync(join(source, file)));
   write(root, "records/state/budgets.json", JSON.stringify(budgets));
@@ -1204,4 +1287,511 @@ test("a completion at the marked dispatch timestamp cannot reset its recovered a
     assert.equal(standing.elapsedMs, 1500);
     assert.equal(standing.state, "exceeded");
   }
+});
+
+// A session journal's rows as the hooks write them: a tool call's rows, a
+// turn's end, at offsets in minutes from a start.
+const minutes = (count) => count * 60 * 1000;
+// An entry is an offset, an event, a tool and, where the row names its call
+// as the hooks now write it, the call.
+const journalLines = (startMs, entries) =>
+  entries
+    .map(([offset, event, tool, call]) =>
+      JSON.stringify({
+        recordedAt: new Date(startMs + minutes(offset)).toISOString(),
+        event,
+        ...(tool ? { tool } : {}),
+        ...(call ? { call } : {}),
+      }),
+    )
+    .join("\n") + "\n";
+// Half an hour of tool calls from an offset, a call every five minutes.
+const halfHourOfCalls = (from) =>
+  [0, 5, 10, 15, 20, 25].flatMap((offset) => [
+    [from + offset, "PreToolUse", "Bash"],
+    [from + offset + 4, "PostToolUse", "Bash"],
+  ]);
+function workedFixture(t, entries, hours) {
+  const { root, budgets } = fixture(t);
+  budgets.dispatches.executor.wallClockMs = minutes(8 * 60);
+  write(root, "docs/control/budgets.json", JSON.stringify(budgets));
+  const startMs = Date.now() - minutes(hours * 60);
+  const started = new Date(startMs).toISOString();
+  write(
+    root,
+    `docs/control/local/harness/${key}.json`,
+    JSON.stringify({ ...journal, startedAt: started }),
+  );
+  if (entries)
+    write(
+      root,
+      `docs/control/local/harness/${key}.jsonl`,
+      journalLines(startMs, entries),
+    );
+  return {
+    root,
+    startMs,
+    standing: (now = startMs + minutes(hours * 60)) =>
+      dispatchStanding(root, { session: id, now, gates: [], events: [] }),
+  };
+}
+
+test("WO-276 criterion P1: two half-hours of activity twenty hours apart, the gap beginning at a turn's end row, read as one hour worked, and a bounded probe is admitted under an eight-hour bound", async (t) => {
+  const { root, standing } = workedFixture(
+    t,
+    [
+      [0, "UserPromptSubmit"],
+      ...halfHourOfCalls(0),
+      [30, "Stop"],
+      [20 * 60 + 30, "UserPromptSubmit"],
+      ...halfHourOfCalls(20 * 60 + 30),
+    ],
+    21,
+  );
+  const read = standing();
+  assert.equal(read.workedMs, minutes(60));
+  assert.equal(read.elapsedMs, minutes(21 * 60));
+  assert.equal(read.state, "within");
+  assert.equal(
+    dispatchStandingLine(read),
+    "dispatch standing: 1 h 0 min worked (21 h 0 min elapsed) of 8 h 0 min; complete runs 0 of 3; within",
+  );
+  const envName = "CODEX_THREAD_ID",
+    previous = process.env[envName];
+  process.env[envName] = id;
+  t.after(() =>
+    previous === undefined
+      ? delete process.env[envName]
+      : (process.env[envName] = previous),
+  );
+  const result = await boundedCommand(
+    ["--", process.execPath, "-e", "process.exit(7)"],
+    root,
+    { report: () => {}, output: () => {} },
+  );
+  assert.equal(result.exitCode, 7);
+});
+
+test("WO-276 criterion P1: nine hours of unbroken activity are refused in the words the bound gave before, and the standing reports the elapsed time", async (t) => {
+  // A call every five minutes for nine hours, and turns that end and begin
+  // again within the idle interval: no gap is idle.
+  const entries = [[0, "UserPromptSubmit"]];
+  for (let hour = 0; hour < 9; hour += 1) {
+    entries.push(...halfHourOfCalls(hour * 60), [hour * 60 + 30, "Stop"]);
+    entries.push(
+      [hour * 60 + 35, "UserPromptSubmit"],
+      ...[35, 40, 45, 50, 55].flatMap((offset) => [
+        [hour * 60 + offset, "PreToolUse", "Read"],
+        [hour * 60 + offset + 4, "PostToolUse", "Read"],
+      ]),
+    );
+  }
+  const { root, standing } = workedFixture(t, entries, 9);
+  const read = standing();
+  assert.equal(read.workedMs, minutes(9 * 60));
+  assert.equal(read.elapsedMs, minutes(9 * 60));
+  assert.equal(read.state, "exceeded");
+  // The message as the bound gave it before worked time was read: the value,
+  // the bound and a standing line with one figure.
+  assert.equal(
+    dispatchBoundMessage(read),
+    `DOTLN_DISPATCH_BOUND: wall clock=9 h 0 min, bound=8 h 0 min. dispatch standing: 9 h 0 min of 8 h 0 min; complete runs 0 of 3; exceeded. ${read.routes}`,
+  );
+  const envName = "CODEX_THREAD_ID",
+    previous = process.env[envName];
+  process.env[envName] = id;
+  t.after(() =>
+    previous === undefined
+      ? delete process.env[envName]
+      : (process.env[envName] = previous),
+  );
+  await assert.rejects(
+    boundedCommand(["--", "nonexistent-dispatch-bound-probe"], root),
+    /DOTLN_DISPATCH_BOUND: wall clock=9 h \d+ min, bound=8 h 0 min\. dispatch standing: 9 h \d+ min of 8 h 0 min;/u,
+  );
+});
+
+test("WO-276 criterion P1: a tool call whose start and end rows are fifty minutes apart counts whole, also where a turn ends while a worker's call runs", (t) => {
+  // The call alone, and the turn's end a minute after it: within the idle
+  // interval the nine minutes after the turn's end still count.
+  const alone = workedFixture(
+    t,
+    [
+      [0, "UserPromptSubmit"],
+      [0, "PreToolUse", "Bash"],
+      [50, "PostToolUse", "Bash"],
+      [51, "Stop"],
+    ],
+    1,
+  );
+  assert.equal(alone.standing().workedMs, minutes(60));
+  // Past the idle interval the wait after the turn's end drops out, and the
+  // call's fifty minutes stay with the minute that led to the turn's end.
+  assert.equal(
+    alone.standing(alone.startMs + minutes(10 * 60)).workedMs,
+    minutes(51),
+  );
+  // A worker's call that runs across the root's stop: the gap begins at a
+  // turn's end row and is fifty minutes long, and the call's two rows lie on
+  // either side of it, so it is worked.
+  const across = workedFixture(
+    t,
+    [
+      [0, "UserPromptSubmit"],
+      [1, "PreToolUse", "Agent"],
+      [2, "PostToolUse", "Agent"],
+      [3, "PreToolUse", "Bash"],
+      [4, "Stop"],
+      [54, "PostToolUse", "Bash"],
+      [55, "SubagentStop"],
+      [56, "UserPromptSubmit"],
+      [60, "Stop"],
+    ],
+    1,
+  );
+  assert.equal(across.standing().workedMs, minutes(60));
+  // The same rows without the call's end row: a start row alone proves
+  // nothing after it, and the fifty minutes after the stop are idle.
+  const interrupted = workedFixture(
+    t,
+    [
+      [0, "UserPromptSubmit"],
+      [3, "PreToolUse", "Bash"],
+      [4, "Stop"],
+      [56, "UserPromptSubmit"],
+      [60, "Stop"],
+    ],
+    1,
+  );
+  assert.equal(interrupted.standing().workedMs, minutes(8));
+  // The interrupted call's tool is used again after the pause. Rows that
+  // name their call pair exactly: the later call's end row belongs to its
+  // own start row, the call that never ended has no span, and the pause
+  // stays idle.
+  const resumedRows = (first, second) => [
+    [0, "UserPromptSubmit"],
+    [3, "PreToolUse", "Bash", first],
+    [4, "Stop"],
+    [56, "UserPromptSubmit"],
+    [57, "PreToolUse", "Bash", second],
+    [58, "PostToolUse", "Bash", second],
+    [60, "Stop"],
+  ];
+  assert.equal(
+    workedFixture(t, resumedRows("call-1", "call-2"), 1).standing().workedMs,
+    minutes(8),
+  );
+  // The same rows with no call named, as an earlier kit wrote them, cannot
+  // tell that history from a long call that ended at the last row: the end
+  // row closes the earliest start still open and the pause reads as worked,
+  // which is the reading the bound gave before.
+  assert.equal(
+    workedFixture(t, resumedRows(), 1).standing().workedMs,
+    minutes(60),
+  );
+  // Two calls of one tool side by side, one of them across the root's stop,
+  // with and without their calls named: the wait is worked.
+  const sideBySide = (first, second) => [
+    [0, "UserPromptSubmit"],
+    [1, "PreToolUse", "Bash", first],
+    [2, "PreToolUse", "Bash", second],
+    [3, "PostToolUse", "Bash", first],
+    [4, "Stop"],
+    [54, "PostToolUse", "Bash", second],
+    [56, "UserPromptSubmit"],
+    [60, "Stop"],
+  ];
+  for (const calls of [["call-1", "call-2"], []])
+    assert.equal(
+      workedFixture(t, sideBySide(...calls), 1).standing().workedMs,
+      minutes(60),
+    );
+  // The hooks are replaced while a worker's call runs: its start row names
+  // no call and its end row names one. The end row pairs by tool, and the
+  // wait across the root's stop stays worked.
+  assert.equal(
+    workedFixture(
+      t,
+      [
+        [0, "UserPromptSubmit"],
+        [2, "PreToolUse", "Bash"],
+        [3, "Stop"],
+        [59, "PostToolUse", "Bash", "call-after-upgrade"],
+        [60, "Stop"],
+      ],
+      1,
+    ).standing().workedMs,
+    minutes(60),
+  );
+});
+
+test("a worker's call that runs across the operator's absence keeps the absence worked while the root runs calls of the same tool, and a phase past its bound is refused as elapsed time refused it", (t) => {
+  // The root starts a worker, the worker starts a long call, the root's
+  // turn ends; four hours later the operator returns and the root runs the
+  // same tool every five minutes; the worker's call ends at 8 h 50 min.
+  const history = (worker, root) => {
+    const entries = [
+      [0, "UserPromptSubmit"],
+      [1, "PreToolUse", "Agent", root && "agent-1"],
+      [1, "PostToolUse", "Agent", root && "agent-1"],
+      [2, "PreToolUse", "Bash", worker],
+      [3, "Stop"],
+      [240, "UserPromptSubmit"],
+    ];
+    for (let offset = 241; offset < 525; offset += 5)
+      entries.push(
+        [offset, "PreToolUse", "Bash", root && `root-${offset}`],
+        [offset + 1, "PostToolUse", "Bash", root && `root-${offset}`],
+      );
+    entries.push([530, "PostToolUse", "Bash", worker]);
+    return entries;
+  };
+  for (const [worker, root] of [
+    ["worker-call", true],
+    [undefined, false],
+  ]) {
+    const read = workedFixture(t, history(worker, root), 9).standing();
+    assert.equal(read.workedMs, minutes(9 * 60), String(worker));
+    assert.equal(read.state, "exceeded");
+  }
+});
+
+test("a host whose tool calls write no rows reads elapsed time, whatever turn's end rows its journal holds", (t) => {
+  // A Codex session as its adapter writes it: a prompt, and a stop row on a
+  // stop the adapter then continues. Its tool calls reach no hook, so the
+  // work after that row leaves nothing in the journal.
+  const { root, startMs, standing } = workedFixture(t, null, 8.5);
+  write(
+    root,
+    `docs/control/local/harness/${key}.jsonl`,
+    journalLines(startMs, [[0, "UserPromptSubmit"]]) +
+      JSON.stringify({
+        recordedAt: new Date(startMs + minutes(120)).toISOString(),
+        event: "Stop",
+        compactionProbe: { continued: true },
+      }) +
+      "\n",
+  );
+  const read = standing();
+  assert.equal(read.workedMs, minutes(8.5 * 60));
+  assert.equal(read.state, "exceeded");
+});
+
+test("a phase with no journal rows, with one long turn whose rows are far apart, or on a host that writes no turn's end row reads elapsed time, as it did before worked time was read", (t) => {
+  // No rows at all: nothing shows a turn ended.
+  const none = workedFixture(t, null, 20);
+  assert.equal(none.standing().workedMs, minutes(20 * 60));
+  assert.equal(
+    dispatchStandingLine(none.standing()),
+    "dispatch standing: 20 h 0 min of 8 h 0 min; complete runs 0 of 3; exceeded",
+  );
+  // One long turn: rows hours apart and no turn's end between them.
+  const longTurn = workedFixture(
+    t,
+    [
+      [0, "UserPromptSubmit"],
+      [1, "PreToolUse", "Read"],
+      [1, "PostToolUse", "Read"],
+      [9 * 60, "PreToolUse", "Write"],
+      [9 * 60, "PostToolUse", "Write"],
+    ],
+    20,
+  );
+  assert.equal(longTurn.standing().workedMs, minutes(20 * 60));
+  // Rows a hook derives while it handles a stop carry no event: they follow
+  // the turn's end row and do not hide it.
+  const derived = workedFixture(t, null, 20);
+  write(
+    derived.root,
+    `docs/control/local/harness/${key}.jsonl`,
+    journalLines(derived.startMs, [
+      [0, "UserPromptSubmit"],
+      [1, "PreToolUse", "Read"],
+      [1, "PostToolUse", "Read"],
+      [30, "Stop"],
+    ]) +
+      JSON.stringify({
+        recordedAt: new Date(derived.startMs + minutes(30) + 5).toISOString(),
+        eventId: "background-task",
+        backgroundTask: { key: "a", state: "completed" },
+      }) +
+      "\n",
+  );
+  assert.equal(derived.standing().workedMs, minutes(30));
+  // A damaged line is passed over and the rows around it stand.
+  const damaged = workedFixture(t, null, 20);
+  write(
+    damaged.root,
+    `docs/control/local/harness/${key}.jsonl`,
+    journalLines(damaged.startMs, [
+      [0, "UserPromptSubmit"],
+      [1, "PreToolUse", "Read"],
+      [1, "PostToolUse", "Read"],
+    ]) +
+      '{"recordedAt":"20\n' +
+      journalLines(damaged.startMs, [[30, "Stop"]]),
+  );
+  assert.equal(damaged.standing().workedMs, minutes(30));
+});
+
+test("the sessions that hold one order's dispatch anchor are read together, so one session's stop while another works is no gap", (t) => {
+  const { root, startMs, standing } = workedFixture(
+    t,
+    [
+      [0, "UserPromptSubmit"],
+      [1, "PreToolUse", "Read"],
+      [1, "PostToolUse", "Read"],
+      [30, "Stop"],
+    ],
+    3,
+  );
+  const second = createHash("sha256").update("second-session").digest("hex");
+  write(
+    root,
+    `docs/control/local/harness/${second}.json`,
+    JSON.stringify({
+      ...journal,
+      startedAt: new Date(startMs).toISOString(),
+    }),
+  );
+  // The second session works from the first one's stop to the third hour.
+  const calls = [];
+  for (let offset = 31; offset < 180; offset += 5)
+    calls.push(
+      [offset, "PreToolUse", "Bash"],
+      [offset + 4, "PostToolUse", "Bash"],
+    );
+  write(
+    root,
+    `docs/control/local/harness/${second}.jsonl`,
+    journalLines(startMs, calls),
+  );
+  assert.equal(standing().workedMs, minutes(180));
+  // A session bound while the lane could not be read keeps a start of its
+  // own, later than the anchor's: it is a session of the same attempt and
+  // its work is read with the anchor's.
+  write(
+    root,
+    `docs/control/local/harness/${second}.json`,
+    JSON.stringify({
+      role: "executor",
+      boundDispatch: {
+        ...journal,
+        startedAt: new Date(startMs + minutes(31)).toISOString(),
+        phaseBoundary: "WO-999:WorkOrderActivated:0",
+        unavailable: "Invalid dispatch journal docs/control/local/harness/x",
+      },
+    }),
+  );
+  assert.equal(standing().workedMs, minutes(180));
+  // A session of another order's dispatch is no session of this phase.
+  write(
+    root,
+    `docs/control/local/harness/${second}.json`,
+    JSON.stringify({
+      ...journal,
+      workOrder: "WO-998",
+      startedAt: new Date(startMs).toISOString(),
+    }),
+  );
+  assert.equal(standing().workedMs, minutes(30));
+});
+
+test("WO-276 criterion P7: a planner session starts at its own dispatch beside an earlier planner session's journal on the same dispatch line and counts none of its complete runs; an executor redispatched in one order's phase keeps the earlier start", (t) => {
+  const { root } = fixture(t);
+  const earlier = "2030-01-01T00:00:00.000Z";
+  const later = "2030-01-03T00:00:00.000Z";
+  const session = (role) => ({
+    role,
+    startingEventCount: 0,
+    reads: [],
+  });
+  const keyOf = (name) => createHash("sha256").update(name).digest("hex");
+  const store = (name, state) =>
+    write(
+      root,
+      `docs/control/local/harness/${keyOf(name)}.json`,
+      JSON.stringify(state),
+    );
+  // An earlier planner session, two days old, on the same dispatch line.
+  const first = session("planner");
+  bindDispatchBound(root, first, "planner", "planning: refute", null, earlier);
+  store("planner-first", first);
+  const second = session("planner");
+  bindDispatchBound(root, second, "planner", "planning: refute", null, later);
+  store("planner-second", second);
+  assert.equal(second.boundDispatch.startedAt, later);
+  const gate = {
+    checkId: "npm test",
+    executed: true,
+    gateSelection: "review",
+    recordedAt: "2030-01-01T01:00:00.000Z",
+  };
+  const planning = dispatchStanding(root, {
+    session: "planner-second",
+    now: Date.parse(later) + 1000,
+    gates: [gate],
+    events: [],
+  });
+  assert.equal(planning.startedAt, later);
+  assert.equal(planning.elapsedMs, 1000);
+  assert.equal(planning.completeRuns, 0);
+  // The same session, dispatched again on its line, keeps its own start.
+  bindDispatchBound(
+    root,
+    second,
+    "planner",
+    "planning: refute",
+    null,
+    "2030-01-03T02:00:00.000Z",
+  );
+  assert.equal(second.boundDispatch.startedAt, later);
+  // An executor redispatched in the same phase of one order: the earlier
+  // start stands, as before.
+  write(
+    root,
+    "docs/control/orders/WO-999.jsonl",
+    JSON.stringify({
+      type: "WorkOrderActivated",
+      workOrderId: "WO-999",
+      recordedAt: "2029-12-31T23:00:00.000Z",
+    }) + "\n",
+  );
+  const executorFirst = session("executor");
+  bindDispatchBound(
+    root,
+    executorFirst,
+    "executor",
+    "resume: next",
+    "WO-999",
+    earlier,
+  );
+  store("executor-first", executorFirst);
+  const executorSecond = session("executor");
+  bindDispatchBound(
+    root,
+    executorSecond,
+    "executor",
+    "resume: next",
+    "WO-999",
+    later,
+  );
+  assert.equal(executorSecond.boundDispatch.startedAt, earlier);
+  // The line decides, not the order the control record selects: a planner
+  // begun by the command is bound with the checkout's latest order and
+  // still starts at its own session.
+  const begunFirst = session("planner");
+  bindDispatchBound(root, begunFirst, "planner", "planner", "WO-999", earlier);
+  store("planner-begun-first", begunFirst);
+  const begunSecond = session("planner");
+  bindDispatchBound(root, begunSecond, "planner", "planner", "WO-999", later);
+  assert.equal(begunSecond.boundDispatch.startedAt, later);
+  // A drive of one order names it in its line: a second router session on
+  // that line keeps the earlier start, as before.
+  const driveFirst = session("router");
+  bindDispatchBound(root, driveFirst, "router", "drive: WO-999", null, earlier);
+  store("router-first", driveFirst);
+  const driveSecond = session("router");
+  bindDispatchBound(root, driveSecond, "router", "drive: WO-999", null, later);
+  assert.equal(driveSecond.boundDispatch.startedAt, earlier);
 });

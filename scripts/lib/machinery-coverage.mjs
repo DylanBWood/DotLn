@@ -2,8 +2,11 @@
 // prevents a suite's declaration from forgetting the entry or a literal input.
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, posix } from "node:path";
-import { createRequire } from "node:module";
 import { relativeImports } from "./evidence-sources.mjs";
+import {
+  sourceSyntax,
+  sourceTokens,
+} from "../../packages/skeleton/src/source-reading.mjs";
 
 export const machineryCoverageScope =
   "Direct entry files, runtime relative imports and literal first-party script paths in entry code; transitive imports and paths built at run time are outside this check. Script literals are conservative: a copied script can later be spawned through a variable. Shell paths are collected conservatively from the whole source, including comments and heredocs.";
@@ -32,63 +35,20 @@ export const machinerySourceExclusions = {
   },
 };
 
-const require = createRequire(import.meta.url);
-let ast;
+/** A source's code tokens as the one source reader gives them, with the two
+ * marks the readers here ask of a token. */
 export function* scriptTokens(text) {
-  ast ??= require("typescript/unstable/ast");
-  const { SyntaxKind: K, LanguageVariant, createScanner } = ast;
-  const scanner = createScanner(true, LanguageVariant.Standard);
-  scanner.setText(text);
-  const endsValue = (kind) =>
-    [
-      K.Identifier,
-      K.PrivateIdentifier,
-      K.StringLiteral,
-      K.NumericLiteral,
-      K.BigIntLiteral,
-      K.NoSubstitutionTemplateLiteral,
-      K.TemplateTail,
-      K.RegularExpressionLiteral,
-      K.CloseParenToken,
-      K.CloseBracketToken,
-      K.CloseBraceToken,
-      K.ThisKeyword,
-      K.SuperKeyword,
-      K.NullKeyword,
-      K.TrueKeyword,
-      K.FalseKeyword,
-      K.PlusPlusToken,
-      K.MinusMinusToken,
-    ].includes(kind);
-  let previous;
-  const braces = [];
-  let previousEnd = -1;
-  for (let kind = scanner.scan(); kind !== K.EndOfFile; kind = scanner.scan()) {
-    if (
-      (kind === K.SlashToken || kind === K.SlashEqualsToken) &&
-      !endsValue(previous)
-    )
-      kind = scanner.reScanSlashToken();
-    else if (kind === K.OpenBraceToken) braces.push(false);
-    else if (kind === K.TemplateHead) braces.push(true);
-    else if (kind === K.CloseBraceToken && braces.pop()) {
-      kind = scanner.reScanTemplateToken(false);
-      if (kind === K.TemplateMiddle) braces.push(true);
-    }
-    const end = scanner.getTokenEnd();
-    if (end <= previousEnd)
-      throw new Error(`Source scanner did not advance at byte ${end}`);
-    previousEnd = end;
+  const { SyntaxKind: K } = sourceSyntax();
+  for (const token of sourceTokens(text))
     yield {
-      text: scanner.getTokenText(),
-      value: scanner.getTokenValue(),
-      start: scanner.getTokenStart(),
-      identifier: kind === K.Identifier,
+      text: token.text,
+      value: token.value,
+      start: token.start,
+      identifier: token.kind === K.Identifier,
       string:
-        kind === K.StringLiteral || kind === K.NoSubstitutionTemplateLiteral,
+        token.kind === K.StringLiteral ||
+        token.kind === K.NoSubstitutionTemplateLiteral,
     };
-    previous = kind;
-  }
 }
 function scriptLiterals(text, { shell = false } = {}) {
   // Shell comments, quoting and heredocs are not JavaScript tokens. Retain
@@ -284,6 +244,35 @@ export function uncoveredFixtureInputs(
           }))
             required.add(path);
       }
+    // What an entry or a listed file loads when it is itself loaded: its
+    // import declarations and those of every copied file they reach, a
+    // file the fixture copies by directory among them, since such a file
+    // is listed nowhere for the lines above to read. A declared double
+    // stands in for its file and is not read. The walk does not pass
+    // through an `import()` call: what one loads runs where its code does,
+    // so a file copied by directory that only such a call reaches is not
+    // read here, and its own imports stay the declaration's to list
+    // (WO-276).
+    const reached = new Set();
+    const queue = [...new Set([...row.entries, ...row.files])];
+    while (queue.length) {
+      const file = /** @type {string} */ (queue.pop());
+      if (reached.has(file)) continue;
+      reached.add(file);
+      if (
+        (row.provided ?? []).includes(file) ||
+        !/\.(?:mjs|cjs|js|ts)$/u.test(file) ||
+        !existsSync(join(root, file))
+      )
+        continue;
+      for (const path of relativeImports(root, file, {
+        sourcePaths: false,
+        dynamic: false,
+      })) {
+        required.add(path);
+        if (covered(path)) queue.push(path);
+      }
+    }
     for (const path of [...required].sort())
       if (
         !covered(path) ||

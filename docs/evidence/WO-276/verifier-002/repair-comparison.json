@@ -1,0 +1,506 @@
+{
+  "schemaVersion": 1,
+  "what": "Comment findings of main's check, the candidate VER-001 judged and the repaired check, over every code file the check reads in this tree with an empty baseline and over the regression inputs; a finding is file, line, kind and the fingerprint of its line",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "judged": "refs/dotln/checkpoint/WO-276/63",
+  "repository": {
+    "files": 691,
+    "findings": {
+      "main": 69,
+      "judged": 69,
+      "repaired": 69
+    },
+    "repairedEqualsMain": true,
+    "repairedEqualsJudged": true,
+    "ms": {
+      "main": 2754,
+      "judged": 468,
+      "repaired": 1343
+    }
+  },
+  "inputs": [
+    {
+      "source": "report",
+      "path": "component.tsx",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "report",
+      "path": "component.jsx",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "report",
+      "path": "module.mjs",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "report",
+      "path": "matcher.mjs",
+      "main": [],
+      "judged": [
+        [
+          2,
+          "decision-number"
+        ]
+      ],
+      "repaired": [],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "added",
+      "path": "view.js",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "added",
+      "path": "view.cjs",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "added",
+      "path": "view.mjs",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "added",
+      "path": "view.ts",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "added",
+      "path": "view.cts",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "added",
+      "path": "view.mts",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "added",
+      "path": "view.jsx",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "added",
+      "path": "view.tsx",
+      "main": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "judged": [],
+      "repaired": [
+        [
+          1,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "added",
+      "path": "page.jsx",
+      "main": [
+        [
+          4,
+          "order-lead"
+        ]
+      ],
+      "judged": [],
+      "repaired": [
+        [
+          4,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "added",
+      "path": "page.tsx",
+      "main": [
+        [
+          4,
+          "order-lead"
+        ]
+      ],
+      "judged": [],
+      "repaired": [
+        [
+          4,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "added",
+      "path": "regex-after-block.mjs",
+      "main": [
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          8,
+          "order-lead"
+        ]
+      ],
+      "judged": [
+        [
+          3,
+          "finding-label"
+        ],
+        [
+          2,
+          "decision-number"
+        ],
+        [
+          5,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ]
+      ],
+      "repaired": [
+        [
+          6,
+          "decision-number"
+        ],
+        [
+          8,
+          "order-lead"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "added",
+      "path": "matcher.sh",
+      "main": [
+        [
+          5,
+          "decision-number"
+        ]
+      ],
+      "judged": [],
+      "repaired": [
+        [
+          5,
+          "decision-number"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "review",
+      "path": "separators.mjs",
+      "main": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          5,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ]
+      ],
+      "judged": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          5,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ]
+      ],
+      "repaired": [
+        [
+          3,
+          "decision-number"
+        ],
+        [
+          5,
+          "decision-number"
+        ],
+        [
+          6,
+          "decision-number"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "review",
+      "path": "separators.sh",
+      "main": [
+        [
+          4,
+          "decision-number"
+        ]
+      ],
+      "judged": [
+        [
+          4,
+          "decision-number"
+        ]
+      ],
+      "repaired": [
+        [
+          4,
+          "decision-number"
+        ]
+      ],
+      "repairedEqualsMain": true,
+      "judgedEqualsMain": true
+    },
+    {
+      "source": "review",
+      "path": "heredoc-css.sh",
+      "main": [],
+      "judged": [
+        [
+          3,
+          "decision-number"
+        ]
+      ],
+      "repaired": [
+        [
+          3,
+          "decision-number"
+        ]
+      ],
+      "repairedEqualsMain": false,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "review",
+      "path": "heredoc-ignore.sh",
+      "main": [],
+      "judged": [
+        [
+          5,
+          "decision-number"
+        ]
+      ],
+      "repaired": [
+        [
+          5,
+          "decision-number"
+        ]
+      ],
+      "repairedEqualsMain": false,
+      "judgedEqualsMain": false
+    },
+    {
+      "source": "review",
+      "path": "heredoc-markdown.sh",
+      "main": [
+        [
+          5,
+          "order-lead"
+        ]
+      ],
+      "judged": [],
+      "repaired": [],
+      "repairedEqualsMain": false,
+      "judgedEqualsMain": false
+    }
+  ]
+}

@@ -552,14 +552,11 @@ for it with `--transport claude-cli-print` or `--transport codex-cli-exec`;
 without a transport the command prints the canonical prompt and closed schema
 for a background worker the session spawns, and the parent remains the sole
 repository writer. A background-worker failure never triggers an automatic
-external fallback. Claude defaults to `claude-opus-5-5` at `xhigh` (WO-100) and
-Codex to `gpt-6.1-sol` at `max` (WO-177, replacing WO-100's `gpt-6-sol` at
-`xhigh`; before WO-100, `claude-fable-5-1` at `max` and `gpt-6-astra` with
-effort `unknown`); `npm run plan -- refute --transport <name>` launches with the
-same per-transport defaults, with the one of the operator's four options
-that `--model opus|fable|sol|astra` names for the transport's host (an effort
-outside that option is refused), or, without `--model`, with the option the
-session's latest `planning:` or `resume:` line named for that host; both are
+external fallback. Each transport runs the instance's `default` worker for
+its provider (`npm run worker -- list` prints what that is; the kit's own
+defaults are data in `packages/skeleton/src/worker-models.mjs`); `npm run plan -- refute --transport <name>` launches the same.
+Either command launches instead the worker or model `--model <name>` names
+for the transport's provider, at `--effort <level>` where one is given; both are
 recorded from the invocation as
 `command-line-readback-and-invocation`, and effective model and effort stay
 `unknown` because no harness reports them. The receipt reads

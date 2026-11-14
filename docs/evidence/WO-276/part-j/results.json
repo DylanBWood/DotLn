@@ -1,0 +1,114 @@
+{
+  "what": "Part J's observations in an exported instance that names a model and three workers of its own.",
+  "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-276/part-j/evidence.mjs",
+  "definition": {
+    "workers": {
+      "default": {
+        "claude": "small"
+      },
+      "verifier": {
+        "claude": {
+          "model": "small",
+          "effort": "max"
+        }
+      },
+      "night-review": {
+        "description": "Reviews that run unattended.",
+        "codex": {
+          "model": "astra",
+          "effort": "high"
+        }
+      }
+    },
+    "models": {
+      "schemaVersion": 1,
+      "models": {
+        "small": {
+          "provider": "claude",
+          "id": "model-a",
+          "effort": "high"
+        }
+      }
+    },
+    "agents": [
+      "dotln-executor.md",
+      "dotln-release-close.md",
+      "dotln-reviewer.md",
+      "dotln-verifier.md",
+      "dotln-worker.md"
+    ],
+    "path": ".claude/agents/dotln-worker.md",
+    "checkBeforeEmit": 1,
+    "emit": 0,
+    "check": 0,
+    "frontMatter": [
+      "model: model-a",
+      "effort: high"
+    ]
+  },
+  "launches": {
+    "review": {
+      "model": "model-a",
+      "effort": "high"
+    },
+    "refute": {
+      "model": "model-a",
+      "effort": "high"
+    },
+    "show": {
+      "name": "night-review",
+      "provider": "codex",
+      "model": "gpt-6-astra",
+      "effort": "high"
+    },
+    "drive": {
+      "executor": {
+        "model": "model-a",
+        "effort": "high"
+      },
+      "verifier": {
+        "model": "model-a",
+        "effort": "max"
+      }
+    }
+  },
+  "refusals": [
+    {
+      "label": "an unknown key",
+      "message": "invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: unknown key dotln.config.json#workers.night.claude.temperature; known keys: model, effort"
+    },
+    {
+      "label": "a binding to a model that is not listed",
+      "message": "invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: dotln.config.json#workers.night.claude names the model \"small\", which is not in the model list (opus, fable, sol, astra, sonnet, luna)"
+    },
+    {
+      "label": "a name that would mean two things",
+      "message": "invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: the worker \"fable\" (dotln.config.json#workers.fable) has the name of a model (the kit's model list); a name means one thing"
+    },
+    {
+      "label": "an effort outside its provider's levels",
+      "message": "invalid DotLn configuration in <scratch>/part-j-malformed/dotln.config.json: dotln.config.json#workers.night.claude.effort must be one of \"low\", \"medium\", \"high\", \"xhigh\", \"max\", the efforts a claude launch takes; found \"extreme\""
+    },
+    {
+      "label": "a negative price",
+      "message": "invalid DotLn configuration in <scratch>/part-j-malformed/dotln.models.json: dotln.models.json#prices[\"model-a\"].output must be a number that is not negative, in US dollars for a million tokens; found -1"
+    }
+  ],
+  "usage": {
+    "timeZone": "America/New_York",
+    "observations": 3,
+    "days": [
+      "2026-11-09",
+      "2026-11-10",
+      "2026-11-11"
+    ],
+    "prices": {
+      "model-a": {
+        "uncachedInput": 3,
+        "cacheRead": 0.3,
+        "cacheWrite": 3.75,
+        "output": 15
+      }
+    }
+  }
+}

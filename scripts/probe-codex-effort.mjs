@@ -9,6 +9,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { isDeepStrictEqual } from "node:util";
 import { join, resolve } from "node:path";
 
 import {
@@ -120,11 +121,12 @@ try {
     const messages = events.filter(
       (e) => e.type === "item.completed" && e.item?.type === "agent_message",
     );
+    // The reply is the requested object exactly, whatever its spacing.
     let validResult = false;
     try {
-      validResult =
-        JSON.stringify(JSON.parse(messages.at(-1)?.item?.text)) ===
-        '{"ok":true}';
+      validResult = isDeepStrictEqual(JSON.parse(messages.at(-1)?.item?.text), {
+        ok: true,
+      });
     } catch {
       /* retain a refused/blocked row */
     }

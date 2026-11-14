@@ -1,0 +1,9 @@
+{
+  "comparison": "imports",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every JavaScript and TypeScript source under scripts/ and packages/: the relative imports the evidence inventories follow",
+  "read": 645,
+  "equal": 645,
+  "differences": {},
+  "examples": []
+}

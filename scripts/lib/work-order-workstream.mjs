@@ -1,24 +1,31 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
-import { dependencyHeader } from "./dependencies.mjs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, join } from "node:path";
 import { docPath, docRelative } from "./config.mjs";
 import { containedRegularFile, parseJson } from "./paths.mjs";
+import { markdownMarkerBlocks } from "./markdown-links.mjs";
+import { headerField, readWorkOrderHeader } from "./work-order-document.mjs";
 
 const WORKSTREAM = /^WS-\d{3}$/u;
 const ORDER = /^WO-\d{3}$/u;
 const COMMIT = /^(?:[0-9a-f]{40}|[0-9a-f]{64}|unknown)$/u;
-export const workstreamSnapshotPrefix = "<!-- dotln-workstreams: ";
 
-/** Membership is declared only in leading metadata, like Repository. */
+/** Membership is declared only in leading metadata, like Repository: the
+ * field's own line holds a space and one WS-NNN id, nothing else. */
 export const parseWorkstreamDeclaration = (markdown, path) => {
-  const { lines, first, end } = dependencyHeader(markdown);
-  const fields = lines
-    .slice(first + 1, end)
-    .filter((line) => /^\*\*Workstream:\*\*/u.test(line));
-  if (!fields.length) return undefined;
-  if (fields.length !== 1)
-    throw new Error(`${path}: duplicate **Workstream:** lines`);
-  const match = /^\*\*Workstream:\*\*\s+(WS-\d{3})\s*$/u.exec(fields[0]);
+  const field = headerField(
+    readWorkOrderHeader(markdown),
+    "Workstream",
+    `${path}: duplicate **Workstream:** lines`,
+  );
+  if (!field) return undefined;
+  const match = /^\s+(WS-\d{3})\s*$/u.exec(field.lineValue);
   if (!match)
     throw new Error(
       `${path}: malformed **Workstream:** line; expected **Workstream:** WS-NNN`,
@@ -31,17 +38,14 @@ export const parseWorkstreamDeclaration = (markdown, path) => {
  * track; a malformed block refuses by its path. The index and the planning
  * subject read the same parse. */
 export const parseWorkstreamDocument = (text, path, expectedId) => {
-  const lines = text.split(/\r?\n/u);
-  const positions = (marker) =>
-    lines.flatMap((line, index) => (line === marker ? [index] : []));
-  const starts = positions("<!-- dotln-workstream:start -->");
-  const ends = positions("<!-- dotln-workstream:end -->");
-  if (starts.length !== 1 || ends.length !== 1 || starts[0] >= ends[0])
-    throw new Error(`${path}: expected one dotln-workstream block`);
-  const stream = parseJson(
-    lines.slice(starts[0] + 1, ends[0]).join("\n"),
-    path,
+  const blocks = markdownMarkerBlocks(
+    text,
+    "dotln-workstream:start",
+    "dotln-workstream:end",
   );
+  if (blocks.length !== 1 || blocks.unbalanced)
+    throw new Error(`${path}: expected one dotln-workstream block`);
+  const stream = parseJson(blocks[0].inner, path);
   if (
     !stream ||
     typeof stream !== "object" ||
@@ -143,28 +147,16 @@ export const readWorkstreams = (root, rows) => {
 };
 
 /** Only these recorded Git facts survive --check; headers and control are
- * projected again, so a changed declaration or verdict still stales the page. */
-export const readWorkstreamSnapshot = (source, path) => {
-  const lines = source
-    .split("\n")
-    .filter((line) => line.includes("<!-- dotln-workstreams:"));
-  if (
-    lines.length !== 1 ||
-    !lines[0].startsWith(workstreamSnapshotPrefix) ||
-    !lines[0].endsWith(" -->")
-  )
+ * projected again, so a changed declaration or verdict still stales the page.
+ * `workstreams` is the index record's workstream observation, as data. */
+export const readWorkstreamSnapshot = (workstreams, path) => {
+  if (!Array.isArray(workstreams))
     throw new Error(
       `${path}: missing or malformed workstream snapshot; run npm run work-orders -- index`,
     );
-  const record = parseJson(
-    lines[0].slice(workstreamSnapshotPrefix.length, -4),
-    path,
-  );
-  if (!record || !Array.isArray(record.workstreams))
-    throw new Error(`${path}: invalid workstream snapshot`);
   const facts = new Map();
   const streams = new Set();
-  for (const stream of record.workstreams) {
+  for (const stream of workstreams) {
     if (
       !stream ||
       !WORKSTREAM.test(stream.id) ||
@@ -197,6 +189,75 @@ export const readWorkstreamSnapshot = (source, path) => {
   }
   return facts;
 };
+
+/** Where the target facts each workstream's row was rendered from are
+ * recorded: what the index observed in other repositories, which no file of
+ * this one holds, so that `index --check` judges the pages without a target
+ * checkout. */
+export const workstreamObservationsRecord = (root) =>
+  docRelative(root, "control", "workstream-observations.json");
+const observationsCommand = "npm run work-orders -- index";
+
+/** The record's bytes for projected workstreams: each member's observed base,
+ * target commit and integration, and nothing a header or the control log
+ * says, which the check projects again. */
+export const renderWorkstreamObservations = (workstreams) =>
+  `${JSON.stringify(
+    {
+      schemaVersion: 1,
+      workstreams: workstreams.map(({ id, members }) => ({
+        id,
+        members: members.map(
+          ({ workOrderId, base, targetCommit, integration, stale }) => ({
+            workOrderId,
+            base,
+            targetCommit,
+            integration,
+            stale,
+          }),
+        ),
+      })),
+    },
+    null,
+    2,
+  )}\n`;
+
+/** Writes the observation record when the index refreshes: its one writer.
+ * True when the bytes changed. */
+export function writeWorkstreamObservations(root, workstreams) {
+  const display = workstreamObservationsRecord(root);
+  const path = join(root, display);
+  if (existsSync(path) && !containedRegularFile(path, root))
+    throw new Error(`${display}: expected a contained regular file`);
+  const next = renderWorkstreamObservations(workstreams);
+  if (existsSync(path) && readFileSync(path, "utf8") === next) return false;
+  mkdirSync(dirname(path), { recursive: true });
+  const temporary = `${path}.${process.pid}.tmp`;
+  writeFileSync(temporary, next, { flag: "wx" });
+  renameSync(temporary, path);
+  return true;
+}
+
+/** The recorded target facts, by workstream and member; a missing record
+ * refuses naming the command that writes it. */
+export function readWorkstreamObservations(root) {
+  const display = workstreamObservationsRecord(root);
+  if (!containedRegularFile(join(root, display), root))
+    throw new Error(
+      `${display}: the workstream observations are missing; run ${observationsCommand}`,
+    );
+  let record;
+  try {
+    record = JSON.parse(readFileSync(join(root, display), "utf8"));
+  } catch {
+    record = undefined;
+  }
+  if (record?.schemaVersion !== 1)
+    throw new Error(
+      `${display}: invalid workstream observations; run ${observationsCommand}`,
+    );
+  return readWorkstreamSnapshot(record.workstreams, display);
+}
 
 export const projectWorkstreams = (streams, rows, facts) => {
   const byId = new Map(rows.map((row) => [row.id, row]));

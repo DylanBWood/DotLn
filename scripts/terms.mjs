@@ -5,20 +5,46 @@ import { isMainModule } from "./lib/paths.mjs";
 import { readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { checkLocalTerms } from "./lib/terms.mjs";
+import {
+  checkLocalTerms,
+  localTermFindings,
+  localTermLine,
+} from "./lib/terms.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
 
-export function termsCheck(root, paths) {
+const namedSurfaces = (root, paths) => {
   if (!paths.length)
     throw new Error("terms check requires explicit file paths");
-  const names = paths;
-  const surfaces = [...new Set(names)].sort().map((name) => {
+  return [...new Set(paths)].sort().map((name) => {
     const path = resolve(root, name);
     if (!containedRegularFile(path, root))
       throw new Error("terms check requires contained regular files");
     return { name, text: readFileSync(path, "utf8") };
   });
-  return checkLocalTerms(root, surfaces);
+};
+
+/** The named files screened against the private list: a refuse-mode match
+ * throws, and the list's status comes back with its context-mode findings. */
+export function termsCheck(root, paths) {
+  return checkLocalTerms(root, namedSurfaces(root, paths));
+}
+
+/** What the command prints for one screen. The status line gives the list's
+ * state, the entries in each class, what was screened and the lines found in
+ * each class. Each context-mode finding follows on standard output, for the
+ * stage at hand to read beside the entry it matched; each refuse-mode finding
+ * goes to standard error as a failure. A finding names a file, a line and a
+ * mode, never a term. Returns whether anything refuses. */
+export function printTermsScreen(result, screened, out = console) {
+  const found = (mode) =>
+    result.findings.filter((finding) => finding.mode === mode);
+  const [refused, context] = [found("refuse"), found("context")];
+  out.log(
+    `local-terms list: present; entries: ${result.refuse} refuse, ${result.context} context; ${screened}; lines found: ${refused.length} refuse, ${context.length} context`,
+  );
+  for (const finding of context) out.log(`CONTEXT ${localTermLine(finding)}`);
+  for (const finding of refused) out.error(`FAIL ${localTermLine(finding)}`);
+  return refused.length > 0;
 }
 if (isMainModule(import.meta.url)) {
   try {
@@ -52,15 +78,22 @@ if (isMainModule(import.meta.url)) {
         ) !== root
       )
         throw new Error(`terms ${action} requires repository root`);
-      if (action === "check")
-        console.log(
-          `local-terms list: ${termsCheck(root, process.argv.slice(3)).status}`,
-        );
-      else {
+      if (action === "check") {
+        const paths = process.argv.slice(3);
+        const result = localTermFindings(root, namedSurfaces(root, paths));
+        if (result.status === "unavailable")
+          console.log("local-terms list: unavailable");
+        else if (
+          printTermsScreen(
+            result,
+            `named files screened: ${new Set(paths).size}`,
+          )
+        )
+          process.exitCode = 1;
+      } else {
         // The document gate's terms task: the lines this branch adds, against
         // its merge base with main (on main, what the last merge brought in).
-        const { branchTermFindings, branchTermLines } =
-          await import("./lib/branch-terms.mjs");
+        const { branchTermFindings } = await import("./lib/branch-terms.mjs");
         const { docRelative } = await import("./lib/config.mjs");
         const result = branchTermFindings(root);
         if (result.status === "no merge base")
@@ -69,14 +102,10 @@ if (isMainModule(import.meta.url)) {
           console.log(
             `local-terms list: unavailable\nAdvisory: no local-terms list is registered at ${docRelative(root, "control", "local/terms.txt")}, so the ${result.files} files this branch changes were not screened; register it to screen them.`,
           );
-        else {
-          console.log(
-            `local-terms list: present; ${result.files} changed files screened, ${result.findings.length} findings`,
-          );
-          for (const line of branchTermLines(result.findings))
-            console.error(`FAIL ${line}`);
-          if (result.findings.length) process.exitCode = 1;
-        }
+        else if (
+          printTermsScreen(result, `changed files screened: ${result.files}`)
+        )
+          process.exitCode = 1;
       }
     }
   } catch (error) {

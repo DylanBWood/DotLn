@@ -1,0 +1,172 @@
+{
+  "note": "The hooks the harness fixture's own settings register, started as a host starts them (one process for each registration whose matcher admits the tool) for a read, a search, a shell command, an edit and a write, each ten times. wallMs is the process's wall time as the case measured it; timingMs is the hook's own timing row in the session journal, which a hook that writes none leaves empty. Milliseconds.",
+  "node": "v26.9.0",
+  "calls": 50,
+  "processes": 400,
+  "wallMs": 41219,
+  "byTool": {
+    "Read": {
+      "calls": 10,
+      "processesACall": 8,
+      "wallMsACallMedian": 748
+    },
+    "Grep": {
+      "calls": 10,
+      "processesACall": 8,
+      "wallMsACallMedian": 751
+    },
+    "Bash": {
+      "calls": 10,
+      "processesACall": 8,
+      "wallMsACallMedian": 870
+    },
+    "Edit": {
+      "calls": 10,
+      "processesACall": 8,
+      "wallMsACallMedian": 894
+    },
+    "Write": {
+      "calls": 10,
+      "processesACall": 8,
+      "wallMsACallMedian": 892
+    }
+  },
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "hook": "concurrent-work-requires-worktrees",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 7376,
+      "wallMsMedian": 171,
+      "timingRows": 50,
+      "timingMsMedian": 154
+    },
+    {
+      "event": "PreToolUse",
+      "hook": "no-attribution",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5299,
+      "wallMsMedian": 106,
+      "timingRows": 50,
+      "timingMsMedian": 88
+    },
+    {
+      "event": "PreToolUse",
+      "hook": "permissions",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5340,
+      "wallMsMedian": 107,
+      "timingRows": 50,
+      "timingMsMedian": 89
+    },
+    {
+      "event": "PreToolUse",
+      "hook": "write-observer",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5903,
+      "wallMsMedian": 123,
+      "timingRows": 50,
+      "timingMsMedian": 105
+    },
+    {
+      "event": "PreToolUse",
+      "hook": "presence-pretooluse",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 3113,
+      "wallMsMedian": 63,
+      "timingRows": 0,
+      "timingMsMedian": null
+    },
+    {
+      "event": "PostToolUse",
+      "hook": "no-lint-type-disables-as-fixes",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5512,
+      "wallMsMedian": 99,
+      "timingRows": 50,
+      "timingMsMedian": 81
+    },
+    {
+      "event": "PostToolUse",
+      "hook": "read-observer",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 5531,
+      "wallMsMedian": 116,
+      "timingRows": 50,
+      "timingMsMedian": 98
+    },
+    {
+      "event": "PostToolUse",
+      "hook": "presence-posttooluse",
+      "matcher": ".*",
+      "tools": [
+        "Read",
+        "Grep",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "starts": 50,
+      "wallMsTotal": 3145,
+      "wallMsMedian": 63,
+      "timingRows": 0,
+      "timingMsMedian": null
+    }
+  ]
+}

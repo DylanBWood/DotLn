@@ -3,7 +3,7 @@ const { text } = await import("node:stream/consumers");
 try {
 const source = await text(process.stdin);
 if (Buffer.byteLength(source) > 1048576) throw new Error("oversized hook input");
-const output = await (async function codexContinuation(input, operatorControl, classify, loadRuntime, phaseOf, workerWords) {
+const output = await (async function codexContinuation(input, operatorControl, classify, loadRuntime, phaseOf) {
     const event = input?.hook_event_name;
     if (!["PostCompact", "SessionStart", "Stop", "UserPromptSubmit"].includes(event) ||
         typeof input.session_id !== "string" ||
@@ -166,25 +166,23 @@ const output = await (async function codexContinuation(input, operatorControl, c
         // for a compaction to restore, and a resumed turn reserves its writer.
         // Each step fails alone, so a lost capture never costs the writer and an
         // unreadable state never withholds the operator's prompt.
-        // Every dispatch line states its selection, an empty one included, so a
-        // later dispatch that names no option returns to the defaults.
-        let options = null;
+        let dispatched = false;
         try {
-            options =
-                typeof workerWords === "function"
-                    ? workerWords(typeof input.prompt === "string" ? input.prompt : "")
-                    : null;
+            dispatched =
+                typeof classify === "function" &&
+                    ["resume:", "planning:"].includes(classify(typeof input.prompt === "string" ? input.prompt : "")
+                        .prefix ?? "");
         }
         catch {
-            // The selection is an observation; the launch then takes its default.
+            // An unread line makes no lane; one that stands is still read.
         }
         let found = null;
         /** @type {Record<string, any> | null} */
         let session = null;
         try {
             // A dispatch line makes the lane in a checkout that has none yet, so
-            // the first line's selection is kept for the session's launches.
-            found = lane({ create: Boolean(options) });
+            // the session it starts is journaled from its first line.
+            found = lane({ create: dispatched });
             if (found)
                 session = read(join(found.directory, `${key}.json`));
         }
@@ -195,18 +193,6 @@ const output = await (async function codexContinuation(input, operatorControl, c
             return control ?? {};
         const { root, directory } = found;
         const journal = join(directory, `${key}.jsonl`);
-        try {
-            if (options)
-                append(journal, {
-                    event,
-                    typedEvent: "WorkerOptionsSelected",
-                    options,
-                    source: "codex-prompt-hook",
-                });
-        }
-        catch {
-            // The selection is an observation; the launch then takes its default.
-        }
         if (!session || !/^WO-\d{3}$/.test(session.workOrder ?? "")) {
             try {
                 append(journal, { event, codexPromptObserved: true });
@@ -893,84 +879,6 @@ const output = await (async function codexContinuation(input, operatorControl, c
         reviewer: "finalReview",
     };
     return phases[session.role ?? ""] ?? session.role ?? "unknown";
-}, (prompt) => (function harnessWorkerWords(prompt, promptLine = harnessPromptLine) {
-    const text = promptLine(prompt).text;
-    if (!/^(?:resume|planning):/u.test(text))
-        return null;
-    const selected = {};
-    const semicolon = text.indexOf(";");
-    for (const part of semicolon < 0
-        ? [text]
-        : [text, text.slice(0, semicolon)]) {
-        const words = part.toLowerCase().match(/[a-z0-9]+(?:\.[0-9]+)*/gu) ?? [];
-        for (let index = words.length - 1; index >= 0; index--) {
-            const word = words[index];
-            if (word === "fable")
-                selected.claude = "fable";
-            else if (word === "astra")
-                selected.codex = "astra";
-            else if (word !== "and" && word !== "5.1" && word !== "6")
-                break;
-        }
-    }
-    return selected;
-})(prompt, function harnessPromptLine(prompt) {
-    const lines = (prompt ?? "").split(/\r?\n/u);
-    const blocks = [
-        "local-command-caveat",
-        "command-name",
-        "command-message",
-        "command-args",
-        "local-command-stdout",
-    ];
-    const wrappers = ["pasted_content"];
-    let index = 0;
-    const skipBlanks = () => {
-        while (index < lines.length && !lines[index].trim())
-            index++;
-    };
-    skipBlanks();
-    for (;;) {
-        const opening = /^\s*<([A-Za-z][\w-]*)(?:\s[^<>]*)?>/u.exec(lines[index] ?? "");
-        if (!opening)
-            break;
-        const name = opening[1];
-        if (blocks.includes(name)) {
-            const closing = `</${name}>`;
-            const opened = index;
-            while (index < lines.length && !lines[index].includes(closing))
-                index++;
-            if (index >= lines.length) {
-                index = opened;
-                break;
-            }
-            const line = lines[index];
-            const after = line.slice(line.indexOf(closing) + closing.length);
-            if (after.trim()) {
-                lines[index] = after;
-                break;
-            }
-            index++;
-        }
-        else if (wrappers.includes(name)) {
-            const rest = lines[index].slice(opening[0].length);
-            if (rest.trim()) {
-                lines[index] = rest;
-                break;
-            }
-            index++;
-        }
-        else
-            break;
-        skipBlanks();
-    }
-    if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
-        index++;
-        skipBlanks();
-    }
-    const text = (lines[index] ?? "").trim();
-    const element = /^<([A-Za-z][\w-]*)(?:[\s/>]|$)/u.exec(text)?.[1] ?? null;
-    return { text, index, element };
-}));
+});
 process.stdout.write(JSON.stringify(output));
 } catch { process.stdout.write(JSON.stringify({systemMessage:"DotLn Codex continuation input unavailable; native stopping remains available."})); }

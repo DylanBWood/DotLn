@@ -1,0 +1,79 @@
+{
+  "comparison": "git-surface",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every source under scripts/ and packages/: the Git forms each file names, as a sorted list with repeats",
+  "read": 240,
+  "equal": 236,
+  "differences": {
+    "defect of the old reader: a GIT_* name written as a member of a TypeScript interface (line 67) was not read": 1,
+    "defect of the old reader: a command substituted inside a quoted argument, as in test \"$(git -C dir log -1)\" = text, went unread; the forms gained are those commands": 2,
+    "defect of the old reader, twice: the forms gained are commands substituted inside a quoted argument, which went unread; the one form lost (check-attr, line 3882) was the text of a regular expression inside a here-document that node reads, which is JavaScript and no Git command": 1
+  },
+  "examples": [
+    {
+      "input": "packages/skeleton/src/source-change-worktree.ts",
+      "named": "defect of the old reader: a GIT_* name written as a member of a TypeScript interface (line 67) was not read",
+      "gained": [
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES x1"
+      ],
+      "lost": []
+    },
+    {
+      "input": "scripts/test-checkpoint.sh",
+      "named": "defect of the old reader: a command substituted inside a quoted argument, as in test \"$(git -C dir log -1)\" = text, went unread; the forms gained are those commands",
+      "gained": [
+        "for-each-ref x1",
+        "for-each-ref --format x1",
+        "git -C x4",
+        "log x1",
+        "log --format x1",
+        "log -1 x1",
+        "rev-parse x2"
+      ],
+      "lost": []
+    },
+    {
+      "input": "scripts/test-release.sh",
+      "named": "defect of the old reader, twice: the forms gained are commands substituted inside a quoted argument, which went unread; the one form lost (check-attr, line 3882) was the text of a regular expression inside a here-document that node reads, which is JavaScript and no Git command",
+      "gained": [
+        "branch x9",
+        "branch --list x9",
+        "cat-file x9",
+        "cat-file -t x9",
+        "for-each-ref x4",
+        "for-each-ref --format x4",
+        "git --git-dir x12",
+        "git -C x50",
+        "rev-list x4",
+        "rev-list -n x4",
+        "rev-parse x24",
+        "show x3",
+        "status x7",
+        "status --porcelain x7",
+        "status --untracked-files x3",
+        "tag x1",
+        "tag --list x1",
+        "worktree list x1",
+        "worktree list --porcelain x1"
+      ],
+      "lost": [
+        "check-attr x1"
+      ]
+    },
+    {
+      "input": "scripts/test-worktree.sh",
+      "named": "defect of the old reader: a command substituted inside a quoted argument, as in test \"$(git -C dir log -1)\" = text, went unread; the forms gained are those commands",
+      "gained": [
+        "branch x11",
+        "branch --list x11",
+        "git -C x19",
+        "rev-parse x4",
+        "show-ref x1",
+        "status x3",
+        "status --porcelain x3",
+        "status --untracked-files x1"
+      ],
+      "lost": []
+    }
+  ]
+}

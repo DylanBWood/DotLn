@@ -1,0 +1,148 @@
+{
+  "status": "passing rows stand for filing",
+  "firstDocumentAttempt": {
+    "command": "npm run test:docs",
+    "recordedAt": "2026-11-14T14:17:41.449Z",
+    "exitCode": 1,
+    "cause": "Formatting in two verifier-owned probe files; later suites skipped.",
+    "correction": "D191; format only criteria-gap.mjs and punctuation.mjs, then rerun the document gate."
+  },
+  "observedAt": "2026-11-14T14:25:47.592Z",
+  "source": "requireDocumentRow and requireGateClaims on the current candidate",
+  "claims": {
+    "checked": true,
+    "claims": {
+      "document": [
+        "15",
+        "27",
+        "35",
+        "44",
+        "49",
+        "55",
+        "62",
+        "70",
+        "75",
+        "83",
+        "90",
+        "96",
+        "100",
+        "109",
+        "113",
+        "118",
+        "125",
+        "132",
+        "133"
+      ],
+      "review": [
+        "133"
+      ],
+      "plain": [
+        "1",
+        "2",
+        "5",
+        "8",
+        "9",
+        "11",
+        "13",
+        "16",
+        "17",
+        "18",
+        "20",
+        "24",
+        "28",
+        "37",
+        "38",
+        "39",
+        "40",
+        "43",
+        "45",
+        "46",
+        "47",
+        "48",
+        "50",
+        "85",
+        "95",
+        "112",
+        "117",
+        "131",
+        "133"
+      ]
+    },
+    "advisories": []
+  },
+  "document": {
+    "evidenceRefs": [
+      "host-gate:bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696:npm run test:docs"
+    ],
+    "checkId": "npm run test:docs",
+    "treeHash": "c6afae2ac1a910afde5f2d0688e7e036db6315a6",
+    "codeIdentity": "bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696",
+    "durationMs": 176151,
+    "evidenceRef": "host-gate:bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696:npm run test:docs",
+    "recordedAt": "2026-11-14T14:25:24.747Z",
+    "executed": true,
+    "exitCode": 0,
+    "documentTreeHash": "7a3a7e0216f06545d628d8fca4d637a98d1e0c85",
+    "documentTreeExcludes": "docs/evidence/WO-276",
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "git-surface",
+      "host",
+      "license-surfaces",
+      "resume-docs",
+      "launchpad-docs",
+      "docs-check",
+      "terms",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ]
+  },
+  "consumedEvidence": {
+    "advisories": [],
+    "productGate": {
+      "evidenceRefs": [
+        "host-gate:bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "439c9397e56828c9d0fea698f172aae1b2f1cdfb",
+      "codeIdentity": "bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696",
+      "durationMs": 2774505,
+      "evidenceRef": "host-gate:bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696:npm test",
+      "recordedAt": "2026-11-14T08:58:38.840Z",
+      "executed": true,
+      "exitCode": 0
+    },
+    "documentGate": {
+      "evidenceRefs": [
+        "host-gate:bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696:npm run test:docs"
+      ],
+      "checkId": "npm run test:docs",
+      "treeHash": "c6afae2ac1a910afde5f2d0688e7e036db6315a6",
+      "codeIdentity": "bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696",
+      "durationMs": 176151,
+      "evidenceRef": "host-gate:bdf0da6a025a869344feb3646b1964637e5381dbe69625708fa0423461585696:npm run test:docs",
+      "recordedAt": "2026-11-14T14:25:24.747Z",
+      "executed": true,
+      "exitCode": 0
+    }
+  }
+}

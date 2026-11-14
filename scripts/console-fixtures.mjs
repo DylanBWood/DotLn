@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 import { json as prettyJson } from "./lib/helpers.mjs";
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
 import {
   projectBoard,
   renderHtml,
@@ -14,70 +12,18 @@ import {
   fixtureRoot,
   loadFixture,
   readFixtureManifest,
-  root,
 } from "../packages/console/dist/test/fixtures.js";
 
 const [mode = "--check", ...rest] = process.argv.slice(2);
-if (
-  rest.length ||
-  ![
-    "--write",
-    "--check",
-    "--check-current-selfhost",
-    "--record-current-selfhost",
-  ].includes(mode)
-)
+if (rest.length || !["--write", "--check"].includes(mode))
   throw new Error(
-    "usage: console-fixtures.mjs [--write|--check|--check-current-selfhost|--record-current-selfhost] (build first)",
+    "usage: console-fixtures.mjs [--write|--check] (build first)",
   );
 const manifest = readFixtureManifest();
-if (mode === "--record-current-selfhost") {
-  const selected = currentEvidence(root, "feedback");
-  // A schema 2 edition names its live audit, which a carried edition keeps
-  // in another directory (WO-154).
-  const record = join(root, selected.directory, "edition.json");
-  const live = existsSync(record)
-    ? JSON.parse(readFileSync(record, "utf8")).liveAudit
-    : null;
-  for (const [key, name, recorded] of [
-    ["selfhostAudit", "selfhost-audit.jsonl", live?.audit.path],
-    [
-      "selfhostVerifier",
-      "selfhost-verification.jsonl",
-      live?.verification.path,
-    ],
-    ["maturity", "feedback.json"],
-  ]) {
-    const path = recorded ?? `${selected.directory}/${name}`;
-    manifest.inputs[key] = {
-      ...manifest.inputs[key],
-      path,
-      ref: path,
-      sha256: createHash("sha256")
-        .update(readFileSync(join(root, path)))
-        .digest("hex"),
-    };
-  }
-  for (const store of manifest.cases.selfhost.stores)
-    store.label = `${selected.workOrder} self-hosted ${store.id === "selfhost-audit" ? "executor" : "verifier"}`;
-  const capture = `Current selfhost recording follows ${selected.directory}; previous source editions retain their bytes.`;
-  if (!manifest.capture.includes(capture)) manifest.capture += ` ${capture}`;
-  // Check every newly pinned input before replacing the fixture manifest.
-  loadFixture("selfhost", manifest);
-  writeFileSync(join(fixtureRoot, "manifest.json"), prettyJson(manifest));
-}
-if (mode === "--check-current-selfhost")
-  assert.equal(
-    manifest.inputs.maturity.path,
-    `${currentEvidence(root, "feedback").directory}/feedback.json`,
-    "console selfhost fixture must follow the selected feedback edition; run npm run sync",
-  );
-const writing = mode === "--write" || mode === "--record-current-selfhost";
+const writing = mode === "--write";
 const directory = join(fixtureRoot, "expected");
 if (writing) mkdirSync(directory, { recursive: true });
-for (const name of mode === "--record-current-selfhost"
-  ? ["selfhost"]
-  : Object.keys(manifest.cases)) {
+for (const name of Object.keys(manifest.cases)) {
   const board = projectBoard(loadFixture(name, manifest));
   for (const [extension, contents] of [
     ["json", prettyJson(board)],

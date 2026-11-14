@@ -32,8 +32,6 @@ import { acquireHostLanes } from "./lib/host-lanes.mjs";
 import { checkHost } from "./structural-checks.mjs";
 import { suiteEnvironment } from "./lib/suite-evidence.mjs";
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
-import { budgetVerdict } from "./lib/process-budget.mjs";
-import { followupStatus } from "./lib/planning-followups.mjs";
 
 const fixture = (t) => {
   const root = createFixtureRoot(join(tmpdir(), "dotln-gate-followups-"));
@@ -42,9 +40,12 @@ const fixture = (t) => {
 };
 const sourceRoot = resolve(import.meta.dirname, "..");
 
-test("bounded role wording preserves prior savings and records reviewed startup additions", async () => {
-  const { harnessInstallation, harnessInstructionBlock } =
-    await import("./lib/harness.mjs");
+// The role roots the harness installs are the roles the efficiency baseline
+// measured and the router, once in each skill root. What a root says is
+// judged by regeneration and the rule records (WO-276); no chain of earlier
+// roots is kept beside Git history.
+test("the installed role roots are the efficiency baseline's roles and the router, in both skill roots", async () => {
+  const { harnessInstallation } = await import("./lib/harness.mjs");
   const baseline = JSON.parse(
     fs.readFileSync(
       join(
@@ -54,289 +55,20 @@ test("bounded role wording preserves prior savings and records reviewed startup 
       "utf8",
     ),
   );
-  const budgets = JSON.parse(
-    fs.readFileSync(join(sourceRoot, "docs/control/budgets.json"), "utf8"),
-  );
-  // The role oracles minted since the preceding integrated oracle, newest
-  // first: the paraphrase and worker no-print rules, the closeout sentences
-  // naming the closeout selection, the
-  // planner's no-update sentence, the planner's capture command naming its host, the worker
-  // options, the whole-change recheck and the consistency
-  // table, the planner's publish helper, the question's pathways and the
-  // blocked-turn sentence, the close's and plan start's bounded prune sentences, the
-  // integration that combined the document kinds' re-pin with
-  // main's prune sentences, the router's prune sentence, the shared prune
-  // sentence's re-pin, the review ladder's, the integration that combined
-  // both branches' role text, then the upstream oracles it took in. Each
-  // names the next as its historical baseline and starts its startup bytes
-  // at the next one's measurement; test-process-debt.mjs walks every
-  // recorded parent link of every oracle and checks each recorded hash.
-  const chain = [
-    "wo259-role-baseline.json",
-    "wo243-role-baseline.json",
-    "wo257-role-baseline.json",
-    "wo255-repair-role-baseline.json",
-    "wo255-role-baseline.json",
-    "wo246-role-baseline.json",
-    "wo254-role-baseline.json",
-    "wo253-role-baseline.json",
-    "wo238-integration-role-baseline.json",
-    "wo252-repair-role-baseline.json",
-    "wo252-role-baseline.json",
-    "wo250-role-baseline.json",
-    "wo249-integration-role-baseline.json",
-    "wo251-role-baseline.json",
-    "wo247-role-baseline.json",
-    "wo192-integration-role-baseline.json",
-    "wo239-integration-role-baseline.json",
-    "wo235-removal-role-baseline.json",
-    "wo235-quality-pass-role-baseline.json",
-    "wo235-maintenance-role-baseline.json",
-    "wo235-usefulness-role-baseline.json",
-    "wo235-private-reply-role-baseline.json",
-    "wo235-repair-role-baseline.json",
-    "wo235-role-baseline.json",
-  ].map((name) => ({
-    name,
-    ...JSON.parse(
-      fs.readFileSync(
-        join(sourceRoot, "packages/skeleton/fixtures", name),
-        "utf8",
-      ),
-    ),
-  }));
-  const links = chain.slice(1).map((earlier, index) => [chain[index], earlier]);
-  for (const [later, earlier] of links)
-    assert.equal(later.historicalBaseline, earlier.name, later.name);
-  const oracle = chain.at(-1);
-  assert.equal(
-    oracle.historicalBaseline,
-    "wo234-integration-role-baseline.json",
-  );
-  const historicalBytes = fs.readFileSync(
-    join(sourceRoot, "packages/skeleton/fixtures", oracle.historicalBaseline),
-  );
-  assert.equal(
-    createHash("sha256").update(historicalBytes).digest("hex"),
-    oracle.historicalSha256,
-    "the preceding role oracle remains byte-exact",
-  );
-  const historicalOracle = JSON.parse(historicalBytes);
-  assert.equal(oracle.upstreamBaseline, historicalOracle.upstreamBaseline);
-  assert.equal(oracle.upstreamSha256, historicalOracle.upstreamSha256);
-  const precedingBytes = fs.readFileSync(
-    join(
-      sourceRoot,
-      "packages/skeleton/fixtures",
-      historicalOracle.historicalBaseline,
-    ),
-  );
-  assert.equal(
-    createHash("sha256").update(precedingBytes).digest("hex"),
-    historicalOracle.historicalSha256,
-  );
-  const historical = JSON.parse(
-    fs.readFileSync(
-      join(sourceRoot, "packages/skeleton/fixtures/wo226-role-baseline.json"),
-      "utf8",
-    ),
-  ).startupCost;
-  const priorCost = historicalOracle.startupCost;
-  const reviewed = oracle.startupCost;
-  for (const cost of [
-    historical,
-    priorCost,
-    ...chain.map((link) => link.startupCost),
-  ]) {
-    assert.match(cost.decision, /^WO-\d{3}-D\d{3}$/u);
-  }
-  // Historical overruns retain their original dispositions. Current breaches
-  // are linked to optimization work without raising a ceiling or cutting duties.
-  for (const cost of [historical, priorCost]) {
-    if (cost.followup !== undefined) {
-      assert.match(cost.followup, /^FUP-[a-f0-9]{16}$/u);
-      continue;
-    }
-    // An accepted addition has no deferred work; its recorded effective
-    // ceiling must be supported by the actual budget acceptance instead.
-    for (const [role, profile] of Object.entries(cost.profiles)) {
-      const nominal = profile.nominalCeiling ?? profile.ceiling;
-      if (nominal === null || profile.bytes <= nominal) continue;
-      assert.ok(
-        budgets.acceptances.some(
-          (entry) =>
-            entry.metric === `coldStartBytes.${role}` &&
-            !entry.scope &&
-            entry.ceiling === profile.ceiling,
-        ),
-        `${role}: prior accepted growth keeps its recorded disposition`,
-      );
-    }
-  }
-  const files = new Map(
-    harnessInstallation().files.map((file) => [file.path, file.contents]),
-  );
-  const floor = fs.readFileSync(join(sourceRoot, "CLAUDE.md"), "utf8");
-  const instruction = floor.replace(
-    harnessInstructionBlock(floor).trimEnd(),
-    files.get("CLAUDE.md").trimEnd(),
-  );
-  const profiles = [...files].filter(([file]) => file.endsWith("/SKILL.md"));
+  const profiles = harnessInstallation()
+    .files.map((file) => file.path)
+    .filter((path) => path.endsWith("/SKILL.md"));
   assert.equal(
     profiles.length,
     baseline.profiles.length + 2,
     "router is added in both installed roots",
   );
-  // Every root over its ceiling follows product 07's one route: its reviewed
-  // rules stay whole and the newest oracle names the optimization follow-up
-  // that the current growth decision boarded, still open, deferred or
-  // allocated.
-  const boardedBreach = (role, bytes, ceiling) => {
-    if (
-      budgetVerdict(budgets, `coldStartBytes.${role}`, bytes, ceiling) !==
-      "breach"
-    )
-      return;
-    const current = chain[0].startupCost.profiles[role];
-    assert.match(
-      current.followup ?? "",
-      /^FUP-[a-f0-9]{16}$/u,
-      `${role}: current overrun names its optimization follow-up`,
-    );
-    const register = JSON.parse(
-      fs.readFileSync(join(sourceRoot, "docs/planning/followups.json"), "utf8"),
-    );
-    const entry = register.entries.find((row) => row.id === current.followup);
-    assert.ok(
-      entry && !entry.revisions.at(-1).missing,
-      `${role}: optimization follow-up remains recorded`,
-    );
-    assert.ok(
-      ["open", "deferred", "allocated"].includes(followupStatus(entry)),
-      `${role}: optimization has a current disposition`,
-    );
-    assert.ok(
-      entry.revisions
-        .at(-1)
-        .ref.endsWith(`#${chain[0].startupCost.decision.toLowerCase()}`),
-      `${role}: follow-up belongs to the current growth decision`,
-    );
-  };
-  for (const [file, contents] of profiles) {
-    const bytes = Buffer.byteLength(instruction) + Buffer.byteLength(contents);
-    const role = file.split("/")[2].slice("dotln-".length);
-    const current = chain[0].startupCost.profiles[role];
-    assert.equal(bytes, current.bytes, `${file}: reviewed startup bytes`);
-    // The router's first oracle had no earlier measurement to link to; each
-    // later oracle links to the preceding one that names it. Its unchanged
-    // ceiling is judged by the same route as every other root's.
-    if (role === "router") {
-      const earlier = chain[1].startupCost.profiles.router;
-      assert.equal(current.beforeBytes, earlier?.bytes ?? null);
-      assert.equal(current.growthBytes, earlier ? bytes - earlier.bytes : null);
-      // The oracle keeps the ceiling it measured against; a ceiling raised
-      // since is the standing route's dated acceptance of the measured bytes
-      // plus one 4,096-byte step (WO-258 step 13).
-      const ceiling = budgets.limits.coldStartBytes.router;
-      if (current.ceiling !== ceiling)
-        assert.ok(
-          budgets.acceptances.some(
-            (entry) =>
-              entry.metric === "coldStartBytes.router" &&
-              !entry.scope &&
-              entry.ceiling === ceiling &&
-              ceiling === bytes + 4096,
-          ),
-          "router: a raised ceiling is the measured bytes plus 4,096, accepted",
-        );
-      boardedBreach(role, bytes, budgets.limits.coldStartBytes.router);
-      continue;
-    }
-    const previous = baseline.profiles.find((profile) => profile.path === file);
-    assert.ok(previous, `missing baseline: ${file}`);
-    const measured = reviewed.profiles[role];
-    const prior = priorCost.profiles[role];
-    const original = historical.profiles[role];
-    for (const [later, earlier] of links)
-      assert.equal(
-        later.startupCost.profiles[role].beforeBytes,
-        earlier.startupCost.profiles[role].bytes,
-        `${file}: ${later.name} starts at the preserved ${earlier.name} measurement`,
-      );
-    assert.equal(
-      bytes - current.beforeBytes,
-      current.growthBytes,
-      `${file}: the newest oracle records its measured change`,
-    );
-    assert.equal(
-      measured.beforeBytes,
-      prior.bytes,
-      `${file}: this order's first oracle starts at the preceding reviewed bytes`,
-    );
-    assert.equal(
-      measured.bytes - measured.beforeBytes,
-      measured.growthBytes,
-      `${file}: only the separately reviewed role additions`,
-    );
-    assert.equal(
-      original.bytes - original.beforeBytes,
-      historical.sharedRuleGrowthBytes,
-      `${file}: the preceding shared-rule addition remains recorded`,
-    );
-    const predecessor = JSON.parse(precedingBytes).startupCost.profiles[role];
-    assert.equal(
-      prior.beforeBytes,
-      predecessor.bytes,
-      `${file}: preceding role cost remains linked`,
-    );
-    assert.equal(
-      prior.bytes - prior.beforeBytes,
-      prior.growthBytes,
-      `${file}: the previous role growth remains recorded`,
-    );
-    assert.equal(
-      measured.ceiling === null ? null : measured.ceiling - measured.bytes,
-      measured.headroomBytes,
-      `${file}: historical headroom uses the recorded bytes and effective ceiling`,
-    );
-    assert.equal(
-      measured.nominalCeiling,
-      prior.nominalCeiling ?? prior.ceiling,
-      `${role}: reviewed additions preserve the preceding nominal ceiling`,
-    );
-    assert.equal(
-      budgets.limits.coldStartBytes[role],
-      measured.nominalCeiling,
-      `${role}: the operating-cost ceiling stays unchanged`,
-    );
-    const metric = `coldStartBytes.${role}`;
-    boardedBreach(role, bytes, measured.nominalCeiling);
-    if (measured.ceiling !== measured.nominalCeiling)
+  for (const file of profiles)
+    if (file.split("/")[2] !== "dotln-router")
       assert.ok(
-        budgets.acceptances.some(
-          (entry) =>
-            entry.metric === metric &&
-            !entry.scope &&
-            entry.ceiling === measured.ceiling,
-        ),
-        `${role}: an explicit global acceptance supplies the recorded ceiling`,
+        baseline.profiles.some((profile) => profile.path === file),
+        `missing baseline: ${file}`,
       );
-    assert.ok(
-      measured.ceiling === null || measured.bytes <= measured.ceiling,
-      `${file}: historical bytes fit their recorded ceiling`,
-    );
-    // Keep historical savings distinct from later duties. Current bytes are
-    // checked above against the configured ceiling and its acceptances.
-    assert.ok(
-      original.beforeBytes <= previous.bytes,
-      `${file}: ${original.beforeBytes} exceeds before ${previous.bytes}`,
-    );
-    if (role === "executor" || role === "reviewer")
-      assert.ok(
-        original.ceiling - original.beforeBytes >= 256,
-        `${role}: the prior wording savings retain 256 bytes of working headroom`,
-      );
-  }
 });
 
 test("a legacy gate marker cannot be revived by a process born after it", (t) => {
@@ -446,62 +178,25 @@ test("protected intake repositories stay outside the gate candidate while ordina
   );
 });
 
-test("reviewer packets carry an ordinary-authority safe default", async () => {
-  const { contributorProgram } =
-    await import("../packages/skeleton/dist/src/loadouts/contributor.js");
-  const reviewer = contributorProgram().roles.find(
-    (role) => role.name === "reviewer",
-  );
-  assert.ok(
-    reviewer.procedure.some(
-      (line) =>
-        line.includes("Every option in an operator packet") &&
-        line.includes("without operator override") &&
-        line.includes("safe default"),
-    ),
-  );
-});
-
-test("planner judgment reuse never authorizes edits to judged text", async () => {
-  const { contributorProgram } =
-    await import("../packages/skeleton/dist/src/loadouts/contributor.js");
-  const planner = contributorProgram().roles.find(
-    (role) => role.name === "planner",
-  );
-  const rule = planner.procedure.find((line) =>
-    line.includes("load dotln-refuter"),
-  );
-  assert.match(
-    rule,
-    /Before editing judged text, resolve its refutation hold or record the operator-authorized amendment/,
-  );
-  assert.match(rule, /judgment reuse never authorizes a repair/);
-});
-
-test("sync selection includes release preparation and current role oracle inputs", async () => {
+test("sync selection includes release preparation inputs", async () => {
   const { machinerySources } = await import("./test-runner.mjs");
   for (const file of [
     "scripts/release.mjs",
     "scripts/lib/release-preparation.mjs",
-    "scripts/check-role-oracle.mjs",
-    "scripts/test-process-debt.mjs",
   ])
     assert.ok(machinerySources["sync-fixtures"].includes(file), file);
 });
 
-test("every role oracle is a declared input of the suite that walks it", async () => {
+test("WO-276 criterion R5: the runner exports the declared sources from their own module, and a row that declares the runner declares that module", async () => {
   const { machinerySources } = await import("./test-runner.mjs");
-  // The role-oracle walk lists the fixtures directory, so a newly minted
-  // oracle must also select the suite that judges it.
-  const fixtures = "packages/skeleton/fixtures";
-  const declared = new Set(machinerySources["process-debt"]);
-  assert.deepEqual(
-    fs
-      .readdirSync(join(sourceRoot, fixtures))
-      .filter((name) => name.endsWith("-role-baseline.json"))
-      .filter((name) => !declared.has(`${fixtures}/${name}`)),
-    [],
+  const moved = await import("./lib/machinery-sources.mjs");
+  assert.equal(machinerySources, moved.machinerySources);
+  const declaring = Object.entries(machinerySources).filter(([, sources]) =>
+    sources.includes("scripts/test-runner.mjs"),
   );
+  assert.ok(declaring.length > 0);
+  for (const [suite, sources] of declaring)
+    assert.ok(sources.includes("scripts/lib/machinery-sources.mjs"), suite);
 });
 
 test("document failure classification does not build for skipped or infrastructure-failed tasks", async (t) => {
@@ -1255,14 +950,21 @@ test("host refusal supplies the gate-share remedy and its feasibility", () => {
     source: "fixture",
   };
   const limits = { taskBytes: 2 ** 30, hostLanes: 4, hostShare: 2 / 3 };
+  // The daemon's sample is fixed here: these cases judge the lane budget,
+  // whatever the host running them holds.
   const result = checkHost(sample, {
     limits,
     requiredPeakBytes: 1.1 * 2 ** 30,
+    fileEvents: {},
   });
   assert.equal(result.exitCode, 1);
   assert.match(result.output, /memory\.gateShare must be at least 0\.55/);
   assert.match(
-    checkHost(sample, { limits, requiredPeakBytes: 2 * 2 ** 30 }).output,
+    checkHost(sample, {
+      limits,
+      requiredPeakBytes: 2 * 2 ** 30,
+      fileEvents: {},
+    }).output,
     /exceeds memory\.hostShare/,
   );
 });

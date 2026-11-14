@@ -1,0 +1,165 @@
+[
+  {
+    "name": "source-discovery",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "WO-276 criterion B1: the document gate screens a source of every dialect",
+      "scripts/test-docs-check.mjs"
+    ],
+    "exitCode": 0,
+    "durationMs": 561,
+    "log": "source-discovery.log"
+  },
+  {
+    "name": "host-admission",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "host structural check refuses|a gate shows the file-events|a gate tells its host check",
+      "scripts/test-runner.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationMs": 736,
+    "log": "host-admission.log"
+  },
+  {
+    "name": "reader-cache",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "coordination directory holds its own process reader|lanes CLI reads live holders",
+      "scripts/test-host-guard.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationMs": 1826,
+    "log": "reader-cache.log"
+  },
+  {
+    "name": "capability-history",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "WO-139 inherited capability rows can be restored only with exact dated preservation",
+      "scripts/test-plan-refutation.mjs"
+    ],
+    "exitCode": 1,
+    "durationMs": 19649,
+    "log": "capability-history.log",
+    "disposition": "Focused case passed; file-level check failed on verifier-authored D146 missing rejected array. Corrected and queued for rerun."
+  },
+  {
+    "name": "comparisons",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "docs/evidence/WO-276/part-b/comparisons/readers.mjs"
+    ],
+    "exitCode": 1,
+    "durationMs": 153247,
+    "log": "comparisons.log",
+    "disposition": "Intentionally stopped after 0 h 3 min; completed partial rows are not a complete comparison pass. Replaced by the nine changed comparisons, all passed."
+  },
+  {
+    "name": "feedback",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "scripts/feedback-evidence.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationMs": 2815,
+    "log": "feedback.log"
+  },
+  {
+    "name": "subject-gates",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "docs/evidence/WO-276/verifier-003/subject-gates.mjs",
+      "session-scratch/subject-gates.json"
+    ],
+    "exitCode": 0,
+    "durationMs": 2538,
+    "log": "subject-gates.log"
+  },
+  {
+    "name": "capability-history-rerun",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "WO-139 inherited capability rows can be restored only with exact dated preservation",
+      "scripts/test-plan-refutation.mjs"
+    ],
+    "exitCode": 0,
+    "log": "capability-history-rerun.log",
+    "disposition": "Passed after correcting D146 and regenerating metadata."
+  },
+  {
+    "name": "host-kit-floor",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "WO-276 criterion H4:",
+      "scripts/test-runner.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationMs": 406,
+    "log": "host-kit-floor.log"
+  },
+  {
+    "name": "format",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "npm",
+      "run",
+      "format:check"
+    ],
+    "exitCode": 0,
+    "durationMs": 12009,
+    "log": "format.log"
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "dollars": {
+    "control": {
+      "day": "2026-11-12",
+      "timeZone": "UTC",
+      "totalTokens": 20000000,
+      "partial": false,
+      "estimateUsd": 60,
+      "pricedUsd": 60,
+      "unpriced": [],
+      "unattested": false
+    },
+    "sameRole": {
+      "day": "2026-11-12",
+      "timeZone": "UTC",
+      "totalTokens": 20000000,
+      "partial": true,
+      "estimateUsd": null,
+      "pricedUsd": 0,
+      "unpriced": [],
+      "unattested": false
+    },
+    "differentRole": {
+      "day": "2026-11-12",
+      "timeZone": "UTC",
+      "totalTokens": 20000000,
+      "partial": true,
+      "estimateUsd": null,
+      "pricedUsd": 60,
+      "unpriced": [],
+      "unattested": false
+    },
+    "printed": [
+      "Day's use (2026-11-12, local calendar day): 20000000 tokens, an estimated $60.00 of a daily figure of $50.00. The daily figure is reached: finish the step in hand, write the standing and end the turn. This is advisory and refuses nothing.",
+      "Day's use (2026-11-12, local calendar day): at least 20000000 tokens (an observation of the day holds no count), estimate unknown (an observation of the day holds no count) against a daily figure of $50.00.",
+      "Day's use (2026-11-12, local calendar day): at least 20000000 tokens (an observation of the day holds no count), estimate unknown (an observation of the day holds no count), at least $60.00 for the sessions that have one, against a daily figure of $50.00. The daily figure is reached: finish the step in hand, write the standing and end the turn. This is advisory and refuses nothing."
+    ]
+  },
+  "tokens": {
+    "control": {
+      "day": "2026-11-12",
+      "timeZone": "UTC",
+      "totalTokens": 1020,
+      "partial": false,
+      "estimateUsd": 0.0003,
+      "pricedUsd": 0.0003,
+      "unpriced": [],
+      "unattested": false
+    },
+    "partial": {
+      "day": "2026-11-12",
+      "timeZone": "UTC",
+      "totalTokens": 20,
+      "partial": true,
+      "estimateUsd": null,
+      "pricedUsd": 0.0003,
+      "unpriced": [],
+      "unattested": false
+    },
+    "printed": [
+      "Day's use (2026-11-12, local calendar day): 1020 tokens of a daily figure of 100 tokens. The daily figure is reached: finish the step in hand, write the standing and end the turn. This is advisory and refuses nothing.",
+      "Day's use (2026-11-12, local calendar day): at least 20 tokens (an observation of the day holds no count) of a daily figure of 100 tokens."
+    ]
+  },
+  "limit": "Pure production aggregation with supported usage observations; renderer uses gate-built distribution corresponding to standing subject."
+}

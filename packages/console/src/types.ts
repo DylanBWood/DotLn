@@ -35,6 +35,33 @@ export interface DocumentSource {
   readonly value: unknown;
 }
 
+/** One table cell of an authored document: its text as written, as a reader
+ * sees it (a line break as a newline), and the destinations of its links. */
+export interface DocumentCell {
+  readonly source: string;
+  readonly text: string;
+  readonly links: readonly string[];
+}
+
+/** An authored Markdown document as the repository's one Markdown reader
+ * reads it: its top-level headings (each title as written) and its tables,
+ * header row first. The console never parses Markdown; the collector asks a
+ * script for this structure and the projectors read it. */
+export interface DocumentStructure {
+  readonly headings: readonly {
+    readonly depth: number;
+    readonly title: string;
+    readonly line: number;
+  }[];
+  readonly tables: readonly {
+    readonly line: number;
+    readonly rows: readonly {
+      readonly line: number;
+      readonly cells: readonly DocumentCell[];
+    }[];
+  }[];
+}
+
 /** The I/O adapter records each input, including unavailable inputs. */
 export interface BoardSources {
   readonly stores?: readonly StoreSource[];
@@ -47,12 +74,12 @@ export interface BoardSources {
   readonly controlLog?: Source<readonly DocumentSource[]>;
   readonly constellation?: Source<string>;
   readonly releases?: Source<string>;
+  /** What the index command prints with `--json`: both pages' cards and the
+   * workstream observation. The pages themselves are never read. */
   readonly workOrderIndex?: Source<string>;
-  /** The index's companion page of settled orders (WO-190). */
-  readonly workOrderHistory?: Source<string>;
-  readonly capabilities?: Source<string>;
-  readonly publication?: Source<string>;
-  readonly roadmap?: Source<string>;
+  readonly capabilities?: Source<DocumentStructure>;
+  readonly publication?: Source<DocumentStructure>;
+  readonly roadmap?: Source<DocumentStructure>;
   readonly refutations?: Source<readonly DocumentSource[]>;
 }
 

@@ -8,6 +8,7 @@ import {
   dispatchStanding,
   requireRedispatchBound,
 } from "./lib/dispatch-bound.mjs";
+import { closeLeftoverCodexServers } from "./lib/codex-background.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   fetchMergedBases,
@@ -21,10 +22,12 @@ import {
 } from "./lib/release-close-handoff.mjs";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   readdirSync,
   renameSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { createHash } from "node:crypto";
@@ -38,9 +41,11 @@ import { pathToFileURL } from "node:url";
 import {
   CLAUDE_SELECTED_EFFORTS,
   claudeSessionReport,
+  observedClaudeVersion,
   reportHarnessRuntime,
   currentHarnessSessionReport,
   observedFactsReport,
+  isCoreRoot,
   isKitRoot,
 } from "./lib/harness-runtime.mjs";
 import {
@@ -70,6 +75,7 @@ import {
   declaredCriteria as declaredCriteriaOf,
   describeHandoff,
   handoffLedgerPath,
+  standingFilePath,
   readHandoffLedger,
   readPreflightSuites,
   requireFinalReviewGate,
@@ -115,6 +121,7 @@ import {
 import {
   containedRegularFile,
   readJsonFile,
+  workOrderAuthorityFiles,
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
 import {
@@ -122,6 +129,7 @@ import {
   docRelative,
   findLaunchpad,
   loadConfig,
+  recordsStayInInstance,
 } from "./lib/config.mjs";
 import {
   criterionRecordRefusal,
@@ -134,8 +142,17 @@ import {
 } from "./lib/derived-contract.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
 import {
+  markdownCodeBlocks,
+  markdownSection,
+  parseMarkdown,
+} from "./lib/markdown-links.mjs";
+import { areaNotes, commitsSince, countableClone } from "./lib/area-notes.mjs";
+import { parseWorkstreamDeclaration } from "./lib/work-order-workstream.mjs";
+import { LIST_UNREAD, readWorkOrder } from "./lib/work-order-document.mjs";
+import {
   directoryIdentity,
   registeredOrder,
+  resolveRecordedClone,
   launchpadInvocation,
   targetGateCommand,
   targetRecordsUnfinished,
@@ -284,6 +301,28 @@ const nextFinalReview = (state) => {
   return `FINAL-${String(Math.max(0, ...used) + 1).padStart(3, "0")}`;
 };
 
+/** Whether this order's records stay in the instance and no records step
+ * is owed: the registration's value with no binding committed. The value is
+ * main's, where registrations are merged and where both publishes read it,
+ * so an order branch that lags main, or runs ahead of it, is offered what the
+ * publishes will require. A registration that cannot be read keeps the step
+ * among those offered, as before, and the action itself refuses to file. */
+const recordsInInstance = (state, { strict = false } = {}) => {
+  if (!state?.repositoryId || state.targetRecords) return false;
+  try {
+    return recordsStayInInstance(
+      loadConfig(mainWorktree(repoRoot)).repositories[state.repositoryId],
+      state,
+    );
+  } catch (error) {
+    // What is offered cannot refuse; the action that files can, and does.
+    if (strict)
+      throw new Error(
+        `where ${state.workOrderId}'s records go could not be read from main's registration (${String(error.message).split("\n")[0]})`,
+      );
+    return false;
+  }
+};
 const legalActions = (state) => {
   const plan = planFirstView(repoRoot, state);
   if (state.phase === "active" && plan)
@@ -306,7 +345,10 @@ const legalActions = (state) => {
       verified: ["final-review"],
       "final-review": ["final-review-result"],
       closed: [
-        ...(state.repositoryId && state.targetSubject && !state.targetRecords
+        ...(state.repositoryId &&
+        state.targetSubject &&
+        !state.targetRecords &&
+        !recordsInInstance(state)
           ? ["target-records"]
           : []),
         "release-close",
@@ -387,7 +429,7 @@ const actorCommand = (action, positional = "") =>
   `npm run resume -- ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
 const captureUsage = "--capture <path> --capture-hash sha256:<digest>";
 const offRampPositional = {
-  "accept-overrun": `<wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> ${captureUsage}`,
+  "accept-overrun": `<wallClockMs|completeRuns|subagentCap> --ceiling <value|unlimited> --reason <text> ${captureUsage}`,
   waive: `<criterion> --reason <text> ${captureUsage}`,
   withdraw: `--disposition ${WITHDRAWAL_DISPOSITIONS.join("|")} --reason <text> ${captureUsage}`,
   correct: `<ordinal|report-path> --set <field>=<value> [--set <field>=<value>] --reason <text>`,
@@ -506,6 +548,15 @@ const appendTransition = (action, event) => {
   return { record: recorded, ordinal };
 };
 
+// The labels of the examples a document's code blocks hold, an example's
+// own examples included, each read as the work order it shows: the fields
+// its own top-level text declares.
+const exampleLabels = (source, tree = parseMarkdown(source)) =>
+  markdownCodeBlocks(source, tree).flatMap((block) => {
+    const example = readWorkOrder(block.value);
+    return [...example.labels, ...exampleLabels(example.source, example.tree)];
+  });
+
 const workOrderDeclaration = (
   workOrderPath,
   { allowLegacyMissingEffort = false, workOrderId } = {},
@@ -516,100 +567,85 @@ const workOrderDeclaration = (
     workOrderPath,
   );
 
-  const source = readFileSync(authorityPath, "utf8").replace(/^\uFEFF/, "");
-  const repository = parseRepositoryDeclaration(source, workOrderPath);
-  const lines = source.split(/\r?\n/);
-  const fieldIndexes = (label) => {
+  const order = readWorkOrder(readFileSync(authorityPath, "utf8"));
+  const repository = parseRepositoryDeclaration(order.source, workOrderPath);
+  // A second declaration in the order's own text, or in an example a code
+  // block shows, is ambiguous. A field a quotation or a list item shows is
+  // an example with no authority, as the column-one reading held.
+  const fields = [...order.labels, ...exampleLabels(order.source, order.tree)];
+  // The one field `label` the order carries, or undefined for a legacy order
+  // without an Effort field.
+  const declared = (label) => {
     const prefix = `**${label}:**`;
-    const pattern = new RegExp(`^\\*\\*${label}:\\*\\*(?:\\s|$)`);
-    const indexes = lines.flatMap((line, index) =>
-      pattern.test(line) ? [index] : [],
+    const found = fields.filter(
+      (field) => field.colon && field.label === label,
     );
-    if (indexes.length === 0 && label === "Effort" && allowLegacyMissingEffort)
+    if (found.length === 0 && label === "Effort" && allowLegacyMissingEffort)
       return undefined;
-    if (indexes.length === 0)
+    if (found.length === 0)
       throw new Error(`work order is missing ${prefix} line: ${workOrderPath}`);
-    if (indexes.length !== 1)
+    if (found.length !== 1)
       throw new Error(
         `work order has duplicate ${prefix} lines: ${workOrderPath}`,
       );
-    return indexes[0];
+    return found[0];
   };
-  const fieldAt = (label, index) => {
-    const prefix = `**${label}:**`;
-    if (!lines[index].slice(prefix.length).trim())
+  // A field's own lines, as the briefing quotes them; a value must begin on
+  // the label's line.
+  const fieldSource = (field, label) => {
+    if (!field.lineValue.trim())
       throw new Error(
-        `work order has malformed ${prefix} line: ${workOrderPath}`,
+        `work order has malformed **${label}:** line: ${workOrderPath}`,
       );
-    const paragraphLines = [];
-    for (let cursor = index; cursor < lines.length; cursor += 1) {
-      if (
-        cursor > index &&
-        (lines[cursor].trim() === "" || /^\*\*[^*]+:\*\*/.test(lines[cursor]))
-      )
-        break;
-      paragraphLines.push(lines[cursor]);
-    }
-    const paragraph = paragraphLines.join(" ").replace(/\s+/g, " ").trim();
-    return {
-      source: paragraphLines.join("\n"),
-      paragraph,
-      nextIndex: index + paragraphLines.length,
-    };
+    return order.source
+      .slice(field.start, field.end)
+      .replace(/\r?\n$/u, "")
+      .split(/\r?\n/u)
+      .join("\n");
   };
 
-  const modelIndex = fieldIndexes("Model");
-  const effortIndex = fieldIndexes("Effort");
-  const titleIndex = lines.findIndex((line) => line.trim());
-  if (titleIndex === -1 || !lines[titleIndex].startsWith("# "))
+  const model = declared("Model");
+  const effort = declared("Effort");
+  if (!order.title)
     throw new Error(`work order has malformed header: ${workOrderPath}`);
-  const bodyBoundaries = lines.flatMap((line, index) =>
-    index > titleIndex &&
-    (/^\*\*Objective:\*\*(?:\s|$)/.test(line) || /^##(?:\s|$)/.test(line))
-      ? [index]
-      : [],
-  );
-  const headerEnd = bodyBoundaries.length
-    ? Math.min(...bodyBoundaries)
-    : lines.length;
   if (
-    modelIndex >= headerEnd ||
-    (effortIndex !== undefined && effortIndex >= headerEnd)
+    !order.header.includes(model) ||
+    (effort !== undefined && !order.header.includes(effort))
   )
     throw new Error(
       `work order must place **Model:** and **Effort:** in its leading metadata header: ${workOrderPath}`,
     );
-  const experimentIndex = lines.findIndex(
-    (line, index) =>
-      index < headerEnd && /^\*\*Experiment:\*\*(?:\s|$)/.test(line),
-  );
-  const experiment =
-    experimentIndex < 0
-      ? {}
-      : {
-          experimentSource: fieldAt("Experiment", experimentIndex).source,
-        };
-  const model = fieldAt("Model", modelIndex);
-  if (effortIndex === undefined)
+  const [experimentField] = order.headerFields("Experiment");
+  const experiment = experimentField
+    ? { experimentSource: fieldSource(experimentField, "Experiment") }
+    : {};
+  const modelSource = fieldSource(model, "Model");
+  if (effort === undefined)
     return {
       ...experiment,
-      modelSource: model.source,
+      modelSource,
       effortSource:
         "**Effort:** unavailable for this pre-WO-019 activation; executor any; verifier any; reviewer any.",
       efforts: { executor: "any", verifier: "any", reviewer: "any" },
       repository,
     };
-  let headerCursor = model.nextIndex;
-  while (lines[headerCursor]?.trim() === "") headerCursor += 1;
-  if (effortIndex !== headerCursor)
+  // Only blank lines may separate the complete Model field from Effort.
+  if (
+    effort.start < model.end ||
+    order.source.slice(model.end, effort.start).trim()
+  )
     throw new Error(
       `work order must place **Effort:** immediately after **Model:** in its header: ${workOrderPath}`,
     );
-  const effort = fieldAt("Effort", effortIndex);
+  const effortSource = fieldSource(effort, "Effort");
+  // The value follows the label after a space, and its wrapped lines read as
+  // one line.
   const level = "(any|low\\+?|medium\\+?|high\\+?|xhigh\\+?|max\\+?)";
-  const match = new RegExp(
-    `^\\*\\*Effort:\\*\\*\\s+executor\\s+${level}\\s*;\\s*verifier\\s+${level}\\s*;\\s*reviewer\\s+${level}(?:\\.\\s*.*|\\.)?$`,
-  ).exec(effort.paragraph);
+  const match =
+    /^\s/u.test(effort.lineValue) &&
+    new RegExp(
+      `^executor\\s+${level}\\s*;\\s*verifier\\s+${level}\\s*;\\s*reviewer\\s+${level}(?:\\.\\s*.*|\\.)?$`,
+    ).exec(effort.value.replace(/\s+/g, " "));
   if (
     !match ||
     !effortDeclarations.has(match[1]) ||
@@ -622,8 +658,8 @@ const workOrderDeclaration = (
 
   return {
     ...experiment,
-    modelSource: model.source,
-    effortSource: effort.source,
+    modelSource,
+    effortSource,
     efforts: {
       executor: match[1],
       verifier: match[2],
@@ -803,6 +839,16 @@ export const parseActor = (
     throw new Error(
       `this Claude Code session exports CLAUDE_EFFORT=${selected}; attest --effort ${selected} --source claude-session-readback rather than ${suppliedEffort} with source ${suppliedSource}. A claude-code attestation from this session records the host's selection; another session's effort is attested from that session.`,
     );
+  // A session attests what it runs. The hook records the version of the
+  // executable a Claude Code session runs, which can be older than the one
+  // on the path; where the session's state records none, the stated value
+  // stands.
+  const observedVersion =
+    harness === "claude-code" ? observedClaudeVersion(repoRoot, env) : null;
+  if (observedVersion && harnessVersion !== observedVersion)
+    throw new Error(
+      `this Claude Code session runs ${observedVersion}, the version its hook observed; attest --harness-version ${observedVersion} rather than ${harnessVersion}. The briefing's session line prints the observed version.`,
+    );
   const accountLabel = values.has("--account-label")
     ? values.get("--account-label")
     : process.env.DOTLN_ACCOUNT_LABEL;
@@ -825,8 +871,11 @@ const validateEffort = (actor, role, declaration, workOrderPath) => {
 const activeWorkOrderDeclaration = (state) =>
   workOrderDeclaration(state.workOrderPath, {
     workOrderId: state.workOrderId,
+    // Core's order that introduced the declaration is the one refused a
+    // missing one; an instance's order of that number is as any other.
     allowLegacyMissingEffort:
-      !state.effortDeclarationValidated && state.workOrderId !== "WO-019",
+      !state.effortDeclarationValidated &&
+      !(isCoreRoot(repoRoot) && state.workOrderId === "WO-019"),
   });
 
 const completionActor = (action, args, state, role, positional = "") => {
@@ -1038,6 +1087,16 @@ const projectOrder = (state, events, routeContext) => {
   };
 };
 
+/** The version of the object `status --json` prints, and of each element
+ * where it prints several orders. A tool that reads the output reads this
+ * first; a release that changes the object's shape raises it and says so in
+ * its Read before upgrading. The projection the worktree and release
+ * commands call in process carries none. */
+export const STATUS_SCHEMA_VERSION = 1;
+const versionedStatus = (status) => ({
+  schemaVersion: STATUS_SCHEMA_VERSION,
+  ...status,
+});
 export const statusProjection = (
   input,
   workOrder,
@@ -1153,6 +1212,23 @@ const selectionArgs = (args) => {
   return { args: remaining, workOrder };
 };
 
+// The file of an order that was filed and never activated: one file of that
+// number under the work-orders root, and no event in the log. Such an order
+// is selected for a withdrawal as a new order is for its activation.
+const unactivatedOrderFile = (control, workOrder) => {
+  if (
+    !workOrder ||
+    control.orders.has(workOrder) ||
+    control.unreadable?.has(workOrder)
+  )
+    return undefined;
+  const prefix = `${docRelative(repoRoot, "workOrders")}/${workOrder}-`;
+  const files = workOrderAuthorityFiles(repoRoot).filter((path) =>
+    path.startsWith(prefix),
+  );
+  return files.length === 1 ? files[0] : undefined;
+};
+
 const requirePhase = (state, events, ...phases) => {
   if (phases.includes(state.phase)) return;
   const commands = legalCommands(state, events);
@@ -1232,16 +1308,31 @@ const calendarDate = (date) => {
     parsed.toISOString().slice(0, 10) === date
   );
 };
-const reactivationNotes = (text) =>
-  [
-    ...text.matchAll(
-      /^\*\*Reactivation \((\d{4}-\d{2}-\d{2})\):\*\*[ \t]+\S[^\r\n]*/gmu,
-    ),
-  ].map((match) => ({
-    date: match[1],
-    valid: calendarDate(match[1]),
-    digest: sha256Bytes(match[0]),
-  }));
+// A reactivation note is a field `Reactivation (YYYY-MM-DD)` whose reason
+// begins on its line; its digest is that line's bytes from the label on, as
+// a withdrawal records the notes it held.
+const reactivationNotes = (text) => {
+  const order = readWorkOrder(text);
+  // A note is a label of the order's own text: one a quotation or a list
+  // item shows is an example and reopens nothing.
+  return order.labels.flatMap((field) => {
+    const date =
+      field.colon &&
+      /^Reactivation \((\d{4}-\d{2}-\d{2})\)$/u.exec(field.label)?.[1];
+    return date && /^[ \t]+\S/u.test(field.lineValue)
+      ? [
+          {
+            date,
+            valid: calendarDate(date),
+            digest: sha256Bytes(
+              order.source.slice(field.start, field.valueStart) +
+                field.lineValue,
+            ),
+          },
+        ]
+      : [];
+  });
+};
 
 // `withdrawn` is left only by a changed revision that says why: a reactivation
 // note the withdrawn revision did not hold, dated on or after the withdrawal
@@ -1363,10 +1454,13 @@ const declaredCriteria = (state) =>
   declaredCriterionList(state)?.map((criterion) => criterion.id) ?? null;
 // A report is judged against the criteria as they read now, so a defect
 // record of amended text is refused; an unreadable authority reads as none.
+// A criteria list the reader refuses was read and is not whole, so the
+// refusal stands rather than reading as no criteria.
 const reportCriteria = (state) => {
   try {
     return declaredCriterionList(state);
-  } catch {
+  } catch (error) {
+    if (error?.code === LIST_UNREAD) throw error;
     return null;
   }
 };
@@ -1436,6 +1530,86 @@ const unmetBriefing = (state) => {
   const criterion = ids.length === 1 ? ids[0] : "<criterion>";
   return `\nThe executor recorded ${ids.length === 1 ? "criterion" : "criteria"} ${ids.join(", ")} unmet in ${handoffLedgerPath(repoRoot, state.workOrderId)}. Three routes spare the cycle. A criterion no candidate can meet as written (${DEFECT_CLASSES.join(", ")}) is recorded defective with its evidence (npm run resume -- defect ${criterion} --class <class> --evidence <text> <actor flags> --work-order ${state.workOrderId}) and judged \`unmet, defective (<class>) by <ordinal>\`. A waiver is recorded only from the operator's words asking for that criterion's waiver (npm run resume -- waive ${criterion} --reason <text> ${captureUsage} <actor flags> --work-order ${state.workOrderId}), and an amendment needs the operator's words changing the criterion (npm run plan -- amend-order); words that call a criterion wrong or authorize a commit or a pull request ask for neither. Without a route the criterion is judged as it stands.`;
 };
+/** What a target order's briefing says of the recorded understanding of its
+ * repository: each area note beside the registered profile, with the paths it
+ * covers, the commit it was written at and how many commits of the base
+ * branch in the registered clone touched those paths since. It points and
+ * refuses nothing: a note whose block cannot be read, a clone that is not
+ * recorded or whose history cannot answer (a shallow or a partial clone)
+ * and a commit the clone does not hold are printed as such. The counts
+ * share ten seconds between them, so a clone that does not answer costs a
+ * briefing that long and no longer. Each path is printed quoted, so a comma
+ * or a semicolon inside one reads as part of it. */
+const areaNoteBriefing = (state, repository) => {
+  const notes = areaNotes(repoRoot, repository.profile);
+  if (!notes.length) return "";
+  let clone = null;
+  try {
+    clone = countableClone(
+      resolveRecordedClone(repoRoot, state.repositoryId).clone,
+    );
+  } catch {
+    // A clone map that cannot be read leaves every count unknown.
+  }
+  const revision = `refs/heads/${repository.baseBranch}`;
+  const until = Date.now() + 10_000;
+  return `\nArea notes of ${state.repositoryId}, each with the paths it covers, the commit it was written at and the commits on ${repository.baseBranch} in the registered clone that touched those paths since:\n${notes
+    .map((note) =>
+      note.failures.length
+        ? `- ${join(repoRoot, note.file)}: its block cannot be read (the document check names the field)`
+        : `- ${join(repoRoot, note.file)}: paths ${note.paths.map((path) => JSON.stringify(path)).join(", ")}; commit ${note.commit}; commits since: ${commitsSince(clone, revision, note, { timeoutMs: until - Date.now() })}`,
+    )
+    .join("\n")}`;
+};
+/** The workstream document of an order whose header names one, with its
+ * rules section, as the briefing prints it. An order that names none, and a
+ * header the index would refuse, print nothing here; an id with no document,
+ * or with more than one, which the index refuses, is said. */
+const workstreamBriefing = (state) => {
+  let id;
+  try {
+    id = parseWorkstreamDeclaration(
+      readFileSync(
+        workOrderAuthorityPath(
+          repoRoot,
+          state.workOrderId,
+          state.workOrderPath,
+        ),
+        "utf8",
+      ),
+      state.workOrderPath,
+    );
+  } catch {
+    return "";
+  }
+  if (!id) return "";
+  const directory = docPath(repoRoot, "workstreams");
+  let names = [];
+  try {
+    names = readdirSync(directory)
+      .sort()
+      .filter(
+        (entry) =>
+          entry.startsWith(`${id}-`) &&
+          entry.endsWith(".md") &&
+          containedRegularFile(join(directory, entry), repoRoot),
+      );
+  } catch {
+    // No workstreams directory: no document.
+  }
+  if (names.length !== 1)
+    return `\nThis order declares workstream ${id}, which has ${names.length ? "more than one document" : "no document"} under ${directory}.`;
+  const file = join(directory, names[0]);
+  let rules;
+  try {
+    rules = markdownSection(readFileSync(file, "utf8"), "Rules", {
+      depths: [2],
+    });
+  } catch {
+    // A document that cannot be read is named without its section.
+  }
+  return `\nThis order is a member of workstream ${id}: ${file}, ${rules ? `whose section Rules (line ${rules.line}) holds the rules every member follows` : "which has no Rules section"}.`;
+};
 const targetBriefing = (state, review = false) => {
   if (!state.repositoryId) return "";
   const repository = loadConfig(repoRoot).repositories[state.repositoryId];
@@ -1445,7 +1619,45 @@ const targetBriefing = (state, review = false) => {
   const location = entry
     ? join(entry.target, repository.documentationRoot)
     : `${state.repositoryId}/${repository.documentationRoot} (target worktree not registered)`;
-  return `\nRepo-native authority includes ${location} and the registered profile. Target gate claims stand on ${review ? targetGateCommand(repoRoot, state.workOrderId, "review") : `${targetGateCommand(repoRoot, state.workOrderId, "plain")} [--review]`}; the instance document gate, which a criterion names as npm run test:docs, runs as ${launchpadInvocation(repoRoot, "test-runner")} --document. This target order records no release; release prepare returns that outcome without assigning a version.${review ? ` Integrate the paired launchpad records with npm run worktree -- integrate ${state.workOrderId}, directly from this target root; this does not merge the target branch. Commit the reviewed target change on wo-${state.workOrderId.slice(3)} before final-review-result pass; after the pass, commit the instance records (the order's records and evidence), run npm run resume -- target-records <actor flags>, whose footer names that commit, then commit the moved records' removal. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title <title> --body-file <path>, and publish the instance records with npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <path>.` : ""}`;
+  // A profile path that leaves the launchpad is one activation refuses; it
+  // is named as declared and never resolved.
+  const profile = !repository.profile
+    ? `${location}; repositories.${state.repositoryId} declares no profile.`
+    : repository.profile.split("/").includes("..")
+      ? `${location}; repositories.${state.repositoryId} declares a profile outside the launchpad (${JSON.stringify(repository.profile)}), which is not read.`
+      : `${location} and the registered profile ${join(repoRoot, repository.profile)}.`;
+  return `\nRepo-native authority includes ${profile} Target gate claims stand on ${review ? targetGateCommand(repoRoot, state.workOrderId, "review") : `${targetGateCommand(repoRoot, state.workOrderId, "plain")} [--review]`}; the instance document gate, which a criterion names as npm run test:docs, runs as ${launchpadInvocation(repoRoot, "test-runner")} --document. This target order records no release; release prepare returns that outcome without assigning a version.${review ? ` Integrate the paired launchpad records with npm run worktree -- integrate ${state.workOrderId}, directly from this target root; this does not merge the target branch. Commit the reviewed target change on wo-${state.workOrderId.slice(3)} before final-review-result pass; after the pass, ${recordsInInstance(state) ? `commit the instance records (the order's records and evidence): repositories.${state.repositoryId}.records keeps them in this instance, so no records step is owed and the target is published at the reviewed commit.` : "commit the instance records (the order's records and evidence), run npm run resume -- target-records <actor flags>, whose footer names that commit, then commit the moved records' removal."} Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title <title> --body-file <path>, and publish the instance records with npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <path>.` : ""}${areaNoteBriefing(state, repository)}${workstreamBriefing(state)}`;
+};
+/** Whether an order's standing file is there: a regular file, never a link
+ * or a directory at its path. */
+const standingFile = (state) => {
+  const path = standingFilePath(repoRoot, state.workOrderId);
+  return lstatSync(join(repoRoot, path), { throwIfNoEntry: false })?.isFile()
+    ? path
+    : null;
+};
+/** The line the executor's briefing carries, in its implementation and in a
+ * repair, while its standing file exists, and nothing without one.
+ * `completion` is the command that ends the phase and removes the file. */
+const standingBriefing = (state, completion) => {
+  const path = standingFile(state);
+  return path
+    ? `\nStanding: ${path} holds where this order's execution stood at its last stop (the steps done, the step in hand, what comes next and what is undecided). Read it before the order's steps; ${completion} removes it.`
+    : "";
+};
+/** Removes an order's standing file once the executor's phase is recorded
+ * complete, and returns the sentence that says so, or nothing where there
+ * was none. The transition is already recorded, so a file that cannot be
+ * removed is reported and fails nothing. */
+const removeStandingFile = (state) => {
+  const path = standingFile(state);
+  if (!path) return "";
+  try {
+    unlinkSync(join(repoRoot, path));
+  } catch (error) {
+    return ` The standing file ${path} could not be removed (${error.code ?? error.message}); remove it before the final review.`;
+  }
+  return ` Removed ${path}, the standing file of the execution now complete.`;
 };
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
@@ -1462,7 +1674,7 @@ const executionBriefing = (state) => {
     );
   return briefingCommands(
     state,
-    `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
+    `Execute ${state.workOrderPath}.${standingBriefing(state, "implementation-ready")}\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
   );
 };
 // A retraction that returned a closed order to repair is its failure source:
@@ -1479,7 +1691,7 @@ const repairSource = (state) => {
 const repairBriefing = (state) =>
   briefingCommands(
     state,
-    `Repair ${state.workOrderPath} using ${repairSource(state)}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
+    `Repair ${state.workOrderPath} using ${repairSource(state)}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${standingBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
   );
 const preflightBriefing = (state) => {
   if (state.repositoryId) return "";
@@ -1542,9 +1754,17 @@ const run = async (argv) => {
     repoRoot,
     "packages/skeleton/dist/src/harness-host.js",
   );
+  // What a dispatch says of Codex background processes it closed.
+  let codexLeftovers = "";
   const reserveCodexDispatch = async (worktree = repoRoot) => {
     const thread = process.env.CODEX_THREAD_ID;
-    if (!thread) return;
+    if (!thread) {
+      // A dispatch from another host is where the background server an
+      // ended Codex session left running is closed, when no Codex process
+      // is alive to use it.
+      codexLeftovers = closeLeftoverCodexServers({ repository: worktree });
+      return;
+    }
     if (!existsSync(harnessHostPath)) {
       throw new Error(
         `Codex writer reservation unavailable; harness runtime is not built. Run ${isKitRoot(repoRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} before retrying this dispatch.`,
@@ -1631,6 +1851,11 @@ const run = async (argv) => {
     );
   // `status --all --json` answers for every order, so it selects none (WO-164).
   const allOrders = action === "status" && args.includes("--all");
+  // Named by --work-order or, on the order's own branch, by the branch.
+  const unactivated =
+    action === "withdraw"
+      ? unactivatedOrderFile(control, workOrder ?? branch)
+      : undefined;
   const selected =
     action === "times" || action === "usage" || allOrders
       ? undefined
@@ -1638,10 +1863,14 @@ const run = async (argv) => {
           workOrder: action === "activate" ? args[0] : workOrder,
           branch,
           latestClosed,
-          allowNew: action === "activate",
+          allowNew: action === "activate" || Boolean(unactivated),
           allowAmbiguous: action === "status" && !args.includes("--json"),
         });
   let state = control.orders.get(selected)?.state ?? fold([]);
+  // The log holds nothing of an order withdrawn before any activation: its
+  // state is the empty one with the order's number and file.
+  if (unactivated)
+    state = { ...state, workOrderId: selected, workOrderPath: unactivated };
   const orderEvents = selected ? eventsForOrder(control, selected) : [];
   let message;
   let statuses;
@@ -1699,11 +1928,13 @@ const run = async (argv) => {
           const order = control.orders.get(
             selectWorkOrder(control, { workOrder: id }),
           ).state;
-          return statusProjection(
-            control,
-            id,
-            readDependencies(repoRoot, order, control, releaseSet),
-            routeContext,
+          return versionedStatus(
+            statusProjection(
+              control,
+              id,
+              readDependencies(repoRoot, order, control, releaseSet),
+              routeContext,
+            ),
           );
         });
         message = JSON.stringify(statuses);
@@ -1712,10 +1943,12 @@ const run = async (argv) => {
       message =
         args[0] === "--json"
           ? JSON.stringify(
-              statusProjection(
-                control,
-                selected,
-                readDependencies(repoRoot, state, control),
+              versionedStatus(
+                statusProjection(
+                  control,
+                  selected,
+                  readDependencies(repoRoot, state, control),
+                ),
               ),
               null,
               2,
@@ -1766,6 +1999,25 @@ const run = async (argv) => {
           }`,
         );
       message = recorded(state);
+      break;
+    }
+    case "checkpoint": {
+      // A recovery point taken where a long order's part ends: the working
+      // tree, tracked and untracked, as a commit under the order's
+      // checkpoint refs, as a transition takes one. It appends no event, so
+      // the order's phase and status read as before it.
+      if (args.length)
+        throw new Error("usage: resume checkpoint [--work-order WO-NNN]");
+      if (!state.workOrderId || !openPhases.includes(state.phase))
+        throw new Error(
+          `checkpoint requires an open work order; observed ${state.workOrderId ?? "no order"} in phase ${state.phase}`,
+        );
+      const { checkpointRef, checkpointSha } = createCheckpoint(
+        repoRoot,
+        "checkpoint",
+        state.workOrderId,
+      );
+      message = `Recorded recovery checkpoint ${checkpointRef} at ${checkpointSha} for ${state.workOrderId}; no event appended. Restore its files with git checkout ${checkpointRef} -- .`;
       break;
     }
     case "activate": {
@@ -1942,7 +2194,7 @@ const run = async (argv) => {
         ...(handoff.checked ? { unmetCriteria: handoff.unmet } : {}),
         actor,
       });
-      message = `${state.workOrderId} is ready for verification.${describeHandoff(handoff)}`;
+      message = `${state.workOrderId} is ready for verification.${describeHandoff(handoff)}${removeStandingFile(state)}`;
       try {
         releasePlanCandidates(repoRoot, state);
       } catch {
@@ -2105,7 +2357,7 @@ const run = async (argv) => {
         ...(handoff.checked ? { unmetCriteria: handoff.unmet } : {}),
         actor,
       });
-      message = `${state.workOrderId} repair is ready for re-verification.${describeHandoff(handoff)}`;
+      message = `${state.workOrderId} repair is ready for re-verification.${describeHandoff(handoff)}${removeStandingFile(state)}`;
       break;
     }
     case "final-review": {
@@ -2269,7 +2521,7 @@ const run = async (argv) => {
         state,
         verdict === "pass"
           ? targetSubject
-            ? `Recorded final review pass for target change committed before this result at ${targetSubject.commit}. Commit the instance records (the order's records and evidence) first, then run npm run resume -- target-records <actor flags>, whose footer names that commit, then commit the moved records' removal. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>, and publish the records with npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
+            ? `Recorded final review pass for target change committed before this result at ${targetSubject.commit}. ${recordsInInstance(state) ? `Commit the instance records (the order's records and evidence): repositories.${state.repositoryId}.records keeps them in this instance, so no records step is owed and the target is published at the reviewed commit.` : "Commit the instance records (the order's records and evidence) first, then run npm run resume -- target-records <actor flags>, whose footer names that commit, then commit the moved records' removal."} Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>, and publish the records with npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
             : `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
           : "Recorded final review failure; return to bounded repair.",
       );
@@ -2278,6 +2530,18 @@ const run = async (argv) => {
     case "target-records": {
       await reserveCodexDispatch();
       requirePhase(state, orderEvents, "closed");
+      let kept;
+      try {
+        kept = recordsInInstance(state, { strict: true });
+      } catch (error) {
+        throw new Error(
+          `target-records refused: ${error.message}; nothing was filed`,
+        );
+      }
+      if (kept)
+        throw new Error(
+          `target-records refused: repositories.${state.repositoryId}.records is "instance", so ${state.workOrderId}'s records stay in this instance and its records pull request publishes them; no records step is owed. Set the key to "target" to file them into the target.`,
+        );
       const actor = completionActor(action, args, state, "reviewer");
       const { commitTargetRecords, removeMovedTargetRecords } =
         await import("./lib/target-records.mjs");
@@ -2301,7 +2565,7 @@ const run = async (argv) => {
     case "accept-overrun": {
       requireOffRamp(state, orderEvents, action);
       const [metric, ...rest] = args;
-      if (!["wallClockMs", "completeRuns"].includes(metric))
+      if (!["wallClockMs", "completeRuns", "subagentCap"].includes(metric))
         throw new Error(`usage: ${commandFor(action)}`);
       const { values, actorArgs } = routeArgs(action, rest, {
         "--ceiling": "one",
@@ -2320,6 +2584,14 @@ const run = async (argv) => {
         throw new Error(
           "accept-overrun requires a nonnegative finite --ceiling or unlimited",
         );
+      if (
+        metric === "subagentCap" &&
+        ceiling !== null &&
+        !Number.isSafeInteger(ceiling)
+      )
+        throw new Error(
+          "accept-overrun subagentCap requires a whole-number --ceiling or unlimited",
+        );
       // The operator authorizes the extension in conversation; the current
       // agent records that capture with its actual identity and keeps its
       // writer. Recording the authorization does not waive a criterion.
@@ -2332,7 +2604,23 @@ const run = async (argv) => {
       });
       let previous;
       let value = null;
-      if (anchor) {
+      const role =
+        phase === "verifying"
+          ? "verifier"
+          : phase === "final-review"
+            ? "reviewer"
+            : "executor";
+      // The cap's base is the budgets file's own value, and what it extends
+      // is the cap this dispatch already runs under; the uses made so far
+      // are the hooks' count and are not read here.
+      if (metric === "subagentCap")
+        previous = effectiveDispatchLimits(
+          readBudgets(repoRoot),
+          role,
+          phase,
+          events,
+        ).subagentCap;
+      else if (anchor) {
         const standing = dispatchStanding(repoRoot, {
           journal: anchor.journal,
           sessionKey: anchor.key,
@@ -2340,15 +2628,10 @@ const run = async (argv) => {
         });
         previous =
           metric === "wallClockMs" ? standing.wallClockMs : standing.bound;
+        // The bound's own reading: worked time, not the time since dispatch.
         value =
-          metric === "wallClockMs" ? standing.elapsedMs : standing.completeRuns;
+          metric === "wallClockMs" ? standing.workedMs : standing.completeRuns;
       } else {
-        const role =
-          phase === "verifying"
-            ? "verifier"
-            : phase === "final-review"
-              ? "reviewer"
-              : "executor";
         previous = effectiveDispatchLimits(
           readBudgets(repoRoot),
           role,
@@ -2665,24 +2948,38 @@ const run = async (argv) => {
       const actor = routeActor(action, actorArgs);
       const { capture, captureHash } = routeCapture(action, values);
       const session = recordingSession(repoRoot);
+      const authority = readFileSync(
+        workOrderAuthorityPath(
+          repoRoot,
+          state.workOrderId,
+          state.workOrderPath,
+        ),
+        "utf8",
+      );
+      // The registered repository a never-activated order's file declares.
+      // No activation bound it, so the withdrawal does: the index holds every
+      // order the log knows to the repository its file names. The id is
+      // recorded as filed, registered still or not.
+      const filed = unactivated
+        ? parseRepositoryDeclaration(authority, unactivated)
+        : undefined;
       const { ordinal } = appendTransition(action, {
         type: "WorkOrderWithdrawn",
         workOrderId: state.workOrderId,
+        // Its first event names the order's file and the repository the
+        // file declares, as an activation would.
+        ...(unactivated ? { workOrderPath: unactivated } : {}),
+        ...(filed
+          ? { repositoryId: filed.id, baseCommit: filed.baseCommit }
+          : {}),
         disposition,
         reason: values.get("--reason"),
         capture,
         captureHash,
         orderHash: authorityHash(state),
-        reactivationNotes: reactivationNotes(
-          readFileSync(
-            workOrderAuthorityPath(
-              repoRoot,
-              state.workOrderId,
-              state.workOrderPath,
-            ),
-            "utf8",
-          ),
-        ).map(({ digest }) => digest),
+        reactivationNotes: reactivationNotes(authority).map(
+          ({ digest }) => digest,
+        ),
         recordingSession: {
           role: session.role,
           capture: captureTiming(repoRoot, capture, session),
@@ -3145,7 +3442,11 @@ const run = async (argv) => {
   }
 
   try {
-    if (!["status", "times", "usage", "briefing"].includes(action)) {
+    // A read and a recovery checkpoint append nothing, so neither rewrites
+    // the projection or the index.
+    if (
+      !["status", "times", "usage", "briefing", "checkpoint"].includes(action)
+    ) {
       control = readControl(repoRoot);
       latestClosed = latestClosedOrder(
         control,
@@ -3210,7 +3511,7 @@ const run = async (argv) => {
     const claudeReport =
       process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID
         ? null
-        : claudeSessionReport();
+        : claudeSessionReport(process.env, repoRoot);
     if (
       (process.env.CODEX_THREAD_ID ||
         process.env.COPILOT_AGENT_SESSION_ID ||
@@ -3245,7 +3546,7 @@ const run = async (argv) => {
             )
           : `${message}\n${report.text}`;
     }
-    if (!["status", "times", "usage"].includes(action)) {
+    if (!["status", "times", "usage", "checkpoint"].includes(action)) {
       const observationState = [
         "activate",
         "fix",
@@ -3268,7 +3569,9 @@ const run = async (argv) => {
     // retrying that transition is illegal, and Codex has no subsequent Stop hook.
     releaseExecutorWriter?.();
   }
-  process.stdout.write(`${message}\n`);
+  process.stdout.write(
+    `${message}${codexLeftovers ? `\n${codexLeftovers}` : ""}\n`,
+  );
 };
 
 export const main = async (argv = process.argv.slice(2)) => {

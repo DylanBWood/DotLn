@@ -1,0 +1,14 @@
+{
+  "plain prose": {
+    "status": "screened",
+    "findings": 1
+  },
+  "one inline code span": {
+    "status": "screened",
+    "findings": 0
+  },
+  "a fenced block": {
+    "status": "screened",
+    "findings": 1
+  }
+}

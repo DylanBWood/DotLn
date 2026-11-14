@@ -32,6 +32,7 @@ import {
 } from "./lib/release-steps.mjs";
 import {
   hasPackageSources,
+  isCoreRoot,
   isKitRoot as isKitWorktree,
 } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
@@ -50,6 +51,7 @@ import {
   loadConfig,
   validateConfig,
   CONFIG_FILENAME,
+  recordsStayInInstance,
 } from "./lib/config.mjs";
 
 import {
@@ -106,6 +108,7 @@ import {
   mainWorktree as findMainWorktree,
   parseWorktrees,
   removeMergedBranch,
+  MERGED_AS,
   releaseCloseCommand,
   shellQuote,
   spawnGit,
@@ -151,6 +154,12 @@ import {
   retainedWorktreeRemovalSubjects,
 } from "./lib/worktree-removal.mjs";
 import { withHostLock } from "./lib/host-resources.mjs";
+import {
+  archivedCloseAttempts,
+  flatCloseAttempt,
+  readableCloseAttempt,
+} from "./lib/close-history.mjs";
+import { readWorkOrder } from "./lib/work-order-document.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
 import {
   directoryIdentity,
@@ -244,20 +253,6 @@ const templateShape = {
 };
 const retainedClosePath = (root, order) =>
   docRelative(root, "control", `local/retained/${order}/release-close.json`);
-const closeAttemptsRoot = (root, order) =>
-  docRelative(root, "control", `local/retained/${order}/attempts/`);
-const readableCloseAttempt = (attempt, order) =>
-  attempt &&
-  attempt.schemaVersion === 1 &&
-  attempt.workOrderId === order &&
-  Array.isArray(attempt.previousAttempts ?? []);
-const flatCloseAttempt = ({
-  previousAttempts: _previous,
-  archivedAttempts: _archives,
-  historyFailure: _failure,
-  retainedHistoryAttempt: _retained,
-  ...attempt
-}) => attempt;
 const historyRecoveryCommand = (root, order) => {
   const code =
     "const {reanchorCloseHistory}=await import(process.argv[1]); await reanchorCloseHistory(process.argv[2],process.argv[3]);";
@@ -339,38 +334,19 @@ export function readCloseHistory(root, order) {
       return result;
     }
   }
-  const prefix = closeAttemptsRoot(root, order).replace(/\/$/u, "") + "/";
-  for (const name of result.archivedAttempts) {
-    const namedArchive =
-      typeof name === "string" &&
-      name.startsWith(prefix) &&
-      /^[a-f0-9]{64}\.json$/u.test(name.slice(prefix.length));
-    try {
-      if (!namedArchive) throw new Error("outside order history");
-      requireMaterialContainment(root, name);
-      const content = readFileSync(join(root, name), "utf8");
-      if (!name.endsWith(`/${sha256(content)}.json`))
-        throw new Error("archive hash differs");
-      const attempt = JSON.parse(content);
-      if (!readableCloseAttempt(attempt, order))
-        throw new Error("archive belongs to another order");
-      result.recoveryAttempts.push(
-        ...(attempt.previousAttempts ?? []),
-        ...(attempt.retainedHistoryAttempt
-          ? [attempt.retainedHistoryAttempt]
-          : []),
-        flatCloseAttempt(attempt),
-      );
-    } catch (error) {
-      result.historyFailure = closeHistoryFailure(
-        root,
-        order,
-        namedArchive ? name : `${file}#archivedAttempts`,
-        error.code ?? "invalid immutable archive",
-      );
-      retainFailure();
-      return result;
-    }
+  // The archives are read by the reader the drive's route shares, so the
+  // close and the route see one history.
+  const archived = archivedCloseAttempts(root, order, result.archivedAttempts);
+  result.recoveryAttempts.push(...archived.attempts);
+  if (archived.failure) {
+    result.historyFailure = closeHistoryFailure(
+      root,
+      order,
+      archived.failure.archive ?? `${file}#archivedAttempts`,
+      archived.failure.cause,
+    );
+    retainFailure();
+    return result;
   }
   if (
     parsed.invalidHistoryRecord !== undefined ||
@@ -438,6 +414,14 @@ export function reanchorCloseHistory(root, order) {
 }
 
 let closeTranscript = null;
+// The commit this run named for a target's change: the close command it
+// prints to run again carries it, since a retry without it is refused,
+// until the close refuses the name itself.
+let namedMergedAs;
+const retryClose = (root, workOrderId) =>
+  releaseCloseCommand(root, workOrderId, "--publish", {
+    mergedAs: namedMergedAs,
+  });
 const writeOutput = (text) => {
   if (closeTranscript) closeTranscript.push(String(text));
   else process.stdout.write(text);
@@ -596,6 +580,21 @@ export function releaseCloseSummary(record) {
       `Target worktree ${cleanup.path}; branch ${cleanup.branch}: ${cleanup.outcome}; base disposable policy ${cleanup.baseDisposablePolicy ?? "delete"}${cleanup.baseDisposablePolicy === "judge-only" ? " (base output retained)" : ""}${deleted.length ? `; disposable output ${record.dryRun ? "would be deleted" : cleanup.outcome === "removed" ? "deleted" : "planned for deletion"}: ${deleted.join(", ")}` : ""}${kit.length ? `; the kit's residue: ${kit.join(", ")}` : ""}${cleanup.baseCheckoutWrites === null ? "; advisory: gate base-checkout writes unavailable" : cleanup.baseCheckoutWrites?.length ? `; advisory: gate commands wrote into the base checkout: ${cleanup.baseCheckoutWrites.join(", ")}` : ""}.`,
     );
   }
+  if (record.targetCleanup?.merged) {
+    const { by, commits, read, subject } = record.targetCleanup.merged;
+    const cost = `${read} base ${read === 1 ? "commit" : "commits"} read`;
+    lines.push(
+      `Target change in the base: ${
+        by === "ancestor"
+          ? "the branch is merged (its commits are in the base's history)"
+          : by === "squash"
+            ? `one commit holds the branch's whole change, ${commits[0]} (a squash); ${cost}`
+            : by === "rebase"
+              ? `a patch-equal commit for each of the branch's commits, ${commits.join(", ")} (a rebase); ${cost}`
+              : `named by --merged-as, ${commits[0]} (${JSON.stringify(subject)}); taken by name, no patch of the base compared`
+      }.`,
+    );
+  }
   lines.push(...targetCloseHandoffLines(record));
   for (const row of record.cleanup.worktrees)
     lines.push(`Worktree ${row.path}: ${row.outcome}.`);
@@ -634,6 +633,37 @@ const execute = (command, args, options = {}) =>
     ...options,
   });
 const outputOf = (result) => `${result.stdout ?? ""}${result.stderr ?? ""}`;
+/** The work-order index is rendered from the same tag record as the
+ * roadmap's table. When writing the table changed the record, the index's
+ * pages are rendered again in the same command, so neither page is left
+ * differing from the tags the record names (WO-276-D044). Where the record
+ * did not change, the pages are rendered again only if the index's own
+ * check finds them stale: a render that failed after the record was
+ * written is then made by running the command again, which finds the
+ * record already written. A stale index that still cannot be rendered then
+ * is not this command's failure, since it changed nothing the index reads;
+ * it is said, and the gate's check of generated pages refuses on it as
+ * before. A checkout without an index page has none to render. */
+const refreshIndexPages = (root, history) => {
+  if (!existsSync(join(root, docRelative(root, "workOrders"), "README.md")))
+    return;
+  const index = (...args) =>
+    execute(
+      process.execPath,
+      [join(TOOL_ROOT, "scripts/work-orders.mjs"), "index", ...args],
+      { cwd: root },
+    );
+  if (!history.record && index("--check").status === 0) return;
+  const result = index();
+  if (result.status === 0) return;
+  if (history.record)
+    throw new Error(
+      `the release tag record changed and the work-order index could not be rendered from it: ${outputOf(result).trim()}`,
+    );
+  process.stderr.write(
+    `DotLn advisory: the work-order index is stale and could not be rendered: ${outputOf(result).trim()}; run npm run work-orders -- index\n`,
+  );
+};
 const optionalGitFile = (root, revision, path) => {
   const result = execute("git", ["-C", root, "show", `${revision}:${path}`]);
   if (result.status !== 0) return undefined;
@@ -841,11 +871,33 @@ const parseControlStateAt = (root, revision, workOrderId) => {
     `${revision}:control segments`,
   );
 };
-const paragraph = (markdown, label) => {
-  const match = new RegExp(
-    `\\*\\*${label}:\\*\\*\\s+([^\\n]+(?:\\n(?!\\n|\\*\\*|#)[^\\n]+)*)`,
-  ).exec(markdown);
-  return match?.[1].replace(/\s+/g, " ").trim();
+// The prose the first field declaring `label` holds, its lines joined by
+// single spaces; undefined when the order declares no such field or writes
+// nothing for it.
+const fieldProse = (order, label) => {
+  // The order's own label: a field a quotation or a list item shows is an
+  // example.
+  const field = order.labels.find(
+    (candidate) => candidate.colon && candidate.label === label,
+  );
+  if (!field) return undefined;
+  let body = field.value;
+  if (!body) {
+    // A label alone in its paragraph introduces the block written under it,
+    // such as a list; a heading or another field is not that block.
+    const under = order.tree.children.find(
+      (block) => block.position.start.offset >= field.end,
+    );
+    const opensField = order.fields.some(
+      (other) => other.start === under?.position.start.offset,
+    );
+    if (under && under.type !== "heading" && !opensField)
+      body = order.source.slice(
+        under.position.start.offset,
+        under.position.end.offset,
+      );
+  }
+  return body.replace(/\s+/g, " ").trim() || undefined;
 };
 const readWorkOrderAuthority = (
   root,
@@ -860,23 +912,30 @@ const readWorkOrderAuthority = (
   workOrderAuthorityPath(root, state.workOrderId, state.workOrderPath, {
     requireFile: !revision,
   });
-  const markdown = repositoryFile(root, state.workOrderPath, revision);
-  const heading = markdown.split("\n", 1)[0];
+  const order = readWorkOrder(
+    repositoryFile(root, state.workOrderPath, revision),
+  );
+  // The heading is the order's title, as the work-order reader reads it.
+  const heading = order.title?.title ?? "";
   const version = headingVersion(heading);
   if (versioned && version === null)
     throw new Error(
       `work-order heading must contain exactly one strict vX.Y.Z version: ${heading}`,
     );
+  if (!order.title)
+    throw new Error(
+      `work-order authority must open with its title heading: ${state.workOrderPath}`,
+    );
   return {
     id: state.workOrderId,
     path: state.workOrderPath,
     version: versioned ? version : undefined,
-    title: heading.replace(/^#\s*/, ""),
+    title: heading,
     objective:
-      paragraph(markdown, "Objective") ??
+      fieldProse(order, "Objective") ??
       "No objective paragraph was found in the work-order authority.",
     nonGoals:
-      paragraph(markdown, "Non-goals") ??
+      fieldProse(order, "Non-goals") ??
       "No non-goals paragraph was found in the work-order authority.",
   };
 };
@@ -1496,9 +1555,19 @@ const passedFinalReview = (event) =>
   event?.type === "FinalReviewCompleted" &&
   event.verdict === "pass" &&
   /^WO-\d{3}$/.test(event.workOrderId ?? "");
-const notesContractWasActive = (root, revision) =>
+/** Whether an order's passing final review switches the release-note
+ * contract on. Core's contract began at one of its own orders, so the root
+ * is asked first whether it is core's: no order of an instance switches it,
+ * whatever its number. */
+export const activatesNotesContract = (root, workOrderId) =>
+  isCoreRoot(root) && workOrderId === "WO-024";
+/** Whether the contract was in force at a revision, by the control log
+ * committed there. */
+export const notesContractWasActive = (root, revision) =>
   controlEventsAt(root, revision).some(
-    ({ event }) => passedFinalReview(event) && event.workOrderId === "WO-024",
+    ({ event }) =>
+      passedFinalReview(event) &&
+      activatesNotesContract(root, event.workOrderId),
   );
 const workOrderTitleAtHead = (root, workOrderId) => {
   const activation = controlEventsAt(root, sourceRevision)
@@ -1525,8 +1594,10 @@ const workOrderTitleAtHead = (root, workOrderId) => {
     throw new Error(
       `cannot read work-order authority from HEAD for release notes: ${workOrderId}`,
     );
-  const heading = source.split("\n", 1)[0];
-  const match = new RegExp(`^#\\s+${workOrderId}\\s+—\\s+(.+)$`).exec(heading);
+  // The order's title, as the work-order reader reads it, names the order
+  // and then, after a dash, what the release notes print.
+  const heading = readWorkOrder(source).title?.title ?? "";
+  const match = new RegExp(`^${workOrderId}\\s+—\\s+(.+)$`, "u").exec(heading);
   if (!match)
     throw new Error(`invalid work-order heading for release notes: ${heading}`);
   return match[1];
@@ -1575,7 +1646,8 @@ const releaseNoteEntries = (root, previousRelease) => {
     ];
 
     for (const id of orderedIds) {
-      const activatesContract = id === "WO-024" && completed.includes(id);
+      const activatesContract =
+        activatesNotesContract(root, id) && completed.includes(id);
       if (activatesContract) contractActive = true;
       let entry = byId.get(id);
       if (!entry) {
@@ -2648,7 +2720,7 @@ const finishPublishedWorktreeOperation = async (
               line.slice("Journal retention: ".length),
             );
             if (journals.outcome === "failed")
-              journals.command = releaseCloseCommand(root, workOrderId);
+              journals.command = retryClose(root, workOrderId);
             const row = cleanup.worktrees.find(
               (item) => item.path === retained,
             );
@@ -2662,7 +2734,7 @@ const finishPublishedWorktreeOperation = async (
             failureOf(finished, `${action} failed`),
           );
       } catch (error) {
-        const command = releaseCloseCommand(root, workOrderId);
+        const command = retryClose(root, workOrderId);
         cleanup.outcome = "blocked";
         record?.blockers.push({
           action,
@@ -2706,7 +2778,7 @@ const finishPublishedWorktreeOperation = async (
             action: "leftover",
             path: row.path,
             reason: `Leftover directory retained: ${row.path}: ${error.message}`,
-            command: releaseCloseCommand(root, workOrderId),
+            command: retryClose(root, workOrderId),
             class: blockerClassOf(error.blockerClass),
             step: currentReleaseStep(record),
           });
@@ -2762,7 +2834,7 @@ const finishPublishedWorktreeOperation = async (
             action: "settle",
             path: row.path,
             reason: reason.join("\n"),
-            command: releaseCloseCommand(root, workOrderId),
+            command: retryClose(root, workOrderId),
             ...(operator ? { operator } : {}),
             class: derivedClasses.get(resolve(row.path)) ?? "other",
             step: currentReleaseStep(record),
@@ -2775,7 +2847,7 @@ const finishPublishedWorktreeOperation = async (
             action: "leftover",
             path: row.path,
             reason: `Worktree retained: ${row.path}: ${row.inventoryError ?? "cleanup did not remove this path"}`,
-            command: releaseCloseCommand(root, workOrderId),
+            command: retryClose(root, workOrderId),
             class: "other",
             step: currentReleaseStep(record),
           };
@@ -2864,7 +2936,7 @@ const finishPublishedWorktreeOperation = async (
         record?.blockers.push({
           action: "branch",
           reason: error.message,
-          command: releaseCloseCommand(root, workOrderId),
+          command: retryClose(root, workOrderId),
           class: blockerClassOf(error.blockerClass),
           step: currentReleaseStep(record),
         });
@@ -2899,7 +2971,7 @@ const finishPublishedWorktreeOperation = async (
       const blocker = {
         action: "prune",
         reason: error.message,
-        command: releaseCloseCommand(root, workOrderId),
+        command: retryClose(root, workOrderId),
         class: blockerClassOf(error.blockerClass),
         step: error.releaseStep ?? currentReleaseStep(record),
       };
@@ -2934,7 +3006,7 @@ const finishPublishedWorktreeOperation = async (
     record?.blockers.push({
       action: "cleanup",
       reason: error.message,
-      command: releaseCloseCommand(root, workOrderId),
+      command: retryClose(root, workOrderId),
       class: blockerClassOf(error.blockerClass),
       step: error.releaseStep ?? currentReleaseStep(record),
     });
@@ -3170,7 +3242,7 @@ const refreshPublishedStartersOperation = async (
     record.blockers.push({
       action: "starter-refresh",
       reason: `${row.sibling}: ${row.reason}`,
-      command: releaseCloseCommand(root, workOrderId),
+      command: retryClose(root, workOrderId),
       class: "starter-refresh",
       step: currentReleaseStep(record),
     });
@@ -3185,24 +3257,23 @@ const refreshPublishedStartersOperation = async (
 // follows; an equal tag on the same commit is an idempotent retry and a
 // differing one refuses. Absent policy keeps today's no-release.
 const targetReleaseClassification = (root, state, revision) => {
-  const markdown = repositoryFile(root, state.workOrderPath, revision);
-  // Every declaration is counted before the sole value is read, so a valid
-  // header beside a malformed duplicate is refused naming both lines. The
-  // value is read as the reader before WO-257 read it: patch, minor or
-  // major at a word boundary after the label, across a line break as well,
-  // whatever follows it, so a header admitted then stays admitted.
-  const valueAt = (index) => {
-    const reader =
-      /\*\*Target release classification:\*\*\s*(patch|minor|major)\b/uy;
-    reader.lastIndex = index;
-    return reader.exec(markdown)?.[1] ?? null;
-  };
-  const headers = [
-    ...markdown.matchAll(/^\*\*Target release classification:\*\*(.*)$/gmu),
-  ].map((match) => ({
-    value: valueAt(match.index) ?? match[1].trim(),
-    line: markdown.slice(0, match.index).split("\n").length,
-  }));
+  const order = readWorkOrder(
+    repositoryFile(root, state.workOrderPath, revision),
+  );
+  // Every declaration in the header is counted before the sole value is read,
+  // so a valid field beside a malformed duplicate is refused naming both
+  // lines. The value is patch, minor or major at a word boundary where the
+  // field's value starts, on the label's line or the next, whatever follows
+  // it, so a header admitted by the earlier reader stays admitted; anything
+  // else is named by the text on the label's line.
+  const headers = order
+    .headerFields("Target release classification")
+    .map((field) => ({
+      value:
+        /^(patch|minor|major)\b/u.exec(field.value)?.[1] ??
+        field.lineValue.trim(),
+      line: field.line,
+    }));
   if (headers.length !== 1)
     throw new Error(
       `repositories.${state.repositoryId}.release.policy is declared, but ${state.workOrderPath} carries ${headers.length ? `${headers.length} **Target release classification:** headers (lines ${headers.map((header) => header.line).join(", ")})` : "no **Target release classification:** patch | minor | major header"}; exactly one is needed`,
@@ -3247,13 +3318,18 @@ const targetReleaseNotesBody = (
       `${path}: **Target release notes:** reviewed needs the reviewed notes at the merged revision, and the file is absent; source retained`,
     );
   const { sections } = parseReleaseNotes(source, path);
+  // An order whose records stay in the instance moved none: every link of
+  // its notes becomes its text. Under the other value the paths are the
+  // records step's, with or without a binding, as before.
   const moved = new Map(
-    targetRecordSources(
-      root,
-      state,
-      eventsForOrder(readControl(root, revision), state.workOrderId),
-      repository,
-    ).map((row) => [row.source, row.path]),
+    recordsStayInInstance(repository, state)
+      ? []
+      : targetRecordSources(
+          root,
+          state,
+          eventsForOrder(readControl(root, revision), state.workOrderId),
+          repository,
+        ).map((row) => [row.source, row.path]),
   );
   const ownIdentifier = new RegExp(
     `^${state.workOrderId}(?:-d[0-9]{3})?$`,
@@ -3604,6 +3680,8 @@ const prepareTargetRelease = async (
   };
 };
 
+const LAUNCHPAD_TAKES_NO_NAME =
+  "--merged-as names the commit of a target's base that carries a target order's change; a launchpad order takes none";
 const closePrerequisites = (root, workOrderId, parsed, record) => {
   const { flags } = parsed;
   if (resolve(process.cwd()) !== root)
@@ -3614,6 +3692,11 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
   const targetOrder =
     targetWorktreeForOrder(root, workOrderId) ||
     readControl(root).orders.get(workOrderId)?.state.repositoryId;
+  // Refused before the close reaches its remote or moves main: the flag names
+  // a commit of a target's base, and the instance's own repository keeps its
+  // merge rule.
+  if (parsed.mergedAs !== undefined && !targetOrder)
+    throw new Error(LAUNCHPAD_TAKES_NO_NAME);
   const reachable = targetOrder
     ? (withBlockerClass("host-denied", () =>
         runGit(root, ["ls-remote", "--exit-code", "--heads", "origin", "main"]),
@@ -3735,7 +3818,7 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
           .split("\n")
           .filter((line) => line.startsWith("FAIL "))
           .join("; ") || "Release surface validation failed",
-      command: releaseCloseCommand(root, workOrderId),
+      command: retryClose(root, workOrderId),
       class: "publication",
       step: currentReleaseStep(record),
     });
@@ -3809,9 +3892,13 @@ const close = async (root, workOrderId, parsed, record, context) => {
     tagger,
     selfKind,
   } = context;
-  const { flags, material: overrides, confirmTerms } = parsed;
+  const { flags, material: overrides, confirmTerms, mergedAs } = parsed;
   const publish = flags.includes("--publish");
   const dryRun = flags.includes("--dry-run");
+  // The instance's own repository keeps its rule: a launchpad order's merge
+  // is judged as it always was, and no commit is named for it.
+  if (mergedAs !== undefined && !state.repositoryId)
+    throw new Error(LAUNCHPAD_TAKES_NO_NAME);
   if (state.repositoryId) {
     record.publication.outcome = "no-release";
     const targetPolicy = targetReleasePolicy(root, state.repositoryId);
@@ -3843,6 +3930,7 @@ const close = async (root, workOrderId, parsed, record, context) => {
       await withReleaseStep(record, "worktree-removal", () =>
         closeTargetWorktree(root, state, true, record, {
           retryMode: dryRun ? "--dry-run" : "--publish",
+          mergedAs,
         }),
       );
       const publishRelease = await prepareTargetRelease(
@@ -3860,7 +3948,7 @@ const close = async (root, workOrderId, parsed, record, context) => {
       try {
         if (!dryRun)
           await withReleaseStep(record, "worktree-removal", () =>
-            closeTargetWorktree(root, state, false, record),
+            closeTargetWorktree(root, state, false, record, { mergedAs }),
           );
       } catch (error) {
         record.cleanup.outcome = "blocked";
@@ -4014,7 +4102,7 @@ const close = async (root, workOrderId, parsed, record, context) => {
   if (!publish) {
     record.publication.outcome = "prepared";
     writeOutput(
-      `Prepared and validated ${authority.version} for ${head}. To create and push only the annotated tag and create its matching GitHub Release, run:\n  ${releaseCloseCommand(root, workOrderId)}\n`,
+      `Prepared and validated ${authority.version} for ${head}. To create and push only the annotated tag and create its matching GitHub Release, run:\n  ${retryClose(root, workOrderId)}\n`,
     );
     return;
   }
@@ -4362,7 +4450,7 @@ const main = async () => {
     const workOrderId = args[0];
     if (!/^WO-\d{3}$/u.test(workOrderId ?? ""))
       throw new Error(
-        "usage: release close WO-NNN [--publish] [--dry-run] [--list-material] [--material <path>=disposable|preserve] [--confirm-terms sha256:<digest>]",
+        "usage: release close WO-NNN [--publish] [--dry-run] [--list-material] [--material <path>=disposable|preserve] [--confirm-terms sha256:<digest>] [--merged-as <commit>]",
       );
     // The record exists before the flags are judged: a malformed word is
     // recorded as a refusal, never a silent exit. `--confirm-terms`, which
@@ -4371,7 +4459,17 @@ const main = async () => {
     let parsed, parseError;
     try {
       const confirmTerms = takeConfirmTerms(closeArgs);
+      // A target's merged change named by its commit, where no identity
+      // matches (a squash edited at merge): read out before the flags.
+      const at = closeArgs.indexOf("--merged-as");
+      const [, mergedAs] = at < 0 ? [] : closeArgs.splice(at, 2);
+      if (at >= 0 && !MERGED_AS.test(mergedAs ?? ""))
+        throw new Error(
+          "usage: --merged-as <commit>, the id of the commit of the target's base that carries the reviewed change",
+        );
+      namedMergedAs = mergedAs;
       parsed = {
+        ...(mergedAs === undefined ? {} : { mergedAs }),
         ...parseMaterialFlags(closeArgs, [
           "--publish",
           "--dry-run",
@@ -4458,7 +4556,7 @@ const main = async () => {
             blocker: null,
             previousAttempts: [],
             recordAdvisories: [],
-            retryCommand: releaseCloseCommand(root, workOrderId),
+            retryCommand: retryClose(root, workOrderId),
             reportPath: docRelative(
               root,
               "control",
@@ -4585,6 +4683,10 @@ const main = async () => {
             }
             return result;
           } catch (error) {
+            if (error?.namedCommitRefused) {
+              namedMergedAs = undefined;
+              record.retryCommand = retryClose(root, workOrderId);
+            }
             const published = settlePublication(record, error.message);
             // A host tool below the checkout's declaration names that floor
             // and the version it read beside the refusal.
@@ -4601,7 +4703,7 @@ const main = async () => {
             record.blockers.push({
               action: published ? "completion" : "publication",
               reason,
-              command: releaseCloseCommand(root, workOrderId),
+              command: retryClose(root, workOrderId),
               class: record.blocker.class,
               step: record.blocker.step,
             });
@@ -4867,6 +4969,7 @@ const main = async () => {
     }
     const history = writeReleaseHistory(toolRoot);
     if (history.changed) written.push(history.path);
+    refreshIndexPages(toolRoot, history);
     writeOutput(
       `Release surfaces synchronized from existing authority; ${written.length} file(s) changed.\n`,
     );
@@ -4945,6 +5048,7 @@ const main = async () => {
       args[1] === "--write"
     ) {
       const written = writeReleaseHistory(toolRoot);
+      refreshIndexPages(toolRoot, written);
       writeOutput(
         `${written.changed ? "Wrote" : "Unchanged"} ${written.path}: release history of ${written.tags} local annotated release tags.\n`,
       );

@@ -1,0 +1,9 @@
+{
+  "comparison": "publication-headings",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every committed revision of each numbered product document, and the worktree's: each heading's anchor, level, title and start, and its section's bytes (as a digest)",
+  "read": 762,
+  "equal": 762,
+  "differences": {},
+  "examples": []
+}

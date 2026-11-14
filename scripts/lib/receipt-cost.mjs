@@ -2,6 +2,7 @@ import { rootPattern } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { readControl } from "./control-store.mjs";
+import { markdownFields } from "./markdown-links.mjs";
 
 /** The closed list (WO-140). A new cause adds a code, never a free-text unknown. */
 export const usageCauseCodes = {
@@ -12,7 +13,8 @@ export const usageCauseCodes = {
   "harness-no-readback":
     "the harness exposes no complete session counter readback; utility-request counters alone are partial",
 };
-export const COST_LINE_PREFIX = "**Process cost:**";
+const COST_LABEL = "Process cost";
+export const COST_LINE_PREFIX = `**${COST_LABEL}:**`;
 /** `verify` and `final-review` stamp this on the receipt they allocate. */
 export const COST_LINE_REQUIRED = "required";
 export const costLineForms = `${COST_LINE_PREFIX} entry <total> tokens; handoff <total> tokens; source <source>\` or \`${COST_LINE_PREFIX} unknown; cause <${Object.keys(usageCauseCodes).join("|")}>`;
@@ -22,16 +24,14 @@ const receiptPath = (root) =>
   new RegExp(
     `^(?:${rootPattern(root, "verifications")}/WO-\\d{3}/VER|${rootPattern(root, "finalReviews")}/WO-\\d{3}/FINAL)-\\d{3}\\.md$`,
   );
-// The line may be indented or a list item; a fenced example is not the line.
-const costLine = /^\s*(?:[-*]\s+)?\*\*Process cost:\*\*(.*)$/;
-const costLines = (report) => {
-  let fenced = false;
-  return report.split(/\r?\n/).flatMap((line) => {
-    if (/^\s*(?:```|~~~)/.test(line)) fenced = !fenced;
-    const body = fenced ? null : costLine.exec(line)?.[1];
-    return body === undefined || body === null ? [] : [body];
-  });
-};
+// The cost line is the report's Process cost field, the bold label with its
+// colon opening a line in a paragraph or a list item, read by the shared
+// Markdown reader: an example in a code block is not the line. Its body is
+// the rest of the label's own line.
+const costLines = (report) =>
+  markdownFields(report)
+    .filter((field) => field.colon && field.label === COST_LABEL)
+    .map((field) => field.lineValue);
 // A counter is a number of tokens, never a digit borrowed from a date or id.
 const counter = (body, name) =>
   new RegExp(

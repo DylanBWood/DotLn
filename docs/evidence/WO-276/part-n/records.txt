@@ -1,0 +1,50 @@
+## Criterion N2: repositories.target.records is "instance"
+
+The reviewed target commit: da4dc6acab087bafdff91f4a498bea8f27bb0f5d
+final-review-result pass printed: Recorded final review pass for target change committed before this result at da4dc6acab087bafdff91f4a498bea8f27bb0f5d. Commit the instance records (the order's records and evidence): repositories.target.records keeps them in this instance, so no records step is owed and the target is published at the reviewed commit. Publish the target with DOTLN_LAUNCHPAD='<launchpad>' node '<launchpad>/scripts/worktree.mjs' publish WO-999 --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>, and publish the records with DOTLN_LAUNCHPAD='<launchpad>' node '<launchpad>/scripts/worktree.mjs' publish WO-999 --title "<title>" --body-file <contained-reviewed-body- […]
+Offered after the pass (status --json, legalNextActions): release-close, next, activate
+resume target-records: exit 1; error: target-records refused: repositories.target.records is "instance", so WO-999's records stay in this instance and its records pull request publishes them; no records step is owed. Set the key to "target" to file them into the target.
+The target publish: exit 0; Pushed fix/preserve-reviewed-text at da4dc6acab087bafdff91f4a498bea8f27bb0f5d and opened pull request #7 on github.invalid/dotln-fixture/target.
+The published target head: da4dc6acab087bafdff91f4a498bea8f27bb0f5d
+The order publish: exit 0; WO-999: target order records no release; its records are in this instance (repositories.target.records is "instance") and this pull request publishes them.
+The plan-first directory (criterion N5): <launchpad>/records/evidence/WO-999/plan-first
+
+The target branch as published (git ls-tree -r --name-only):
+  reviewed.txt
+  source.txt
+
+The records branch on the instance's origin, the order's own paths (git ls-tree -r --name-only refs/heads/wo-999, lines naming WO-999):
+  records/evidence/WO-999/decisions.md
+  records/final-reviews/WO-999/FINAL-001.md
+  records/state/orders/WO-999.jsonl
+  records/verifications/WO-999/VER-001.md
+  records/work-orders/WO-999-fixture.md
+
+The order's index card (criterion N6):
+  - Records: in this instance (`repositories.target.records` is `instance`).
+
+## Criterion N3: repositories.target.records is "target"
+
+The reviewed target commit: a76c4589ddff384b7de60007230c3f92f9a0ab0e
+final-review-result pass printed: Recorded final review pass for target change committed before this result at a76c4589ddff384b7de60007230c3f92f9a0ab0e. Commit the instance records (the order's records and evidence) first, then run DOTLN_LAUNCHPAD='<launchpad>' node '<launchpad>/scripts/resume.mjs' target-records <actor flags>, whose footer names that commit, then commit the moved records' removal. Publish the target with DOTLN_LAUNCHPAD='<launchpad>' node '<launchpad>/scripts/worktree.mjs' publish WO-999 --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>, and publish the records with DOTLN_LAUNCHPAD='<launchpad>' node '<launchpad>/scripts/worktree.mjs' publish WO-999 --titl […]
+Offered after the pass: target-records, release-close, next, activate
+The target publish without the step: exit 1; error: target publish refused: WO-999 has no committed TargetRecordsCommitted
+The order publish without the step: exit 1; error: WO-999: committed control has no TargetRecordsCommitted
+The records commit the step made: ed3585142075e1cfc2a44fe0c1aaea3f36d61bac
+The target publish with it: exit 0; Pushed fix/preserve-reviewed-text at ed3585142075e1cfc2a44fe0c1aaea3f36d61bac and opened pull request #7 on github.invalid/dotln-fixture/target.
+The published target head: ed3585142075e1cfc2a44fe0c1aaea3f36d61bac
+The order publish with it: exit 0; WO-999: target order records no release; records live in target at ed3585142075e1cfc2a44fe0c1aaea3f36d61bac.
+The plan-first directory (criterion N5): <fixture>/Targets/target-wo999/docs/evidence/WO-999/plan-first
+
+The order's index card (criterion N6):
+  - Records: target at commit ed3585142075e1cfc2a44fe0c1aaea3f36d61bac.
+  - Record order 1: docs/work-orders/WO-999-fixture.md (31a193738a58b8b8e74ec0a703b2f089c21466fbe274e6892106acb59bac255c).
+  - Record decisions 2: docs/evidence/WO-999/decisions.md (097e6f72cd17d4254e96f0ab63c933fba2b1f93a7182c3ad3eecd5072a294167).
+  - Record verification 3: docs/verifications/WO-999/VER-001.md (059f11536c4cbc17f2cc85097c9c1e07b9c725b87d80a8f2215d27b410a6cbad).
+  - Record final-review 4: docs/final-reviews/WO-999/FINAL-001.md (2feb9f0228a1dc8d7e40e2fe7deff20556c607b792a30b653135f8eee3a24f37).
+
+## Criterion N4: records filed under the default, then the registration set to instance
+
+The records commit: e4dd95adda961149e500808cf7733732f70a6e59
+The published target head: e4dd95adda961149e500808cf7733732f70a6e59
+The order publish: exit 0; WO-999: target order records no release; records live in target at e4dd95adda961149e500808cf7733732f70a6e59. repositories.target.records is now "instance": this order's records were already filed into the target at that commit and are published from there.

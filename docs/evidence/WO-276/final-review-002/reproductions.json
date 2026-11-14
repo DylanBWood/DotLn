@@ -1,0 +1,83 @@
+{
+  "what": "Each blocking finding of FINAL-001 and of VER-006, run again by the reviewer at the candidate FINAL-002 judged (code identity adba01dad241e0707e58f4efb26e95bb296d055c042b7b8c156e3667d08c5f28), one process at a time under node scripts/harness.mjs bounded, on 2026-11-14 between 18:15 and 18:32 UTC. Each retained reproducer was run with its result written to session scratch, so no earlier record was rewritten. The blocking findings of VER-001 to VER-004 stand as FINAL-001 ran them again (final-review-001/reproductions.json). Of the files they judge, the repair since changed the work-order reader and the shared Markdown reader, so the two reproducers that read through them were run again here, and the header and criteria readings of every order revision in main's history were compared (history-differential.json).",
+  "runs": [
+    {
+      "claim": "VER-002 F5, criterion 21",
+      "probe": "node --test --test-name-pattern 'WO-276 criterion B4' scripts/test-configuration-root.mjs",
+      "exitCode": 0,
+      "reads": "still repaired: 1 case passed"
+    },
+    {
+      "claim": "VER-002 F5, VER-003 F1 and F3",
+      "probe": "docs/evidence/WO-276/verifier-003/boundary-probes.mjs",
+      "exitCode": 0,
+      "reads": "still repaired: the six source names are selected, the checkpoint shapes are held and the header reads equal the whole reader's"
+    },
+    {
+      "claim": "FINAL-001 F1, criterion 98",
+      "probe": "docs/evidence/WO-276/final-review-001/rebase-reuse.mjs",
+      "exitCode": 0,
+      "reads": "repaired: the branch whose last change the base never received is answered not merged, with no base commit matched"
+    },
+    {
+      "claim": "FINAL-001 F2",
+      "probe": "docs/evidence/WO-276/final-review-001/terms-numbered-lines-cost.mjs",
+      "exitCode": 0,
+      "reads": "repaired: one hundred number-led lines take 2 ms with an entry of 19 letters and digits, as at the base, and no finding differs"
+    },
+    {
+      "claim": "FINAL-001 F3",
+      "probe": "docs/evidence/WO-276/final-review-001/dollar-fields.mjs",
+      "exitCode": 0,
+      "reads": "repaired: with a dollar figure in each of two header fields the Release classification, the Cost and the Track read as at the base"
+    },
+    {
+      "claim": "FINAL-001 F4, criterion 28",
+      "probe": "docs/evidence/WO-276/final-review-001/unread-refusal.mjs",
+      "exitCode": 0,
+      "reads": "repaired as its rule asks: the hold's reason and the audit name scripts/resident.mjs and the event log holds it; the runtime status and the status command still do not show a hold's reason"
+    },
+    {
+      "claim": "FINAL-001 F5",
+      "probe": "docs/evidence/WO-276/final-review-001/presence-during-card-refresh.mjs",
+      "exitCode": 0,
+      "reads": "repaired: under the launcher the presence command exits 0 in 133 ms while the owner's card read runs for 5.9 s"
+    },
+    {
+      "claim": "FINAL-001 F6",
+      "probe": "docs/evidence/WO-276/final-review-001/walkthrough-option.mjs",
+      "exitCode": 1,
+      "reads": "repaired: this probe passes the removed option, and the host now refuses it by name with what replaced it; a worker built the host as the maintained walkthrough does and read ten work orders"
+    },
+    {
+      "claim": "FINAL-001 F7, criterion 25",
+      "probe": "docs/evidence/WO-276/final-review-001/comparison-coverage-gaps.mjs",
+      "exitCode": 0,
+      "reads": "repaired: each of the six readers has a row of the comparison map and a comparison the driver names"
+    },
+    {
+      "claim": "FINAL-001 F8",
+      "probe": "docs/evidence/WO-276/final-review-001/verify-order.mjs",
+      "exitCode": 0,
+      "reads": "repaired: kit verification refuses the changed compiled runtime file before any of the instance's code has run, as the base does"
+    },
+    {
+      "claim": "FINAL-001 F52",
+      "probe": "docs/evidence/WO-276/final-review-001/criteria-html-block.mjs",
+      "exitCode": 1,
+      "reads": "repaired: this probe reads this order as filed, and the reader now refuses it by line (3407) with the remedy, where it returned 78 of 133 criteria"
+    },
+    {
+      "claim": "VER-006 F1",
+      "probe": "docs/evidence/WO-276/verifier-006/criteria-gap.mjs",
+      "exitCode": 1,
+      "reads": "repaired: this probe asserts the defect, and its assertion that the reader returns the first criterion alone now fails, since the reader refuses the list"
+    },
+    {
+      "claim": "criterion 51, the recorded contradiction",
+      "probe": "docs/evidence/WO-276/final-review-001/criterion-51.mjs",
+      "exitCode": 0,
+      "reads": "confirmed: a read of the rule table under the observer the product gate installs is recorded as an excluded read"
+    }
+  ]
+}

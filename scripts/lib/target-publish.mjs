@@ -1,12 +1,9 @@
-import {
-  createScratchRoot,
-  removeTemporaryPath as rmSync,
-} from "./temporary-roots.mjs";
 import { spawnGit, runGit, ensureClean, mainWorktree } from "./git.mjs";
 import {
   findLaunchpad,
   loadConfig,
   docPath,
+  recordsStayInInstance,
   CONFIG_FILENAME,
 } from "./config.mjs";
 import {
@@ -21,6 +18,7 @@ import {
 } from "./target-worktrees.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { validateTargetRecordsCommit } from "./target-records.mjs";
+import { workingTree as checkoutTree } from "./checkpoint.mjs";
 import { repairedPublicationEpisode } from "./target-repair.mjs";
 import { checkTargetHarness } from "./harness.mjs";
 
@@ -32,7 +30,6 @@ import {
   realpathSync,
   lstatSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { canonicalStringify, compileLoadout } from "@dotln/compiler";
 import { appendEvent, authorize, decodeLog } from "@dotln/kernel";
@@ -94,9 +91,11 @@ export const PUBLICATION_EFFECTS = Object.freeze([
 export const TARGET_PUBLISH_HOST = "target-publish-host";
 
 const refuse = (reason) => new Error(`target publish refused: ${reason}`);
-/** Which of the changed paths the target's base tree already holds: a Change
- * row of such a path is the target's own vocabulary and is not reported. */
-const baseTreePaths = (repo, baseCommit, paths) =>
+/** Which of the given paths a commit's tree holds as files. At the base, a
+ * Change row of such a path is the target's own vocabulary and is not
+ * reported; at the reviewed head, a record path it holds is a record the
+ * change keeps. */
+const treePaths = (repo, commit, paths) =>
   new Set(
     runGit(
       repo,
@@ -106,7 +105,7 @@ const baseTreePaths = (repo, baseCommit, paths) =>
         "-r",
         "--name-only",
         "-z",
-        baseCommit,
+        commit,
         "--",
         ...paths,
       ],
@@ -940,29 +939,17 @@ function committedRegistration(main, repositoryId) {
   return repository;
 }
 
-/** The tree of the target worktree's working copy, staged through a
- * temporary index so HEAD and the real index stay untouched. */
+/** The tree of the target worktree's working copy: what Git tracks there
+ * and the untracked files no ignore rule matches, as a checkpoint reads a
+ * checkout. HEAD and the real index stay untouched, and the target's hooks
+ * and file monitor never run. */
 function workingTree(target) {
-  const scratch = createScratchRoot(join(tmpdir(), "dotln-target-draft-"));
   try {
-    const env = { ...process.env, GIT_INDEX_FILE: join(scratch, "index") };
-    const inTarget = (args) => {
-      const result = spawnGit(["-C", target, ...HOST_GIT_READ, ...args], {
-        encoding: "utf8",
-        env,
-        maxBuffer: 16 * 1024 * 1024,
-      });
-      if (result.status !== 0)
-        throw refuse(
-          `git ${args[0]} failed while reading the target's working tree: ${String(result.stderr ?? "").trim()}`,
-        );
-      return result.stdout.trim();
-    };
-    inTarget(["read-tree", "HEAD"]);
-    inTarget(["add", "-A", "--", "."]);
-    return inTarget(["write-tree"]);
-  } finally {
-    rmSync(scratch, { recursive: true, force: true });
+    return checkoutTree(target, HOST_GIT_READ);
+  } catch (error) {
+    throw refuse(
+      `Git failed while reading the target's working tree: ${String(error.message).trim()}`,
+    );
   }
 }
 
@@ -1200,7 +1187,7 @@ export function publishTargetDraft({
       activationBase,
       headCommit: draftCommit,
       files: changes.files,
-      baseTree: baseTreePaths(
+      baseTree: treePaths(
         entry.target,
         baseCommit,
         changes.files.map((file) => file.path),
@@ -1370,8 +1357,19 @@ export function publishTargetWorktree({
     throw refuse(`${workOrderId} final review has no targetSubject`);
   const observed = reviewedTargetSubject(launchpad, state);
   const records = state.targetRecords;
-  if (!records)
-    throw refuse(`${workOrderId} has no committed TargetRecordsCommitted`);
+  const entry = targetWorktreeForOrder(launchpad, workOrderId);
+  const main = mainWorktree(launchpad);
+  // A records binding the order has committed decides an order in flight:
+  // with one, everything below is as it was. Without one the registration
+  // says whether the records stay in the instance, and then the reviewed
+  // commit is the head that is published.
+  let repository;
+  if (!records) {
+    repository = committedRegistration(main, subject.repositoryId);
+    if (!recordsStayInInstance(repository, state))
+      throw refuse(`${workOrderId} has no committed TargetRecordsCommitted`);
+  }
+  const head = records?.commit ?? subject.commit;
   const gate = review.targetGate;
   if (
     !gate ||
@@ -1382,18 +1380,19 @@ export function publishTargetWorktree({
     throw refuse(
       `${workOrderId} has no passing targetGate bound to the reviewed commit ${subject.commit}`,
     );
-  if (observed.commit !== records.commit)
+  if (observed.commit !== head)
     throw refuse(
-      `target commit ${observed.commit} differs from records commit ${records.commit} after reviewed commit ${subject.commit}; review the changed target before publication`,
+      records
+        ? `target commit ${observed.commit} differs from records commit ${records.commit} after reviewed commit ${subject.commit}; review the changed target before publication`
+        : `target commit ${observed.commit} differs from the reviewed commit ${subject.commit}; repositories.${subject.repositoryId}.records keeps this order's records in the instance, so nothing follows the reviewed commit. Review the changed target before publication; if the commit after it is a records commit made while the key was "target", set the key back and rerun the records step, or return the target branch to the reviewed commit`,
     );
   if (subject.commit === subject.baseCommit)
     throw refuse(
       "reviewed target commit equals the base; no target change to publish",
     );
-  const entry = targetWorktreeForOrder(launchpad, workOrderId);
-  const main = mainWorktree(launchpad);
-  const repository = committedRegistration(main, subject.repositoryId);
-  validateTargetRecordsCommit(entry.target, subject, records, repository);
+  repository ??= committedRegistration(main, subject.repositoryId);
+  if (records)
+    validateTargetRecordsCommit(entry.target, subject, records, repository);
   authorizeRegisteredPublication(
     repository,
     readAuthorityGrantRegistry(main),
@@ -1407,17 +1406,46 @@ export function publishTargetWorktree({
   const { baseCommit, activationBase } = describedTargetBase(
     entry,
     subject.baseCommit,
-    records.commit,
+    head,
     boundUrl,
   );
   if (
-    gitText(entry.target, "rev-parse", `${records.commit}^{tree}`) ===
+    gitText(entry.target, "rev-parse", `${head}^{tree}`) ===
     gitText(entry.target, "rev-parse", `${baseCommit}^{tree}`)
   )
     throw refuse(
-      "records tree equals the described base; no target change to publish",
+      records
+        ? "records tree equals the described base; no target change to publish"
+        : "reviewed tree equals the described base; no target change to publish",
     );
-  const changes = targetChanges(entry.target, baseCommit, records.commit);
+  const recordPaths = targetRecordSources(
+    launchpad,
+    state,
+    eventsForOrder(control, workOrderId),
+    repository,
+  ).map((row) => row.path);
+  const changes = targetChanges(entry.target, baseCommit, head);
+  // Records kept in the instance are not in the target: a change that adds
+  // or edits one of the paths the records step would write is refused by
+  // name. A path the target's base already held is not this order's doing
+  // (records filed in an earlier cycle, or by another instance under the
+  // same order number) and is left alone, and a change that removes one
+  // files nothing: the reviewed tree holds no record at that path. So the
+  // change is judged by what its tree holds, not by which paths it touched.
+  if (!records) {
+    const kept = new Set(recordPaths);
+    const touched = changes.files
+      .map((file) => file.path)
+      .filter((path) => kept.has(path));
+    const present = touched.length
+      ? treePaths(entry.target, head, touched)
+      : new Set();
+    const held = touched.filter((path) => present.has(path));
+    if (held.length)
+      throw refuse(
+        `the reviewed target change holds this order's records (${held.join(", ")}), and repositories.${subject.repositoryId}.records keeps them in the instance; remove them from the target change and review it again, or set the key to "target" and run the records step`,
+      );
+  }
   const manifestPath = ".claude/target-worker-manifest.json";
   const manifestFile = join(entry.target, manifestPath);
   try {
@@ -1445,21 +1473,16 @@ export function publishTargetWorktree({
     body,
     baseCommit,
     activationBase,
-    headCommit: records.commit,
+    headCommit: head,
     files: changes.files,
-    baseTree: baseTreePaths(
+    baseTree: treePaths(
       entry.target,
       baseCommit,
       changes.files.map((file) => file.path),
     ),
-    kitPaths: new Set(
-      targetRecordSources(
-        launchpad,
-        state,
-        eventsForOrder(control, workOrderId),
-        repository,
-      ).map((row) => row.path),
-    ),
+    // The kit's own paths in the change are the records a records commit
+    // wrote; where none was filed no path is the kit's.
+    kitPaths: new Set(records ? recordPaths : []),
     gate: targetGateSection(gate),
   });
   const { review: confirmedReview } = lintArtifacts(
@@ -1488,7 +1511,7 @@ export function publishTargetWorktree({
   return publishBoundTargetCommit({
     target: entry.target,
     sourceBranch: entry.branch,
-    commit: records.commit,
+    commit: head,
     branch,
     title,
     body: publishedBody,
@@ -1923,7 +1946,7 @@ function readinessArtifacts(request, episode, target, workOrder, bodyInputs) {
  * may carry the composed body's `sections` and the Change table's `rows`, so
  * a finding names the part it sits in and, in a Change row, the added path,
  * while a row whose path the target's base already held is not reported.
- * Review items (listed review words, review-mode private terms) refuse until
+ * Review items (listed review words, context-mode private terms) refuse until
  * `confirmTerms` names the composed body's digest; the confirmed review is
  * returned for the publication record. */
 export function lintArtifacts(

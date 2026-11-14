@@ -1,0 +1,57 @@
+## Criterion M1, squash: release close WO-999 --dry-run, then --publish
+
+WO-999 dry run: no-release; no tag or GitHub Release is due.
+WO-999 closes a registered target; no release tag is due in either repository.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: would-remove; base disposable policy delete.
+Target change in the base: one commit holds the branch's whole change, e82bc9c2d65e1cae2c75d67aa0921a492106f513 (a squash); 2 base commits read.
+WO-999: no-release; no tag or GitHub Release is due.
+WO-999 closes a registered target; no release tag is due in either repository.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: removed; base disposable policy delete.
+Target change in the base: one commit holds the branch's whole change, e82bc9c2d65e1cae2c75d67aa0921a492106f513 (a squash); 2 base commits read.
+
+## Criterion M1, rebase: release close WO-999 --dry-run, then --publish
+
+WO-999 dry run: no-release; no tag or GitHub Release is due.
+WO-999 closes a registered target; no release tag is due in either repository.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: would-remove; base disposable policy delete.
+Target change in the base: a patch-equal commit for each of the branch's commits, c5ef69df5e9f21241c91339000983de213fcf19c, 9e6a1b18facfaea832ec93deb504b337543be4ba (a rebase); 3 base commits read.
+WO-999: no-release; no tag or GitHub Release is due.
+WO-999 closes a registered target; no release tag is due in either repository.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: removed; base disposable policy delete.
+Target change in the base: a patch-equal commit for each of the branch's commits, c5ef69df5e9f21241c91339000983de213fcf19c, 9e6a1b18facfaea832ec93deb504b337543be4ba (a rebase); 3 base commits read.
+
+## Criterion M1, merge: release close WO-999 --dry-run, then --publish
+
+WO-999 dry run: no-release; no tag or GitHub Release is due.
+WO-999 closes a registered target; no release tag is due in either repository.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: would-remove; base disposable policy delete.
+Target change in the base: the branch is merged (its commits are in the base's history).
+WO-999: no-release; no tag or GitHub Release is due.
+WO-999 closes a registered target; no release tag is due in either repository.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: removed; base disposable policy delete.
+Target change in the base: the branch is merged (its commits are in the base's history).
+
+## Criterion M2, a base that does not hold the change: release close WO-999 --publish
+
+WO-999: no-release; no tag or GitHub Release is due.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: retained; base disposable policy delete.
+Cleanup/publication blocker (completion): target branch wo-999 is not merged into origin/main; source retained. Merge the reviewed branch, then rerun '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish; where origin/main holds its change under a commit whose patch differs (a squash edited at merge or carrying other changes, or a base that changed lines beside the change since the branch was cut), name that commit: '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish --merged-as <commit> (2 base commits read)
+error: target branch wo-999 is not merged into origin/main; source retained. Merge the reviewed branch, then rerun '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish; where origin/main holds its change under a commit whose patch differs (a squash edited at merge or carrying other changes, or a base that changed lines beside the change since the branch was cut), name that commit: '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish --merged-as <commit> (2 base commits read)
+
+## Criterion M2, --merged-as naming a commit that is not in the base (the branch's own tip)
+
+WO-999: no-release; no tag or GitHub Release is due.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: retained; base disposable policy delete.
+Cleanup/publication blocker (completion): target branch wo-999 is not merged into origin/main: --merged-as 95ee2a04540e68708c44d44c4b4888780cc00c34 is not in origin/main; source retained. Name the commit of origin/main that carries the reviewed change, then rerun '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish --merged-as <commit>
+error: target branch wo-999 is not merged into origin/main: --merged-as 95ee2a04540e68708c44d44c4b4888780cc00c34 is not in origin/main; source retained. Name the commit of origin/main that carries the reviewed change, then rerun '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish --merged-as <commit>
+
+## Criterion M2, a squash edited at merge: refused, then --merged-as naming its commit in the fetched base
+
+WO-999: no-release; no tag or GitHub Release is due.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: retained; base disposable policy delete.
+Cleanup/publication blocker (completion): target branch wo-999 is not merged into origin/main; source retained. Merge the reviewed branch, then rerun '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish; where origin/main holds its change under a commit whose patch differs (a squash edited at merge or carrying other changes, or a base that changed lines beside the change since the branch was cut), name that commit: '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish --merged-as <commit> (2 base commits read)
+error: target branch wo-999 is not merged into origin/main; source retained. Merge the reviewed branch, then rerun '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish; where origin/main holds its change under a commit whose patch differs (a squash edited at merge or carrying other changes, or a base that changed lines beside the change since the branch was cut), name that commit: '<node>' '<launchpad>/scripts/release.mjs' close WO-999 --publish --merged-as <commit> (2 base commits read)
+WO-999: no-release; no tag or GitHub Release is due.
+WO-999 closes a registered target; no release tag is due in either repository.
+Target worktree <fixture>/Targets/target-wo999; branch wo-999: removed; base disposable policy delete.
+Target change in the base: named by --merged-as, c33de15a8a10e9b8958700ffa5559eb6a337b47d ("feat: the order's change, squashed"); taken by name, no patch of the base compared.

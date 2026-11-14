@@ -1,0 +1,172 @@
+{
+  "verdict": "fail",
+  "blocking": 11,
+  "followups": 7,
+  "unmetCriteria": [
+    17,
+    18,
+    21,
+    25,
+    64,
+    65,
+    101,
+    103,
+    115,
+    127
+  ],
+  "regression": "F10",
+  "findings": [
+    {
+      "id": "F1",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Checkout screening omits supported source extensions from the Markdown-reader screen.",
+      "basis": {
+        "criterion": "18"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/independent-probes.mjs"
+    },
+    {
+      "id": "F2",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Instance-record target publication refuses a reviewed deletion of a prior record that is absent from the reviewed tree.",
+      "basis": {
+        "criterion": "103"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/target-record-deletion.mjs"
+    },
+    {
+      "id": "F3",
+      "route": "follow-up",
+      "class": "escape",
+      "summary": "The starter discovery criterion excludes a mandatory default host observation when no host is elected; boarded in WO-276-D130."
+    },
+    {
+      "id": "F4",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Checkpoint snapshots omit tracked files newly matched by ignore rules.",
+      "basis": {
+        "criterion": "17"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/checkpoint-preservation.mjs"
+    },
+    {
+      "id": "F5",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Header optimization stops inside a multiline inline code span.",
+      "basis": {
+        "criterion": "21"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/header-parity.mjs"
+    },
+    {
+      "id": "F6",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "The retained migration comparisons do not cover every mapped reader.",
+      "basis": {
+        "criterion": "25"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/reader-comparison-gaps.json"
+    },
+    {
+      "id": "F7",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Archived successful target closes stop counting after nine later dry runs.",
+      "basis": {
+        "criterion": "101"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/close-history.mjs"
+    },
+    {
+      "id": "F8",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Unreadable host elections disappear instead of reporting unknown.",
+      "basis": {
+        "criterion": "64"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/host-update-boundaries.mjs"
+    },
+    {
+      "id": "F9",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "The host report privacy corpus misses Unicode absolute paths.",
+      "basis": {
+        "criterion": "65"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/host-update-boundaries.mjs"
+    },
+    {
+      "id": "F10",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Execution-record lists and quotations now invalidate plan continuation.",
+      "basis": {
+        "regression": "Main admitted execution-record appendices containing bold labels inside list items and quotations."
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/execution-appendix.mjs"
+    },
+    {
+      "id": "F11",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Partial usage observations erase known daily lower bounds.",
+      "basis": {
+        "criterion": "115"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/usage-lower-bounds.mjs"
+    },
+    {
+      "id": "F12",
+      "route": "follow-up",
+      "class": "escape",
+      "summary": "The fast import selector retains inherited grammar blind spots; named follow-up in WO-276-D130."
+    },
+    {
+      "id": "F13",
+      "route": "follow-up",
+      "class": "escape",
+      "summary": "Reader edge cases and emitted worker guidance remain inconsistent; named follow-up in WO-276-D130."
+    },
+    {
+      "id": "F14",
+      "route": "follow-up",
+      "class": "escape",
+      "summary": "A newly elected host surface is refused before its harness check; named follow-up in WO-276-D130."
+    },
+    {
+      "id": "F15",
+      "route": "follow-up",
+      "class": "escape",
+      "summary": "Paired-review measurement counts records described as unpaired; named follow-up in WO-276-D130."
+    },
+    {
+      "id": "F16",
+      "route": "follow-up",
+      "class": "escape",
+      "summary": "Inferred test names run in every shard; named follow-up in WO-276-D130."
+    },
+    {
+      "id": "F17",
+      "route": "follow-up",
+      "class": "escape",
+      "summary": "An unreadable profile parent silently suppresses readable area notes; named follow-up in WO-276-D130."
+    },
+    {
+      "id": "F18",
+      "route": "blocking",
+      "class": "escape",
+      "summary": "Withdrawing a never-activated target order breaks the index.",
+      "basis": {
+        "criterion": "127"
+      },
+      "reproduction": "docs/evidence/WO-276/verifier-002/unactivated-target-withdrawal.mjs"
+    }
+  ]
+}

@@ -11,29 +11,29 @@ import {
   string,
   unknown,
 } from "./values.js";
+import { readWorkOrderCards } from "@dotln/skeleton/dist/src/runtime-status-contract.js";
 import {
-  INDEX_PAGE_TITLES,
-  markdownLinks,
   parseConstellation,
   parseReleases,
-  parseWorkOrderIndex,
   parseWorkstreams,
-  plainText,
 } from "./text-sources.js";
 
-/** The generated index's two pages (WO-190), each its own section. */
+/** The generated index's two pages (WO-190), each its own section. Their
+ * cards are read from the index command's own output, which the collector
+ * runs, and each card's evidence names its page and line. */
+const WORK_ORDER_INDEX = "work-orders:index--json";
 const INDEX_PAGES = {
   index: {
     sectionId: "work-order-index",
     title: "Work-order evidence index",
     ref: "docs/work-orders/README.md",
-    pageTitle: INDEX_PAGE_TITLES.index,
+    page: "index",
   },
   history: {
     sectionId: "work-order-history",
     title: "Work-order history index",
     ref: "docs/work-orders/HISTORY.md",
-    pageTitle: INDEX_PAGE_TITLES.history,
+    page: "history",
   },
 } as const;
 
@@ -50,29 +50,27 @@ function indexPage(
     page.sectionId,
     page.title,
     source,
-    page.ref,
-    (text, ref) => {
-      const rows = parseWorkOrderIndex(text, page.pageTitle);
-      for (const row of rows)
-        if (indexed.has(row.key))
-          throw new Error(`work-order card ${row.key} is on both pages`);
-      return rows.map((row): BoardRow => {
-        const evidence = ctx.ref(ref, `line:${row.line} (${row.key})`);
-        const links = Object.values(row.values)
-          .flatMap(markdownLinks)
-          .map((link) => ({
+    WORK_ORDER_INDEX,
+    (text) => {
+      const ref = page.ref;
+      const cards = readWorkOrderCards(text, page.page);
+      for (const card of cards)
+        if (indexed.has(card.id))
+          throw new Error(`work-order card ${card.id} is on both pages`);
+      return cards.map((card): BoardRow => {
+        const evidence = ctx.ref(ref, `line:${card.line} (${card.id})`);
+        const result = {
+          id: id("indexed-order", card.id),
+          title: card.id,
+          cells: Object.entries({ title: card.title, ...card.fields }).map(
+            ([key, value]) => known(key, key, value, evidence),
+          ),
+          links: card.links.map((link) => ({
             label: `Evidence: ${link}`,
             target: ctx.ref(ref, `link:${link}`)[0]!,
-          }));
-        const result = {
-          id: id("indexed-order", row.key),
-          title: row.key,
-          cells: Object.entries(row.values).map(([key, value]) =>
-            known(key, key, plainText(value), evidence),
-          ),
-          links,
+          })),
         };
-        indexed.set(row.key, result);
+        indexed.set(card.id, result);
         return result;
       });
     },
@@ -95,7 +93,7 @@ export function projectWork(
     ctx,
     indexed,
     INDEX_PAGES.history,
-    sources.workOrderHistory,
+    sources.workOrderIndex,
   );
   const status = ctx.section(
     "orders",
@@ -310,7 +308,7 @@ export function projectWork(
     "workstreams",
     "Workstreams",
     sources.workOrderIndex,
-    INDEX_PAGES.index.ref,
+    WORK_ORDER_INDEX,
     (text, ref) =>
       parseWorkstreams(text).map((row): BoardRow => {
         const detail = indexed.get(row.values["workOrder"]!);

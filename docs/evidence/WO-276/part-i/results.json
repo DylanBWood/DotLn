@@ -1,0 +1,34 @@
+{
+  "what": "Part I's observations on the update fixture.",
+  "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-276/part-i/evidence.mjs",
+  "bothChanged": [
+    "docs/control/budgets.json",
+    "docs/work-orders/WO-001-environment-truth.md"
+  ],
+  "preview": {
+    "exitCode": 0,
+    "rows": [
+      "docs/control/budgets.json",
+      "docs/work-orders/WO-001-environment-truth.md"
+    ]
+  },
+  "reading": {
+    "what": "judgeUpdateMerge on the fixture's update branch, three runs, in milliseconds: the starter's revision found by its ref, the merge found, the two files' states read at the base, both sides, the merge and HEAD",
+    "ms": [
+      306,
+      249,
+      249
+    ]
+  },
+  "publish": {
+    "refused": 1,
+    "kept": 0,
+    "taken": 0
+  },
+  "launches": {
+    "npm run worker -- review": 1,
+    "npm run --silent worker -- review": 1,
+    "npm run worker --silent -- review": 1,
+    "node scripts/worker.mjs review": 1
+  }
+}

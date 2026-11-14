@@ -1,0 +1,185 @@
+{
+  "what": "Part K's observations in an exported instance that holds files of its own under extensions/ and a settings fragment.",
+  "command": "node scripts/harness.mjs bounded -- node --test docs/evidence/WO-276/part-k/evidence.mjs",
+  "k2": {
+    "files": [
+      "extensions/tools/scratch.mjs",
+      "extensions/tools/unformatted.mjs",
+      "extensions/package.json",
+      "extensions/package-lock.json",
+      "extensions/data/rows.jsonl"
+    ],
+    "npmTest": {
+      "exit": 0,
+      "tasks": [
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "kit-verify"
+      ],
+      "wallMs": 15329
+    },
+    "emit": "harness emit: 32 generated surfaces; local-terms list: unavailable",
+    "check": "harness check: 32 generated surfaces; local-terms list: unavailable",
+    "kitRoot": true
+  },
+  "k3": {
+    "fragment": {
+      "hooks": {
+        "PostToolUse": [
+          {
+            "matcher": "Bash",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "echo ran >> \"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hook-ran.log\"",
+                "timeout": 15
+              }
+            ]
+          }
+        ]
+      },
+      "permissions": {
+        "deny": [
+          "Bash(extensions/tools/deploy *)"
+        ]
+      }
+    },
+    "merged": {
+      "hookGroups": {
+        "PreToolUse": 1,
+        "PostToolUse": 2,
+        "PermissionDenied": 1,
+        "SubagentStop": 1,
+        "PostToolUseFailure": 1,
+        "UserPromptSubmit": 1,
+        "SessionStart": 1,
+        "Stop": 1
+      },
+      "allow": 3,
+      "ask": 0,
+      "deny": 25
+    },
+    "kit": {
+      "hookGroups": {
+        "PreToolUse": 1,
+        "PostToolUse": 1,
+        "PermissionDenied": 1,
+        "SubagentStop": 1,
+        "PostToolUseFailure": 1,
+        "UserPromptSubmit": 1,
+        "SessionStart": 1,
+        "Stop": 1
+      },
+      "allow": 3,
+      "ask": 0,
+      "deny": 24
+    },
+    "removedEqualsBare": true,
+    "refusals": [
+      {
+        "label": "It would replace an entry the kit emits",
+        "message": "invalid settings fragment in .claude/settings.instance.json: autoMemoryEnabled would replace the autoMemoryEnabled the kit emits: a fragment only adds"
+      },
+      {
+        "label": "It names a key the merge does not define",
+        "message": "invalid settings fragment in .claude/settings.instance.json: unknown key env: the merge defines hooks and permissions"
+      },
+      {
+        "label": "It names a permissions key the merge does not define",
+        "message": "invalid settings fragment in .claude/settings.instance.json: unknown key permissions.defaultMode: the merge defines allow, ask, deny"
+      },
+      {
+        "label": "It would remove a list, were null read as removal",
+        "message": "invalid settings fragment in .claude/settings.instance.json: permissions.deny must be an array: a fragment only adds"
+      },
+      {
+        "label": "A hook under PreToolUse",
+        "message": "invalid settings fragment in .claude/settings.instance.json: hooks.PreToolUse: a fragment adds no hook under PreToolUse, where a hook's output can rewrite a call after the kit's guards have judged it"
+      },
+      {
+        "label": "A hook under SubagentStop",
+        "message": "invalid settings fragment in .claude/settings.instance.json: hooks.SubagentStop: a fragment adds no hook under SubagentStop, where the kit itself answers a worker's stop and an added hook's answer can take precedence over it"
+      },
+      {
+        "label": "A hook under UserPromptSubmit",
+        "message": "invalid settings fragment in .claude/settings.instance.json: hooks.UserPromptSubmit: a fragment adds no hook under UserPromptSubmit, where a hook that blocks or fails keeps a prompt from the session, the operator's recovery controls among them"
+      },
+      {
+        "label": "A hook the kit registers itself, registered again",
+        "message": "invalid settings fragment in .claude/settings.instance.json: hooks.Stop[0].hooks[0].command is a hook the kit registers itself: a fragment adds its own and registers none of the kit's again"
+      },
+      {
+        "label": "A rule the kit emits, in another list",
+        "message": "invalid settings fragment in .claude/settings.instance.json: permissions.deny holds a rule the kit emits under permissions.allow (Bash(node scripts/launchpad.mjs update --publish *)): it would countermand that entry, and a fragment only adds"
+      },
+      {
+        "label": "A rule with a character that cannot be seen",
+        "message": "invalid settings fragment in .claude/settings.instance.json: permissions.deny[0] must be a non-empty string without control or format characters"
+      },
+      {
+        "label": "A hook under an event the kit registers nothing under",
+        "message": "invalid settings fragment in .claude/settings.instance.json: hooks.Notification: a fragment adds hooks under PermissionDenied, PostToolUse, PostToolUseFailure, SessionStart, Stop alone"
+      },
+      {
+        "label": "An entry of another shape than the kit's own",
+        "message": "invalid settings fragment in .claude/settings.instance.json: hooks.Stop[0].matcher must be a non-empty string without control or format characters"
+      }
+    ],
+    "times": {
+      "note": "milliseconds, five runs each of the instance's own emit and check as child processes; before: no fragment; after: the fragment above",
+      "before": {
+        "emit": {
+          "runs": [
+            172,
+            176,
+            172,
+            171,
+            172
+          ],
+          "medianMs": 172
+        },
+        "check": {
+          "runs": [
+            185,
+            181,
+            184,
+            179,
+            180
+          ],
+          "medianMs": 181
+        }
+      },
+      "after": {
+        "emit": {
+          "runs": [
+            173,
+            169,
+            171,
+            172,
+            173
+          ],
+          "medianMs": 172
+        },
+        "check": {
+          "runs": [
+            184,
+            182,
+            181,
+            187,
+            185
+          ],
+          "medianMs": 184
+        }
+      }
+    }
+  },
+  "k5": {
+    "firstKey": "schemaVersion",
+    "schemaVersion": 1,
+    "allWithNoOrder": "[]"
+  }
+}

@@ -10,6 +10,7 @@ import {
 } from "node:fs";
 import { dirname, isAbsolute, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isCoreRoot } from "./runtime-inputs.mjs";
 
 /** @typedef {"authority" | "artifact-identity" | "verification" | "feedback"} EvidenceKind */
 /** @typedef {{workOrder: string, revision: string | null}} EvidenceEdition */
@@ -30,6 +31,10 @@ export function currentEvidence(root, kind, override) {
   if (manifest && manifest.schemaVersion !== 1)
     throw new Error("Unsupported current-evidence manifest");
   const row = override ?? manifest?.editions?.[kind];
+  // Core's first feedback edition lives at its order's evidence root and
+  // takes no revision. An instance's edition of that number is as any other.
+  /** @param {unknown} workOrder */
+  const first = (workOrder) => isCoreRoot(root) && workOrder === "WO-011";
   if (
     !row ||
     typeof row.workOrder !== "string" ||
@@ -38,7 +43,7 @@ export function currentEvidence(root, kind, override) {
       row.revision === null ||
       (typeof row.revision === "string" && /^(?!000)\d{3}$/.test(row.revision))
     ) ||
-    (kind === "feedback" && row.workOrder === "WO-011" && row.revision !== null)
+    (kind === "feedback" && first(row.workOrder) && row.revision !== null)
   )
     throw new Error(`Invalid current-evidence edition: ${kind}`);
   /** @type {EvidenceEdition} */
@@ -49,7 +54,7 @@ export function currentEvidence(root, kind, override) {
         ? `authority/${edition.revision}`
         : ""
       : kind === "feedback"
-        ? edition.workOrder === "WO-011"
+        ? first(edition.workOrder)
           ? ""
           : `feedback${edition.revision ? `-${edition.revision}` : ""}`
         : `${kind}${edition.revision ? `/${edition.revision}` : ""}`;

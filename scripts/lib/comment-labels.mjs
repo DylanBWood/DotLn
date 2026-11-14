@@ -2,10 +2,16 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { sha256Hex } from "./helpers.mjs";
 import { runGitPathList, spawnGit } from "./git.mjs";
-import { docPath, docRelative, loadConfig } from "./config.mjs";
+import { docPath, docRelative, extensionPath, loadConfig } from "./config.mjs";
 import { parseJson } from "./paths.mjs";
 import { evidenceSources } from "./evidence-sources.mjs";
-import { feedbackSourcesComments } from "../../packages/skeleton/dist/src/feedback-source-comments.js";
+import { provenVendoredFile } from "./vendored-parser.mjs";
+import {
+  lineReader,
+  sourceTrees,
+  treeTokens,
+} from "../../packages/skeleton/src/source-reading.mjs";
+import { readShellText } from "../../packages/skeleton/src/shell-reading.mjs";
 
 // A comment says what the code does or why. A report-local label (a
 // verification or final-review finding label, a bare decision number) names
@@ -29,7 +35,8 @@ const inside = (root, path) =>
   path === root || path.startsWith(`${root}${sep}`);
 
 /** The tracked and untracked code files the check reads: documentation roots,
- * generated and hash-pinned surfaces, build output and dependency trees are left out. */
+ * generated and hash-pinned surfaces, build output, dependency trees and the
+ * reserved root, whose code is the instance's own, are left out. */
 export function commentFiles(root) {
   const roots = Object.values(loadConfig(root).roots).map((path) =>
     resolve(root, path),
@@ -51,7 +58,11 @@ export function commentFiles(root) {
         existsSync(join(root, file)) &&
         !/(?:^|\/)(?:node_modules|dist)\//u.test(file) &&
         !/^\.(?:claude|agents|codex)\//u.test(file) &&
-        !roots.some((path) => inside(path, resolve(root, file))),
+        !extensionPath(file) &&
+        !roots.some((path) => inside(path, resolve(root, file))) &&
+        // The carried parser is the pinned package's text, not this
+        // repository's: exactly the proven copy is left out.
+        !provenVendoredFile(root, file),
     )
     .sort();
   if (!candidates.length) return [];
@@ -80,65 +91,126 @@ export function commentFiles(root) {
   return candidates.filter((file) => !excluded.has(file));
 }
 
-// Physical comment lines of one file: shell comments by line, JavaScript and
-// TypeScript comments through the parser, which never reads a string, regex
-// or template as a comment. Each body is located in its source to get its
-// line; JSDoc continuation markers are stripped from the text.
-// Inside a heredoc only a JavaScript line comment counts: a "#" line there is
-// data, such as a Markdown heading a fixture writes. A here-string opens none.
-const HEREDOC =
-  /(?<!<)<<(?!<)(-?)\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z_][A-Za-z0-9_]*))/u;
-const shellComments = (source) => {
-  const rows = [];
-  let heredoc = null;
-  source.split("\n").forEach((line, index) => {
-    if (heredoc) {
-      const body = heredoc.strip ? line.replace(/^\t+/u, "") : line;
-      if (body === heredoc.word) heredoc = null;
-      else {
-        const match = /^\s*\/\/\s?(.*)$/u.exec(line);
-        if (match) rows.push({ line: index + 1, text: match[1] });
-      }
-      return;
+// Physical comment lines, each format read by the repository's one reader
+// of it. JavaScript and TypeScript comments come from the syntax trees of the
+// source reader (packages/skeleton/src/source-reading.mjs), one batch for the
+// whole check: the grammar, not the token before a slash, tells a comment
+// from the text of a regular expression, a template or JSX, which a scanner
+// alone cannot do after a closing parenthesis or brace. A line is counted at
+// each line feed and nowhere else, as the shell reader and the baseline's
+// fingerprints count it; JSDoc continuation markers are stripped from the
+// text. A shell file's comments come from the shell reader
+// (packages/skeleton/src/shell-reading.mjs), which knows where a `#` begins
+// a word: a comment that opens its line is judged, and a `#!` line is an
+// interpreter line. A here-document is data, such as a Markdown heading a
+// fixture writes, and a `#` line in it is no comment; its body is read as a
+// TypeScript module whatever command it feeds, so a comment the grammar
+// finds there that opens its line is judged. A here-string opens none.
+
+/** Whether only blanks stand before an offset on its line. */
+const opensLine = (text, offset) =>
+  !text.slice(text.lastIndexOf("\n", offset - 1) + 1, offset).trim();
+
+/** Each input's comments beside its text, every source of the batch parsed
+ * from one start of the compiler's API; null for a shell file. A code path
+ * the reader parses in no dialect is refused, never skipped, so every file
+ * the selector admits is judged. */
+const readSources = (inputs) =>
+  sourceTrees(inputs).map((read, index) => {
+    if (read) {
+      // The compiler's own line map also breaks at U+2028, U+2029 and a lone
+      // carriage return, which a string or template may hold; count line
+      // feeds alone.
+      const line = lineReader(read.file.text);
+      return {
+        comments: treeTokens(read.file).comments.map((comment) => ({
+          ...comment,
+          line: line(comment.start),
+        })),
+        file: { text: read.file.text },
+      };
     }
-    const match = /^\s*(?:#(?!!)|\/\/)\s?(.*)$/u.exec(line);
-    if (match) rows.push({ line: index + 1, text: match[1] });
-    else {
-      const opener = HEREDOC.exec(line);
-      if (opener)
-        heredoc = {
-          word: opener[2] ?? opener[3] ?? opener[4],
-          strip: opener[1] === "-",
-        };
-    }
+    if (!SHELL.test(inputs[index].path))
+      throw new Error(
+        `comment check: the source reader parses no dialect for ${inputs[index].path}`,
+      );
+    return null;
   });
-  return rows;
-};
-const locateBodies = (source, bodies) => {
-  const rows = [];
-  let cursor = 0;
-  for (const body of bodies) {
-    let at = source.indexOf(body, cursor);
-    while (at >= 0 && !["//", "/*"].includes(source.slice(at - 2, at)))
-      at = source.indexOf(body, at + 1);
-    if (at < 0) continue;
-    cursor = at + body.length;
-    const startLine = source.slice(0, at).split("\n").length;
-    body.split("\n").forEach((text, index) =>
-      rows.push({
-        line: startLine + index,
+
+/** The rows of one source's comments, each with its line and block. */
+const sourceRows = (read, { firstLine = 1, leading = false } = {}) =>
+  read.comments
+    .filter((comment) => !leading || opensLine(read.file.text, comment.start))
+    .flatMap((comment, block) =>
+      comment.body.split("\n").map((text, index) => ({
+        line: firstLine - 1 + comment.line + index,
         // A JSDoc body opens with its own star on the first row too.
         text: text.replace(/^\s*\*+\s?/u, "").replace(/^\s?/u, ""),
-        block: rows.length && index > 0 ? rows.at(-1).block : rows.length,
-      }),
+        block,
+      })),
     );
+
+/** A shell file's comments that open their lines, and its here-documents. */
+function shellComments(source) {
+  const reading = readShellText(source, { whole: true });
+  if (!reading)
+    throw new Error("shell text nests deeper than the shell reader follows");
+  const lineOf = lineReader(source);
+  const rows = [];
+  for (const { start, end } of reading.comments) {
+    const text = source.slice(start + 1, end);
+    if (!text.startsWith("!") && opensLine(source, start))
+      rows.push({ line: lineOf(start), text: text.replace(/^\s/u, "") });
   }
-  return rows;
-};
-export function fileComments(path, source, bodies) {
-  const rows = SHELL.test(path)
-    ? shellComments(source).map((row, index) => ({ ...row, block: index }))
-    : locateBodies(source, bodies);
+  return {
+    rows,
+    heredocs: reading.heredocs.map((heredoc) => ({
+      line: lineOf(heredoc.start),
+      source: source.slice(heredoc.start, heredoc.end),
+    })),
+  };
+}
+
+/** Every source's comment rows. The JavaScript and TypeScript sources, and
+ * the here-documents of the shell files, are parsed in one batch. */
+function commentRows(sources) {
+  const shells = sources.map(({ path, source }) =>
+    SHELL.test(path) ? shellComments(source) : null,
+  );
+  const reads = readSources([
+    ...sources.map(({ path, source }, index) => ({
+      path: shells[index] ? "shell.sh" : path,
+      source,
+    })),
+    ...shells.flatMap((shell) =>
+      (shell?.heredocs ?? []).map(({ source }) => ({
+        path: "here-document.ts",
+        source,
+      })),
+    ),
+  ]);
+  let next = sources.length;
+  return sources.map((_, index) => {
+    const shell = shells[index];
+    if (!shell) return reads[index] ? sourceRows(reads[index]) : [];
+    const rows = [...shell.rows];
+    for (const heredoc of shell.heredocs) {
+      rows.push(
+        ...sourceRows(reads[next++], {
+          firstLine: heredoc.line,
+          leading: true,
+        }),
+      );
+    }
+    // Each shell row is its own block; consecutive lines join below.
+    return rows
+      .sort((a, b) => a.line - b.line)
+      .map((row, block) => ({ ...row, block }));
+  });
+}
+
+/** Comment rows grouped into blocks. */
+function commentBlocks(rows) {
   // Consecutive single-line comments form one block; a multi-line body is one.
   const blocks = [];
   for (const row of rows) {
@@ -154,9 +226,16 @@ export function fileComments(path, source, bodies) {
   return blocks;
 }
 
+/** One file's comments, grouped into blocks. */
+export const fileComments = (path, source) =>
+  commentBlocks(commentRows([{ path, source }])[0]);
+
 /** Every finding in one file: {line, kind, fingerprint}. The fingerprint is
  * of the physical line's text, so the line text itself is never stored. */
-export function commentLabelFindings(path, source, bodies) {
+export const commentLabelFindings = (path, source) =>
+  blockFindings(fileComments(path, source));
+
+function blockFindings(blocks) {
   const findings = [];
   const seen = new Set();
   const push = (row, kind) => {
@@ -169,7 +248,7 @@ export function commentLabelFindings(path, source, bodies) {
       fingerprint: sha256Hex(normalized(row.text)),
     });
   };
-  for (const block of fileComments(path, source, bodies)) {
+  for (const block of blocks) {
     const lead = block.find((row) => row.text.trim() !== "");
     if (lead && ORDER_LEAD.test(lead.text.trimStart()))
       push(lead, "order-lead");
@@ -244,7 +323,7 @@ export function checkCommentLabels(
     path: file,
     source: readFileSync(join(root, file), "utf8"),
   }));
-  const bodies = feedbackSourcesComments(sources);
+  const rows = commentRows(sources);
   const remaining = new Map(
     Object.entries(baseline.lines).map(([file, entries]) => [
       file,
@@ -261,8 +340,8 @@ export function checkCommentLabels(
       failures.push(
         `${baselineRelative(root)}: ${file} is in no evidence edition and carries no admission; fix its comments instead of baselining them`,
       );
-  sources.forEach(({ path, source }, index) => {
-    for (const finding of commentLabelFindings(path, source, bodies[index])) {
+  sources.forEach(({ path }, index) => {
+    for (const finding of blockFindings(commentBlocks(rows[index]))) {
       findings.push({ file: path, ...finding });
       const entries = remaining.get(path);
       if (entries?.[finding.fingerprint] > 0) {

@@ -62,6 +62,7 @@ import {
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
+import { SHARD_VARIABLE, shardValue } from "./lib/test-shards.mjs";
 import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
 import {
   gateCriticalPath,
@@ -89,7 +90,7 @@ import {
 import {
   completeCoverage,
   suiteEnvironment,
-  withoutDrivenContext,
+  probeEnvironment,
 } from "./lib/suite-evidence.mjs";
 import {
   CONFINED_PARTIAL_CHECK,
@@ -100,7 +101,6 @@ import {
 } from "./lib/host-confinement.mjs";
 
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
-import { evidenceSources } from "./lib/evidence-sources.mjs";
 import {
   CORE_STRUCTURAL_TASKS,
   STRUCTURAL_TASKS,
@@ -108,15 +108,17 @@ import {
   structuralTasks,
 } from "./lib/generated-artifacts.mjs";
 export { CORE_STRUCTURAL_TASKS, STRUCTURAL_TASKS };
-import { docRelative, findLaunchpad } from "./lib/config.mjs";
+import { docRelative } from "./lib/config.mjs";
+import {
+  GENERATED_SUITES,
+  machinerySources,
+} from "./lib/machinery-sources.mjs";
 import { branchWorkOrder } from "./lib/control-store.mjs";
 import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   productReadEnvironment,
   productReadObservations,
 } from "./lib/product-read-guard.mjs";
-
-const recordedSources = evidenceSources(findLaunchpad());
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
@@ -148,8 +150,6 @@ const nodeTests = (name, pattern, options = {}) => ({
   needsBuild: true,
   ...options,
 });
-const VERTICAL_STATEMENT_PATTERN =
-  "composed baseline (?:records source-bound failure judgments|walks requirement-voice wording)|resident consumes source-bound failure judgments|healthy negative wording";
 // These shells each own a checked temporary root, Git repository and PATH.
 const shell = (name, file) => ({
   name,
@@ -157,738 +157,9 @@ const shell = (name, file) => ({
   needsBuild: true,
 });
 
-// Machinery declarations select optional review checks by their own source paths.
-export const machinerySources = {
-  "sync-fixtures": [
-    "scripts/features.mjs",
-    "scripts/harness.mjs",
-    "scripts/lib/harness.mjs",
-    "scripts/meta.mjs",
-    "scripts/release.mjs",
-    // The close's step names, blocker classes and removal children, which
-    // release.mjs, worktree.mjs and plan failures import.
-    "scripts/lib/release-steps.mjs",
-    "scripts/lib/release-preparation.mjs",
-    "scripts/lib/proposal-delivery.mjs",
-    "scripts/check-role-oracle.mjs",
-    "scripts/test-process-debt.mjs",
-    "scripts/test-runner.mjs",
-    "scripts/structural-checks.mjs",
-    "scripts/lib/host-resources.mjs",
-    "scripts/lib/gate-scheduling-baseline.json",
-    "packages/skeleton/src/evidence-editions.mjs",
-    "scripts/lib/evidence-fixture.mjs",
-    "scripts/test-sync.mjs",
-    "scripts/sync.mjs",
-    "scripts/lib/generated-artifacts.mjs",
-    "scripts/lib/build-freshness.mjs",
-  ],
-  "launchpad-planning": [
-    "scripts/features.mjs",
-    "scripts/lib/feature-registry.mjs",
-    "scripts/lib/features.mjs",
-    "scripts/lib/build-overlay.mjs",
-    // plan start applies the owned-root prune through this summary (WO-237).
-    "scripts/lib/temporary-prune-summary.mjs",
-    "scripts/lib/planning-document.mjs",
-    // release prepare names a routed packet's release through this module.
-    "scripts/lib/proposal-delivery.mjs",
-    "packages/kernel/src/types.ts",
-    "packages/compiler/src/harness.ts",
-    "packages/console/src/index.ts",
-    "scripts/build.mjs",
-    "scripts/bootstrap.mjs",
-    "scripts/harness.mjs",
-    "scripts/license-surfaces.mjs",
-    "scripts/target-gate.mjs",
-    "scripts/test-target-publication-fixture.mjs",
-    "scripts/worktree.mjs",
-    "scripts/lib/release-steps.mjs",
-    "scripts/launchpad.mjs",
-    "scripts/kit/",
-    "docs/KIT.md",
-    "scripts/refute-plan.mjs",
-    "scripts/lib/planning-followups.mjs",
-    "scripts/lib/planning-conditions.mjs",
-    "scripts/lib/plan-",
-    "scripts/entropy.mjs",
-    "scripts/lib/entropy-review.mjs",
-    // The entropy review launches through the shared worker launch (WO-250).
-    "scripts/lib/worker-launch.mjs",
-    "scripts/meta.mjs",
-    "scripts/lib/meta.mjs",
-    "scripts/docs-check.mjs",
-    "scripts/check-publication.mjs",
-    "scripts/lib/reader-profiles.mjs",
-    "scripts/reader.mjs",
-    "scripts/work-orders.mjs",
-    "scripts/test-runner.mjs",
-    "scripts/lineage.mjs",
-    "scripts/resume.mjs",
-    "scripts/release.mjs",
-    "scripts/lib/release-kit-runtime.mjs",
-    "scripts/lib/release-records.mjs",
-    "scripts/lib/harness.mjs",
-    "scripts/harness-probe.mjs",
-    "scripts/operator-control.mjs",
-    "packages/skeleton/src/gate-evidence.mjs",
-    "packages/skeleton/src/runtime-inputs.mjs",
-    "packages/skeleton/src/writer-teardown.mjs",
-    "packages/skeleton/src/usage-observation.mjs",
-    "packages/compiler/src/codex-continuation.mjs",
-    "scripts/test-launchpad-planning.mjs",
-  ],
-  "wo107-schema": [
-    "corpus/harness/wo107-schema.test.mjs",
-    "corpus/harness/profile.mjs",
-    "corpus/harness/wo107-records.mjs",
-    "corpus/harness/wo107-scenarios.mjs",
-    "corpus/harness/wo107-bounded.mjs",
-  ],
-  "fixture-temp-root": [
-    "scripts/temporary-root.mjs",
-    "scripts/lib/harness-prune.mjs",
-    "scripts/lib/temporary-prune.mjs",
-    "scripts/lib/host-lanes.mjs",
-    "scripts/lib/host-resources.mjs",
-    "scripts/lib/temporary-roots.mjs",
-    "packages/skeleton/src/temporary-root-records.mjs",
-    "scripts/test-temp-root.sh",
-    "scripts/test-fixture-temp-root.sh",
-  ],
-  "harness-probe": [
-    "scripts/meta.mjs",
-    "scripts/features.mjs",
-    "scripts/lib/feature-registry.mjs",
-    "scripts/lib/features.mjs",
-    "scripts/lib/build-overlay.mjs",
-    "scripts/lib/planning-document.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/skeleton/src/discovery-sandbox.ts",
-    "packages/skeleton/src/source-change-command.ts",
-    "scripts/resume.mjs",
-    "scripts/harness-probe.mjs",
-    "scripts/lib/copilot-probe.mjs",
-    "scripts/lib/copilot-qualification.mjs",
-    "scripts/fixtures/copilot-probe-hook.mjs",
-    "scripts/lib/subagent-probe.mjs",
-    "scripts/fixtures/subagent-probe-hook.mjs",
-    "scripts/lib/agent-identity-probe.mjs",
-    "scripts/lib/target-worktree-fixture.mjs",
-    "scripts/test-target-publication-fixture.mjs",
-    "scripts/test-beacon-fixture.mjs",
-    "scripts/test-target-worktree.fixture-inputs.json",
-    "scripts/fixtures/agent-identity-probe-hook.mjs",
-    "scripts/lib/authority-probe.mjs",
-    "scripts/fixtures/authority-effect.mjs",
-    "scripts/test-authority-probe.mjs",
-    "scripts/lib/writing-worker-probe.mjs",
-    "scripts/probe-worker-hosts.mjs",
-    "scripts/test-harness-probe.mjs",
-    "scripts/probes/local-model-role-qualification.mjs",
-    // The probes build their Codex argv and home through the launcher (WO-159).
-    "packages/skeleton/src/worker-transport.ts",
-  ],
-  "harness-fixtures": [
-    "scripts/features.mjs",
-    "scripts/lib/feature-registry.mjs",
-    "scripts/lib/features.mjs",
-    "scripts/lib/build-overlay.mjs",
-    "scripts/outward-lint.mjs",
-    "scripts/lib/drive-worker.mjs",
-    "scripts/lib/drive-session.mjs",
-    // The retained-usage readback the harness suite exercises (WO-237).
-    "scripts/lib/retained-session.mjs",
-    // The stopped-apply report its temporary-root cases exercise (WO-237).
-    "scripts/lib/temporary-prune-summary.mjs",
-    // The dispatch-word case resolves the session's worker option through
-    // the shared launch module (WO-255).
-    "scripts/lib/worker-launch.mjs",
-    "scripts/build.mjs",
-    "scripts/lib/planning-document.mjs",
-    "scripts/lib/off-ramps.mjs",
-    "scripts/lib/release-close-handoff.mjs",
-    "scripts/test-dispatch-bound.mjs",
-    "scripts/test-temporary-roots.mjs",
-    "scripts/lib/temporary-prune.mjs",
-    "scripts/lib/temporary-root-declarations.mjs",
-    "scripts/lib/temporary-roots.mjs",
-    "packages/skeleton/src/temporary-root-records.mjs",
-    "scripts/lib/fixture-inputs.mjs",
-    "scripts/lib/plan-failures.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "scripts/lib/bounded-command.mjs",
-    "scripts/lib/dispatch-bound.mjs",
-    "scripts/lib/duration.mjs",
-    "packages/skeleton/src/duration.mjs",
-    "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/skeleton/src/test-selection.mjs",
-    "packages/kernel/src/index.ts",
-    "packages/compiler/src/artifact-identity.ts",
-    "packages/compiler/src/index.ts",
-    "packages/compiler/src/operator-control.mjs",
-    "packages/skeleton/src/gate-deadlines.mjs",
-    "scripts/bootstrap.mjs",
-    "scripts/harness-entry.mjs",
-    "scripts/harness.mjs",
-    "scripts/lib/evidence-preparation.mjs",
-    "scripts/lib/gate-evidence.mjs",
-    "scripts/lib/harness-runtime.mjs",
-    "scripts/lib/terms.mjs",
-    "scripts/lib/validation.mjs",
-    "scripts/release.mjs",
-    // The WO-139 stopped-close case copies it beside the release script (WO-254).
-    "scripts/license-surfaces.mjs",
-    "scripts/test-fixture-temporary.mjs",
-    "packages/skeleton/src/presence-heartbeat.ts",
-    "packages/skeleton/src/presence-signals.ts",
-    "packages/skeleton/src/resident-store.ts",
-    "scripts/terms.mjs",
-    "scripts/harness-context.mjs",
-    "scripts/lib/harness-context.mjs",
-    "packages/skeleton/src/feedback-boundary.ts",
-    "packages/skeleton/src/gate-evidence.mjs",
-    "packages/skeleton/src/runtime-inputs.mjs",
-    "scripts/test-harness.mjs",
-    "scripts/test-plan-first.mjs",
-    "scripts/test-plan-first-boundaries.mjs",
-    "scripts/lib/plan-first.mjs",
-    "scripts/lib/plan-first-screen.mjs",
-    "scripts/lib/plan-first-fixture.mjs",
-    "scripts/plan-first.mjs",
-    "packages/skeleton/src/plan-first-boundary.ts",
-    // The snapshot names releases before records gave, read by the harness
-    // suite's snapshot proof regression (WO-252).
-    "scripts/fixtures/wo252-pre-record-snapshots.json",
-    "scripts/test-drive.mjs",
-    "scripts/drive.mjs",
-    "scripts/fixtures/drive-live.mjs",
-    "scripts/lib/drive-diagnostics.mjs",
-    "scripts/lib/drive-evidence.mjs",
-    "scripts/lib/drive-process.mjs",
-    "scripts/lib/drive-prompts.mjs",
-    "scripts/lib/drive-route.mjs",
-    "scripts/lib/github-repository.mjs",
-    "scripts/lib/drive-session.mjs",
-    "scripts/lib/drive-stream.mjs",
-    "scripts/lib/drive-transport.mjs",
-    "scripts/lib/drive-worker.mjs",
-    "scripts/lib/host-resources.mjs",
-    "scripts/lib/process-budget.mjs",
-    "scripts/lib/release-tags.mjs",
-    "scripts/lib/order-worktree-grants.mjs",
-    "scripts/lib/order-worktrees.mjs",
-    "scripts/lib/target-worktree-fixture.mjs",
-    "scripts/lib/target-worktrees.mjs",
-    "scripts/lib/helpers.mjs",
-    "scripts/test-runner.mjs",
-    "scripts/lib/harness-prune.mjs",
-    // Prune usage retention follows preservation's collision names (WO-171).
-    "scripts/lib/intake-reconciliation.mjs",
-    "scripts/lib/worktree-material.mjs",
-    "scripts/lib/worktree-removal.mjs",
-    "scripts/lib/release-steps.mjs",
-    "scripts/lib/git.mjs",
-    // The observer's journal-read failure case rewrites the control store's
-    // reader in its fixture copy.
-    "scripts/lib/control-store.mjs",
-    "packages/skeleton/src/writer-teardown.mjs",
-    "scripts/lib/stash-drop.mjs",
-    // Prune lists stale Codex episode homes through the launcher (WO-159).
-    "packages/skeleton/src/worker-transport.ts",
-    "scripts/test-observed-facts.mjs",
-    "scripts/lib/executor-handoff.mjs",
-    "scripts/resume.mjs",
-    "scripts/work-orders.mjs",
-    "scripts/worktree.mjs",
-    "packages/skeleton/src/observed-facts.ts",
-    "packages/skeleton/src/correction-observation.mjs",
-    "scripts/test-target-harness.mjs",
-    "scripts/lib/harness.mjs",
-    "scripts/lib/harness-instruction.mjs",
-    "scripts/kit/CLAUDE.template.md",
-    "packages/compiler/src/harness.ts",
-    "packages/skeleton/src/harness-host.ts",
-    "packages/skeleton/src/version.ts",
-    "packages/skeleton/src/subagent-budget.ts",
-    "packages/skeleton/src/harness-command.ts",
-    "packages/skeleton/src/document-quality.ts",
-    "packages/skeleton/src/loadouts/",
-  ],
-  harness: [
-    "scripts/lib/node-engines.mjs",
-    "scripts/lib/host-lanes.mjs",
-    "scripts/lib/bounded-command.mjs",
-    "scripts/lib/dispatch-bound.mjs",
-    "scripts/lib/duration.mjs",
-    "packages/skeleton/src/duration.mjs",
-    "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/skeleton/src/test-selection.mjs",
-    // The check action's stale host-rule report (WO-221), loaded on demand.
-    "scripts/lib/target-worktrees.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/skeleton/src/usage-observation.mjs",
-    // A closed order's session read from its retained lane (WO-237).
-    "scripts/lib/retained-session.mjs",
-    "scripts/lib/evidence-preparation.mjs",
-    "scripts/lib/harness-prune.mjs",
-    "scripts/lib/harness-runtime.mjs",
-    "packages/skeleton/src/presence-heartbeat.ts",
-    "packages/skeleton/src/presence-signals.ts",
-    "packages/skeleton/src/resident-store.ts",
-    "scripts/harness.mjs",
-    "scripts/lib/feature-registry.mjs",
-    "scripts/lib/features.mjs",
-    "scripts/lib/build-overlay.mjs",
-    "packages/skeleton/src/harness-host.ts",
-    // Every generated hook embeds its tool map (WO-250).
-    "packages/skeleton/src/harness-command.ts",
-    "packages/skeleton/src/version.ts",
-    "packages/skeleton/src/subagent-budget.ts",
-    "packages/skeleton/src/gate-evidence.mjs",
-    "packages/skeleton/src/runtime-inputs.mjs",
-    "scripts/lib/harness.mjs",
-    "packages/compiler/src/harness.ts",
-    "packages/skeleton/src/loadouts/",
-  ],
-  // The suite scans every non-test script for a literal document root, so
-  // any changed script selects it (WO-169 item 5, WO-085 D014).
-  "configuration-root": [
-    "scripts/",
-    "packages/skeleton/src/runtime-inputs.mjs",
-  ],
-  "harness-context": [
-    "scripts/lib/process-budget.mjs",
-    "scripts/lib/dispatch-bound.mjs",
-    "scripts/lib/duration.mjs",
-    "packages/skeleton/src/duration.mjs",
-    "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/skeleton/src/test-selection.mjs",
-    "scripts/lib/harness.mjs",
-    "scripts/harness-context.mjs",
-    "scripts/lib/harness-context.mjs",
-  ],
-  "harness-evidence": recordedSources["harness"],
-  "plan-refutation": [
-    // plan publish runs against this fixture's forge, through the helper,
-    // which screens the branch's change with the local-terms list (WO-259).
-    "scripts/test-target-publication-fixture.mjs",
-    "scripts/lib/launchpad-publish.mjs",
-    "scripts/lib/branch-terms.mjs",
-    "scripts/lib/branch-changes.mjs",
-    // Plan failures, which the refutation fixtures import, reads the close's
-    // blocker classes and step names from here.
-    "scripts/lib/release-steps.mjs",
-    "scripts/features.mjs",
-    "scripts/lib/feature-registry.mjs",
-    "scripts/lib/features.mjs",
-    "scripts/lib/build-overlay.mjs",
-    // plan start applies the owned-root prune through this summary (WO-237).
-    "scripts/lib/temporary-prune-summary.mjs",
-    // plan start and plan documents read the document kinds, the moves and
-    // the session journals' census.
-    "scripts/lib/document-census.mjs",
-    "scripts/lib/document-kinds.mjs",
-    "scripts/lib/document-moves.mjs",
-    "scripts/lib/markdown-links.mjs",
-    "scripts/lib/proposal-delivery.mjs",
-    "scripts/docs-check.mjs",
-    "scripts/lib/front-page-scope.mjs",
-    "scripts/lib/planning-document.mjs",
-    "scripts/lib/gate-evidence.mjs",
-    "scripts/lib/gate-reuse.mjs",
-    "scripts/lib/planning-conditions.mjs",
-    "scripts/lib/host-lanes.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/kernel/src/index.ts",
-    "scripts/lib/control-store.mjs",
-    "scripts/lib/control.mjs",
-    "scripts/lib/dependencies.mjs",
-    "scripts/lib/legacy-cost.mjs",
-    "scripts/lib/terms.mjs",
-    "scripts/work-orders.mjs",
-    "packages/skeleton/src/plan-refutation-host.ts",
-    "packages/skeleton/src/plan-refutation-fake.ts",
-    "packages/skeleton/src/temporary-roots.ts",
-    "packages/skeleton/src/worker-transport.ts",
-    "scripts/test-plan-refutation.mjs",
-    "scripts/refute-plan.mjs",
-    "scripts/lib/reader-profiles.mjs",
-    "scripts/lib/plan-",
-    // plan-failures reads the persisted correction ids through meta.mjs.
-    "scripts/lib/meta.mjs",
-    "packages/skeleton/src/plan-refutation-protocol.ts",
-    "packages/skeleton/src/loadouts/plan-refuter.ts",
-    "packages/skeleton/src/entropy-review-protocol.ts",
-    "packages/skeleton/src/entropy-review-fake.ts",
-    "packages/skeleton/src/loadouts/entropy-reducer.ts",
-    "scripts/test-entropy-review.mjs",
-    "scripts/entropy.mjs",
-    "scripts/lib/entropy-review.mjs",
-    // The shared worker launch and the change review helper it serves, with
-    // the run-time modules its fixtures load and pin: the reviewer briefs and
-    // pins, the worker definition, the counter, the protocol the fake
-    // validates with, the session and journal readers and the duration format
-    // (WO-250).
-    "scripts/lib/worker-launch.mjs",
-    "scripts/lib/review-worker.mjs",
-    "scripts/lib/review-worker-fake.mjs",
-    // A registered target's order is bound through the target registry and
-    // read with the host's safe Git options (WO-255).
-    "scripts/lib/target-worktrees.mjs",
-    "scripts/lib/github-repository.mjs",
-    "scripts/lib/checkpoint.mjs",
-    "scripts/worker.mjs",
-    "scripts/test-review-worker.mjs",
-    "packages/skeleton/src/change-review-protocol.ts",
-    "packages/skeleton/src/loadouts/contributor.ts",
-    "packages/compiler/src/harness.ts",
-    "packages/skeleton/src/subagent-budget.ts",
-    "packages/skeleton/src/verification-protocol.ts",
-    "packages/skeleton/src/worker-protocol.ts",
-    "scripts/lib/dispatch-bound.mjs",
-    "scripts/lib/duration.mjs",
-    "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/skeleton/src/usage-observation.mjs",
-  ],
-  "runner-fixtures": [
-    // The kit's Git call sites run under the below-floor Git, and the
-    // recorded Git surface's reader is judged on fixture trees (WO-260).
-    "scripts/test-git-floor.mjs",
-    "scripts/fixtures/git-below-floor/git",
-    "scripts/lib/git-surface.mjs",
-    "scripts/lib/git-surface.json",
-    "scripts/worktree.mjs",
-    "scripts/lib/target-records.mjs",
-    "scripts/lib/target-record-reader.mjs",
-    "scripts/lib/target-planning.mjs",
-    "scripts/lib/stash-drop.mjs",
-    "scripts/lib/authority-probe.mjs",
-    "scripts/fixtures/authority-effect.mjs",
-    "packages/skeleton/src/source-change-worktree.ts",
-    // The document gate's terms task runs the real branch screen (WO-259).
-    "scripts/terms.mjs",
-    "scripts/lib/terms.mjs",
-    "scripts/lib/branch-terms.mjs",
-    "scripts/lib/branch-changes.mjs",
-    "scripts/lib/temporary-prune.mjs",
-    "scripts/lib/temporary-root-declarations.mjs",
-    "scripts/lib/temporary-roots.mjs",
-    "packages/skeleton/src/temporary-root-records.mjs",
-    "scripts/check-role-oracle.mjs",
-    "scripts/lib/fixture-inputs.mjs",
-    "scripts/structural-checks.mjs",
-    "scripts/lib/generated-artifacts.mjs",
-    "scripts/lib/build-freshness.mjs",
-    "scripts/lib/github-body.mjs",
-    "scripts/lib/target-gate.mjs",
-    "scripts/target-gate.mjs",
-    "scripts/lib/target-worktrees.mjs",
-    "scripts/harness.mjs",
-    "scripts/test-host-guard.test.mjs",
-    "scripts/host-guard.mjs",
-    "scripts/lib/host-resources.mjs",
-    "scripts/lib/gate-scheduling-baseline.json",
-    "scripts/lib/host-footprint.c",
-    "scripts/lib/host-lock.c",
-    "scripts/lib/host-guard-state.mjs",
-    "scripts/lib/host-lanes.mjs",
-    "scripts/lib/process-monitor.mjs",
-    "scripts/lib/bounded-command.mjs",
-    "scripts/lib/dispatch-bound.mjs",
-    "scripts/lib/duration.mjs",
-    "packages/skeleton/src/duration.mjs",
-    "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/skeleton/src/test-selection.mjs",
-    "scripts/fixtures/memory-growth.c",
-    "scripts/fixtures/detached-descendant.c",
-    "scripts/lib/plan-failures.mjs",
-    "corpus/harness/bounded-findings.mjs",
-    "corpus/harness/wo102-",
-    "corpus/harness/generate-cadence-corpus.mjs",
-    "scripts/lib/machinery-coverage.mjs",
-    "scripts/lib/product-read-guard.mjs",
-    "scripts/lib/evidence-sources.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/compiler/src/artifact-identity.ts",
-    "packages/skeleton/src/harness-host.ts",
-    "packages/skeleton/src/loadouts/contributor.ts",
-    "packages/skeleton/src/version.ts",
-    "scripts/authority-evidence.mjs",
-    "scripts/build.mjs",
-    "scripts/fixtures/historical-compiler-loader.mjs",
-    "scripts/lib/lifecycle-evidence.mjs",
-    "scripts/lib/release-records.mjs",
-    "scripts/reactor-identity.mjs",
-    "scripts/test-plan-refutation.mjs",
-    "scripts/lib/gate-timeline.mjs",
-    "scripts/measure-gates.mjs",
-    "scripts/measure-lanes.mjs",
-    "scripts/lib/gate-evidence.mjs",
-    // The passing-row lookup `npm test` reuses and completions read (WO-173).
-    "scripts/lib/gate-reuse.mjs",
-    "scripts/lib/case-reporter.mjs",
-    "scripts/lib/case-marker.mjs",
-    "scripts/lib/control-store.mjs",
-    "scripts/lib/handoff-ledger.mjs",
-    // A completion bounds its repeated document runs by the handoff start
-    // this module reads from the order's events.
-    "scripts/lib/control-time.mjs",
-    "scripts/lib/planning-conditions.mjs",
-    "scripts/license-surfaces.mjs",
-    "scripts/lib/host-confinement.mjs",
-    "scripts/test-runner.mjs",
-    "packages/skeleton/src/evidence-editions.mjs",
-    "scripts/test-runner.test.mjs",
-    "scripts/test-vertical.mjs",
-    "scripts/test-vertical-judgment.mjs",
-    "scripts/test-vertical.recovery.mjs",
-    "scripts/lib/document-gate-stubs.mjs",
-    "scripts/lib/document-failures.mjs",
-    "scripts/lib/evidence-jsonl.mjs",
-    "scripts/lib/node-engines.mjs",
-    "scripts/check-registrations.mjs",
-    "scripts/test-gate-deadlines.mjs",
-    "scripts/test-release-fixtures.mjs",
-    "scripts/test-release.sh",
-    "scripts/test-reader-fixture.mjs",
-    "scripts/test-close-admission.mjs",
-    "scripts/lib/worktree-removal.mjs",
-    "scripts/lib/release-steps.mjs",
-    "packages/skeleton/src/writer-teardown.mjs",
-    "scripts/lib/suite-evidence.mjs",
-    "scripts/lib/release-fixtures.mjs",
-    // The release shell runs the library through this entry point (WO-163).
-    "scripts/release-fixtures.mjs",
-    "packages/skeleton/src/gate-evidence.mjs",
-    "packages/skeleton/src/runtime-inputs.mjs",
-    "packages/skeleton/src/gate-deadlines.mjs",
-    // The case inventory check reads the split launchpad files and their list.
-    "scripts/test-launchpad-export.mjs",
-    "scripts/test-launchpad-update.mjs",
-    "scripts/test-launchpad-seeds.mjs",
-    "scripts/fixtures/launchpad-cases.json",
-    "scripts/fixtures/target-worktree-cases.json",
-    "scripts/test-target-worktree-",
-    "scripts/lib/target-worktree-fixture.mjs",
-  ],
-  "process-debt": [
-    "scripts/features.mjs",
-    "scripts/lib/feature-registry.mjs",
-    "scripts/lib/features.mjs",
-    "scripts/lib/build-overlay.mjs",
-    // plan start applies the owned-root prune through this summary (WO-237).
-    "scripts/lib/temporary-prune-summary.mjs",
-    "scripts/lib/plan-subject.mjs",
-    "scripts/lib/planning-document.mjs",
-    // The driven-start figure beside the cold-start meter (WO-247).
-    "scripts/lib/drive-prompts.mjs",
-    "scripts/test-gate-followups.mjs",
-    "docs/control/budgets.json",
-    "CLAUDE.md",
-    "scripts/lib/fixture-inputs.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/compiler/src/feedback.ts",
-    "packages/compiler/src/index.ts",
-    "packages/compiler/src/operator-control.mjs",
-    "packages/skeleton/src/feedback-boundary.ts",
-    "packages/skeleton/src/feedback-selfhost.ts",
-    "packages/skeleton/src/gate-deadlines.mjs",
-    "packages/skeleton/src/harness-command.ts",
-    "packages/skeleton/src/document-quality.ts",
-    "packages/skeleton/src/observed-facts.ts",
-    "packages/skeleton/src/writer-teardown.mjs",
-    "scripts/bootstrap.mjs",
-    "scripts/harness-context.mjs",
-    "scripts/harness.mjs",
-    "scripts/lib/adjacent-queue.mjs",
-    "scripts/lib/gate-evidence.mjs",
-    "scripts/lib/github-body.mjs",
-    "scripts/lib/harness.mjs",
-    "scripts/lib/plan-receipts.mjs",
-    "scripts/lib/release-kit-runtime.mjs",
-    "scripts/meta.mjs",
-    "scripts/operator-control.mjs",
-    "scripts/refute-plan.mjs",
-    "scripts/release.mjs",
-    "scripts/resume.mjs",
-    "scripts/test-beacon-fixture.mjs",
-    "scripts/test-fixture-temporary.mjs",
-    "packages/skeleton/src/correction-observation.mjs",
-    "scripts/lib/meta.mjs",
-    "scripts/lib/intake-reconciliation.mjs",
-    "scripts/lib/worktree-material.mjs",
-    "scripts/lib/worktree-removal.mjs",
-    "scripts/lib/release-steps.mjs",
-    "scripts/lib/git.mjs",
-    "packages/skeleton/src/writer-teardown.mjs",
-    "scripts/lib/evidence-preparation.mjs",
-    "scripts/lib/planning-followups.mjs",
-    "scripts/lib/private-paths.mjs",
-    "scripts/lib/planning-conditions.mjs",
-    "docs/planning/followups.json",
-    "scripts/build.mjs",
-    "scripts/work-orders.mjs",
-    "scripts/discover.mjs",
-    "packages/skeleton/src/usage-observation.mjs",
-    "scripts/test-process-debt.mjs",
-    "scripts/test-process-debt.fixture-inputs.json",
-    "packages/skeleton/fixtures/wo195-role-baseline.json",
-    "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
-    "packages/skeleton/fixtures/wo186-role-baseline.json",
-    "packages/skeleton/fixtures/wo187-role-baseline.json",
-    "packages/skeleton/fixtures/wo196-role-baseline.json",
-    "packages/skeleton/fixtures/wo188-role-baseline.json",
-    "packages/skeleton/fixtures/wo073-role-baseline.json",
-    "packages/skeleton/fixtures/wo191-role-baseline.json",
-    "packages/skeleton/fixtures/wo215-role-baseline.json",
-    "packages/skeleton/fixtures/wo218-role-baseline.json",
-    "packages/skeleton/fixtures/wo217-role-baseline.json",
-    "packages/skeleton/fixtures/wo226-role-baseline.json",
-    "packages/skeleton/fixtures/wo219-role-baseline.json",
-    "packages/skeleton/fixtures/wo204-role-baseline.json",
-    "packages/skeleton/fixtures/wo233-role-baseline.json",
-    "packages/skeleton/fixtures/wo236-role-baseline.json",
-    "packages/skeleton/fixtures/wo234-role-baseline.json",
-    "packages/skeleton/fixtures/wo234-recovery-role-baseline.json",
-    "packages/skeleton/fixtures/wo234-integration-role-baseline.json",
-    "packages/skeleton/fixtures/wo235-role-baseline.json",
-    "packages/skeleton/fixtures/wo235-repair-role-baseline.json",
-    "packages/skeleton/fixtures/wo235-private-reply-role-baseline.json",
-    "packages/skeleton/fixtures/wo235-usefulness-role-baseline.json",
-    "packages/skeleton/fixtures/wo235-maintenance-role-baseline.json",
-    "packages/skeleton/fixtures/wo235-quality-pass-role-baseline.json",
-    "packages/skeleton/fixtures/wo235-removal-role-baseline.json",
-    "packages/skeleton/fixtures/wo239-role-baseline.json",
-    "packages/skeleton/fixtures/wo239-integration-role-baseline.json",
-    "packages/skeleton/fixtures/wo079-role-baseline.json",
-    "packages/skeleton/fixtures/wo145-role-baseline.json",
-    "packages/skeleton/fixtures/wo146-role-baseline.json",
-    "packages/skeleton/fixtures/wo149-role-baseline.json",
-    "packages/skeleton/fixtures/wo150-role-baseline.json",
-    "packages/skeleton/fixtures/wo157-role-baseline.json",
-    "packages/skeleton/fixtures/wo158-role-baseline.json",
-    "packages/skeleton/fixtures/wo161-role-baseline.json",
-    "packages/skeleton/fixtures/wo166-role-baseline.json",
-    "packages/skeleton/fixtures/wo168-role-baseline.json",
-    "packages/skeleton/fixtures/wo173-role-baseline.json",
-    "packages/skeleton/fixtures/wo179-role-baseline.json",
-    "packages/skeleton/fixtures/wo185-role-baseline.json",
-    "packages/skeleton/fixtures/wo216-role-baseline.json",
-    "packages/skeleton/fixtures/wo221-role-baseline.json",
-    "packages/skeleton/fixtures/wo192-role-baseline.json",
-    "packages/skeleton/fixtures/wo192-integration-role-baseline.json",
-    "packages/skeleton/fixtures/wo247-role-baseline.json",
-    "packages/skeleton/fixtures/wo251-role-baseline.json",
-    "packages/skeleton/fixtures/wo249-role-baseline.json",
-    "packages/skeleton/fixtures/wo249-integration-role-baseline.json",
-    "packages/skeleton/fixtures/wo250-role-baseline.json",
-    "packages/skeleton/fixtures/wo252-role-baseline.json",
-    "packages/skeleton/fixtures/wo252-repair-role-baseline.json",
-    "packages/skeleton/fixtures/wo238-role-baseline.json",
-    "packages/skeleton/fixtures/wo238-integration-role-baseline.json",
-    "packages/skeleton/fixtures/wo253-role-baseline.json",
-    "packages/skeleton/fixtures/wo254-role-baseline.json",
-    "packages/skeleton/fixtures/wo246-role-baseline.json",
-    "packages/skeleton/fixtures/wo255-role-baseline.json",
-    "packages/skeleton/fixtures/wo255-repair-role-baseline.json",
-    "packages/skeleton/fixtures/wo257-role-baseline.json",
-    "packages/skeleton/fixtures/wo243-role-baseline.json",
-    "packages/skeleton/fixtures/wo259-role-baseline.json",
-    "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
-    "scripts/test-helper-reuse.mjs",
-    "scripts/lib/helpers.mjs",
-    "scripts/lib/git.mjs",
-    "scripts/lib/paths.mjs",
-    "scripts/test-codex-session.mjs",
-    "scripts/lib/harness-runtime.mjs",
-    "scripts/lib/lifecycle-evidence.mjs",
-    "scripts/lib/receipt-cost.mjs",
-    "scripts/lib/worktree-material.mjs",
-    "scripts/lib/process-budget.mjs",
-    "scripts/lib/dispatch-bound.mjs",
-    "scripts/lib/duration.mjs",
-    "packages/skeleton/src/duration.mjs",
-    "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/skeleton/src/test-selection.mjs",
-    "packages/skeleton/src/harness-host.ts",
-    "packages/skeleton/src/version.ts",
-    "packages/skeleton/src/subagent-budget.ts",
-    "packages/skeleton/src/gate-evidence.mjs",
-    "packages/skeleton/src/runtime-inputs.mjs",
-    "scripts/lib/control-actor.mjs",
-    "scripts/lib/control-store.mjs",
-    "scripts/lib/control-usage.mjs",
-    "scripts/lib/harness-prune.mjs",
-  ],
-  mutation: [
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/compiler/src/compile.ts",
-    "packages/compiler/src/normalize.ts",
-    "packages/kernel/src/index.ts",
-    "corpus/mutation/",
-  ],
-  // The inventories and the import closure they must follow (WO-157 item 12).
-  "evidence-sources": [
-    "scripts/lib/evidence-fixture.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/compiler/src/artifact-identity.ts",
-    "packages/kernel/src/index.ts",
-    "packages/skeleton/src/entropy-review-protocol.ts",
-    "packages/skeleton/src/verification.ts",
-    "packages/skeleton/src/worker-store.ts",
-    "packages/skeleton/test/scenario.test.ts",
-    "scripts/build.mjs",
-    "scripts/lib/evidence-sources.mjs",
-    "scripts/test-evidence-sources.mjs",
-    "scripts/feedback-evidence.mjs",
-    "packages/skeleton/src/feedback-audit.ts",
-    "packages/skeleton/src/evidence-editions.mjs",
-  ],
-  // Any changed docs path, stub list or registry re-runs the registration
-  // check under --review, not only under test:docs (WO-157 item 13).
-  registrations: [
-    "scripts/lib/planning-document.mjs",
-    "scripts/lib/build-freshness.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "packages/kernel/src/index.ts",
-    "docs/",
-    "scripts/check-registrations.mjs",
-    "scripts/lib/document-gate-stubs.mjs",
-    "scripts/lib/document-failures.mjs",
-    "scripts/lib/evidence-jsonl.mjs",
-    "scripts/test-runner.mjs",
-    "packages/kernel/test/fixtures/jsonl-protocols.json",
-  ],
-  "authority-evidence": recordedSources["authority"],
-  "artifact-evidence": recordedSources["artifact-identity"],
-  "verification-evidence": recordedSources["verification"],
-  "feedback-evidence": recordedSources["feedback"],
-  meta: [
-    "scripts/features.mjs",
-    "scripts/lib/feature-registry.mjs",
-    "scripts/lib/features.mjs",
-    "scripts/lib/build-overlay.mjs",
-    // Direct entry imports and literal first-party script inputs (WO-174).
-    "scripts/lib/executor-handoff.mjs",
-    "scripts/lib/plan-subject.mjs",
-    "packages/skeleton/src/correction-observation.mjs",
-    "scripts/lib/control-store.mjs",
-    "scripts/lib/control-time.mjs",
-    "scripts/lib/planning-followups.mjs",
-    "scripts/lib/planning-conditions.mjs",
-    "packages/skeleton/src/usage-observation.mjs",
-    "scripts/meta.mjs",
-    "scripts/lib/meta.mjs",
-    "scripts/lib/receipt-cost.mjs",
-    "scripts/lib/process-budget.mjs",
-    "scripts/lib/dispatch-bound.mjs",
-    "scripts/lib/duration.mjs",
-    "packages/skeleton/src/duration.mjs",
-    "packages/skeleton/src/dispatch-journal.mjs",
-    "packages/skeleton/src/test-selection.mjs",
-  ],
-};
+// The declared sources live in their own module, which a planning command
+// reads without loading this one; they are exported from here as before.
+export { machinerySources };
 const protection = {
   "wo107-schema":
     "the WO-107 baseline's provenance hash matches its pinned collector bytes",
@@ -1011,20 +282,7 @@ function classifySuite(row) {
     ...(structural && structuralHostSlots[row.name]
       ? { hostSlots: structuralHostSlots[row.name] }
       : {}),
-    generated: [
-      "release-surfaces",
-      "authority-evidence",
-      "artifact-evidence",
-      "verification-evidence",
-      "feedback-evidence",
-      "harness",
-      "harness-evidence",
-      "meta",
-      "index",
-      "lineage",
-      "siblings",
-      "publication",
-    ].includes(row.name),
+    generated: GENERATED_SUITES.includes(row.name),
     document,
     product: !machinery && !document,
     protects:
@@ -1346,10 +604,11 @@ export const suites = [
   nodeTests("target-publish", "scripts/test-target-publish.mjs", {
     kit: "core-only: core outward-vocabulary control data",
   }),
-  nodeTests("target-worktree", "scripts/test-target-worktree-start.mjs", {
+  // The close file takes most of the group's deadline, so it starts first.
+  nodeTests("target-worktree", "scripts/test-target-worktree-close.mjs", {
     args: [
+      "scripts/test-target-worktree-start.mjs",
       "scripts/test-target-worktree-publish.mjs",
-      "scripts/test-target-worktree-close.mjs",
       "scripts/test-target-worktree-release.mjs",
     ],
     fileConcurrency: 1,
@@ -1362,7 +621,7 @@ export const suites = [
   }),
   nodeTests("vertical", "scripts/test-vertical.mjs", {
     kit: "core-only: core outward-vocabulary control data",
-    // Files expand into bounded tasks, partitioning the large statement matrix.
+    // Each file expands into its own bounded task.
     args: [
       "scripts/test-vertical-judgment.mjs",
       "scripts/test-vertical.recovery.mjs",
@@ -1420,6 +679,9 @@ export const suites = [
       "scripts/launchpad.mjs",
       "scripts/kit/",
       "docs/KIT.md",
+      "docs/OPERATOR.md",
+      // launchpad commands prints the page through this module.
+      "scripts/lib/operator-commands.mjs",
     ],
     kit: "core-only: package TypeScript and build configuration needed to export",
     // Each file owns two host slots, including its nested kit gates.
@@ -1478,11 +740,12 @@ export const suites = [
   nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs", {
     sources: [
       "scripts/fixtures/worktree-integration/wo193-preflight-bridge.json",
+      "scripts/fixtures/worktree-integration/wo276-criteria-wrap-bridge.json",
     ],
     kit: "core-only: core source and publication inputs",
-    // Its reservation admits only the measured light peers.
+    // It holds the whole host: no light peer ran beside it in either row of
+    // the comparison that judged its overlap, so it declares none.
     exclusive: true,
-    overlap: 2,
   }),
   {
     ...shell("release", "scripts/test-release.sh"),
@@ -1503,14 +766,15 @@ export const suites = [
       "product byte ceilings, receipt and dispatch boundaries, and repository documentation links hold",
   }),
   // The private local-terms list screens every line a branch adds, so a
-  // refused term never reaches a commit the gate passed (WO-259).
+  // refuse-mode term never reaches a commit the gate passed (WO-259), and a
+  // context-mode match is listed for the stage at hand to read.
   node("terms", "scripts/terms.mjs", {
     instance: "document",
     args: ["branch"],
     document: true,
     preflight: true,
     protects:
-      "no line a branch adds carries a term of the private local-terms list, and no refusal prints the term",
+      "no line a branch adds carries a refuse-mode term of the private local-terms list, each context-mode match is listed by file and line for the stage to read, and no line printed names a term",
   }),
   nodeTests("docs-check-fixtures", "scripts/test-docs-check.mjs", {
     kit: "core-only: core product roadmap",
@@ -1682,6 +946,9 @@ export const suites = [
     group: "hook-heavy",
     exclusive: true,
     overlap: 2,
+    // Every file the row loads takes `test` from scripts/lib/test-shards.mjs,
+    // so each case runs in exactly one of these processes.
+    shards: 3,
   }),
   node("harness", "scripts/harness.mjs", {
     instance: "runtime",
@@ -1828,6 +1095,11 @@ export function validateSuites(table) {
     )
       throw new Error(`Invalid exclusive overlap: ${row.name}`);
     if (
+      row.shards !== undefined &&
+      (!row.exclusive || !Number.isSafeInteger(row.shards) || row.shards < 1)
+    )
+      throw new Error(`Invalid shard count: ${row.name}`);
+    if (
       row.groupLimit !== undefined &&
       (!row.group ||
         !Number.isSafeInteger(row.groupLimit) ||
@@ -1857,10 +1129,22 @@ const explicitlyIsolated = (row) =>
   Boolean(row.build || row.exclusive || row.loadClass === "isolated");
 const overlapSlots = (row, concurrency) =>
   row.exclusive ? Math.min(row.overlap ?? 0, concurrency - 1) : 0;
+/** The lanes an exclusive row holds: every lane its light peers do not. */
+const exclusiveSlots = (row, concurrency) =>
+  concurrency - overlapSlots(row, concurrency);
 const reservedSlots = (row, concurrency) =>
   explicitlyIsolated(row)
-    ? concurrency - overlapSlots(row, concurrency)
+    ? row.shard
+      ? // The row's reservation, shared evenly by its shards.
+        Math.max(
+          1,
+          Math.floor(exclusiveSlots(row, concurrency) / row.shard.count),
+        )
+      : exclusiveSlots(row, concurrency)
     : Math.min(row.loadSlots ?? 1, concurrency);
+/** Whether two tasks are shards of one row, which run together. */
+const sameShards = (left, right) =>
+  Boolean(left?.shard && right?.shard && left.shard.row === right.shard.row);
 
 export function lightSuiteNames(samples = schedulingBaseline.taskSamples) {
   const byName = Map.groupBy(samples, (row) => row.name);
@@ -1899,6 +1183,25 @@ export function expand(command, repo) {
   });
 }
 
+// How long a supervisor waits for the host guard's record of a stop it
+// did not make itself: fifty reads, twenty milliseconds apart.
+const GUARD_RECORD_WAITS = 50;
+const GUARD_RECORD_WAIT_MS = 20;
+
+/** The host task as a gate runs it. A gate that was started inside a gate
+ * that was admitted, under a lease that gate holds and this one validated,
+ * tells its host check so: the check then stands on that admission at warning
+ * memory pressure and refuses at critical pressure alone. The word goes to
+ * the kit's own host check, the row whose arguments name the host mode; a
+ * row a fixture or a profile put in its place keeps its own command whole,
+ * since the word means nothing to another program.
+ * @param {{name: string, args?: string[]}} row
+ * @param {unknown} inheritedLease */
+export const hostTaskUnder = (row, inheritedLease) =>
+  inheritedLease && Array.isArray(row.args) && row.args.includes("host")
+    ? { ...row, args: [...row.args, "--under-running-gate"] }
+    : row;
+
 export function executeSuite(
   row,
   repo,
@@ -1914,7 +1217,7 @@ export function executeSuite(
       capacity: recordedHostLaneCapacity(hostDirectory),
     });
   let env = row.probe
-    ? withoutDrivenContext(row.executionEnvironment ?? process.env)
+    ? probeEnvironment(row.executionEnvironment ?? process.env)
     : suiteEnvironment(
         row.executionEnvironment ?? process.env,
         row.gateContext,
@@ -1946,6 +1249,11 @@ export function executeSuite(
           ? temporaryOwner.repository
           : undefined,
       DOTLN_PRUNE_SCOPE: "repository",
+    };
+  if (row.shard)
+    env = {
+      ...env,
+      [SHARD_VARIABLE]: shardValue(row.shard.number, row.shard.count),
     };
   const deadline = startDeadline(`suite:${row.name}`, timeoutMs, { env });
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
@@ -2288,8 +1596,24 @@ export function executeSuite(
       failure = error.message;
     });
     let finished = false;
+    // The host guard stops a process before it publishes the stop's record.
+    // A child that died of a SIGKILL this supervisor did not send may be one
+    // the guard stopped, so the record is given a bounded moment to land
+    // before the task is read without one.
+    let guardWaits = 0;
     const finish = (code) => {
       if (finished) return;
+      if (
+        child.signalCode === "SIGKILL" &&
+        !killTimer &&
+        !resourceFailure &&
+        guardWaits < GUARD_RECORD_WAITS &&
+        !incidentForProcess(hostDirectory, child.pid, started)
+      ) {
+        guardWaits++;
+        setTimeout(() => finish(code), GUARD_RECORD_WAIT_MS);
+        return;
+      }
       finished = true;
       clearTimeout(timer);
       clearTimeout(killTimer);
@@ -2562,6 +1886,22 @@ export async function scheduleSuites(
       if (hostLanes.onWait) hostLanes.onWait(holders, observation);
       else console.log(formatLaneWait(task, observation));
     };
+  // An exclusive row's host reservation holds the row and its light peers,
+  // and belongs to the row for as long as the scheduler keeps the row open:
+  // its lease is let go once the scheduler has closed the reservation and
+  // its last user has finished, whichever comes later. A shard that ends
+  // while later shards of its row still wait leaves it held for them.
+  const reservationReleases = [];
+  const settleReservation = (reservation) => {
+    if (!reservation.closed || reservation.users > 0 || reservation.settled)
+      return undefined;
+    reservation.settled = (async () => {
+      const outer = await reservation.promise.catch(() => undefined);
+      await outer?.release();
+    })();
+    reservationReleases.push(reservation.settled);
+    return reservation.settled;
+  };
   const executeTask = async (
     row,
     laneIndexes,
@@ -2574,8 +1914,21 @@ export async function scheduleSuites(
     const { startedAt, concurrentAtStart, reservation } = observation;
     const isolated = explicitlyIsolated(row);
     const occupiedSlots = laneIndexes.length;
+    // Beside a shard run its row's light peers and the other shards the
+    // row's lanes hold at once, which is fewer than the row's count where
+    // the host has few lanes: a declaration past the host's capacity is one
+    // the deadline's validator refuses.
+    const shardsAtOnce = row.shard
+      ? Math.min(
+          row.shard.count,
+          Math.max(
+            1,
+            Math.floor(exclusiveSlots(row, concurrency) / occupiedSlots),
+          ),
+        )
+      : 1;
     const peerConcurrency = isolated
-      ? overlapSlots(row, concurrency) + 1
+      ? overlapSlots(row, concurrency) + shardsAtOnce
       : Math.max(1, concurrency - occupiedSlots + 1);
     const gateContext = {
       ...diagnosticContext,
@@ -2716,9 +2069,9 @@ export async function scheduleSuites(
       };
     } finally {
       await lease?.release();
-      if (reservation && --reservation.users === 0) {
-        const outer = await reservation.promise.catch(() => undefined);
-        await outer?.release();
+      if (reservation) {
+        reservation.users -= 1;
+        await settleReservation(reservation);
       }
     }
   };
@@ -2810,6 +2163,8 @@ export async function scheduleSuites(
     pending.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
   const groups = new Map();
   let exclusive = null,
+    exclusiveMembers = 0,
+    exclusiveLanes = 0,
     exclusiveReservation;
   const groupAvailable = (row) =>
     !row.group || (groups.get(row.group) ?? 0) < (row.groupLimit ?? 1);
@@ -2820,6 +2175,21 @@ export async function scheduleSuites(
     );
   const isLight = (row) => !explicitlyIsolated(row) && lightTasks.has(row.name);
   const canJoin = (row) => {
+    if (exclusive?.shard) {
+      // A later shard joins while the row's lanes hold it; a lane a finished
+      // shard freed stays the row's, so light peers keep to the overlap,
+      // counted in the lanes they hold: a light task of two lanes is two.
+      const beside = [...active.keys()]
+        .map((name) => table.find((task) => task.name === name))
+        .filter((task) => !sameShards(task, exclusive))
+        .reduce((lanes, task) => lanes + reservedSlots(task, concurrency), 0);
+      return sameShards(row, exclusive)
+        ? exclusiveLanes + reservedSlots(row, concurrency) <=
+            exclusiveSlots(row, concurrency)
+        : isLight(row) &&
+            beside + reservedSlots(row, concurrency) <=
+              overlapSlots(exclusive, concurrency);
+    }
     if (exclusive) return isLight(row);
     if (!explicitlyIsolated(row)) return true;
     return (
@@ -2828,7 +2198,28 @@ export async function scheduleSuites(
       ) && active.size <= overlapSlots(row, concurrency)
     );
   };
+  // The reservation is the row's while any of its shards runs or waits: on
+  // a host with lanes for one shard at a time, the row's shards follow one
+  // another with no heavy row between them. It is let go once none is left.
+  const releaseExclusive = () => {
+    if (
+      exclusive &&
+      exclusiveMembers === 0 &&
+      !pending.some((waiting) => sameShards(waiting, exclusive))
+    ) {
+      const reservation = exclusiveReservation;
+      exclusive = null;
+      exclusiveReservation = undefined;
+      if (reservation) {
+        reservation.closed = true;
+        void settleReservation(reservation);
+      }
+    }
+  };
   while (pending.length || active.size) {
+    // A shard that left the queue without running (a failed dependency, a
+    // stop) no longer holds its row's reservation.
+    releaseExclusive();
     // A stop request ends scheduling at this boundary; the suites already
     // running are ended by their execute adapter and settle below.
     if (stopRequested() || (!keepGoing && failedFirst))
@@ -2877,17 +2268,35 @@ export async function scheduleSuites(
         (!canJoin(head) || reservedSlots(head, concurrency) > freeLanes.length)
       )
         break;
+      // An exclusive row drains heavy work behind it, so one does not open
+      // past a row of higher priority that is ready and waits only for
+      // lanes: the lanes that row needs come free first. A later shard of
+      // the row that already holds the reservation is no opening.
+      const waitsForLanes = (row) =>
+        unblocked(row) &&
+        canJoin(row) &&
+        reservedSlots(row, concurrency) > freeLanes.length;
       const index = pending.findIndex(
-        (row) =>
+        (row, at) =>
           reservedSlots(row, concurrency) <= freeLanes.length &&
           unblocked(row) &&
-          canJoin(row),
+          canJoin(row) &&
+          !(
+            explicitlyIsolated(row) &&
+            !sameShards(row, exclusive) &&
+            pending.slice(0, at).some(waitsForLanes)
+          ),
       );
       if (index < 0) break;
       const [row] = pending.splice(index, 1);
       const isolated = explicitlyIsolated(row);
-      if (isolated) {
+      // A later shard of the row that holds the reservation joins it.
+      const joinsShards = isolated && sameShards(row, exclusive);
+      if (isolated) exclusiveLanes += reservedSlots(row, concurrency);
+      if (joinsShards) exclusiveMembers += 1;
+      else if (isolated) {
         exclusive = row;
+        exclusiveMembers = 1;
         // One full host reservation contains both the exclusive task and its
         // admitted light peers. Unrelated gates cannot borrow overlap slots.
         const waitObservations = [];
@@ -2956,10 +2365,9 @@ export async function scheduleSuites(
             lanes[index].previous = row.name;
           }
           onActiveChange([...active.keys()]);
-          if (isolated) {
-            exclusive = null;
-            exclusiveReservation = undefined;
-          }
+          if (isolated) exclusiveLanes -= laneIndexes.length;
+          if (isolated) exclusiveMembers -= 1;
+          releaseExclusive();
           if (row.group) groups.set(row.group, groups.get(row.group) - 1);
         });
       active.set(row.name, task);
@@ -2969,6 +2377,10 @@ export async function scheduleSuites(
     else if (pending.length)
       throw new Error("Cyclic or unsatisfied suite dependencies");
   }
+  // The last reservation closes when its row's last task settles above;
+  // its lease is released before the results are returned.
+  releaseExclusive();
+  await Promise.all(reservationReleases);
   return results;
 }
 
@@ -2989,7 +2401,7 @@ export function expandSuiteTasks(
   const preflight = selected
     .filter((row) => row.preflight)
     .map((row) => row.name);
-  return selected
+  const tasks = selected
     .flatMap((row) => {
       if (["launchpad", "target-worktree"].includes(row.name)) {
         const prefix = row.command.slice(0, -1);
@@ -3002,41 +2414,17 @@ export function expandSuiteTasks(
         }));
       }
       if (row.name === "vertical") {
-        // Separate clocks keep queued files and large matrices from spending
-        // another task's deadline. Each file owns two host slots.
+        // Separate clocks keep a queued file from spending another file's
+        // deadline. Each file owns two host slots. The end-to-end file is one
+        // task since WO-276 (Part E) moved its statement wordings to a table
+        // in the skeleton's tests.
         const prefix = row.command.slice(0, -1);
-        return [row.command.at(-1), ...(row.args ?? [])].flatMap((file) => {
-          const task = {
-            ...row,
-            name: `vertical:file:${basename(file)}`,
-            command: [...prefix, file],
-            args: [],
-          };
-          if (basename(file) !== "test-vertical.mjs") return [task];
-          // Identical complementary filters retain each current and future case.
-          return [
-            {
-              ...task,
-              name: `${task.name}:statements`,
-              namePattern: VERTICAL_STATEMENT_PATTERN,
-              command: [
-                ...prefix,
-                `--test-name-pattern=${VERTICAL_STATEMENT_PATTERN}`,
-                file,
-              ],
-            },
-            {
-              ...task,
-              name: `${task.name}:workflow`,
-              skipPattern: VERTICAL_STATEMENT_PATTERN,
-              command: [
-                ...prefix,
-                `--test-skip-pattern=${VERTICAL_STATEMENT_PATTERN}`,
-                file,
-              ],
-            },
-          ];
-        });
+        return [row.command.at(-1), ...(row.args ?? [])].map((file) => ({
+          ...row,
+          name: `vertical:file:${basename(file)}`,
+          command: [...prefix, file],
+          args: [],
+        }));
       }
       if (row.name === "release") {
         if (!template) throw new Error("Release fixture template is required");
@@ -3069,6 +2457,19 @@ export function expandSuiteTasks(
             ],
           },
         ];
+      if (row.shards > 1)
+        // One task a shard. They share the row's reservation and run
+        // together, in a group of their own whose limit is their count.
+        return Array.from({ length: row.shards }, (_, at) => {
+          const { shards: count, ...task } = row;
+          return {
+            ...task,
+            name: `${row.name}:shard:${at + 1}`,
+            shard: { row: row.name, number: at + 1, count },
+            group: `${row.name}:shards`,
+            groupLimit: count,
+          };
+        });
       return [row];
     })
     .map((row) => ({
@@ -3093,6 +2494,24 @@ export function expandSuiteTasks(
           }
         : {}),
     }));
+  // The exclusive rows run as one convoy. Each takes the highest priority
+  // any of them holds and they stand together where the first of them
+  // stood, so the queue takes them back to back and heavy work drains for
+  // them once; among themselves they keep the order their own priorities
+  // gave. A heavy row whose lead is above the convoy's still starts before
+  // it, and one that ties with it never starts inside it.
+  const convoy = tasks.filter((row) => row.exclusive);
+  if (convoy.length < 2) return tasks;
+  const top = Math.max(...convoy.map((row) => row.priority));
+  const at = tasks.findIndex((row) => row.exclusive);
+  const others = tasks.filter((row) => !row.exclusive);
+  return [
+    ...others.slice(0, at),
+    ...convoy
+      .toSorted((a, b) => b.priority - a.priority)
+      .map((row) => ({ ...row, priority: top })),
+    ...others.slice(at),
+  ];
 }
 
 export function aggregateSuiteRows(selected, tasks, rows, codeIdentity) {
@@ -3852,7 +3271,9 @@ async function runGateChecks(
               }
             : await executeSuite(
                 {
-                  ...row,
+                  ...(row.name === "host"
+                    ? hostTaskUnder(row, inheritedLease)
+                    : row),
                   temporaryGateId,
                   resourceMonitor: monitor,
                   memoryLimits: limits,
@@ -3931,12 +3352,14 @@ async function runGateChecks(
           `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
         );
         // Successful checks still deliver their explicit diagnostics, the
-        // criteria screen's advisories among them (WO-249).
+        // criteria screen's advisories among them (WO-249) and the lines a
+        // passing terms task lists for the stage to read.
         for (const line of (row.output ?? "").trimEnd().split("\n"))
           if (
             row.exitCode !== 0 ||
             /^(?:(?:ADVISORY|NEWER)\b|criteria advisory: )/u.test(line) ||
-            (row.name === "kit-verify" && line.startsWith("kit: "))
+            (row.name === "kit-verify" && line.startsWith("kit: ")) ||
+            (row.name === "terms" && line.startsWith("CONTEXT "))
           )
             console.log(`  [${row.name}] ${line}`);
       },

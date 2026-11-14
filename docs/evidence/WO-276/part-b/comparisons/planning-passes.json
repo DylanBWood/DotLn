@@ -1,0 +1,9 @@
+{
+  "comparison": "planning-passes",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every committed revision of the idea ledger and every receipt's pass heading: the dated planning passes, each with its heading and identifier",
+  "read": 220,
+  "equal": 220,
+  "differences": {},
+  "examples": []
+}

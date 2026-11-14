@@ -1,0 +1,219 @@
+{
+  "repairBaseTree": "f9adffa2fb495401e33cfc3a0cc4761e27f30e92",
+  "handoffCheckpoint": "refs/dotln/checkpoint/WO-276/68",
+  "handoffTree": "dd4e4cc00b4296976954df83a3fcc75d32540012",
+  "comparison": "Git tree blobs, including files not yet tracked in the working index. All changed scripts and package files still match the repaired handoff.",
+  "changedFiles": [
+    ".claude/harness-manifest.json",
+    ".claude/hooks/agent-finished.mjs",
+    ".claude/hooks/commit-msg.mjs",
+    ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+    ".claude/hooks/failure-observer.mjs",
+    ".claude/hooks/finish.mjs",
+    ".claude/hooks/no-attribution.mjs",
+    ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+    ".claude/hooks/permission-denied.mjs",
+    ".claude/hooks/permissions.mjs",
+    ".claude/hooks/read-observer.mjs",
+    ".claude/hooks/session.mjs",
+    ".claude/hooks/write-observer.mjs",
+    "docs/KIT.md",
+    "docs/control/current.md",
+    "docs/control/orders/WO-276.jsonl",
+    "docs/evidence/WO-276/authority/049/authority.ref.json",
+    "docs/evidence/WO-276/authority/049/bundle-diff.json",
+    "docs/evidence/WO-276/decisions.md",
+    "docs/evidence/WO-276/handoff.md",
+    "docs/evidence/WO-276/meta.json",
+    "docs/evidence/WO-276/part-b/comparisons/amendment-decisions.json",
+    "docs/evidence/WO-276/part-b/comparisons/console-capabilities.json",
+    "docs/evidence/WO-276/part-b/comparisons/console-publication.json",
+    "docs/evidence/WO-276/part-b/comparisons/console-roadmap-rungs.json",
+    "docs/evidence/WO-276/part-b/comparisons/console-work-order-cards.json",
+    "docs/evidence/WO-276/part-b/comparisons/cost-fields.json",
+    "docs/evidence/WO-276/part-b/comparisons/coverage.json",
+    "docs/evidence/WO-276/part-b/comparisons/criterion-judgments.json",
+    "docs/evidence/WO-276/part-b/comparisons/decisions.json",
+    "docs/evidence/WO-276/part-b/comparisons/drive-route-operator-finding.json",
+    "docs/evidence/WO-276/part-b/comparisons/execution-plan-paths.json",
+    "docs/evidence/WO-276/part-b/comparisons/feedback-comments.json",
+    "docs/evidence/WO-276/part-b/comparisons/findings-blocks.json",
+    "docs/evidence/WO-276/part-b/comparisons/generated-pages.json",
+    "docs/evidence/WO-276/part-b/comparisons/git-surface.json",
+    "docs/evidence/WO-276/part-b/comparisons/github-body-criterion-records.json",
+    "docs/evidence/WO-276/part-b/comparisons/github-body-shape.json",
+    "docs/evidence/WO-276/part-b/comparisons/github-body-soft-wraps.json",
+    "docs/evidence/WO-276/part-b/comparisons/harness-context-citations.json",
+    "docs/evidence/WO-276/part-b/comparisons/harness-context-directives.json",
+    "docs/evidence/WO-276/part-b/comparisons/harness-context-sections.json",
+    "docs/evidence/WO-276/part-b/comparisons/imports.json",
+    "docs/evidence/WO-276/part-b/comparisons/index-partition.json",
+    "docs/evidence/WO-276/part-b/comparisons/instance-secrets.json",
+    "docs/evidence/WO-276/part-b/comparisons/known-issues.json",
+    "docs/evidence/WO-276/part-b/comparisons/markdown-links.json",
+    "docs/evidence/WO-276/part-b/comparisons/mission-clauses.json",
+    "docs/evidence/WO-276/part-b/comparisons/mission-decisions.json",
+    "docs/evidence/WO-276/part-b/comparisons/mission-vision.json",
+    "docs/evidence/WO-276/part-b/comparisons/named-differences.json",
+    "docs/evidence/WO-276/part-b/comparisons/operator-words.json",
+    "docs/evidence/WO-276/part-b/comparisons/order-declarations.json",
+    "docs/evidence/WO-276/part-b/comparisons/outward-rendered-view.json",
+    "docs/evidence/WO-276/part-b/comparisons/plan-continuation-citation-headings.json",
+    "docs/evidence/WO-276/part-b/comparisons/plan-continuation-criteria.json",
+    "docs/evidence/WO-276/part-b/comparisons/plan-continuation-order-pairs.json",
+    "docs/evidence/WO-276/part-b/comparisons/plan-continuation-reassessments.json",
+    "docs/evidence/WO-276/part-b/comparisons/plan-cost.json",
+    "docs/evidence/WO-276/part-b/comparisons/planning-captures.json",
+    "docs/evidence/WO-276/part-b/comparisons/planning-passes.json",
+    "docs/evidence/WO-276/part-b/comparisons/planning-subjects-base.json",
+    "docs/evidence/WO-276/part-b/comparisons/product-content.json",
+    "docs/evidence/WO-276/part-b/comparisons/publication-coverage.json",
+    "docs/evidence/WO-276/part-b/comparisons/publication-headings.json",
+    "docs/evidence/WO-276/part-b/comparisons/readers.mjs",
+    "docs/evidence/WO-276/part-b/comparisons/receipt-cost-lines.json",
+    "docs/evidence/WO-276/part-b/comparisons/red-tags.json",
+    "docs/evidence/WO-276/part-b/comparisons/release-authority.json",
+    "docs/evidence/WO-276/part-b/comparisons/release-notes-sections.json",
+    "docs/evidence/WO-276/part-b/comparisons/release-notes-target-source.json",
+    "docs/evidence/WO-276/part-b/comparisons/release-preparation-reading.json",
+    "docs/evidence/WO-276/part-b/comparisons/runtime-status-orders.json",
+    "docs/evidence/WO-276/part-b/comparisons/script-tokens.json",
+    "docs/evidence/WO-276/part-b/comparisons/sequence-groups.json",
+    "docs/evidence/WO-276/part-b/comparisons/shell-comments.json",
+    "docs/evidence/WO-276/part-b/comparisons/shell-reader.json",
+    "docs/evidence/WO-276/part-b/comparisons/shell-reader.mjs",
+    "docs/evidence/WO-276/part-b/comparisons/umbrella-notices.json",
+    "docs/evidence/WO-276/part-b/comparisons/work-order-headers.json",
+    "docs/evidence/WO-276/repair-002/header-reading.json",
+    "docs/evidence/WO-276/repair-002/header-reading.mjs",
+    "docs/evidence/current.json",
+    "docs/lineage/decisions-index.md",
+    "docs/planning/followups.json",
+    "docs/product/07-execution-guide.md",
+    "docs/publication/software-engineer-toc.md",
+    "docs/work-orders/README.md",
+    "packages/skeleton/src/usage-reading.mjs",
+    "scripts/lib/checkpoint.mjs",
+    "scripts/lib/close-history.mjs",
+    "scripts/lib/control.mjs",
+    "scripts/lib/drive-route.mjs",
+    "scripts/lib/host-doctor.mjs",
+    "scripts/lib/markdown-links.mjs",
+    "scripts/lib/markdown-screen.mjs",
+    "scripts/lib/meta.mjs",
+    "scripts/lib/plan-continuation.mjs",
+    "scripts/lib/target-publish.mjs",
+    "scripts/lib/target-worktree-fixture.mjs",
+    "scripts/lib/work-order-document.mjs",
+    "scripts/release.mjs",
+    "scripts/resume.mjs",
+    "scripts/test-configuration-root.mjs",
+    "scripts/test-docs-check.mjs",
+    "scripts/test-drive.mjs",
+    "scripts/test-off-ramps.mjs",
+    "scripts/test-plan-refutation.mjs",
+    "scripts/test-process-debt.mjs",
+    "scripts/test-runner.test.mjs",
+    "scripts/test-target-worktree-publish.mjs",
+    "scripts/test-work-orders.mjs"
+  ],
+  "changedScriptAndPackageFiles": [
+    {
+      "path": "packages/skeleton/src/usage-reading.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/checkpoint.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/close-history.mjs",
+      "status": "added"
+    },
+    {
+      "path": "scripts/lib/control.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/drive-route.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/host-doctor.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/markdown-links.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/markdown-screen.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/meta.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/plan-continuation.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/target-publish.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/target-worktree-fixture.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/lib/work-order-document.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/release.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/resume.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-configuration-root.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-docs-check.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-drive.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-off-ramps.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-plan-refutation.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-process-debt.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-runner.test.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-target-worktree-publish.mjs",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/test-work-orders.mjs",
+      "status": "modified"
+    }
+  ],
+  "currentMatchesHandoff": true
+}

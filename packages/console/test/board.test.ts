@@ -36,25 +36,36 @@ import type {
 } from "../src/types.js";
 import { exportedLoadouts, observationsFromReport } from "../src/builds.js";
 import { collectSources, editionStream, storeFromLog } from "../src/collect.js";
-import { available, object, unavailable } from "../src/values.js";
+import { available, id, object, unavailable } from "../src/values.js";
 import { displayWidth, TERMINAL_WIDTH } from "../src/render.js";
 import {
+  cellText,
   parseCapabilities,
   parseConstellation,
   parseReleases,
   parseRefutation,
-  parseWorkOrderIndex,
   parseWorkstreams,
-  plainText,
   tableRows,
 } from "../src/text-sources.js";
+import { readWorkOrderCards } from "@dotln/skeleton/dist/src/runtime-status-contract.js";
 import {
   combinedFixture,
   fixtureRoot,
+  currentSelfhostManifest,
   loadFixture,
+  markdownStructure,
   readFixtureManifest,
   root,
 } from "./fixtures.js";
+
+/** What the index command prints with `--json`: both pages' cards, the
+ * workstream observation and the release tags, read from no page. */
+const indexCards = () =>
+  execFileSync(
+    process.execPath,
+    [join(root, "scripts/work-orders.mjs"), "index", "--json"],
+    { cwd: root, encoding: "utf8", maxBuffer: 64_000_000 },
+  );
 
 const sections = (board: BoardView) =>
   board.panels.flatMap((panel) => panel.sections);
@@ -125,6 +136,52 @@ test("[document] WO-174 fixture drafts validate supplied pins without changing t
   assert.doesNotThrow(() => loadFixture("selfhost"));
 });
 
+/** What every board must be, whatever evidence it was projected from: its
+ * five panels, a terminal render within the width, markup that loads and
+ * runs nothing, links that land, evidence under every cell, and no private
+ * text. */
+function boardProperties(
+  board: ReturnType<typeof projectBoard>,
+  encoded: string,
+  terminal: string,
+  html: string,
+) {
+  assert.deepEqual(
+    board.panels.map((panel) => panel.id),
+    ["actors", "builds", "mechanisms", "work", "blueprint"],
+  );
+  assert.ok(
+    terminal.split("\n").every((line) => displayWidth(line) <= TERMINAL_WIDTH),
+  );
+  assert.doesNotMatch(
+    html,
+    /<(?:script|iframe|object|embed|img|link|form|input|button|video|audio|canvas)\b/iu,
+  );
+  assert.doesNotMatch(
+    html,
+    /\son[a-z]+\s*=|\b(?:src|srcset|poster)\s*=|url\s*\(|@import/iu,
+  );
+  assert.doesNotMatch(html, /href="(?!#)/u);
+  const ids = [...html.matchAll(/\bid="([^"]+)"/gu)].map((match) => match[1]);
+  assert.equal(new Set(ids).size, ids.length, "duplicate HTML targets");
+  for (const link of html.matchAll(/href="#([^"]+)"/gu))
+    assert.ok(ids.includes(link[1]), `dead link: ${link[1]}`);
+  const evidenceIds = new Set(board.evidence.map((row) => row.id));
+  for (const row of allRows(board))
+    for (const cell of row.cells) {
+      assert.ok(cell.evidence.length > 0, `cell lacks evidence: ${cell.key}`);
+      assert.ok(
+        cell.evidence.every((id) => evidenceIds.has(id)),
+        `cell invents evidence: ${cell.key}`,
+      );
+      if (cell.status !== "known") assert.equal(cell.value, null);
+    }
+  assert.doesNotMatch(
+    encoded,
+    /SYNTHETIC_PRIVATE_|privateTranscript|source-file bodies.*contents|\/Users\/|\/private\//u,
+  );
+}
+
 test("[document] WO-032 AC1/6 recorded fixture cases", async (t) => {
   for (const name of Object.keys(readFixtureManifest().cases))
     await t.test(
@@ -159,49 +216,34 @@ test("[document] WO-032 AC1/6 recorded fixture cases", async (t) => {
             ),
             output,
           );
-        assert.deepEqual(
-          board.panels.map((panel) => panel.id),
-          ["actors", "builds", "mechanisms", "work", "blueprint"],
-        );
-        assert.ok(
-          terminal
-            .split("\n")
-            .every((line) => displayWidth(line) <= TERMINAL_WIDTH),
-        );
-        assert.doesNotMatch(
-          html,
-          /<(?:script|iframe|object|embed|img|link|form|input|button|video|audio|canvas)\b/iu,
-        );
-        assert.doesNotMatch(
-          html,
-          /\son[a-z]+\s*=|\b(?:src|srcset|poster)\s*=|url\s*\(|@import/iu,
-        );
-        assert.doesNotMatch(html, /href="(?!#)/u);
-        const ids = [...html.matchAll(/\bid="([^"]+)"/gu)].map(
-          (match) => match[1],
-        );
-        assert.equal(new Set(ids).size, ids.length, "duplicate HTML targets");
-        for (const link of html.matchAll(/href="#([^"]+)"/gu))
-          assert.ok(ids.includes(link[1]), `dead link: ${link[1]}`);
-        const evidenceIds = new Set(board.evidence.map((row) => row.id));
-        for (const row of allRows(board))
-          for (const cell of row.cells) {
-            assert.ok(
-              cell.evidence.length > 0,
-              `cell lacks evidence: ${cell.key}`,
-            );
-            assert.ok(
-              cell.evidence.every((id) => evidenceIds.has(id)),
-              `cell invents evidence: ${cell.key}`,
-            );
-            if (cell.status !== "known") assert.equal(cell.value, null);
-          }
-        assert.doesNotMatch(
-          encoded,
-          /SYNTHETIC_PRIVATE_|privateTranscript|source-file bodies.*contents|\/Users\/|\/private\//u,
-        );
+        boardProperties(board, encoded, terminal, html);
       },
     );
+});
+
+test("[document] WO-276 criterion E3: the feedback edition the evidence selection names now passes the board's property checks, with no byte comparison", async () => {
+  const current = await currentSelfhostManifest();
+  // The recorded case reads its fixed copy and not the selected edition, and
+  // the generator's check, which sync and the structural phase run, passes
+  // all the same: a newer edition stales nothing here.
+  assert.notEqual(
+    readFixtureManifest().inputs["maturity"]!.path,
+    current.inputs["maturity"]!.path,
+  );
+  const check = spawnSync(
+    process.execPath,
+    ["scripts/console-fixtures.mjs", "--check"],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(check.status, 0, `${check.stdout}${check.stderr}`);
+  const sources = loadFixture("selfhost", current);
+  const board = projectBoard(sources),
+    encoded = JSON.stringify(board, null, 2) + "\n";
+  assert.ok(
+    schemaMatches(JSON.parse(encoded), schema, schema),
+    "serialized board violates its JSON schema",
+  );
+  boardProperties(board, encoded, renderTerminal(board), renderHtml(board));
 });
 
 test("[document] WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts", () => {
@@ -626,12 +668,13 @@ test("[document] WO-032 AC5 control facts preserve legal actions, negative elaps
 });
 
 test("[document] WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources", () => {
+  // A text without the workstream observation has no groups; the WO-080
+  // test pins its malformed observations.
   for (const parse of [
     parseConstellation,
     parseReleases,
-    parseWorkOrderIndex,
-    parseWorkstreams,
-    parseCapabilities,
+    (text: string) => readWorkOrderCards(text, "index"),
+    (text: string) => parseCapabilities(markdownStructure(text)),
   ])
     assert.throws(() => parse("different format\n"));
   assert.throws(() => parseConstellation("Beacon x | active\n"));
@@ -667,54 +710,103 @@ test("[document] WO-032 text adapters pin formats and refuse malformed, missing 
   );
 });
 
-test("[document] WO-190 the index parser pins each page's title, ends a card at the link definitions, accepts an empty page, and an overlapping card fails only the history section", () => {
-  const page = (title: string, body: string) =>
-    `${title}\n\nThis file is generated by \`npm run work-orders -- index\`.\n\n${body}`;
-  const card =
-    "## Open\n\n### WO-901\n\n[WO-901 — Fixture (version assigned at activation)](WO-901-fixture.md)\n\n- State: draft.\n- Authority: [docs/work-orders/WO-901-fixture.md](WO-901-fixture.md)\n\n[WO-901]: WO-901-fixture.md\n[WO-902]: WO-902-fixture.md\n";
-  const rows = parseWorkOrderIndex(page("# Work orders", card));
+test("[document] WO-190 the index reader takes each page's cards from the index record, records each card's line, accepts an empty page, and an overlapping card fails only the history section", () => {
+  // The index record the index command writes beside its two pages; the
+  // pages' Markdown is for people and is not read.
+  const file = (pages: {
+    index?: readonly unknown[];
+    history?: readonly unknown[];
+  }) =>
+    JSON.stringify({
+      schemaVersion: 1,
+      index: { cards: pages.index ?? [] },
+      history: { cards: pages.history ?? [] },
+      workstreams: [],
+      releaseTags: [],
+    });
+  const card = (section: string, id = "WO-901") => ({
+    id,
+    line: 9,
+    section,
+    title: "WO-901 — Fixture (version assigned at activation)",
+    phase: "draft",
+    dependency: "unknown",
+    verdict: null,
+    fields: {
+      State: "draft.",
+      Authority: "docs/work-orders/WO-901-fixture.md",
+    },
+    links: ["WO-901-fixture.md"],
+  });
+  const rows = readWorkOrderCards(file({ index: [card("Open")] }), "index");
   assert.equal(rows.length, 1);
+  assert.equal(rows[0]!.id, "WO-901");
+  assert.equal(rows[0]!.line, 9);
   assert.equal(
-    rows[0]!.values["title"],
+    rows[0]!.title,
     "WO-901 — Fixture (version assigned at activation)",
   );
-  assert.deepEqual(Object.keys(rows[0]!.values).sort(), [
-    "Authority",
-    "State",
-    "title",
-  ]);
-  assert.throws(() => parseWorkOrderIndex(page("# Work-order history", card)));
-  assert.equal(
-    parseWorkOrderIndex(
-      page("# Work-order history", card),
-      "# Work-order history",
-    ).length,
-    1,
-  );
+  assert.deepEqual(Object.keys(rows[0]!.fields), ["State", "Authority"]);
+  // Each page reads only its own cards.
   assert.deepEqual(
-    parseWorkOrderIndex(
-      page("# Work orders", "## Active\n\nNone.\n\n## Open\n\nNone.\n"),
-    ),
+    readWorkOrderCards(file({ history: [card("Closed")] }), "index"),
     [],
   );
-  for (const [name, title] of [
-    ["README.md", "# Work orders"],
-    ["HISTORY.md", "# Work-order history"],
-  ] as const)
-    for (const row of parseWorkOrderIndex(
-      readFileSync(join(root, "docs/work-orders", name), "utf8"),
-      title,
-    ))
-      assert.match(String(row.values["title"]), /^WO-\d{3} — /u, name);
+  assert.equal(
+    readWorkOrderCards(file({ history: [card("Closed")] }), "history").length,
+    1,
+  );
+  // A card in another page's section, a repeated card, another schema or a
+  // page in place of the index record refuses.
+  assert.throws(() =>
+    readWorkOrderCards(file({ history: [card("Open")] }), "history"),
+  );
+  assert.throws(() =>
+    readWorkOrderCards(file({ index: [card("Open"), card("Open")] }), "index"),
+  );
+  assert.throws(() =>
+    readWorkOrderCards(
+      file({}).replace('"schemaVersion":1', '"schemaVersion":2'),
+      "index",
+    ),
+  );
+  assert.throws(() =>
+    readWorkOrderCards(
+      "# Work orders\n\nThis file is generated by fixture.\n",
+      "index",
+    ),
+  );
+  assert.deepEqual(readWorkOrderCards(file({}), "index"), []);
+  // The index command's own output names each card by its heading's line.
+  const cards = indexCards();
+  for (const [name, which] of [
+    ["README.md", "index"],
+    ["HISTORY.md", "history"],
+  ] as const) {
+    const lines = readFileSync(
+      join(root, "docs/work-orders", name),
+      "utf8",
+    ).split("\n");
+    for (const card of readWorkOrderCards(cards, which)) {
+      assert.match(card.title, /^WO-\d{3} — /u, name);
+      assert.equal(lines[card.line - 1], `### ${card.id}`, name);
+    }
+  }
   const control = loadFixture("control");
+  if (control.workOrderIndex?.status !== "available")
+    assert.fail("control index record absent");
+  const recorded = JSON.parse(control.workOrderIndex.value) as {
+    history: { cards: unknown[] };
+  };
+  recorded.history.cards.push({
+    ...card("Closed", "WO-033"),
+    phase: "closed",
+  });
   const overlapping = projectBoard({
     ...control,
-    workOrderHistory: available(
+    workOrderIndex: available(
       "fixture:overlapping-history",
-      page(
-        "# Work-order history",
-        "## Closed\n\n### WO-033\n\n[WO-033 — Duplicate card](WO-033-fixture.md)\n\n- State: closed.\n- Authority: [docs/work-orders/WO-033-fixture.md](WO-033-fixture.md)\n",
-      ),
+      JSON.stringify(recorded),
     ),
   });
   assert.equal(
@@ -759,6 +851,7 @@ test("[document] WO-190 the work view reads both generated pages; every release 
     join(root, "docs/work-orders/HISTORY.md"),
     "utf8",
   );
+  const recordedCards = indexCards();
   // The release rows the base page recorded, from the repository's own list.
   const recorded = new Set(
     (
@@ -788,13 +881,26 @@ test("[document] WO-190 the work view reads both generated pages; every release 
         row.links.map((link) => `${link.label} => ${link.target}`).sort(),
       ]),
     );
-  const before = links({
-    workOrderIndex: available("docs/work-orders/README.md", base),
-    releases,
-  });
+  // The base page predates the index record, so the links it gave are
+  // derived from its cards by this test's own scan: a release row links each
+  // order it names that had a card on that page.
+  const cards = (text: string) =>
+    [...text.matchAll(/^### (WO-\d{3})$/gmu)].map((match) => match[1]!);
+  const carded = new Set(cards(base));
+  const before = Object.fromEntries(
+    section(projectBoard({ releases }), "releases").rows.map((row) => [
+      row.title,
+      String(cells(row)["workOrders"]!.value)
+        .split(",")
+        .filter((order) => carded.has(order))
+        .map(
+          (order) => `Evidence for ${order} => ${id("indexed-order", order)}`,
+        )
+        .sort(),
+    ]),
+  );
   const after = links({
-    workOrderIndex: available("docs/work-orders/README.md", readme),
-    workOrderHistory: available("docs/work-orders/HISTORY.md", history),
+    workOrderIndex: available("work-orders:index--json", recordedCards),
     releases,
   });
   assert.equal(
@@ -804,21 +910,26 @@ test("[document] WO-190 the work view reads both generated pages; every release 
   );
   assert.ok(Object.values(before).some((row) => row.length > 0));
   assert.deepEqual(after, before);
+  const withoutHistory = JSON.parse(recordedCards) as {
+    history: { cards: unknown[] };
+  };
+  withoutHistory.history.cards = [];
   assert.notDeepEqual(
     links({
-      workOrderIndex: available("docs/work-orders/README.md", readme),
+      workOrderIndex: available(
+        "work-orders:index--json",
+        JSON.stringify(withoutHistory),
+      ),
       releases,
     }),
     before,
-    "the history page is what keeps the settled orders' links",
+    "the history page's cards are what keep the settled orders' links",
   );
-  const cards = (text: string) =>
-    [...text.matchAll(/^### (WO-\d{3})$/gmu)].map((match) => match[1]!);
-  for (const id of cards(base))
+  for (const order of cards(base))
     assert.equal(
-      [readme, history].filter((page) => cards(page).includes(id)).length,
+      [readme, history].filter((page) => cards(page).includes(order)).length,
       1,
-      `${id} is on exactly one page`,
+      `${order} is on exactly one page`,
     );
 });
 
@@ -944,18 +1055,19 @@ test("[document] WO-032 AC5 each role's pinned answering cells exist and the que
     keys: readonly string[];
   }[];
   const roles = tableRows(
-    readFileSync(join(root, "docs/product/13-uifa-roles.md"), "utf8"),
+    markdownStructure(
+      readFileSync(join(root, "docs/product/13-uifa-roles.md"), "utf8"),
+    ),
     ["Role", "Owns", "Produces", "The question they keep asking"],
   );
   assert.equal(mapping.length, 5);
   for (const answer of mapping) {
     const original = roles.find(
-      (row) =>
-        plainText(row.key) === `UIFA ${answer.role.replaceAll("-", " ")}`,
+      (row) => cellText(row.key) === `UIFA ${answer.role.replaceAll("-", " ")}`,
     )!;
     assert.ok(original);
     assert.equal(
-      original.values["The question they keep asking"]!.replace(
+      cellText(original.values["The question they keep asking"]!).replace(
         /^[“"]|[”"]$/gu,
         "",
       ),
@@ -1116,6 +1228,8 @@ test("[document] WO-032 host collection reads current sources and all shipped ex
       .map((name) => `docs/control/orders/${name}`),
     "docs/work-orders/README.md",
     "docs/work-orders/HISTORY.md",
+    "docs/control/release-history.json",
+    "docs/control/workstream-observations.json",
     "docs/planning/capability-table.md",
     "docs/publication/audience-status-index.md",
     "docs/product/06-roadmap.md",
@@ -1160,7 +1274,6 @@ test("[document] WO-032 host collection reads current sources and all shipped ex
       sources.constellation,
       sources.releases,
       sources.workOrderIndex,
-      sources.workOrderHistory,
       sources.capabilities,
       sources.publication,
       sources.roadmap,
@@ -1420,20 +1533,31 @@ test("[document] WO-080 workstreams case shows every column and the stale mark",
   assert.match(renderHtml(board), /Workstreams/u);
 });
 
-test("[document] WO-080 an index without the marker gives an empty section; a malformed marker makes it unavailable", () => {
-  const ref = "docs/work-orders/README.md";
-  const index = "# Work orders\n\nThis file is generated by fixture.\n";
+test("[document] WO-080 an index record without workstreams gives an empty section; a malformed workstream observation makes it unavailable", () => {
+  const ref = "work-orders:index--json";
+  const record = (workstreams: unknown, cards: readonly unknown[] = []) =>
+    JSON.stringify({
+      schemaVersion: 1,
+      index: { cards },
+      history: { cards: [] },
+      workstreams,
+      releaseTags: [],
+    });
   const project = (text: string) =>
     projectBoard({ workOrderIndex: available(ref, text) });
-  assert.equal(section(project(index), "workstreams").status, "available");
-  assert.equal(section(project(index), "workstreams").rows.length, 0);
+  assert.equal(section(project(record([])), "workstreams").status, "available");
+  assert.equal(section(project(record([])), "workstreams").rows.length, 0);
   assert.equal(section(projectBoard({}), "workstreams").status, "unavailable");
-  for (const suffix of [
-    "<!-- dotln-workstreams: {oops} -->\n",
-    '<!-- dotln-workstreams: {"workstreams":[]} -->\n'.repeat(2),
-    '<!-- dotln-workstreams: {"workstreams":[{"id":"WS-001","members":[{}],"edges":[]}]} -->\n',
+  // A malformed observation fails only the workstreams section; the record's
+  // cards stay readable.
+  for (const workstreams of [
+    [
+      { id: "WS-001", members: [], edges: [] },
+      { id: "WS-001", members: [], edges: [] },
+    ],
+    [{ id: "WS-001", members: [{}], edges: [] }],
   ]) {
-    const board = project(index + suffix);
+    const board = project(record(workstreams));
     assert.equal(section(board, "workstreams").status, "unavailable");
     assert.equal(section(board, "work-order-index").status, "available");
     assert.equal(
@@ -1445,18 +1569,27 @@ test("[document] WO-080 an index without the marker gives an empty section; a ma
       1,
     );
   }
+  // Text that is not the record refuses, and so does a record whose
+  // observation is not a list.
   assert.throws(() => parseWorkstreams("not a generated index"));
+  assert.equal(
+    section(project(record({ oops: true })), "workstreams").status,
+    "unavailable",
+  );
   const sources = loadFixture("workstreams");
   assert.ok(sources.workOrderIndex?.status === "available");
-  const withoutCards = sources.workOrderIndex.value.replace(
-    /^### WO-[\s\S]+/mu,
-    "",
+  const recorded = sources.workOrderIndex.value;
+  const grouped = section(project(recorded), "workstreams");
+  assert.ok(grouped.rows.length > 0);
+  assert.ok(grouped.rows.every((row) => row.links.length === 1));
+  // Without the index cards, the same members link to no card.
+  const withoutCards = section(
+    project(record(JSON.parse(recorded).workstreams)),
+    "workstreams",
   );
-  assert.ok(
-    section(project(withoutCards), "workstreams").rows.every(
-      (row) => row.links.length === 0,
-    ),
-  );
+  assert.equal(withoutCards.status, "available");
+  assert.equal(withoutCards.rows.length, grouped.rows.length);
+  assert.ok(withoutCards.rows.every((row) => row.links.length === 0));
 });
 
 test("WO-080 a view without the workstreams section validates and renders in text and HTML", () => {

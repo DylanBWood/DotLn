@@ -1,0 +1,18 @@
+{
+  "note": "Two rows allocated to WO-888 and WO-889; the change then removes WO-888's file. The first batch re-disposes the other row and leaves the row that names WO-888; the second re-disposes that row.",
+  "rowAllocatedToTheRemovedOrder": "FUP-4608c6acd2e50861",
+  "batchThatLeavesTheRow": {
+    "refused": "Planning follow-ups: allocation target WO-888 has no filed work order (row FUP-4608c6acd2e50861); nothing was written"
+  },
+  "registerUnchangedAfterTheRefusal": true,
+  "batchThatReDisposesTheRow": {
+    "applied": [
+      {
+        "id": "FUP-4608c6acd2e50861",
+        "status": "deferred"
+      }
+    ],
+    "revision": "54be02429f58868af9877e3d0c102ffb8cb1b8d4eb01e0fad8dac7ce268a14c1"
+  },
+  "registerReadsAfterIt": "54be02429f58868af9877e3d0c102ffb8cb1b8d4eb01e0fad8dac7ce268a14c1"
+}

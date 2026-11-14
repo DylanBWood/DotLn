@@ -1,0 +1,268 @@
+{
+  "baseKit": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "previousReleaseDocumentGate": 0,
+  "starterRevisionEqualsAFreshExport": true,
+  "seedsTheRefreshWrote": [
+    ".gitattributes",
+    "AGENTS.md",
+    "AI-HARNESS-SECURITY.md",
+    "CLAUDE.md",
+    "FOR-CORE.md",
+    "docs/control/budgets.json",
+    "docs/repositories/README.md",
+    "docs/work-orders/WO-001-environment-truth.md",
+    "docs/workstreams/README.md"
+  ],
+  "preview": [
+    "kit files: 288 replaced; 52 added; 70 removed; 0 refused; 760 unchanged.",
+    "instance files both sides changed: none"
+  ],
+  "mergeExit": 0,
+  "mergeIsATrueMerge": true,
+  "regeneratedBytesAfterEmitAndLineage": false,
+  "checksAfterTheMerge": {
+    "instance: harness check": {
+      "exit": 0,
+      "said": [
+        "harness check: 27 generated surfaces; local-terms list: present"
+      ]
+    },
+    "instance: lineage index --check": {
+      "exit": 0,
+      "said": [
+        "PASS lineage index: 0 sections"
+      ]
+    },
+    "instance: launchpad verify": {
+      "exit": 0,
+      "said": [
+        "kit: 1100 files verified at da29f20f3185129290fb3bcf879b43b25a5d50b0"
+      ]
+    },
+    "instance: host report": {
+      "exit": 0,
+      "said": [
+        "0 unmet, 1 unknown, of 9 rows."
+      ]
+    },
+    "instance: index --check before the index is run": {
+      "exit": 1,
+      "said": [
+        "error: docs/work-orders/README.md: the work-order index needs its tag record docs/control/release-history.json; run npm run work-orders -- index"
+      ]
+    },
+    "instance: index --check after it": {
+      "exit": 0,
+      "said": [
+        "PASS docs/work-orders/HISTORY.md is current"
+      ]
+    },
+    "instance: terms over the branch": {
+      "exit": 0,
+      "said": [
+        "local-terms list: present; entries: 0 refuse, 1 context; changed files screened: 350; lines found: 0 refuse, 0 context"
+      ]
+    }
+  },
+  "documentGateAfterTheGuidesSteps": {
+    "exit": 1,
+    "said": [
+      "FAIL generated 0 h 0 min",
+      "  [generated] stale docs/control/FEATURES.md; run npm run features -- render",
+      "  [generated] Run npm run sync; stale artifacts: meta",
+      "  [kit-verify] stale docs/control/FEATURES.md; run npm run features -- render",
+      "npm run test:docs: 4 passed; 11 failed; 0 h 0 min; 5 fresh tasks"
+    ]
+  },
+  "whatTheSyncRegenerated": [
+    "M docs/control/FEATURES.md"
+  ],
+  "documentGateAfterTheSync": {
+    "exit": 0,
+    "said": [
+      "npm run test:docs: 15 passed; 0 failed; 0 h 1 min; 15 fresh tasks"
+    ]
+  },
+  "productGateAfterTheSync": {
+    "exit": 0,
+    "said": [
+      "npm test: 7 passed; 0 failed; 0 h 0 min; 7 fresh tasks"
+    ]
+  },
+  "steps": [
+    {
+      "step": "base: export the kit",
+      "exit": 0,
+      "said": [
+        "sibling receipt: none (starter is not declared in docs/siblings/siblings.json)"
+      ]
+    },
+    {
+      "step": "instance: install",
+      "exit": 0,
+      "said": [
+        "added 10 packages in 1s"
+      ]
+    },
+    {
+      "step": "instance: bootstrap",
+      "exit": 0,
+      "said": [
+        "Worktree ready for Claude or Codex (1 preparation steps)."
+      ]
+    },
+    {
+      "step": "instance: sync, as its first steps",
+      "exit": 0,
+      "said": [
+        "publication | current | current | none"
+      ]
+    },
+    {
+      "step": "instance on the previous release: document gate",
+      "exit": 0,
+      "said": [
+        "npm run test:docs: 15 passed; 0 failed; 0 h 1 min; 15 fresh tasks"
+      ]
+    },
+    {
+      "step": "candidate: update the starter",
+      "exit": 0,
+      "said": [
+        "kit files: 1048 replaced; 52 added; 70 removed; 0 refused."
+      ]
+    },
+    {
+      "step": "candidate: a fresh export",
+      "exit": 0,
+      "said": [
+        "sibling receipt: none (fresh is not declared in docs/siblings/siblings.json)"
+      ]
+    },
+    {
+      "step": "starter: install",
+      "exit": 0,
+      "said": [
+        "added 10 packages in 1s"
+      ]
+    },
+    {
+      "step": "starter: emit",
+      "exit": 0,
+      "said": [
+        "harness emit: 27 generated surfaces; local-terms list: unavailable"
+      ]
+    },
+    {
+      "step": "instance: preview with the incoming launchpad",
+      "exit": 0,
+      "said": [
+        "kit files: 288 replaced; 52 added; 70 removed; 0 refused; 760 unchanged.",
+        "instance files both sides changed: none"
+      ]
+    },
+    {
+      "step": "instance: git merge upstream/main",
+      "exit": 0,
+      "said": []
+    },
+    {
+      "step": "instance: emit",
+      "exit": 0,
+      "said": [
+        "harness emit: 27 generated surfaces; local-terms list: present"
+      ]
+    },
+    {
+      "step": "instance: lineage index",
+      "exit": 0,
+      "said": [
+        "Generated docs/lineage/README.md"
+      ]
+    },
+    {
+      "step": "instance: harness check",
+      "exit": 0,
+      "said": [
+        "harness check: 27 generated surfaces; local-terms list: present"
+      ]
+    },
+    {
+      "step": "instance: lineage index --check",
+      "exit": 0,
+      "said": [
+        "PASS lineage index: 0 sections"
+      ]
+    },
+    {
+      "step": "instance: launchpad verify",
+      "exit": 0,
+      "said": [
+        "kit: 1100 files verified at da29f20f3185129290fb3bcf879b43b25a5d50b0"
+      ]
+    },
+    {
+      "step": "instance: host report",
+      "exit": 0,
+      "said": [
+        "0 unmet, 1 unknown, of 9 rows."
+      ]
+    },
+    {
+      "step": "instance: index --check before the index is run",
+      "exit": 1,
+      "said": [
+        "error: docs/work-orders/README.md: the work-order index needs its tag record docs/control/release-history.json; run npm run work-orders -- index"
+      ]
+    },
+    {
+      "step": "instance: index, the guide's step for this release",
+      "exit": 0,
+      "said": []
+    },
+    {
+      "step": "instance: index --check after it",
+      "exit": 0,
+      "said": [
+        "PASS docs/work-orders/HISTORY.md is current"
+      ]
+    },
+    {
+      "step": "instance: terms over the branch",
+      "exit": 0,
+      "said": [
+        "local-terms list: present; entries: 0 refuse, 1 context; changed files screened: 350; lines found: 0 refuse, 0 context"
+      ]
+    },
+    {
+      "step": "instance after the guide's steps: document gate",
+      "exit": 1,
+      "said": [
+        "FAIL generated 0 h 0 min",
+        "  [generated] stale docs/control/FEATURES.md; run npm run features -- render",
+        "  [generated] Run npm run sync; stale artifacts: meta",
+        "  [kit-verify] stale docs/control/FEATURES.md; run npm run features -- render",
+        "npm run test:docs: 4 passed; 11 failed; 0 h 0 min; 5 fresh tasks"
+      ]
+    },
+    {
+      "step": "instance: sync, which the gate names",
+      "exit": 0,
+      "said": []
+    },
+    {
+      "step": "instance after the sync: document gate",
+      "exit": 0,
+      "said": [
+        "npm run test:docs: 15 passed; 0 failed; 0 h 1 min; 15 fresh tasks"
+      ]
+    },
+    {
+      "step": "instance after the sync: product gate",
+      "exit": 0,
+      "said": [
+        "npm test: 7 passed; 0 failed; 0 h 0 min; 7 fresh tasks"
+      ]
+    }
+  ]
+}

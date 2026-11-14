@@ -1,0 +1,248 @@
+{
+  "observedAt": "2026-11-13T22:01:25.809Z",
+  "baseline": "refs/dotln/checkpoint/WO-276/77",
+  "source": "scripts/lib/codex-background.mjs",
+  "mode": "synthetic process rows, recording signal callback; no real signals",
+  "total": 34,
+  "passed": 34,
+  "results": [
+    {
+      "name": "abandoned-order-0",
+      "passed": true,
+      "selected": [
+        501,
+        502,
+        503
+      ],
+      "message": "Closed 3 Codex background-server processes that an ended Codex session left running (501, 502, 503); no Codex session was alive to use them."
+    },
+    {
+      "name": "abandoned-order-1",
+      "passed": true,
+      "selected": [
+        501,
+        503,
+        502
+      ],
+      "message": "Closed 3 Codex background-server processes that an ended Codex session left running (501, 503, 502); no Codex session was alive to use them."
+    },
+    {
+      "name": "abandoned-order-2",
+      "passed": true,
+      "selected": [
+        501,
+        502,
+        503
+      ],
+      "message": "Closed 3 Codex background-server processes that an ended Codex session left running (501, 502, 503); no Codex session was alive to use them."
+    },
+    {
+      "name": "abandoned-order-3",
+      "passed": true,
+      "selected": [
+        501,
+        502,
+        503
+      ],
+      "message": "Closed 3 Codex background-server processes that an ended Codex session left running (501, 502, 503); no Codex session was alive to use them."
+    },
+    {
+      "name": "abandoned-order-4",
+      "passed": true,
+      "selected": [
+        501,
+        503,
+        502
+      ],
+      "message": "Closed 3 Codex background-server processes that an ended Codex session left running (501, 503, 502); no Codex session was alive to use them."
+    },
+    {
+      "name": "abandoned-order-5",
+      "passed": true,
+      "selected": [
+        501,
+        503,
+        502
+      ],
+      "message": "Closed 3 Codex background-server processes that an ended Codex session left running (501, 503, 502); no Codex session was alive to use them."
+    },
+    {
+      "name": "live-cli-interactive-parent-1",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-interactive-parent-501",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-interactive-parent-502",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-exec --ephemeral --parent-1",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-exec --ephemeral --parent-501",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-exec --ephemeral --parent-502",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-resume-parent-1",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-resume-parent-501",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-resume-parent-502",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-a prompt-parent-1",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-a prompt-parent-501",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "live-cli-a prompt-parent-502",
+      "passed": true,
+      "baselineSelectedLive": true,
+      "currentSelected": []
+    },
+    {
+      "name": "server-without-daemon",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "daemon-not-orphaned",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "server-parent-unknown",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "helper-parent-unknown",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "helper-other-release",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "unknown-role",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "external-live-cli",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "live-application",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "two-independent-abandoned-releases",
+      "passed": true,
+      "selected": [
+        501,
+        601,
+        503,
+        602,
+        603,
+        502
+      ],
+      "message": "Closed 6 Codex background-server processes that an ended Codex session left running (501, 601, 503, 602, 603, 502); no Codex session was alive to use them."
+    },
+    {
+      "name": "guard-CODEX_THREAD_ID",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "guard-DOTLN_GATE_CHILD",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "guard-DOTLN_TEMP_GATE",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "temporary-directory-guard",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "ownership-marker-guard",
+      "passed": true,
+      "selected": [],
+      "message": ""
+    },
+    {
+      "name": "process-reader-and-read-failure",
+      "passed": true,
+      "parsedCount": 2
+    },
+    {
+      "name": "signal-failure-does-not-fail-lifecycle",
+      "passed": true,
+      "attempted": [
+        501,
+        502,
+        503
+      ],
+      "message": ""
+    }
+  ]
+}

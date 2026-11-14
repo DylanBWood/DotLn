@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "index": {
+    "cards": [
+      {
+        "id": "WO-301",
+        "line": 35,
+        "section": "Open",
+        "title": "WO-301 — Synthetic member (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Repository": "service @ cbd82a45ad8a74dd7b6bd2a3b66c24e38416d68b.",
+          "Application target": "unassigned.",
+          "Dependencies": "conservative token view; does not block.",
+          "References": "none declared.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "fixture",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Track": "unknown",
+          "Authority": "docs/work-orders/WO-301-fixture.md"
+        },
+        "links": [
+          "WO-301-fixture.md"
+        ]
+      },
+      {
+        "id": "WO-302",
+        "line": 52,
+        "section": "Open",
+        "title": "WO-302 — Synthetic member (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Repository": "client @ 6a3e7984706e5bdc50fb297f29365e202e700d97.",
+          "Application target": "unassigned.",
+          "Dependencies": "conservative token view; does not block.",
+          "References": "none declared.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "fixture",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Track": "unknown",
+          "Authority": "docs/work-orders/WO-302-fixture.md"
+        },
+        "links": [
+          "WO-302-fixture.md"
+        ]
+      },
+      {
+        "id": "WO-303",
+        "line": 69,
+        "section": "Open",
+        "title": "WO-303 — Synthetic member (version assigned at activation)",
+        "phase": "draft",
+        "dependency": "unknown",
+        "verdict": null,
+        "fields": {
+          "State": "draft.",
+          "Repository": "client @ 6a3e7984706e5bdc50fb297f29365e202e700d97.",
+          "Application target": "unassigned.",
+          "Dependencies": "conservative token view; does not block.",
+          "References": "none declared.",
+          "Verification": "none recorded.",
+          "Final review": "none recorded.",
+          "Release": "none recorded.",
+          "Model": "fixture",
+          "Effort": "executor xhigh+; verifier xhigh+; reviewer any.",
+          "Track": "unknown",
+          "Authority": "docs/work-orders/WO-303-fixture.md"
+        },
+        "links": [
+          "WO-303-fixture.md"
+        ]
+      }
+    ]
+  },
+  "history": {
+    "cards": []
+  },
+  "workstreams": [
+    {
+      "id": "WS-001",
+      "members": [
+        {
+          "workOrderId": "WO-301",
+          "repository": "service",
+          "base": "cbd82a45ad8a74dd7b6bd2a3b66c24e38416d68b",
+          "phase": "draft",
+          "verdict": "unknown",
+          "integration": "behind",
+          "stale": "yes",
+          "targetCommit": "ced739d2f5c6f9108817fa8be5a55a97ff2744f2"
+        },
+        {
+          "workOrderId": "WO-302",
+          "repository": "client",
+          "base": "6a3e7984706e5bdc50fb297f29365e202e700d97",
+          "phase": "draft",
+          "verdict": "unknown",
+          "integration": "current",
+          "stale": "no",
+          "targetCommit": "6a3e7984706e5bdc50fb297f29365e202e700d97"
+        },
+        {
+          "workOrderId": "WO-303",
+          "repository": "client",
+          "base": "6a3e7984706e5bdc50fb297f29365e202e700d97",
+          "phase": "draft",
+          "verdict": "unknown",
+          "integration": "current",
+          "stale": "no",
+          "targetCommit": "6a3e7984706e5bdc50fb297f29365e202e700d97"
+        }
+      ],
+      "edges": [
+        {
+          "from": "WO-302",
+          "to": "WO-301",
+          "relation": "hard"
+        }
+      ]
+    }
+  ],
+  "releaseTags": []
+}

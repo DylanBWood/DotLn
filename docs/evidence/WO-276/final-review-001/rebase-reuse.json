@@ -1,0 +1,9 @@
+{
+  "branchCommits": "4",
+  "branchTipHoldsTheChange": true,
+  "baseTipHoldsTheChange": false,
+  "merged": true,
+  "by": "rebase",
+  "baseCommitsMatched": 3,
+  "baseCommitsRead": 4
+}

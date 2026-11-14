@@ -51,8 +51,11 @@ const publicPathTemplates = (text) => {
     "<host-scratchpad>",
   );
 };
-export const privatePathLines = (name, text) =>
-  linesMatching(privatePathRule(name), publicPathTemplates(text));
+/** The lines of `text` that hold a private path, by the rule for a file of
+ * that name, or by `rule` where the caller reads a file whose name selects
+ * none. */
+export const privatePathLines = (name, text, rule = privatePathRule(name)) =>
+  linesMatching(rule, publicPathTemplates(text));
 
 // A global replacement judges each look-behind against the original text, so
 // a second home prefix written directly after an account name survives one

@@ -1,0 +1,4 @@
+# node scripts/launchpad.mjs preview --from starter, in the update fixture: the section step I2 adds.
+instance files both sides changed since their merge base 5dfa76aec527, outside the kit's manifest: keep this instance's bytes for each when merging. Git may merge such a file in silence, and update --publish refuses a merge that changed one unless --take names it.
+both changed: docs/control/budgets.json
+both changed: docs/work-orders/WO-001-environment-truth.md

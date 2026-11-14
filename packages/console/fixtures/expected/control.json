@@ -11499,12 +11499,7 @@
       "explanation": null
     },
     {
-      "ref": "docs/work-orders/README.md",
-      "status": "available",
-      "explanation": null
-    },
-    {
-      "ref": "docs/work-orders/HISTORY.md",
+      "ref": "work-orders:index--json",
       "status": "available",
       "explanation": null
     },

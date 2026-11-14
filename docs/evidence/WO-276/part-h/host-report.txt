@@ -1,0 +1,18 @@
+$ node scripts/doctor.mjs   # exit 0
+DotLn host report: what the kit assumes of this host. It reads and refuses nothing.
+
+| Assumption | Observed | Verdict | What depends on it | Remedy |
+| --- | --- | --- | --- | --- |
+| Node is inside the range package.json engines.node declares | Node v26.9.0 | met | every script of the kit, the gate and the hooks | none |
+| Git is at or above the floor package.json engines.git declares | Git 2.55.0 | met | worktrees, updates and every Git read the scripts make | none |
+| a C compiler builds the kit's host helpers | the lock helper compiled | met | the lock every gate task starts through, and the gate's memory reader | none |
+| one gate lane's memory budget covers the largest task this root's gate carries | 16 logical processors, 48.0 GiB of memory, 8 lanes of 3.0 GiB each | met | the host task of every gate, which refuses a lane too small for its heaviest task | none |
+| this account can create a symbolic link | a symbolic link was created | met | the workspace links an install makes and the instruction file's second name | none |
+| Git converts no line ending of a kit file in this clone | core.autocrlf unset; 0 of 8866 tracked kit files open to conversion | met | the kit's verification, which hashes its files' bytes | none |
+| the origin is a forge the publish helpers accept, and the forge's tool is installed | a GitHub-form origin (HOST/OWNER/REPO), one target for fetch and push; gh found (2.98.0) | met | final review's push and pull request, release close's tag and Release, and an update's publish | none |
+| the platform is one the kit runs on | macOS, which the kit is exercised on | met | every command | none |
+| the agent CLI of Claude Code, every instance's host | found (2.1.322) | reported | sessions on that host; reported and never judged | none |
+| the agent CLI of Codex, a host this instance has on | found (0.167.0) | reported | sessions on that host; reported and never judged | none |
+| the agent CLI of Copilot, a host this instance has on | found (1.0.94) | reported | sessions on that host; reported and never judged | none |
+
+0 unmet, 0 unknown, of 11 rows.

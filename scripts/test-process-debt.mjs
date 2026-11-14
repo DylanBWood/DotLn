@@ -28,6 +28,7 @@ import {
   reportHarnessRuntime,
 } from "./lib/harness-runtime.mjs";
 import assert from "node:assert/strict";
+import { declaredCriteria } from "./lib/handoff-ledger.mjs";
 import { execFileSync, spawn } from "node:child_process";
 import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { createHash } from "node:crypto";
@@ -175,6 +176,7 @@ import { main as planMain } from "./refute-plan.mjs";
 import {
   appendObservation,
   observeTypedCorrection,
+  renderDailyUse,
   scanMessage,
 } from "../packages/skeleton/dist/src/observed-facts.js";
 // plan start applies the owned-root prune. A fixture's prune stays within its
@@ -606,6 +608,830 @@ test("WO-170 a closed order's snapshot stands for its journals, and with neither
   assert.equal(readFileSync(snapshotFile, "utf8"), snapshotBefore);
 });
 
+test("WO-276 criteria J5 and J6: beside a role's total the meter holds uncached input, cache read, cache write and output, each by its host's own meaning and null where none was reported, so that a Claude row and a Codex row with the same counters each sum to that host's total; and the usage report gives tokens by class for each order and each local calendar day, an observation counted on the day it was observed, with an estimate from the instance's declared prices marked as one and unknown where the model that ran has no price", async (t) => {
+  const {
+    USAGE_CLASSES,
+    estimateUsd,
+    localDay,
+    renderUsageReading,
+    usageClasses,
+    usageIncrements,
+    usageReading,
+  } = await import("./lib/usage-reading.mjs");
+  const { attestedSessionModels } = await import("./lib/meta.mjs");
+  const { WORKER_PRICE_CLASSES } = await import("./lib/config.mjs");
+  // The classes a price is declared for are the classes the reading gives.
+  assert.deepEqual([...WORKER_PRICE_CLASSES], [...USAGE_CLASSES]);
+  // The same counters as each host reports them, read by the usage module
+  // for its total and by the reading for the classes.
+  const claude = usageObservation([
+    {
+      type: "result",
+      subtype: "success",
+      usage: {
+        input_tokens: 1000,
+        cache_read_input_tokens: 400,
+        cache_creation_input_tokens: 50,
+        output_tokens: 200,
+      },
+    },
+  ]);
+  const codex = usageObservation([
+    {
+      type: "turn.completed",
+      usage: {
+        input_tokens: 1000,
+        cached_input_tokens: 400,
+        output_tokens: 200,
+      },
+    },
+  ]);
+  assert.deepEqual(
+    [claude.source, codex.source],
+    ["claude-result-envelope", "codex-result-envelope"],
+  );
+  const classesOf = (observation) =>
+    usageClasses(observation.usage, observation.source);
+  assert.deepEqual(classesOf(claude), {
+    uncachedInput: 1000,
+    cacheRead: 400,
+    cacheWrite: 50,
+    output: 200,
+  });
+  // A Codex count of input holds its cached part, and it reports no cache
+  // write: that class is null, never zero.
+  assert.deepEqual(classesOf(codex), {
+    uncachedInput: 600,
+    cacheRead: 400,
+    cacheWrite: null,
+    output: 200,
+  });
+  for (const observation of [claude, codex])
+    assert.equal(
+      Object.values(classesOf(observation)).reduce(
+        (sum, value) => sum + (value ?? 0),
+        0,
+      ),
+      observation.usage.totalTokens,
+      observation.source,
+    );
+  assert.notEqual(claude.usage.totalTokens, codex.usage.totalTokens);
+  // A Codex count that reports no cached part cannot be split: its input
+  // holds the cached tokens, so the uncached class is unknown and never
+  // the whole input (rolling review 40).
+  assert.deepEqual(
+    usageClasses(
+      { inputTokens: 100, outputTokens: 20, totalTokens: 120 },
+      codex.source,
+    ),
+    { uncachedInput: null, cacheRead: null, cacheWrite: null, output: 20 },
+  );
+  // A source whose counters this reading cannot place gives no class.
+  assert.deepEqual(usageClasses(claude.usage, "copilot-result-shutdown"), {
+    uncachedInput: null,
+    cacheRead: null,
+    cacheWrite: null,
+    output: null,
+  });
+  // The meter: the four beside each role's total, from this checkout's rows.
+  const root = repo(t);
+  const workOrder = "WO-999";
+  const row = (role, observation, observedAt) => ({
+    workOrder,
+    role,
+    startedAt: observedAt,
+    durationMs: 1000,
+    sessionKey: `session ${role} ${observedAt}`,
+    observation: { ...observation, scope: "dispatch", observedAt },
+    recordedAt: observedAt,
+  });
+  const scoped = (entry, scope) => ({
+    ...entry,
+    observation: { ...entry.observation, scope },
+  });
+  // Half past three in the morning, UTC, is the evening before in New York.
+  const rows = [
+    row("executor", claude, "2026-11-10T03:30:00.000Z"),
+    row("executor", claude, "2026-11-10T15:00:00.000Z"),
+    row("verifier", codex, "2026-11-11T15:00:00.000Z"),
+    // A Copilot session's count is of the whole session, as its producer
+    // marks it: no count of the dispatch.
+    scoped(
+      row(
+        "reviewer",
+        { ...claude, source: "copilot-result-shutdown" },
+        "2026-11-11T16:00:00.000Z",
+      ),
+      "session-cumulative",
+    ),
+  ];
+  write(root, "docs/control/local/process/usage.jsonl", jsonLines(rows));
+  const order = await metaRow(root);
+  const held = (role) =>
+    Object.fromEntries(
+      [
+        "totalTokens",
+        "uncachedInputTokens",
+        "cacheReadTokens",
+        "cacheWriteTokens",
+        "outputTokens",
+      ].map((key) => [key, order.usageByRole[role][key]]),
+    );
+  assert.deepEqual(held("executor"), {
+    totalTokens: 3300,
+    uncachedInputTokens: 2000,
+    cacheReadTokens: 800,
+    cacheWriteTokens: 100,
+    outputTokens: 400,
+  });
+  assert.deepEqual(held("verifier"), {
+    totalTokens: 1200,
+    uncachedInputTokens: 600,
+    cacheReadTokens: 400,
+    cacheWriteTokens: null,
+    outputTokens: 200,
+  });
+  assert.deepEqual(held("reviewer"), {
+    totalTokens: null,
+    uncachedInputTokens: null,
+    cacheReadTokens: null,
+    cacheWriteTokens: null,
+    outputTokens: null,
+  });
+  // The order's meta.json, written from those rows, holds the same. A
+  // snapshot is written for an order this checkout holds a journal of.
+  writeJournal(root, "executor", [
+    { workOrder, role: "executor", event: "PreToolUse" },
+  ]);
+  const snapshot = writeOrderSnapshot(root, await collectMeta(root), workOrder);
+  assert.equal(snapshot.written, true, snapshot.reason);
+  const written = JSON.parse(readFileSync(join(root, snapshot.path), "utf8"))
+    .orders[0].usageByRole;
+  assert.equal(written.executor.cacheWriteTokens, 100);
+  assert.equal(written.verifier.cacheWriteTokens, null);
+  assert.equal(written.verifier.uncachedInputTokens, 600);
+  // The model of a session is the one its own events attest: an event is
+  // the record of the session of its role that had started most recently
+  // when it was recorded. A first run on one model and a repair on another
+  // each keep their own; a session none of its role's events falls to, one
+  // whose events name two models, and a row a launcher took from a worker's
+  // result have none.
+  const session = (series, role, startedAt, own = true) => ({
+    series,
+    role,
+    startedAt,
+    session: own,
+  });
+  const attested = (type, recordedAt, model, role) => ({
+    type,
+    recordedAt,
+    actor: { model },
+    ...(role ? { recordingSession: { role } } : {}),
+  });
+  assert.deepEqual(
+    [
+      ...attestedSessionModels(
+        [
+          attested(
+            "ImplementationReady",
+            "2026-11-10T10:00:00.000Z",
+            "model-a",
+          ),
+          attested("RepairCompleted", "2026-11-11T10:00:00.000Z", "model-b"),
+          attested(
+            "DispatchBoundAccepted",
+            "2026-11-11T11:00:00.000Z",
+            "model-b",
+            "executor",
+          ),
+          attested(
+            "VerificationCompleted",
+            "2026-11-10T20:00:00.000Z",
+            "model-c",
+          ),
+          attested(
+            "DispatchBoundAccepted",
+            "2026-11-10T21:00:00.000Z",
+            "model-d",
+            "verifier",
+          ),
+          attested(
+            "FinalReviewCompleted",
+            "2026-11-12T10:00:00.000Z",
+            "unknown",
+          ),
+          { type: "ImplementationReady", actor: { model: "model-e" } },
+          { type: "WorkOrderActivated" },
+        ],
+        [
+          session("first run", "executor", "2026-11-10T01:00:00.000Z"),
+          session("repair", "executor", "2026-11-11T01:00:00.000Z"),
+          session("later, unattested", "executor", "2026-11-12T01:00:00.000Z"),
+          session("two models", "verifier", "2026-11-10T19:00:00.000Z"),
+          session("a launch", "verifier", "2026-11-10T19:30:00.000Z", false),
+          session("review", "reviewer", "2026-11-12T01:00:00.000Z"),
+        ],
+      ),
+    ],
+    [
+      ["first run", "model-a"],
+      ["repair", "model-b"],
+    ],
+  );
+  // A session measured by one source and, where a collection failed, by
+  // none is one session: its model is its own whichever row is asked.
+  assert.deepEqual(
+    [
+      ...attestedSessionModels(
+        [
+          attested(
+            "ImplementationReady",
+            "2026-11-10T10:00:00.000Z",
+            "model-a",
+          ),
+        ],
+        ["measured", "unavailable"].map((source) => ({
+          ...session(
+            `one session:${source}`,
+            "executor",
+            "2026-11-10T01:00:00.000Z",
+          ),
+          sessionId: "one session",
+        })),
+      ),
+    ],
+    [["one session", "model-a"]],
+  );
+  // Successive observations of one dispatch count it from its start: each
+  // is read for what it adds to the one before, in the order recorded.
+  const seen = (total, observedAt, counters = {}) => ({
+    recordedAt: observedAt,
+    observation: {
+      source: "claude-result-envelope",
+      observedAt,
+      usage: {
+        inputTokens: total,
+        cachedInputTokens: 0,
+        cacheWriteInputTokens: 0,
+        outputTokens: 0,
+        totalTokens: total,
+        costUsd: null,
+        ...counters,
+      },
+    },
+  });
+  const [first, second, third] = [
+    "2026-11-10T12:00:00.000Z",
+    "2026-11-10T18:00:00.000Z",
+    "2026-11-11T12:00:00.000Z",
+  ];
+  const adds = (observations, figure = (added) => added.totalTokens) =>
+    usageIncrements(observations).map(({ added }) => figure(added));
+  assert.deepEqual(
+    adds([seen(1800, third), seen(1000, first), seen(1500, second)]),
+    [1000, 500, 300],
+  );
+  // One that adds nothing is left out; the only one stands, unknown or not.
+  assert.deepEqual(adds([seen(1000, first), seen(1000, second)]), [1000]);
+  assert.deepEqual(adds([seen(null, first, { inputTokens: null })]), [null]);
+  assert.deepEqual(
+    adds([seen(null, first, { inputTokens: null }), seen(700, second)]),
+    [700],
+  );
+  // A figure a later observation does not report adds nothing known, and
+  // the last value reported stands as the one before.
+  assert.deepEqual(
+    adds(
+      [
+        seen(1000, first, { cacheWriteInputTokens: 50 }),
+        seen(1200, second, { cacheWriteInputTokens: null }),
+        seen(1300, third, { cacheWriteInputTokens: 80 }),
+      ],
+      (added) => added.classes.cacheWrite,
+    ),
+    [50, null, 30],
+  );
+  // A count that fell: the later observation is taken whole and the
+  // earlier ones stay in their days adding nothing, so no day is given
+  // less than nothing and the sum is the last observation's count.
+  assert.deepEqual(
+    adds([seen(1000, first), seen(1500, second), seen(400, third)]),
+    [0, 0, 400],
+  );
+  // No producer counts downward, so a count that fell is marked wherever
+  // it is summed, and later observations of that session keep the mark;
+  // one that only grew has none.
+  assert.deepEqual(
+    usageIncrements([
+      seen(1000, first),
+      seen(400, second),
+      seen(900, third),
+    ]).map(({ added, fell }) => [added.totalTokens, fell]),
+    [
+      [0, true],
+      [400, true],
+      [500, true],
+    ],
+  );
+  // Two recorders of one session may write out of turn: the observations
+  // are read in the order they were made, and nothing fell.
+  const outOfTurn = (total, observedAt, recordedAt) => ({
+    ...seen(total, observedAt),
+    recordedAt,
+  });
+  assert.deepEqual(
+    usageIncrements([
+      outOfTurn(120, "2026-11-10T10:00:03.000Z", "2026-11-10T10:00:04.000Z"),
+      outOfTurn(100, "2026-11-10T10:00:00.000Z", "2026-11-10T10:00:05.000Z"),
+    ]).map(({ added, fell }) => [added.totalTokens, fell]),
+    [
+      [100, false],
+      [20, false],
+    ],
+  );
+  // An observation of another scope than the dispatch gives no figure.
+  assert.deepEqual(
+    usageIncrements([
+      {
+        ...seen(1000, first),
+        observation: {
+          ...seen(1000, first).observation,
+          scope: "session-cumulative",
+        },
+      },
+    ]).map(({ added }) => [added.totalTokens, added.classes.uncachedInput]),
+    [[null, null]],
+  );
+  assert.ok(
+    usageIncrements([seen(1000, first), seen(1500, second)]).every(
+      ({ fell }) => !fell,
+    ),
+  );
+  const fallen = usageReading(
+    [seen(1000, first), seen(1500, second), seen(400, third)].map((entry) => ({
+      ...entry,
+      workOrder,
+      role: "executor",
+      series: "one session",
+    })),
+    { timeZone: "UTC" },
+  );
+  // The day the session was first observed keeps its line, adding nothing
+  // and saying why; the order's sum is the last count.
+  assert.deepEqual(
+    fallen.byDay.map(({ day, totalTokens, fell }) => [day, totalTokens, fell]),
+    [
+      ["2026-11-10", 0, 2],
+      ["2026-11-11", 400, 1],
+    ],
+  );
+  assert.deepEqual(
+    [fallen.byOrder[0].totalTokens, fallen.byOrder[0].fell],
+    [400, 3],
+  );
+  assert.match(
+    renderUsageReading(fallen),
+    /^2026-11-10: .*total 0; .*; 2 of its observations are of a session whose count fell between observations: that session is counted from the fall on, and what it used on each day is not known$/mu,
+  );
+  // A session none of whose observations gave a count of the dispatch
+  // keeps each of them on its day: every day it was seen says so.
+  const unmeasuredDays = usageReading(
+    [first, second, third].map((observedAt) => ({
+      ...seen(1000, observedAt),
+      observation: {
+        ...seen(1000, observedAt).observation,
+        source: "copilot-result-shutdown",
+        scope: "session-cumulative",
+      },
+      workOrder,
+      role: "reviewer",
+      series: "a copilot session",
+    })),
+    { timeZone: "UTC" },
+  );
+  assert.deepEqual(
+    unmeasuredDays.byDay.map(({ day, totalTokens, unmeasured }) => [
+      day,
+      totalTokens,
+      unmeasured,
+    ]),
+    [
+      ["2026-11-10", null, 2],
+      ["2026-11-11", null, 1],
+    ],
+  );
+  assert.equal(unmeasuredDays.byOrder[0].unmeasured, 3);
+  // In the reading, rows that share a series are one dispatch: each day
+  // holds what its observations added, and the order holds the last count.
+  const spanning = usageReading(
+    [seen(1000, first), seen(1500, second), seen(1800, third)].map((entry) => ({
+      ...entry,
+      workOrder,
+      role: "executor",
+      series: "one session",
+    })),
+    { timeZone: "UTC" },
+  );
+  assert.deepEqual(
+    spanning.byDay.map(({ day, totalTokens, observations }) => [
+      day,
+      totalTokens,
+      observations,
+    ]),
+    [
+      ["2026-11-10", 1500, 2],
+      ["2026-11-11", 300, 1],
+    ],
+  );
+  assert.equal(spanning.byOrder[0].totalTokens, 1800);
+  // The reading, with the model each row's role attests. One price is
+  // declared; the verifier's model has none.
+  const prices = {
+    "model-a": {
+      uncachedInput: 3,
+      cacheRead: 0.3,
+      cacheWrite: 3.75,
+      output: 15,
+    },
+  };
+  const models = { executor: "model-a", verifier: "model-c" };
+  const reading = usageReading(
+    rows.map((entry) => ({ ...entry, model: models[entry.role] ?? null })),
+    { timeZone: "America/New_York", prices },
+  );
+  assert.equal(reading.schemaVersion, 1);
+  assert.deepEqual(reading.prices, prices);
+  assert.deepEqual(
+    reading.byDay.map(({ day, totalTokens, observations }) => [
+      day,
+      totalTokens,
+      observations,
+    ]),
+    [
+      ["2026-11-09", 1650, 1],
+      ["2026-11-10", 1650, 1],
+      ["2026-11-11", null, 2],
+    ],
+  );
+  // The eleventh holds the Copilot session, whose count is no count of the
+  // dispatch: the day's total is unknown and says how much was not measured.
+  assert.equal(reading.byDay[2].unmeasured, 1);
+  assert.equal(localDay("2026-11-10T03:30:00.000Z", "UTC"), "2026-11-10");
+  const [byOrder] = reading.byOrder;
+  assert.equal(byOrder.subject, workOrder);
+  assert.deepEqual(byOrder.tokens, {
+    uncachedInput: 2600,
+    cacheRead: 1200,
+    cacheWrite: 100,
+    output: 600,
+  });
+  // Each class once by its own price for a million tokens.
+  const executor = byOrder.roles.find((entry) => entry.role === "executor");
+  const expected = (2000 * 3 + 800 * 0.3 + 100 * 3.75 + 400 * 15) / 1_000_000;
+  const near = (actual, wanted) =>
+    assert.ok(Math.abs(actual - wanted) < 1e-12, `${actual} is ${wanted}`);
+  near(executor.estimateUsd, expected);
+  near(estimateUsd(classesOf(claude), prices["model-a"]) * 2, expected);
+  // No price for the verifier's model, and none attested for the reviewer:
+  // no estimate for either, nor for a sum that holds one of them.
+  assert.equal(
+    byOrder.roles.find((entry) => entry.role === "verifier").estimateUsd,
+    null,
+  );
+  assert.equal(byOrder.estimateUsd, null);
+  near(reading.byDay[0].estimateUsd, expected / 2);
+  const printed = renderUsageReading(reading);
+  assert.match(
+    printed,
+    /^  WO-999 executor \(model-a\): uncached input 2,000; cache read 800; cache write 100; output 400; total 3,300; reported by the host unknown; estimate \$0\.01 \(an estimate\)$/mu,
+  );
+  assert.match(
+    printed,
+    /^  WO-999 verifier \(model-c\): uncached input 600; cache read 400; cache write unknown; output 200; total 1,200; reported by the host unknown; estimate unknown$/mu,
+  );
+  assert.match(printed, /^2026-11-09: uncached input 1,000; /mu);
+  // A date bounds the days read.
+  assert.deepEqual(
+    usageReading(rows, {
+      timeZone: "America/New_York",
+      since: "2026-11-11",
+    }).byDay.map(({ day }) => day),
+    ["2026-11-11"],
+  );
+  // The command: it prints the same reading of this checkout's rows, as
+  // text or as JSON, and writes no page.
+  const { metaMain } = await import("./meta.mjs");
+  const captured = [];
+  const log = console.log;
+  console.log = (line) => captured.push(line);
+  let returned;
+  try {
+    returned = await metaMain(["--usage", "--json"], root);
+    await metaMain(["--usage", "--since", "2026-11-11"], root);
+    await assert.rejects(
+      metaMain(["--usage", "--since", "yesterday"], root),
+      /--since takes a local calendar date, YYYY-MM-DD/u,
+    );
+    await assert.rejects(
+      metaMain(["--usage", "--check"], root),
+      /meta --usage takes only --since <YYYY-MM-DD> and --json/u,
+    );
+  } finally {
+    console.log = log;
+  }
+  assert.deepEqual(JSON.parse(captured[0]), returned);
+  assert.equal(returned.schemaVersion, 1);
+  // The order holds the Copilot session, which gave no count of the
+  // dispatch: its total is unknown and its classes sum the rest.
+  assert.equal(returned.byOrder[0].totalTokens, null);
+  assert.equal(returned.byOrder[0].unmeasured, 1);
+  assert.deepEqual(returned.byOrder[0].tokens, byOrder.tokens);
+  assert.match(captured[1], /^Usage in tokens by class since 2026-11-11; /u);
+  assert.match(
+    captured[1],
+    /^No price is declared in dotln\.models\.json for a model that ran, so no estimate is made\.$/mu,
+  );
+  assert.ok(!existsSync(join(root, "docs/control/FEATURES.md")));
+  // The command with the instance's own prices. The model of a session is
+  // the one its own events of the order's log attest: the executor's second
+  // session is priced in the configuration, its first is attested by no
+  // event, and the verifier's model has no price.
+  const segment = join(root, `docs/control/orders/${workOrder}.jsonl`);
+  writeFileSync(
+    segment,
+    readFileSync(segment, "utf8") +
+      jsonLines(
+        [
+          {
+            type: "ImplementationReady",
+            recordedAt: "2026-11-10T16:00:00.000Z",
+            actor: { model: "model-a" },
+          },
+          {
+            type: "VerificationRequested",
+            recordedAt: "2026-11-10T16:00:01.000Z",
+            verificationId: "VER-001",
+          },
+          {
+            type: "VerificationCompleted",
+            recordedAt: "2026-11-11T16:30:00.000Z",
+            verificationId: "VER-001",
+            verdict: "pass",
+            actor: { model: "model-c" },
+          },
+        ].map((event) => ({
+          schemaVersion: 1,
+          workOrderId: workOrder,
+          ...event,
+        })),
+      ),
+  );
+  write(root, "dotln.models.json", json({ schemaVersion: 1, prices }));
+  const priced = [];
+  console.log = (line) => priced.push(line);
+  try {
+    await metaMain(["--usage"], root);
+  } finally {
+    console.log = log;
+  }
+  assert.match(
+    priced[0],
+    /^Estimates use the prices of this instance's dotln\.models\.json for model-a, in US dollars for a million tokens, as declared now; a cost the host reported is the figure of record\.$/mu,
+  );
+  assert.match(
+    priced[0],
+    /^  WO-999 executor \(model-a\): uncached input 1,000; .*; estimate \$0\.01 \(an estimate\)$/mu,
+  );
+  assert.match(
+    priced[0],
+    /^  WO-999 executor \(model not attested\): uncached input 1,000; .*; estimate unknown$/mu,
+  );
+  assert.match(
+    priced[0],
+    /^  WO-999 verifier \(model-c\): .*; estimate unknown$/mu,
+  );
+  assert.match(
+    priced[0],
+    /^  WO-999 reviewer \(model not attested\): .*; estimate unknown; 1 of its observations gave no count of the dispatch, and the classes sum the rest$/mu,
+  );
+  // The report reads the whole ledger, never the meter's selection of
+  // orders: a row of an order the meter holds no row for and an order whose
+  // rows survive as a retained copy are both read, and a role the ledger
+  // holds a row of is not read again from a copy.
+  // One session of WO-998 is observed on two days, the second time at
+  // three times the first count.
+  const of = (order, entry) => ({ ...entry, workOrder: order });
+  const opened = of(
+    "WO-998",
+    row("executor", claude, "2026-11-12T12:00:00.000Z"),
+  );
+  const grown = {
+    ...opened,
+    recordedAt: "2026-11-13T12:00:00.000Z",
+    observation: {
+      ...opened.observation,
+      observedAt: "2026-11-13T12:00:00.000Z",
+      usage: Object.fromEntries(
+        Object.entries(claude.usage).map(([name, value]) => [
+          name,
+          typeof value === "number" ? value * 3 : value,
+        ]),
+      ),
+    },
+  };
+  // A collection that failed records a row with no counters. Beside a
+  // measured row of the same session (the verifier's here) it says nothing
+  // and is left out; where it is all an order has (WO-996) it stands, and
+  // the report says how much of a sum was never measured.
+  const uncounted = (entry, recordedAt) => ({
+    ...entry,
+    recordedAt,
+    observation: {
+      ...usageObservation([]),
+      scope: "dispatch",
+      observedAt: recordedAt,
+    },
+  });
+  assert.equal(usageObservation([]).source, "unavailable");
+  // One session of WO-995 is observed twice and the second count is half
+  // the first, which no producer does.
+  const counted = of(
+    "WO-995",
+    row("executor", claude, "2026-11-12T08:00:00.000Z"),
+  );
+  const fallenLater = {
+    ...counted,
+    recordedAt: "2026-11-13T08:00:00.000Z",
+    observation: {
+      ...counted.observation,
+      observedAt: "2026-11-13T08:00:00.000Z",
+      usage: Object.fromEntries(
+        Object.entries(claude.usage).map(([name, value]) => [
+          name,
+          typeof value === "number" ? value / 2 : value,
+        ]),
+      ),
+    },
+  };
+  // One session of the order's router is recorded out of turn: the later
+  // observation (120) is written a second before the earlier one (100).
+  // The meter and the report both take the later observation.
+  const routed = (total, observedAt, recordedAt) => ({
+    ...row("router", claude, "2026-11-10T10:00:00.000Z"),
+    recordedAt,
+    observation: {
+      ...claude,
+      scope: "dispatch",
+      observedAt,
+      usage: { ...claude.usage, inputTokens: total, totalTokens: total },
+    },
+  });
+  write(
+    root,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines([
+      ...rows,
+      routed(120, "2026-11-10T10:00:03.000Z", "2026-11-10T10:00:04.000Z"),
+      routed(100, "2026-11-10T10:00:00.000Z", "2026-11-10T10:00:05.000Z"),
+      uncounted(rows[2], "2026-11-11T18:00:00.000Z"),
+      counted,
+      fallenLater,
+      opened,
+      grown,
+      uncounted(
+        of("WO-996", row("executor", claude, "2026-11-12T10:00:00.000Z")),
+        "2026-11-12T10:00:00.000Z",
+      ),
+    ]),
+  );
+  write(
+    root,
+    "docs/control/local/retained/WO-997/process/usage.jsonl",
+    jsonLines([
+      of("WO-997", row("verifier", codex, "2026-11-12T16:00:00.000Z")),
+    ]),
+  );
+  write(
+    root,
+    `docs/control/local/retained/${workOrder}/process/usage.jsonl`,
+    jsonLines([
+      row("executor", claude, "2026-11-08T15:00:00.000Z"),
+      row("release-close", codex, "2026-11-12T17:00:00.000Z"),
+    ]),
+  );
+  assert.deepEqual(
+    (await collectMeta(root)).orders.map((entry) => entry.workOrder),
+    [workOrder],
+  );
+  // The command counts a day in the host's own zone, named here.
+  const zone = process.env.TZ;
+  process.env.TZ = "UTC";
+  console.log = () => {};
+  let whole, since;
+  try {
+    whole = await metaMain(["--usage", "--json"], root);
+    since = await metaMain(
+      ["--usage", "--json", "--since", "2026-11-13"],
+      root,
+    );
+  } finally {
+    console.log = log;
+    if (zone === undefined) delete process.env.TZ;
+    else process.env.TZ = zone;
+  }
+  assert.deepEqual(
+    whole.byOrder.map(({ subject, observations, totalTokens }) => [
+      subject,
+      observations,
+      totalTokens,
+    ]),
+    [
+      ["WO-995", 2, 825],
+      ["WO-996", 1, null],
+      ["WO-997", 1, 1200],
+      ["WO-998", 2, 4950],
+      ["WO-999", 7, null],
+    ],
+  );
+  assert.deepEqual(
+    [
+      (await metaRow(root)).usageByRole.router.totalTokens,
+      ...whole.byOrder
+        .at(-1)
+        .roles.filter(({ role }) => role === "router")
+        .map(({ totalTokens, fell }) => [totalTokens, fell]),
+    ],
+    [120, [120, 0]],
+  );
+  assert.deepEqual(
+    whole.byOrder.map(({ unmeasured, fell }) => [unmeasured, fell]),
+    [
+      [0, 2],
+      [1, 0],
+      [0, 0],
+      [0, 0],
+      [1, 0],
+    ],
+  );
+  // The verifier's session keeps its model and its count beside the row
+  // of its failed collection.
+  assert.deepEqual(
+    whole.byOrder
+      .at(-1)
+      .roles.filter(({ role }) => role === "verifier")
+      .map(({ model, totalTokens, observations }) => [
+        model,
+        totalTokens,
+        observations,
+      ]),
+    [["model-c", 1200, 1]],
+  );
+  // Each day holds what its observations added: the session of WO-998
+  // leaves its first count on the twelfth and the rest on the thirteenth.
+  // The twelfth also holds the observation with no counters, so its total
+  // is unknown and its classes sum what was measured, which the day says.
+  // The session of WO-995 whose count fell leaves its last count on the
+  // thirteenth and nothing on the twelfth, and both days are marked. The
+  // eleventh holds the Copilot session.
+  assert.deepEqual(
+    whole.byDay.map(({ day, totalTokens, unmeasured, fell }) => [
+      day,
+      totalTokens,
+      unmeasured,
+      fell,
+    ]),
+    [
+      ["2026-11-10", 3420, 0, 0],
+      ["2026-11-11", null, 1, 0],
+      ["2026-11-12", null, 1, 1],
+      ["2026-11-13", 4125, 0, 1],
+    ],
+  );
+  assert.match(
+    renderUsageReading(whole),
+    /^WO-995: .*total 825; .*; 2 of its observations are of a session whose count fell between observations: that session is counted from the fall on, and what it used on each day is not known$/mu,
+  );
+  assert.equal(
+    whole.byDay[2].tokens.uncachedInput + whole.byDay[2].tokens.cacheRead,
+    1000 + 400 + 600 + 400 + 600 + 400,
+  );
+  assert.match(
+    renderUsageReading(whole),
+    /^WO-996: uncached input unknown; .*; total unknown; .*; 1 of its observations gave no count of the dispatch, and the classes sum the rest$/mu,
+  );
+  assert.deepEqual(
+    since.byOrder.map(({ subject, observations, totalTokens }) => [
+      subject,
+      observations,
+      totalTokens,
+    ]),
+    [
+      ["WO-995", 1, 825],
+      ["WO-998", 1, 3300],
+    ],
+  );
+});
+
 test("WO-170 a retained usage copy supplies the order's tokens by role and names its source", async (t) => {
   const root = repo(t);
   const workOrder = "WO-999";
@@ -648,6 +1474,10 @@ test("WO-170 a retained usage copy supplies the order's tokens by role and names
     source: copies,
     dispatches: 2,
     totalTokens: 120,
+    uncachedInputTokens: null,
+    cacheReadTokens: null,
+    cacheWriteTokens: null,
+    outputTokens: null,
     costUsd: null,
     commandsRun: 4,
     stepCount: 6,
@@ -1714,6 +2544,10 @@ test("WO-170 recovery carries usage totals by role and each retained copy's dige
           executor: {
             dispatches: 1,
             totalTokens: 100,
+            uncachedInputTokens: null,
+            cacheReadTokens: null,
+            cacheWriteTokens: null,
+            outputTokens: null,
             costUsd: null,
             commandsRun: 2,
             stepCount: 3,
@@ -1722,6 +2556,10 @@ test("WO-170 recovery carries usage totals by role and each retained copy's dige
           verifier: {
             dispatches: 2,
             totalTokens: 55,
+            uncachedInputTokens: null,
+            cacheReadTokens: null,
+            cacheWriteTokens: null,
+            outputTokens: null,
             costUsd: null,
             commandsRun: 4,
             stepCount: 6,
@@ -1805,6 +2643,10 @@ test("WO-170 recovery carries usage totals by role and each retained copy's dige
         reviewer: {
           dispatches: 1,
           totalTokens: 7,
+          uncachedInputTokens: null,
+          cacheReadTokens: null,
+          cacheWriteTokens: null,
+          outputTokens: null,
           costUsd: null,
           commandsRun: 2,
           stepCount: 3,
@@ -1887,21 +2729,26 @@ const writableOwnedTree = (path) => {
 // fixture's emit installs the complete bundle (WO-258). It names no Claude
 // Code line, so only a case that reads no hook receipt writes it: the hook
 // advises on a session line its record does not show.
-const recordEveryHost = (root) =>
+// A host is on by an election or an attestation, never by an observed
+// version (WO-275), so the fixture elects every host to emit every surface.
+const electEveryHost = (root) => {
+  const path = join(root, "dotln.config.json");
+  const config = existsSync(path)
+    ? JSON.parse(readFileSync(path, "utf8"))
+    : { version: 1 };
   write(
     root,
-    "docs/discovery/environment.json",
+    "dotln.config.json",
     json({
-      effortReadbackProbe: {
-        harnesses: Object.fromEntries(
-          ["codex-cli", "copilot-cli"].map((harness) => [
-            harness,
-            { versions: [{ classification: "observed", value: "fixture" }] },
-          ]),
-        ),
+      ...config,
+      features: {
+        ...config.features,
+        "host-codex": true,
+        "host-copilot": true,
       },
     }),
   );
+};
 function repo(t, { runtime = false } = {}) {
   const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-debt-")));
   t.after(() => {
@@ -3555,7 +4402,7 @@ test("WO-132 verification and review observe oversized, generated and unread rep
 
 test("evidence preparation repairs owned projections before fingerprinting, preserves explicit inputs and is idempotent", (t) => {
   const root = repo(t, { runtime: true });
-  recordEveryHost(root);
+  electEveryHost(root);
   write(
     root,
     "docs/work-orders/WO-999-fixture.md",
@@ -3685,10 +4532,10 @@ test("every installed hook is wired to a harness event or the Git commit boundar
   assert.deepEqual(startHook, promptHook);
   assert.equal(startTimeout, 15);
   assert.ok(promptTimeout * 1000 > 4 * 120_000 + 30_000);
-  assert.match(
-    settings.hooks.UserPromptSubmit[0].hooks[1].command,
-    /presence-userpromptsubmit\.mjs/,
-  );
+  // The heartbeat rides the session hook at a prompt and the finish hook at a
+  // stop, so neither event registers a second process (WO-276 criterion Q1).
+  assert.equal(settings.hooks.UserPromptSubmit[0].hooks.length, 1);
+  assert.ok(commands.every((command) => !command.includes("/presence-")));
   assert.match(settings.hooks.SessionStart[0].hooks[0].command, /session\.mjs/);
   for (const file of installed)
     assert.ok(
@@ -3703,8 +4550,8 @@ test("every installed hook is wired to a harness event or the Git commit boundar
   ])
     assert.equal(existsSync(join(root, `.claude/hooks/${name}.mjs`)), false);
   const stopHooks = settings.hooks.Stop.flatMap((row) => row.hooks);
-  assert.equal(stopHooks.length, 2);
-  assert.match(stopHooks[1].command, /presence-stop\.mjs/);
+  assert.equal(stopHooks.length, 1);
+  assert.match(stopHooks[0].command, /finish\.mjs/);
 });
 
 test("discovery uses a bounded observed probe and session warns once off the version line", async (t) => {
@@ -4161,6 +5008,12 @@ test("executable paths and wrappers preserve denied invocation effects", () => {
     ["npx npm publish", "package.publish"],
     ["npx --yes --package npm npm publish", "package.publish"],
     ["eval 'npm' 'publish'", "package.publish"],
+    // Corepack runs the package manager it is given, at a version or not
+    // (WO-276, the fourteenth critic).
+    ["corepack npm publish", "package.publish"],
+    ["corepack npm@11.19.1 publish", "package.publish"],
+    ["corepack yarn npm publish", "package.publish"],
+    ["env corepack npm publish", "package.publish"],
   ])
     assert.deepEqual(invocationEffects(command), [effect], command);
   assert.deepEqual(
@@ -4202,6 +5055,10 @@ test("executable paths and wrappers preserve denied invocation effects", () => {
     "printf '%s' 'git' 'push'",
     "command -v git",
     "echo '{ git push; }'",
+    // Corepack's own commands, and a harmless one behind it.
+    "corepack enable",
+    "corepack prepare npm@11.19.1 --activate",
+    "corepack npm --version",
   ])
     assert.deepEqual(invocationEffects(command), ["shell.run"], command);
   for (const command of [
@@ -6087,7 +6944,7 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
   // missing observation (WO-155 D006).
   assert.equal(
     renderMeta(meta).match(
-      /^\S+\/refuter: [\d,]+ bytes; ceiling unset; .*; unset$/gm,
+      /^\S+\/refuter: [\d,]+ bytes; fixed reads [^;]+ bytes; ceiling unset; .*; unset$/gm,
     )?.length,
     2,
     renderMeta(meta),
@@ -6307,6 +7164,102 @@ test("WO-167 VER-001 F1 harness-context --check refuses a renamed heading an ins
   );
 });
 
+test("WO-276 criterion F7: beside a role's installed bytes the meter reports the bytes of the files and sections its root's explicit Read lines name outright; a selector that begins with @, a read stated on a condition and another role's line are not counted, and a read that does not resolve leaves the figure null with its cause", async (t) => {
+  const root = repo(t);
+  write(
+    root,
+    "docs/control/budgets.json",
+    readFileSync(join(source, "docs/control/budgets.json")),
+  );
+  const guide = "docs/product/07-execution-guide.md";
+  const section = "## Planning pass\n\nRule one.\n\n### Detail\n\nMore.\n";
+  const sequence = "# Sequence\n\n1. WO-001\n";
+  write(root, guide, `# Guide\n\n${section}\n## Ideation mode\n\nOther.\n`);
+  write(root, "docs/planning/sequence.md", sequence);
+  write(root, "CLAUDE.md", "# Fixture floor\n");
+  const skill = [
+    "Read: `@work-order`",
+    `Read: \`${guide}#Planning pass\``,
+    "Read: `docs/planning/sequence.md`",
+    `For an \`ideation:\` entry, read \`${guide}#Ideation mode\` as well.`,
+    `Read[executor]: \`${guide}#Ideation mode\``,
+    // A section named twice is read once.
+    `Read: \`${guide}#Planning pass\``,
+    "",
+  ].join("\n");
+  // The same holds under another spelling of the section and for a file
+  // named whole beside a section of it: a line is counted once (WO-276, the
+  // attack on Part F).
+  const { fixedReads } = await import("./lib/harness-context.mjs");
+  const whole = `# Guide\n\n${section}\n## Ideation mode\n\nOther.\n`;
+  assert.deepEqual(
+    fixedReads(
+      [
+        `Read: \`${guide}#Planning pass\``,
+        `Read: \`${guide}#planning-pass\``,
+        `Read: \`${guide}\``,
+        "",
+      ].join("\n"),
+      "planner",
+      () => whole,
+    ).map(({ bytes }) => bytes),
+    [
+      Buffer.byteLength(`${section}\n`),
+      0,
+      Buffer.byteLength(whole) - Buffer.byteLength(`${section}\n`),
+    ],
+  );
+  for (const skillsRoot of [".claude/skills", ".agents/skills"])
+    write(root, `${skillsRoot}/dotln-planner/SKILL.md`, skill);
+  const planner = () =>
+    measureColdStarts(root).profiles.filter((row) => row.role === "planner");
+  const measured = planner();
+  assert.equal(measured.length, 2);
+  for (const row of measured) {
+    assert.deepEqual(
+      row.fixedReads.map(({ selector, bytes }) => [selector, bytes]),
+      [
+        // The section runs to the line before the next heading of its depth.
+        [`${guide}#Planning pass`, Buffer.byteLength(`${section}\n`)],
+        ["docs/planning/sequence.md", Buffer.byteLength(sequence)],
+      ],
+    );
+    assert.equal(
+      row.fixedReadBytes,
+      Buffer.byteLength(`${section}\n`) + Buffer.byteLength(sequence),
+    );
+    assert.equal(row.fixedReadCause, null);
+    // The installed bytes are the floor's and the skill's, as before, and
+    // the ceiling's verdict reads them alone.
+    assert.equal(
+      row.bytes,
+      Buffer.byteLength("# Fixture floor\n") + Buffer.byteLength(skill),
+    );
+  }
+  const verdicts = measured.map((row) => row.verdict);
+  // A role without a root has no second number, and says why.
+  const absent = measureColdStarts(root).profiles.find(
+    (row) => row.role === "refuter",
+  );
+  assert.deepEqual(
+    [absent.fixedReadBytes, absent.fixedReads, absent.fixedReadCause],
+    [null, null, "skill-unavailable"],
+  );
+  // A read that no longer resolves leaves the second number unknown and
+  // the first, with its verdict, as it was: the meter never refuses.
+  write(root, guide, "# Guide\n\n## Renamed\n\nRule one.\n");
+  for (const [index, row] of planner().entries()) {
+    assert.equal(row.fixedReadBytes, null);
+    assert.equal(row.fixedReads, null);
+    assert.match(
+      row.fixedReadCause,
+      /^Unresolved required section: Planning pass$/u,
+    );
+    assert.equal(row.bytes, measured[index].bytes);
+    assert.equal(row.verdict, verdicts[index]);
+  }
+});
+
 test("configured-root meter retains installed journal stops and deduplicates historical copies", async (t) => {
   const root = repo(t);
   write(
@@ -6419,6 +7372,277 @@ test("dispatch budgets validate both bounds and preserve pre-bound exports", (t)
     assert.equal(dispatch.wallClockMs, null);
     assert.equal(dispatch.completeRuns, null);
   }
+});
+
+test("WO-276 criterion P2: the day's use is the usage report's reading of the day: its tokens, an estimate at declared prices, and which model or session leaves the estimate unknown", async (t) => {
+  const { dayUse } = await import("./lib/meta.mjs");
+  const root = repo(t);
+  const usage = {
+    inputTokens: 1000,
+    cachedInputTokens: 400,
+    cacheWriteInputTokens: 50,
+    outputTokens: 200,
+    totalTokens: 1650,
+  };
+  const row = (role, observedAt, model, tokens = usage) => ({
+    workOrder: "WO-999",
+    role,
+    series: `${role} ${observedAt}`,
+    model,
+    recordedAt: observedAt,
+    observation: {
+      source: "claude-transcript-message-usage",
+      scope: "dispatch",
+      observedAt,
+      usage: tokens,
+    },
+  });
+  const prices = {
+    "model-a": {
+      uncachedInput: 3,
+      cacheRead: 0.3,
+      cacheWrite: 3.75,
+      output: 15,
+    },
+  };
+  const now = new Date("2026-11-12T15:00:00.000Z");
+  const read = (rows) => dayUse(root, { now, timeZone: "UTC", rows, prices });
+  // Yesterday's row is no part of the day; a day with no row used nothing.
+  const yesterday = row("executor", "2026-11-11T15:00:00.000Z", "model-a");
+  assert.deepEqual(read([yesterday]), {
+    day: "2026-11-12",
+    timeZone: "UTC",
+    totalTokens: 0,
+    partial: false,
+    estimateUsd: 0,
+    pricedUsd: 0,
+    unpriced: [],
+    unattested: false,
+  });
+  // A priced model: the total and the estimate, each class once by its price.
+  const priced = read([
+    yesterday,
+    row("executor", "2026-11-12T10:00:00.000Z", "model-a"),
+  ]);
+  assert.equal(priced.totalTokens, 1650);
+  assert.ok(
+    Math.abs(
+      priced.estimateUsd -
+        (1000 * 3 + 400 * 0.3 + 50 * 3.75 + 200 * 15) / 1_000_000,
+    ) < 1e-12,
+  );
+  assert.deepEqual([priced.unpriced, priced.unattested], [[], false]);
+  // A model with no declared price, and a session that attests none: the
+  // tokens stand and the estimate is unknown, each cause named.
+  const unknown = read([
+    row("executor", "2026-11-12T10:00:00.000Z", "model-a"),
+    row("verifier", "2026-11-12T11:00:00.000Z", "model-c"),
+    row("reviewer", "2026-11-12T12:00:00.000Z", null),
+  ]);
+  assert.equal(unknown.totalTokens, 3 * 1650);
+  assert.equal(unknown.estimateUsd, null);
+  assert.deepEqual([unknown.unpriced, unknown.unattested], [["model-c"], true]);
+  // What the priced session alone comes to stands beside the unknown whole.
+  assert.ok(Math.abs(unknown.pricedUsd - priced.estimateUsd) < 1e-12);
+  assert.equal(priced.pricedUsd, priced.estimateUsd);
+  // An observation with no count of the dispatch: the day used at least
+  // what the others reported.
+  const partial = read([
+    row("executor", "2026-11-12T10:00:00.000Z", "model-a"),
+    {
+      ...row("reviewer", "2026-11-12T12:00:00.000Z", "model-a"),
+      observation: {
+        source: "copilot-result-shutdown",
+        scope: "session-cumulative",
+        observedAt: "2026-11-12T12:00:00.000Z",
+        usage,
+      },
+    },
+  ]);
+  assert.deepEqual([partial.totalTokens, partial.partial], [1650, true]);
+  assert.equal(partial.estimateUsd, null);
+  assert.ok(Math.abs(partial.pricedUsd - priced.estimateUsd) < 1e-12);
+  // An observation that holds no count takes nothing from what another
+  // measured, whichever sessions they are: two of one role of one order on
+  // one model, two roles, two orders, and a second observation of the
+  // measured session itself. The least amounts are those of the measured
+  // session alone, and the prompt's line reaches a figure by them.
+  const reached = /The daily figure is reached/u;
+  const large = {
+    inputTokens: 20_000_000,
+    cachedInputTokens: 0,
+    cacheWriteInputTokens: 0,
+    outputTokens: 0,
+    totalTokens: 20_000_000,
+  };
+  const measured = row(
+    "executor",
+    "2026-11-12T10:00:00.000Z",
+    "model-a",
+    large,
+  );
+  const uncounted = (role, extra = {}) => ({
+    ...row(role, "2026-11-12T12:00:00.000Z", "model-a", null),
+    ...extra,
+  });
+  const alone = read([measured]);
+  assert.deepEqual([alone.totalTokens, alone.pricedUsd], [20_000_000, 60]);
+  for (const [name, other] of [
+    ["a session of the same role", uncounted("executor")],
+    ["a session of another role", uncounted("reviewer")],
+    [
+      "a session of another order",
+      uncounted("executor", { workOrder: "WO-998" }),
+    ],
+    ["a session that attests no model", uncounted("executor", { model: null })],
+  ]) {
+    const use = read([measured, other]);
+    assert.deepEqual(
+      [use.totalTokens, use.pricedUsd, use.estimateUsd],
+      [20_000_000, 60, null],
+      name,
+    );
+    assert.match(renderDailyUse({ usd: 50 }, use), reached, name);
+    assert.match(renderDailyUse({ tokens: 20_000_000 }, use), reached, name);
+    assert.doesNotMatch(renderDailyUse({ usd: 61 }, use), reached, name);
+    assert.match(
+      renderDailyUse({ usd: 61 }, use),
+      /estimate unknown .*at least \$60\.00 for the sessions that have one/u,
+      name,
+    );
+  }
+  // A later observation of the measured session that holds no count adds
+  // nothing and leaves nothing unknown: the session's figures stand whole.
+  const again = read([
+    measured,
+    uncounted("executor", { series: measured.series }),
+  ]);
+  assert.deepEqual(
+    [again.totalTokens, again.pricedUsd, again.estimateUsd, again.partial],
+    [20_000_000, 60, 60, false],
+  );
+  // A host that reports a total and not how its input splits: the total
+  // is what the session is known to have used, alone or beside a session
+  // with no count, and never the one class it did report.
+  const unsplit = {
+    ...row("executor", "2026-11-12T10:00:00.000Z", "model-a", {
+      inputTokens: 1000,
+      outputTokens: 20,
+      totalTokens: 1020,
+    }),
+    observation: {
+      source: "codex-result-envelope",
+      scope: "dispatch",
+      observedAt: "2026-11-12T10:00:00.000Z",
+      usage: { inputTokens: 1000, outputTokens: 20, totalTokens: 1020 },
+    },
+  };
+  for (const rows of [
+    [unsplit],
+    [unsplit, uncounted("executor")],
+    [unsplit, uncounted("reviewer")],
+  ]) {
+    const use = read(rows);
+    assert.equal(use.totalTokens, 1020, `${rows.length} rows`);
+    assert.match(renderDailyUse({ tokens: 100 }, use), reached);
+    assert.doesNotMatch(renderDailyUse({ tokens: 1021 }, use), reached);
+    // Its one priced class is the least its estimate can be.
+    assert.ok(Math.abs(use.pricedUsd - (20 * 15) / 1_000_000) < 1e-12);
+  }
+  // A total and a class sum are added an observation at a time: a session
+  // with a total and one that reports classes and no total.
+  const classesOnly = row("verifier", "2026-11-12T11:00:00.000Z", "model-a", {
+    inputTokens: 300,
+    outputTokens: 30,
+  });
+  const mixed = read([measured, classesOnly]);
+  assert.deepEqual([mixed.totalTokens, mixed.partial], [20_000_330, true]);
+  // Read from the checkout's own ledger, as the prompt hook reads it: the
+  // rows of the day, whose sessions no record attests a model for.
+  write(
+    root,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines([
+      {
+        workOrder: "WO-999",
+        role: "executor",
+        startedAt: "2026-11-12T09:00:00.000Z",
+        durationMs: 1000,
+        sessionKey: "session executor",
+        recordedAt: "2026-11-12T10:00:00.000Z",
+        observation: {
+          source: "claude-transcript-message-usage",
+          scope: "dispatch",
+          observedAt: "2026-11-12T10:00:00.000Z",
+          usage,
+        },
+      },
+    ]),
+  );
+  const own = dayUse(root, { now, timeZone: "UTC" });
+  assert.deepEqual(
+    [own.totalTokens, own.estimateUsd, own.unpriced, own.unattested],
+    [1650, null, [], true],
+  );
+});
+
+test("WO-276 criterion P3: a day's figure loads as tokens, dollars or both, and any other shape of spend.daily is refused by its field", (t) => {
+  const root = repo(t);
+  const file = "docs/control/budgets.json";
+  const original = JSON.parse(readFileSync(join(source, file), "utf8"));
+  const load = (spend) => {
+    const value = structuredClone(original);
+    if (spend === undefined) delete value.spend;
+    else value.spend = spend;
+    write(root, file, JSON.stringify(value));
+    return readBudgets(root);
+  };
+  // None declared: the key absent, the figure absent, or both fields null.
+  assert.equal(load(undefined).spend, undefined);
+  assert.deepEqual(load({}).spend, {});
+  assert.deepEqual(load({ daily: {} }).spend.daily, {});
+  assert.deepEqual(load({ daily: { tokens: null, usd: null } }).spend.daily, {
+    tokens: null,
+    usd: null,
+  });
+  // The kit's template carries the field with both figures null.
+  assert.deepEqual(
+    JSON.parse(
+      readFileSync(join(source, "scripts/kit/budgets.template.json"), "utf8"),
+    ).spend,
+    { daily: { tokens: null, usd: null } },
+  );
+  for (const daily of [
+    { tokens: 2_000_000 },
+    { usd: 50 },
+    { tokens: 2_000_000, usd: 12.5 },
+    { tokens: null, usd: 50 },
+  ])
+    assert.deepEqual(load({ daily }).spend.daily, daily);
+  for (const [spend, field] of [
+    ["2000000", "spend"],
+    [[], "spend"],
+    [null, "spend"],
+    [{ daily: 2_000_000 }, "spend.daily"],
+    [{ daily: "2000000" }, "spend.daily"],
+    [{ daily: [2_000_000] }, "spend.daily"],
+    [{ daily: null }, "spend.daily"],
+    [{ daily: { tokens: -1 } }, "spend.daily.tokens"],
+    [{ daily: { tokens: 0 } }, "spend.daily.tokens"],
+    [{ daily: { tokens: "2000000" } }, "spend.daily.tokens"],
+    [{ daily: { usd: -0.5 } }, "spend.daily.usd"],
+    [{ daily: { usd: true } }, "spend.daily.usd"],
+    [{ daily: { tokens: 1, dollars: 5 } }, "spend.daily.dollars"],
+    [{ daily: { weekly: 5 } }, "spend.daily.weekly"],
+    // A key beside the day's figure would be a cap nothing applies.
+    [{ weekly: { tokens: 5 } }, "spend.weekly"],
+    [{ daily: { tokens: 5 }, weekly: -1 }, "spend.weekly"],
+  ])
+    assert.throws(
+      () => load(spend),
+      (error) => error.message === `Invalid budget: ${field}`,
+      JSON.stringify(spend),
+    );
 });
 
 test("budgets keep unselected caps unset and cold-start measurement ignores product prose", (t) => {
@@ -6922,225 +8146,49 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through the current release-close role and changes only executor instructions on", () => {
-  const historical = JSON.parse(
-    readFileSync(
-      join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
-      "utf8",
-    ),
-  );
-  // Authorized role edits get a separate oracle; never rewrite a historical
-  // snapshot to make the current generated instruction check pass. WO-149's
-  // common role edits affect both settings, so pin contemporaneous default and
-  // opt-out bytes separately and preserve the complete historical chain.
-  // WO-157, WO-158, WO-161, WO-166, WO-168, WO-173 and WO-179 shared role edits
-  // follow the same route. The integrated oracle preserves both WO-185's
-  // upstream snapshot and WO-195's original planner/release-close snapshot.
-  // WO-186's default-root record admission preserves that integrated snapshot;
-  // WO-187's review duties and worker pin preserve WO-186 in turn.
-  // WO-196's ordered procedures and conditional economy preserve WO-187.
-  // Publication guidance and conditional reader scoring preserve the prior role oracle and all its history.
-  // WO-221's release-close deletion sentence preserves WO-216's snapshot.
-  // The combined oracle preserves both independently reviewed role histories.
-  // Removing a shared sentence follows the same route as adding one.
-  const fixtures = join(source, "packages/skeleton/fixtures");
-  // The shared standing-document sentence's kinds, census and reviewer
-  // judgment and the one-line residue per profile (WO-238) were pinned over
-  // WO-250's oracle while, on main, the shared prune sentence and the
-  // release-close residue and glob clause (WO-252) re-pinned the trees over
-  // WO-250's and the router's prune sentence (WO-252's repair) over that. The
-  // integrated trees carry both orders' sentences, so the WO-238 integration
-  // oracle pins them through two parents: WO-252's repair oracle, main's at
-  // integration, as its historical parent and WO-238's as its branch parent,
-  // both reaching the unchanged WO-250 oracle. The review ladder, the
-  // counting of every worker use and the worker gate rule (WO-250) re-pinned
-  // the trees over the WO-249 integration oracle. That oracle pins the
-  // combined trees of WO-249's criteria rules and WO-251's desktop and
-  // browser boundary through two parents: WO-251's oracle, main's at
-  // integration, as its historical parent and WO-249's as its branch parent,
-  // and both preserve WO-247's oracle, which carries the integrated oracle and
-  // both chains below it. WO-253's release-close and planner prune sentences
-  // re-pin the trees over that WO-238 integration oracle, WO-254's question
-  // pathways, blocked-turn sentence and writer sentences re-pin them over
-  // WO-253's, WO-246's planner sentence on the publish helper re-pins them
-  // over WO-254's, WO-255's worker options, whole-change recheck,
-  // consistency table and planner capture sentence re-pin them over WO-246's,
-  // and WO-255's repair, naming the helper's required host in the planner's
-  // capture sentence, re-pins them over WO-255's.
-  // WO-257's planner sentence (no pass takes a newer starter unless the
-  // operator asks in that session) pins the role trees over WO-255's repair.
-  // The closeout sentences that name the closeout selection, in the executor,
-  // the reviewer and the target clause the execution roles share (WO-243),
-  // pin them over WO-257's. The paraphrase rule and the worker no-print rules
-  // in every root, the router's plan-approval stop and the reviewer's records
-  // commit before filing (WO-259) pin them over WO-243's.
-  const current = "wo259-role-baseline.json";
-  const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo243-role-baseline.json");
-  const closeoutSelection = JSON.parse(
-    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
-  );
-  assert.equal(
-    closeoutSelection.historicalBaseline,
-    "wo257-role-baseline.json",
-  );
-  const noUpdate = JSON.parse(
-    readFileSync(join(fixtures, closeoutSelection.historicalBaseline), "utf8"),
-  );
-  assert.equal(noUpdate.historicalBaseline, "wo255-repair-role-baseline.json");
-  const repair = JSON.parse(
-    readFileSync(join(fixtures, noUpdate.historicalBaseline), "utf8"),
-  );
-  assert.equal(repair.historicalBaseline, "wo255-role-baseline.json");
-  const options = JSON.parse(
-    readFileSync(join(fixtures, repair.historicalBaseline), "utf8"),
-  );
-  assert.equal(options.historicalBaseline, "wo246-role-baseline.json");
-  const publish = JSON.parse(
-    readFileSync(join(fixtures, options.historicalBaseline), "utf8"),
-  );
-  assert.equal(publish.historicalBaseline, "wo254-role-baseline.json");
-  const questions = JSON.parse(
-    readFileSync(join(fixtures, publish.historicalBaseline), "utf8"),
-  );
-  assert.equal(questions.historicalBaseline, "wo253-role-baseline.json");
-  const closePrune = JSON.parse(
-    readFileSync(join(fixtures, questions.historicalBaseline), "utf8"),
-  );
-  assert.equal(
-    closePrune.historicalBaseline,
-    "wo238-integration-role-baseline.json",
-  );
-  const integrated = JSON.parse(
-    readFileSync(join(fixtures, closePrune.historicalBaseline), "utf8"),
-  );
-  assert.equal(
-    integrated.historicalBaseline,
-    "wo252-repair-role-baseline.json",
-  );
-  assert.equal(integrated.branchBaseline, "wo238-role-baseline.json");
-  assert.equal(integrated.upstreamBaseline, "wo250-role-baseline.json");
-  const routerPrune = JSON.parse(
-    readFileSync(join(fixtures, integrated.historicalBaseline), "utf8"),
-  );
-  assert.equal(routerPrune.historicalBaseline, "wo252-role-baseline.json");
-  const pruneSentence = JSON.parse(
-    readFileSync(join(fixtures, routerPrune.historicalBaseline), "utf8"),
-  );
-  assert.equal(pruneSentence.historicalBaseline, "wo250-role-baseline.json");
-  const documentKinds = JSON.parse(
-    readFileSync(join(fixtures, integrated.branchBaseline), "utf8"),
-  );
-  assert.equal(documentKinds.historicalBaseline, "wo250-role-baseline.json");
-  const ladder = JSON.parse(
-    readFileSync(join(fixtures, pruneSentence.historicalBaseline), "utf8"),
-  );
-  assert.equal(
-    ladder.historicalBaseline,
-    "wo249-integration-role-baseline.json",
-  );
-  const integration = JSON.parse(
-    readFileSync(join(fixtures, ladder.historicalBaseline), "utf8"),
-  );
-  assert.equal(integration.historicalBaseline, "wo251-role-baseline.json");
-  assert.equal(integration.branchBaseline, "wo249-role-baseline.json");
-  assert.equal(integration.upstreamBaseline, "wo247-role-baseline.json");
-  for (const name of [
-    integration.historicalBaseline,
-    integration.branchBaseline,
-  ]) {
-    const parent = JSON.parse(readFileSync(join(fixtures, name), "utf8"));
-    assert.equal(parent.historicalBaseline, "wo247-role-baseline.json", name);
-  }
-  const previous = JSON.parse(
-    readFileSync(join(fixtures, integration.upstreamBaseline), "utf8"),
-  );
-  assert.equal(
-    previous.historicalBaseline,
-    "wo192-integration-role-baseline.json",
-  );
-  assert.equal(previous.branchBaseline, "wo192-role-baseline.json");
-  assert.equal(previous.upstreamBaseline, "wo185-role-baseline.json");
-  // Follow every recorded parent, not only the historical line: an integrated
-  // oracle has two parents, and either parent may carry its own branch
-  // history. Every recorded digest must still match, and no oracle may drop
-  // out of the walk, so a later integration cannot silently stop checking an
-  // older chain.
-  const reached = new Set();
-  for (const pending = [baseline]; pending.length;) {
-    const snapshot = pending.pop();
-    for (const [name, digest] of [
-      [snapshot.historicalBaseline, snapshot.historicalSha256],
-      [snapshot.branchBaseline, snapshot.branchSha256],
-      [snapshot.upstreamBaseline, snapshot.upstreamSha256],
-    ]) {
-      if (!name) continue;
-      const previousBytes = readFileSync(join(fixtures, name));
-      if (digest)
-        assert.equal(
-          createHash("sha256").update(previousBytes).digest("hex"),
-          digest,
-          `${name} remains byte-exact`,
-        );
-      if (reached.has(name)) continue;
-      reached.add(name);
-      pending.push(JSON.parse(previousBytes));
-    }
-  }
-  assert.deepEqual(
-    readdirSync(fixtures).filter(
-      (name) =>
-        name.endsWith("-role-baseline.json") &&
-        name !== current &&
-        !reached.has(name),
-    ),
-    [],
-    "every role oracle stays reachable from the current one",
-  );
+// What a role root says is judged by regeneration: harness check refuses a
+// committed root that differs from the emitted one, and Git history holds
+// every earlier root (WO-276). This case judges how the roots relate: the
+// two skill roots carry the same roles, and the economy support changes the
+// executor's instructions alone.
+test("WO-145 optional economy support changes only executor instructions on, and both skill roots carry the same roles", async () => {
   const on = harnessInstallation();
   const explicitOn = harnessInstallation({
     supports: { "tinkerer-economy": true },
   });
-  // Both hosts' worker definitions carry the same rules (WO-259).
+  // Both hosts' workers carry the same rules (WO-259): Claude's in its one
+  // generated definition, and a Codex spawn, which reads no definition, in
+  // the preamble its launch is printed with (WO-276).
   const workers = on.files.filter((file) =>
     /^\.(?:claude|codex)\/agents\/dotln-worker/u.test(file.path),
   );
-  assert.deepEqual(workers.map((file) => file.path).sort(), [
-    ".claude/agents/dotln-worker-fable.md",
-    ".claude/agents/dotln-worker.md",
-    ".codex/agents/dotln-worker-astra.toml",
-  ]);
-  for (const file of workers)
+  assert.deepEqual(
+    workers.map((file) => file.path),
+    [".claude/agents/dotln-worker.md"],
+  );
+  const { showWorker } = await import("./lib/worker-launch.mjs");
+  const spawned = await showWorker(undefined, "default", {
+    provider: "codex",
+    session: "codex",
+  });
+  for (const [name, contents] of [
+    [workers[0].path, workers[0].contents],
+    ["a Codex spawn's preamble", spawned.session.preamble],
+  ])
     for (const rule of [operatorWordsRule, workerNoPrintRules])
-      assert.ok(file.contents.includes(rule), `${file.path} carries ${rule}`);
+      assert.ok(contents.includes(rule), `${name} carries ${rule}`);
   const off = harnessInstallation({
     supports: { "tinkerer-economy": false },
   });
   const withoutOrigin = (text) => text.replace(/^<!-- Origin: .* -->\n/m, "");
+  // The economy support's paragraph, as the support's own record holds it.
+  const { executorSupports } =
+    await import("../packages/skeleton/dist/src/loadouts/executor-supports.js");
+  const economy = executorSupports
+    .find((support) => support.supportFacetId === "tinkerer-economy")
+    .emissions.find((emission) => emission.kind === "prompt-fragment").text;
   const roles = on.files.filter((file) => file.path.endsWith("/SKILL.md"));
-  assert.equal(roles.length, Object.keys(baseline.roles).length);
-  assert.equal(roles.length, Object.keys(baseline.optOutRoles).length);
   for (const file of roles) {
-    if (file.path.includes("dotln-router/"))
-      assert.equal(
-        historical.roles[file.path],
-        undefined,
-        "router is a newly introduced role",
-      );
-    else {
-      const released = execGit(["show", `${historical.release}:${file.path}`], {
-        cwd: source,
-      });
-      assert.equal(
-        createHash("sha256").update(released).digest("hex"),
-        historical.roles[file.path],
-      );
-    }
-    assert.equal(
-      createHash("sha256").update(file.contents).digest("hex"),
-      baseline.roles[file.path],
-      file.path,
-    );
     assert.equal(
       explicitOn.files.find((row) => row.path === file.path).contents,
       file.contents,
@@ -7148,11 +8196,6 @@ test("WO-145 optional economy support preserves historical snapshots through the
     // Shared role edits belong to both settings; only the economy support is
     // removed, not later authorized Codex entry or verifier instructions.
     const optedOut = off.files.find((row) => row.path === file.path);
-    assert.equal(
-      createHash("sha256").update(optedOut.contents).digest("hex"),
-      baseline.optOutRoles[file.path],
-      file.path,
-    );
     const twin = on.files.find(
       (row) =>
         row.path ===
@@ -7161,89 +8204,17 @@ test("WO-145 optional economy support preserves historical snapshots through the
           : file.path.replace(".agents/skills/", ".claude/skills/")),
     );
     assert.equal(twin.contents, file.contents, `${file.path} both roots`);
-    assert.doesNotMatch(
-      file.contents,
-      /need no Git escalation/,
-      `${file.path} must not imply an approval path in full-access mode`,
-    );
-    // Every root carries the rule that committed text paraphrases the
-    // operator and the rules on what a worker never reads or prints (WO-259).
+    // Every root, the router's among them, carries the rule that committed
+    // text paraphrases the operator and the rules on what a worker never
+    // reads or prints (WO-259), each as the compiler's own constant.
     for (const rule of [operatorWordsRule, workerNoPrintRules])
       assert.ok(file.contents.includes(rule), `${file.path} carries ${rule}`);
-    if (file.path.includes("dotln-router/"))
-      assert.match(
-        file.contents,
-        /Stop for awaiting-merge, awaiting-plan-approval \(the operator answers the proposed plan and resumes the executor before driving again\),/u,
-      );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
-      // The reviews are a ladder with an end (WO-250): three reviewers over
-      // the whole diff, a recheck that confirms the fixes and reads the whole
-      // change again under the admission rule (WO-255), one combined last
-      // look, then the executor's own judgment; and every launch, re-task and
-      // kit launch counts against the cap.
-      for (const rule of [
-        /Round 1: three fresh independent `dotln-worker` reviewers over the whole diff against the merge base/,
-        /Round 2, the recheck: each reviewer whose findings were fixed confirms those fixes, then reviews the whole current change against the base again/,
-        /a `Traced consumers` table \(changed contract, consumer, command, result\) with a generated pages row and a fixture manifests row, each naming the command run; a consistency report without that table is not recorded/,
-        /a new finding is admitted only when it breaks an acceptance criterion or a behavior `main` had, and any other new finding is recorded in the handoff, not fixed/,
-        /Round 3, the last: only when round 2's fixes changed code again, one combined worker carrying the three briefs/,
-        /After round 3 no reviewer runs in this execution or repair: you judge the remaining delta/,
-        /Skip a round, and say so, when the fixes before it touch only comments, documentation, formatting, test names or regenerated files/,
-        /starting at round 3 when that diff is under fifty changed source lines/,
-        /`npm run worker -- review --kind criteria\|design\|consistency\|combined --host codex\|claude/,
-        /Every launch, re-task \(a `SendMessage` or a resumed agent\) and kit launch counts one use against subagentCap/,
-        /`self-review: found N; fixed N; recorded N; rounds R; unreviewed M lines \(<reason>\)`/,
-      ])
-        assert.match(file.contents, rule);
-      assert.doesNotMatch(
-        file.contents,
-        /restart all three existing reviewers|restart all three independent/,
-      );
-      const completeRunStep = file.contents
-        .split("\n")
-        .find((line) =>
-          /^\d+\. Run the checks the closeout selection names,/.test(line),
-        );
-      assert.match(
-        completeRunStep,
-        /on failure finish.*repair and its write-backs.*format.*review ladder and finish it before starting a fresh complete run/,
-      );
-      const reviewStep = file.contents
-        .split("\n")
-        .find((line) => /^\d+\. Finish implementation or repair,/.test(line));
-      assert.match(
-        reviewStep,
-        /authored outputs before the review ladder's first round; never use early scouting reviews/,
-      );
-      assert.doesNotMatch(
-        file.contents,
-        /have the same consistency reviewer check the final write-backs/,
-      );
-      assert.match(
-        file.contents,
-        /Integrate main only at the lifecycle points/,
-      );
-      assert.match(
-        file.contents,
-        /For a target order, read on demand the profile declared for its `Repository:` id/,
-      );
-      assert.match(
-        file.contents,
-        /Tinkerer — Economy: When the work shows two credible ways/,
-      );
-      assert.match(
-        file.contents,
-        /differ on a named axis, run one bounded comparison and record both arms/,
-      );
-      assert.match(file.contents, /record nothing when no such fork appeared/);
-      assert.match(file.contents, /an order may name an experiment/);
-      assert.equal(file.contents.split("Tinkerer — Economy:").length - 1, 1);
-      assert.ok(!optedOut.contents.includes("Tinkerer — Economy:"));
+      const lines = withoutOrigin(file.contents).split("\n");
+      assert.equal(lines.filter((line) => line === economy).length, 1);
+      assert.ok(!optedOut.contents.includes(economy));
       assert.equal(
-        withoutOrigin(file.contents)
-          .split("\n")
-          .filter((line) => !line.startsWith("Tinkerer — Economy:"))
-          .join("\n"),
+        lines.filter((line) => line !== economy).join("\n"),
         withoutOrigin(optedOut.contents),
         "opt-out removes only the executor economy paragraph",
       );
@@ -7257,38 +8228,6 @@ test("WO-145 optional economy support preserves historical snapshots through the
       );
       assert.notEqual(optedOut.contents, file.contents, file.path);
     }
-  }
-  // The criteria rules each role reads (WO-249): every non-router role names
-  // the three off-ramps and the words rule; the verifier carries the funnel,
-  // the reviewer the defective line forms and the planner the five-class
-  // screen and its lint.
-  const sentences = {
-    shared: [
-      "`retract <ordinal>` undoes a waiver or defect record and `reopen-handoff` returns a handoff the operator widened to its phase",
-      "records an unmet criterion only from the operator's words asking for that criterion's waiver",
-      "An executor records an unmet criterion of the five defect classes unmet with its class named for the verifier and asks the operator nothing.",
-    ],
-    verifier: [
-      "an input you constructed outside the supported vocabulary is a follow-up, never a block",
-      "a recorded defect `unmet, defective (<class>) by <ordinal>` with your evidence",
-    ],
-    reviewer: [
-      "`unmet, defective (<class>) by <ordinal>` with your own evidence for the class",
-      'a blocking entry also carrying `"basis": {"criterion": "<id>"}`',
-    ],
-    planner: [
-      "Screen every acceptance criterion before filing against the five defect classes",
-      "prints a `criteria advisory` line",
-      // The capture review's command runs as written: the helper requires
-      // its host (WO-255's repair).
-      "`npm run worker -- review --kind criteria --host codex|claude --subject planning` carries the operator's dispatch capture with `--capture <file>`",
-    ],
-  };
-  for (const file of roles) {
-    const role = file.path.split("/")[2].slice("dotln-".length);
-    if (role === "router") continue;
-    for (const sentence of [...sentences.shared, ...(sentences[role] ?? [])])
-      assert.ok(file.contents.includes(sentence), `${file.path}: ${sentence}`);
   }
   for (const [index, bundle] of on.bundles.entries()) {
     const manifest = bundle.manifest;
@@ -7424,6 +8363,28 @@ test("decisions require dispatch and reopening source, substitute inherited ledg
       "**Acceptance criteria**\n1. Add a ledger entry.\n**Non-goals:** Elsewhere.",
     ),
     true,
+  );
+  // The criteria are the ones the order's own label leads: a quoted example
+  // of the label that names the ledger declares no duty, and a real list
+  // below a quoted example still does (WO-276, the readers' label views).
+  assert.equal(
+    inheritedLedgerDuty(
+      "# WO-900 — fixture\n\n> **Acceptance criteria:** add a ledger entry.\n\n**Acceptance criteria**\n\n1. Nothing of the kind.\n\n**Non-goals:** Elsewhere.\n",
+    ),
+    false,
+  );
+  assert.equal(
+    inheritedLedgerDuty(
+      "# WO-900 — fixture\n\n> **Acceptance criteria:** an example.\n\n**Acceptance criteria**\n\n1. Add a ledger entry.\n\n**Non-goals:** Elsewhere.\n",
+    ),
+    true,
+  );
+  // A criterion keeps the number its author wrote.
+  assert.deepEqual(
+    declaredCriteria(
+      "# WO-900 — fixture\n\n**Acceptance criteria**\n\n1. First.\n3. Third.\n",
+    ).map((criterion) => criterion.id),
+    ["1", "3"],
   );
   assert.equal(
     readFileSync(join(root, "docs/lineage/idea-ledger.md"), "utf8"),
@@ -7890,6 +8851,91 @@ test("follow-up dispositions refuse stale updates, absent allocation targets and
   const state = readFollowups(root);
   assert.equal(state.entries[0].dispositions.length, 2);
   assert.match(state.entries[0].dispositions[0].reason, /explicit coverage/);
+});
+
+test("WO-276 criterion R3: a batch is judged as the register it produces: re-disposing a row whose order's file the same change removes applies, and a batch whose result still names an absent order is refused naming the row, with nothing written", (t) => {
+  const root = repo(t);
+  write(
+    root,
+    "docs/product/ideas.md",
+    "## Candidate — First\nScope one.\n\n## Candidate — Second\nScope two.\n",
+  );
+  const [first, second] = syncFollowups(root).entries;
+  for (const id of ["WO-888", "WO-889"])
+    write(root, `docs/work-orders/${id}-fixture.md`, "# Filed target\n");
+  dispose(root, first, "allocated", ["WO-888"]);
+  dispose(root, second, "allocated", ["WO-889"]);
+  const register = join(root, FOLLOWUPS);
+  // The planner reads the revision; the same change removes one order's file.
+  const revision = planningFollowups(root).revision;
+  rmSync(join(root, "docs/work-orders/WO-888-fixture.md"));
+  const request = (entry, status, targets = []) => ({
+    expectedRevision: revision,
+    id: entry.id,
+    sourceRevision: entry.revisions.length,
+    status,
+    reason: `Synthetic ${status} disposition with explicit coverage`,
+    reopenWhen: "Changed evidence or operator direction",
+    targets,
+  });
+  // The register as it stands names an order with no file: a read refuses.
+  const original = readFileSync(register);
+  assert.throws(
+    () => planningFollowups(root),
+    /allocation target WO-888 has no filed work order/u,
+  );
+  // One request is a batch of one. A request that leaves the row is refused
+  // naming it, with nothing written; the request that re-disposes the row
+  // applies, as the same request in a batch does below.
+  assert.throws(
+    () => disposeFollowup(root, request(second, "deferred")),
+    new RegExp(
+      `allocation target WO-888 has no filed work order \\(row ${first.id}\\); nothing was written`,
+      "u",
+    ),
+  );
+  assert.deepEqual(readFileSync(register), original);
+  assert.ok(!existsSync(`${register}.lock`), "the lock is released");
+  const single = disposeFollowup(root, request(first, "deferred"));
+  assert.deepEqual([single.id, single.status], [first.id, "deferred"]);
+  assert.equal(planningFollowups(root).revision, single.revision);
+  // The batches start from the register as the change found it.
+  writeFileSync(register, original);
+  // A batch whose result still names an absent order is refused naming the
+  // row, whichever request leaves it there, and nothing is written.
+  for (const [requests, target, row] of [
+    [[request(second, "deferred")], "WO-888", first.id],
+    [
+      [request(first, "deferred"), request(second, "allocated", ["WO-887"])],
+      "WO-887",
+      second.id,
+    ],
+  ]) {
+    assert.throws(
+      () => disposeFollowups(root, requests),
+      new RegExp(
+        `allocation target ${target} has no filed work order \\(row ${row}\\); nothing was written`,
+        "u",
+      ),
+    );
+    assert.deepEqual(readFileSync(register), original, target);
+    assert.ok(!existsSync(`${register}.lock`), "the lock is released");
+  }
+  // The batch that re-disposes the row applies: the register it produces
+  // names only filed orders, and the register reads again.
+  const applied = disposeFollowups(root, [request(first, "deferred")]);
+  assert.deepEqual(applied.applied, [{ id: first.id, status: "deferred" }]);
+  assert.equal(planningFollowups(root).revision, applied.revision);
+  const after = readFollowups(root);
+  assert.equal(
+    after.entries.find((row) => row.id === first.id).dispositions.length,
+    2,
+  );
+  assert.equal(
+    after.entries.find((row) => row.id === second.id).dispositions.at(-1)
+      .status,
+    "allocated",
+  );
 });
 
 test("follow-up planning entry pages reach every pending record within the byte budget", async (t) => {
@@ -8974,7 +10020,7 @@ test("WO-169 followups --apply takes a batch under one revision, all or none", a
   );
   // A request the local-terms screen refuses is named by its index too.
   writeFileSync(register, original);
-  write(root, "docs/control/local/terms.txt", "zebracorn\n");
+  write(root, "docs/control/local/terms.txt", "refuse: zebracorn\n");
   assert.throws(
     () =>
       disposeFollowups(root, [
@@ -8984,10 +10030,37 @@ test("WO-169 followups --apply takes a batch under one revision, all or none", a
           reason: "Waits for the zebracorn service",
         },
       ]),
-    /local-terms list present; refused \[\{"file":"request index 1","line":1,"endLine":1,"count":1,"mode":"review"\}\] \(request index 1; nothing was written\)/,
+    /local-terms list present; refused \[\{"file":"request index 1","line":1,"endLine":1,"count":1,"mode":"refuse"\}\] \(request index 1; nothing was written\)/,
   );
   assert.deepEqual(readFileSync(register), original);
   assert.ok(!existsSync(`${register}.lock`), "the lock is released");
+  // Under a context entry the same batch is applied and the match is listed
+  // by its place for the pass to read, never by its entry (WO-276).
+  write(root, "docs/control/local/terms.txt", "context:\nzebracorn\n");
+  const listedTerms = [];
+  const inheritedError = console.error;
+  console.error = (line) => listedTerms.push(String(line));
+  let appliedInContext;
+  try {
+    appliedInContext = disposeFollowups(root, [
+      request(first, "deferred"),
+      {
+        ...request(second, "deferred"),
+        reason: "Waits for the zebracorn service",
+      },
+    ]);
+  } finally {
+    console.error = inheritedError;
+  }
+  assert.equal(appliedInContext.applied.length, 2);
+  assert.ok(
+    listedTerms.some((line) =>
+      /^CONTEXT .*: a local term in context mode/u.test(line),
+    ),
+    listedTerms.join("\n"),
+  );
+  assert.doesNotMatch(listedTerms.join("\n"), /zebracorn/u);
+  assert.notDeepEqual(readFileSync(register), original);
   rmSync(join(root, "docs/control/local/terms.txt"));
   // One invalid request writes nothing and names its index.
   writeFileSync(register, original);
@@ -9014,7 +10087,8 @@ test("WO-169 followups --apply takes a batch under one revision, all or none", a
         request(second, "allocated", ["WO-777"]),
         request(third, "deferred"),
       ],
-      /no filed work order \(request index 1; /,
+      // Judged on the register the batch produces, so the row is named.
+      /allocation target WO-777 has no filed work order \(row FUP-[0-9a-f]+\); nothing was written/,
     ],
     [
       [
@@ -10419,10 +11493,7 @@ test("WO-131 operator-control precedes runtime, state, Git, gate and writer chec
               ? { prompt: "continue the diagnosis" }
               : {}),
           });
-          // Presence observers have no governance decision or context response.
-          if (/\/presence-[^/]+\.mjs$/.test(path))
-            assert.deepEqual(response, {});
-          else accepts(response);
+          accepts(response);
         }
       }
       assert.equal(
@@ -10860,10 +11931,6 @@ test("WO-132 missing bootstrap runtime delegates every pre-tool hook to host per
           true,
           `${name}: ${JSON.stringify(tool_input)}`,
         );
-        if (name.startsWith("presence-")) {
-          assert.deepEqual(response, {});
-          continue;
-        }
         assert.match(response.systemMessage, /advisory:/, name);
         assert.match(
           response.systemMessage,
@@ -11983,34 +13050,6 @@ test("WO-140 the briefing names the session and the exact usage command the usag
       );
       for (const code of Object.keys(usageCauseCodes))
         assert.ok(skill.includes(`\`${code}\``), `${skills} ${role} ${code}`);
-      if (role === "verifier") {
-        assert.match(
-          skill,
-          /Consume the executor's structural and Preflight rows at the subject's code identity, and its document row for the exact candidate tree/,
-        );
-        assert.match(
-          skill,
-          /Reproduce findings with `npm test -- --only <suite>`; rerun an affected Preflight suite when its identity differs, stating which/,
-        );
-        assert.doesNotMatch(skill, /Run the product gate with `npm test`/);
-      } else {
-        assert.match(
-          skill,
-          /reuse the passing complete review row at the integrated code identity when one exists; only when none exists start `npm test -- --review` in the background, never under the bounded probe wrapper/,
-        );
-        assert.match(
-          skill,
-          /Await it with `node scripts\/harness\.mjs evidence --wait`/,
-        );
-        assert.match(
-          skill,
-          /A confined or partial run never supplies the complete review row; use the printed outside command under host permissions and existing authority/,
-        );
-      }
-      assert.doesNotMatch(
-        skill,
-        /outside-sandbox approval|outside the harness sandbox/,
-      );
     }
 });
 

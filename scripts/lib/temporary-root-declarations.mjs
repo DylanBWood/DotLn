@@ -9,7 +9,8 @@ import { tmpdir } from "node:os";
 import { isAbsolute, join, posix, resolve, sep } from "node:path";
 import { scriptTokens } from "./machinery-coverage.mjs";
 import { relativeImports } from "./evidence-sources.mjs";
-import { docPath, docRelative } from "./config.mjs";
+import { docPath, docRelative, extensionPath } from "./config.mjs";
+import { provenVendoredFile } from "./vendored-parser.mjs";
 
 /** Scan executable tokens, not examples embedded in strings. Output-side
  * atomic staging under an existing store belongs to that store's protocol;
@@ -42,7 +43,12 @@ export function unownedTemporaryRootSites(root) {
         continue;
       const child = `${path}/${entry.name}`;
       if (entry.isDirectory()) walk(child);
-      else if (/\.(?:mjs|cjs|ts|js)$/.test(entry.name)) files.push(child);
+      else if (
+        /\.(?:mjs|cjs|ts|js)$/.test(entry.name) &&
+        // The proven copy of the pinned parser declares no temporary root.
+        !provenVendoredFile(root, child)
+      )
+        files.push(child);
     }
   };
   walk("scripts");
@@ -60,6 +66,10 @@ export function unownedTemporaryRootSites(root) {
       isAbsolute(path) ||
       path === intake ||
       path.startsWith(intake + "/") ||
+      // The reserved root's scripts are the instance's own: a path literal
+      // in a kit file that happens to name one brings it no rule of the
+      // kit's.
+      extensionPath(path) ||
       !/\.(?:mjs|cjs|js|ts)$/.test(path)
     )
       return;

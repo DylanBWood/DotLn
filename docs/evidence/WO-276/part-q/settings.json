@@ -1,0 +1,129 @@
+{
+  "note": "The hook registrations of the emitted settings: this checkout's .claude/settings.json, and the settings of a target worktree's bundle. A matcher of null is an event that takes none. hookFiles lists the hook files beside them.",
+  "launchpad": {
+    "registrations": [
+      {
+        "event": "PreToolUse",
+        "matcher": "Bash|Edit|Monitor|NotebookEdit|Write|apply_patch|exec_command|functions.exec|write_stdin",
+        "hooks": [
+          "concurrent-work-requires-worktrees"
+        ]
+      },
+      {
+        "event": "PreToolUse",
+        "matcher": "Bash|Monitor|exec_command|functions.exec|write_stdin",
+        "hooks": [
+          "no-attribution"
+        ]
+      },
+      {
+        "event": "PreToolUse",
+        "matcher": ".*",
+        "hooks": [
+          "permissions",
+          "write-observer"
+        ]
+      },
+      {
+        "event": "PostToolUse",
+        "matcher": "Edit|NotebookEdit|Write|apply_patch",
+        "hooks": [
+          "no-lint-type-disables-as-fixes"
+        ]
+      },
+      {
+        "event": "PostToolUse",
+        "matcher": ".*",
+        "hooks": [
+          "read-observer"
+        ]
+      },
+      {
+        "event": "PermissionDenied",
+        "matcher": ".*",
+        "hooks": [
+          "permission-denied"
+        ]
+      },
+      {
+        "event": "SubagentStop",
+        "matcher": null,
+        "hooks": [
+          "agent-finished"
+        ]
+      },
+      {
+        "event": "PostToolUseFailure",
+        "matcher": ".*",
+        "hooks": [
+          "failure-observer"
+        ]
+      },
+      {
+        "event": "UserPromptSubmit",
+        "matcher": null,
+        "hooks": [
+          "session"
+        ]
+      },
+      {
+        "event": "SessionStart",
+        "matcher": null,
+        "hooks": [
+          "session"
+        ]
+      },
+      {
+        "event": "Stop",
+        "matcher": null,
+        "hooks": [
+          "finish"
+        ]
+      }
+    ],
+    "hookFiles": [
+      "agent-finished.mjs",
+      "commit-msg.mjs",
+      "concurrent-work-requires-worktrees.mjs",
+      "failure-observer.mjs",
+      "finish.mjs",
+      "no-attribution.mjs",
+      "no-lint-type-disables-as-fixes.mjs",
+      "permission-denied.mjs",
+      "permissions.mjs",
+      "read-observer.mjs",
+      "session.mjs",
+      "write-observer.mjs"
+    ]
+  },
+  "target": {
+    "registrations": [
+      {
+        "event": "PreToolUse",
+        "matcher": ".*",
+        "hooks": [
+          "permissions"
+        ]
+      },
+      {
+        "event": "PreToolUse",
+        "matcher": "^(?!(?:Agent|AskUserQuestion|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*)$)[\\s\\S]*$",
+        "hooks": [
+          "concurrent-work-requires-worktrees"
+        ]
+      },
+      {
+        "event": "PreToolUse",
+        "matcher": "^(?!(?:Agent|AskUserQuestion|Edit|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|NotebookEdit|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|Write|apply_patch|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*)$)[\\s\\S]*$",
+        "hooks": [
+          "no-attribution"
+        ]
+      }
+    ],
+    "hookFiles": [
+      "concurrent-work-requires-worktrees.mjs",
+      "no-attribution.mjs",
+      "permissions.mjs"
+    ]
+  }
+}

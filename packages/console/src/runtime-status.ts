@@ -5,6 +5,14 @@ import {
   type RuntimeStatusV1,
 } from "@dotln/skeleton/dist/src/runtime-status-contract.js";
 
+/** A work-order source's reason as a reader meets it. A resident started
+ * through the package's own entry has no card source: the reason then names
+ * the launcher that hands it one. */
+export const workOrderSourceReason = (reason: string): string =>
+  reason === "binding-unavailable"
+    ? `${reason}; start the resident with scripts/resident.mjs`
+    : reason;
+
 export const RUNTIME_STATUS_FILE = "runtime-status-v1.json";
 
 export function readRuntimeStatus(directory: string): RuntimeStatusV1 {
@@ -61,7 +69,7 @@ export function renderRuntimeStatus(view: RuntimeStatusV1): string {
     "Budget (portfolio actors only; intent admissions excluded)",
     `  ${view.budget.status} · episodes ${amount(view.budget.episodes)} · wall ${amount(view.budget.wallMs)} ms · tokens ${amount(view.budget.tokens)}`,
     "",
-    `Open work orders (${view.workOrders.status}${view.workOrders.reason ? `: ${view.workOrders.reason}` : ""})`,
+    `Open work orders (${view.workOrders.status}${view.workOrders.reason ? `: ${workOrderSourceReason(view.workOrders.reason)}` : ""})`,
     ...(view.workOrders.items.length
       ? view.workOrders.items.map(
           (order) =>

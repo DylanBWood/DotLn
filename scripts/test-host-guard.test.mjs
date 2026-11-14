@@ -30,6 +30,7 @@ import { once } from "node:events";
 import { executeSuite, runGate, suites } from "./test-runner.mjs";
 import { readGateChecks } from "./lib/gate-evidence.mjs";
 import {
+  HOST_GUARD_TITLE,
   guardCensus,
   transferDuplicateOwnership,
   handledStopMembers,
@@ -39,6 +40,7 @@ import {
   acquireHostLaneCapacity,
   acquireHostLanes,
   laneHolderAlive,
+  readHolders,
 } from "./lib/host-lanes.mjs";
 import {
   atomicJson,
@@ -83,6 +85,27 @@ test("a live guard restores its missing record and a concurrent start reuses it"
   assert.equal(second.pid, first.pid);
   assert.equal(second.birth, first.birth);
   assert.equal(second.reused, true);
+});
+
+test("the spawned guard reports the title that names it as the guard every DotLn session of the user shares", async (t) => {
+  const f = await fixture(t);
+  const guard = await ensureHostGuard(f.directory);
+  const record = JSON.parse(
+    readFileSync(join(f.directory, "guard.json"), "utf8"),
+  );
+  assert.equal(record.pid, guard.pid);
+  assert.equal(record.title, HOST_GUARD_TITLE);
+  assert.match(HOST_GUARD_TITLE, /shared by every DotLn session of this user/u);
+  // What the process table prints is the platform's to decide; it is shown
+  // here for the record and not judged.
+  const shown = execFileSync(
+    "ps",
+    ["-o", "command=", "-p", String(guard.pid)],
+    {
+      encoding: "utf8",
+    },
+  ).trim();
+  console.log(`host guard as ps prints it: ${JSON.stringify(shown)}`);
 });
 
 async function fixture(t, { containmentBudget = true } = {}) {
@@ -250,6 +273,69 @@ function assertStopped(row, ceiling) {
   );
 }
 
+test(
+  "WO-276 (Part D's after run): a task stopped by the guard is read with the stop's record when the record lands after the task's exit, and a kill nobody records finishes without one",
+  { skip: !native },
+  async (t) => {
+    const f = await fixture(t);
+    // The child names itself and waits. The test, standing in for the
+    // guard, kills it and publishes the record a moment after: the order
+    // the guard keeps, with the gap a loaded host can put between the two.
+    const run = (publishAfterMs) => {
+      let stopping;
+      return executeSuite(
+        {
+          name: "late-record",
+          command: [
+            process.execPath,
+            "-e",
+            "console.log('PROGRESS pid=' + process.pid); setInterval(() => {}, 1000);",
+          ],
+          memoryLimits: f.limits,
+          hostDirectory: f.directory,
+        },
+        f.repo,
+        60_000,
+        ({ message }) => {
+          const pid = Number(/^PROGRESS pid=(\d+)$/u.exec(message)?.[1]);
+          if (!pid || stopping) return;
+          stopping = true;
+          process.kill(pid, "SIGKILL");
+          if (publishAfterMs !== undefined)
+            setTimeout(() => {
+              mkdirSync(join(f.directory, "latest-incidents"), {
+                recursive: true,
+              });
+              writeFileSync(
+                join(f.directory, "latest-incidents", `${pid}.json`),
+                JSON.stringify({
+                  contract: "host-memory-incident-v1",
+                  recordedAt: new Date().toISOString(),
+                  failureKind: "memory-budget",
+                  scope: "task",
+                  pid,
+                  budgetBytes: 1,
+                  measuredPeakFootprintBytes: 2,
+                  residentBytesAtStop: 2,
+                }),
+              );
+            }, publishAfterMs);
+        },
+      );
+    };
+    const late = await run(300);
+    assert.equal(late.exitCode, 1, late.output);
+    assert.equal(late.failureKind, "memory-budget", late.output);
+    assert.equal(late.memoryFailure.measuredPeakFootprintBytes, 2);
+    const started = performance.now();
+    const unrecorded = await run(undefined);
+    assert.equal(unrecorded.exitCode, 1, unrecorded.output);
+    assert.equal(unrecorded.failureKind, undefined, unrecorded.output);
+    // The wait is bounded: about a second, then the task is read as it is.
+    assert.ok(performance.now() - started < 5000);
+  },
+);
+
 async function guardMetrics(directory, predicate) {
   let metrics;
   for (let n = 0; n < 200; n++) {
@@ -339,14 +425,20 @@ test(
       const [code, signal] = await exited;
       assert.equal(code, null, output);
       assert.equal(signal, "SIGKILL", output);
-      const incident = readFileSync(
-        join(f.directory, "incidents.jsonl"),
-        "utf8",
-      )
-        .split("\n")
-        .filter(Boolean)
-        .map(JSON.parse)
-        .findLast((row) => row.pid === child.pid);
+      // The guard stops the process before it publishes the incident
+      // record, so the row can land after this process sees the exit.
+      const incidents = join(f.directory, "incidents.jsonl");
+      const recorded = () =>
+        existsSync(incidents)
+          ? readFileSync(incidents, "utf8")
+              .split("\n")
+              .filter(Boolean)
+              .map(JSON.parse)
+              .findLast((row) => row.pid === child.pid)
+          : undefined;
+      for (let n = 0; n < 100 && !recorded(); n++) await delay(20);
+      const incident = recorded();
+      assert.ok(incident, `no incident names the stopped child: ${output}`);
       assert.equal(incident.failureKind, "memory-budget");
       assert.ok(
         incident.measuredPeakFootprintBytes <
@@ -1539,6 +1631,37 @@ test("WO-185 nested gates suballocate one reservation and a dead runner's live t
     suballocationWaited: true,
     retainedUntilTaskExit: true,
   });
+});
+
+test("a coordination directory holds its own process reader whatever directory this process read through first", async (t) => {
+  // One process reads a snapshot through one directory and then coordinates
+  // in a second while the first still stands, as a case's cleanup does when
+  // a guard outlives it. Inspection runs the reader from the directory it
+  // inspects and never compiles one, so the second directory needs its own.
+  const first = await fixture(t);
+  assert.ok(
+    readHostSnapshot({ footprint: false, directory: first.directory }).processes
+      .length > 0,
+  );
+  const second = await fixture(t);
+  const lease = await acquireHostLanes({
+    slots: 4,
+    directory: second.directory,
+    worktree: second.repo,
+    task: "second-directory",
+    parentLease: null,
+  });
+  try {
+    const { holders } = readHolders(second.directory, {
+      worktree: second.repo,
+    });
+    assert.deepEqual(
+      holders.map(({ task, slots }) => [task, slots]),
+      [["second-directory", 4]],
+    );
+  } finally {
+    await lease.release();
+  }
 });
 
 test("WO-185 host coordination ignores temporary environment, ancestry is verified and corpus assertion guard rejects sweep aliases", () => {
@@ -2747,24 +2870,12 @@ test("lane diagnostics label other, nested own and legacy holders without paths"
 });
 
 test("lanes CLI reads live holders and capacity without any registry mutation", async (t) => {
-  // Warm the process cache outside this fixture, as earlier suite cases do.
+  // Read a snapshot through another registry first, as earlier suite cases
+  // do: the acquisition below still prepares this registry's own reader,
+  // before the read-only byte snapshot is taken.
   if (native) readHostSnapshot({ footprint: false });
   const f = await fixture(t);
-  const { readHolders } = await import("./lib/host-lanes.mjs");
   const { createHash } = await import("node:crypto");
-  // Acquisition can reuse a reader cached in another registry. Prepare this
-  // registry's reader in a fresh process before the read-only byte snapshot.
-  if (native)
-    execFileSync(
-      process.execPath,
-      [
-        "--input-type=module",
-        "-e",
-        `const {readHostSnapshot}=await import(${JSON.stringify(new URL("./lib/host-resources.mjs", import.meta.url).href)}); readHostSnapshot({footprint:false,directory:process.argv[1]});`,
-        f.directory,
-      ],
-      { cwd: root, encoding: "utf8" },
-    );
   const lease = await acquireHostLanes({
     directory: f.directory,
     slots: 4,

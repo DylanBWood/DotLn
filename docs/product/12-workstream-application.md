@@ -190,10 +190,14 @@ operator works from the instance; an order names one repository; a
 workstream spans several; a session in a target is rare, because the router
 (WO-192) runs each phase's worker in the target worktree under WO-049's
 bundle, launched from the instance. A session opened in the instance is
-governed and oriented by its build: the role skill for the active order loads
-the workstream document and the target's repository profile, with its pinned
-references into this blueprint, on demand, so the operator never restates the
-vision per session, and the instance's hook logs report which compiled units
+governed and oriented by its build: the dispatch briefing of a target order
+names the target's repository profile, the area notes beside it with how
+far the target has moved since each was written, and the order's workstream
+document with its Rules section, and the role for the active order reads
+the profile, with its pinned references into this blueprint, the notes that
+cover the paths it changes and those rules, on demand
+([decision](../evidence/WO-276/decisions.md#wo-276-d086--part-l-as-built-area-notes-beside-a-targets-profile-read-by-the-document-check-and-the-briefing-and-one-sentence-in-three-roles)), so the operator never
+restates the vision per session, and the instance's hook logs report which compiled units
 fired there. WO-083 records one such run as its receipt. Other organizations
 fork the same starter as their own instances; their workstreams,
 repositories and evidence stay in their forks, and kit updates reach them as

@@ -18,6 +18,11 @@ import {
 // against Git before use, so a later tag is newer evidence while an invented
 // version in either generated file refuses.
 import { firstDifferingLine } from "./lib/validation.mjs";
+import {
+  markdownFields,
+  markdownSections,
+  parseMarkdown,
+} from "./lib/markdown-links.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { describeTag, parseWorktrees, runGit } from "./lib/git.mjs";
@@ -47,7 +52,7 @@ import { dirname, join, posix } from "node:path";
 const NOT_EVIDENCED = "not evidenced";
 const notEvidenced = (reason) => `${NOT_EVIDENCED} (${reason})`;
 const COMMAND = "node scripts/siblings.mjs index";
-const MANIFEST_HASH_LINE = "- **Manifest hash:** ";
+const MANIFEST_HASH_LABEL = "Manifest hash";
 const TAG_RECORD = "<!-- dotln-sibling-tags:";
 const code = (value) => `\`${value}\``;
 
@@ -214,7 +219,7 @@ export const renderRegistry = ({ root, declaration, receipts, facts }) => {
       `- **Core commit:** ${latest ? code(latest.coreCommit) : NOT_EVIDENCED}`,
     );
     lines.push(
-      `${MANIFEST_HASH_LINE}${latest ? code(latest.manifestHash) : NOT_EVIDENCED}`,
+      `- **${MANIFEST_HASH_LABEL}:** ${latest ? code(latest.manifestHash) : NOT_EVIDENCED}`,
     );
     lines.push(
       `- **Build hash:** ${latest ? code(latest.buildHash) : NOT_EVIDENCED}`,
@@ -265,31 +270,39 @@ export const renderRegistry = ({ root, declaration, receipts, facts }) => {
   return `${lines.join("\n").trimEnd()}\n`;
 };
 
-// The page split into its entries by heading, for a check that compares one
-// field structurally instead of by pattern.
-const entries = (text) =>
-  new Map(
-    text
-      .split(/^(?=## )/mu)
-      .slice(1)
-      .map((section) => [section.slice(3, section.indexOf("\n")), section]),
+// Each entry's manifest hash as the page records it, by sibling id: the
+// Manifest hash field under the entry's level-2 heading, read through the
+// pinned Markdown parser so the check compares one field, not a line.
+const manifestHashes = (text) => {
+  const tree = parseMarkdown(text);
+  const fields = markdownFields(text, tree).filter(
+    (field) => field.label === MANIFEST_HASH_LABEL,
   );
-const manifestHashLine = (section) =>
-  section?.split("\n").find((line) => line.startsWith(MANIFEST_HASH_LINE)) ??
-  null;
+  return new Map(
+    markdownSections(text, tree)
+      .filter((section) => section.depth === 2)
+      .map((section) => [
+        section.title,
+        fields.find(
+          (field) =>
+            field.start > section.start && field.start < section.bodyEnd,
+        )?.value ?? null,
+      ]),
+  );
+};
 
-/** A stale registry, named: an entry whose recorded manifest hash line is not
- * the regenerated one names the latest receipt; any other difference, a hand
- * edit included, names its first differing line. */
+/** A stale registry, named: an entry whose recorded manifest hash is not the
+ * regenerated one names the latest receipt; any other difference, a hand edit
+ * included, names its first differing line. */
 export const checkRegistry = ({ path, expected, actual, receipts }) => {
   if (expected === actual) return;
-  const before = entries(actual);
-  for (const [id, section] of entries(expected)) {
-    const recorded = manifestHashLine(before.get(id));
-    if (recorded !== null && recorded !== manifestHashLine(section)) {
+  const before = manifestHashes(actual);
+  for (const [id, hash] of manifestHashes(expected)) {
+    const recorded = before.get(id) ?? null;
+    if (recorded !== null && recorded !== hash) {
       const latest = receipts.get(id)?.at(-1);
       throw new Error(
-        `${path}: the ${id} entry records manifest hash ${recorded.slice(MANIFEST_HASH_LINE.length)}, and ${latest ? `its latest receipt ${latest.path} records ${code(latest.manifestHash)}` : "no receipt exists"}; run ${COMMAND}`,
+        `${path}: the ${id} entry records manifest hash ${recorded}, and ${latest ? `its latest receipt ${latest.path} records ${code(latest.manifestHash)}` : "no receipt exists"}; run ${COMMAND}`,
       );
     }
   }

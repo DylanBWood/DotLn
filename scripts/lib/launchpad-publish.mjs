@@ -14,7 +14,11 @@ import {
   readOutwardVocabulary,
 } from "../outward-lint.mjs";
 import { branchChanges } from "./branch-changes.mjs";
-import { branchTermFindings, branchTermLines } from "./branch-terms.mjs";
+import {
+  branchTermClasses,
+  branchTermFindings,
+  branchTermLines,
+} from "./branch-terms.mjs";
 import { docPath } from "./config.mjs";
 import { runGit } from "./git.mjs";
 import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
@@ -52,13 +56,15 @@ const ownVocabulary = (root) =>
     ? readOutwardVocabulary(root)
     : { types: conventionalTypes, reviewTerms: [] };
 
-/** What refuses this repository's own title or body. The public review words
- * name the launchpad and its parts, which is what its own pull request is
- * about, so they pass. A private term refuses in either mode: this route has
- * no reviewer's confirmation for a review-mode match to wait for. */
+/** What refuses this repository's own title or body, and what is listed
+ * for the stage to read. The public review words name the launchpad and its
+ * parts, which is what its own pull request is about, so they pass. A
+ * refuse-mode private term refuses; a context-mode one is listed by artifact
+ * and line and refuses nothing. */
 const lintFailures = (root, artifacts) => {
   const vocabulary = ownVocabulary(root);
   const failures = [];
+  const listed = [];
   for (const { kind, text } of artifacts) {
     const result = checkOutwardArtifact(root, { kind, text, vocabulary });
     if (result.checks.localTerms.status === "unavailable")
@@ -66,12 +72,16 @@ const lintFailures = (root, artifacts) => {
         `${kind}: the local-terms list is absent; register it at ${docPath(root, "control", "local/terms.txt")}, where an empty list refuses nothing`,
       );
     for (const finding of result.findings)
-      if (finding.rule !== "vocabulary.review")
+      if (finding.rule === "vocabulary.local" && finding.mode === "context")
+        listed.push(
+          `${kind}:${finding.span.line}: a local term in context mode${finding.count > 1 ? `, ${finding.count} matches` : ""}`,
+        );
+      else if (finding.rule !== "vocabulary.review")
         failures.push(
           `${kind}: ${outwardFindingText(finding, text)}${finding.span ? ` (line ${finding.span.line})` : ""}`,
         );
   }
-  return failures;
+  return { failures, listed };
 };
 
 /** Publish the checkout's planning or update branch: every refusal precedes
@@ -107,8 +117,9 @@ export function publishLaunchpadBranch(
     throw fail(`the body ${bodyFile} is not a regular file`);
   const body = readFileSync(bodyPath, "utf8");
   // The files the branch carries are screened as the document gate's terms
-  // task screens them: a private term in a line the branch adds refuses by
-  // file, line and mode. A malformed list refuses naming its line, never a
+  // task screens them: a refuse-mode term in a line the branch adds refuses
+  // by file, line and mode, and a context-mode one is listed before the push
+  // for the stage to read. A malformed list refuses naming its line, never a
   // term.
   let changed;
   try {
@@ -124,15 +135,18 @@ export function publishLaunchpadBranch(
     throw fail(
       `${changed.reason}, so the files this branch changes cannot be screened`,
     );
-  if (changed.findings.length)
+  const { refused, context } = branchTermClasses(changed.findings);
+  if (refused.length)
     throw fail(
-      `the local-terms list refuses lines this branch adds: ${branchTermLines(changed.findings).join("; ")}`,
+      `the local-terms list refuses lines this branch adds: ${branchTermLines(refused).join("; ")}`,
     );
-  const failures = lintFailures(root, [
+  const { failures, listed } = lintFailures(root, [
     { kind: "pr-title", text: title },
     { kind: "pr-body", text: body },
   ]);
   if (failures.length) throw fail(`outward lint: ${failures.join("; ")}`);
+  for (const line of [...branchTermLines(context), ...listed])
+    console.log(`CONTEXT ${line}`);
   try {
     assertGitHubBodyProfile(body, bodyFile);
   } catch (error) {

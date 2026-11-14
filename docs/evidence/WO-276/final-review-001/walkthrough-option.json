@@ -1,0 +1,8 @@
+{
+  "walkthroughPassesTheRemovedOption": true,
+  "walkthroughPassesTheNewOption": false,
+  "workOrders": "unavailable",
+  "reason": "binding-unavailable",
+  "items": 0,
+  "consoleLine": "binding-unavailable; start the resident with scripts/resident.mjs"
+}

@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "provenance": "Frozen re-wrap of two lines of WO-276's criterion 78 as the order was filed: the second line opens with the placeholder <option>, a raw HTML block to the parser, which ends the criteria list there, and this release's criteria reader refuses such a list wherever an open order holds it (WO-276-D175). The branch that carries the reader amends the order, so the re-wrap bridges a clone of the revision before it to this release's index check; the words are the filed ones, moved, as the derived-orders case's re-wrapped input holds them.",
+  "orderPath": "docs/work-orders/WO-276-the-queue-lands-as-one-order.md",
+  "filedLines": "   claude --order <id> --dry-run` and `npm run plan -- refute --model\n   <option>` each print a launch that names the configured model and\n",
+  "rewrappedLines": "   claude --order <id> --dry-run` and `npm run plan -- refute --model <option>`\n   each print a launch that names the configured model and\n"
+}

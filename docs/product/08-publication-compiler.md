@@ -347,7 +347,7 @@ criterion 7). The check is structural, never
 editorial, and judges no historical body; the balanced `prBody` example
 predates the meter block and stays a historical sample. A target
 publication's words are reviewed, not banned: the public `reviewTerms` and
-review-mode private terms are review items the reviewer confirms with
+context-mode private terms are review items the reviewer confirms with
 `--confirm-terms sha256:<digest of the composed body>`, launchpad
 identifiers and refuse-mode private terms refuse, and a generated
 Change-table path is judged apart from the reviewed prose, with a path the

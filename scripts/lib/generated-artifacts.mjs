@@ -84,13 +84,22 @@ export function generatedArtifacts(root) {
     ),
     ...(core
       ? [
-          {
-            name: "role-oracle",
-            check: node("scripts/check-role-oracle.mjs"),
-            timeoutMs: 30_000,
-            route:
-              "Record the authorizing role-change decision and mint a new linked role oracle; historical snapshots stay byte-exact.",
-          },
+          // The scripts' copy of the pinned Markdown parser follows the
+          // installed Prettier; an instance carries it as a kit file.
+          artifact(
+            "vendored-parser",
+            "scripts/lib/vendored-parser.mjs",
+            ["--check"],
+            [],
+          ),
+          // The operator's commands page is core's: an instance carries it
+          // as a kit file and never regenerates it from its own README.
+          artifact(
+            "operator-commands",
+            "scripts/lib/operator-commands.mjs",
+            ["--check"],
+            [],
+          ),
           ...[
             [
               "authority-evidence",
@@ -121,30 +130,14 @@ export function generatedArtifacts(root) {
                 "Repair the generated harness or its evidence inputs; the historical live harness observations are immutable.",
             },
           ),
+          // The console's recorded cases against its renderer. Every case
+          // reads fixed inputs, the self-host case among them, so a newer
+          // evidence edition stales nothing here.
           artifact(
             "console-fixtures",
             "scripts/console-fixtures.mjs",
-            ["--check-current-selfhost"],
-            null,
-            {
-              regenerate(root, run) {
-                const pin = run(
-                  node(
-                    "scripts/console-fixtures.mjs",
-                    "--record-current-selfhost",
-                  ),
-                  root,
-                  30_000,
-                );
-                return pin.exitCode
-                  ? pin
-                  : run(
-                      node("scripts/console-fixtures.mjs", "--write"),
-                      root,
-                      30_000,
-                    );
-              },
-            },
+            ["--check"],
+            ["--write"],
           ),
           artifact(
             "baseline-fingerprints",
@@ -202,7 +195,7 @@ function reportedStale(row, result) {
     lineage:
       /^(?:Stale|Missing) [^\n]+; run node scripts\/lineage\.mjs index$/m,
     index:
-      /^[^\n]+(?: is stale at line \d+|: missing or malformed tag snapshot); run npm run work-orders -- index$/m,
+      /^[^\n]+(?: is stale at line \d+|: the work-order index needs its tag record [^\n]+|: the workstream observations are missing|: invalid (?:release tag record|workstream observations)|: missing or malformed (?:tag snapshot|workstream snapshot)); run npm run work-orders -- index$/m,
     siblings:
       /^[^\n]+(?: is stale at line \d+|: the [^\n]+ entry records manifest hash [^\n]+|: (?:missing|invalid) tag observations|: observations do not match receipt commits|: [a-f0-9]+ records (?:tag|nearest) [^\n]+, which is not a Git tag (?:at|at or below) its receipt commit); run node scripts\/siblings\.mjs index$/m,
     harness: /^harness drift:/m,
@@ -213,8 +206,7 @@ function reportedStale(row, result) {
     "verification-evidence": /stale verification evidence:/,
     "feedback-evidence":
       /feedback evidence is stale(?:\n|: a compiler release moved the policy hash)|^StaleFeedbackEdition \[Error\]: feedback evidence is stale:/m,
-    "console-fixtures":
-      /console selfhost fixture must follow the selected feedback edition; run npm run sync|console fixture changed: [^\n]+/,
+    "console-fixtures": /console fixture changed: [^\n]+/,
   };
   if (row.name === "publication") {
     const failures = output

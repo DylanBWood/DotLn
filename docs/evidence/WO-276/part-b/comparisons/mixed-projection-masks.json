@@ -1,0 +1,9 @@
+{
+  "comparison": "mixed-projection-masks",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every committed revision of the root instruction file and of the front page, and the worktree's: each as a mixed projection's mask leaves it, and the front page as the merge's restore then writes its version back, as digests",
+  "read": 253,
+  "equal": 253,
+  "differences": {},
+  "examples": []
+}

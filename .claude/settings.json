@@ -42,18 +42,28 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": ".*",
+        "matcher": "Bash|Edit|Monitor|NotebookEdit|Write|apply_patch|exec_command|functions.exec|write_stdin",
         "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/concurrent-work-requires-worktrees.mjs\"",
             "timeout": 15
-          },
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Monitor|exec_command|functions.exec|write_stdin",
+        "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-attribution.mjs\"",
             "timeout": 15
-          },
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/permissions.mjs\"",
@@ -63,32 +73,27 @@
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/write-observer.mjs\"",
             "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-pretooluse.mjs\"",
-            "timeout": 15
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": ".*",
+        "matcher": "Edit|NotebookEdit|Write|apply_patch",
         "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-lint-type-disables-as-fixes.mjs\"",
             "timeout": 15
-          },
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/read-observer.mjs\"",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-posttooluse.mjs\"",
             "timeout": 15
           }
         ]
@@ -136,11 +141,6 @@
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session.mjs\"",
             "timeout": 600
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-userpromptsubmit.mjs\"",
-            "timeout": 15
           }
         ]
       }
@@ -162,11 +162,6 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/finish.mjs\"",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-stop.mjs\"",
             "timeout": 15
           }
         ]

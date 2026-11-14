@@ -1,0 +1,9 @@
+{
+  "comparison": "order-criteria",
+  "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+  "reads": "every work order: its declared criteria as the lifecycle joins them, and the suites its Preflight line names",
+  "read": 269,
+  "equal": 269,
+  "differences": {},
+  "examples": []
+}

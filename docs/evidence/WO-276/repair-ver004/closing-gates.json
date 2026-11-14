@@ -1,0 +1,40 @@
+{
+  "source": "canonical gate rows",
+  "complete": {
+    "checkId": "npm test",
+    "treeHash": "d77e79bebde58ecf53729ae7a6f63b76c4db05d8",
+    "codeIdentity": "46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323",
+    "startedAt": "2026-11-13T20:56:35.522Z",
+    "recordedAt": "2026-11-13T21:53:35.229Z",
+    "durationMs": 3419707,
+    "exitCode": 0,
+    "executed": true,
+    "gateSelection": "review",
+    "freshSuites": 125,
+    "reusedSuites": 0,
+    "unrunSuites": [],
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "suiteCount": 48,
+    "failedCases": []
+  },
+  "document": {
+    "checkId": "npm run test:docs",
+    "treeHash": "f74c4f00b105480cfb7786630230eeeff0f1190d",
+    "documentTreeHash": "c0dfff9424bb8e19ad63c80a113892b9feb609ca",
+    "documentTreeExcludes": "docs/evidence/WO-276",
+    "codeIdentity": "46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323",
+    "startedAt": "2026-11-13T21:55:09.114Z",
+    "recordedAt": "2026-11-13T21:57:49.532Z",
+    "durationMs": 160418,
+    "exitCode": 0,
+    "executed": true,
+    "gateSelection": "document",
+    "freshSuites": 29,
+    "reusedSuites": 0,
+    "unrunSuites": [],
+    "identityUnchanged": true,
+    "suiteCount": 29,
+    "failedCases": []
+  }
+}

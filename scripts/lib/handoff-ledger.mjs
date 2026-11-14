@@ -14,6 +14,12 @@ import { docPath, docRelative } from "./config.mjs";
 import { runGitPathList } from "./git.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
 import { criterionJudgments, criterionLineForms } from "./off-ramps.mjs";
+import { markdownListItems } from "./markdown-links.mjs";
+import {
+  LIST_UNREAD,
+  readWorkOrder,
+  refuseUnreadList,
+} from "./work-order-document.mjs";
 
 // Presentation wrappers and an optional worker name do not change the three
 // counts. Quotes, prose prefixes and incomplete counts remain outside the form.
@@ -21,34 +27,62 @@ import { criterionJudgments, criterionLineForms } from "./off-ramps.mjs";
 // with an optional note such as a skipped round, and the lines no reviewer
 // read, with the reason (none needed when there are none). Prose may follow
 // after a space, but a `;` there must start one of those fields.
+// The line is the executor's own fixed form, read a line of the file at a
+// time and not as Markdown: a copy inside a fence is the line, an indented
+// or a quoted one is not, and a list marker may stand before it. The case
+// table in scripts/test-verification-review.mjs holds each of those, and
+// retained handoffs were written against it.
 const SELF_REVIEW =
   /^(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?self-review(?: \([^()\r\n]{1,100}\))?: found \d+; fixed \d+; recorded \d+(?:; rounds \d+(?: \([^()\r\n]{1,200}\))?)?(?:; unreviewed (?:0 lines?(?: \([^()\r\n]{1,200}\))?|\d+ lines? \([^()\r\n]{1,200}\)))?(?![\w;])/iu;
 const inlinePresentation = (line) =>
   line.replace(/(\*\*|__|`|\*|_)(?=\S)(.+?\S|\S)\1/gu, "$2");
 
+// The criteria open at a label `**Acceptance criteria …**` or a heading of
+// that title at depth two to four, whichever comes first.
+const CRITERIA = /^acceptance criteria\b/iu;
+
 /**
  * The numbered acceptance criteria an order's text declares, each with the
  * text of its item (wrapped lines included, up to a blank line), or null
- * when the text holds no such list to check against. The item's text, trimmed
- * and its wrapped lines joined by one space, is what a defect record hashes,
- * so a change to that joining rule invalidates every standing record.
+ * when the text holds no such list to check against. The list is the ordered
+ * one the criteria label or heading leads, read up to the next label or
+ * heading. Where anything else stands there, such as a raw HTML block that
+ * ended the list early, the reader refuses with the code `LIST_UNREAD`,
+ * naming the line and the remedy, and never returns a shorter list. The
+ * item's text, trimmed and its wrapped lines joined by one space, is what a
+ * defect record hashes, so a change to that joining rule invalidates every
+ * standing record.
  */
 export function declaredCriteria(text) {
-  const start = text.search(
-    /^(?:\*\*Acceptance criteria\b[^\n]*|#{2,4} Acceptance criteria\b[^\n]*)$/imu,
-  );
-  if (start < 0) return null;
-  const items = [];
-  let open = false;
-  for (const line of text.slice(start).split(/\r?\n/u).slice(1)) {
-    if (/^(?:#{1,4} |\*\*[^*]+(?::\*\*|\*\*$))/u.test(line)) break;
-    const item = /^(\d{1,4})\.\s+(.*)$/u.exec(line);
-    if (item) {
-      items.push({ id: item[1], text: item[2].trim() });
-      open = true;
-    } else if (!line.trim()) open = false;
-    else if (open) items.at(-1).text += ` ${line.trim()}`;
-  }
+  const order = readWorkOrder(text);
+  const opening = [
+    order.labels.find((label) => CRITERIA.test(label.label)),
+    order.headings.find(
+      (heading) =>
+        heading.depth >= 2 &&
+        heading.depth <= 4 &&
+        CRITERIA.test(heading.title),
+    ),
+  ]
+    .filter(Boolean)
+    .sort((a, b) => a.start - b.start)[0];
+  if (!opening) return null;
+  refuseUnreadList(order, opening, "acceptance criteria");
+  const { start, end } = order.block(opening);
+  const items = markdownListItems(order.source, order.tree)
+    .filter((item) => item.ordered && item.start >= start && item.start < end)
+    .map((item) => ({
+      // The number the author wrote: a list that skips one keeps its
+      // identifiers, as a judgment names them.
+      id: String(item.written),
+      // An item's text ends at its first blank line: a later paragraph or
+      // list under it is commentary, not the criterion.
+      text: item.text
+        .split(/\r?\n[ \t]*\r?\n/u, 1)[0]
+        .split(/\r?\n/u)
+        .map((line) => line.trim())
+        .join(" "),
+    }));
   // A planning pass can retain an explicitly retired item for provenance.
   // Only its dated, affirmative retirement removes it from the judgment set.
   const active = items.filter(
@@ -58,12 +92,13 @@ export function declaredCriteria(text) {
   return items.length ? active : null;
 }
 
-/** Read only the Preflight field, including its wrapped continuation lines. */
+/** Read only the Preflight field, including its wrapped continuation lines:
+ * its value up to the paragraph's end or the next field. */
 export function readPreflightSuites(orderText) {
   const field =
-    /(?:^|\n)\*\*Preflight:\*\*([^]*?)(?=\n\s*\n|\n\*\*|$)/u.exec(
-      orderText,
-    )?.[1] ?? "";
+    readWorkOrder(orderText).labels.find(
+      (label) => label.colon && label.label === "Preflight",
+    )?.value ?? "";
   return [
     ...new Set(
       [...field.matchAll(/--only\s+([a-z][a-z0-9:-]*)/gu)].map(
@@ -101,6 +136,13 @@ const changedDocuments = (root) =>
 /** The launchpad-relative ledger path. */
 export const handoffLedgerPath = (root, workOrderId) =>
   docRelative(root, "evidence", `${workOrderId}/handoff.md`);
+
+/** The launchpad-relative path of an order's standing file: where its
+ * execution stood at the executor's last stop (the steps done, the step in
+ * hand, what comes next, what is undecided). It exists only while the order
+ * is being executed, beside the ledger and never part of it. */
+export const standingFilePath = (root, workOrderId) =>
+  docRelative(root, "evidence", `${workOrderId}/standing.md`);
 
 // The gates a criterion's text names; the review form implies the plain one.
 const GATE_NAMES = [
@@ -204,6 +246,9 @@ export async function requireLiveReceiptIdentity(root, ledger) {
   return results;
 }
 
+// An authority that cannot be read is read as one with no criteria, which
+// the ledger reports and does not check. A criteria list the reader refuses
+// is not that: it is read and could not be read whole, and stands.
 const readDeclaredCriteria = (root, state) => {
   try {
     return declaredCriteria(
@@ -212,7 +257,8 @@ const readDeclaredCriteria = (root, state) => {
         "utf8",
       ),
     );
-  } catch {
+  } catch (error) {
+    if (error?.code === LIST_UNREAD) throw error;
     return null;
   }
 };

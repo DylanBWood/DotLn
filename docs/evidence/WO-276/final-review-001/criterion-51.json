@@ -1,0 +1,14 @@
+{
+  "tableReadExit": 0,
+  "controlReadExit": 0,
+  "excludedReads": [
+    {
+      "path": "docs/evidence/WO-276/part-f/rule-table.md",
+      "method": "readFileSync"
+    },
+    {
+      "path": "docs/evidence/WO-276/part-f/rule-table.md",
+      "method": "openSync"
+    }
+  ]
+}

@@ -484,6 +484,29 @@ test("WO-117 schema and decoder accept legacy status and only coded unavailable 
   }
 });
 
+test("WO-276 criterion B11: a resident with no card source reports its work orders unavailable and the console names the launcher beside the reason", () => {
+  const unbound: RuntimeStatusV1 = {
+    ...view,
+    workOrders: {
+      status: "unavailable",
+      reason: "binding-unavailable",
+      items: [],
+    },
+  };
+  assert.match(
+    renderRuntimeStatus(unbound),
+    /^Open work orders \(unavailable: binding-unavailable; start the resident with scripts\/resident\.mjs\)$/mu,
+  );
+  // Another reason is shown as it is.
+  assert.match(
+    renderRuntimeStatus({
+      ...unbound,
+      workOrders: { ...unbound.workOrders, reason: "index-invalid" },
+    }),
+    /^Open work orders \(unavailable: index-invalid\)$/mu,
+  );
+});
+
 test("resident status labels the budget as portfolio-only beside an intent outcome", () => {
   const status: RuntimeStatusV1 = {
     ...view,

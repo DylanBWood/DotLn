@@ -1,0 +1,6 @@
+{
+  "scenario": "A reviewed target change deletes an earlier cycle's record while current records stay in the instance",
+  "recordAbsentAtReviewedHead": true,
+  "changedPaths": "D\tdocs/evidence/WO-999/decisions.md\nA\treviewed.txt",
+  "exitCode": 0
+}

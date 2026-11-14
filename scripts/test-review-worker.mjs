@@ -16,7 +16,6 @@ import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  appendFileSync,
   chmodSync,
   existsSync,
   readFileSync,
@@ -561,6 +560,19 @@ export async function reviewWorkerFixtures() {
         "docs/control/local/reviews/planning-2030-01-03-batches",
       );
       assert.ok(!existsSync(join(lane, "round-1-criteria.md")));
+      // The batch that passed before it is kept, named as no record of the
+      // round, with its findings (WO-276, the attack on Part C).
+      assert.match(
+        missing.printed,
+        /; the round records no report, and the earlier batches' reports are kept at \S+\/round-1-criteria\.batch-1\.unrecorded\.md$/mu,
+      );
+      assert.match(
+        readFileSync(
+          join(lane, "round-1-criteria.batch-1.unrecorded.md"),
+          "utf8",
+        ),
+        /^Not this round's record\. This batch's report passed;[^\n]*\n\n## Findings\n/u,
+      );
       // One worker per batch, each brief under the ceiling with the round's
       // index, and one report keyed by batch.
       const { result, printed } = await review(repo, planning, {
@@ -1228,7 +1240,7 @@ export async function reviewWorkerFixtures() {
       );
       assert.match(
         refused.printed,
-        /^DOTLN_SUBAGENT_CAP_REFUSED: count 1, cap 1; docs\/control\/budgets\.json subagentCap would be exceeded\./u,
+        /^DOTLN_SUBAGENT_CAP_REFUSED: count 1, cap 1; docs\/control\/budgets\.json subagentCap, or the cap accepted for this dispatch, would be exceeded\./u,
       );
       assert.equal(
         refused.result.refused.split("\n")[0],
@@ -1592,22 +1604,559 @@ export async function reviewWorkerFixtures() {
       );
     });
 
-    await test("the transports' pins are the role text's worker pins", async () => {
-      const { TRANSPORT_DEFAULTS } = await import("./lib/worker-launch.mjs");
-      const { contributorWorkerPins } =
-        await import("../packages/skeleton/dist/src/loadouts/contributor.js");
-      for (const [transport, host] of [
-        ["claude-cli-print", "claude"],
-        ["codex-cli-exec", "codex"],
-      ])
-        assert.deepEqual(
+    await test("WO-276 criteria J1 to J4, the worker table: a name is a worker or a model and means one thing, any number of workers resolve each on its own, every refusal names what the table has, and a session's launch of each is the provider's own", async () => {
+      const {
+        PROVIDERS,
+        listWorkerRows,
+        listWorkers,
+        resolveWorker,
+        sessionLaunch,
+        showWorker,
+        workerTable,
+      } = await import("./lib/worker-launch.mjs");
+      const { KIT_MODELS, KIT_WORKERS } =
+        await import("../packages/skeleton/src/worker-models.mjs");
+      const kit = workerTable();
+      // Every model the kit lists resolves, by its name and by its exact
+      // id, to its own row; the kit's rows are the four the operator named
+      // for workers and the two the resident's judge already ran.
+      assert.deepEqual(Object.keys(KIT_MODELS), [
+        "opus",
+        "fable",
+        "sol",
+        "astra",
+        "sonnet",
+        "luna",
+      ]);
+      assert.deepEqual(Object.keys(KIT_WORKERS), [
+        "default",
+        "advanced",
+        "judge",
+        "verifier",
+      ]);
+      for (const [name, row] of Object.entries(KIT_MODELS))
+        for (const asked of [name, row.id]) {
+          const resolved = resolveWorker(kit, asked);
+          assert.deepEqual(
+            [
+              resolved.name,
+              resolved.entry,
+              resolved.provider,
+              resolved.model,
+              resolved.effort,
+              resolved.workerType,
+            ],
+            [
+              name,
+              "model",
+              row.provider,
+              { name, id: row.id, family: row.family ?? null },
+              row.effort,
+              PROVIDERS[row.provider].workerType,
+            ],
+            asked,
+          );
+        }
+      // The kit's workers: a default and an advanced choice for each
+      // provider, and the verifier at an effort of its own.
+      for (const [name, worker] of Object.entries(KIT_WORKERS))
+        for (const provider of ["claude", "codex"]) {
+          const binding = worker[provider];
+          const model = typeof binding === "string" ? binding : binding.model;
+          const resolved = resolveWorker(kit, name, { provider });
+          assert.deepEqual(
+            [resolved.entry, resolved.model.id, resolved.effort],
+            [
+              "worker",
+              KIT_MODELS[model].id,
+              typeof binding === "string"
+                ? KIT_MODELS[model].effort
+                : binding.effort,
+            ],
+            `${name} on ${provider}`,
+          );
+        }
+      // A worker bound to several providers needs one named; an effort
+      // given for one launch stands over the binding's and the model's.
+      assert.throws(
+        () => resolveWorker(kit),
+        /the worker "default" runs on claude and codex; name the provider/u,
+      );
+      assert.equal(
+        resolveWorker(kit, "advanced", { provider: "codex", effort: "low" })
+          .effort,
+        "low",
+      );
+      assert.throws(
+        () => resolveWorker(kit, "opus", { effort: "extreme" }),
+        /the effort "extreme" is not one a claude launch takes/u,
+      );
+      // Forty workers of an instance's own, several on one model, each
+      // resolve on their own, and restating the default changes no other.
+      const efforts = PROVIDERS.codex.efforts;
+      const forty = Object.fromEntries(
+        Array.from({ length: 40 }, (unused, index) => [
+          `crew-${index + 1}`,
           {
-            model: TRANSPORT_DEFAULTS[transport].model,
-            effort: TRANSPORT_DEFAULTS[transport].effort,
+            description: null,
+            bindings:
+              index % 2
+                ? { claude: { model: "fable", effort: null } }
+                : {
+                    codex: {
+                      model: "astra",
+                      effort: efforts[index % efforts.length],
+                    },
+                  },
           },
-          { ...contributorWorkerPins[host] },
-          transport,
+        ]),
+      );
+      const crew = workerTable({ named: forty });
+      const restated = workerTable({
+        named: {
+          ...forty,
+          default: {
+            description: null,
+            bindings: { claude: { model: "fable", effort: "low" } },
+          },
+        },
+      });
+      for (const [index, name] of Object.keys(forty).entries()) {
+        const resolved = resolveWorker(crew, name);
+        assert.deepEqual(
+          [resolved.provider, resolved.model.name, resolved.effort],
+          index % 2
+            ? ["claude", "fable", KIT_MODELS.fable.effort]
+            : ["codex", "astra", efforts[index % efforts.length]],
+          name,
         );
+        assert.equal(
+          resolved.source.model,
+          `dotln.config.json#workers.${name}.${resolved.provider}`,
+        );
+        assert.deepEqual(resolveWorker(restated, name), resolved, name);
+      }
+      // The restated default keeps the binding it did not state.
+      assert.deepEqual(
+        ["claude", "codex"].map((provider) => {
+          const { model, effort } = resolveWorker(restated, "default", {
+            provider,
+          });
+          return [model.name, effort];
+        }),
+        [
+          ["fable", "low"],
+          ["sol", KIT_MODELS.sol.effort],
+        ],
+      );
+      assert.equal(
+        listWorkerRows().length,
+        Object.keys(KIT_WORKERS).length + Object.keys(KIT_MODELS).length,
+      );
+      // One name, one meaning; an unknown name is answered with every
+      // name; one id is one model of a provider.
+      const row = { provider: "claude", id: "model-a", effort: "high" };
+      assert.throws(
+        () =>
+          workerTable({
+            named: {
+              fable: {
+                description: null,
+                bindings: { claude: { model: "opus", effort: null } },
+              },
+            },
+          }),
+        /the worker "fable" \(dotln\.config\.json#workers\.fable\) has the name of a model \(the kit's model list\); a name means one thing/u,
+      );
+      assert.throws(
+        () => resolveWorker(crew, "gemini"),
+        new RegExp(
+          `"gemini" is no worker or model of this instance; it has ${[...Object.keys(KIT_WORKERS), ...Object.keys(forty), ...Object.keys(KIT_MODELS)].join(", ")}`,
+          "u",
+        ),
+      );
+      assert.throws(
+        () =>
+          workerTable({
+            models: { second: { ...row, id: KIT_MODELS.opus.id } },
+          }),
+        /dotln\.models\.json#models\.second\.id gives "second" the id .*, which is the claude model "opus" already; a second effort of a model is a worker, not a model/u,
+      );
+      assert.throws(
+        () => resolveWorker(kit, "sol", { provider: "claude" }),
+        /"sol" is a codex model, and this launch is on claude; claude has opus, fable/u,
+      );
+      // A model of a provider the kit has no launcher for is listed, and
+      // refused where a launch would be resolved, naming what is missing.
+      const foreign = workerTable({
+        models: {
+          flash: { provider: "gemini", id: "flash-9", effort: "high" },
+        },
+      });
+      assert.deepEqual(
+        listWorkers(foreign).find((entry) => entry.name === "flash").runs,
+        [
+          {
+            provider: "gemini",
+            model: "flash",
+            id: "flash-9",
+            effort: "high",
+            family: null,
+            launchable: false,
+            source: "dotln.models.json#models.flash",
+          },
+        ],
+      );
+      assert.throws(
+        () => resolveWorker(foreign, "flash"),
+        /"flash" runs the gemini model flash-9, and the kit has no launcher for gemini; its launchers are claude and codex/u,
+      );
+      // A name is any word of the name's form, and `constructor` is one:
+      // it is a worker, a model's id or a provider's name like any other,
+      // and never something an object merely inherits.
+      const odd = workerTable({
+        named: {
+          constructor: {
+            description: null,
+            bindings: { claude: { model: "fable", effort: null } },
+          },
+        },
+        models: {
+          plain: { provider: "codex", id: "constructor-1", effort: "low" },
+          stray: { provider: "constructor", id: "valueof", effort: "low" },
+        },
+      });
+      assert.equal(resolveWorker(odd, "constructor").model.name, "fable");
+      assert.equal(resolveWorker(odd, "plain").model.id, "constructor-1");
+      assert.throws(
+        () => resolveWorker(odd, "stray"),
+        /the kit has no launcher for constructor/u,
+      );
+      assert.throws(
+        () =>
+          workerTable({
+            named: {
+              night: {
+                description: null,
+                bindings: { claude: { model: "constructor", effort: null } },
+              },
+            },
+          }),
+        /names the model "constructor", which is not in the model list/u,
+      );
+      assert.throws(
+        () => resolveWorker(kit, "constructor"),
+        /"constructor" is no worker or model of this instance/u,
+      );
+      // An instance's row of a kit model's name replaces that row whole:
+      // the family the kit's row stated is gone with its id.
+      const repinned = workerTable({ models: { fable: row } });
+      assert.deepEqual(resolveWorker(repinned, "fable").model, {
+        name: "fable",
+        id: "model-a",
+        family: null,
+      });
+      assert.equal(
+        sessionLaunch(repinned, resolveWorker(repinned, "fable")),
+        null,
+      );
+      // A Claude session launches the one worker definition: as it stands
+      // for the model the definition holds, with an effort where the launch
+      // differs, and by family for any other model, which the host
+      // resolves and the launch therefore does not call exact.
+      const claude = (name, effort) =>
+        sessionLaunch(
+          kit,
+          resolveWorker(kit, name, { provider: "claude", effort }),
+        );
+      assert.deepEqual(claude("default"), {
+        tool: "Agent",
+        arguments: { subagent_type: "dotln-worker" },
+        exact: true,
+      });
+      assert.deepEqual(claude("default", "low"), {
+        tool: "Agent",
+        arguments: { subagent_type: "dotln-worker", effort: "low" },
+        exact: true,
+      });
+      for (const [name, model] of Object.entries(KIT_MODELS)) {
+        if (model.provider !== "claude" || model.id === KIT_MODELS.opus.id)
+          continue;
+        const launch = claude(name);
+        assert.deepEqual(
+          [launch.tool, launch.arguments, launch.exact],
+          [
+            "Agent",
+            {
+              subagent_type: "dotln-worker",
+              model: model.family,
+              effort: model.effort,
+            },
+            false,
+          ],
+          name,
+        );
+        assert.match(launch.note, /record the model the worker reports/u);
+      }
+      // What `npm run worker -- show` prints. In a Claude session a
+      // worker bound to both providers is Claude's, the other provider's
+      // model has no session launch and the note names the kit's commands;
+      // a Codex spawn carries the worker's standing rules as its preamble.
+      const shown = await showWorker(undefined, "advanced", {
+        session: "claude",
+      });
+      assert.deepEqual(
+        [
+          shown.provider,
+          shown.model.id,
+          shown.session.arguments,
+          shown.receipt,
+        ],
+        [
+          "claude",
+          KIT_MODELS.fable.id,
+          { subagent_type: "dotln-worker", model: "fable", effort: "xhigh" },
+          "--worker-type dotln-worker",
+        ],
+      );
+      const other = await showWorker(undefined, "sol", { session: "claude" });
+      assert.equal(other.session, null);
+      assert.match(
+        other.note,
+        /this Claude session cannot launch a Codex worker itself; npm run worker -- review --host codex --model sol launches a review on it, and npm run plan -- refute --transport codex-cli-exec --model sol a refutation/u,
+      );
+      // An effort given for the launch is in both commands the note names.
+      assert.match(
+        (
+          await showWorker(undefined, "sol", {
+            session: "claude",
+            effort: "low",
+          })
+        ).note,
+        /review --host codex --model sol --effort low launches a review on it, and npm run plan -- refute --transport codex-cli-exec --model sol --effort low a refutation/u,
+      );
+      const spawned = await showWorker(undefined, "astra", {
+        provider: "codex",
+        session: "codex",
+      });
+      assert.deepEqual(
+        [
+          spawned.session.tool,
+          spawned.session.arguments,
+          spawned.session.exact,
+          spawned.receipt,
+        ],
+        [
+          "spawn_agent",
+          {
+            fork_turns: "none",
+            model: KIT_MODELS.astra.id,
+            reasoning_effort: KIT_MODELS.astra.effort,
+          },
+          true,
+          "--worker-type codex-spawn-agent",
+        ],
+      );
+      assert.match(
+        spawned.session.preamble,
+        /never start a test-runner gate in any form/u,
+      );
+      assert.match(
+        spawned.session.preamble,
+        /never reads or prints the contents of `docs\/control\/local\/`/u,
+      );
+      await assert.rejects(
+        showWorker(undefined, "default", { session: null }),
+        /the worker "default" runs on claude and codex; name the provider/u,
+      );
+      // A re-pinned model with no family has no session launch on its own
+      // provider either, and the note says why.
+      const bare = orderRepository(parent);
+      write(
+        bare,
+        "dotln.models.json",
+        prettyJson({ schemaVersion: 1, models: { fable: row } }),
+      );
+      const familyless = await showWorker(bare, "fable", { session: "claude" });
+      assert.equal(familyless.session, null);
+      assert.match(
+        familyless.note,
+        /a Claude session's own launch takes a model family, and the model fable states none; npm run worker -- review --host claude --model fable/u,
+      );
+    });
+
+    await test("WO-276 criteria J2 and J4: every launcher takes what a name runs from the one table, the instance's workers and models over the kit's; the review helper's dry run carries them; and a launch that fails names where the instance wrote its model", async () => {
+      const { TRANSPORT_DEFAULTS, resolveLaunch, transportLaunch } =
+        await import("./lib/worker-launch.mjs");
+      const { KIT_MODELS } =
+        await import("../packages/skeleton/src/worker-models.mjs");
+      // With nothing declared each transport runs the kit's default
+      // worker for its provider, and no place of the instance's named it.
+      for (const [transport, provider, model] of [
+        ["claude-cli-print", "claude", KIT_MODELS.opus],
+        ["codex-cli-exec", "codex", KIT_MODELS.sol],
+      ]) {
+        assert.deepEqual(transportLaunch(undefined, transport), {
+          model: model.id,
+          effort: model.effort,
+          modelKey: null,
+        });
+        assert.deepEqual(TRANSPORT_DEFAULTS[transport], {
+          host: provider,
+          harness: provider === "claude" ? "claude-code" : "codex-cli",
+        });
+      }
+      // A transport's launch names a worker or a model as every other
+      // launch does: the name is resolved for the transport's provider, an
+      // effort given for the launch stands over the table's, and another
+      // provider's model is refused. The fixture double runs the fixture
+      // model, and with no transport what is stated is recorded as stated.
+      assert.deepEqual(
+        transportLaunch(undefined, "claude-cli-print", "advanced"),
+        {
+          model: KIT_MODELS.fable.id,
+          effort: KIT_MODELS.fable.effort,
+          modelKey: null,
+        },
+      );
+      assert.deepEqual(
+        transportLaunch(undefined, "codex-cli-exec", "advanced", "low"),
+        { model: KIT_MODELS.astra.id, effort: "low", modelKey: null },
+      );
+      assert.throws(
+        () => transportLaunch(undefined, "claude-cli-print", "sol"),
+        /--model sol: "sol" is a codex model, and this launch is on claude/u,
+      );
+      assert.throws(
+        () => transportLaunch(undefined, "claude-cli-print", "gpt-6.1-sol"),
+        /"sol" is a codex model, and this launch is on claude/u,
+      );
+      assert.deepEqual(transportLaunch(undefined, "fake"), {
+        model: "fixture",
+        effort: "max",
+        modelKey: null,
+      });
+      assert.deepEqual(transportLaunch(undefined, null, "as-stated"), {
+        model: "as-stated",
+        effort: "unknown",
+        modelKey: null,
+      });
+      assert.throws(
+        () => transportLaunch(undefined, "carrier-pigeon"),
+        /unknown worker transport carrier-pigeon/u,
+      );
+      // An instance with a model of its own, a default that runs it on
+      // Claude and the kit's model at another effort on Codex, and a worker
+      // of its own.
+      const repo = orderRepository(parent);
+      write(
+        repo,
+        "dotln.config.json",
+        prettyJson({
+          version: 1,
+          workers: {
+            default: {
+              claude: "haiku",
+              codex: { model: "sol", effort: "high" },
+            },
+            night: { codex: { model: "astra", effort: "medium" } },
+          },
+        }),
+      );
+      write(
+        repo,
+        "dotln.models.json",
+        prettyJson({
+          schemaVersion: 1,
+          models: {
+            haiku: { provider: "claude", id: "model-a", effort: "high" },
+          },
+        }),
+      );
+      assert.deepEqual(transportLaunch(repo, "claude-cli-print"), {
+        model: "model-a",
+        effort: "high",
+        modelKey:
+          "dotln.models.json#models.haiku and dotln.config.json#workers.default.claude",
+      });
+      assert.deepEqual(transportLaunch(repo, "codex-cli-exec"), {
+        model: KIT_MODELS.sol.id,
+        effort: "high",
+        modelKey: "dotln.config.json#workers.default.codex",
+      });
+      assert.deepEqual(transportLaunch(repo, "codex-cli-exec", "night"), {
+        model: KIT_MODELS.astra.id,
+        effort: "medium",
+        modelKey: "dotln.config.json#workers.night.codex",
+      });
+      const night = resolveLaunch(repo, "night");
+      assert.deepEqual(
+        [night.name, night.host, night.model, night.effort, night.selection],
+        ["night", "codex", KIT_MODELS.astra.id, "medium", "model-flag"],
+      );
+      // A model asked for by its exact id answers to its name, and the
+      // kit's model the instance did not touch names no place of its own.
+      assert.equal(resolveLaunch(repo, "model-a").name, "haiku");
+      assert.equal(resolveLaunch(repo, "fable").modelKey, null);
+      // The review helper's dry run prints the launch it would make.
+      const args = ["--kind", "criteria", "--host", "claude"];
+      const dry = (await review(repo, [...args, "--dry-run"], {})).result;
+      const flag = (name) => dry.argv[dry.argv.indexOf(name) + 1];
+      assert.deepEqual(
+        [flag("--model"), flag("--effort")],
+        ["model-a", "high"],
+      );
+      const codexDry = async (...more) =>
+        (
+          await review(
+            repo,
+            ["--kind", "criteria", "--host", "codex", ...more, "--dry-run"],
+            {},
+          )
+        ).result;
+      const codex = await codexDry();
+      assert.deepEqual(codex.option, {
+        name: "default",
+        selection: "host-default",
+      });
+      assert.ok(
+        codex.argv.includes('model_reasoning_effort="high"'),
+        codex.argv.join(" "),
+      );
+      const named = await codexDry("--model", "night");
+      assert.deepEqual(named.option, {
+        name: "night",
+        selection: "model-flag",
+      });
+      assert.ok(
+        named.argv.includes('model_reasoning_effort="medium"'),
+        named.argv.join(" "),
+      );
+      // An effort given for the one launch stands over the worker's.
+      assert.ok(
+        (await codexDry("--model", "night", "--effort", "low")).argv.includes(
+          'model_reasoning_effort="low"',
+        ),
+      );
+      await assert.rejects(
+        codexDry("--model", "night", "--effort", "extreme"),
+        /--model night: the effort "extreme" is not one a codex launch takes/u,
+      );
+      // A launch that fails, here the fixture launcher's failing double,
+      // says where the instance wrote its model; one whose model the kit's
+      // own list supplied says nothing of the instance's files.
+      const failing = { DOTLN_WORKER_FIXTURE: join(parent, "absent.json") };
+      assert.match(
+        (await review(repo, args, failing)).printed,
+        /returned no report \(.* The model model-a came from dotln\.models\.json#models\.haiku and dotln\.config\.json#workers\.default\.claude; a model the host does not offer is corrected there\.\)/u,
+      );
+      const bare = orderRepository(parent);
+      const unconfigured = await review(bare, args, failing);
+      assert.match(unconfigured.printed, /returned no report \(/u);
+      assert.ok(
+        !/dotln\.(?:config|models)\.json/u.test(unconfigured.printed),
+        unconfigured.printed,
+      );
     });
 
     await test("a long transcript costs a bounded tail, never the run, and Codex's final message is read from its own file", async () => {
@@ -1730,6 +2279,79 @@ export async function reviewWorkerFixtures() {
           assert.equal(printed.measured.brief, printed.brief.length);
           assert.equal(typeof printed.measured.ceiling, "number");
         }
+    });
+
+    await test("a launch that names a part tells its worker which part's criteria are due and that the others are not, in every kind's brief, and refuses a part that is no capital letter or belongs to a planning subject (WO-276)", async () => {
+      const repo = orderRepository(parent);
+      const since = runGit(repo, ["rev-parse", "HEAD^{tree}"]);
+      const brief = async (kind, extra) =>
+        JSON.parse(
+          (
+            await review(
+              repo,
+              [
+                "--kind",
+                kind,
+                "--host",
+                "codex",
+                ...(kind === "combined" ? ["--since", since] : []),
+                ...extra,
+                "--dry-run",
+              ],
+              {},
+            )
+          ).printed,
+        ).brief;
+      const sentence =
+        "This launch reviews Part C of an order whose execution plan is divided into parts. Judge the change against the order's design frame (the Design items before its first part) and Part C's own design, steps, acceptance criteria, Preflight line, known issues and non-goals. The other parts' criteria are not due: a criterion of another part that the change does not meet is no finding.";
+      for (const kind of ["criteria", "design", "consistency", "combined"]) {
+        const named = await brief(kind, ["--part", "C"]);
+        const round = named.split("\n## Round\n")[1].split("\n## Change\n")[0];
+        assert.ok(round.includes(sentence), `${kind} names the part`);
+        // A launch that names no part carries the same brief without it.
+        const whole = await brief(kind, []);
+        assert.ok(!whole.includes("This launch reviews Part"), kind);
+        assert.equal(named.replace(`\n\n${sentence}`, ""), whole, kind);
+      }
+      for (const [part, refusal] of [
+        ["c", /--part names a part by its capital letter/u],
+        ["AB", /--part names a part by its capital letter/u],
+        ["3", /--part names a part by its capital letter/u],
+        ["C-A", /--part names a part by its capital letter/u],
+        ["B-B", /--part names a part by its capital letter/u],
+      ])
+        await assert.rejects(brief("criteria", ["--part", part]), refusal);
+      // A review of the whole change while the order is still being executed
+      // names the parts done so far: the later parts' criteria are not due.
+      const ranged = await brief("design", ["--part", "A-C"]);
+      assert.ok(
+        ranged.includes(
+          "This launch reviews Parts A to C of an order whose execution plan is divided into parts and is still being executed, part by part.",
+        ),
+      );
+      assert.ok(
+        ranged.includes(
+          "The later parts are not built yet and their criteria are not due",
+        ),
+      );
+      await assert.rejects(
+        review(
+          repo,
+          [
+            "--kind",
+            "criteria",
+            "--host",
+            "codex",
+            "--subject",
+            "planning",
+            "--part",
+            "C",
+            "--dry-run",
+          ],
+          {},
+        ),
+        /--part names a part of an order, never of a planning subject/u,
+      );
     });
 
     await test("a dry run prints the Codex argv with its tool features on and the Claude argv with its read tools", async () => {
@@ -1885,7 +2507,7 @@ export async function reviewWorkerFixtures() {
       assert.equal(refused.result.report, null);
       assert.match(
         refused.printed,
-        /^review: consistency round 1: the worker's report is refused, since a consistency report carries a `Traced consumers` table \(changed contract, consumer, command, result\), and this report has none; it returned 2 findings; 0 h 0 min; nothing written to docs\/control\/local\/reviews\/WO-901\n$/u,
+        /^review: consistency round 1: the worker's report is refused, since a consistency report carries a `Traced consumers` table \(changed contract, consumer, command, result\), and this report has none; it returned 2 findings; 0 h 0 min; the round records no report, and the refused report is kept at docs\/control\/local\/reviews\/WO-901\/round-1-consistency\.refused\.md\n$/u,
       );
       assert.ok(
         !existsSync(
@@ -2051,7 +2673,7 @@ export async function reviewWorkerFixtures() {
       });
       assert.match(
         readFileSync(join(other, recorded.report), "utf8"),
-        /model `gpt-6-astra` at effort `max`, as the recorder attests; option astra/u,
+        /model `gpt-6-astra` at effort `max`, as the recorder attests; name `astra`, named with --model on record/u,
       );
       await assert.rejects(
         recordAgentReview(
@@ -2068,7 +2690,7 @@ export async function reviewWorkerFixtures() {
           ],
           { write: () => {} },
         ),
-        /--model astra is a Codex option, and --host names claude/u,
+        /--model astra: "astra" is a codex model, and this launch is on claude; claude has opus, fable, sonnet; usage: npm run worker -- record/u,
       );
     });
 
@@ -3025,6 +3647,419 @@ export async function reviewWorkerFixtures() {
       );
     });
 
+    await test("WO-276 criterion C1: every kind's round-one brief states what blocks and asks for the writer, a recheck's brief states what blocks beside its own rule, and a refused criteria report is kept under a name that marks it refused while the round records none", async () => {
+      const repo = orderRepository(parent);
+      const blocking =
+        "A finding blocks when it names the acceptance criterion it fails and an input the kit's writers or an author's ordinary text produce, or a leak (a copy, a broken link or a wrong pass admitted), or behavior `main` had with the probe that shows it; anything else is reported as a recorded finding.";
+      const asks =
+        "For each finding, say which writer produces the input it names, or that you found none.";
+      const round = (brief) =>
+        brief.split("\n## Round\n")[1].split("\n## Change\n")[0];
+      const dry = async (args) =>
+        JSON.parse(
+          (await review(repo, [...args, "--host", "claude", "--dry-run"], {}))
+            .printed,
+        ).brief;
+      for (const kind of ["criteria", "design", "consistency"]) {
+        const text = round(await dry(["--kind", kind]));
+        assert.ok(text.includes(blocking), `${kind} states what blocks`);
+        assert.ok(text.includes(asks), `${kind} asks for the writer`);
+      }
+      // A combined round 1 is round one of a combined or a paired ladder.
+      const combined = round(await dry(["--kind", "combined", "--round", "1"]));
+      assert.ok(
+        combined.includes(
+          "This is round 1: one combined review carrying all three briefs over the whole change against the base below (the merge base with main).",
+        ),
+        combined,
+      );
+      assert.ok(combined.includes(blocking) && combined.includes(asks));
+      // A recheck keeps its own rule and states what blocks beside it.
+      const first = await review(
+        repo,
+        ["--kind", "criteria", "--host", "codex"],
+        {
+          DOTLN_WORKER_FIXTURE: canned(parent, "c1-round-one", roundOne),
+        },
+      );
+      const recheck = round(
+        await dry([
+          "--kind",
+          "criteria",
+          "--round",
+          "2",
+          "--recheck",
+          first.result.report,
+        ]),
+      );
+      assert.ok(recheck.includes(blocking), recheck);
+      assert.ok(recheck.includes("A new finding is admitted only when"));
+      assert.ok(!recheck.includes(asks));
+
+      // A criteria report whose Items table holds a disposition outside the
+      // three admitted is refused, kept under a name that says so, and the
+      // round has no recorded report.
+      const planning = planningRepository(
+        parent,
+        "planning/2030-01-07-refused",
+      );
+      const capturePath = join(parent, "c1-capture.md");
+      write(
+        parent,
+        "c1-capture.md",
+        "# Dispatch\n\n1. Key the lane by branch.\n",
+      );
+      const bad = [
+        "Read the pass.",
+        "",
+        "## Items",
+        "",
+        "| Item | Location in the subject | Disposition |",
+        "| --- | --- | --- |",
+        "| 1 | docs/planning/fixture-pass.md | perhaps later |",
+        "",
+      ].join("\n");
+      const args = [
+        "--kind",
+        "criteria",
+        "--subject",
+        "planning",
+        "--capture",
+        capturePath,
+      ];
+      const refused = await review(planning, [...args, "--host", "claude"], {
+        DOTLN_WORKER_FIXTURE: canned(parent, "c1-bad-items", {
+          ...roundOne,
+          report: bad,
+        }),
+      });
+      assert.equal(refused.result.report, null);
+      const kept = /the refused report is kept at (\S+)\n/u.exec(
+        refused.printed,
+      )?.[1];
+      assert.match(
+        kept ?? refused.printed,
+        /\/round-1-criteria\.refused\.md$/u,
+      );
+      const keptText = readFileSync(join(planning, kept), "utf8");
+      assert.match(
+        keptText,
+        /^Not this round's record\. The helper refused this report, since .*disposition is one of acted on, reviewed, missing/u,
+      );
+      assert.ok(keptText.includes("perhaps later"));
+      const laneOf = (path) => join(planning, path, "..");
+      for (const name of ["round-1-criteria.md", "round-1-criteria.json"])
+        assert.ok(!existsSync(join(laneOf(kept), name)), name);
+      // The record route keeps a refused report the same way, beside the
+      // first, and the round still has none.
+      write(parent, "c1-bad-record.txt", bad);
+      await assert.rejects(
+        recordAgentReview(
+          planning,
+          [...args, "--from", join(parent, "c1-bad-record.txt")],
+          { write: () => {} },
+        ),
+        /not recorded: .*disposition is one of acted on, reviewed, missing; 1 row names another; the round records no report, and the refused report is kept at \S+\/round-1-criteria\.refused-2\.md$/u,
+      );
+      assert.ok(
+        existsSync(join(laneOf(kept), "round-1-criteria.refused-2.md")),
+      );
+      assert.ok(!existsSync(join(laneOf(kept), "round-1-criteria.json")));
+    });
+
+    await test("WO-276 criterion C9: a split round owes its Items table once, in the merged report, and a refused merged report is kept with each batch's report under names that say which is which", async () => {
+      const repo = planningRepository(parent, "planning/2030-01-08-split");
+      const filler = (id) =>
+        `# ${id} — Fixture order\n\n${`${id} carries a long paragraph of fixture prose for the review. `.repeat(2400)}\n`;
+      for (const id of ["WO-903", "WO-904", "WO-905"])
+        write(repo, `docs/work-orders/${id}-fixture-order.md`, filler(id));
+      commit(repo, "three large orders");
+      const capture = join(parent, "c9-dispatch.md");
+      write(
+        parent,
+        "c9-dispatch.md",
+        "planning: fixture\n\n1. first item\n2. second item\n",
+      );
+      const planning = [
+        "--kind",
+        "criteria",
+        "--host",
+        "codex",
+        "--subject",
+        "planning",
+        "--capture",
+        capture,
+      ];
+      const items = (rows) =>
+        `Read the orders against the dispatch.\n\n## Items\n\n| Item | Location in the subject | Disposition |\n| --- | --- | --- |\n${rows.map((row) => `| ${row} |`).join("\n")}\n`;
+      const withTable = canned(parent, "c9-batch-one", {
+        ...roundOne,
+        report: items([
+          "1 | WO-903 criterion 1 | acted on",
+          "2 | WO-905 criterion 1 | reviewed",
+        ]),
+      });
+      const without = canned(parent, "c9-batch-two", {
+        ...roundOne,
+        findings: [roundOne.findings[1]],
+        report: "Read WO-905 against the dispatch; nothing further.",
+      });
+      // The second batch returns no table: the merged report carries the
+      // first batch's, and the round is recorded.
+      const merged = await review(repo, planning, {
+        DOTLN_WORKER_FIXTURE: `${withTable},${without}`,
+      });
+      assert.ok(merged.result.report, merged.printed);
+      assert.ok(
+        readFileSync(join(repo, merged.result.report), "utf8").includes(
+          "| 2 | WO-905 criterion 1 | reviewed |",
+        ),
+      );
+      // No batch returns the table: the merged report is refused, and the
+      // lane holds the first batch's report and the refused one.
+      const bare = canned(parent, "c9-batch-bare", {
+        ...roundOne,
+        report: "Read the first orders against the dispatch.",
+      });
+      const refused = await review(
+        repo,
+        [...planning, "--round", "2", "--recheck", merged.result.report],
+        {
+          DOTLN_WORKER_FIXTURE: `${bare},${without}`,
+        },
+      );
+      assert.equal(refused.result.report, null);
+      assert.match(
+        refused.printed,
+        /^review: criteria round 2: the merged report is refused, since .*`## Items` table.*; the round records no report, and the refused report is kept at (\S+\/round-2-criteria\.merged\.refused\.md) with the batches' reports at (\S+\/round-2-criteria\.batch-1\.unrecorded\.md), (\S+\/round-2-criteria\.batch-2\.unrecorded\.md)\n/u,
+      );
+      const lane = join(
+        repo,
+        "docs/control/local/reviews/planning-2030-01-08-split",
+      );
+      assert.match(
+        readFileSync(
+          join(lane, "round-2-criteria.batch-1.unrecorded.md"),
+          "utf8",
+        ),
+        // The kept file is the batch's one copy: its findings, rechecks and
+        // files read as a recorded report lists them, then its text.
+        /^Not this round's record\. This batch's report passed;[^\n]*\n\n## Findings\n\n(?:- \*\*F\d+\*\* \([^\n]+\n)+[\s\S]*\n## Files read\n[\s\S]*\n## The worker's report\n\nRead the first orders against the dispatch\.\n$/u,
+      );
+      assert.match(
+        readFileSync(join(lane, "round-2-criteria.merged.refused.md"), "utf8"),
+        /^Not this round's record\. The helper refused this report, since /u,
+      );
+      for (const name of ["round-2-criteria.md", "round-2-criteria.json"])
+        assert.ok(!existsSync(join(lane, name)), name);
+    });
+
+    await test("WO-276 criterion C6: the failures report counts each paired order's rounds by class and by who found each finding, with its first verification and the sums, and an order that declares no paired round contributes nothing", async () => {
+      const { pairedRoundReport } = await import("./lib/plan-failures.mjs");
+      const repo = realpathSync(createFixtureRoot(join(parent, "paired-")));
+      const order = (id, ladder) =>
+        `# ${id} — Fixture order\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n${ladder ? `**Review ladder:** ${ladder}\n` : ""}\n**Objective:** fixture.\n`;
+      const finding = (id, finders, klass, disposition = "fixed") => ({
+        id,
+        finders,
+        class: klass,
+        disposition,
+      });
+      const decision = (id, number, extra = {}) =>
+        `## ${id}-D00${number} — Fixture decision ${number}\n\n\`\`\`json\n${JSON.stringify(
+          {
+            id: `${id}-D00${number}`,
+            date: "2030-01-09",
+            dispatch: "resume: next",
+            decision: "A fixture decision.",
+            evidence: ["fixture"],
+            rejected: [],
+            reopenWhen: "never in this fixture",
+            ...extra,
+          },
+          null,
+          2,
+        )}\n\`\`\`\n`;
+      const decisions = (id, blocks) =>
+        write(
+          repo,
+          `docs/evidence/${id}/decisions.md`,
+          `# ${id} decisions\n\n${blocks.join("\n")}`,
+        );
+      write(
+        repo,
+        "docs/work-orders/WO-911-first.md",
+        order("WO-911", "paired"),
+      );
+      // A derived order is an order: the report enumerates what every
+      // reader of the orders does (rolling review 10).
+      write(
+        repo,
+        "docs/work-orders/derived/WO-912-second.md",
+        order("WO-912", "paired"),
+      );
+      write(repo, "docs/work-orders/WO-913-full.md", order("WO-913", "full"));
+      write(repo, "docs/work-orders/WO-914-silent.md", order("WO-914"));
+      decisions("WO-911", [
+        decision("WO-911", 1),
+        decision("WO-911", 2, {
+          roundFindings: [
+            finding("F1", ["criteria", "combined"], "criterion"),
+            finding("F2", ["combined"], "criterion"),
+            finding("F3", ["design"], "lesser", "recorded"),
+            finding("F4", ["consistency", "design"], "improvement", "recorded"),
+          ],
+        }),
+        decision("WO-911", 3, {
+          roundFindings: [finding("G1", ["combined"], "none", "recorded")],
+        }),
+      ]);
+      decisions("WO-912", [
+        decision("WO-912", 1, {
+          roundFindings: [
+            finding("F1", ["criteria"], "criterion"),
+            finding("F2", ["criteria", "design", "combined"], "lesser"),
+          ],
+        }),
+      ]);
+      // An order that declares the full ladder is not counted, whatever its
+      // decisions hold.
+      decisions("WO-913", [
+        decision("WO-913", 1, {
+          roundFindings: [finding("F1", ["combined"], "criterion")],
+        }),
+      ]);
+      const report = pairedRoundReport(repo, {
+        facts: [
+          { fact: "first-verification", order: "WO-911", failed: true },
+          { fact: "first-verification", order: "WO-913", failed: false },
+        ],
+      });
+      const counts = (rows) =>
+        Object.fromEntries(
+          ["criterion", "lesser", "improvement", "none"].map((name, at) => [
+            name,
+            {
+              combinedOnly: rows[at][0],
+              kindsOnly: rows[at][1],
+              both: rows[at][2],
+            },
+          ]),
+        );
+      assert.deepEqual(
+        report.orders.map(
+          ({ workOrder, firstVerification, rounds, counts }) => ({
+            workOrder,
+            firstVerification,
+            rounds,
+            counts,
+          }),
+        ),
+        [
+          {
+            workOrder: "WO-911",
+            firstVerification: "fail",
+            rounds: 2,
+            counts: counts([
+              [1, 0, 1],
+              [0, 1, 0],
+              [0, 1, 0],
+              [1, 0, 0],
+            ]),
+          },
+          {
+            workOrder: "WO-912",
+            firstVerification: "none",
+            rounds: 1,
+            counts: counts([
+              [0, 1, 0],
+              [0, 0, 1],
+              [0, 0, 0],
+              [0, 0, 0],
+            ]),
+          },
+        ],
+      );
+      assert.deepEqual(
+        report.orders[0].perRound.map(({ decision, findings }) => [
+          decision,
+          findings,
+        ]),
+        [
+          ["WO-911-D002", 4],
+          ["WO-911-D003", 1],
+        ],
+      );
+      assert.deepEqual(report.sums, {
+        orders: 2,
+        rounds: 3,
+        counts: counts([
+          [1, 1, 1],
+          [0, 1, 1],
+          [0, 1, 0],
+          [1, 0, 0],
+        ]),
+        firstVerification: { pass: 0, fail: 1, none: 1 },
+      });
+      // An entry the shape check refuses is not counted (WO-276, the attack
+      // on Part C): an unknown finder, a repeated identifier, a field of no
+      // finding.
+      const { roundFindingCounts } = await import("./lib/round-findings.mjs");
+      assert.deepEqual(
+        roundFindingCounts([
+          finding("F1", ["combined"], "criterion"),
+          finding("F1", ["combined"], "criterion"),
+          finding("F2", ["reviewer"], "lesser"),
+          { ...finding("F3", ["design"], "none"), note: "extra" },
+          finding("F4", ["design", "design"], "none"),
+          finding("F5", ["design"], "none", "maybe"),
+        ]),
+        counts([
+          [1, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0],
+        ]),
+      );
+      // The page is bounded, and every later order declares a paired ladder:
+      // with forty of them the page still fits, holds the sums over all and
+      // a line for each of the latest eight, and names where the rest are.
+      for (let number = 20; number < 60; number++) {
+        const id = `WO-9${number}`;
+        write(repo, `docs/work-orders/${id}-paired.md`, order(id, "paired"));
+        decisions(id, [
+          decision(id, 1, {
+            roundFindings: [
+              finding("F1", ["criteria", "combined"], "criterion"),
+            ],
+          }),
+        ]);
+      }
+      write(repo, ".gitignore", "docs/control/local/\n");
+      git(repo, ["init", "--quiet", "-b", "main"]);
+      for (const [key, value] of [
+        ["user.email", "fixture@example.invalid"],
+        ["user.name", "Fixture"],
+        ["commit.gpgsign", "false"],
+      ])
+        git(repo, ["config", key, value]);
+      commit(repo, "paired orders");
+      const { planningFailures } = await import("./lib/plan-failures.mjs");
+      const page = planningFailures(repo);
+      assert.ok(Buffer.byteLength(JSON.stringify(page, null, 2)) <= 8192);
+      assert.equal(page.pairedRounds.sums.orders, 42);
+      assert.equal(page.pairedRounds.ordersNotShown, 34);
+      assert.deepEqual(
+        page.pairedRounds.orders.map((line) => line.slice(0, 6)),
+        [52, 53, 54, 55, 56, 57, 58, 59].map((number) => `WO-9${number}`),
+      );
+      assert.equal(
+        page.pairedRounds.orders.at(-1),
+        "WO-959: first verification none; rounds 1; criterion 0/0/1; lesser 0/0/0; improvement 0/0/0; none 0/0/0",
+      );
+      assert.match(page.pairedRounds.every, /failures --export/u);
+    });
+
     await test("a registered target's order is reviewed on the target's base and candidate, read-only in the target, counted once and reported in the launchpad's lane", async () => {
       const launchpad = orderRepository(parent);
       const target = realpathSync(createFixtureRoot(join(parent, "target-")));
@@ -3199,7 +4234,9 @@ export async function reviewWorkerFixtures() {
       );
     });
 
-    await test("each launch runs one of the operator's four options: the host's default, the one --model names or the dispatch line's, and a cross-host option is refused naming the host's", async () => {
+    await test("each launch runs what its name runs in the worker table: the default worker for its host, or the worker or model --model names, and another provider's model is refused naming the host's own", async () => {
+      const { KIT_MODELS, KIT_WORKERS } =
+        await import("../packages/skeleton/src/worker-models.mjs");
       const repo = planningRepository(parent, "planning/2030-01-05-models");
       const launch = async (args, env = {}) => {
         const dry = JSON.parse(
@@ -3227,68 +4264,81 @@ export async function reviewWorkerFixtures() {
           option: dry.option,
         };
       };
+      const codexEffort = (model) => `model_reasoning_effort="${model.effort}"`;
       assert.deepEqual(await launch(["--host", "codex"]), {
-        model: "gpt-6.1-sol",
-        effort: 'model_reasoning_effort="max"',
-        option: { name: "sol", selection: "host-default" },
+        model: KIT_MODELS.sol.id,
+        effort: codexEffort(KIT_MODELS.sol),
+        option: { name: "default", selection: "host-default" },
       });
       assert.deepEqual(await launch(["--host", "codex", "--model", "astra"]), {
-        model: "gpt-6-astra",
-        effort: 'model_reasoning_effort="max"',
+        model: KIT_MODELS.astra.id,
+        effort: codexEffort(KIT_MODELS.astra),
         option: { name: "astra", selection: "model-flag" },
       });
       assert.deepEqual(await launch(["--host", "claude"]), {
-        model: "claude-opus-5-5",
-        effort: "xhigh",
-        option: { name: "opus", selection: "host-default" },
+        model: KIT_MODELS.opus.id,
+        effort: KIT_MODELS.opus.effort,
+        option: { name: "default", selection: "host-default" },
       });
-      assert.deepEqual(await launch(["--host", "claude", "--model", "fable"]), {
-        model: "claude-fable-5-1",
-        effort: "xhigh",
-        option: { name: "fable", selection: "model-flag" },
-      });
+      // A worker's name and a model's are named the same way, and the
+      // host given says which of a worker's bindings runs.
+      assert.deepEqual(
+        await launch(["--host", "claude", "--model", "advanced"]),
+        {
+          model: KIT_MODELS.fable.id,
+          effort: KIT_MODELS.fable.effort,
+          option: { name: "advanced", selection: "model-flag" },
+        },
+      );
+      assert.deepEqual(
+        await launch(["--host", "codex", "--model", "advanced"]),
+        {
+          model: KIT_MODELS.astra.id,
+          effort: codexEffort(KIT_MODELS.astra),
+          option: { name: "advanced", selection: "model-flag" },
+        },
+      );
+      assert.deepEqual(
+        await launch(["--host", "claude", "--model", KIT_MODELS.fable.id]),
+        {
+          model: KIT_MODELS.fable.id,
+          effort: KIT_MODELS.fable.effort,
+          option: { name: "fable", selection: "model-flag" },
+        },
+      );
       await assert.rejects(
         launch(["--host", "codex", "--model", "fable"]),
-        /--model fable is a Claude option; a Codex launch takes sol or astra/u,
+        /--model fable: "fable" is a claude model, and this launch is on codex; codex has sol, astra/u,
       );
       await assert.rejects(
         launch(["--host", "claude", "--model", "astra"]),
-        /--model astra is a Codex option; a Claude launch takes opus or fable/u,
+        /--model astra: "astra" is a codex model, and this launch is on claude; claude has opus, fable/u,
       );
       await assert.rejects(
         launch(["--host", "claude", "--model", "gpt-5"]),
-        /--model gpt-5 is not one of the operator's four worker options: opus \(claude-opus-5-5 at xhigh\), fable \(claude-fable-5-1 at xhigh\), sol \(gpt-6.1-sol at max\), astra \(gpt-6-astra at max\)/u,
+        new RegExp(
+          `--model gpt-5: "gpt-5" is no worker or model of this instance; it has ${[...Object.keys(KIT_WORKERS), ...Object.keys(KIT_MODELS)].join(", ")}`,
+          "u",
+        ),
       );
-      // The session's latest dispatch line selects its host's non-default
-      // when no --model is named, and one that names none returns to the
-      // defaults; a named --model always wins.
+      // A dispatch line selects nothing: a journal row an earlier kit
+      // wrote for one is not read, and a launch that names nothing runs
+      // the default.
       const session = "fixture-dispatch-session";
       const journal = `docs/control/local/harness/${sha256(session)}.jsonl`;
-      const selected = (options) =>
-        `${JSON.stringify({ typedEvent: "WorkerOptionsSelected", options, source: "claude-prompt-hook" })}\n`;
-      write(repo, journal, selected({ codex: "astra" }));
-      const env = { CLAUDE_CODE_SESSION_ID: session };
-      assert.deepEqual((await launch(["--host", "codex"], env)).option, {
-        name: "astra",
-        selection: "dispatch-word",
-      });
-      assert.equal(
-        (await launch(["--host", "codex"], env)).model,
-        "gpt-6-astra",
+      write(
+        repo,
+        journal,
+        `${JSON.stringify({ typedEvent: "WorkerOptionsSelected", options: { codex: "astra" }, source: "claude-prompt-hook" })}\n`,
       );
-      assert.equal(
-        (await launch(["--host", "claude"], env)).model,
-        "claude-opus-5-5",
+      assert.deepEqual(
+        await launch(["--host", "codex"], { CLAUDE_CODE_SESSION_ID: session }),
+        {
+          model: KIT_MODELS.sol.id,
+          effort: codexEffort(KIT_MODELS.sol),
+          option: { name: "default", selection: "host-default" },
+        },
       );
-      assert.equal(
-        (await launch(["--host", "codex", "--model", "sol"], env)).model,
-        "gpt-6.1-sol",
-      );
-      appendFileSync(join(repo, journal), selected({}));
-      assert.deepEqual((await launch(["--host", "codex"], env)).option, {
-        name: "sol",
-        selection: "host-default",
-      });
     });
 
     await test("record reads the tree a structured report's field names, ignores a tree line quoted later, and records the body whose table passed", async () => {
@@ -3402,6 +4452,72 @@ export async function reviewWorkerFixtures() {
       assert.match(
         reroll.printed,
         /DotLn advisory: this fresh round 1 reviews tree [0-9a-f]{40}, which docs\/control\/local\/reviews\/WO-901\/round-3-combined\.json already reviewed; nothing in it is newer than that review\./u,
+      );
+    });
+
+    await test("WO-276 (the attack on Part C): a combined worker's round 2 over its own round 1 is a recheck of the whole change and never the last round, and another kind's round 1 in one ladder over one tree is no re-roll", async () => {
+      const repo = orderRepository(parent);
+      const env = {
+        DOTLN_WORKER_FIXTURE: canned(parent, "combined-recheck", roundOne),
+      };
+      const recordOf = (launch) =>
+        JSON.parse(readFileSync(join(repo, launch.result.record), "utf8"));
+      const one = await review(
+        repo,
+        ["--kind", "combined", "--host", "codex", "--round", "1"],
+        env,
+      );
+      const first = recordOf(one);
+      const two = await review(
+        repo,
+        [
+          "--kind",
+          "combined",
+          "--host",
+          "codex",
+          "--round",
+          "2",
+          "--recheck",
+          one.result.report,
+        ],
+        env,
+      );
+      const second = recordOf(two);
+      assert.match(
+        second.brief,
+        /This is round 2, a recheck: first confirm or refute the fixes of the earlier findings listed below on the current tree, then review the whole current change against the base below again under the three briefs you carry\./u,
+      );
+      assert.doesNotMatch(second.brief, /This is the last round/u);
+      // The whole change again, against the base round 1 read it from, with
+      // the tree round 1 reviewed named beside it.
+      assert.equal(second.since, first.since);
+      assert.equal(second.priorReviewedTree, first.reviewedTree);
+      // A paired round's blind launches: each kind's round 1 in the ladder
+      // one base opens, over one tree. The second is no re-roll of the first.
+      const blind = (kind) =>
+        review(
+          repo,
+          [
+            "--kind",
+            kind,
+            "--host",
+            "codex",
+            "--round",
+            "1",
+            "--since",
+            first.since,
+          ],
+          env,
+        );
+      const criteria = await blind("criteria");
+      const design = await blind("design");
+      assert.equal(
+        recordOf(design).reviewedTree,
+        recordOf(criteria).reviewedTree,
+      );
+      assert.doesNotMatch(
+        design.printed,
+        /DotLn advisory: this fresh round 1/u,
       );
     });
 

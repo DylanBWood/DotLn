@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-10T18:15:50.532Z",
+  "harness": "claude-code",
+  "version": "2.1.322 (Claude Code)",
+  "actor": {
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "exitCode": 0,
+  "timedOut": false,
+  "tools": [
+    {
+      "name": "Bash",
+      "parent": false
+    },
+    {
+      "name": "Agent",
+      "parent": false
+    },
+    {
+      "name": "Bash",
+      "parent": true
+    },
+    {
+      "name": "TaskStop",
+      "parent": true
+    },
+    {
+      "name": "TaskStop",
+      "parent": false
+    }
+  ],
+  "error": false,
+  "authenticationUnavailable": false,
+  "shells": {
+    "parent": "one background shell, started before the worker",
+    "worker": "one background shell, started by the worker"
+  },
+  "stopInputFields": [
+    "agent_id",
+    "agent_transcript_path",
+    "agent_type",
+    "background_tasks",
+    "cwd",
+    "effort",
+    "hook_event_name",
+    "last_assistant_message",
+    "permission_mode",
+    "prompt_id",
+    "session_crons",
+    "session_id",
+    "stop_hook_active",
+    "transcript_path"
+  ],
+  "backgroundTaskFields": [
+    [
+      "command",
+      "description",
+      "id",
+      "status",
+      "type"
+    ],
+    [
+      "agent_type",
+      "description",
+      "id",
+      "status",
+      "type"
+    ]
+  ],
+  "stops": [
+    {
+      "stopHookActive": false,
+      "decision": "block",
+      "backgroundTasks": [
+        {
+          "id": "task-1",
+          "type": "shell",
+          "status": "running",
+          "startedBy": "parent"
+        },
+        {
+          "id": "task-2",
+          "type": "subagent",
+          "status": "running",
+          "startedBy": null,
+          "self": true
+        },
+        {
+          "id": "task-3",
+          "type": "shell",
+          "status": "running",
+          "startedBy": "worker"
+        }
+      ]
+    },
+    {
+      "stopHookActive": true,
+      "decision": "observe",
+      "backgroundTasks": [
+        {
+          "id": "task-1",
+          "type": "shell",
+          "status": "running",
+          "startedBy": "parent"
+        },
+        {
+          "id": "task-2",
+          "type": "subagent",
+          "status": "running",
+          "startedBy": null,
+          "self": true
+        }
+      ]
+    }
+  ],
+  "listScope": "session",
+  "listHoldsStoppingWorker": true,
+  "startIdentifierNamesListedTask": {
+    "worker": true,
+    "parent": true
+  },
+  "startIdentifierFields": [
+    "backgroundTaskId"
+  ],
+  "refusedStopHeldWorker": true,
+  "workerCallsAfterRefusal": [
+    "TaskStop"
+  ],
+  "reentryStopHookActive": true,
+  "parentPromptAfterWorkerStop": true,
+  "parentStops": [
+    {
+      "stopHookActive": false,
+      "backgroundTasks": [
+        {
+          "id": "task-1",
+          "type": "shell",
+          "status": "running",
+          "startedBy": "parent"
+        },
+        {
+          "id": "task-2",
+          "type": "subagent",
+          "status": "running",
+          "startedBy": null
+        }
+      ]
+    },
+    {
+      "stopHookActive": true,
+      "backgroundTasks": [
+        {
+          "id": "task-1",
+          "type": "shell",
+          "status": "running",
+          "startedBy": "parent"
+        },
+        {
+          "id": "task-2",
+          "type": "subagent",
+          "status": "running",
+          "startedBy": null
+        },
+        {
+          "id": "task-3",
+          "type": "shell",
+          "status": "running",
+          "startedBy": "worker"
+        }
+      ]
+    },
+    {
+      "stopHookActive": false,
+      "backgroundTasks": []
+    }
+  ],
+  "events": [
+    {
+      "event": "UserPromptSubmit",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "agent": false,
+      "decision": "observe",
+      "started": "parent"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Agent",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "SubagentStart",
+      "agent": true,
+      "decision": "observe"
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Agent",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "agent": true,
+      "decision": "observe"
+    },
+    {
+      "event": "Stop",
+      "agent": false,
+      "decision": "block"
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "agent": true,
+      "decision": "observe",
+      "started": "worker"
+    },
+    {
+      "event": "SubagentStop",
+      "agent": true,
+      "decision": "block"
+    },
+    {
+      "event": "Stop",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "TaskStop",
+      "agent": true,
+      "decision": "observe"
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "TaskStop",
+      "agent": true,
+      "decision": "observe"
+    },
+    {
+      "event": "SubagentStop",
+      "agent": true,
+      "decision": "observe"
+    },
+    {
+      "event": "UserPromptSubmit",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "TaskStop",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "TaskStop",
+      "agent": false,
+      "decision": "observe"
+    },
+    {
+      "event": "Stop",
+      "agent": false,
+      "decision": "observe"
+    }
+  ],
+  "rawTranscriptRetained": false,
+  "userSettingsWritten": false
+}

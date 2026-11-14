@@ -1,0 +1,43 @@
+{
+  "criterion": "25",
+  "requirement": "Each migrated reader has its comparison over committed input corpus, with differences classified; rerun one comparison.",
+  "rerun": "shell-reader.mjs passed; comment comparison also rerun",
+  "gaps": [
+    {
+      "reader": "scripts/lib/verification-briefing.mjs",
+      "mappedComparison": "order-criteria",
+      "actualCalls": [
+        "handoff-ledger.declaredCriteria",
+        "handoff-ledger.readPreflightSuites"
+      ],
+      "uncompared": "knownIssueSections: section boundaries/text, unread advisories and open fences over committed orders"
+    },
+    {
+      "reader": "scripts/lib/off-ramps.mjs",
+      "mappedComparison": "order-criteria",
+      "actualCalls": [
+        "handoff-ledger.declaredCriteria",
+        "handoff-ledger.readPreflightSuites"
+      ],
+      "uncompared": "criterionJudgments: judgment and evidence boundaries in handoffs and reports"
+    },
+    {
+      "reader": "scripts/lib/plan-receipts.mjs",
+      "mappedComparison": "planning-subjects",
+      "actualCalls": [
+        "receipt.subject",
+        "plan-subject.buildPlanSubject"
+      ],
+      "uncompared": "executionPlanPaths/Spans and targetOrderPathAdvisories"
+    }
+  ],
+  "sources": [
+    "docs/evidence/WO-276/part-b/comparisons/coverage.json:107",
+    "docs/evidence/WO-276/part-b/comparisons/coverage.json:126",
+    "docs/evidence/WO-276/part-b/comparisons/coverage.json:167",
+    "docs/evidence/WO-276/part-b/comparisons/readers.mjs:206",
+    "docs/evidence/WO-276/part-b/comparisons/readers.mjs:253"
+  ],
+  "dispositionHistory": "Round2 F5 rejected unit tests as substitutes. D038 pointed to coverage map. Round3 recheck combined.2.F5 not-held; round4 confirmed planning-rules addition only. Handoff criterion25 still relies on same map.",
+  "limit": "Missing retained comparison evidence, not a claim that these three readers currently return different corpus results."
+}

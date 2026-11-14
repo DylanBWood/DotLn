@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
 import { journalLane } from "./worktree-removal.mjs";
 import { docPath, docRelative } from "./config.mjs";
-import { renderRedTagBlock } from "./document-kinds.mjs";
+import { markedJsonBlock, renderRedTagBlock } from "./document-kinds.mjs";
 import { mainWorktree, runGit } from "./git.mjs";
 
 /** The branch `plan start` creates: planning/<date>-<slug>. */
@@ -71,31 +71,15 @@ const text = (value) => typeof value === "string" && value.trim().length > 0;
 /** The rules a pass document's block records, or null when it has no block.
  * A malformed block refuses with the document's path. */
 export function rulesRecordedBlock(source, file) {
-  const starts = source.split(RULES_RECORDED_START).length - 1,
-    ends = source.split(RULES_RECORDED_END).length - 1;
-  if (!starts && !ends) return null;
-  if (
-    starts !== 1 ||
-    ends !== 1 ||
-    source.indexOf(RULES_RECORDED_END) < source.indexOf(RULES_RECORDED_START)
-  )
-    throw new Error(
-      `${file}: the rules-recorded block needs one ordered marker pair`,
-    );
-  const inner = source
-    .slice(
-      source.indexOf(RULES_RECORDED_START) + RULES_RECORDED_START.length,
-      source.indexOf(RULES_RECORDED_END),
-    )
-    .replace(/^\s*```json\s*\n/u, "")
-    .replace(/\n```\s*$/u, "")
-    .trim();
-  let rules;
-  try {
-    rules = JSON.parse(inner);
-  } catch {
-    throw new Error(`${file}: the rules-recorded block holds invalid JSON`);
-  }
+  // The red-tag block's form: one `json` fenced block between the markers.
+  const marked = markedJsonBlock(source, {
+    start: RULES_RECORDED_START,
+    end: RULES_RECORDED_END,
+    name: "rules-recorded",
+    file,
+  });
+  if (!marked) return null;
+  const rules = marked.value;
   if (
     !Array.isArray(rules) ||
     rules.some(

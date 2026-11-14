@@ -10,9 +10,10 @@ import {
   uncoveredMachinerySources,
 } from "./lib/machinery-coverage.mjs";
 import {
-  largestTaskPeakRss,
+  judgeLaneMemory,
   memoryBudgets,
   pressureSample,
+  requiredTaskPeakRss,
   sampleFileEventDaemon,
 } from "./lib/host-resources.mjs";
 import {
@@ -25,34 +26,43 @@ import { checkGitSurface, recordGitSurface } from "./lib/git-surface.mjs";
 export function checkHost(
   sample = pressureSample(),
   {
-    limits = memoryBudgets(findLaunchpad()),
-    requiredPeakBytes = largestTaskPeakRss(),
+    // The root whose gate this host is judged for: a kit root's gate carries
+    // fewer and lighter tasks than core's, and is sized to those.
+    root = findLaunchpad(),
+    limits = memoryBudgets(root),
+    requiredPeakBytes = requiredTaskPeakRss(root),
     fileEvents = sampleFileEventDaemon(),
     standing,
     nodeVersion,
     packageRoot,
     gitVersion,
+    // Whether this gate was started inside a gate that was admitted and
+    // holds its lanes. Such a gate stands on that admission at warning
+    // pressure, which the run it belongs to may itself have produced:
+    // refusing it relieves nothing and fails the run that started it.
+    underRunningGate = false,
   } = {},
 ) {
   const runtime = judgeRunningNode(nodeVersion, packageRoot);
   // The Git floor is judged where Node is, with one git --version spawn.
   const git = judgeRunningGit(packageRoot, gitVersion);
-  const underBudget = limits.taskBytes < requiredPeakBytes;
-  const minimumGateShare =
-    Math.ceil(
-      ((requiredPeakBytes * limits.hostLanes) / sample.physicalBytes) *
-        1_000_000,
-    ) / 1_000_000;
-  const remedy = underBudget
-    ? `; memory.gateShare must be at least ${minimumGateShare} to admit this peak at ${limits.hostLanes} lanes${minimumGateShare > limits.hostShare ? "; that exceeds memory.hostShare, so use a host with more memory or reduce the task's measured peak" : "; set it in docs/control/budgets.json after judging the shared host budget, then retry"}`
-    : "";
+  const lane = judgeLaneMemory({
+    limits,
+    requiredPeakBytes,
+    physicalBytes: sample.physicalBytes,
+  });
+  const { underBudget } = lane;
   if (standing?.state === "exceeded")
     return { ...dispatchBoundResult(standing), sample, fileEvents };
+  const standsOnRunningGate = underRunningGate && sample.level === "warning";
+  const daemon = judgeFileEventDaemon(fileEvents, { underRunningGate });
   return {
     exitCode:
       !runtime.admitted ||
       !git.admitted ||
-      ["warning", "critical"].includes(sample.level) ||
+      sample.level === "critical" ||
+      (sample.level === "warning" && !underRunningGate) ||
+      daemon.refused ||
       underBudget
         ? 1
         : 0,
@@ -60,8 +70,54 @@ export function checkHost(
     fileEvents,
     taskBudgetBytes: limits.taskBytes,
     requiredPeakBytes,
-    output: `${runtime.message}\n${git.message}\nHost memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy}`,
+    output: `${runtime.message}\n${git.message}\nHost memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}${standsOnRunningGate ? "; admitted on the running gate that started this one and holds its lanes" : ""}\n${daemon.message}\n${lane.message}`,
   };
+}
+
+/** The resident memory above which the host's file-events daemon is taken
+ * to be stuck: 1 GiB. A healthy one held 0.01 to 0.17 GiB under this
+ * repository's gates, complete runs included; one whose event table had
+ * overflowed passed 1 GiB within hours and 15 GiB within two days, used a
+ * whole processor with nothing running, and returned to megabytes only when
+ * it was restarted. Of two complete runs made in that state one added 4 GiB
+ * and one added nothing, and what held the memory was not established: the
+ * refusal is a precaution against running on a daemon in that state. */
+export const FILE_EVENT_DAEMON_LIMIT_BYTES = 2 ** 30;
+
+/** What a gate says of the file-events daemon's sample, and whether it
+ * refuses on it. The sample is shown at every start, so that its growth is
+ * seen the day it begins. Above the limit a gate refuses and names the
+ * restart, which needs an administrator; a gate started inside a running
+ * gate reports the same reading and stands on that gate's admission, since
+ * refusing it would only fail the run that started it. A host with no such
+ * daemon, or a sample that could not be taken, is reported and refuses
+ * nothing.
+ * @param {{residentBytes?: number|null, source?: string, unavailable?: string}|null|undefined} fileEvents
+ * @param {{underRunningGate?: boolean}} [options] */
+export function judgeFileEventDaemon(
+  fileEvents,
+  { underRunningGate = false } = {},
+) {
+  const bytes = fileEvents?.residentBytes;
+  if (typeof bytes !== "number")
+    return {
+      refused: false,
+      message: `File-events daemon: no sample (${fileEvents?.unavailable ?? fileEvents?.source ?? "not sampled"})`,
+    };
+  const reading = `File-events daemon: residentBytes=${bytes}; limitBytes=${FILE_EVENT_DAEMON_LIMIT_BYTES}`;
+  if (bytes <= FILE_EVENT_DAEMON_LIMIT_BYTES)
+    return { refused: false, message: reading };
+  const stuck =
+    "over the limit: a healthy daemon holds under 0.2 GiB here, and the one that passed this limit reached 15 GiB over the next day of gates and returned to megabytes only when it was restarted";
+  return underRunningGate
+    ? {
+        refused: false,
+        message: `${reading}; ${stuck}; admitted on the running gate that started this one. Restart the daemon before the next gate: sudo killall fseventsd (the system starts it again).`,
+      }
+    : {
+        refused: true,
+        message: `${reading}; ${stuck}. Restart it, which needs an administrator, and rerun this command: sudo killall fseventsd (the system starts it again).`,
+      };
 }
 
 export function checkDeclarations(root, table, closures) {
@@ -97,12 +153,18 @@ if (isMainModule(import.meta.url)) {
       rest[0] === "--build-phase-only";
     const recording =
       mode === "git-surface" && rest.length === 1 && rest[0] === "--record";
+    // The gate that runs the host check says whether it was itself started
+    // inside a running gate; the gate knows that from a lease it validated.
+    const underRunningGate =
+      mode === "host" &&
+      rest.length === 1 &&
+      rest[0] === "--under-running-gate";
     if (
-      (rest.length && !buildPhaseOnly && !recording) ||
+      (rest.length && !buildPhaseOnly && !recording && !underRunningGate) ||
       !["declarations", "generated", "git-surface", "host"].includes(mode)
     )
       throw new Error(
-        "usage: structural-checks.mjs declarations|generated [--build-phase-only]|git-surface [--record]|host",
+        "usage: structural-checks.mjs declarations|generated [--build-phase-only]|git-surface [--record]|host [--under-running-gate]",
       );
     let result;
     if (recording) {
@@ -135,7 +197,7 @@ if (isMainModule(import.meta.url)) {
             }
           : {},
       );
-    else result = checkHost();
+    else result = checkHost(undefined, { underRunningGate });
     if (result.output) console.log(result.output);
     for (const row of result.cases ?? []) {
       console.log(

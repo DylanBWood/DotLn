@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-10T18:35:22.934Z",
+  "command": "node scripts/terms.mjs branch",
+  "criterionA1": {
+    "fixture": "the list and the branch of the runner case named for criterion A1: one unmarked entry above the sections, one under refuse:, one under context:, one marked review:, and a branch that adds a line carrying each",
+    "withTheRefuseEntrysLine": {
+      "exit": 1,
+      "stdout": [
+        "local-terms list: present; entries: 1 refuse, 3 context; changed files screened: 1; lines found: 1 refuse, 3 context",
+        "CONTEXT docs/classes.md:3: a local term in context mode",
+        "CONTEXT docs/classes.md:4: a local term in context mode",
+        "CONTEXT docs/classes.md:5: a local term in context mode"
+      ],
+      "stderr": [
+        "FAIL docs/classes.md:6: a local term in refuse mode"
+      ]
+    },
+    "withThatLineRemoved": {
+      "exit": 0,
+      "stdout": [
+        "local-terms list: present; entries: 1 refuse, 3 context; changed files screened: 1; lines found: 0 refuse, 3 context",
+        "CONTEXT docs/classes.md:3: a local term in context mode",
+        "CONTEXT docs/classes.md:4: a local term in context mode",
+        "CONTEXT docs/classes.md:5: a local term in context mode"
+      ],
+      "stderr": []
+    }
+  },
+  "criterionA16": {
+    "fixture": "scripts/kit/terms.example.txt as the list and scripts/fixtures/terms-example/sample.md as the branch's added lines",
+    "exampleAsShipped": {
+      "exit": 1,
+      "stdout": [
+        "local-terms list: present; entries: 2 refuse, 1 context; changed files screened: 1; lines found: 1 refuse, 2 context",
+        "CONTEXT docs/sample.md:1: a local term in context mode",
+        "CONTEXT docs/sample.md:2: a local term in context mode"
+      ],
+      "stderr": [
+        "FAIL docs/sample.md:3: a local term in refuse mode"
+      ]
+    },
+    "withTheTwoSectionLinesRemoved": {
+      "exit": 0,
+      "stdout": [
+        "local-terms list: present; entries: 0 refuse, 3 context; changed files screened: 1; lines found: 0 refuse, 3 context",
+        "CONTEXT docs/sample.md:1: a local term in context mode",
+        "CONTEXT docs/sample.md:2: a local term in context mode",
+        "CONTEXT docs/sample.md:3: a local term in context mode"
+      ],
+      "stderr": []
+    }
+  }
+}

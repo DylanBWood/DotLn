@@ -93,8 +93,8 @@ WO-303 [indexed-order-fa175f4c85ec0b2e]
   Authority: docs/work-orders/WO-303-fixture.md [evidence-5]
   -> Evidence: WO-303-fixture.md [evidence-6]
 
-Work-order history index [work-order-history] — unavailable
-Source not supplied
+Work-order history index [work-order-history] — available
+The source records no entries
 
 Recorded actor usage [usage] — unavailable
 Source not supplied
@@ -176,8 +176,7 @@ SOURCES
 unavailable: skeleton:loadout-exports — Source not supplied
 unavailable: skeleton:feedback-units — Source not supplied
 unavailable: control:canonical-segments — Source not supplied
-available: docs/work-orders/README.md
-unavailable: docs/work-orders/HISTORY.md — Source not supplied
+available: work-orders:index--json
 unavailable: resume:status--json — Source not supplied
 unavailable: worktree:constellation — Source not supplied
 unavailable: release:list — Source not supplied
@@ -189,20 +188,20 @@ unavailable: docs/planning/refutations/ — Source not supplied
 
 EVIDENCE
 [evidence-1] docs/work-orders/README.md
-  line:37 (WO-301)
+  line:35 (WO-301)
 [evidence-2] docs/work-orders/README.md
   link:WO-301-fixture.md
 [evidence-3] docs/work-orders/README.md
-  line:54 (WO-302)
+  line:52 (WO-302)
 [evidence-4] docs/work-orders/README.md
   link:WO-302-fixture.md
 [evidence-5] docs/work-orders/README.md
-  line:71 (WO-303)
+  line:69 (WO-303)
 [evidence-6] docs/work-orders/README.md
   link:WO-303-fixture.md
-[evidence-7] docs/work-orders/README.md
+[evidence-7] work-orders:index--json
   workstreams:WS-001/WO-301
-[evidence-8] docs/work-orders/README.md
+[evidence-8] work-orders:index--json
   workstreams:WS-001/WO-302
-[evidence-9] docs/work-orders/README.md
+[evidence-9] work-orders:index--json
   workstreams:WS-001/WO-303

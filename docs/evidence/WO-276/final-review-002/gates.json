@@ -1,0 +1,40 @@
+{
+  "what": "The subject FINAL-002 judged and the gate rows that stand at it, read on 2026-11-14 between 17:55 and 18:25 UTC with scripts/lib/gate-evidence.mjs (gateCodeIdentity) and scripts/lib/gate-reuse.mjs (gateCandidates).",
+  "subject": {
+    "base": "0097fcac608bcaa24c51c8b6d6020fc2382ea141",
+    "baseIs": "main, origin/main and the branch's merge base alike",
+    "integration": "npm run worktree -- integrate WO-276 answered: Integration took in nothing: the worktree is not behind main.",
+    "dispatchCheckpoint": "refs/dotln/checkpoint/WO-276/101 (a084bbcc70158efe0ff2b4a5e395c3401370aa0e)",
+    "workingTreeAgainstThatCheckpoint": "equal but for the dispatch's own projections (docs/control/current.md, docs/control/orders/WO-276.jsonl, docs/work-orders/README.md) and this review's records",
+    "codeIdentity": "adba01dad241e0707e58f4efb26e95bb296d055c042b7b8c156e3667d08c5f28"
+  },
+  "completeReviewRow": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "codeIdentity": "adba01dad241e0707e58f4efb26e95bb296d055c042b7b8c156e3667d08c5f28",
+    "recordedAt": "2026-11-14T15:57:05.360Z",
+    "exitCode": 0,
+    "executed": true,
+    "executionMode": "fresh",
+    "requiredSuites": 48,
+    "treeHash": "5f3d9341a15c315f2d9eb17292041249e0a11b8c",
+    "reads": "The one complete row at the judged identity, recorded after the last repair. No source file was edited by this review, so no complete run was owed and none was started."
+  },
+  "documentRowsAtEntry": [
+    {
+      "recordedAt": "2026-11-14T16:01:40.554Z",
+      "exitCode": 0,
+      "treeHash": "db3d79cc228d357562606e95eb05b5d040fe738f"
+    },
+    {
+      "recordedAt": "2026-11-14T17:48:07.676Z",
+      "exitCode": 0,
+      "treeHash": "54f81c52a3c1c0c3b79f6f479d20170786f5d7fb"
+    }
+  ],
+  "since": {
+    "firstFinalReviewSubject": "refs/dotln/checkpoint/WO-276/85, code identity 46946378783201d5255fc2480a215269e2822907a48e9a12232c16badc925323",
+    "repairSinceThen": "71 paths outside the order's evidence and reports, 3,002 lines added and 463 removed (git diff --shortstat between checkpoints 85 and 101)",
+    "unchangedSinceThen": "the installed skill roots under .claude/skills and .agents/skills, the agent definitions under .claude/agents and .codex, .claude/settings.json, packages/skeleton/src/harness-host.ts, packages/skeleton/src/loadouts and packages/compiler/src (git diff --quiet between the two checkpoints over those paths exits 0)"
+  }
+}
