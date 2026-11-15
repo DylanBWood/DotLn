@@ -1,7 +1,14 @@
 # DotLn kit guide
 
-This is the kit guide for the launchpad instance it ships with. The kit is
-exported from DotLn core: the control plane under `scripts/` with its suites, the compiled runtime of
+This is the kit guide for the launchpad instance it ships with: the
+reference that the kit's roles and reviewers work from. A person who is
+setting an instance up, running an order or taking a release starts at
+[OPERATOR.md](OPERATOR.md), which holds the commands of each step with what
+to look for and what to do when one fails, and which `node
+scripts/launchpad.mjs commands` prints before any install.
+
+The kit is exported from DotLn core: the control plane under `scripts/` with
+its suites, the compiled runtime of
 `@dotln/kernel`, `@dotln/compiler`, `@dotln/skeleton` and `@dotln/console` under
 `packages/<name>/dist/src/` and compiled tests under `dist/test/`, the build-free Beacon workspace under
 `packages/beacons`, the Contributor harness bundle under `.claude/`,
@@ -153,7 +160,7 @@ decision). The steps below say more about the first of them.
 To start a private repository from this starter, clone it with no tags and
 keep it as the `upstream` remote that §Taking upstream updates uses:
 
-<!-- operator-commands new-instance: Once per instance, clone the starter into a private repository with the starter kept as `upstream`, then install and check the runtime; the instance runs Claude Code alone, and its first order inspects no other host, until its `dotln.config.json` elects one. -->
+<!-- operator-commands new-instance: Once per instance. The first block makes your private repository from the starter, keeps the starter as the `upstream` remote, and installs and checks the kit. The second registers the private terms list, a file Git ignores, and it comes before any session publishes: while the list is absent a planning pass's publish refuses, and the files an order's branch changes are not screened. Look for one row from `node scripts/doctor.mjs` for each thing the kit needs of the machine (it refuses nothing, so read the rows), and for `local-terms list: unavailable` from `node scripts/harness.mjs check`, which is expected until the second block has run. After the copy, replace the example's entries with your own, one a line: under `refuse:` every name that must never reach a commit, under `context:` names that are also ordinary words. Then run the last line again; it prints `local-terms list: present` with your counts. If a `doctor` row reads `unmet`, apply the remedy it names and run it again; if the terms check prints `FAIL`, reword the line it names. The instance runs Claude Code alone until its `dotln.config.json` elects another host. -->
 ```sh
 gh repo create <org>/<name> --private
 git clone --no-tags <starter url> <name>
@@ -265,6 +272,22 @@ operator sandbox settings.
    Harbor
    ```
 
+   To register the list, copy the example into place and check two of this
+   instance's files against it:
+
+   <!-- operator-commands new-instance -->
+   ```sh
+   mkdir -p docs/control/local
+   cp scripts/kit/terms.example.txt docs/control/local/terms.txt
+   npm run terms -- check CLAUDE.md README.md
+   ```
+
+   Then replace the example's entries with your own and run the last line
+   again. It prints the status line described below, `local-terms list:
+   present` with the entries in each class, the two named files screened and
+   the lines found, and a `FAIL` line for a file and line that hold a
+   `refuse:` entry.
+
    A branch that adds these four lines as `docs/sample.md`:
 
    ```text
@@ -300,7 +323,10 @@ operator sandbox settings.
    and exits zero.
 
    A present list with no entries is `present` with counts of zero and refuses
-   nothing; an absent list is `unavailable` and refuses publication. WO-001's
+   nothing. An absent list is `unavailable`: the publish of a planning
+   branch, of a kit update and of a target's change refuses until a list is
+   registered, and an order's own publish says that the files its branch
+   changes were not screened. WO-001's
    checklist item 4 registers this list and checks the files that order
    writes; its criterion 3 records the printed status, a refuse-mode match
    fixed before filing and each context-mode match read (see
@@ -362,7 +388,7 @@ operator sandbox settings.
    and [Planning in this instance](#planning-in-this-instance) how a large
    target is studied area by area.
 
-   <!-- operator-commands register-repository: A planning pass files the registration order (the repository under `repositories` in `dotln.config.json`, its profile, the outward vocabulary and the operator's grant); its executor records the clone, you merge that order before any target order starts, and each target order then runs like any other. -->
+   <!-- operator-commands register-repository: To work on another repository, ask a planning pass to file its registration order from the values you state: the repository under `repositories` in `dotln.config.json`, its profile, the outward vocabulary and your grant. For a team's application repository ask for `"records": "instance"`, so that no order's record is committed into the team's repository. The order's executor records the clone with this command; you merge that order before any target order starts, and each target order then runs like any other (step 3). Look for the registration order's pull request, and merge it first. If a plan check, a document gate or `node scripts/bootstrap.mjs` names a repository whose clone is not recorded, run this command with the repository's id and the clone's absolute path. -->
    ```sh
    npm run worktree -- clone <id> <absolute-path>
    ```
@@ -507,7 +533,7 @@ operator sandbox settings.
    registered target's pull request merges by the method that repository's
    team uses (§Releases in this instance).
 
-<!-- operator-commands run-order: From clean `main`, start each order in its own worktree with its id and its order's path (the first is `WO-001` at `docs/work-orders/WO-001-environment-truth.md`); in a session opened in that worktree, type each phase's phrase as a message of its own once the phase before it has completed, or type `drive: WO-NNN` in `main` to run the phases in fresh sessions until your merge (product 07's phrase table names each phase). -->
+<!-- operator-commands run-order: From clean `main`, the first block starts an order in its own worktree, a sibling folder named `<name>-woNNN`, and prepares it; the first order is `WO-001` at `docs/work-orders/WO-001-environment-truth.md`. Open a Claude Code session in that folder and type the three phrases one at a time, each as a message of its own in a fresh session once the phase before it has finished: `resume: next` does the work, `resume: verify` checks it independently, and `resume: final review` reviews it and opens its pull request. Or type `drive: WO-NNN` in a session in `main`, which runs the phases in fresh sessions and stops for your merge. Look for `Carried the local-terms list into` in the start's output, which says the order's worktree holds your list; if it prints `No local-terms list` instead, register the list as step 1 says, in `main` and in the new folder, before the order publishes. Each phase ends by saying what it recorded. If a verification or a final review fails, type `resume: fix` in the worktree, then `resume: verify` and `resume: final review` again. `resume: status` says where an order stands at any time (product 07's phrase table names each phrase). -->
 ```sh
 npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md
 ```
@@ -519,7 +545,7 @@ resume: verify
 resume: final review
 ```
 
-<!-- operator-commands close-order: Merge the order's pull request with a merge commit, then type this phrase in a session in the instance's `main`: the close updates `main`, publishes the order's tag and Release and cleans up its worktree. -->
+<!-- operator-commands close-order: Merge the order's pull request with a merge commit, never a squash or a rebase: the close needs the order's branch in the history of `main`, which either rewrites. Then type this phrase as a message of its own in a session in the instance's `main`. The close updates `main`, publishes the order's tag and Release, and removes the order's worktree and branch. Look for the tag and the Release on the repository, and for the sibling folder to be gone. If the close stops, it names what it found; mend that and type the phrase again, since the close checks a Release that already exists and never publishes one twice. -->
 ```text
 resume: release close
 ```
@@ -741,7 +767,7 @@ the journal contradicts and a digest that is not the message's; the operator
 strikes a rule by removing its entry
 ([decision](evidence/WO-259/decisions.md#wo-259-d008)).
 
-<!-- operator-commands first-pass: In a Claude Code session on the instance's clean `main`, type this phrase as a message of its own: the pass starts its planning branch, files the instance's orders and sequence, refutes them with one background worker and opens the pull request you merge with a merge commit. -->
+<!-- operator-commands first-pass: In a Claude Code session on the instance's clean `main`, type this phrase as a message of its own, with nothing else in it. The pass starts its planning branch, files the instance's orders and sequence, has one background worker refute them, and opens a pull request that you merge with a merge commit. `WO-001`, environment truth, is already the one entry of the starter's sequence, so it can run before this pass (step 3). Look for the pull request's URL when the pass ends. If its publish refuses because the terms list is absent, register the list as step 1 says, with your own entries in place of the example's, and ask the session to publish again; if it refuses on a line, it names the file and the line and never the entry, so ask the session to reword that line. A pass never takes a starter update: only your word in a plain session does (step 5). -->
 ```text
 planning: first pass
 ```
@@ -868,7 +894,7 @@ is the operator's choice (operator direction, 2026-11-09;
 [the pass that recorded it](planning/passes/whole-plan-and-codebase-review-2026-11-09.md);
 [decision](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file)).
 
-<!-- operator-commands tell-core: Read the instance's `FOR-CORE.md`, which its final reviews and planning passes write, and paraphrase the entries you choose to a core planning pass or send them yourself; nothing leaves the instance unless you carry it. -->
+<!-- operator-commands tell-core: Read the instance's `FOR-CORE.md`, where its final reviews and planning passes write what the kit got wrong or made hard. Each entry says which kit version it met, whether it stops the instance's next order and whether a release has answered it. Paraphrase the entries you choose into a core planning pass, or send them yourself: nothing leaves the instance unless you carry it. A file that holds only the form of an entry has nothing to send. If the document gate refuses the file, it names the entry and the field to mend. -->
 ```sh
 cat FOR-CORE.md
 ```
@@ -2146,7 +2172,7 @@ instance's launchpad knows only the kit paths of its export and refuses a
 manifest naming a later one; the incoming launchpad knows every path it
 ships. This example names the starter remote `upstream`:
 
-<!-- operator-commands take-release: On your word in a plain session in `main`, never in a planning pass, read the release's Read before upgrading, preview the starter's revision, take it on a `chore/` branch through its own pull request, merge that with a merge commit and finish in `main`. -->
+<!-- operator-commands take-release: Take a release on your own word, never in a planning pass, and read its Read before upgrading first: tell a plain session in `main` to take the starter update, or type these lines yourself, one at a time. The first block previews the starter's revision and changes nothing: read its rows, above all each `both changed:` file and each `refused` kit file. The second takes the update on a `chore/` branch, regenerates what this instance generates and opens the update's pull request, which you merge with a merge commit; the third finishes in `main`. Stop after the `git merge` line. For each `both changed:` file, whether or not the merge stopped on it, run `git checkout main -- <path>` to keep this instance's bytes; where that checkout says the path did not match any file known to Git, this instance deleted the file, so run `git rm <path>` to keep it deleted. If the merge stops on `.claude/harness-manifest.json`, as it can where this instance has a host the starter lacks, run `git checkout main -- .claude/harness-manifest.json`, which the next line's emit rewrites. Then go on from the emit. If the publish refuses, the refusal says what to do; if the finish refuses, it names the fact, and past its time bound it prints the lines that finish by hand. -->
 ```sh
 git config remote.upstream.tagOpt --no-tags
 git fetch --no-tags upstream
