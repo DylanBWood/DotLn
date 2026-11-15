@@ -52970,6 +52970,13 @@
           "title": "WO-245-D005: Bind guide-sensitive validation to current documentation bytes: declare executable document inputs in the shared product identity/reuse contract or move their consumers to exact-tree…",
           "summary": "{ \"id\": \"WO-245-D005\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Declare docs/KIT.md in the launchpad suite and launchpad-planning machinery selectors; defer the wider documentation-byte reuse boundary to planning.\", \"evidence\": [ \"Consistency review C1: the former scripts/kit/README.client.md matched both selectors; docs/KIT.md did not. scripts/test-runner.mjs now names the moved input in both places.\", \"Consistency review C2: packages/skeleton/src/gate-evidence.mjs excludes docs from gateCodeIdentity and gateInstanceInputDigest returns undefined in core. scripts/lib/gate-reuse.mjs filters product rows by code identity, not candidate tree. Adding selectors does not guar",
           "missing": false
+        },
+        {
+          "hash": "766b7e3dc2e33d5cc0ea002ce4bc8c763efc89d11cbbd9b25308698da436fa8e",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d005",
+          "title": "WO-245-D005: Bind guide-sensitive validation to current documentation bytes: declare executable document inputs in the shared product identity/reuse contract or move their consumers to exact-tree…",
+          "summary": "{ \"id\": \"WO-245-D005\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Declare docs/KIT.md in the launchpad suite and launchpad-planning machinery selectors; defer the wider documentation-byte reuse boundary to planning.\", \"evidence\": [ \"Consistency review C1: the former scripts/kit/README.client.md matched both selectors; docs/KIT.md did not. scripts/test-runner.mjs now names the moved input in both places.\", \"Consistency review C2: packages/skeleton/src/gate-evidence.mjs excludes docs from gateCodeIdentity and gateInstanceInputDigest returns undefined in core. scripts/lib/gate-reuse.mjs filters product rows by code identity, not candidate tree. Adding selectors does not guar",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -52988,6 +52995,14 @@
           "reopenWhen": "Planning scopes documentation-sensitive evidence reuse, or a guide-only edit would otherwise claim a cached product pass.",
           "targets": [],
           "at": "2026-11-02T01:31:50.313Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Its condition occurred in WO-277's repair: a guide-only edit claimed a cached product pass. With docs/KIT.md and docs/OPERATOR.md changed and nothing outside docs/, the complete review run of 15:43 UTC on 2026-11-15 passed in 1 min with 110 of 117 tasks carried from a row recorded before the page changed, the suites that read the page among them; the executor ran the selection again in full instead (WO-277-D018). FUP-3c5993936b048f5d is that decision's row for the same seam, with its reproduction and check. [WO-277's final review, FINAL-001 (docs/evidence/WO-277/decisions.md#wo-277-d027--of-the-four-earlier-follow-ups-this-change-matches-three-are-left-as-they-are-and-ones-condition-occurred-a-guide-only-edit-claimed-a-cached-product-pass)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-11-15T18:14:29.692Z"
         }
       ]
     },
@@ -60244,6 +60259,294 @@
           "at": "2026-11-15T00:32:41.242Z"
         }
       ]
+    },
+    {
+      "id": "FUP-493a210c3658ce32",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d66c1c2b2adf25ad4641b8967c826080848b8c2a514c51d605d93efaaf5fe3eb",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d003--what-the-page-says-of-an-absent-terms-list-is-what-each-publish-does-and-the-guides-sentence-beside-the-new-block-is-corrected-to-it",
+          "title": "WO-277-D003: Planning: an order's own publish (worktree publish) goes on when the private terms list is absent, printing that the files its branch changes were not screened, while the publish of a…",
+          "summary": "{ \"id\": \"WO-277-D003\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 steps 1 and 2\", \"decision\": \"The order's objective is that the terms list comes before anything publishes, and its observed gap and the 2026-11-14 pass's section give the reason as every publish refusing without a list. Read in the code, three of the four publishes refuse while the list is absent and the fourth does not. The publish of a planning branch and of a kit update share one helper, which fails the title and the body with the words that the local-terms list is absent and where to register it. A target's publish fails each artifact as unavailable for the same cause. An order's own publish, worktree publish,",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2a3442fb0e568755",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "59f632256eec7e0187b1ce7703229729360a8f782677d6c7bbd562d6df06d9da",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d005--step-3s-suite-failed-twice-before-it-passed-once-on-the-executors-own-order-of-work-once-on-a-failure-main-has-held-since-the-planning-commit-which-the-roadmap-tables-writer-repairs",
+          "title": "WO-277-D005: Planning: after every release close, the first index refresh records the new tag while the roadmap's table still ends at the tag before it, and from then the sync suite's real-inventory…",
+          "summary": "{ \"id\": \"WO-277-D005\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 step 3, 05:16 to 05:37 UTC on 2026-11-15\", \"decision\": \"npm test -- --only sync-fixtures, the check of step 3, ran three times. The first run (05:16 to 05:17 UTC) failed in its structural preflight with five of nine tasks: the decisions index and the work-order index were stale. That was the executor's error twice over. Release preparation had written the order's first decision and its heading's version at 05:12, and the gate was started after npm run format without npm run sync, which the handoff sequence puts between them. And the command piped the gate to tail, so the shell reported the pipe's exit of 0 for a f",
+          "missing": false
+        },
+        {
+          "hash": "7c8f5c9bd5eb12eedefe368136531c510ec0e9feb67aeb241df449b97043a4bd",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d005--step-3s-suite-failed-twice-before-it-passed-once-on-the-executors-own-order-of-work-once-on-a-failure-main-has-held-since-the-planning-commit-which-the-roadmap-tables-writer-repairs",
+          "title": "WO-277-D005: Planning: after every release close, the first index refresh records the new tag while the roadmap's table still ends at the tag before it, and from then the sync suite's real-inventory…",
+          "summary": "{ \"id\": \"WO-277-D005\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 step 3, 05:16 to 05:37 UTC on 2026-11-15\", \"decision\": \"npm test -- --only sync-fixtures, the check of step 3, ran three times. The first run (05:16 to 05:17 UTC) failed in its structural preflight with five of nine tasks: the decisions index and the work-order index were stale. That was the executor's error twice over. Release preparation had written the order's first decision and its heading's version at 05:12, and the gate was started after npm run format without npm run sync, which the handoff sequence puts between them. And the command piped the gate to tail, so the shell reported the pipe's exit of 0 for a f",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5621408816545b95",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "81b20a635f6b567696a440051f781e04fbbf3b0bdaeb740efd79369fc6d68735",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d006--the-page-as-built-seven-paragraphs-each-claim-read-where-the-kit-makes-it-true-the-terms-block-as-three-lines-and-the-manifests-route-in-the-release-steps-paragraph",
+          "title": "WO-277-D006: Planning: the commands page's release step carries the harness manifest's route (git checkout main -- .claude/harness-manifest.json after a stopped merge) only until WO-282 repairs the…",
+          "summary": "{ \"id\": \"WO-277-D006\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 steps 1 to 4\", \"decision\": \"The seven marker sentences of docs/KIT.md are rewritten as one paragraph each, on one line of its comment as the grammar reads it, and the page is regenerated by its own command at the version release preparation assigned, v1.0.1. Each paragraph says what the step does, what to look for and what to do when it fails, in the second person, after the 2026-11-14 pass's section. What each says was read where the kit makes it true and not copied from that section, which differs from the code in one place (WO-277-D003). Step 1: the rows of the host report with a verdict of met, unmet or unknow",
+          "missing": false
+        },
+        {
+          "hash": "864f61af35ff8c9a3eb9c8904ebe30477fbfd8e1ebaf4cd8d51de6643d3b62ba",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d006--the-page-as-built-seven-paragraphs-each-claim-read-where-the-kit-makes-it-true-the-terms-block-as-three-lines-and-the-manifests-route-in-the-release-steps-paragraph",
+          "title": "WO-277-D006: Planning: the commands page's release step carries the harness manifest's route (git checkout main -- .claude/harness-manifest.json after a stopped merge) only until WO-282 repairs the…",
+          "summary": "{ \"id\": \"WO-277-D006\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 steps 1 to 4\", \"decision\": \"The seven marker sentences of docs/KIT.md are rewritten as one paragraph each, on one line of its comment as the grammar reads it, and the page is regenerated by its own command at the version release preparation assigned, v1.0.1. Each paragraph says what the step does, what to look for and what to do when it fails, in the second person, after the 2026-11-14 pass's section. What each says was read where the kit makes it true and not copied from that section, which differs from the code in one place (WO-277-D003). Step 1: the rows of the host report with a verdict of met, unmet or unknow",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-858a24b8de5b5313",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7724c00aae8af7cc3879a394df5fe8d758aa6f41ff958f8b85c785fe283bd4a7",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d007--round-1-of-the-paired-ladder-twelve-distinct-findings-from-four-reviewers-one-of-them-a-stale-pin-that-fails-criterion-4-each-judged-before-any-fix",
+          "title": "WO-277-D007: Planning: the seeded first order's item 4 says to create the private terms list from the example, while the commands page registers the list in step 1 and worktree start carries the main…",
+          "summary": "{ \"id\": \"WO-277-D007\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 the review ladder, round 1, 06:02 to 06:20 UTC on 2026-11-15\", \"decision\": \"The order's header declares the paired ladder. Round 1 was four fresh workers of the instance's default worker for Claude, launched together at 06:04:19 UTC as round 1 on one base (b8591a7307703d2cd454e51ac0c0557dc10d48d0) and one reviewed tree (1699f95895eee9f3d83a0a86223e3bbb3d419b1b): criteria, design, consistency and the combined worker, each given the kit's own round 1 brief as its dry run printed it and none given another's report. Each dry run's round, base and tree were read before the launch (WO-276-D118). The host's transcripts o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0b9d1ba5052aa2b7",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f5d62aae4e036bec3d51ca15fd4eb1e488142c4a83110249756b96ba279136c0",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d004--criteria-1-to-3-are-judged-in-the-launchpad-suites-own-export-one-case-is-added-and-no-generator-step-table-or-check-of-the-page-changes",
+          "title": "WO-277-D004: Criterion 3 states three facts in the export fixture of npm test -- --only launchpad: the exported front page's first paragraph links docs/OPERATOR.md, the exported guide's first…",
+          "summary": "{ \"id\": \"WO-277-D004\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 step 4\", \"decision\": \"Criterion 3 states three facts in the export fixture of npm test -- --only launchpad: the exported front page's first paragraph links docs/OPERATOR.md, the exported guide's first paragraph links OPERATOR.md, and the commands printed in the export hold the terms list's block in step 1. Before this order no case of that suite read any of the three: the suite's existing case holds the exported page to the source's page byte for byte and to the guide's blocks, which says nothing of a first paragraph and would pass with the terms block gone from both. A met criterion that names the suite stands on",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d088964c0f58f42e",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e1374295629ce2f153e7006a9eae042cadf2c4065d464314d7c07aac2517f9b1",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d009--round-2-confirms-every-fix-and-admits-nothing-the-first-critics-three-points-are-accepted-and-the-case-added-under-d004-comes-out",
+          "title": "WO-277-D009: Planning: the commands page has no regression case of its own. Nothing fails when a later edit drops the terms list's block from step 1, the page's link from the first paragraph of the…",
+          "summary": "{ \"id\": \"WO-277-D009\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; WO-277 the review ladder, round 2, and the first critic, 06:26 to 06:45 UTC on 2026-11-15\", \"decision\": \"Round 2. Each of the four round 1 reviewers had a finding fixed, so each was resumed at 06:26:04 UTC with the kit's round 2 brief, rendered by a dry run and read first, on the tree b16e21c516bed75c9af2ae0718a3ff5e2599eb6b against the same base. The helper words the combined worker's round 2 brief as the last round; it names the merge base and that worker's own findings, so it asks the same recheck. Returns: design at 06:28:59 UTC, criteria at 06:29:15, combined at 06:31:23 and consistency at 06:37:25. Every fix held: ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0cfd840f500b9874",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "71f5dbfcee3c48eb4e9363d4429b7ebc56ebe6d228fd2cb3da66bd190926b1eb",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d010--correction-messages-the-executor-wrote-to-the-operator-between-tool-calls-are-not-in-the-hosts-transcript-the-notice-of-the-accounts-address-among-them",
+          "title": "WO-277-D010: Planning: under Claude Code 2.1.263 in this instance, a line an executor writes to the operator between tool calls is in the session's transcript only when it is short (every held one is…",
+          "summary": "{ \"id\": \"WO-277-D010\", \"date\": \"2026-11-15\", \"kind\": \"correction\", \"dispatch\": \"resume: next; WO-277, found at 06:39 UTC on 2026-11-15 while the critic's third point was being checked against the host's transcript\", \"misread\": \"The executor took every line it wrote to the operator as delivered. It recorded in D002 that the operator had been told at 05:09 UTC that this session's transcript holds the account's mail address, that the critic would read a copy with the address replaced, and that either of two words would change that; and in D005 that the follow-up queue's one item had been announced as an intent in chat before it ran. Neither message is in the host's transcript.\", \"meant\": \"The o",
+          "missing": false
+        },
+        {
+          "hash": "15f40052be49fee19bb3540beda1cebc00f83eeff7089e43f5cf1d57c949eae7",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d010--correction-messages-the-executor-wrote-to-the-operator-between-tool-calls-are-not-in-the-hosts-transcript-the-notice-of-the-accounts-address-among-them",
+          "title": "WO-277-D010: Planning: under Claude Code 2.1.325, the version the session's hook observed, a line an executor writes to the operator between tool calls is in the session's transcript only when it is…",
+          "summary": "{ \"id\": \"WO-277-D010\", \"date\": \"2026-11-15\", \"kind\": \"correction\", \"dispatch\": \"resume: next; WO-277, found at 06:39 UTC on 2026-11-15 while the critic's third point was being checked against the host's transcript\", \"misread\": \"The executor took every line it wrote to the operator as delivered. It recorded in D002 that the operator had been told at 05:09 UTC that this session's transcript holds the account's mail address, that the critic would read a copy with the address replaced, and that either of two words would change that; and in D005 that the follow-up queue's one item had been announced as an intent in chat before it ran. Neither message is in the host's transcript.\", \"meant\": \"The o",
+          "missing": false
+        },
+        {
+          "hash": "2dc09ecae720352b39277f68b11eccea36c5c4ec600b8a1f83d6cfe0da49cb2c",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d010--correction-messages-the-executor-wrote-to-the-operator-between-tool-calls-are-not-in-the-hosts-transcript-the-notice-of-the-accounts-address-among-them",
+          "title": "WO-277-D010: Planning: under Claude Code 2.1.325, the version the session's hook observed, a line an executor writes to the operator between tool calls is in the session's transcript only when it is…",
+          "summary": "{ \"id\": \"WO-277-D010\", \"date\": \"2026-11-15\", \"kind\": \"correction\", \"dispatch\": \"resume: next; WO-277, found at 06:39 UTC on 2026-11-15 while the critic's third point was being checked against the host's transcript\", \"misread\": \"The executor took every line it wrote to the operator as delivered. It recorded in D002 that the operator had been told at 05:09 UTC that this session's transcript holds the account's mail address, that the critic would read a copy with the address replaced, and that either of two words would change that; and in D005 that the follow-up queue's one item had been announced as an intent in chat before it ran. Neither message is in the host's transcript.\", \"meant\": \"The o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3285bd4a53c4c3e9",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "eda62eb2c1c0a9100b31e48b4bd64722eab84d3c3a02910040bc2e56f1652665",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d012",
+          "title": "WO-277-D012: Planning: make the commands page update recovery preserve a deleted instance file as well as an existing one. In docs/KIT.md take-release and the generated docs/OPERATOR.md, branch the…",
+          "summary": "{ \"id\": \"WO-277-D012\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: verify; independent judgment and deferred update recovery\", \"decision\": \"Consume the executor complete review row at the unchanged code identity, and independently exercise the export without installed dependencies, from a directory containing spaces and a nested working directory, plus the terms setup and seed pin. Keep the implementation unchanged. The deleted-file recovery note from criteria round two is reproduced: changedOnBothSides lists a path deleted by the instance and changed by the starter, but the page checkout command fails and leaves the conflict unresolved. It is a follow-up under the verification rule: criterio",
+          "missing": false
+        },
+        {
+          "hash": "5de660e7d128a27a477b11ca77f0b083bab21bed4afc439b0a05cdd5f194f0f2",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d012",
+          "title": "WO-277-D012: Planning: make the commands page update recovery preserve a deleted instance file as well as an existing one. In docs/KIT.md take-release and the generated docs/OPERATOR.md, branch the…",
+          "summary": "{ \"id\": \"WO-277-D012\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: verify; independent judgment and deferred update recovery\", \"decision\": \"Consume the executor complete review row at the unchanged code identity, and independently exercise the export without installed dependencies, from a directory containing spaces and a nested working directory, plus the terms setup and seed pin. Keep the implementation unchanged. The deleted-file recovery note from criteria round two is reproduced: changedOnBothSides lists a path deleted by the instance and changed by the starter, but the page checkout command fails and leaves the conflict unresolved. It is a follow-up under the verification rule: criterio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-84e1fe3a9001289c",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3adb2e42b437a75badbc315dc8599ed808f751aeefad5a5759e1d4cbe4b0f68c",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d014--the-repair-of-ver-001-the-status-capture-names-its-locations-by-the-kits-placeholder-and-every-line-this-order-writes-is-read-for-a-home-directory",
+          "title": "WO-277-D014: Planning: two ways a home path reaches a committed record without the document gate refusing it. First, completion consumes a document row that stands after later writes inside the…",
+          "summary": "{ \"id\": \"WO-277-D014\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: fix; the repair of VER-001's blocking finding F2, criterion 4\", \"decision\": \"The status capture's two location fields, route.cwd and route.launchpad, held this worktree's absolute home path, which the document gate refuses in a record. Both now read <worktree>, the placeholder the kit's own screens write for the worktree root. No other byte of the capture changed: it is still the readback of npm run resume -- status --json recorded after implementation-ready at 07:33:30 UTC, phase ready-to-verify, next action verify, checkpoint 2. The capture as the executor wrote it stays in the local recovery refs refs/dotln/checkpoint/WO-27",
+          "missing": false
+        },
+        {
+          "hash": "ebb4d7451291f26edca92b1cf49892c39b957c68b1271948fb3462e3c0ae57d3",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d014--the-repair-of-ver-001-the-status-capture-names-its-locations-by-the-kits-placeholder-and-every-line-this-order-writes-is-read-for-a-home-directory",
+          "title": "WO-277-D014: Planning: two ways a home path reaches a committed record without the document gate refusing it. First, completion consumes a document row that stands after later writes inside the…",
+          "summary": "{ \"id\": \"WO-277-D014\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: fix; the repair of VER-001's blocking finding F2, criterion 4\", \"decision\": \"The status capture's two location fields, route.cwd and route.launchpad, held this worktree's absolute home path, which the document gate refuses in a record. Both now read <worktree>, the placeholder the kit's own screens write for the worktree root. No other byte of the capture changed: it is still the readback of npm run resume -- status --json recorded after implementation-ready at 07:33:30 UTC, phase ready-to-verify, next action verify, checkpoint 2. The capture as the executor wrote it stays in the local recovery refs refs/dotln/checkpoint/WO-27",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ed709688ea483bd1",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c73df5a65f85c5c06aadf402d435815a7d6a67b979f2966b429de7e366e5e27f",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d017--the-repairs-one-combined-review-no-blocking-finding-d014s-stale-count-is-corrected-and-a-renamed-file-is-recorded-with-a-follow-up",
+          "title": "WO-277-D017: Planning: a file this instance renamed and the starter then changed. The preview and the publish read the files both sides changed with --no-renames (changedOnBothSides in…",
+          "summary": "{ \"id\": \"WO-277-D017\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: fix; the repair's one combined review, 15:22 to 15:36 UTC\", \"decision\": \"A fix dispatch runs one combined review over the repair's change and no other round. One fresh dotln-worker of the worker table's default for Claude was launched at 15:22:43 UTC. Its brief was the helper's combined brief as its dry run printed it: base 848c8f4a37b9, the tree VER-001's completion records; reviewed tree d624754891f8; brief SHA-256 b416194a08e5f678ecc0b45d513db26b73b225d03b6bdbb924d0450705c51fc7. After the brief, the parent added three notes: the report the repair answers, that the repair's probes write beside themselves and are not to be ru",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3c5993936b048f5d",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4b12945d38c47a39e85bc4bdc01d65e95c6fc2854430c30b490d3525e117c56b",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d018--the-repairs-complete-run-reused-the-suites-that-read-the-page-so-it-is-run-again-in-full",
+          "title": "WO-277-D018: Planning: the runner reuses a suite's passing tasks at the same code identity even when the suite declares among its sources documents that changed since that row. The launchpad suite…",
+          "summary": "{ \"id\": \"WO-277-D018\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: fix; the repair's complete run\", \"decision\": \"The repair's complete run, npm test -- --review from 15:42 UTC, passed in 1 min with 7 fresh tasks. The runner reused 110 tasks from the implementation's passing row of 07:26 UTC at the same code identity, among them the launchpad suite's three files, sync-fixtures, launchpad-planning and process-debt. The code identity leaves out every path under docs/, and the repair changed docs/KIT.md and docs/OPERATOR.md and nothing outside docs/, so the identity stayed 274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e and the reuse rule asks no more. But the launchpad suite dec",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bd0e52a14e35c026",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a30a5ff9a9f17ef3f73a34034a4ef6ec5526f36ec12a7eae1fb1d3adcab98f97",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d019--the-fresh-complete-run-failed-one-suite-on-its-deadline-under-the-hosts-load-the-row-is-composed-again-with-that-file-run-on-its-own",
+          "title": "WO-277-D019: Planning: the target-worktree group's close file, scripts/test-target-worktree-close.mjs, runs near its 15 min deadline in a complete run. In WO-277's runs on 2026-11-15 it took 720 s of…",
+          "summary": "{ \"id\": \"WO-277-D019\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: fix; the repair's fresh complete run\", \"decision\": \"The fresh complete run, npm test -- --review --again --keep-going, ran all 117 tasks from 15:48:54 to 16:35:26 UTC and failed one. target-worktree:file:test-target-worktree-close.mjs timed out at its 15 min deadline while running the case for WO-276 criterion M2, after the cases before it had passed. Every suite that reads the guide or the page passed on the repaired page: the launchpad suite's three files, sync-fixtures, launchpad-planning and process-debt. The timeout is the host's load, not this repair. The close file declares as its sources only scripts/test-target-worktr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-be21bcb82ee48a3a",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ce6832ce7cd6c7be73df1f56aa191cf2771021d15c12895155cb91c4cd9d8ba1",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d026--the-final-reviews-three-findings-each-a-follow-up-two-update-histories-the-release-step-gives-no-route-for-and-a-handoff-advisory-that-names-the-wrong-cause",
+          "title": "WO-277-D026: Planning: three things from WO-277's final review. (1) The commands page's release step, and the preview's line above its both-changed rows, tell a person to keep this instance's bytes…",
+          "summary": "{ \"id\": \"WO-277-D026\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review; FINAL-001, findings F1 to F3\", \"decision\": \"Three findings, each routed to a follow-up: none fails a criterion and none breaks a behavior main had, whose page gave the release step no recovery at all and whose preview already told a person to keep this instance's bytes for a file both sides changed. Round 2's design reviewer named the first two from the guide without running them (D009), the handoff carried them with no register row, and VER-001 read the note and did not reproduce it. final-001/update-recovery-gaps.mjs now reproduces both in synthetic histories. F1: where an earlier update reached main by a squas",
+          "missing": false
+        },
+        {
+          "hash": "1488e1301176bad48543533df5ae6a63ca40442db5bfd125a04d3dd76e330713",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d026--the-final-reviews-three-findings-each-a-follow-up-two-update-histories-the-release-step-gives-no-route-for-and-a-handoff-advisory-that-names-the-wrong-cause",
+          "title": "WO-277-D026: Planning: three things from WO-277's final review. (1) The commands page's release step, and the preview's line above its both-changed rows, tell a person to keep this instance's bytes…",
+          "summary": "{ \"id\": \"WO-277-D026\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review; FINAL-001, findings F1 to F3\", \"decision\": \"Three findings, each routed to a follow-up: none fails a criterion and none breaks a behavior main had, whose page gave the release step no recovery at all and whose preview already told a person to keep this instance's bytes for a file both sides changed. Round 2's design reviewer named the first two from the guide without running them (D009), the handoff carried them with no register row, and VER-001 read the note and did not reproduce it. final-001/update-recovery-gaps.mjs now reproduces both in synthetic histories. F1: where an earlier update reached main by a squas",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8cfdf28d91a0d2b7",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "acb643aa15af0d0aa77ce5f889456208a739b2573e655b8de231f37485c82747",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d028--the-sync-refused-two-checks-on-their-time-limits-while-the-host-was-slow-both-pass-at-ordinary-speed-and-the-document-gate-is-run-when-the-host-is",
+          "title": "WO-277-D028: Planning: the generated-artifact checks share a fixed 30 s limit each (scripts/lib/generated-artifacts.mjs), in npm run sync and in the structural phase of every gate. On 2026-11-15 the…",
+          "summary": "{ \"id\": \"WO-277-D028\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review; FINAL-001, finding F4, 18:22 to 18:41 UTC\", \"decision\": \"After this review's records were written, npm run sync exited 1 with the decisions-index check and the work-order index check each refused as timed out and nothing written for either. Both are bounded at 30 s in the inventory the sync and the gate's structural phase share. Run alone a few minutes later, the decisions-index check took 72 s, 69 s of it the process's own time, and the index check 26 s. A profile of the first shows the shared Markdown parser reading every decisions record and every stamped receipt, and none of this review's files is slow to par",
+          "missing": false
+        },
+        {
+          "hash": "e7b4b2f5fc053eb3cee2166a681fb8e03be4c312c7561ce6a38e5c56e186ec2f",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d028--the-sync-refused-two-checks-on-their-time-limits-while-the-host-was-slow-both-pass-at-ordinary-speed-and-the-document-gate-is-run-when-the-host-is",
+          "title": "WO-277-D028: Planning: the generated-artifact checks share a fixed 30 s limit each (scripts/lib/generated-artifacts.mjs), in npm run sync and in the structural phase of every gate. On 2026-11-15 the…",
+          "summary": "{ \"id\": \"WO-277-D028\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review; FINAL-001, finding F4, 18:22 to 18:42 UTC\", \"decision\": \"After this review's records were written, npm run sync exited 1 with the decisions-index check and the work-order index check each refused as timed out and nothing written for either. Both are bounded at 30 s in the inventory the sync and the gate's structural phase share. Run alone a few minutes later, the decisions-index check took 72 s, 69 s of it the process's own time, and the index check 26 s. A profile of the first shows the shared Markdown parser reading every decisions record and every stamped receipt, and none of this review's files is slow to par",
+          "missing": false
+        },
+        {
+          "hash": "6c158cbbc46b3c6787f3f797bff2aedb9c30dc47090a8d23c6e6343796f3b40d",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d028--the-sync-refused-two-checks-on-their-time-limits-while-the-host-was-slow-both-pass-at-ordinary-speed-and-the-document-gate-is-run-when-the-host-is",
+          "title": "WO-277-D028: Planning: the generated-artifact checks share a fixed 30 s limit each (scripts/lib/generated-artifacts.mjs), in npm run sync and in the structural phase of every gate. On 2026-11-15 the…",
+          "summary": "{ \"id\": \"WO-277-D028\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review; FINAL-001, finding F4, 18:22 to 18:42 UTC\", \"decision\": \"After this review's records were written, npm run sync exited 1 with the decisions-index check and the work-order index check each refused as timed out and nothing written for either. Both are bounded at 30 s in the inventory the sync and the gate's structural phase share. Run alone a few minutes later, the decisions-index check took 72 s, 69 s of it the process's own time, and the index check 26 s. A profile of the first shows the shared Markdown parser reading every decisions record and every stamped receipt, and none of this review's files is slow to par",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5e8a7883add5361b",
+      "key": "decision:docs/evidence/WO-277/decisions.md#wo-277-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1bc6cd6c460be1f113f068e60cf032f9fca33b35ef9bf1e6448fac20b5ff99f8",
+          "ref": "docs/evidence/WO-277/decisions.md#wo-277-d030--the-second-meta-critics-five-points-each-checked-and-accepted-four-are-the-executors-conduct-and-stand-as-recorded-the-missing-messages-rule-is-reopened-with-its-cause-unsettled-and-four-deferred-observations-gain-a-destination",
+          "title": "WO-277-D030: Planning: (1) four things about the commands page that WO-281 weighs and that no row held. R1-08: the step paragraphs quote what commands print and point at blocks by position, and no…",
+          "summary": "{ \"id\": \"WO-277-D030\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review; the second meta critic's report, 19:09 to 19:20 UTC on 2026-11-15\", \"decision\": \"Launch 2 ran 17 min on gpt-6-astra at max, by the launcher's own line, and returned five criticisms, three things to keep and one first change. The report was given to the operator whole at 19:10:55 UTC, in a message the host's transcript holds, before any answer, and is repeated in the turn's closing message with these answers. Four of the five points are about the executor's two sessions and the fifth about a routing this review had already made. Each was checked against its source before it was answered, and each is accepted. Firs",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-277] — The starter's commands page tells a person every step · **queued**
+- [x] [WO-277] — The starter's commands page tells a person every step · **final-reviewed**
 - [ ] [WO-281] — The kit guide is easy to follow · **queued**
 - [ ] [WO-282] — An update leaves nothing to repair by hand · **queued**
 - [ ] [WO-279] — A critic of conduct the kit launches when asked · **queued**
@@ -40,23 +40,6 @@ None.
 
 ## Open
 
-### WO-277
-
-[WO-277 — The starter's commands page tells a person every step: the private terms list before anything publishes, what each step does and what to do when it fails (version assigned at activation)](WO-277-the-starters-commands-page-tells-a-person-every-step.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: none declared.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-277-the-starters-commands-page-tells-a-person-every-step.md](WO-277-the-starters-commands-page-tells-a-person-every-step.md)
-
 ### WO-281
 
 [WO-281 — The kit guide is easy to follow: rewritten for its readers, and its write-backs held to the rule that already asks for it (version assigned at activation)](WO-281-the-kit-guide-is-easy-to-follow.md)
@@ -64,7 +47,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-277: not-control-closed.
+- References: WO-277: control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -81,7 +64,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-277: not-control-closed; WO-281: not-control-closed.
+- References: WO-277: control-closed; WO-281: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

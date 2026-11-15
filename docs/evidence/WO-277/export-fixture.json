@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-11-15T07:27:11.939Z",
+  "command": "node scripts/launchpad.mjs commands, run in the export",
+  "printedBytes": 8831,
+  "printedSha256": "d93996384fb1a5a182ebd8f7dfd2a629308d9c2c2ca56b2bc9135f6ed91b6bd2",
+  "checkoutPageSha256": "d93996384fb1a5a182ebd8f7dfd2a629308d9c2c2ca56b2bc9135f6ed91b6bd2",
+  "printedEqualsCheckoutPage": true,
+  "stepOneHoldsTermsBlockAfterCloneRecipe": true,
+  "frontPageFirstParagraph": "This repository is a launchpad instance exported from DotLn core, ready for\nits owner's projects, work orders and evidence. Start at\n[docs/OPERATOR.md](docs/OPERATOR.md), which `node scripts/launchpad.mjs\ncommands` prints before anything is installed: the commands that set an\ninstance up, run an order and take a release, step by step, with what to\nlook for and what to do when a step fails. The [kit guide](docs/KIT.md) is\nthe reference behind it; the [map](docs/README.md) names each document root\nand its convention; `UPSTREAM.md` records the kit's provenance.",
+  "kitGuideFirstParagraph": "This is the kit guide for the launchpad instance it ships with: the\nreference that the kit's roles and reviewers work from. A person who is\nsetting an instance up, running an order or taking a release starts at\n[OPERATOR.md](OPERATOR.md), which holds the commands of each step with what\nto look for and what to do when one fails, and which `node\nscripts/launchpad.mjs commands` prints before any install."
+}

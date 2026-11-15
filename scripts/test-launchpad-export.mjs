@@ -159,7 +159,7 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
   // migration in the changing order's decisions and release's Read before upgrading.
   assert.equal(
     sha256(readFileSync(join(repository, "scripts/kit/README.client.md"))),
-    "4b60b964df6168c2d9ddef3b806d051d9f3b0e2be5ea40dfef10760909ab9699",
+    "7b2c2d3210e0593b93eb11cba7f49d2f6ed968aabbaf6c680c8b5beffdafad9e",
   );
   const seed = readFileSync(join(kit, "README.md"), "utf8");
   assert.equal(

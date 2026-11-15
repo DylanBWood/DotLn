@@ -1,0 +1,34 @@
+{
+  "recordedAt": "2026-11-15T17:06:13.190Z",
+  "statusRepair": {
+    "originalSha256": "65f8767eb80f7bac49bb370d102ec20038f07cc8a93247e43bc7ffc4b3db251e",
+    "currentSha256": "2183d393739f8b68e69e66154bbcbaac2e3d65275df9596bd06ac40dd190dc31",
+    "originalPrivatePathLines": [
+      13,
+      14
+    ],
+    "currentPrivatePathLines": [],
+    "onlyChangedFields": [
+      "route.cwd",
+      "route.launchpad"
+    ],
+    "allOtherFieldsPreserved": true
+  },
+  "recovery": {
+    "fixtureOnly": true,
+    "pathsWithSpaces": true,
+    "gitVersion": "git version 2.55.0",
+    "previewBothChanged": [
+      "live guide.md",
+      "retired guide.md"
+    ],
+    "mergeExit": 1,
+    "checkoutDeletedExit": 1,
+    "checkoutNamesMissingPath": true,
+    "removeExit": 0,
+    "deletionPreserved": true,
+    "editedFilePreserved": true,
+    "unresolvedAfter": [],
+    "publishJudgmentNotKept": []
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-11-15T16:56:25.025Z",
+  "base": "b8591a7307703d2cd454e51ac0c0557dc10d48d0",
+  "filesRead": 42,
+  "filesNew": 28,
+  "filesChanged": 14,
+  "linesRead": 5961,
+  "filesByType": {
+    ".md": 13,
+    ".jsonl": 1,
+    ".json": 16,
+    ".txt": 4,
+    ".mjs": 8
+  },
+  "filesOutsideGateRecordRule": [
+    "docs/evidence/WO-277/export-fixture.mjs",
+    "docs/evidence/WO-277/repair-001/deleted-file-recovery.mjs",
+    "docs/evidence/WO-277/repair-001/export-fixture.mjs",
+    "docs/evidence/WO-277/repair-001/home-paths.mjs",
+    "docs/evidence/WO-277/repair-001/rename-note.mjs",
+    "docs/evidence/WO-277/verifier-001/deleted-file-probe.mjs",
+    "docs/evidence/WO-277/verifier-001/export-probe.mjs",
+    "scripts/test-launchpad-export.mjs"
+  ],
+  "gateRuleLines": {},
+  "homeDirectoryLinesInAnyType": {},
+  "accountNamesSearched": 1,
+  "accountNameLines": {},
+  "capture": {
+    "original": "refs/dotln/checkpoint/WO-277/3:docs/evidence/WO-277/status.json",
+    "originalSha256": "65f8767eb80f7bac49bb370d102ec20038f07cc8a93247e43bc7ffc4b3db251e",
+    "currentSha256": "2183d393739f8b68e69e66154bbcbaac2e3d65275df9596bd06ac40dd190dc31",
+    "originalLocationFieldsHeldHomeDirectory": true,
+    "originalHomeDirectoryLines": [
+      13,
+      14
+    ],
+    "currentHomeDirectoryLines": [],
+    "fieldsChanged": [
+      "route.cwd",
+      "route.launchpad"
+    ],
+    "placeholder": "<worktree>",
+    "everyOtherFieldEqual": true
+  }
+}

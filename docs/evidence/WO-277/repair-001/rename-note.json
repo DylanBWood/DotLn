@@ -1,0 +1,17 @@
+{
+  "recordedAt": "2026-11-15T15:39:06.010Z",
+  "gitVersion": "git version 2.55.0",
+  "bothChanged": [
+    "guide.md"
+  ],
+  "mergeExit": 0,
+  "oldPathCheckoutExit": 1,
+  "oldPathCheckoutSaysNoMatch": true,
+  "oldPathGitRmExit": 128,
+  "oldPathGitRmSaysNoMatch": true,
+  "oldPathAbsentAtMergeCommit": true,
+  "publishJudgmentNotKept": [],
+  "renamedFileHoldsInstanceBytes": false,
+  "renamedFileHoldsStarterChange": true,
+  "renamedFileHoldsInstanceChange": true
+}

@@ -1,0 +1,68 @@
+{
+  "recordedAt": "2026-11-15T18:06:31.881Z",
+  "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+  "claims": {
+    "document": [
+      "4"
+    ],
+    "review": [
+      "4"
+    ],
+    "plain": [
+      "3",
+      "4"
+    ]
+  },
+  "productGate": {
+    "evidenceRefs": [
+      "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test"
+    ],
+    "checkId": "npm test",
+    "treeHash": "730d35ef2c065aa07246a630e975c339fb1fd01c",
+    "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+    "durationMs": 735960,
+    "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test",
+    "recordedAt": "2026-11-15T16:52:24.433Z",
+    "executed": true,
+    "exitCode": 0
+  },
+  "npmTestRowsAtIdentity": [
+    {
+      "recordedAt": "2026-11-15T07:26:05.641Z",
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "durationMs": 2309153,
+      "treeHash": "63fe59eb5643c100fb90d01a7df28662f4c858f3"
+    },
+    {
+      "recordedAt": "2026-11-15T15:43:45.377Z",
+      "exitCode": 0,
+      "executionMode": "composed",
+      "durationMs": 71942,
+      "treeHash": "4c8a1e3c549c9043b5def728a080d9f7cdf1178d"
+    },
+    {
+      "recordedAt": "2026-11-15T16:35:26.834Z",
+      "exitCode": 1,
+      "executionMode": "forced-fresh",
+      "durationMs": 2792397,
+      "treeHash": "6ec1eb482bd7f68511611a75087f34cc22d74510"
+    },
+    {
+      "recordedAt": "2026-11-15T16:52:24.433Z",
+      "exitCode": 0,
+      "executionMode": "composed",
+      "durationMs": 735960,
+      "treeHash": "730d35ef2c065aa07246a630e975c339fb1fd01c"
+    }
+  ],
+  "handoffSelfReview": {
+    "ledgerAdvisories": [
+      "docs/evidence/WO-277/handoff.md lacks a self-review: line; summarize this run's review ladder as `self-review: found <n>; fixed <n>; recorded <n>`, optionally followed by `; rounds <n>; unreviewed <n> lines (<reason>)`, and cite every round's reports."
+    ],
+    "linePresent": true,
+    "lineCharacters": 365,
+    "reasonCharacters": 287,
+    "readerReasonBound": 200
+  }
+}

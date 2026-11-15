@@ -1,0 +1,49 @@
+test("WO-277 criteria 1 to 3: a fresh export's front page and kit guide send a person to the commands page in their first paragraphs, and the page printed in the export opens every step with a paragraph, holds the private terms list's block after the clone recipe in step 1, names WO-001 in the first planning pass's step and gives the harness manifest's route in the release step", async () => {
+  const { OPERATOR_STEPS } = await import("./lib/operator-commands.mjs");
+  // A document's first paragraph: the text under its title, up to the next
+  // blank line.
+  const firstParagraphLinks = (path) =>
+    markdownLinks(
+      readFileSync(join(kit, path), "utf8").split(/\n[ \t]*\n/u)[1],
+    ).map(({ href }) => href);
+  // Each link is relative to its own document: the front page stands at the
+  // root and the guide beside the page.
+  assert.ok(firstParagraphLinks("README.md").includes("docs/OPERATOR.md"));
+  assert.ok(firstParagraphLinks("docs/KIT.md").includes("OPERATOR.md"));
+  const printed = ok(
+    run(process.execPath, ["scripts/launchpad.mjs", "commands"], { cwd: kit }),
+    "launchpad commands in the export",
+  ).stdout;
+  // The page's steps, each from its numbered heading to the next, in the
+  // step table's order.
+  const steps = printed.split(/^## \d+\. /mu).slice(1);
+  assert.equal(steps.length, OPERATOR_STEPS.length);
+  // A step's paragraph stands under its heading, before any block.
+  const paragraphOf = (step) => step.split("\n\n")[1];
+  OPERATOR_STEPS.forEach(([, heading], index) => {
+    const step = steps[index];
+    assert.ok(step.startsWith(`${heading}\n`), heading);
+    const paragraph = paragraphOf(step);
+    assert.ok(paragraph.length > 0, heading);
+    assert.doesNotMatch(paragraph, /^(?:```|~~~|In the kit guide:)/u, heading);
+    assert.ok(step.indexOf(paragraph) < step.search(/^(?:```|~~~)/mu), heading);
+  });
+  const stepOf = (id) =>
+    steps[OPERATOR_STEPS.findIndex(([step]) => step === id)];
+  const newInstance = stepOf("new-instance");
+  const recipe = newInstance.indexOf("\ngit clone --no-tags ");
+  const terms = newInstance.indexOf(
+    "```sh\nmkdir -p docs/control/local\ncp scripts/kit/terms.example.txt docs/control/local/terms.txt\nnpm run terms -- check CLAUDE.md README.md\n```\n",
+  );
+  assert.ok(recipe >= 0 && terms > recipe);
+  assert.match(paragraphOf(stepOf("first-pass")), /`WO-001`/u);
+  // The page carries this route until an update's emit keeps the instance's
+  // harness manifest itself; this assertion goes when the route does.
+  assert.ok(
+    paragraphOf(stepOf("take-release")).includes(
+      "`git checkout main -- .claude/harness-manifest.json`",
+    ),
+  );
+  // The example list the block copies is a kit file of the export.
+  assert.ok(existsSync(join(kit, "scripts/kit/terms.example.txt")));
+});

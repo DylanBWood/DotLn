@@ -1,4 +1,4 @@
-# WO-277 — The starter's commands page tells a person every step: the private terms list before anything publishes, what each step does and what to do when it fails (version assigned at activation)
+# WO-277 — The starter's commands page tells a person every step: the private terms list before anything publishes, what each step does and what to do when it fails (v1.0.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
