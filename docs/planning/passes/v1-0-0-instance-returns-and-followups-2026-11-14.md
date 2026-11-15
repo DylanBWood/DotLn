@@ -74,7 +74,7 @@ limit should be raisable by editing a file; and before anything is cut,
 say what it is for and whether it is useful. One of them opened an
 `operator override:` (03:14:19Z, digest `64eb6b4d1af2`), closed at 03:19Z.
 
-A second session finished the pass on 2026-11-15, dispatched by a
+A second session took the pass up on 2026-11-15, dispatched by a
 `planning:` line asking it to read the operator's purpose from the messages
 above and repair the pass (journaled 03:22:13Z, class direction, digest
 `2d95bd6ced21133962122c177ab921cc4cae82f9e4d7e465c7e4aa0c33498a58`; two
@@ -467,14 +467,16 @@ delete it. That was wrong, and the draft is withdrawn.
   the rows and signals as observations (`buildGoalSubject` in
   `scripts/lib/plan-subject.mjs`), so that its judgment of a plan rests on
   what the last orders measurably cost and not on the planner's account.
-- **Whether it is used.** Yes. Of the 74 receipts under
-  `docs/planning/refutations/`, 53 cite the table's own figures in their
-  judgment, 23 of those by observation identifier (a search of each
-  receipt's result, holds and dispositions for the identifier and for ten
-  metric names its trap signals carry). Receipt 061 judged an order that
+- **Whether it is used.** The reviewer consumes it. In 53 of the 74
+  receipts under `docs/planning/refutations/`, the judgment (result, holds
+  or dispositions) contains the table's observation identifier (23 of
+  them) or one of ten metric names its trap signals carry. That is a text
+  search, and four of the 53 were read: receipt 061 judged an order that
   added a refusing guard against guard refusals already rising 0, 1, 2, 3
-  over four orders; receipts 058 to 060 each carry a finding drawn from
-  its record of the role roots over their byte ceilings.
+  over four orders, and receipts 058 to 060 each carry a finding drawn
+  from its record of the role roots over their byte ceilings. This shows
+  the table is read and used in a judgment. It does not show how often it
+  changed a verdict, which nothing here measured.
 - **What was wrong.** Only its size limit: 64 KB, written as a number into
   two scripts, refusing the whole file with no setting to raise it, in a
   pass that may not edit scripts. WO-276, fifteen orders in one, made the
@@ -488,8 +490,36 @@ delete it. That was wrong, and the draft is withdrawn.
 
 ### Critic 2, and the critic on the second session
 
-The first session launched a second critic at 03:09Z and stopped it at
-03:21Z when the operator said to stop; it returned no report.
+The first session launched a second critic at 03:09Z. It was stopped when
+that session ended at 03:21Z and returned no report.
+
+The second session ran one critic on its own conduct, as the operator had
+directed for this pass: the same charter, naming the second session's
+transcript as its subject and the first session's as a source for what the
+operator asked, on `astra` (`gpt-6-astra` at `max`), 9 minutes, its report
+in the ignored reviews lane. Both sessions' transcripts were screened
+against the private list first, counts only: 0 refuse-class and 0
+context-class lines. The report reached the operator whole before any
+answer. Its four points all hold:
+
+1. Replies never shown. The session's answers to two of the operator's
+   messages, the correction of its first reading and a question about which
+   branch it was working on, were recorded by the host as reasoning and
+   never displayed: the correction went 34 minutes and the question 16
+   minutes without a shown answer. The session confirmed this in its own
+   transcript and sent both answers with the critic's report. How the
+   replies came to be recorded so is not established; the session now reads
+   its transcript after a reply to the operator.
+2. Completion written before it was observed. This document said the second
+   session had finished the pass while the pass had no receipt. It now says
+   the session took the pass up, and §Validation holds what was observed.
+3. A text search stated as citations. §The planning cost table now says
+   what was searched, how many receipts were read and what the count does
+   not show.
+4. A failed gate reported as a success. A background wrapper that appended
+   the document gate's exit status returned its own, so the host showed the
+   failed run as passed; the session found the failure in the log. Later
+   runs keep the command's status.
 
 ## Orders filed and amended
 
@@ -537,7 +567,7 @@ gives the order of work.
 A seventh order was drafted and withdrawn before publication (second
 session). Under the override the first session filed an order numbered
 WO-283 to delete the planning cost table, on the premise that nothing reads
-it. The plan's reviews read it and cite it
+it. The plan's reviewer is handed it and uses it
 (§The planning cost table: what it is and why it stays), so the draft left
 the plan with its file, its sequence entry and its catalog row; no register
 row named it, and its number is free for the next order filed.
@@ -615,10 +645,18 @@ Each declined candidate, with why and what reverses it:
   when the next order's critics or reviews find the class again after the
   line WO-279's critic draws.
 - **Deleting the planning cost table** (second session; the first
-  session's draft order). 53 of 74 filed plan reviews cite its figures, so
-  deleting it would take the measured record from the plan's reviewer.
-  Reverse on the operator's word, or when ten reviews in a row cite none
-  of it.
+  session's draft order). The judgment of 53 of 74 filed plan reviews
+  mentions its identifiers or metrics, so deleting it would take the
+  measured record from the plan's reviewer. Reverse on the operator's
+  word, or when ten reviews in a row mention none of it.
+- **A jump the meter does not flag** (second session; receipt 069's note).
+  At WO-276 the table shows 57 operator corrections against 3, 3, 3 and 8
+  for the four orders before it, and 69 guard refusals against 1, 9, 3 and
+  6; the meter flags a measure only after three rises running, so neither
+  is flagged, and none of the 57 is attributed to a unit. WO-276 was
+  fifteen orders in one, so its counts are not comparable with a single
+  order's. Reverse when the next single order closes above the earlier
+  range on either measure.
 - **Trimming the planning cost table** (second session). It copies the
   budgets file's dated acceptances whole (19 KB of its 67 KB, a list that
   only grows) and carries each signal's full series. With no size limit
@@ -691,31 +729,46 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
 - Workers, against a cap of 20: five research workers (`dotln-worker`, the
   generated definition's `claude-opus-5-5` at `xhigh`; effective settings
   unverified), 0 h 13 min to 0 h 19 min each and 199,144 to 279,082 tokens;
-  one meta critic on `gpt-6-astra` at `max`, 0 h 14 min, tokens unknown; and
-  one refuter (below). The hook counted the five research workers; the
-  critic's scratch launcher is counted by nothing, the gap WO-279 closes.
+  one meta critic on `gpt-6-astra` at `max`, 0 h 14 min, tokens unknown. The
+  first session launched no refuter. The hook counted the five research
+  workers; the critic's scratch launcher is counted by nothing, the gap
+  WO-279 closes.
 - What the time bought: the research workers' seam maps carried the orders'
   line references and suites; the critic found five errors of conduct,
   three of them in the orders as first written. What it did not buy: about
   an hour of the pass went to answering the operator's setup question in
   chat before the answer was understood to belong in the starter.
+- The second session: `claude-fable-5-2` at `max`, the operator's
+  selection. Usage at 04:04:11Z on 2026-11-15, 0 h 42 min after its
+  dispatch: 36,123,833 total tokens (35,528,399 cached input, 420,521 cache
+  write, 174,665 output, 248 input); source
+  `claude-transcript-message-usage`, scope dispatch, cost unknown. Two
+  worker uses against a cap of 20: the refuter (`dotln-worker`; the host's
+  session context named `claude-opus-5-5`, effort not read back; 0 h 12
+  min, 198,465 tokens) and the critic on `gpt-6-astra` at `max` (0 h 9 min,
+  tokens unknown), which the hook does not count. What the time bought:
+  the draft order's premise checked against the receipts before the table
+  was deleted, and four faults of the session's own conduct found by the
+  critic. What it did not buy: the operator's two messages answered when
+  they were sent.
 
 ## Validation
 
-- `npm run test:docs` on the committed subject (`a3cdfaf2b`): every task
-  passes but `plan` and `plan-refutation-current`, which fail because the
-  pass has no receipt yet.
-- The receipt cannot be filed: filing rebuilds the subject with the
-  planning cost table, and `npm run meta -- --plan-cost` refuses to write it
-  ("exceeds 64 KB"). The table would be 67,334 bytes, of which the
+- First session: `npm run test:docs` on its committed subject
+  (`a3cdfaf2b`) passed every task but `plan` and
+  `plan-refutation-current`, which failed for want of a receipt.
+- First session: the receipt could not be filed. Filing rebuilds the
+  subject with the planning cost table, and `npm run meta -- --plan-cost`
+  refused to write it as over 64 KB. The table would be 67,334 bytes, of which the
   subject's own fifteen rows are 1,532; the rest is the meter's
   whole-record data, the trap signals (41,786) and the dated acceptances
   (19,035), and the traps cover the last five closed orders, WO-276 among
-  them, so every planning pass is refused the same way until five more
-  orders close. The bound is code (`scripts/lib/meta.mjs` `PLAN_COST_BYTES`
-  and the reader in `scripts/lib/plan-subject.mjs`, pinned by a case in
-  `scripts/test-process-debt.mjs`), which a planning branch refuses to
-  write; the pass stops here for the operator.
+  them, so later passes would be refused the same way while WO-276 stays
+  in that window. The bound was code (`scripts/lib/meta.mjs`
+  `PLAN_COST_BYTES` and the reader in `scripts/lib/plan-subject.mjs`,
+  pinned by a case in `scripts/test-process-debt.mjs`), which a planning
+  branch refuses to write; the first session stopped there and waited for
+  the operator.
 - Cleared on the operator's word. From 03:14:19Z to 03:19:36Z on
   2026-11-15 the operator held `operator override:` with the direction that
   what nobody can show to be useful goes. The limit was judged on its
@@ -728,10 +781,11 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
   whole). The table was then written. Bypassed under the override: the
   planning branch's refusal of writes outside `docs/` (WO-135), for these
   three code files alone.
-- The override's record: `npm run resume -- override-record` refused at
-  `operator override: off` ("no main-branch control-plane worktree found":
-  the main checkout holds this planning branch), so the override is
-  recorded here, as the hook directs for a use outside a selected order.
+- The override's record: when the override was turned off,
+  `npm run resume -- override-record` refused with
+  `no main-branch control-plane worktree found`, since the main checkout
+  held this planning branch. The override is therefore recorded here, as
+  the hook directs for a use outside a selected order.
   Bypassed: DotLn hook enforcement, used only for the planning branch's
   refusal of writes outside `docs/` (WO-135). Effects: the three code
   files, the table written, and the draft order to delete the table
@@ -745,3 +799,21 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
   record-wide signals, so that candidate is declined (§NoOps). And the
   draft order rested on the table having no reader, which the receipts
   contradict (§The planning cost table: what it is and why it stays).
+- The override's code change, probed by the second session:
+  `node scripts/harness.mjs bounded -- node --test
+  scripts/test-process-debt.mjs` passed 187 of 187 cases in 0 h 3 min, and
+  no other file under `scripts/` names the removed refusals (a search for
+  their two messages and the constant).
+- The refutation, by the second session: one fresh background
+  `dotln-worker` given the canonical prompt, its schema and the goal card
+  alone, 0 h 12 min. [Receipt 069](../refutations/2026-11-15-planning-1996ba3bd0b1c848-069.md):
+  `aligned-with-findings`, no hold, on the six orders judged; the nine Not
+  now orders' verdicts carry by hash. Its 25 findings are known issues with
+  reopening observations; each is on its order's catalog row in the map
+  with the planner's reading for the executor, together with the plan
+  check's three preflight advisories for WO-279 and WO-281.
+- The document gate before the receipt (second session) failed on one
+  task: `docs-check` read a quoted refusal message beside the override's
+  name in this section as the operator's words. The sentence now names the
+  message as code. The gate's result on the published commit is in the
+  pull request's description.

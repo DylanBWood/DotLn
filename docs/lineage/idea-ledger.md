@@ -49,7 +49,7 @@ in `docs/intake/planning-dispatch-2026-11-14-v1-0-0-instance-returns-and-followu
 (the journal's digest of the message
 `90a23f1bbae9b79f3c760f130d682a0bf463281b37ab7c81d46eace1b1507603`), with
 the further messages of the pass captured beside it; a second session
-finished the pass on 2026-11-15 (Fable 5.2 at max, operator-selected;
+took the pass up on 2026-11-15 (Fable 5.2 at max, operator-selected;
 capture `docs/intake/planning-dispatch-2026-11-15-finish-the-2026-11-14-pass.md`).
 The pass reads the instance's entries against the code, disposes the 75
 open register rows WO-276 left, files WO-277 to WO-282 (the starter's
