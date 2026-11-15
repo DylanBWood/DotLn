@@ -4,7 +4,12 @@
 
 ## Proposed order
 
-- [x] [WO-276] — The queue lands as one order · **final-reviewed**
+- [ ] [WO-277] — The starter's commands page tells a person every step · **queued**
+- [ ] [WO-281] — The kit guide is easy to follow · **queued**
+- [ ] [WO-282] — An update leaves nothing to repair by hand · **queued**
+- [ ] [WO-279] — A critic of conduct the kit launches when asked · **queued**
+- [ ] [WO-278] — The review helper reads a report as written · **queued**
+- [ ] [WO-280] — The discovery timeout traced and repaired · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -34,6 +39,108 @@ None.
 None.
 
 ## Open
+
+### WO-277
+
+[WO-277 — The starter's commands page tells a person every step: the private terms list before anything publishes, what each step does and what to do when it fails (version assigned at activation)](WO-277-the-starters-commands-page-tells-a-person-every-step.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-277-the-starters-commands-page-tells-a-person-every-step.md](WO-277-the-starters-commands-page-tells-a-person-every-step.md)
+
+### WO-281
+
+[WO-281 — The kit guide is easy to follow: rewritten for its readers, and its write-backs held to the rule that already asks for it (version assigned at activation)](WO-281-the-kit-guide-is-easy-to-follow.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-277: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-281-the-kit-guide-is-easy-to-follow.md](WO-281-the-kit-guide-is-easy-to-follow.md)
+
+### WO-282
+
+[WO-282 — An instance takes a release without repairing by hand what the update left (version assigned at activation)](WO-282-an-update-leaves-nothing-to-repair-by-hand.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-277: not-control-closed; WO-281: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-282-an-update-leaves-nothing-to-repair-by-hand.md](WO-282-an-update-leaves-nothing-to-repair-by-hand.md)
+
+### WO-279
+
+[WO-279 — A critic of conduct is a worker the kit launches by name when asked, on the model an instance chooses, Opus 5.5 at xhigh by default, and on a cadence only where an instance turns one on (version assigned at activation)](WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-281: not-control-closed; WO-282: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md](WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md)
+
+### WO-278
+
+[WO-278 — The review helper reads a report as written, a paired round is launched as one, and a worker in an instance probes what the instance runs (version assigned at activation)](WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-279: not-control-closed; WO-281: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md](WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md)
+
+### WO-280
+
+[WO-280 — The five-second discovery timeout is traced to its child and its cause, and repaired or left recording what it needs (version assigned at activation)](WO-280-the-discovery-timeout-is-found-and-fixed.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-280-the-discovery-timeout-is-found-and-fixed.md](WO-280-the-discovery-timeout-is-found-and-fixed.md)
 
 ### WO-244
 
@@ -191,4 +298,9 @@ None.
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
 [WO-244]: WO-244-paired-planning-passes-and-the-synthesis-pass.md
-[WO-276]: WO-276-the-queue-lands-as-one-order.md
+[WO-277]: WO-277-the-starters-commands-page-tells-a-person-every-step.md
+[WO-278]: WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md
+[WO-279]: WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md
+[WO-280]: WO-280-the-discovery-timeout-is-found-and-fixed.md
+[WO-281]: WO-281-the-kit-guide-is-easy-to-follow.md
+[WO-282]: WO-282-an-update-leaves-nothing-to-repair-by-hand.md

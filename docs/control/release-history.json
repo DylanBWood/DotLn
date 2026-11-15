@@ -852,6 +852,10 @@
     {
       "name": "v0.122.1",
       "object": "1e0b3a26258381c12a7a406f5c3d2fad860d51fd"
+    },
+    {
+      "name": "v1.0.0",
+      "object": "e0dcf09677f24c5805ce0ebce10507c9b1b6dce2"
     }
   ],
   "table": "v0.122.1"

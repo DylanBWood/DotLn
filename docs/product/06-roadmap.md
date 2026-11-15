@@ -61,7 +61,7 @@ and reliability to justify its weight — the kernel doesn't care). Synchronized
 views: RPG loadout, statechart, function table, event timeline, and raw IR;
 semantic-hash equality across editable views; glyph system with the visual
 grammar; replay scrubber; the first full transmog skin beyond glyphs (Native
-Emoji) — the friendly skin serves the teammate goal and does not wait for v1.0.
+Emoji) — the friendly skin serves the teammate goal and does not wait for v2.0.0.
 Terminal remains a complete control surface. Exit: the v0.2.0 demo watched
 entirely from the console, then re-watched via replay; every animated element
 opens its mechanics inspector.

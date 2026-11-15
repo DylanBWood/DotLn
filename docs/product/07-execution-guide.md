@@ -2309,9 +2309,15 @@ Standard artifacts, all doc-only:
   runs the complete review selection (WO-144 D010; WO-216);
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
-- `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost
-  table after the subject revision. It carries latest meter rows and trap
-  signals. Stale or missing observations are labeled; cost shortfalls become
+- `npm run meta -- --plan-cost` refreshes the subject-hashed cost table
+  after the subject revision. The table is the measured record the plan's
+  independent reviewer reads: one row for each order of the subject, and
+  the meter's five trap signals over the last five closed orders (among
+  them the operator's corrections and directions, guard refusals, and the
+  growth of the gate and the cold-start documents). It is written whole,
+  with no size limit
+  ([what it is and why it stays](../planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md#the-planning-cost-table-what-it-is-and-why-it-stays)).
+  Stale or missing observations are labeled; cost shortfalls become
   planning input and never create an automatic structural hold;
 - `npm run work-orders -- index` regenerated and `npm run test:docs` green.
   A document-only pass runs no code suite.

@@ -2115,8 +2115,10 @@ rather than merely ordinal.
 
 ## Candidate — Embodied Explorer
 
-The **Embodied Explorer** is a candidate domain role for the post-1.0 simulation
-laboratory, not a new canonical actor kind. Its obligation is to discover an
+The **Embodied Explorer** is a candidate domain role for the simulation
+laboratory after `v2.0.0`, the roadmap's Teammate-ready rung
+([its number](../evidence/WO-276/decisions.md#wo-276-d073--this-orders-release-is-v100-and-the-roadmaps-teammate-ready-rung-is-v200-on-the-operators-word)),
+not a new canonical actor kind. Its obligation is to discover an
 embodiment's affordances and limits from bounded interaction: start with
 rudimentary observations and motor primitives, attempt small movements, and
 compose verified sequences into larger skills such as stabilizing, reaching,

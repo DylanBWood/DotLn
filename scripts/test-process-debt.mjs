@@ -95,7 +95,6 @@ import {
   metaHealth,
   planCostTable,
   planCostText,
-  PLAN_COST_BYTES,
   writeOrderSnapshot,
   recoveredUsageSnapshot,
   usageTotals,
@@ -1994,41 +1993,19 @@ test("WO-172 every closed order carries its failed judgments, repairs and record
     recordedCorrections: 0,
   });
   assert.equal(table.rows[1].metrics, null, "outside the meter's rows");
-  // The table is written whole within its 64 KB bound and refused over it:
-  // at the bound's last byte, one byte past it, in bytes where characters
-  // would still fit, and for the builder's own rows.
-  assert.equal(PLAN_COST_BYTES, 65536);
+  // The table is written whole, at any size: the 64 KB cap it once carried
+  // was removed on the operator's direction of 2026-11-15, after it refused
+  // every planning pass over the meter's whole-record data.
   assert.equal(planCostText(table), json(table));
-  const padded = (bytes) => ({
-    pad: "x".repeat(bytes - Buffer.byteLength(json({ pad: "" }))),
+  const large = planCostTable(meta, {
+    costTable: { schemaVersion: 1 },
+    revision: "fixture",
+    orders: Array.from({ length: 1200 }, (_, index) => ({
+      workOrderId: `WO-${String(index).padStart(4, "0")}`,
+    })),
   });
-  assert.equal(
-    Buffer.byteLength(planCostText(padded(PLAN_COST_BYTES))),
-    PLAN_COST_BYTES,
-  );
-  assert.throws(
-    () => planCostText(padded(PLAN_COST_BYTES + 1)),
-    /Planning cost table exceeds 64 KB/,
-  );
-  const wide = { pad: "é".repeat(PLAN_COST_BYTES / 2) };
-  assert.ok(
-    json(wide).length < PLAN_COST_BYTES,
-    "fewer characters than the bound",
-  );
-  assert.throws(() => planCostText(wide), /Planning cost table exceeds 64 KB/);
-  assert.throws(
-    () =>
-      planCostText(
-        planCostTable(meta, {
-          costTable: { schemaVersion: 1 },
-          revision: "fixture",
-          orders: Array.from({ length: 1200 }, (_, index) => ({
-            workOrderId: `WO-${String(index).padStart(3, "0")}`,
-          })),
-        }),
-      ),
-    /Planning cost table exceeds 64 KB/,
-  );
+  assert.ok(Buffer.byteLength(json(large)) > 65536, "past the old cap");
+  assert.equal(planCostText(large), json(large));
   assert.equal(meta.reopenCandidates.length, 0);
   assert.ok(
     meta.traps.every((row) =>

@@ -416,8 +416,9 @@ implementation, or permission to reproduce source expression. See the
   no activity-as-progress, evidence precedes "done," and utilization is not the
   objective. A profile that omits verification says so instead.
 - The reference implementation is not finished when it works for its author:
-  v1.0 means a person who has never read these docs can declare a bounded intent
-  and receive a verifiable result.
+  v2.0.0, the roadmap's Teammate-ready rung, means a person who has never read
+  these docs can declare a bounded intent and receive a verifiable result
+  ([the rung's number](../evidence/WO-276/decisions.md#wo-276-d073--this-orders-release-is-v100-and-the-roadmaps-teammate-ready-rung-is-v200-on-the-operators-word)).
 
 Two standing acceptance questions for every design decision: **the six-month
 livability test** — would the operator still enjoy living with this system six

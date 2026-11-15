@@ -1,7 +1,9 @@
 # προτείνω (protíno) — the first-party application thesis
 
-**Status:** operator-named product destination, post-1.0 horizon, and member of
-the intended first application cohort. This is the intended shape of a flagship
+**Status:** operator-named product destination, a horizon after `v2.0.0` (the
+roadmap's Teammate-ready rung,
+[its number](../evidence/WO-276/decisions.md#wo-276-d073--this-orders-release-is-v100-and-the-roadmaps-teammate-ready-rung-is-v200-on-the-operators-word)),
+and member of the intended first application cohort. This is the intended shape of a flagship
 first-party DotLn application, not a claim that it is already compelling in
 use, a release allocation, an implementation plan, or permission to distort the
 earlier platform rungs.
