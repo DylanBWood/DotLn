@@ -1,0 +1,12 @@
+{
+  "recordedAt": "2026-11-15T14:34:45.934Z",
+  "bothChanged": [
+    "sample.md"
+  ],
+  "instanceFileState": null,
+  "mergeExit": 1,
+  "documentedCheckoutExit": 1,
+  "documentedCheckoutError": "error: pathspec 'sample.md' did not match any file(s) known to git",
+  "unresolvedAfterCheckout": "sample.md",
+  "gitRmKeepsDeletionAndResolves": true
+}

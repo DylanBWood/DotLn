@@ -1,0 +1,55 @@
+{
+  "recordedAt": "2026-11-15T17:53:48.789Z",
+  "fixture": "scripts/lib/launchpad-fixture.mjs",
+  "noInstall": true,
+  "pathWithSpaces": true,
+  "rootAndNestedOutputEqual": true,
+  "pageSha256": "874635cc92db6456869a883d2117cd64781499d881a281002a7ca54f3f3c702c",
+  "pageBytes": 8973,
+  "sourcePageEqual": true,
+  "manifestHashesEqual": true,
+  "termsBlockAfterCloneBeforePlanning": true,
+  "ownEntriesRequired": true,
+  "firstPassNamesWO001": true,
+  "manifestRecoveryNamed": true,
+  "deletionRecoveryNamed": true,
+  "readmeFirstParagraph": "This repository is a launchpad instance exported from DotLn core, ready for\nits owner's projects, work orders and evidence. Start at\n[docs/OPERATOR.md](docs/OPERATOR.md), which `node scripts/launchpad.mjs\ncommands` prints before anything is installed: the commands that set an\ninstance up, run an order and take a release, step by step, with what to\nlook for and what to do when a step fails. The [kit guide](docs/KIT.md) is\nthe reference behind it; the [map](docs/README.md) names each document root\nand its convention; `UPSTREAM.md` records the kit's provenance.",
+  "guideFirstParagraph": "This is the kit guide for the launchpad instance it ships with: the\nreference that the kit's roles and reviewers work from. A person who is\nsetting an instance up, running an order or taking a release starts at\n[OPERATOR.md](OPERATOR.md), which holds the commands of each step with what\nto look for and what to do when one fails, and which `node\nscripts/launchpad.mjs commands` prints before any install.",
+  "steps": [
+    {
+      "step": 1,
+      "heading": "A new instance",
+      "paragraphBeforeBlocks": true
+    },
+    {
+      "step": 2,
+      "heading": "The first planning pass",
+      "paragraphBeforeBlocks": true
+    },
+    {
+      "step": 3,
+      "heading": "Running an order",
+      "paragraphBeforeBlocks": true
+    },
+    {
+      "step": 4,
+      "heading": "Closing it",
+      "paragraphBeforeBlocks": true
+    },
+    {
+      "step": 5,
+      "heading": "Taking a release",
+      "paragraphBeforeBlocks": true
+    },
+    {
+      "step": 6,
+      "heading": "Registering a repository",
+      "paragraphBeforeBlocks": true
+    },
+    {
+      "step": 7,
+      "heading": "Telling core",
+      "paragraphBeforeBlocks": true
+    }
+  ]
+}

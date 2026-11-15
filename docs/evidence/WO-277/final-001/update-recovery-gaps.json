@@ -1,0 +1,56 @@
+{
+  "recordedAt": "2026-11-15T17:58:01.161Z",
+  "pageParagraphNames": {
+    "checkoutForEachBothChanged": true,
+    "readsRefusedRows": true,
+    "take": false,
+    "squash": false
+  },
+  "earlierUpdateSquashed": {
+    "gitVersion": "git version 2.55.0",
+    "history": "base; the starter changes seed.md; main takes that by git merge --squash; the starter changes seed.md again; the instance never edits it",
+    "bothChanged": [
+      "seed.md"
+    ],
+    "merge": {
+      "exit": 1,
+      "stoppedOn": [
+        "seed.md"
+      ]
+    },
+    "pageRecovery": {
+      "path": "seed.md",
+      "checkoutExit": 0
+    },
+    "publishJudgmentNotKept": [],
+    "fileAfterPageRecovery": "the starter's first change",
+    "starterChangeLeftOut": true,
+    "counterCase": {
+      "resolution": "seed.md resolved to the starter's bytes",
+      "publishJudgmentNotKept": [
+        "seed.md"
+      ]
+    }
+  },
+  "editedKitFile": {
+    "history": "base lists kit.md in the kit manifest; the instance edits kit.md and own.md; the starter changes both",
+    "bothChanged": [
+      "own.md"
+    ],
+    "merge": {
+      "exit": 1,
+      "stoppedOn": [
+        "kit.md",
+        "own.md"
+      ]
+    },
+    "unresolvedAfterPageRecovery": [
+      "kit.md"
+    ],
+    "blockGoesOn": {
+      "addExit": 0,
+      "commitExit": 0
+    },
+    "mergeCommitHoldsConflictMarkersInKitFile": true
+  }
+}

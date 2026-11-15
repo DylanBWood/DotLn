@@ -1,0 +1,313 @@
+{
+  "recordedAt": "2026-11-15T17:07:41.927Z",
+  "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+  "ledgerAdvisories": [
+    "docs/evidence/WO-277/handoff.md lacks a self-review: line; summarize this run's review ladder as `self-review: found <n>; fixed <n>; recorded <n>`, optionally followed by `; rounds <n>; unreviewed <n> lines (<reason>)`, and cite every round's reports."
+  ],
+  "productClaims": {
+    "document": [],
+    "review": [
+      "4"
+    ],
+    "plain": [
+      "3",
+      "4"
+    ]
+  },
+  "coverage": {
+    "advisories": [],
+    "productGate": {
+      "evidenceRefs": [
+        "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "730d35ef2c065aa07246a630e975c339fb1fd01c",
+      "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+      "durationMs": 735960,
+      "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test",
+      "recordedAt": "2026-11-15T16:52:24.433Z",
+      "executed": true,
+      "exitCode": 0
+    }
+  },
+  "currentRequiredSuites": [
+    "build",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "git-surface",
+    "host",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "target-worktree",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "resume",
+    "launchpad",
+    "workstream-pilot",
+    "instance-history",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "siblings-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "launchpad-planning",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "currentTaskFields": [
+    "name",
+    "durationMs",
+    "slowestCases",
+    "peakFootprintBytes",
+    "peakRssBytes",
+    "memoryBudgetBytes",
+    "footprintSource",
+    "droppedOutputBytes",
+    "startedAt",
+    "finishedAt",
+    "exitCode",
+    "executed",
+    "temporaryRootsRemoved",
+    "concurrentAtStart",
+    "predecessors",
+    "schedulerDurationMs",
+    "loadClass",
+    "loadFactor",
+    "peerCap",
+    "reservedSlots",
+    "slotCapacity",
+    "hostCapacity",
+    "timeoutMs",
+    "lanes",
+    "hostLaneWaitMs",
+    "hostLaneWaitRelations",
+    "hostLaneSlots"
+  ],
+  "relevantRuns": [
+    {
+      "evidenceRefs": [
+        "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "4c8a1e3c549c9043b5def728a080d9f7cdf1178d",
+      "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+      "durationMs": 71942,
+      "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test",
+      "recordedAt": "2026-11-15T15:43:45.377Z",
+      "executed": true,
+      "exitCode": 0,
+      "executionMode": "composed",
+      "relevantTasks": [
+        {
+          "name": "registrations",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T15:42:57.008Z",
+          "finishedAt": "2026-11-15T15:42:57.768Z",
+          "durationMs": 737
+        },
+        {
+          "name": "target-worktree:file:test-target-worktree-close.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "launchpad:file:test-launchpad-update.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "launchpad:file:test-launchpad-export.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "launchpad:file:test-launchpad-seeds.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "sync-fixtures",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "launchpad-planning",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        }
+      ]
+    },
+    {
+      "evidenceRefs": [
+        "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "6ec1eb482bd7f68511611a75087f34cc22d74510",
+      "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+      "durationMs": 2792397,
+      "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test",
+      "recordedAt": "2026-11-15T16:35:26.834Z",
+      "executed": true,
+      "exitCode": 1,
+      "executionMode": "forced-fresh",
+      "relevantTasks": [
+        {
+          "name": "registrations",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T15:49:17.964Z",
+          "finishedAt": "2026-11-15T15:49:18.725Z",
+          "durationMs": 738
+        },
+        {
+          "name": "sync-fixtures",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T15:57:21.042Z",
+          "finishedAt": "2026-11-15T16:04:30.279Z",
+          "durationMs": 427955
+        },
+        {
+          "name": "launchpad-planning",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T16:12:14.908Z",
+          "finishedAt": "2026-11-15T16:21:18.452Z",
+          "durationMs": 536996
+        },
+        {
+          "name": "target-worktree:file:test-target-worktree-close.mjs",
+          "exitCode": 1,
+          "executed": true,
+          "startedAt": "2026-11-15T16:13:50.679Z",
+          "finishedAt": "2026-11-15T16:28:53.253Z",
+          "durationMs": 900221
+        },
+        {
+          "name": "launchpad:file:test-launchpad-export.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T16:28:12.141Z",
+          "finishedAt": "2026-11-15T16:34:23.171Z",
+          "durationMs": 365162
+        },
+        {
+          "name": "launchpad:file:test-launchpad-seeds.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T16:34:23.182Z",
+          "finishedAt": "2026-11-15T16:34:42.283Z",
+          "durationMs": 17250
+        },
+        {
+          "name": "launchpad:file:test-launchpad-update.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T16:24:17.274Z",
+          "finishedAt": "2026-11-15T16:35:21.180Z",
+          "durationMs": 652304
+        }
+      ]
+    },
+    {
+      "evidenceRefs": [
+        "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test"
+      ],
+      "checkId": "npm test",
+      "treeHash": "730d35ef2c065aa07246a630e975c339fb1fd01c",
+      "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+      "durationMs": 735960,
+      "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test",
+      "recordedAt": "2026-11-15T16:52:24.433Z",
+      "executed": true,
+      "exitCode": 0,
+      "executionMode": "composed",
+      "relevantTasks": [
+        {
+          "name": "registrations",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T16:40:30.670Z",
+          "finishedAt": "2026-11-15T16:40:31.519Z",
+          "durationMs": 825
+        },
+        {
+          "name": "launchpad:file:test-launchpad-update.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "launchpad:file:test-launchpad-export.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "launchpad:file:test-launchpad-seeds.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "sync-fixtures",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "launchpad-planning",
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "durationMs": 0
+        },
+        {
+          "name": "target-worktree:file:test-target-worktree-close.mjs",
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-11-15T16:41:13.489Z",
+          "finishedAt": "2026-11-15T16:52:23.934Z",
+          "durationMs": 657091
+        }
+      ]
+    }
+  ]
+}

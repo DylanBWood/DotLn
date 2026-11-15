@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-11-15T14:33:56.351Z",
+  "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+  "advisories": [],
+  "productGate": {
+    "evidenceRefs": [
+      "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test"
+    ],
+    "checkId": "npm test",
+    "treeHash": "63fe59eb5643c100fb90d01a7df28662f4c858f3",
+    "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+    "durationMs": 2309153,
+    "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm test",
+    "recordedAt": "2026-11-15T07:26:05.641Z",
+    "executed": true,
+    "exitCode": 0
+  }
+}

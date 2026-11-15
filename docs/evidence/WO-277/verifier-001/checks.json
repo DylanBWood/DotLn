@@ -1,0 +1,100 @@
+{
+  "recordedAt": "2026-11-15T14:35:33.688Z",
+  "subjectCodeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+  "checks": [
+    {
+      "name": "export",
+      "command": "bounded node --test: independent export page and terms setup",
+      "startedAt": "2026-11-15T14:34:01.805Z",
+      "finishedAt": "2026-11-15T14:34:10.037Z",
+      "durationMs": 8232,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "name": "deletion",
+      "command": "bounded node --test: both-changed deletion recovery",
+      "startedAt": "2026-11-15T14:34:45.588Z",
+      "finishedAt": "2026-11-15T14:34:45.951Z",
+      "durationMs": 363,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "name": "seed-pin",
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'front page is a pinned instance seed' scripts/test-launchpad-export.mjs",
+      "startedAt": "2026-11-15T14:34:49.529Z",
+      "finishedAt": "2026-11-15T14:34:55.902Z",
+      "durationMs": 6373,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "name": "generator",
+      "command": "node scripts/harness.mjs bounded -- node scripts/lib/operator-commands.mjs --check",
+      "startedAt": "2026-11-15T14:35:13.274Z",
+      "finishedAt": "2026-11-15T14:35:13.467Z",
+      "durationMs": 193,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "name": "format",
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "startedAt": "2026-11-15T14:35:17.129Z",
+      "finishedAt": "2026-11-15T14:35:29.514Z",
+      "durationMs": 12385,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    }
+  ],
+  "documentGate": {
+    "state": "failed",
+    "reason": "subject status capture contains absolute home paths",
+    "evidence": "document-gates.json",
+    "rows": [
+      {
+        "evidenceRefs": [
+          "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs"
+        ],
+        "checkId": "npm run test:docs",
+        "treeHash": "1eb1a428403117d6e9da9f297cf8aa065f7a5fda",
+        "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+        "durationMs": 132677,
+        "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs",
+        "recordedAt": "2026-11-15T14:42:43.883Z",
+        "executed": true,
+        "exitCode": 1
+      },
+      {
+        "evidenceRefs": [
+          "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs"
+        ],
+        "checkId": "npm run test:docs",
+        "treeHash": "86c71c411a16d0a832f0e5c95f3823af23b4d448",
+        "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+        "durationMs": 135651,
+        "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs",
+        "recordedAt": "2026-11-15T14:47:45.418Z",
+        "executed": true,
+        "exitCode": 1
+      }
+    ]
+  },
+  "termsScreen": {
+    "recordedAt": "2026-11-15T14:45:13.592271+00:00",
+    "command": "node scripts/terms.mjs branch",
+    "exitCode": 0,
+    "listStatus": "present",
+    "changedFiles": 33,
+    "refuseLines": 0,
+    "contextLines": 0,
+    "contextLinesRead": 0
+  },
+  "followup": "FUP-3285bd4a53c4c3e9"
+}

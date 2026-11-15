@@ -1,0 +1,2639 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-277",
+  "workOrderPath": "docs/work-orders/WO-277-the-starters-commands-page-tells-a-person-every-step.md",
+  "phase": "ready-to-verify",
+  "route": {
+    "action": "verify",
+    "role": "verifier",
+    "phrase": "resume: verify",
+    "stop": null,
+    "mode": "dispatch",
+    "transport": "claude-cli-print",
+    "cwd": "<worktree>",
+    "launchpad": "<worktree>",
+    "eventCount": 2
+  },
+  "latestVerification": null,
+  "verificationPath": null,
+  "latestVerdict": null,
+  "finalReview": null,
+  "finalReviewPath": null,
+  "latestAttestation": {
+    "harness": "claude-code",
+    "harnessVersion": "2.1.325",
+    "model": "claude-fable-5-2",
+    "effort": "xhigh",
+    "source": "claude-session-readback",
+    "accountLabel": "not-applicable"
+  },
+  "effortDrift": [
+    {
+      "effort": "xhigh"
+    }
+  ],
+  "recordedAt": "2026-11-15T07:33:30.130Z",
+  "elapsed": {
+    "implementation": 9163021
+  },
+  "latestCheckpoint": {
+    "sha": "3cfe9faa67bb9228970d568b145a1e0a22e6bc76",
+    "ref": "refs/dotln/checkpoint/WO-277/2",
+    "restoreCommand": "git checkout refs/dotln/checkpoint/WO-277/2 -- ."
+  },
+  "legalNextActions": [
+    "verify"
+  ],
+  "legalOffRamps": [
+    "withdraw",
+    "correct",
+    "override-record",
+    "reopen-handoff"
+  ],
+  "boundAcceptances": [],
+  "waivedCriteria": [],
+  "unmetCriteria": [],
+  "withdrawal": null,
+  "corrections": [],
+  "overrideRecords": [],
+  "defectiveCriteria": [],
+  "retractedOffRamps": [],
+  "reopenedHandoffs": [],
+  "dependencies": {
+    "source": "conservative-tokens",
+    "entries": [],
+    "blocking": []
+  },
+  "orders": [
+    {
+      "workOrder": "WO-003",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "repair": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-004",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "repair": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-012",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-101",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-005",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-006",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "repair": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-015",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-007",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "repair": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-013",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-024",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-025",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-019",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "repair": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-027",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-017",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-016",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-008",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-018",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-023",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": null,
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": "unknown",
+        "finalReview": "unknown"
+      }
+    },
+    {
+      "workOrder": "WO-028",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-04T21:22:21.995Z",
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": 889287,
+        "finalReview": 845318
+      }
+    },
+    {
+      "workOrder": "WO-026",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-05T00:27:23.191Z",
+      "elapsed": {
+        "implementation": 3740817,
+        "verification": 954799,
+        "finalReview": 1097192
+      }
+    },
+    {
+      "workOrder": "WO-020",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-05T03:44:27.739Z",
+      "elapsed": {
+        "implementation": 7107547,
+        "verification": 813288,
+        "finalReview": 1545384
+      }
+    },
+    {
+      "workOrder": "WO-030",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-05T07:04:56.153Z",
+      "elapsed": {
+        "implementation": 4170929,
+        "verification": 1153091,
+        "finalReview": 1885810
+      }
+    },
+    {
+      "workOrder": "WO-009",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-05T23:20:36.763Z",
+      "elapsed": {
+        "implementation": 10530866,
+        "verification": 879688,
+        "finalReview": 1755143
+      }
+    },
+    {
+      "workOrder": "WO-010",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-06T15:44:16.159Z",
+      "elapsed": {
+        "implementation": 36346888,
+        "verification": 833654,
+        "finalReview": 1427664
+      }
+    },
+    {
+      "workOrder": "WO-011",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-06T18:49:19.762Z",
+      "elapsed": {
+        "implementation": 6527691,
+        "verification": 701763,
+        "finalReview": 1673600
+      }
+    },
+    {
+      "workOrder": "WO-021",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-05T17:08:42.329Z",
+      "elapsed": {
+        "implementation": 32565591,
+        "verification": 863517,
+        "finalReview": 1224163
+      }
+    },
+    {
+      "workOrder": "WO-022",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-06T04:12:47.952Z",
+      "elapsed": {
+        "implementation": 4179858,
+        "verification": 1410848,
+        "finalReview": 1410577
+      }
+    },
+    {
+      "workOrder": "WO-029",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-05T19:27:11.752Z",
+      "elapsed": {
+        "implementation": 3709599,
+        "verification": 1244232,
+        "finalReview": 960052
+      }
+    },
+    {
+      "workOrder": "WO-031",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-06T01:56:51.293Z",
+      "elapsed": {
+        "implementation": 2743960,
+        "verification": 664336,
+        "finalReview": 1358208
+      }
+    },
+    {
+      "workOrder": "WO-032",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-07T21:31:02.803Z",
+      "elapsed": {
+        "implementation": 5155670,
+        "verification": 994807,
+        "finalReview": 2239093
+      }
+    },
+    {
+      "workOrder": "WO-038",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-07T16:18:44.050Z",
+      "elapsed": {
+        "implementation": 43658628,
+        "verification": 786612,
+        "finalReview": 1625815
+      }
+    },
+    {
+      "workOrder": "WO-039",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-08T16:33:32.509Z",
+      "elapsed": {
+        "implementation": 14225760,
+        "verification": 1090197,
+        "repair": 27103415,
+        "finalReview": 2205496
+      }
+    },
+    {
+      "workOrder": "WO-041",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-07T18:44:50.878Z",
+      "elapsed": {
+        "implementation": 36409941,
+        "verification": 923951,
+        "repair": 3355985,
+        "finalReview": 1454946
+      }
+    },
+    {
+      "workOrder": "WO-042",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-09T16:13:50.460Z",
+      "elapsed": {
+        "implementation": 14690100,
+        "verification": 2658875,
+        "repair": 2264964,
+        "finalReview": 3521278
+      }
+    },
+    {
+      "workOrder": "WO-043",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-11T19:31:17.047Z",
+      "elapsed": {
+        "implementation": 30075955,
+        "verification": 1857525,
+        "repair": 1442856,
+        "finalReview": 1202373
+      }
+    },
+    {
+      "workOrder": "WO-044",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-15T03:49:29.573Z",
+      "elapsed": {
+        "implementation": 12859963,
+        "verification": 1082838,
+        "repair": 1254653,
+        "finalReview": 986547
+      }
+    },
+    {
+      "workOrder": "WO-045",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-15T20:56:41.166Z",
+      "elapsed": {
+        "implementation": 2342020,
+        "verification": 465231,
+        "repair": 2852472,
+        "finalReview": 1951440
+      }
+    },
+    {
+      "workOrder": "WO-046",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-15T23:22:48.732Z",
+      "elapsed": {
+        "implementation": 1328797,
+        "verification": 824463,
+        "finalReview": 821080
+      }
+    },
+    {
+      "workOrder": "WO-047",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T02:47:20.972Z",
+      "elapsed": {
+        "implementation": 1034402,
+        "verification": 833186,
+        "repair": 1460308,
+        "finalReview": 3351574
+      }
+    },
+    {
+      "workOrder": "WO-048",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T00:03:34.089Z",
+      "elapsed": {
+        "implementation": 1691677,
+        "verification": 693365,
+        "finalReview": 1922643
+      }
+    },
+    {
+      "workOrder": "WO-049",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T22:59:11.973Z",
+      "elapsed": {
+        "implementation": 4837065,
+        "verification": 1042596,
+        "repair": 2890934,
+        "finalReview": 1990728
+      }
+    },
+    {
+      "workOrder": "WO-050",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T01:39:49.630Z",
+      "elapsed": {
+        "implementation": 1869688,
+        "verification": 308930,
+        "finalReview": 2231517
+      }
+    },
+    {
+      "workOrder": "WO-051",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T20:55:51.498Z",
+      "elapsed": {
+        "implementation": 2322102,
+        "verification": 1093807,
+        "finalReview": 1611248
+      }
+    },
+    {
+      "workOrder": "WO-052",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-17T14:26:58.638Z",
+      "elapsed": {
+        "implementation": 40357904,
+        "verification": 2010136,
+        "finalReview": 2581239
+      }
+    },
+    {
+      "workOrder": "WO-053",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-18T00:42:35.301Z",
+      "elapsed": {
+        "implementation": 3354678,
+        "verification": 1009072,
+        "finalReview": 1358265
+      }
+    },
+    {
+      "workOrder": "WO-054",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-18T21:25:35.278Z",
+      "elapsed": {
+        "implementation": 16982140,
+        "verification": 873188,
+        "repair": 345354,
+        "finalReview": 1607421
+      }
+    },
+    {
+      "workOrder": "WO-055",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-18T23:54:23.642Z",
+      "elapsed": {
+        "implementation": 2211468,
+        "verification": 1294455,
+        "finalReview": 1782289
+      }
+    },
+    {
+      "workOrder": "WO-056",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T06:11:31.489Z",
+      "elapsed": {
+        "implementation": 11599636,
+        "verification": 443501,
+        "finalReview": 593559
+      }
+    },
+    {
+      "workOrder": "WO-057",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-30T02:50:52.527Z",
+      "elapsed": {
+        "implementation": 2102545,
+        "verification": 982699,
+        "finalReview": 945129
+      }
+    },
+    {
+      "workOrder": "WO-058",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-30T18:12:37.767Z",
+      "elapsed": {
+        "implementation": 3028646,
+        "verification": 922350,
+        "finalReview": 1063090
+      }
+    },
+    {
+      "workOrder": "WO-059",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T02:47:07.725Z",
+      "elapsed": {
+        "implementation": 3444912,
+        "verification": 832365,
+        "repair": 2904761,
+        "finalReview": 592100
+      }
+    },
+    {
+      "workOrder": "WO-060",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-28T17:54:18.901Z",
+      "elapsed": {
+        "implementation": 4855245,
+        "verification": 629700,
+        "finalReview": 1314441
+      }
+    },
+    {
+      "workOrder": "WO-061",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T23:16:25.511Z",
+      "elapsed": {
+        "implementation": 3797115,
+        "verification": 446813,
+        "finalReview": 828361
+      }
+    },
+    {
+      "workOrder": "WO-062",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-02T03:24:21.503Z",
+      "elapsed": {
+        "implementation": 1638816,
+        "verification": 414362,
+        "repair": 1496804,
+        "finalReview": 870418
+      }
+    },
+    {
+      "workOrder": "WO-063",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-22T02:12:36.701Z",
+      "elapsed": {
+        "implementation": 1183627,
+        "verification": 549616,
+        "finalReview": 1009416
+      }
+    },
+    {
+      "workOrder": "WO-064",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-22T19:37:29.752Z",
+      "elapsed": {
+        "implementation": 2745661,
+        "verification": 495382,
+        "repair": 959970,
+        "finalReview": 1856419
+      }
+    },
+    {
+      "workOrder": "WO-065",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-29T02:34:40.659Z",
+      "elapsed": {
+        "implementation": 1935268,
+        "verification": 1352610,
+        "repair": 1219625,
+        "finalReview": 1183881
+      }
+    },
+    {
+      "workOrder": "WO-066",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-30T07:55:22.467Z",
+      "elapsed": {
+        "implementation": 7084369,
+        "verification": 1401323,
+        "finalReview": 887490
+      }
+    },
+    {
+      "workOrder": "WO-067",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-15T19:05:22.096Z",
+      "elapsed": {
+        "implementation": 2427029,
+        "verification": 988464,
+        "finalReview": 1528182
+      }
+    },
+    {
+      "workOrder": "WO-068",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T16:36:54.826Z",
+      "elapsed": {
+        "implementation": 3692768,
+        "verification": 1075023,
+        "finalReview": 1214376
+      }
+    },
+    {
+      "workOrder": "WO-069",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-21T06:18:36.215Z",
+      "elapsed": {
+        "implementation": 3516928,
+        "verification": 1147377,
+        "repair": 1570924,
+        "finalReview": 1292351
+      }
+    },
+    {
+      "workOrder": "WO-070",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-26T00:47:13.173Z",
+      "elapsed": {
+        "implementation": 6497309,
+        "verification": 508402,
+        "finalReview": 1374878
+      }
+    },
+    {
+      "workOrder": "WO-071",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-21T13:59:34.786Z",
+      "elapsed": {
+        "implementation": 2761286,
+        "verification": 700148,
+        "finalReview": 1016387
+      }
+    },
+    {
+      "workOrder": "WO-072",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-11T23:43:59.691Z",
+      "elapsed": {
+        "implementation": 4278115,
+        "verification": 849729,
+        "repair": 2127110,
+        "finalReview": 1535852
+      }
+    },
+    {
+      "workOrder": "WO-073",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-09T20:39:37.099Z",
+      "elapsed": {
+        "implementation": 4277632,
+        "verification": 2333196,
+        "finalReview": 1062956
+      }
+    },
+    {
+      "workOrder": "WO-074",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-09T06:58:15.950Z",
+      "elapsed": {
+        "implementation": 5128534,
+        "verification": 1044139,
+        "finalReview": 3161496
+      }
+    },
+    {
+      "workOrder": "WO-075",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-09T18:13:12.841Z",
+      "elapsed": {
+        "implementation": 12043807,
+        "verification": 770713,
+        "repair": 4749200,
+        "finalReview": 3394926
+      }
+    },
+    {
+      "workOrder": "WO-076",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-12T02:34:32.980Z",
+      "elapsed": {
+        "implementation": 5584079,
+        "verification": 1196143,
+        "finalReview": 2073049
+      }
+    },
+    {
+      "workOrder": "WO-077",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-10T13:58:22.291Z",
+      "elapsed": {
+        "implementation": 3007266,
+        "verification": 947258,
+        "finalReview": 1304056
+      }
+    },
+    {
+      "workOrder": "WO-078",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-11T19:04:14.018Z",
+      "elapsed": {
+        "implementation": 7767285,
+        "verification": 657404,
+        "repair": 2381923,
+        "finalReview": 2873576
+      }
+    },
+    {
+      "workOrder": "WO-079",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-21T03:21:09.085Z",
+      "elapsed": {
+        "implementation": 2828322,
+        "verification": 741850,
+        "finalReview": 848771
+      }
+    },
+    {
+      "workOrder": "WO-080",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-24T17:24:54.803Z",
+      "elapsed": {
+        "implementation": 8163070,
+        "verification": 1342094,
+        "finalReview": 1740818
+      }
+    },
+    {
+      "workOrder": "WO-084",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-19T05:48:01.811Z",
+      "elapsed": {
+        "implementation": 1477816,
+        "verification": 1324157,
+        "finalReview": 1504540
+      }
+    },
+    {
+      "workOrder": "WO-085",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-26T21:23:17.516Z",
+      "elapsed": {
+        "implementation": 2822646,
+        "verification": 3387902,
+        "repair": 1825640,
+        "finalReview": 1910250
+      }
+    },
+    {
+      "workOrder": "WO-086",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-29T19:54:28.939Z",
+      "elapsed": {
+        "implementation": 10980668,
+        "verification": 516189,
+        "repair": 1172618,
+        "finalReview": 1123466
+      }
+    },
+    {
+      "workOrder": "WO-087",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-30T01:28:56.985Z",
+      "elapsed": {
+        "implementation": 3666040,
+        "verification": 785291,
+        "finalReview": 717452
+      }
+    },
+    {
+      "workOrder": "WO-090",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T17:32:49.947Z",
+      "elapsed": {
+        "implementation": 1535258,
+        "verification": 506354,
+        "repair": 1416096,
+        "finalReview": 714988
+      }
+    },
+    {
+      "workOrder": "WO-099",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T23:11:34.713Z",
+      "elapsed": {
+        "implementation": 1974812,
+        "verification": 600968,
+        "repair": 663402,
+        "finalReview": 706227
+      }
+    },
+    {
+      "workOrder": "WO-100",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-22T21:27:50.746Z",
+      "elapsed": {
+        "implementation": 5521643,
+        "verification": 989439,
+        "repair": 1335218,
+        "finalReview": 1000019
+      }
+    },
+    {
+      "workOrder": "WO-102",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T16:11:49.003Z",
+      "elapsed": {
+        "implementation": 2652513,
+        "verification": 406905,
+        "finalReview": 3843667
+      }
+    },
+    {
+      "workOrder": "WO-103",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T15:41:34.367Z",
+      "elapsed": {
+        "implementation": 2637347,
+        "verification": 430438,
+        "finalReview": 2013081
+      }
+    },
+    {
+      "workOrder": "WO-105",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T18:27:28.838Z",
+      "elapsed": {
+        "implementation": 6646406,
+        "verification": 682859,
+        "finalReview": 2022207
+      }
+    },
+    {
+      "workOrder": "WO-107",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-02T03:01:28.029Z",
+      "elapsed": {
+        "implementation": 6333719,
+        "verification": 496270,
+        "finalReview": 1117113
+      }
+    },
+    {
+      "workOrder": "WO-108",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-06T21:36:56.902Z",
+      "elapsed": {
+        "implementation": 5066636,
+        "verification": 1183151,
+        "finalReview": 1661814
+      }
+    },
+    {
+      "workOrder": "WO-109",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-08T01:18:26.844Z",
+      "elapsed": {
+        "implementation": 8288738,
+        "verification": 1128934,
+        "finalReview": 1865780
+      }
+    },
+    {
+      "workOrder": "WO-110",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T20:27:52.516Z",
+      "elapsed": {
+        "implementation": 2486372,
+        "verification": 519526,
+        "repair": 2235456,
+        "finalReview": 1122433
+      }
+    },
+    {
+      "workOrder": "WO-111",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-25T00:56:36.469Z",
+      "elapsed": {
+        "implementation": 4566098,
+        "verification": 534605,
+        "repair": 1308174,
+        "finalReview": 1457688
+      }
+    },
+    {
+      "workOrder": "WO-112",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-07T05:28:04.567Z",
+      "elapsed": {
+        "implementation": 5224246,
+        "verification": 1464587,
+        "repair": 6363662,
+        "finalReview": 2620036
+      }
+    },
+    {
+      "workOrder": "WO-114",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-24T23:52:39.672Z",
+      "elapsed": {
+        "implementation": 3761470,
+        "verification": 1708901,
+        "repair": 990838,
+        "finalReview": 1133569
+      }
+    },
+    {
+      "workOrder": "WO-115",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-26T17:04:38.329Z",
+      "elapsed": {
+        "implementation": 16370,
+        "verification": 304333,
+        "finalReview": 103101
+      }
+    },
+    {
+      "workOrder": "WO-116",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-29T00:15:01.581Z",
+      "elapsed": {
+        "implementation": 4460093,
+        "verification": 288401,
+        "finalReview": 873424
+      }
+    },
+    {
+      "workOrder": "WO-117",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-29T17:57:32.707Z",
+      "elapsed": {
+        "implementation": 3242169,
+        "verification": 2477396,
+        "finalReview": 1567415
+      }
+    },
+    {
+      "workOrder": "WO-118",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-13T15:09:54.434Z",
+      "elapsed": {
+        "implementation": 8246734,
+        "verification": 1492182,
+        "repair": 6071157,
+        "finalReview": 3799847
+      }
+    },
+    {
+      "workOrder": "WO-119",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-17T01:02:18.563Z",
+      "elapsed": {
+        "implementation": 2954646,
+        "verification": 1289073,
+        "finalReview": 1343996
+      }
+    },
+    {
+      "workOrder": "WO-120",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-22T02:47:26.180Z",
+      "elapsed": {
+        "implementation": 2089449,
+        "verification": 533856,
+        "finalReview": 1528722
+      }
+    },
+    {
+      "workOrder": "WO-121",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-17T01:41:38.023Z",
+      "elapsed": {
+        "implementation": 3014350,
+        "verification": 854406,
+        "repair": 874629,
+        "finalReview": 1509467
+      }
+    },
+    {
+      "workOrder": "WO-122",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-17T15:31:56.872Z",
+      "elapsed": {
+        "implementation": 41791689,
+        "verification": 1005967,
+        "finalReview": 1481643
+      }
+    },
+    {
+      "workOrder": "WO-123",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-05T23:24:07.289Z",
+      "elapsed": {
+        "implementation": 12440994,
+        "verification": 889391,
+        "repair": 5723980,
+        "finalReview": 7394836
+      }
+    },
+    {
+      "workOrder": "WO-124",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-02T00:37:38.969Z",
+      "elapsed": {
+        "implementation": 2019288,
+        "verification": 328079,
+        "finalReview": 1345582
+      }
+    },
+    {
+      "workOrder": "WO-125",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-12T15:47:39.240Z",
+      "elapsed": {
+        "implementation": 1774634,
+        "verification": 3110627,
+        "repair": 1218131,
+        "finalReview": 2171699
+      }
+    },
+    {
+      "workOrder": "WO-126",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-11T01:39:56.523Z",
+      "elapsed": {
+        "implementation": 16902521,
+        "verification": 3795097,
+        "repair": 3221468,
+        "finalReview": 2129166
+      }
+    },
+    {
+      "workOrder": "WO-127",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-11T05:15:08.860Z",
+      "elapsed": {
+        "implementation": 4227904,
+        "verification": 1107313,
+        "finalReview": 762620,
+        "repair": 1464379
+      }
+    },
+    {
+      "workOrder": "WO-128",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-13T00:40:58.153Z",
+      "elapsed": {
+        "implementation": 12307056,
+        "verification": 3437927,
+        "finalReview": 2084467
+      }
+    },
+    {
+      "workOrder": "WO-129",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-13T04:39:17.261Z",
+      "elapsed": {
+        "implementation": 2752422,
+        "verification": 1330547,
+        "repair": 1125453,
+        "finalReview": 1973535
+      }
+    },
+    {
+      "workOrder": "WO-130",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-13T21:23:31.599Z",
+      "elapsed": {
+        "implementation": 33490171,
+        "verification": 1500445,
+        "repair": 3334667,
+        "finalReview": 1548360
+      }
+    },
+    {
+      "workOrder": "WO-131",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-14T17:27:36.516Z",
+      "elapsed": {
+        "implementation": 52286793,
+        "verification": 1154742,
+        "repair": 4670614,
+        "finalReview": 1463334
+      }
+    },
+    {
+      "workOrder": "WO-132",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-15T17:05:03.271Z",
+      "elapsed": {
+        "implementation": 6496382,
+        "verification": 759578,
+        "repair": 800739,
+        "finalReview": 1566104
+      }
+    },
+    {
+      "workOrder": "WO-133",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T14:03:29.969Z",
+      "elapsed": {
+        "implementation": 3083731,
+        "verification": 1425070,
+        "finalReview": 1393514,
+        "repair": 1177357
+      }
+    },
+    {
+      "workOrder": "WO-134",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-16T19:10:33.266Z",
+      "elapsed": {
+        "implementation": 1495725,
+        "verification": 1014653,
+        "finalReview": 1066939
+      }
+    },
+    {
+      "workOrder": "WO-135",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-18T01:36:40.032Z",
+      "elapsed": {
+        "implementation": 3257859,
+        "verification": 1839467,
+        "finalReview": 2602321
+      }
+    },
+    {
+      "workOrder": "WO-136",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-17T22:36:30.369Z",
+      "elapsed": {
+        "implementation": 7970574,
+        "verification": 1063266,
+        "finalReview": 883939
+      }
+    },
+    {
+      "workOrder": "WO-137",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-19T00:25:50.408Z",
+      "elapsed": {
+        "implementation": 3662309,
+        "verification": 1087649,
+        "finalReview": 1126010
+      }
+    },
+    {
+      "workOrder": "WO-138",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-21T16:04:16.373Z",
+      "elapsed": {
+        "implementation": 6688525,
+        "verification": 475943,
+        "repair": 2568977,
+        "finalReview": 1690344
+      }
+    },
+    {
+      "workOrder": "WO-139",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-18T18:10:02.992Z",
+      "elapsed": {
+        "implementation": 4096538,
+        "verification": 1667893,
+        "finalReview": 1197042,
+        "repair": 1610787
+      }
+    },
+    {
+      "workOrder": "WO-140",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T04:48:16.888Z",
+      "elapsed": {
+        "implementation": 4435328,
+        "verification": 731696,
+        "finalReview": 960884
+      }
+    },
+    {
+      "workOrder": "WO-141",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-17T22:01:17.687Z",
+      "elapsed": {
+        "implementation": 6145875,
+        "verification": 1017597,
+        "finalReview": 1449645
+      }
+    },
+    {
+      "workOrder": "WO-142",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-19T17:10:51.344Z",
+      "elapsed": {
+        "implementation": 3883719,
+        "verification": 940194,
+        "repair": 1221184,
+        "finalReview": 1097614
+      }
+    },
+    {
+      "workOrder": "WO-143",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-19T19:08:57.364Z",
+      "elapsed": {
+        "implementation": 2389594,
+        "verification": 1686325,
+        "finalReview": 1196564
+      }
+    },
+    {
+      "workOrder": "WO-144",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T01:07:40.129Z",
+      "elapsed": {
+        "implementation": 2202115,
+        "verification": 485882,
+        "repair": 2416704,
+        "finalReview": 1561017
+      }
+    },
+    {
+      "workOrder": "WO-145",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T07:32:35.296Z",
+      "elapsed": {
+        "implementation": 1716838,
+        "verification": 719060,
+        "finalReview": 938233
+      }
+    },
+    {
+      "workOrder": "WO-146",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-20T16:03:28.735Z",
+      "elapsed": {
+        "implementation": 34296812,
+        "verification": 565552,
+        "repair": 844896,
+        "finalReview": 884568
+      }
+    },
+    {
+      "workOrder": "WO-147",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-21T21:13:16.207Z",
+      "elapsed": {
+        "implementation": 9137882,
+        "verification": 750694,
+        "finalReview": 1824253
+      }
+    },
+    {
+      "workOrder": "WO-148",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-21T20:33:58.103Z",
+      "elapsed": {
+        "implementation": 2284382,
+        "verification": 940735,
+        "repair": 1317148,
+        "finalReview": 1340230
+      }
+    },
+    {
+      "workOrder": "WO-149",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-22T00:00:19.382Z",
+      "elapsed": {
+        "implementation": 4210519,
+        "verification": 754785,
+        "repair": 2061010,
+        "finalReview": 1061103
+      }
+    },
+    {
+      "workOrder": "WO-150",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-21T17:09:14.982Z",
+      "elapsed": {
+        "implementation": 1146140,
+        "verification": 982312,
+        "finalReview": 975902
+      }
+    },
+    {
+      "workOrder": "WO-151",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-22T16:19:31.187Z",
+      "elapsed": {
+        "implementation": 4372194,
+        "verification": 925700,
+        "repair": 2050921,
+        "finalReview": 3317657
+      }
+    },
+    {
+      "workOrder": "WO-152",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-22T14:39:40.548Z",
+      "elapsed": {
+        "implementation": 2124905,
+        "verification": 1017504,
+        "repair": 1673542,
+        "finalReview": 1093352
+      }
+    },
+    {
+      "workOrder": "WO-153",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-24T17:05:54.467Z",
+      "elapsed": {
+        "implementation": 1465057,
+        "verification": 203192,
+        "repair": 1934237,
+        "finalReview": 1037113
+      }
+    },
+    {
+      "workOrder": "WO-154",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-24T18:46:47.205Z",
+      "elapsed": {
+        "implementation": 3848305,
+        "verification": 553562,
+        "repair": 3982819,
+        "finalReview": 1408248
+      }
+    },
+    {
+      "workOrder": "WO-155",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-24T19:57:53.018Z",
+      "elapsed": {
+        "implementation": 1748954,
+        "verification": 732034,
+        "finalReview": 1192197
+      }
+    },
+    {
+      "workOrder": "WO-156",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-24T20:53:54.609Z",
+      "elapsed": {
+        "implementation": 1184154,
+        "verification": 384286,
+        "repair": 663363,
+        "finalReview": 1148557
+      }
+    },
+    {
+      "workOrder": "WO-157",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-24T15:17:25.744Z",
+      "elapsed": {
+        "implementation": 7308605,
+        "verification": 724161,
+        "repair": 134297760,
+        "finalReview": 2247926
+      }
+    },
+    {
+      "workOrder": "WO-158",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-25T16:22:35.089Z",
+      "elapsed": {
+        "implementation": 8383557,
+        "verification": 943500,
+        "repair": 930895,
+        "finalReview": 1127963
+      }
+    },
+    {
+      "workOrder": "WO-159",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-25T06:09:33.519Z",
+      "elapsed": {
+        "implementation": 5380354,
+        "verification": 562937,
+        "repair": 1063925,
+        "finalReview": 2065481
+      }
+    },
+    {
+      "workOrder": "WO-160",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-25T20:37:21.835Z",
+      "elapsed": {
+        "implementation": 3769349,
+        "verification": 1380979,
+        "repair": 1158929,
+        "finalReview": 1507191
+      }
+    },
+    {
+      "workOrder": "WO-161",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-25T18:48:00.750Z",
+      "elapsed": {
+        "implementation": 2581154,
+        "verification": 983317,
+        "repair": 1470956,
+        "finalReview": 1238789
+      }
+    },
+    {
+      "workOrder": "WO-162",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-28T03:31:54.180Z",
+      "elapsed": {
+        "implementation": 3107586,
+        "verification": 579015,
+        "repair": 3956041,
+        "finalReview": 2338848
+      }
+    },
+    {
+      "workOrder": "WO-163",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-28T02:40:46.036Z",
+      "elapsed": {
+        "implementation": 6634228,
+        "verification": 491247,
+        "repair": 1154972,
+        "finalReview": 1135259
+      }
+    },
+    {
+      "workOrder": "WO-164",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-27T20:21:56.783Z",
+      "elapsed": {
+        "implementation": 4120627,
+        "verification": 259955,
+        "repair": 3511141,
+        "finalReview": 1597539
+      }
+    },
+    {
+      "workOrder": "WO-165",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-26T18:46:43.295Z",
+      "elapsed": {
+        "implementation": 2569702,
+        "verification": 2446324,
+        "finalReview": 1493703
+      }
+    },
+    {
+      "workOrder": "WO-166",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-26T23:44:41.957Z",
+      "elapsed": {
+        "implementation": 3599093,
+        "verification": 1313945,
+        "repair": 1814695,
+        "finalReview": 1367069
+      }
+    },
+    {
+      "workOrder": "WO-167",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-28T19:06:52.862Z",
+      "elapsed": {
+        "implementation": 6207698,
+        "verification": 960213,
+        "repair": 2015083,
+        "finalReview": 1337580
+      }
+    },
+    {
+      "workOrder": "WO-168",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-27T16:07:57.647Z",
+      "elapsed": {
+        "implementation": 6962842,
+        "verification": 883068,
+        "repair": 2192527,
+        "finalReview": 1676228
+      }
+    },
+    {
+      "workOrder": "WO-169",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-27T14:50:06.557Z",
+      "elapsed": {
+        "implementation": 5160519,
+        "verification": 1521542,
+        "finalReview": 1843912
+      }
+    },
+    {
+      "workOrder": "WO-170",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-27T23:35:02.023Z",
+      "elapsed": {
+        "implementation": 5142257,
+        "verification": 1596954,
+        "repair": 1325526,
+        "finalReview": 1323242
+      }
+    },
+    {
+      "workOrder": "WO-171",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-27T19:12:00.198Z",
+      "elapsed": {
+        "implementation": 3559029,
+        "verification": 807983,
+        "repair": 1774558,
+        "finalReview": 1450123
+      }
+    },
+    {
+      "workOrder": "WO-172",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-29T23:52:51.943Z",
+      "elapsed": {
+        "implementation": 16956207,
+        "verification": 743977,
+        "repair": 7208804,
+        "finalReview": 2078710
+      }
+    },
+    {
+      "workOrder": "WO-173",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-28T22:24:21.315Z",
+      "elapsed": {
+        "implementation": 5945809,
+        "verification": 495450,
+        "repair": 1990685,
+        "finalReview": 1344311
+      }
+    },
+    {
+      "workOrder": "WO-174",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-09-30T21:09:32.026Z",
+      "elapsed": {
+        "implementation": 6927943,
+        "verification": 924955,
+        "repair": 2092015,
+        "finalReview": 1114391
+      }
+    },
+    {
+      "workOrder": "WO-175",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T00:54:50.608Z",
+      "elapsed": {
+        "implementation": 4575140,
+        "verification": 1960675,
+        "finalReview": 1491234
+      }
+    },
+    {
+      "workOrder": "WO-176",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T15:11:18.843Z",
+      "elapsed": {
+        "implementation": 32383266,
+        "verification": 1722249,
+        "finalReview": 1796247,
+        "repair": 2775922
+      }
+    },
+    {
+      "workOrder": "WO-177",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T20:18:49.614Z",
+      "elapsed": {
+        "implementation": 1783821,
+        "verification": 553913,
+        "finalReview": 560523
+      }
+    },
+    {
+      "workOrder": "WO-178",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T19:15:37.433Z",
+      "elapsed": {
+        "implementation": 4531034,
+        "verification": 621055,
+        "finalReview": 2091708,
+        "repair": 2930868
+      }
+    },
+    {
+      "workOrder": "WO-179",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-02T00:06:31.812Z",
+      "elapsed": {
+        "implementation": 6728125,
+        "verification": 1266964,
+        "repair": 1384249,
+        "finalReview": 1524801
+      }
+    },
+    {
+      "workOrder": "WO-180",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T12:03:54.998Z",
+      "elapsed": {
+        "implementation": 3557462,
+        "verification": 825100,
+        "finalReview": 1135742
+      }
+    },
+    {
+      "workOrder": "WO-181",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T17:07:03.355Z",
+      "elapsed": {
+        "implementation": 4061124,
+        "verification": 607278,
+        "finalReview": 1696139
+      }
+    },
+    {
+      "workOrder": "WO-182",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-01T21:24:34.327Z",
+      "elapsed": {
+        "implementation": 3065923,
+        "verification": 1210562,
+        "finalReview": 1536116
+      }
+    },
+    {
+      "workOrder": "WO-184",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-03T15:41:02.024Z",
+      "elapsed": {
+        "implementation": 45578751,
+        "verification": 1211565,
+        "repair": 2887271,
+        "finalReview": 2260894
+      }
+    },
+    {
+      "workOrder": "WO-185",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-04T14:28:12.723Z",
+      "elapsed": {
+        "implementation": 46960048,
+        "verification": 1024510,
+        "repair": 5828193,
+        "finalReview": 1806208
+      }
+    },
+    {
+      "workOrder": "WO-186",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-05T21:11:22.696Z",
+      "elapsed": {
+        "implementation": 31708945,
+        "verification": 920000,
+        "repair": 3140553,
+        "finalReview": 2015322
+      }
+    },
+    {
+      "workOrder": "WO-187",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-06T14:46:19.557Z",
+      "elapsed": {
+        "implementation": 7784492,
+        "verification": 1232173,
+        "repair": 5101593,
+        "finalReview": 3825272
+      }
+    },
+    {
+      "workOrder": "WO-188",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-09T15:36:10.774Z",
+      "elapsed": {
+        "implementation": 17683304,
+        "verification": 1602525,
+        "repair": 3748946,
+        "finalReview": 4816866
+      }
+    },
+    {
+      "workOrder": "WO-189",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-10T23:07:05.754Z",
+      "elapsed": {
+        "implementation": 8532653,
+        "verification": 776749,
+        "repair": 12732736,
+        "finalReview": 3535647
+      }
+    },
+    {
+      "workOrder": "WO-190",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-09T17:06:13.768Z",
+      "elapsed": {
+        "implementation": 10321865,
+        "verification": 1340146,
+        "finalReview": 5012116
+      }
+    },
+    {
+      "workOrder": "WO-191",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-11T18:07:26.604Z",
+      "elapsed": {
+        "implementation": 9552762,
+        "verification": 1017185,
+        "finalReview": 3256293
+      }
+    },
+    {
+      "workOrder": "WO-192",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-31T10:15:14.772Z",
+      "elapsed": {
+        "implementation": 470541721,
+        "verification": 955315,
+        "finalReview": 1884496
+      }
+    },
+    {
+      "workOrder": "WO-195",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-04T16:25:03.320Z",
+      "elapsed": {
+        "implementation": 10538866,
+        "verification": 728144,
+        "repair": 6030651,
+        "finalReview": 1674242
+      }
+    },
+    {
+      "workOrder": "WO-196",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-07T16:38:56.999Z",
+      "elapsed": {
+        "implementation": 6231941,
+        "verification": 982143,
+        "repair": 3386038,
+        "finalReview": 2668720
+      }
+    },
+    {
+      "workOrder": "WO-197",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-08T00:28:41.112Z",
+      "elapsed": {
+        "implementation": 15015081,
+        "verification": 1075285,
+        "repair": 752675,
+        "finalReview": 926424
+      }
+    },
+    {
+      "workOrder": "WO-198",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-10T01:38:01.323Z",
+      "elapsed": {
+        "implementation": 2477636,
+        "verification": 902908,
+        "repair": 2668307,
+        "finalReview": 1573262
+      }
+    },
+    {
+      "workOrder": "WO-199",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-08T20:43:59.737Z",
+      "elapsed": {
+        "implementation": 8715816,
+        "verification": 1482583,
+        "repair": 5381621,
+        "finalReview": 1384529
+      }
+    },
+    {
+      "workOrder": "WO-200",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-12T04:42:35.431Z",
+      "elapsed": {
+        "implementation": 2510656,
+        "verification": 1432552,
+        "finalReview": 1508782
+      }
+    },
+    {
+      "workOrder": "WO-201",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-12T08:53:19.029Z",
+      "elapsed": {
+        "implementation": 4461579,
+        "verification": 1215072,
+        "repair": 2533913,
+        "finalReview": 1579734
+      }
+    },
+    {
+      "workOrder": "WO-202",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-12T17:50:54.546Z",
+      "elapsed": {
+        "implementation": 5901181,
+        "verification": 1951726,
+        "finalReview": 3580677
+      }
+    },
+    {
+      "workOrder": "WO-203",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-13T01:01:14.048Z",
+      "elapsed": {
+        "implementation": 11700045,
+        "verification": 1171928,
+        "repair": 7242590,
+        "finalReview": 1803752
+      }
+    },
+    {
+      "workOrder": "WO-204",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-25T20:31:09.329Z",
+      "elapsed": {
+        "implementation": 22935958,
+        "verification": 1563674,
+        "repair": 4902527,
+        "finalReview": 3067244
+      }
+    },
+    {
+      "workOrder": "WO-210",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-15T13:37:17.990Z",
+      "elapsed": {
+        "implementation": 13085752,
+        "verification": 1303365,
+        "repair": 32814935,
+        "finalReview": 2506391
+      }
+    },
+    {
+      "workOrder": "WO-213",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-17T17:44:47.384Z",
+      "elapsed": {
+        "implementation": 21005358,
+        "verification": 709248,
+        "finalReview": 3041509,
+        "repair": 7470340
+      }
+    },
+    {
+      "workOrder": "WO-215",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-14T04:40:00.945Z",
+      "elapsed": {
+        "implementation": 7766483,
+        "verification": 2139176,
+        "repair": 10232708,
+        "finalReview": 3142067
+      }
+    },
+    {
+      "workOrder": "WO-216",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-18T15:23:19.818Z",
+      "elapsed": {
+        "implementation": 6824006,
+        "verification": 561529,
+        "repair": 5108335,
+        "finalReview": 4770029
+      }
+    },
+    {
+      "workOrder": "WO-217",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-21T22:21:14.760Z",
+      "elapsed": {
+        "implementation": 30742671,
+        "verification": 1430830,
+        "repair": 29482908,
+        "finalReview": 1803477
+      }
+    },
+    {
+      "workOrder": "WO-218",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-20T18:13:49.773Z",
+      "elapsed": {
+        "implementation": 15426535,
+        "verification": 3011002,
+        "repair": 9554166,
+        "finalReview": 6979041
+      }
+    },
+    {
+      "workOrder": "WO-219",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-23T23:45:46.509Z",
+      "elapsed": {
+        "implementation": 22066031,
+        "verification": 1465146,
+        "repair": 2601877,
+        "finalReview": 3875701
+      }
+    },
+    {
+      "workOrder": "WO-220",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-24T13:32:56.082Z",
+      "elapsed": {
+        "implementation": 8955243,
+        "verification": 2202101,
+        "finalReview": 2654808
+      }
+    },
+    {
+      "workOrder": "WO-221",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-19T13:06:19.549Z",
+      "elapsed": {
+        "implementation": 31382937,
+        "verification": 3127511,
+        "repair": 4896921,
+        "finalReview": 2812962
+      }
+    },
+    {
+      "workOrder": "WO-222",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-19T21:52:54.375Z",
+      "elapsed": {
+        "implementation": 20020034,
+        "verification": 1672887,
+        "finalReview": 2151085
+      }
+    },
+    {
+      "workOrder": "WO-223",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-21T01:35:56.368Z",
+      "elapsed": {
+        "implementation": 4929842,
+        "verification": 2779976,
+        "finalReview": 1843209
+      }
+    },
+    {
+      "workOrder": "WO-224",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-24T23:42:23.092Z",
+      "elapsed": {
+        "implementation": 5117375,
+        "verification": 934655,
+        "finalReview": 1778074
+      }
+    },
+    {
+      "workOrder": "WO-225",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-23T04:27:29.880Z",
+      "elapsed": {
+        "implementation": 6372404,
+        "verification": 1170732,
+        "finalReview": 1671680
+      }
+    },
+    {
+      "workOrder": "WO-226",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-22T11:50:10.021Z",
+      "elapsed": {
+        "implementation": 9825257,
+        "verification": 2060581,
+        "finalReview": 2059932
+      }
+    },
+    {
+      "workOrder": "WO-227",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-23T01:27:50.847Z",
+      "elapsed": {
+        "implementation": 16830597,
+        "verification": 792085,
+        "repair": 3113295,
+        "finalReview": 2099540
+      }
+    },
+    {
+      "workOrder": "WO-229",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-23T13:44:33.150Z",
+      "elapsed": {
+        "implementation": 9060011,
+        "verification": 959304,
+        "repair": 3539767,
+        "finalReview": 1725664
+      }
+    },
+    {
+      "workOrder": "WO-230",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-24T21:20:42.663Z",
+      "elapsed": {
+        "implementation": 4925018,
+        "verification": 796519,
+        "finalReview": 1773983
+      }
+    },
+    {
+      "workOrder": "WO-231",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-25T03:33:20.701Z",
+      "elapsed": {
+        "implementation": 2897655,
+        "verification": 963324,
+        "finalReview": 1579371
+      }
+    },
+    {
+      "workOrder": "WO-232",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-25T16:45:43.014Z",
+      "elapsed": {
+        "implementation": 9082607,
+        "verification": 1794353,
+        "repair": 3796246,
+        "finalReview": 1756751
+      }
+    },
+    {
+      "workOrder": "WO-233",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-28T03:52:56.497Z",
+      "elapsed": {
+        "implementation": 26942630,
+        "verification": 1661529,
+        "repair": 10830973,
+        "finalReview": 3538392
+      }
+    },
+    {
+      "workOrder": "WO-234",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-29T02:04:07.174Z",
+      "elapsed": {
+        "implementation": 58075938,
+        "verification": 2100282,
+        "repair": 3279546,
+        "finalReview": 2859328
+      }
+    },
+    {
+      "workOrder": "WO-235",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-30T05:55:37.053Z",
+      "elapsed": {
+        "implementation": "unknown",
+        "verification": 604340,
+        "repair": 5960366,
+        "finalReview": 1664746
+      }
+    },
+    {
+      "workOrder": "WO-236",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-28T18:26:27.575Z",
+      "elapsed": {
+        "implementation": 9821412,
+        "verification": 1551523,
+        "finalReview": 1890375
+      }
+    },
+    {
+      "workOrder": "WO-237",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-01T20:56:43.390Z",
+      "elapsed": {
+        "implementation": 19912030,
+        "verification": 985782,
+        "finalReview": 2009852
+      }
+    },
+    {
+      "workOrder": "WO-238",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-03T17:56:52.215Z",
+      "elapsed": {
+        "implementation": 20134990,
+        "verification": 1005873,
+        "repair": 10076634,
+        "finalReview": 5185243
+      }
+    },
+    {
+      "workOrder": "WO-239",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-30T09:12:55.858Z",
+      "elapsed": {
+        "implementation": 65049490,
+        "verification": 1155890,
+        "finalReview": 1328925
+      }
+    },
+    {
+      "workOrder": "WO-240",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-31T22:48:10.422Z",
+      "elapsed": {
+        "implementation": 18954260,
+        "verification": 548457,
+        "finalReview": 1375152
+      }
+    },
+    {
+      "workOrder": "WO-241",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-03T22:36:29.774Z",
+      "elapsed": {
+        "implementation": 19337461,
+        "verification": 2088876,
+        "finalReview": 1423573
+      }
+    },
+    {
+      "workOrder": "WO-242",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-07T05:27:18.121Z",
+      "elapsed": {
+        "implementation": 21180652,
+        "verification": 1363085,
+        "finalReview": 1762575
+      }
+    },
+    {
+      "workOrder": "WO-243",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-07T17:55:28.229Z",
+      "elapsed": {
+        "implementation": 10637432,
+        "verification": 1048990,
+        "repair": 2678877,
+        "finalReview": 1703895
+      }
+    },
+    {
+      "workOrder": "WO-245",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-02T05:44:32.136Z",
+      "elapsed": {
+        "implementation": 6097215,
+        "verification": 4042471,
+        "finalReview": 2812673
+      }
+    },
+    {
+      "workOrder": "WO-246",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-05T14:40:29.146Z",
+      "elapsed": {
+        "implementation": 12985557,
+        "verification": 976570,
+        "repair": 7620664,
+        "finalReview": 1508571
+      }
+    },
+    {
+      "workOrder": "WO-247",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-01T09:16:25.417Z",
+      "elapsed": {
+        "implementation": 34030230,
+        "verification": 911573,
+        "finalReview": 1878411
+      }
+    },
+    {
+      "workOrder": "WO-248",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-02T22:34:17.359Z",
+      "elapsed": {
+        "implementation": 2876329,
+        "verification": 809593,
+        "finalReview": 3224534
+      }
+    },
+    {
+      "workOrder": "WO-249",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-02T16:07:05.164Z",
+      "elapsed": {
+        "implementation": 44322136,
+        "verification": 1054909,
+        "finalReview": 4397392
+      }
+    },
+    {
+      "workOrder": "WO-250",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-02T21:34:40.823Z",
+      "elapsed": {
+        "implementation": 16566228,
+        "verification": 863023,
+        "finalReview": 1713107
+      }
+    },
+    {
+      "workOrder": "WO-251",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-02T14:36:56.802Z",
+      "elapsed": {
+        "implementation": 14343395,
+        "verification": 2362585,
+        "finalReview": 3477777
+      }
+    },
+    {
+      "workOrder": "WO-252",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-03T16:23:52.212Z",
+      "elapsed": {
+        "implementation": 12438530,
+        "verification": 772418,
+        "repair": 9874894,
+        "finalReview": 1728739
+      }
+    },
+    {
+      "workOrder": "WO-253",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-04T15:17:04.091Z",
+      "elapsed": {
+        "implementation": 21484279,
+        "verification": 725034,
+        "repair": 8031798,
+        "finalReview": 1880347
+      }
+    },
+    {
+      "workOrder": "WO-254",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-04T22:55:25.113Z",
+      "elapsed": {
+        "implementation": 22977498,
+        "verification": 692214,
+        "finalReview": 2177015
+      }
+    },
+    {
+      "workOrder": "WO-255",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-06T01:11:19.492Z",
+      "elapsed": {
+        "implementation": 14831261,
+        "verification": 1143339,
+        "repair": 5702682,
+        "finalReview": 2000336
+      }
+    },
+    {
+      "workOrder": "WO-257",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-06T20:55:28.238Z",
+      "elapsed": {
+        "implementation": 46346940,
+        "verification": 1665713,
+        "repair": 6891701,
+        "finalReview": 3080365
+      }
+    },
+    {
+      "workOrder": "WO-258",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-08T13:01:46.444Z",
+      "elapsed": {
+        "implementation": 26382448,
+        "verification": 1101488,
+        "finalReview": 2031356
+      }
+    },
+    {
+      "workOrder": "WO-259",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-08T21:54:54.137Z",
+      "elapsed": {
+        "implementation": 25246940,
+        "verification": 1139816,
+        "finalReview": 2682122
+      }
+    },
+    {
+      "workOrder": "WO-260",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-09T21:33:20.761Z",
+      "elapsed": {
+        "implementation": 20640415,
+        "verification": 1893620,
+        "repair": 6336529,
+        "finalReview": 2455713
+      }
+    },
+    {
+      "workOrder": "WO-276",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-11-14T19:07:59.550Z",
+      "elapsed": {
+        "implementation": 201943674,
+        "verification": 806453,
+        "repair": 5691789,
+        "finalReview": 4623071
+      }
+    },
+    {
+      "workOrder": "WO-277",
+      "phase": "ready-to-verify",
+      "latestVerdict": null,
+      "recordedAt": "2026-11-15T07:33:30.130Z",
+      "elapsed": {
+        "implementation": 9163021
+      }
+    }
+  ],
+  "currentSession": {
+    "available": true,
+    "harness": "claude-code",
+    "harnessVersion": "2.1.325",
+    "effort": "xhigh",
+    "channel": "CLAUDE_EFFORT",
+    "source": "claude-session-readback",
+    "scope": "selected, not effective"
+  }
+}

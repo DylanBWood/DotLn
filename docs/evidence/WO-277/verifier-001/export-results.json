@@ -1,0 +1,16 @@
+{
+  "recordedAt": "2026-11-15T14:34:07.960Z",
+  "pageSha256": "d93996384fb1a5a182ebd8f7dfd2a629308d9c2c2ca56b2bc9135f6ed91b6bd2",
+  "printedBytes": 8831,
+  "steps": 7,
+  "bareExport": true,
+  "nestedCwd": true,
+  "firstParagraphLinks": true,
+  "termsBlockOrder": true,
+  "replaceOwnEntries": true,
+  "absentList": true,
+  "copiedList": true,
+  "syntheticOwnList": true,
+  "ignoredList": true,
+  "refuseAndContextSemantics": true
+}

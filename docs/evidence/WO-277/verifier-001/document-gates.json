@@ -1,0 +1,51 @@
+{
+  "recordedAt": "2026-11-15T14:48:15.433Z",
+  "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+  "rows": [
+    {
+      "evidenceRefs": [
+        "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs"
+      ],
+      "checkId": "npm run test:docs",
+      "treeHash": "1eb1a428403117d6e9da9f297cf8aa065f7a5fda",
+      "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+      "durationMs": 132677,
+      "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs",
+      "recordedAt": "2026-11-15T14:42:43.883Z",
+      "executed": true,
+      "exitCode": 1
+    },
+    {
+      "evidenceRefs": [
+        "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs"
+      ],
+      "checkId": "npm run test:docs",
+      "treeHash": "86c71c411a16d0a832f0e5c95f3823af23b4d448",
+      "codeIdentity": "274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e",
+      "durationMs": 135651,
+      "evidenceRef": "host-gate:274d9bc7d57447f31227fc7a69cd769fb91065e4124205e4eb4bc2b389a4275e:npm run test:docs",
+      "recordedAt": "2026-11-15T14:47:45.418Z",
+      "executed": true,
+      "exitCode": 1
+    }
+  ],
+  "subject": {
+    "path": "docs/evidence/WO-277/status.json",
+    "sha256": "65f8767eb80f7bac49bb370d102ec20038f07cc8a93247e43bc7ffc4b3db251e",
+    "phase": "ready-to-verify",
+    "recordedAt": "2026-11-15T07:33:30.130Z",
+    "absoluteHomePathFields": [
+      "route.cwd",
+      "route.launchpad"
+    ],
+    "lines": [
+      13,
+      14
+    ]
+  },
+  "failures": [
+    "FAIL docs/evidence/WO-277/status.json:13: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+    "FAIL docs/evidence/WO-277/status.json:14: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/"
+  ],
+  "repair": "Normalize public location fields without changing captured lifecycle facts; preserve the original only in ignored recovery material. Rerun the document gate."
+}

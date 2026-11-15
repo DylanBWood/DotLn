@@ -1,0 +1,59 @@
+{
+  "checks": [
+    {
+      "command": "independent export probe",
+      "startedAt": "2026-11-15T17:05:02.337Z",
+      "finishedAt": "2026-11-15T17:05:08.899Z",
+      "durationMs": 6562,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "independent status and deletion recovery probe",
+      "startedAt": "2026-11-15T17:06:12.741Z",
+      "finishedAt": "2026-11-15T17:06:13.200Z",
+      "durationMs": 458,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "node scripts/lib/operator-commands.mjs --check",
+      "startedAt": "2026-11-15T17:06:22.245Z",
+      "finishedAt": "2026-11-15T17:06:22.434Z",
+      "durationMs": 189,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "npm run format:check",
+      "startedAt": "2026-11-15T17:06:22.653Z",
+      "finishedAt": "2026-11-15T17:06:34.234Z",
+      "durationMs": 11580,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "first gate-coverage helper attempt",
+      "startedAt": "2026-11-15T17:07:20.432Z",
+      "finishedAt": "2026-11-15T17:07:20.549Z",
+      "durationMs": 116,
+      "exitCode": 1,
+      "executed": true,
+      "droppedOutputBytes": 0,
+      "disposition": "Probe implementation error: readControl orders map entry wraps the state. The helper passed the wrapper; corrected to entry.state. No product finding or gate run."
+    },
+    {
+      "command": "corrected gate-coverage helper",
+      "startedAt": "2026-11-15T17:07:40.955Z",
+      "finishedAt": "2026-11-15T17:07:41.939Z",
+      "durationMs": 984,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    }
+  ]
+}

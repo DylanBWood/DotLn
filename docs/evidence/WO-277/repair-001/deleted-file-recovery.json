@@ -1,0 +1,55 @@
+{
+  "recordedAt": "2026-11-15T15:15:22.718Z",
+  "gitVersion": "git version 2.55.0",
+  "pageParagraphNames": {
+    "checkout": true,
+    "noMatch": true,
+    "gitRm": true,
+    "manifest": true
+  },
+  "bothChanged": [
+    "deleted.md",
+    "edited.md",
+    "silent.md"
+  ],
+  "instanceStateOfDeleted": null,
+  "merge": {
+    "exit": 1,
+    "stoppedOn": [
+      "deleted.md",
+      "edited.md"
+    ]
+  },
+  "recovery": [
+    {
+      "path": "deleted.md",
+      "checkoutExit": 1,
+      "checkoutSaysNoMatch": true,
+      "gitRmExit": 0
+    },
+    {
+      "path": "edited.md",
+      "checkoutExit": 0
+    },
+    {
+      "path": "silent.md",
+      "checkoutExit": 0
+    }
+  ],
+  "unresolvedAfterRecovery": [],
+  "deletedAbsentAtMergeCommit": true,
+  "publishJudgmentNotKept": [],
+  "counterCase": {
+    "resolution": "deleted.md left at the starter's bytes; edited.md and silent.md restored from main",
+    "merge": {
+      "exit": 1,
+      "stoppedOn": [
+        "deleted.md",
+        "edited.md"
+      ]
+    },
+    "publishJudgmentNotKept": [
+      "deleted.md"
+    ]
+  }
+}
