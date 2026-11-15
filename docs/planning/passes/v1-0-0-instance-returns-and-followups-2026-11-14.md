@@ -22,7 +22,7 @@ Each entry says it does not stop the instance's next order and names the
 route the instance used. Per product 07 they are evidence the operator
 carried, never operator direction; this document paraphrases them.
 
-During the pass the operator sent eighteen more messages, each captured
+During the pass the operator sent nineteen more messages, each captured
 beside the dispatch with `-midturn-N` and journaled by the prompt hook. In
 paraphrase, with each journal digest's first twelve characters:
 
@@ -61,6 +61,8 @@ paraphrase, with each journal digest's first twelve characters:
     (`905dbfdbdb62`).
 18. The critic is not to run by default: on request, or configurable
     through the configuration the kit has (`84e8b237fba5`).
+19. The operator is setting up the work instance now; why wait for orders
+    to get the page (`d730afd6e446`).
 
 The pass ran in Claude Code on `claude-opus-5-5` at `max` (the operator's
 `/model` selection at the start of the session; effort read from
@@ -201,8 +203,10 @@ runs Claude Code alone.
    reviews and planning passes write, and carry the entries you choose
    into a core `planning:` message.
 
-This section is the model for the starter's own page: WO-277 makes
-`docs/OPERATOR.md`, which every starter ships, a document in this form.
+This section is the model for the starter's own page: WO-277 brings
+`docs/OPERATOR.md`, which every starter ships, to it, every step with a
+paragraph on what it does and what to do when it fails, in a release the
+operator can run as soon as this pass merges.
 
 ### What failed since the last receipt
 
@@ -260,12 +264,13 @@ Each was checked at the file it names; all five hold.
    instance's own `.codex/` files read as unowned. The guide's update
    section never says which side a conflict keeps, and its sentence that a
    Codex instance sees `remove` rows "in the merge" is false once the starter
-   is Claude-only (WO-258-D004's reopening condition). WO-277.
+   is Claude-only (WO-258-D004's reopening condition). WO-282; WO-277's
+   page carries the route until it lands.
 2. **Register rows re-keyed by the new reader.** A candidate's key hashes
    its bold title (`scripts/lib/planning-followups.mjs` 285 to 290); its
    body and `source.hash` do not depend on the title, so a sync can match
    the two rows. WO-276-D059 carried two such rows by hand in core; its
-   reopening condition is this entry. WO-277.
+   reopening condition is this entry. WO-282.
 3. **`--keep-going` and the target gate.** The executor's root (from
    `contributor.ts` 932), product 07 and the guide name it after any failed
    complete run; `scripts/target-gate.mjs` refuses it and already runs
@@ -293,7 +298,9 @@ rows, 105 dispositions applied in one batch (register revision
   (items taken by the repair of FINAL-001, item 8 done by this pass), and
   three deferred rows whose need is met (FUP-dec74be4077f5f25,
   FUP-5d31b4cd52b01f51, FUP-632348a91b2ae9d8).
-- 23 allocated to the five orders and to WO-244.
+- 23 allocated to the orders filed here and to WO-244; four of them were
+  retargeted from WO-277 to WO-282 when the two were split (register
+  revision `78b8592d3747`).
 - 46 deferred with their conditions, among them the fired rows below.
 - 9 declined: rows `followups --touching` listed for a filed order's files
   that the order does not change.
@@ -389,9 +396,11 @@ all hold, and three changed the plan:
 
 1. Instructions given before their prerequisites were traced (the terms
    list). Acknowledged; the commands above trace them.
-2. A reversal of WO-277's design argued without evidence. WO-277 now rests
-   its choice on the evidence: the page generated one sentence per step is
-   the page the operator could not use.
+2. A reversal of WO-277's design argued without evidence. After the
+   operator's message 19 the page's fix is cut to ship first: WO-277 keeps
+   the generator and its single source and changes only the page's words
+   and blocks, a choice made on time (the release the operator is waiting
+   for), and the page's form is weighed again in WO-281.
 3. A missing rule diagnosed where an existing rule went unapplied. WO-281
    now says the rules already ask for it and builds the gate's listing and
    the reviewer's judgment instead of new wording.
@@ -403,16 +412,23 @@ all hold, and three changed the plan:
 
 ## Orders filed and amended
 
-Five orders, one subsystem each. Under the standing rule a pass does not
+Six orders, one subsystem each. Under the standing rule a pass does not
 bundle unrelated subsystems by its own choice; the operator may direct a
-merge.
+merge. The page and the update's repairs were first one order; the
+operator's message 19 (setting up the work instance now, why wait for
+orders) split them, since the starter changes only at a release close
+(`scripts/lib/starter-refresh.mjs` tags the starter with core's release
+tag), so the page ships alone and first.
 
-- **WO-277 — A person sets up and updates an instance from one page.**
-  `docs/OPERATOR.md` in every starter written for a person in the form of
-  the section above, its commands checked against the guide's; the front
-  page leads with it; the emit keeps an instance's own host surfaces; a
-  re-keyed register row keeps its dispositions; three update-path repairs.
-  From the instance's entries 1 and 2 and the operator's messages 2 to 10.
+- **WO-277 — The starter's commands page tells a person every step.**
+  Documentation only: the private terms list's commands in step 1, a
+  paragraph per step on what it does and what to do when it fails, the
+  front page leading with the page; a patch release whose close refreshes
+  the starter. From the operator's messages 2 to 10 and 19.
+- **WO-282 — An update leaves nothing to repair by hand.** The emit keeps an
+  instance's own host surfaces; a re-keyed register row keeps its
+  dispositions; three update-path repairs; the guide's update section
+  corrected. From the instance's entries 1 and 2.
 - **WO-279 — A critic of conduct the kit launches when asked.** Kinds as
   data, the critic the first, launched by name through the kit's transport
   on `opus` at `xhigh` unless an instance chooses another; a cadence only
@@ -512,8 +528,8 @@ Each declined candidate, with why and what reverses it:
 
 ## Sequence
 
-WO-276 leaves the list. The five orders come first, in this order: WO-277,
-WO-279, WO-281, WO-278, WO-280; then the Not now orders as they were. The
+WO-276 leaves the list. The six orders come first, in this order: WO-277,
+WO-282, WO-279, WO-281, WO-278, WO-280; then the Not now orders as they were. The
 "Serial for now" rule is replaced by the lane-pair rule it suspended. WO-207's
 and WO-096's Not now entries now state what WO-276 delivered for each.
 
@@ -547,8 +563,8 @@ and WO-281.
 ```text
 Answers from core's planning pass of 2026-11-14 to this instance's five entries on v1.0.0. This is a core session's text and no operator direction. None of the five stops your next order; each has the working route you used until the release that carries it.
 
-1. The harness manifest on an update merge. Confirmed: the emit reads ownership from the manifest on disk, so a merge that took the starter's side refuses your own Codex surfaces. Filed as WO-277: the emit admits a .codex file whose bytes equal the hash main's manifest records, the preview says to keep this instance's side of .claude/harness-manifest.json on a conflict, and the guide's sentence about remove rows in the merge is corrected. Until then: git checkout main -- .claude/harness-manifest.json before the emit, as you did.
-2. Register rows re-keyed by the new reader. Confirmed, and core met it for two rows during WO-276. Filed as WO-277: a sync matches a row it retires and a row it creates in the same section with the same body, and carries the dispositions. Rows you already carried by hand stay as you left them.
+1. The harness manifest on an update merge. Confirmed: the emit reads ownership from the manifest on disk, so a merge that took the starter's side refuses your own Codex surfaces. Filed as WO-282: the emit admits a .codex file whose bytes equal the hash main's manifest records, the preview says to keep this instance's side of .claude/harness-manifest.json on a conflict, and the guide's sentence about remove rows in the merge is corrected. Until then: git checkout main -- .claude/harness-manifest.json before the emit, as you did; the commands page in WO-277, the next release, carries that route.
+2. Register rows re-keyed by the new reader. Confirmed, and core met it for two rows during WO-276. Filed as WO-282: a sync matches a row it retires and a row it creates in the same section with the same body, and carries the dispositions. Rows you already carried by hand stay as you left them.
 3. --keep-going and the target gate. Confirmed. Filed as WO-278: the role text, product 07 and the guide say the flag belongs to npm test -- --review and a target order reruns node scripts/target-gate.mjs WO-NNN --review. Your repository profile's sentence is the route until then.
 4. The Items table after one sentence. Confirmed and reproduced. Filed as WO-278: a required table is read anywhere in its section, and a split round's merge keeps such a batch. Restating a refused report by the worker the helper launched is deferred: the one refusal on record was the reader's, and restatement needs persisted host sessions. It reopens if, after WO-278, a helper-launched report is refused for its form and its round is lost or paid again.
 5. A core-only suite probed in an instance. Confirmed. Filed as WO-278: the bounded wrapper answers a core-only suite in a kit root with the runner's reason and a status of its own instead of running it, and the review brief names the suites the instance carries. An instance's gates run no node --test file.

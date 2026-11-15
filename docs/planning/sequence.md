@@ -101,17 +101,20 @@ operator met setting up the work laptop that day, what an instance
 reported after taking v1.0.0, and what WO-276 left
 ([the 2026-11-14 pass](passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)):
 
-- WO-277: a person sets up and updates an instance from one page in the
-  starter, `docs/OPERATOR.md`, written in the form the operator named, with
-  the private terms list before anything publishes; and an update leaves
-  nothing to repair by hand (the emit keeps an instance's own host
-  surfaces, a re-keyed register row keeps its dispositions).
+- WO-277: the starter's commands page, `docs/OPERATOR.md`, tells a person
+  every step, the private terms list before anything publishes, with what
+  each step does and what to do when it fails; the starter's front page
+  names it first. A small documentation release, to run as soon as this
+  pass merges: its release close puts the page in the starter.
+- WO-282: an update leaves nothing to repair by hand (the emit keeps an
+  instance's own host surfaces, a re-keyed register row keeps its
+  dispositions, three update-path repairs).
 - WO-279: the critic of conduct WO-276 ran by hand becomes a worker the kit
   launches by name when someone asks, on Opus 5.5 at xhigh unless an
   instance chooses another, so it runs on the work laptop; a cadence runs
   only where an instance turns on its feature, off by default.
 - WO-281: the kit guide rewritten to be easy to follow, its facts kept, and
-  the write-back and `quality pass:` rules that keep it so.
+  its later write-backs held to the rule that already asks for it.
 - WO-278: the review helper reads a report's table where it stands, a paired
   first round is launched as one, and a worker in an instance probes only
   what the instance carries.
@@ -120,7 +123,7 @@ reported after taking v1.0.0, and what WO-276 left
 
 WO-277 (delivery) and WO-280 (machinery) have disjoint surfaces and no hard
 edge, so they may run as a lane pair if the operator says to run both at
-once; otherwise the five run in this order.
+once; otherwise the six run in this order.
 
 ## Not now
 
@@ -163,7 +166,8 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
   requests to a hook, or the operator records approval friction.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-277 — A person sets up and updates an instance from one page
+- WO-277 — The starter's commands page tells a person every step
+- WO-282 — An update leaves nothing to repair by hand
 - WO-279 — A critic of conduct the kit launches when asked
 - WO-281 — The kit guide is easy to follow
 - WO-278 — The review helper reads a report as written

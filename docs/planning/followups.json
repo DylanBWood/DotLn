@@ -59783,6 +59783,17 @@
             "WO-281"
           ],
           "at": "2026-11-15T00:32:34.722Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Retargeted from WO-277 when the pass split the commands page from the update repairs: item 2 is WO-282 step 8; item 3 is in WO-281 rewrite; item 1 stays under the condition. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A committed record is found to hold a run of the operator's captured words inside a code span; an owner reports an entry that stopped matching, or began matching an ordinary word, after taking this release; or an instance reports a planning publication into a target held by a context entry.",
+          "targets": [
+            "WO-282",
+            "WO-281"
+          ],
+          "at": "2026-11-15T00:45:15.777Z"
         }
       ]
     },
@@ -59907,6 +59918,16 @@
             "WO-277"
           ],
           "at": "2026-11-15T00:32:34.317Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Retargeted from WO-277 when the pass split the commands page from the update repairs: item 1 (the update history reads with a grafts file) is WO-282 step 4; item 2 was taken by the repair of FINAL-001 (WO-276-D177). [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An instance reports an update publish refused as sharing no history on a clone that does share it.",
+          "targets": [
+            "WO-282"
+          ],
+          "at": "2026-11-15T00:45:15.412Z"
         }
       ]
     },
@@ -59957,6 +59978,16 @@
             "WO-277"
           ],
           "at": "2026-11-15T00:32:34.450Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Retargeted from WO-277 when the pass split the commands page from the update repairs: items 1 and 3 are WO-282 steps 8 and 6; items 2, 4, 5 and 6 are left under the condition. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An instance reports release entries that lost their sections after taking this release; or a later order edits a shared rule and meets the table's check.",
+          "targets": [
+            "WO-282"
+          ],
+          "at": "2026-11-15T00:45:15.532Z"
         }
       ]
     },
@@ -60153,6 +60184,16 @@
             "WO-277"
           ],
           "at": "2026-11-15T00:32:34.585Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Retargeted from WO-277 when the pass split the commands page from the update repairs: the first half is WO-282 step 3; the second half stays for the order that next touches the close. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An instance reports an update whose retry was refused for a runtime file its incoming kit dropped, or a close that deleted a branch whose last commit its base did not hold.",
+          "targets": [
+            "WO-282"
+          ],
+          "at": "2026-11-15T00:45:15.652Z"
         }
       ]
     },

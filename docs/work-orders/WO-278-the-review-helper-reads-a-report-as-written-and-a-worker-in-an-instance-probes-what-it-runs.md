@@ -50,11 +50,10 @@ FUP-2ce66cf6a0602982 (WO-250-D003). FUP-fddba57354445514 (a refused report
 restated by the worker that wrote it) is read here and deferred again (see
 Non-goals). Clean-room screen: the entries are in generic words and name
 kit files only.
-**Depends on:** WO-277 by placement only (both edit `docs/KIT.md` and the
-document check reads both); no hard edge.
-**Recommended placement:** second, after WO-277. It precedes WO-279, which
-adds worker kinds through the same launch path, and its paired launch serves
-every later order's first round.
+**Depends on:** WO-279 and WO-281 by placement only (WO-279 edits the same
+launch path and WO-281 the guide); no hard edge.
+**Recommended placement:** fifth, after WO-281 and before WO-280; its
+paired launch serves every later order's first round.
 **Cites (read these sections):** product 07 §Review helper and round
 reports, §Preflight before the full gate; `docs/KIT.md` §What runs here,
 and what does not; `scripts/lib/review-worker.mjs` (`tableUnder`,

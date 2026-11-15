@@ -59,10 +59,10 @@ gate-row reader that a malformed checks file stops) are allocated here.
 Clean-room screen: the critic reads transcripts that in an instance hold
 whatever its sessions read; the screen of this order's design withholds a
 launch over a refuse-class entry and prints counts only.
-**Depends on:** WO-277 by placement only; no hard edge.
-**Recommended placement:** second, after WO-277: the operator asked for it
-during this pass, and every later order can then run its critic through
-the kit on the work laptop.
+**Depends on:** WO-282 by placement only; no hard edge.
+**Recommended placement:** third, after WO-277 and WO-282: the operator
+asked for it during this pass, and every later order can then run its
+critic through the kit on the work laptop.
 **Cites (read these sections):** `docs/evidence/WO-276/critic/README.md`,
 `charter.md`, `launch.mjs` and `criticisms.md`; WO-276-D077, D101, D110,
 D111, D113, D115, D143, D145, D165, D166 and D182;
