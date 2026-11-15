@@ -612,8 +612,8 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
   and the reader in `scripts/lib/plan-subject.mjs`, pinned by a case in
   `scripts/test-process-debt.mjs`), which a planning branch refuses to
   write; the pass stops here for the operator.
-- Cleared on the operator's word. At 03:13Z on 2026-11-15 the operator
-  entered `operator override:` with the direction that what is not shown
+- Cleared on the operator's word. From 03:14:19Z to 03:19:36Z on
+  2026-11-15 the operator held `operator override:` with the direction that what is not shown
   useful goes. The cap was judged on its evidence: the table's trap signals
   enter the plan's review prompt, which was already 146 KB, and the cap
   refused a 3 KB overflow with no route but code, stopping every planning
@@ -626,3 +626,13 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
   refusal of writes outside `docs/` (WO-135), for these three code files
   alone. The real fix, a table that holds only the plan being judged so it
   cannot grow with the record, is a candidate for the next pass.
+- The override's record: `npm run resume -- override-record` refused at
+  `operator override: off` ("no main-branch control-plane worktree found":
+  the main checkout holds this planning branch), so the override is
+  recorded here, as the hook directs for a use outside a selected order.
+  Bypassed: DotLn hook enforcement, used only for the planning branch's
+  refusal of writes outside `docs/` (WO-135). Effects: the three code files
+  and the sentence of product 07 named above, the table written, and
+  WO-283 filed (commits `0269f773b` and `671f09ec3`). After the override the
+  operator said to stop; the review, its receipt and the pull request are
+  not done, and nothing is pushed.
