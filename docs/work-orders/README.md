@@ -5,10 +5,9 @@
 ## Proposed order
 
 - [ ] [WO-277] — The starter's commands page tells a person every step · **queued**
-- [ ] [WO-283] — Planning stops writing a table nobody acts on · **queued**
+- [ ] [WO-281] — The kit guide is easy to follow · **queued**
 - [ ] [WO-282] — An update leaves nothing to repair by hand · **queued**
 - [ ] [WO-279] — A critic of conduct the kit launches when asked · **queued**
-- [ ] [WO-281] — The kit guide is easy to follow · **queued**
 - [ ] [WO-278] — The review helper reads a report as written · **queued**
 - [ ] [WO-280] — The discovery timeout traced and repaired · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
@@ -58,22 +57,22 @@ None.
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-277-the-starters-commands-page-tells-a-person-every-step.md](WO-277-the-starters-commands-page-tells-a-person-every-step.md)
 
-### WO-283
+### WO-281
 
-[WO-283 — Planning stops writing a table of past costs that nobody acts on (version assigned at activation)](WO-283-planning-stops-writing-a-table-nobody-acts-on.md)
+[WO-281 — The kit guide is easy to follow: rewritten for its readers, and its write-backs held to the rule that already asks for it (version assigned at activation)](WO-281-the-kit-guide-is-easy-to-follow.md)
 
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: none declared.
+- References: WO-277: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
+- Track: delivery
 - Review ladder: paired
-- Authority: [docs/work-orders/WO-283-planning-stops-writing-a-table-nobody-acts-on.md](WO-283-planning-stops-writing-a-table-nobody-acts-on.md)
+- Authority: [docs/work-orders/WO-281-the-kit-guide-is-easy-to-follow.md](WO-281-the-kit-guide-is-easy-to-follow.md)
 
 ### WO-282
 
@@ -82,7 +81,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-277: not-control-closed.
+- References: WO-277: not-control-closed; WO-281: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -99,7 +98,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-282: not-control-closed.
+- References: WO-281: not-control-closed; WO-282: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -108,23 +107,6 @@ None.
 - Track: machinery
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md](WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md)
-
-### WO-281
-
-[WO-281 — The kit guide is easy to follow: rewritten for its readers, and its write-backs held to the rule that already asks for it (version assigned at activation)](WO-281-the-kit-guide-is-easy-to-follow.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-277: not-control-closed; WO-282: not-control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-281-the-kit-guide-is-easy-to-follow.md](WO-281-the-kit-guide-is-easy-to-follow.md)
 
 ### WO-278
 
@@ -322,4 +304,3 @@ None.
 [WO-280]: WO-280-the-discovery-timeout-is-found-and-fixed.md
 [WO-281]: WO-281-the-kit-guide-is-easy-to-follow.md
 [WO-282]: WO-282-an-update-leaves-nothing-to-repair-by-hand.md
-[WO-283]: WO-283-planning-stops-writing-a-table-nobody-acts-on.md

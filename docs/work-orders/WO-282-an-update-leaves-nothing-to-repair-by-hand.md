@@ -42,8 +42,9 @@ reader with its disposition left behind), which the instance's entry 2
 meets, and WO-258-D004's (an update merge that conflicts in a generated
 surface the re-emit cannot repair), which its entry 1 meets. Clean-room
 screen: the entries are in generic words and name kit files only.
-**Depends on:** WO-277 by placement (both edit `docs/KIT.md`); no hard edge.
-**Recommended placement:** third, after WO-277 and WO-283.
+**Depends on:** WO-277 and WO-281 by placement (each edits `docs/KIT.md`);
+no hard edge.
+**Recommended placement:** third, after WO-277 and WO-281.
 **Cites (read these sections):** `docs/KIT.md` §Taking upstream updates;
 `scripts/lib/harness.mjs` (`emitHarness`, `walkOwned`); `scripts/launchpad.mjs`
 (`planUpdate`, `renderUpdatePlan`, `changedOnBothSides`);
@@ -130,8 +131,8 @@ register's stale refusal names the revision to read.
   whose body a later edit touches, which this carry leaves alone).
 
 **Execution plan (the executor follows these steps in order; observed at
-`ed66a822c`, 2026-11-14; after WO-277 has merged, the guide's base is that
-merge's):**
+`ed66a822c`, 2026-11-14; after WO-277 and WO-281 have merged, the guide's
+base is the later merge's):**
 
 1. `scripts/lib/harness.mjs` `emitHarness`: read
    `main:.claude/harness-manifest.json` once through `runGit` with
@@ -251,6 +252,10 @@ took the starter's manifest.
 
 **Known issues and carry-ins:**
 
+- WO-281 rewrites the kit guide before this order runs. The passages of
+  §Taking upstream updates this order corrects keep their facts and their
+  heading and lose their wording, so the executor finds each by its fact,
+  and writes each correction in the rewritten section's shape.
 - Until WO-278's paired launch exists, this order's first round is
   launched by hand as WO-276-D118 records: each of the three kinds and the
   combined worker with no `--recheck`, all naming the same `--since` base,

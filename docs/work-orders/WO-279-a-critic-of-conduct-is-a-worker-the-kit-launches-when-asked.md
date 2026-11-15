@@ -59,8 +59,9 @@ gate-row reader that a malformed checks file stops) are allocated here.
 Clean-room screen: the critic reads transcripts that in an instance hold
 whatever its sessions read; the screen of this order's design withholds a
 launch over a refuse-class entry and prints counts only.
-**Depends on:** WO-282 by placement only; no hard edge.
-**Recommended placement:** fourth, after WO-277, WO-283 and WO-282: the operator
+**Depends on:** WO-281 and WO-282 by placement only (each edits
+`docs/KIT.md`); no hard edge.
+**Recommended placement:** fourth, after WO-277, WO-281 and WO-282: the operator
 asked for it during this pass, and every later order can then run its
 critic through the kit on the work laptop.
 **Cites (read these sections):** `docs/evidence/WO-276/critic/README.md`,
@@ -356,6 +357,9 @@ host's transcripts after a counts-only screen against the private list.
 
 **Known issues and carry-ins:**
 
+- WO-281 rewrites the kit guide before this order runs: step 10's passage
+  in §Planning in this instance is written in the rewritten section's
+  shape.
 - Until WO-278 lands, this order's first round is launched as
   WO-276-D118 records.
 - The briefed critic (WO-276-D115) waits for the operator's word.

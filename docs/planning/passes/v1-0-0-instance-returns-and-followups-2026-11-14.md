@@ -64,9 +64,37 @@ paraphrase, with each journal digest's first twelve characters:
 19. The operator is setting up the work instance now; why wait for orders
     to get the page (`d730afd6e446`).
 
-The pass ran in Claude Code on `claude-opus-5-5` at `max` (the operator's
-`/model` selection at the start of the session; effort read from
-`CLAUDE_EFFORT`), on branch
+The first session stopped at 00:53Z on 2026-11-15, at a size limit on the
+planning cost table, and waited for the operator. Messages 20 to 58, sent
+from 03:06Z when the operator found it stalled, are named by their journal
+rows in the capture `…-midturn-21-on.md`. In paraphrase: the pass was to
+have been finished hours earlier, and the session is to finish it itself,
+with no manual step from the operator and no override as its route; a
+limit should be raisable by editing a file; and before anything is cut,
+say what it is for and whether it is useful. One of them opened an
+`operator override:` (03:14:19Z, digest `64eb6b4d1af2`), closed at 03:19Z.
+
+A second session finished the pass on 2026-11-15, dispatched by a
+`planning:` line asking it to read the operator's purpose from the messages
+above and repair the pass (journaled 03:22:13Z, class direction, digest
+`2d95bd6ced21133962122c177ab921cc4cae82f9e4d7e465c7e4aa0c33498a58`; two
+mid-turn messages, one of them correcting that session's first, too narrow
+reading of the purpose; ignored capture
+`docs/intake/planning-dispatch-2026-11-15-finish-the-2026-11-14-pass.md`,
+SHA-256 `2bb763a8b6a5dad5c2a2b25e41d64c1a00120df2a47803a6c66f6b8f1041b9aa`).
+It read the purpose as eight things: the standard pass with the left-over
+follow-ups and the instance's entries; nothing kept of WO-275; the
+starter's own page of commands for a person, not behind other orders; the
+kit guide and the documents like it rewritten so a person reads them; the
+critic launched on this pass and codified to run on request; WO-276's
+critic findings disposed; the pass finished without the operator's hands;
+and a true account of what a mechanism is for before it is cut. What it
+changed is marked "second session" below.
+
+The first session ran in Claude Code on `claude-opus-5-5` at `max`, the
+second on `claude-fable-5-2` at `max` (each the operator's `/model`
+selection at the start of the session; effort read from `CLAUDE_EFFORT`),
+on branch
 `planning/2026-11-14-v1-0-0-instance-returns-and-followups`, opened by
 `plan start` from clean `main` at `ed66a822c` (v1.0.0, WO-276's merge).
 `FOR-CORE.md` does not exist in core, and no GitHub issue is open on the
@@ -239,9 +267,14 @@ rows, read below.
   changes (WO-275's abandoned work), the branch tip `80227e2fb` already in
   `main`'s history, no remote branch, its writer reservation held by a dead
   process, no host rule naming it. Run: `git worktree remove --force` and
-  `git branch -d wo-275`. Three older recovery refs under
-  `refs/dotln/checkpoint/WO-275/` remain; whether to remove them is the
-  operator's call, asked in this pass's report.
+  `git branch -d wo-275`. Three recovery refs remain,
+  `refs/dotln/checkpoint/WO-275/1` to `/3` (`a64ba1814`, `7e092646c`,
+  `a0a396bab`: the order's activation and two snapshots of its abandoned
+  work, none in `main`'s history). The first session left their removal as
+  a question for the operator, whose direction to keep nothing already
+  answers it. Second session: `git update-ref -d` on the three was declined
+  by the host's permission check as destructive, so they stand until the
+  operator removes them; the session's report gives the command.
 
 ### The serial rule has run its course
 
@@ -379,7 +412,11 @@ The record:
   whether a reader can follow it.
 
 WO-281 takes it: the guide rewritten, the pasted paragraph first, and the
-gate and the final reviewer holding later write-backs to the rule.
+gate and the final reviewer holding later write-backs to the rule. Second
+session: it runs second, straight after the commands page, where the first
+session had it fifth. Documents a person can read were most of what the
+operator asked of this pass, and the orders after it then write into the
+rewritten guide and are held to its shape.
 
 ### Critic 1 on this pass
 
@@ -410,9 +447,53 @@ all hold, and three changed the plan:
 5. Evidence overstated: the guide names `OPERATOR.md` three times (lines
    148, 1059 and 1632), not once. WO-277's gap is corrected.
 
+### The planning cost table: what it is and why it stays
+
+Second session. The operator asked what the table is, why it exists and
+whether it is useful, and got no straight answer from the first session,
+which told the operator that no rule reads it and drafted an order to
+delete it. That was wrong, and the draft is withdrawn.
+
+- **What it is.** `docs/planning/cost-table.json`, written by
+  `npm run meta -- --plan-cost` at each pass. It holds one row for each
+  order of the plan, the dated acceptances of the budgets file, how many of
+  the last eight orders failed their first verification, and five trap
+  signals over the last five closed orders: what the operator had to
+  correct or direct, how often a guard refused, how far the gate and the
+  cold-start documents grew, how much of the work was machinery, and how
+  often a session re-read or re-announced. A measure that rose three orders
+  running is flagged.
+- **Who reads it.** The plan's independent reviewer. The subject hands it
+  the rows and signals as observations (`buildGoalSubject` in
+  `scripts/lib/plan-subject.mjs`), so that its judgment of a plan rests on
+  what the last orders measurably cost and not on the planner's account.
+- **Whether it is used.** Yes. Of the 74 receipts under
+  `docs/planning/refutations/`, 53 cite the table's own figures in their
+  judgment, 23 of those by observation identifier (a search of each
+  receipt's result, holds and dispositions for the identifier and for ten
+  metric names its trap signals carry). Receipt 061 judged an order that
+  added a refusing guard against guard refusals already rising 0, 1, 2, 3
+  over four orders; receipts 058 to 060 each carry a finding drawn from
+  its record of the role roots over their byte ceilings.
+- **What was wrong.** Only its size limit: 64 KB, written as a number into
+  two scripts, refusing the whole file with no setting to raise it, in a
+  pass that may not edit scripts. WO-276, fifteen orders in one, made the
+  five-order window large (about 67 KB), so the limit stopped this pass
+  and would have stopped later ones while WO-276 stays in that window. The
+  kit's dispatch bounds and caps live in `docs/control/budgets.json`, which
+  a pass may edit; this limit did not, which is why editing a file could
+  not raise it.
+- **What was done.** The limit was removed under the operator's override
+  (§Validation). The table stays as it is.
+
+### Critic 2, and the critic on the second session
+
+The first session launched a second critic at 03:09Z and stopped it at
+03:21Z when the operator said to stop; it returned no report.
+
 ## Orders filed and amended
 
-Seven orders, one subsystem each. Under the standing rule a pass does not
+Six orders, one subsystem each. Under the standing rule a pass does not
 bundle unrelated subsystems by its own choice; the operator may direct a
 merge. The page and the update's repairs were first one order; the
 operator's message 19 (setting up the work instance now, why wait for
@@ -425,10 +506,11 @@ tag), so the page ships alone and first.
   paragraph per step on what it does and what to do when it fails, the
   front page leading with the page; a patch release whose close refreshes
   the starter. From the operator's messages 2 to 10 and 19.
-- **WO-283 — Planning stops writing a table nobody acts on.** The table of
-  past costs each pass writes and hands its review, whose size limit stopped
-  this pass, is removed with its command and checks; receipts filed with it
-  keep validating. From the operator's direction under override.
+- **WO-281 — The kit guide is easy to follow.** The guide and the map
+  rewritten, the pasted paragraph first, no fact lost (an inventory proves
+  it); the gate lists long paragraphs as a smell; the final reviewer
+  returns a passage its reader cannot follow. From the operator's messages
+  3 and 12 to 17.
 - **WO-282 — An update leaves nothing to repair by hand.** The emit keeps an
   instance's own host surfaces; a re-keyed register row keeps its
   dispositions; three update-path repairs; the guide's update section
@@ -440,11 +522,6 @@ tag), so the page ships alone and first.
   a counts-only screen of the transcripts before each launch; the kit's own
   check of a stale standing file. From the operator's messages 11 and 18
   and WO-276's critic rows.
-- **WO-281 — The kit guide is easy to follow.** The guide and the map
-  rewritten, the pasted paragraph first, no fact lost (an inventory proves
-  it); the gate lists long paragraphs as a smell; the final reviewer
-  returns a passage its reader cannot follow. From the operator's messages
-  3 and 12 to 17.
 - **WO-278 — The review helper reads a report as written.** A table read
   anywhere in its section; a paired first round launched as one; a probe of
   a core-only suite in a kit root answered, not run; `--keep-going` named
@@ -456,6 +533,14 @@ tag), so the page ships alone and first.
 
 No order was amended. The order numbers are identifiers; the sequence
 gives the order of work.
+
+A seventh order was drafted and withdrawn before publication (second
+session). Under the override the first session filed an order numbered
+WO-283 to delete the planning cost table, on the premise that nothing reads
+it. The plan's reviews read it and cite it
+(§The planning cost table: what it is and why it stays), so the draft left
+the plan with its file, its sequence entry and its catalog row; no register
+row named it, and its number is free for the next order filed.
 
 Each order was checked before refutation: every repository path it names
 exists or is created by one of its own steps (two new files in WO-279);
@@ -529,13 +614,29 @@ Each declined candidate, with why and what reverses it:
 - **The critics' classes marked "nothing"** in the table above. Reverse
   when the next order's critics or reviews find the class again after the
   line WO-279's critic draws.
+- **Deleting the planning cost table** (second session; the first
+  session's draft order). 53 of 74 filed plan reviews cite its figures, so
+  deleting it would take the measured record from the plan's reviewer.
+  Reverse on the operator's word, or when ten reviews in a row cite none
+  of it.
+- **Trimming the planning cost table** (second session). It copies the
+  budgets file's dated acceptances whole (19 KB of its 67 KB, a list that
+  only grows) and carries each signal's full series. With no size limit
+  nothing refuses, and the reviews cite the series. Reverse when a plan
+  review's prompt no longer fits its reviewer, or a reviewer reports the
+  observations too long to use.
 
 ## Sequence
 
-WO-276 leaves the list. The seven orders come first, in this order: WO-277,
-WO-283, WO-282, WO-279, WO-281, WO-278, WO-280; then the Not now orders as they were. The
-"Serial for now" rule is replaced by the lane-pair rule it suspended. WO-207's
-and WO-096's Not now entries now state what WO-276 delivered for each.
+WO-276 leaves the list. The six orders come first, in this order: WO-277,
+WO-281, WO-282, WO-279, WO-278, WO-280; then the Not now orders as they
+were. The first two are the documents a person reads, the operator's main
+ask; WO-282 and WO-278 are the instance's reports, each with a working
+route today; WO-279 is the critic the operator asked to have codified;
+WO-280 is research. The order is the planner's, and one edit of the
+sequence moves any of them. The "Serial for now" rule is replaced by the
+lane-pair rule it suspended. WO-207's and WO-096's Not now entries now
+state what WO-276 delivered for each.
 
 ## Write-backs
 
@@ -545,8 +646,11 @@ and WO-096's Not now entries now state what WO-276 delivered for each.
   (`npm run publication:check` passes; neither edition states the rung).
 - `docs/planning/sequence.md`: the rules, the orders and the Not now
   entries above.
-- `docs/planning/work-order-map.md`: the five orders' catalog rows.
+- `docs/planning/work-order-map.md`: the six orders' catalog rows.
 - `docs/planning/followups.json`: the 105 dispositions.
+- Product 07, the standard artifacts' line on `npm run meta -- --plan-cost`
+  (second session): it says what the table is for and that it has no size
+  limit, where it had called the table bounded.
 
 ## Rules recorded
 
@@ -613,26 +717,31 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
   `scripts/test-process-debt.mjs`), which a planning branch refuses to
   write; the pass stops here for the operator.
 - Cleared on the operator's word. From 03:14:19Z to 03:19:36Z on
-  2026-11-15 the operator held `operator override:` with the direction that what is not shown
-  useful goes. The cap was judged on its evidence: the table's trap signals
-  enter the plan's review prompt, which was already 146 KB, and the cap
-  refused a 3 KB overflow with no route but code, stopping every planning
-  pass. It was removed, not raised: `scripts/lib/meta.mjs` (`planCostText`
-  writes the table whole), `scripts/lib/plan-subject.mjs` (no byte check),
-  the case in `scripts/test-process-debt.mjs` (a table past the old cap
-  writes whole; the single case passed under the bounded wrapper), and
-  product 07's sentence that called the table bounded. The table was then
-  written (67,335 bytes). Bypassed under the override: the planning branch's
-  refusal of writes outside `docs/` (WO-135), for these three code files
-  alone. The real fix, a table that holds only the plan being judged so it
-  cannot grow with the record, is a candidate for the next pass.
+  2026-11-15 the operator held `operator override:` with the direction that
+  what nobody can show to be useful goes. The limit was judged on its
+  evidence: the table's trap signals enter the plan's review prompt, which
+  the first session measured at 146 KB already, and the limit refused a
+  3 KB overflow with no route but code, stopping the pass. It was removed,
+  not raised: `scripts/lib/meta.mjs` (`planCostText` writes the table
+  whole), `scripts/lib/plan-subject.mjs` (no byte check) and the case in
+  `scripts/test-process-debt.mjs` (a table past the old limit writes
+  whole). The table was then written. Bypassed under the override: the
+  planning branch's refusal of writes outside `docs/` (WO-135), for these
+  three code files alone.
 - The override's record: `npm run resume -- override-record` refused at
   `operator override: off` ("no main-branch control-plane worktree found":
   the main checkout holds this planning branch), so the override is
   recorded here, as the hook directs for a use outside a selected order.
   Bypassed: DotLn hook enforcement, used only for the planning branch's
-  refusal of writes outside `docs/` (WO-135). Effects: the three code files
-  and the sentence of product 07 named above, the table written, and
-  WO-283 filed (commits `0269f773b` and `671f09ec3`). After the override the
-  operator said to stop; the review, its receipt and the pull request are
-  not done, and nothing is pushed.
+  refusal of writes outside `docs/` (WO-135). Effects: the three code
+  files, the table written, and the draft order to delete the table
+  (commits `0269f773b` and `671f09ec3`). After the override the operator
+  said to stop, with the review, its receipt and the pull request not done.
+- Corrections by the second session to what the first recorded here. It
+  wrote that product 07's sentence calling the table bounded had been
+  changed; no such change was on the branch, and the second session made it
+  (§Write-backs). It called a table holding only the plan's own rows the
+  real fix; those rows are 1.6 KB, and what the reviews cite is the
+  record-wide signals, so that candidate is declined (§NoOps). And the
+  draft order rested on the table having no reader, which the receipts
+  contradict (§The planning cost table: what it is and why it stays).

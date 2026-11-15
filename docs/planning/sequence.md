@@ -106,9 +106,10 @@ reported after taking v1.0.0, and what WO-276 left
   each step does and what to do when it fails; the starter's front page
   names it first. A small documentation release, to run as soon as this
   pass merges: its release close puts the page in the starter.
-- WO-283: planning stops writing a table of past costs that nobody acts
-  on, whose size limit stopped this pass (the operator's direction under
-  override, 2026-11-15).
+- WO-281: the kit guide rewritten to be easy to follow, its facts kept, and
+  its later write-backs held to the rule that already asks for it. Second
+  because documents a person can read were most of what the operator asked
+  of the pass, and the orders after it then write into the rewritten guide.
 - WO-282: an update leaves nothing to repair by hand (the emit keeps an
   instance's own host surfaces, a re-keyed register row keeps its
   dispositions, three update-path repairs).
@@ -116,8 +117,6 @@ reported after taking v1.0.0, and what WO-276 left
   launches by name when someone asks, on Opus 5.5 at xhigh unless an
   instance chooses another, so it runs on the work laptop; a cadence runs
   only where an instance turns on its feature, off by default.
-- WO-281: the kit guide rewritten to be easy to follow, its facts kept, and
-  its later write-backs held to the rule that already asks for it.
 - WO-278: the review helper reads a report's table where it stands, a paired
   first round is launched as one, and a worker in an instance probes only
   what the instance carries.
@@ -126,7 +125,7 @@ reported after taking v1.0.0, and what WO-276 left
 
 WO-277 (delivery) and WO-280 (machinery) have disjoint surfaces and no hard
 edge, so they may run as a lane pair if the operator says to run both at
-once; otherwise the seven run in this order.
+once; otherwise the six run in this order.
 
 ## Not now
 
@@ -170,10 +169,9 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 
 <!-- dotln-work-order-sequence:start -->
 - WO-277 — The starter's commands page tells a person every step
-- WO-283 — Planning stops writing a table nobody acts on
+- WO-281 — The kit guide is easy to follow
 - WO-282 — An update leaves nothing to repair by hand
 - WO-279 — A critic of conduct the kit launches when asked
-- WO-281 — The kit guide is easy to follow
 - WO-278 — The review helper reads a report as written
 - WO-280 — The discovery timeout traced and repaired
 - WO-244 — Paired planning passes and the synthesis pass

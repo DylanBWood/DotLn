@@ -49,11 +49,14 @@ starter's seeded map rewritten by the refresh) and the third item of
 FUP-348ac9430f5e66f3 (WO-276-D155: where the guide says a context entry
 never refuses, it names the two target routes that wait on the reviewer's
 confirmation). Clean-room screen: core's own documents.
-**Depends on:** WO-277 and WO-282 by placement (WO-277 edits the guide's
-first paragraph and §First steps' marked blocks and makes `docs/OPERATOR.md`
-the person's page, which this rewrite keeps; WO-282 edits §Taking upstream
-updates); no hard edge.
-**Recommended placement:** fifth, after WO-277, WO-283, WO-282 and WO-279.
+**Depends on:** WO-277 by placement (WO-277 edits the guide's first
+paragraph and §First steps' marked blocks and makes `docs/OPERATOR.md` the
+person's page, which this rewrite keeps); no hard edge.
+**Recommended placement:** second, after WO-277: documents a person can
+read were most of what the operator asked of the 2026-11-14 pass, and the
+orders after it (WO-282, WO-279 and WO-278) then write into the rewritten
+guide and are held to its shape, instead of adding passages this order
+would rewrite.
 **Cites (read these sections):** `docs/KIT.md` whole; `docs/README.md`;
 product 07 §Operator-opened planning pass item 7 (the three kinds of
 document and how each changes), §Documentation freshness and ownership and
@@ -147,8 +150,8 @@ repair. A long document is fine where it is easy to follow.
   been read.
 
 **Execution plan (the executor follows these steps in order; observed at
-`ed66a822c`, 2026-11-14; after WO-277 and WO-282 have merged, the guide's base is the
-later merge's):**
+`ed66a822c`, 2026-11-14; after WO-277 has merged, the guide's base is that
+merge's):**
 
 1. `docs/evidence/WO-281/inventory.mjs` (new): the inventory of the Design
    over a given revision of `docs/KIT.md`; it writes the base's inventory.
