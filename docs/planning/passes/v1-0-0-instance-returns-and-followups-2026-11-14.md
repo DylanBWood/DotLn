@@ -817,3 +817,7 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
   name in this section as the operator's words. The sentence now names the
   message as code. The gate's result on the published commit is in the
   pull request's description.
+- The private list before the publish (second session):
+  `node scripts/terms.mjs branch` screened the branch's 28 changed files
+  and found no line in refuse mode and none in context mode, so there was
+  no context-mode line to read.
