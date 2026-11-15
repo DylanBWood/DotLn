@@ -40,6 +40,22 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-281 filed); registration only; the record is the planning document
+
+Dispatch: `planning:` asking for a standard pass with the follow-ups left
+over and an instance's five entries, journaled at 2026-11-14T23:21:12.253Z
+(hook time) in Claude Code (Opus 5.5 at max, operator-selected), captured
+in `docs/intake/planning-dispatch-2026-11-14-v1-0-0-instance-returns-and-followups.md`
+(the journal's digest of the message
+`90a23f1bbae9b79f3c760f130d682a0bf463281b37ab7c81d46eace1b1507603`), with
+eighteen further messages during the pass captured beside it. The pass
+reads the instance's entries against the code, disposes the 75 open
+register rows WO-276 left, files WO-277 to WO-281 (the person's page in the
+starter and the update's repairs; the critic launched when asked; the kit
+guide rewritten; the review helper; the discovery timeout) and replaces the
+expired serial rule with the lane-pair rule. Record:
+[the planning document](../planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md).
+
 ## 2026-11-10 — Planning pass: one order for the whole queue (WO-276 filed; WO-261 to WO-275 made umbrella records); registration only; the record is the planning document
 
 Dispatch: `planning:` with the operator's question about the state of the

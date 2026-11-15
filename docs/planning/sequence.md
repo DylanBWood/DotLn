@@ -14,17 +14,18 @@ pointers and continuation command. Untouched items persist across passes.
 
 ## Rules in force
 
-- **Serial for now.** Core runs one order at a time for the next thirty
-  orders from 2026-10-13 and parallelizes across repositories instead: the
-  fork, DotLn-Angular and DotLn WoW Forever (operator direction,
-  2026-10-13). Parallel orders stay the aim where they pay; when pairs
-  return, two entries between blank lines are a lane pair (the delivery
-  order first, a machinery or evidence order second, disjoint primary
-  surfaces, no hard edge), one order at a time passes final review and
-  release close, and the entries after the last pair run one at a time
+- **Pairs where they pay.** The operator kept core to one order at a time
+  for thirty orders from 2026-10-13 (operator direction, 2026-10-13); more
+  than thirty have closed since, so that choice has run its course
+  ([the 2026-11-14 pass](passes/v1-0-0-instance-returns-and-followups-2026-11-14.md#the-serial-rule-has-run-its-course)).
+  Parallel orders stay the aim where they pay: two entries between blank
+  lines are a lane pair (the delivery order first, a machinery or evidence
+  order second, disjoint primary surfaces, no hard edge), one order at a
+  time passes final review and release close, and the entries after the
+  last pair run one at a time
   ([the map's tracks](work-order-map.md#tracks-and-dispatch-dimensions)).
-  Reopen pairs when the thirtieth of those orders closes, or on the
-  operator's word.
+  A pair runs side by side only when the operator says both are to run at
+  once.
 - **Every open order has a place in this list.** Closed and withdrawn
   entries leave the list at the next planning pass (WO-158); the history
   page is their record. A member of a workstream marked `track: separate`
@@ -93,35 +94,33 @@ capture SHA-256
 stream of work in this repository depends on it. The fork and
 DotLn-Angular remain where the same route is exercised in the open.
 
-## The order, serial
+## The orders, one at a time
 
-One order carries the queue. The operator's first cycle on the work laptop
-and the execution of WO-275 on 2026-11-09 and 2026-11-10 showed what the
-kit owed before anything else, and the operator directed that the repairs
-and the whole queue land as one order
-([the 2026-11-10 pass](passes/one-order-for-the-whole-queue-2026-11-10.md)):
+WO-276 closed as v1.0.0 on 2026-11-14. What comes next is what the
+operator met setting up the work laptop that day, what an instance
+reported after taking v1.0.0, and what WO-276 left
+([the 2026-11-14 pass](passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)):
 
-- WO-276: the queue lands as one order of eighteen parts. First what
-  stops an order for no reason: a private list with a context class that
-  stops nothing and a refuse class that stops everything, a repair after
-  a failed run that restarts the run, a worker that cannot hand back with
-  shells running, a role that cannot wait on a question dialog (Part A);
-  and one reader for each format the sources read (Part B). Then what
-  every later part passes through: reviews judged before they are fixed
-  (Part C), the complete run as one convoy (Part D), a complete run that
-  fails for a defect in the change (Part E), and role text that binds the
-  role that loads it (Part F). Then the work instance, in the order a new
-  instance meets it: a first order that looks for Claude alone, the
-  operator's commands as a page and one file for what core should hear
-  (Part G); a host report (Part H); an update that keeps an instance's
-  files (Part I); models, effort and what an order used (Part J); a root
-  for an instance's own tools (Part K); area notes on a target (Part L);
-  a team on a repository that squashes its merges (Part M); a target
-  order's records kept in the instance (Part N); an initiative laid out
-  before its orders are cut (Part O); an order paced across days (Part
-  P); hooks that run for the tools they judge (Part Q); and what the
-  instance asked of core on 2026-11-10 (Part R). The orders it absorbs,
-  WO-261 to WO-275, are umbrella records.
+- WO-277: a person sets up and updates an instance from one page in the
+  starter, `docs/OPERATOR.md`, written in the form the operator named, with
+  the private terms list before anything publishes; and an update leaves
+  nothing to repair by hand (the emit keeps an instance's own host
+  surfaces, a re-keyed register row keeps its dispositions).
+- WO-279: the critic of conduct WO-276 ran by hand becomes a worker the kit
+  launches by name when someone asks, on Opus 5.5 at xhigh unless an
+  instance chooses another, so it runs on the work laptop; a cadence runs
+  only where an instance turns on its feature, off by default.
+- WO-281: the kit guide rewritten to be easy to follow, its facts kept, and
+  the write-back and `quality pass:` rules that keep it so.
+- WO-278: the review helper reads a report's table where it stands, a paired
+  first round is launched as one, and a worker in an instance probes only
+  what the instance carries.
+- WO-280: the five-second discovery timeout traced and repaired, or left
+  with what it needs recorded.
+
+WO-277 (delivery) and WO-280 (machinery) have disjoint surfaces and no hard
+edge, so they may run as a lane pair if the operator says to run both at
+once; otherwise the five run in this order.
 
 ## Not now
 
@@ -139,10 +138,10 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
   Reopen when the operator asks core to record a measured comparison of
   the instance route.
 - WO-207 (an instance's kit updates: rollback, extension point and build
-  channel): its extension point is recut as Part K of WO-276 without the
-  loader.
-  The rollback, the build channel and the declared suites wait for a need
-  an instance reports; a pass that reopens any of them recuts it first.
+  channel): its extension point shipped as Part K of WO-276 (v1.0.0)
+  without the loader. The rollback, the build channel and the declared
+  suites wait for a need an instance reports; a pass that reopens any of
+  them recuts it first.
 - WO-193 (an instance's requests reach core's intake): the focus asks for
   less traffic to core, and the pasted block serves what blocks. Reopen
   when an instance's blocking need reaches core late or is lost.
@@ -155,14 +154,20 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 - WO-091 (the full 5S set on the Repo Gardener): reopen when the operator
   directs the demonstration or a consumer needs a group with several
   active mechanics.
-- WO-096 (feedback rule migration): Part F of WO-276 is the route to less
-  role text. Reopen when that part's measurements show sentences only a
-  mechanism can replace.
+- WO-096 (feedback rule migration): Part F of WO-276 measured each role's
+  installed and read bytes before and after it moved the shared rules into
+  records ([WO-276-D055](../evidence/WO-276/decisions.md#wo-276-d055--part-f-as-built-the-shared-rules-as-records-the-rule-by-role-table-the-refutations-steps-from-its-command-the-review-helpers-section-and-the-meters-second-number))
+  and named no sentence that only a mechanism can replace. Reopen when a
+  measurement names one.
 - WO-014 (approval-burden baseline): reopen when a host reports approval
   requests to a hook, or the operator records approval friction.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-276 — The queue lands as one order
+- WO-277 — A person sets up and updates an instance from one page
+- WO-279 — A critic of conduct the kit launches when asked
+- WO-281 — The kit guide is easy to follow
+- WO-278 — The review helper reads a report as written
+- WO-280 — The discovery timeout traced and repaired
 - WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel

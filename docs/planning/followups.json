@@ -1867,6 +1867,14 @@
           "reopenWhen": "WO-098 closes and the ledger names batch candidates",
           "targets": [],
           "at": "2026-09-19T01:19:48.394Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its condition named WO-098, which is superseded; the batches wait on WO-096, which stays under Not now. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "WO-096 closes and the ledger names batch candidates.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.045Z"
         }
       ]
     },
@@ -2825,6 +2833,13 @@
           "title": "Candidate — Embodied Explorer",
           "summary": "## Candidate — Embodied Explorer The **Embodied Explorer** is a candidate domain role for the post-1.0 simulation laboratory, not a new canonical actor kind. Its obligation is to discover an embodiment's affordances and limits from bounded interaction: start with rudimentary observations and motor primitives, attempt small movements, and compose verified sequences into larger skills such as stabilizing, reaching, grasping, locomotion, object relocation, and tool use. “What am I?” must not collapse into Identity or model introspection. Keep these three surfaces separate even if later schemas use different names: - an authoritative, versioned **embodiment contract** describing morphology, avai",
           "missing": false
+        },
+        {
+          "hash": "ef47ad5c5da2e312ee54c6d39e0a7ae489fcaee83628cbee7f4b3507bef359c6",
+          "ref": "docs/product/05-pattern-library.md#candidate--embodied-explorer",
+          "title": "Candidate — Embodied Explorer",
+          "summary": "## Candidate — Embodied Explorer The **Embodied Explorer** is a candidate domain role for the simulation laboratory after `v2.0.0`, the roadmap's Teammate-ready rung ([its number](../evidence/WO-276/decisions.md#wo-276-d073--this-orders-release-is-v100-and-the-roadmaps-teammate-ready-rung-is-v200-on-the-operators-word)), not a new canonical actor kind. Its obligation is to discover an embodiment's affordances and limits from bounded interaction: start with rudimentary observations and motor primitives, attempt small movements, and compose verified sequences into larger skills such as stabilizing, reaching, grasping, locomotion, object relocation, and tool use. “What am I?” must not collapse ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2835,6 +2850,14 @@
           "reopenWhen": "a planning pass names a consumer scenario after WO-091 to WO-095 land (the pass's suggestion), or the clause the source section states",
           "targets": [],
           "at": "2026-09-19T01:19:54.551Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "This pass renamed the rung in the candidate's first sentence (after v2.0.0, WO-276-D073); the candidate is otherwise unchanged and no consumer scenario exists. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "a planning pass names a consumer scenario after WO-091 to WO-095 land (the pass's suggestion), or the clause the source section states",
+          "targets": [],
+          "at": "2026-11-15T00:32:37.514Z"
         }
       ]
     },
@@ -4443,6 +4466,14 @@
           "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
           "targets": [],
           "at": "2026-11-09T00:39:17.242Z"
+        },
+        {
+          "sourceRevision": 29,
+          "status": "deferred",
+          "reason": "Revision 29 changed only product 12's paragraph on what a target order's briefing names (WO-276-D086's write-back); the candidate's demonstrations and first-screen claims are unchanged, so the earlier deferral stands. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
+          "targets": [],
+          "at": "2026-11-15T00:32:37.383Z"
         }
       ]
     },
@@ -12832,6 +12863,14 @@
           "reopenWhen": "A snapshot cannot load a reachable module, or runtime snapshot maintenance evaluates deriving the import closure.",
           "targets": [],
           "at": "2026-10-25T21:19:44.538Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-277 and not taken: WO-277 changes the emit's ownership reading, not the runtime pin list. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A snapshot cannot load a reachable module, or runtime snapshot maintenance evaluates deriving the import closure.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.687Z"
         }
       ]
     },
@@ -19578,6 +19617,14 @@
           "reopenWhen": "A planning pass allocates the validator kit, or another order pays a live feedback episode and adds or edits a protocol file carrying the repeated group.",
           "targets": [],
           "at": "2026-11-02T21:28:02.298Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-279 and not taken: WO-279 edits one prompt's output section in change-review-protocol.ts; the validator kit is a refactor of six protocol files that no failure asks for. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A planning pass allocates the validator kit, or another order pays a live feedback episode and adds or edits a protocol file carrying the repeated group.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.943Z"
         }
       ]
     },
@@ -26908,6 +26955,14 @@
           "reopenWhen": "WO-113 activation (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-30T00:08:58.176Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Its condition named WO-113, which is superseded; WO-276 used the route this candidate asked about, fifteen orders as parts under one activation with the orders made umbrella records (the 2026-11-10 pass). [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An umbrella's parts need separate verification or release.",
+          "targets": [],
+          "at": "2026-11-15T00:32:44.982Z"
         }
       ]
     },
@@ -36435,6 +36490,14 @@
           "reopenWhen": "A pass's document condition is unavailable three passes running with contended samples, or WO-229 closes without marking contention",
           "targets": [],
           "at": "2026-10-22T01:19:51.871Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The document condition was unavailable at the 2026-11-07, 11-08 and 11-09 passes; whether those samples were contended is not recorded, and WO-229 marks contention. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A pass records the document condition unavailable with contended samples three passes running.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.916Z"
         }
       ]
     },
@@ -43903,6 +43966,14 @@
           "reopenWhen": "WO-207's activation or next amendment, where the preparation is weighed as a step, or an instance reports a hand bootstrap after update --finish",
           "targets": [],
           "at": "2026-10-24T04:18:35.297Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-207 was amended after this deferral without weighing the SessionStart preparation; it stays parked under Not now. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "WO-207 activates, or an instance reports a hand bootstrap after update --finish.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.788Z"
         }
       ]
     },
@@ -45081,6 +45152,14 @@
           "reopenWhen": "An instance reports an unavailable console source as 'invalid format' whose command was killed or exceeded its output limit; or WO-220's activation (its executor may take this console row inside the Boy Scout bound) or the next order editing packages/console/src/values.ts",
           "targets": [],
           "at": "2026-10-24T04:18:38.266Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The WO-220 clause was spent and weighed on 2026-10-24; the rest stands. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance reports an unavailable console source as invalid format whose command was killed or exceeded its output limit, or the next order editing packages/console/src/values.ts.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.172Z"
         }
       ]
     },
@@ -45608,6 +45687,14 @@
           "reopenWhen": "A drive order after WO-247 is filed, or OD-013 and OD-049 are answered.",
           "targets": [],
           "at": "2026-10-31T16:02:15.635Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Borderline: WO-276 edited the drive's route and session modules, and none of the folds is built; no order's subject is the drive's phase and stop model. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An order whose subject is the drive's phase and stop model is filed, or OD-013 and OD-049 are answered.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.659Z"
         }
       ]
     },
@@ -46021,6 +46108,14 @@
           "reopenWhen": "the next order on the target lifecycle, or a second target order needs the correct route",
           "targets": [],
           "at": "2026-10-24T04:18:35.912Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Condition occurred: WO-276's Parts M and N changed the target lifecycle. A completion still records productGate only without a repository (scripts/lib/handoff-ledger.mjs 561). [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The next order editing scripts/lib/release-records.mjs or the completion's productGate line, or a second target order needs the correct route.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.401Z"
         }
       ]
     },
@@ -47426,6 +47521,14 @@
           "reopenWhen": "A second pass on either side must act on a worktree's rows without disposing them, or a records merge brings a row a pass already acted on and the two dispositions disagree.",
           "targets": [],
           "at": "2026-10-27T00:11:36.225Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-277 and not taken: WO-277's carry judges one projection; a worktree's rows reaching main are a different seam. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A second pass on either side must act on a worktree's rows without disposing them, or a records merge brings a row a pass already acted on and the two dispositions disagree.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.559Z"
         }
       ]
     },
@@ -48214,6 +48317,14 @@
           "reopenWhen": "The operator directs the contract, an instance records a duty lost at an update, or a second instance asks.",
           "targets": [],
           "at": "2026-10-28T14:03:38.287Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-277 and not taken: no instance has recorded a duty lost at an update. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The operator directs the contract, an instance records a duty lost at an update, or a second instance asks.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.815Z"
         }
       ]
     },
@@ -48286,6 +48397,14 @@
           "reopenWhen": "A bound stop lands in an attended session whose tool-active time is observed below its wall-clock bound, or a planning pass reads the boundStops block and most initial stops end in acceptances.",
           "targets": [],
           "at": "2026-10-31T16:02:15.969Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276's Part P bounds a dispatch on worked time with idle gaps excluded (WO-276-D098, D103), which is the attended-session concern; the window shows no bound stop and seven acceptances. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A bound stop lands in an attended session whose worked time is below its bound.",
+          "targets": [],
+          "at": "2026-11-15T00:32:45.112Z"
         }
       ]
     },
@@ -49358,6 +49477,16 @@
           "reopenWhen": "A repair of WO-234 happens, or the next order touching scripts/lib/dispatch-bound.mjs or the gate-row reader activates; or verification-003-probe.mjs usage U4's current standing names docs/control/local/harness/checks.json.",
           "targets": [],
           "at": "2026-11-08T12:57:24.960Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Condition occurred twice (WO-258 and WO-276 edited scripts/lib/dispatch-bound.mjs) and the need stands: readChecksFile parses with a bare JSON.parse. WO-279's cadence reads gate rows at each prompt where it is on, and its step 5 reads a malformed checks file as unavailable. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; verification-003-probe.mjs usage U4's current standing names docs/control/local/harness/checks.json.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:36.861Z"
         }
       ]
     },
@@ -51742,6 +51871,16 @@
           "reopenWhen": "A drive order after WO-247 is filed, or OD-013 and OD-049 are answered.",
           "targets": [],
           "at": "2026-10-31T16:02:17.878Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The same folds and condition as FUP-c713e7e97964d316. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "As FUP-c713e7e97964d316 records.",
+          "targets": [
+            "FUP-c713e7e97964d316"
+          ],
+          "at": "2026-11-15T00:32:44.721Z"
         }
       ]
     },
@@ -53210,6 +53349,16 @@
           "reopenWhen": "A session exceeds the cap on a path this order does not count, or a planning pass allocates the remaining kit launch paths.",
           "targets": [],
           "at": "2026-11-02T17:10:39.468Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-278 step 5 counts the paired launch, plan refute --transport and entropy review --transport; WO-279 counts its own worker launch. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An order is refused at the cap while using no more distinct agents than a comparable earlier order (the order's known issue), or a session exceeds the cap on a path this order does not count.",
+          "targets": [
+            "WO-278"
+          ],
+          "at": "2026-11-15T00:32:35.666Z"
         }
       ]
     },
@@ -54983,6 +55132,14 @@
           "reopenWhen": "Two orders executed after WO-255 have recorded their round-2 recheck findings and durations, or the operator asks for the recheck narrower.",
           "targets": [],
           "at": "2026-11-05T19:03:57.014Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-259 and WO-260 recorded their round-2 recheck counts (WO-259-D017; WO-260-D019 and D030); the paired-ladder rule now sizes reviews from fifteen paired rounds, which carry this measure. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The pass that reads fifteen paired rounds finds the recheck rounds unmeasured.",
+          "targets": [],
+          "at": "2026-11-15T00:32:44.851Z"
         }
       ]
     },
@@ -55022,6 +55179,14 @@
           "reopenWhen": "A target order's repair ladder is refused by the overwrite rule after a failed target gate, or a planning pass allocates the repair-lane change.",
           "targets": [],
           "at": "2026-11-05T16:52:38.909Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-278 and not taken: no target order's repair ladder has been refused after a failed target gate. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A target order's repair ladder is refused by the overwrite rule after a failed target gate.",
+          "targets": [],
+          "at": "2026-11-15T00:32:44.201Z"
         }
       ]
     },
@@ -55105,6 +55270,16 @@
           "reopenWhen": "WO-244 activates, or plan review launches a planning criteria review without --capture.",
           "targets": [],
           "at": "2026-11-05T16:52:39.048Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Condition occurred: WO-244 was activated on 2026-11-08 and parked on 2026-11-09; its parked commit builds plan review with a required --capture, which is this row's ask. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "WO-244 is withdrawn, or reactivates without plan review's --capture.",
+          "targets": [
+            "WO-244"
+          ],
+          "at": "2026-11-15T00:32:37.121Z"
         }
       ]
     },
@@ -55488,6 +55663,14 @@
           "reason": "WO-255-D041 records the two nonblocking repair-3 design notes; no behavioral defect or measured performance problem requires expanding the Markdown-context repair.",
           "reopenWhen": "The decoder or omission path next needs substantial maintenance, or measured repeated matcher construction matters.",
           "at": "2026-11-05T22:59:44.444Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-278 and not taken: a maintenance suggestion with no defect or measured cost behind it. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A further format change makes orchestration obscure decoding correctness, or measured capture-matching cost warrants the separate interface.",
+          "targets": [],
+          "at": "2026-11-15T00:32:44.461Z"
         }
       ]
     },
@@ -55519,6 +55702,16 @@
           "reopenWhen": "A planning pass allocates the parser change, or a caller's genuine result with ordinary closing prose cannot be recorded with --format json and putting the result alone is not acceptable to its route.",
           "targets": [],
           "at": "2026-11-06T00:58:27.208Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "The JSON return reader skips a brace that opens no object in preface or closing prose: WO-278 step 3, with the instance's refused report the reason this seam is open now. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A caller's genuine result with ordinary closing prose cannot be recorded with --format json, or the documentation's claim changes.",
+          "targets": [
+            "WO-278"
+          ],
+          "at": "2026-11-15T00:32:35.530Z"
         }
       ]
     },
@@ -55797,6 +55990,14 @@
           "reopenWhen": "An operator needs a different review budget for one instance, or a batch brief fails the protocol's check.",
           "targets": [],
           "at": "2026-11-07T19:12:47.141Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-278 and not taken: no operator has asked for another review budget. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An operator needs a different review budget for one instance, or a batch brief fails the protocol's check.",
+          "targets": [],
+          "at": "2026-11-15T00:32:44.330Z"
         }
       ]
     },
@@ -55993,6 +56194,16 @@
           "reopenWhen": "A split round's admitted parts are refused at the merge in an actual pass, or an order touching mergeBatchReports activates.",
           "targets": [],
           "at": "2026-11-07T19:12:47.544Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Condition occurred: WO-276 edited the split-round merge (its function is mergeBatchResults, not the mergeBatchReports the row names). The merge judging and building the report from each part's body is WO-278 step 3. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A split round's admitted parts are refused at the merge in an actual pass, or the final reviewer judges the record route within criterion 12.",
+          "targets": [
+            "WO-278"
+          ],
+          "at": "2026-11-15T00:32:35.393Z"
         }
       ]
     },
@@ -56075,6 +56286,14 @@
           "reopenWhen": "An elected order is refused implementation-ready after an integration with an unchanged proposal, or an order touching the plan-first boundary activates.",
           "targets": [],
           "at": "2026-11-07T19:12:46.738Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Condition occurred: WO-276 edited the plan-first boundary. A moved HEAD still clears the approval; no instance elects plan-first yet. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An elected order is refused implementation-ready after an integration with an unchanged proposal, or an order editing the plan-first approval binding activates.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.143Z"
         }
       ]
     },
@@ -56133,6 +56352,14 @@
           "reopenWhen": "A supported workflow leaves an active elected target order without its registration, or an order touching scripts/lib/plan-first-view.mjs or its reader activates.",
           "targets": [],
           "at": "2026-11-07T19:12:46.872Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Condition occurred: WO-276's Part N edited planFirstView and planFirstContext in scripts/lib/plan-first.mjs (the file the row calls plan-first-view.mjs does not exist). The uncaught throw where status calls it stands; no instance elects plan-first yet. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance elects plan-first and meets the throw, or an order editing scripts/lib/plan-first.mjs's view or context activates.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.013Z"
         }
       ]
     },
@@ -56274,6 +56501,14 @@
           "reopenWhen": "A product suite starts to read a record under a record root that the classifier does not list, or a planning pass allocates the runner's record declarations.",
           "targets": [],
           "at": "2026-11-07T08:05:53.234Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-278 and not taken: WO-278 adds no gate-input record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A product suite starts to read a record under a record root that the classifier does not list, or round 2 finds a fix here incomplete.",
+          "targets": [],
+          "at": "2026-11-15T00:32:44.070Z"
         }
       ]
     },
@@ -56697,6 +56932,16 @@
           "reopenWhen": "The next order that edits the starter refresh's seed rules, or an instance cloned from a refreshed starter reports the root READMEs red-tagged by its first pass.",
           "targets": [],
           "at": "2026-11-07T21:25:24.506Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-281 rewrites the map and its step 3 makes a starter refresh replace a starter's unedited docs/README.md, so the rewrite reaches every starter. The condition is sharpened to name scripts/lib/starter-refresh.mjs. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "WO-281 is withdrawn, or an instance cloned from a refreshed starter reports its root READMEs red-tagged by its first pass.",
+          "targets": [
+            "WO-281"
+          ],
+          "at": "2026-11-15T00:32:37.250Z"
         }
       ]
     },
@@ -57322,6 +57567,14 @@
           "reopenWhen": "A kit-carried file outside scripts/ and packages/ names a Git form above the floor, or the kit's support list gains another file that calls Git.",
           "targets": [],
           "at": "2026-11-09T23:56:10.616Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Listed by followups --touching for WO-277 and not taken: WO-277 changes the update's plan, not the kit's carried Git forms. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A kit-carried file outside scripts/ and packages/ names a Git form above the floor, or the kit's support list gains another file that calls Git.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.431Z"
         }
       ]
     },
@@ -57643,6 +57896,14 @@
           "reopenWhen": "WO-272's after-reading is recorded, or the next order adds a hook judgment.",
           "targets": [],
           "at": "2026-11-09T23:56:11.266Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Condition occurred: WO-272's after-reading is recorded (WO-276-D106, 400 to 210 hook processes) and Part A added two hook refusals. The dispatcher of one process an event stays the larger cut, with D106 as its baseline; no hook cost is reported as a burden. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The operator or an instance names the hooks' time per tool call as a cost, or harness-host.ts needs a judgment no unit can test in process.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.274Z"
         }
       ]
     },
@@ -57691,6 +57952,14 @@
           "reopenWhen": "WO-264's measurements are read, or the operator asks for a quality pass on a section.",
           "targets": [],
           "at": "2026-11-09T23:56:12.169Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Condition occurred: WO-264's measurements, WO-276's Part F (WO-276-D055), are read in this pass; they move the guide's review section and the rule table and leave the decisions' shape as it was. The guide's readability is WO-281's. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The operator asks for a quality pass on decisions, or a reader of decisions cannot tell the choice from the record.",
+          "targets": [],
+          "at": "2026-11-15T00:32:42.530Z"
         }
       ]
     },
@@ -57892,6 +58161,14 @@
           "reopenWhen": "After WO-276 a helper-launched report refused for its form is still run again from nothing.",
           "targets": [],
           "at": "2026-11-10T16:00:51.291Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Condition met in substance: after WO-276 a helper-launched report was refused for its form (the instance's entry 4) and its round's record was lost, not run again. The refusal was the table reader's, which WO-278 repairs; restatement by the same worker needs persisted host sessions and a judged transport source, which no second case yet justifies. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "After WO-278, a helper-launched report is refused for its form and its round is lost or paid again.",
+          "targets": [],
+          "at": "2026-11-15T00:32:43.301Z"
         }
       ]
     },
@@ -57932,7 +58209,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No order this pass files proposes a rule about questions; the operator's direction of 2026-11-10 stands for the pass that does. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An order proposes a rule about questions, or the operator asks for one.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.322Z"
+        }
+      ]
     },
     {
       "id": "FUP-0ec1f3eae656c226",
@@ -58013,7 +58299,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The four standing passages and the map's tracks paragraph now say v2.0.0 (this pass, WO-276-D163 item 8); WO-183's and WO-083's own text waits for the pass that reopens either, since both sit under Not now and that pass re-cuts the order. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A pass reopens or amends WO-183 or WO-083, or a reader takes a dated record's v1.0.0 for the Teammate-ready rung.",
+          "targets": [],
+          "at": "2026-11-15T00:32:41.757Z"
+        }
+      ]
     },
     {
       "id": "FUP-2d104bb644bc094c",
@@ -58028,7 +58323,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No instance has reported a PreToolUse hook of its own outside the kit's fragment; this pass's answer asks the reporting instance whether it keeps one. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The host shows a rewritten input to the other PreToolUse hooks, or says what it does with an event name it does not know; an owner's tool needs a hook field or an event the fragment refuses, named in an entry to core; an instance reports the complete run paid again after an edit under the root as a cost; or a kit program is found judging, rewriting or shipping a file under the root.; or an instance reports keeping a PreToolUse hook of its own outside the fragment.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.450Z"
+        }
+      ]
     },
     {
       "id": "FUP-2de3c94204e13b7a",
@@ -58043,7 +58347,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "A kind and a cadence as data, one launch command: WO-279, which ships the critic as the first kind, on request by default, the cadence an instance's opt-in feature (the operator's direction of 2026-11-15). [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A Claude Code version resolves a model family to a model other than the row's id, or stops taking an effort for one launch (rerun the two-launch probe of D076 on each new version); an instance needs two models of one provider under one id, or a model on a provider the kit has no adapter for; a name is found to resolve two ways, or a refusal to name no file and key; a dispatch line the operator types stops dispatching or a prose line starts to; or a copied fixture is found short of a file its entry loads that the check did not name.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:35.803Z"
+        }
+      ]
     },
     {
       "id": "FUP-556aa33ee7c4b0f7",
@@ -58058,7 +58373,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Items 2 (worker show reads the emitted definition) and 3 (receipts filed under the worker types in use) are WO-278 step 4, the two the decision called defects found and left; items 1, 4 and 5 stay under its condition. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A model id is found in live kit source outside the data module, the named leftovers and the dated-record scripts; a refusal of the worker table names no entry of the instance's, or the wrong file; a probe or the entropy reviewer launches a model the table did not resolve; a release-close line the operator types is not recovered; or the session hook is found running a runtime older than the last emit.",
+          "targets": [
+            "WO-278"
+          ],
+          "at": "2026-11-15T00:32:35.125Z"
+        }
+      ]
     },
     {
       "id": "FUP-d886cffcb0695e76",
@@ -58080,7 +58406,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "No instance binds its default worker to another model and runs an entropy review yet. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The complete run's record shows a suite file registering a title more often than the rule counts, or a registration the rule neither counts nor shows as unread; a source reads Markdown by a form the screen lacks, in a file the screen reads; a planning document's rules-recorded block is read differently by the two readers; or a launch is found to run a model that no row of the table names.; or an instance binds default to another model and runs an entropy review.",
+          "targets": [],
+          "at": "2026-11-15T00:32:41.498Z"
+        }
+      ]
     },
     {
       "id": "FUP-9a6b117811966204",
@@ -58102,7 +58437,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The duplicate-title rule has not met a form it misses since WO-276-D097 stated its contract. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The last round's reviewer shows one of these repairs wrong; a suite file registers a title twice by a form that neither the rule nor its corpus holds; a source in a file the screen reads reads a heading's underline by a form the screen lacks; or a document named only by a program whose name begins test- is red-tagged by the census.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.188Z"
+        }
+      ]
     },
     {
       "id": "FUP-20d4cb240cd43c51",
@@ -58117,7 +58461,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D082 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A source in a file the screen reads reads one of the seven forms by a pattern the screen names neither by its spelling nor by what it matches; the matching names a pattern of the repository that reads no Markdown; a suite file registers a title twice by a form that neither the rule nor its corpus holds; or the complete run's record shows a registration the rule neither counts nor shows as unread.",
+          "targets": [],
+          "at": "2026-11-15T00:32:31.791Z"
+        }
+      ]
     },
     {
       "id": "FUP-d83238234d974d57",
@@ -58139,7 +58492,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-276-D083 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A session resumes this order: it reads the first block of the standing file's section in hand before anything else.",
+          "targets": [],
+          "at": "2026-11-15T00:32:33.380Z"
+        }
+      ]
     },
     {
       "id": "FUP-80ceadcebbadb4a6",
@@ -58154,7 +58516,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D084 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The integration's runtime stage fails again with an exit status or a signal to read; the runner mode of the matrix passes twice its new baseline in a complete run; a suite file registers a title twice by a form neither the rule nor node's listing shows; the operator directs the edit for the two behaviors; or the operator asks for a complete passing row before Part L.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.326Z"
+        }
+      ]
     },
     {
       "id": "FUP-ae4a4c6b978859d5",
@@ -58169,7 +58540,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D085 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A part closes more than its share behind its row; the runner mode's growth is explained; or a consumer of one of Part L's five changes is met by a gate that this map does not name.",
+          "targets": [],
+          "at": "2026-11-15T00:32:33.108Z"
+        }
+      ]
     },
     {
       "id": "FUP-097112c8525e947f",
@@ -58184,7 +58564,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D086 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance reports the list of notes in a briefing as noise; a count is wrong on a clone that holds its whole history; a launchpad order's workstream rules are missed by a role; an instance keeps a profile at a path whose siblings are profiles; or a note's block needs a third field.",
+          "targets": [],
+          "at": "2026-11-15T00:32:31.389Z"
+        }
+      ]
     },
     {
       "id": "FUP-231731f4c1cc4025",
@@ -58199,7 +58588,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D087 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance's unedited squash or rebase needs --merged-as more than rarely, which would show the context rule costs more than the fixture's variants suggest; a close reports patches more than it compares; a change that was reverted on the base closes an order someone still needed open; the Git floor moves to a release whose patch-id has --verbatim; a team reports two clones activating one order, which is the collision a claim would exist for; or a retry after a partial close is found to need the earlier attempt's line.",
+          "targets": [],
+          "at": "2026-11-15T00:32:31.925Z"
+        }
+      ]
     },
     {
       "id": "FUP-87f30cf60e15375c",
@@ -58214,7 +58612,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D088 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance works a target in a partial clone and finds the attended close a burden; an operator's wrong name is found to have cost more than one retry; a close record's earlier attempts are found to settle an order that a later real attempt had reopened; or the update's reading of both sides is measured slow on a large instance.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.453Z"
+        }
+      ]
     },
     {
       "id": "FUP-28364fff54e2ffd5",
@@ -58229,7 +58636,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D089 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance's honest squash or rebase is refused because a forge merged a file otherwise than git merge-file does (a merge driver, an end-of-line rule); the named commit is needed often for squashes beside changed lines, which the exact comparison could find without the identity; or the table shows the count will not last to Part R.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.060Z"
+        }
+      ]
     },
     {
       "id": "FUP-394805c9f84b8479",
@@ -58244,7 +58660,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D090 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance needs an order in flight to move its filed records back; a team wants some kinds of record filed and others kept; an instance with a configured document root publishes a target order's records and is asked for a launchpad gate row; or main's and an order branch's plan-first registrations are found to differ in use.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.194Z"
+        }
+      ]
     },
     {
       "id": "FUP-eb42ec4b4a0100c0",
@@ -58259,7 +58684,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No owner has changed a registration's records value with plan-first orders active. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An owner changes a registration's value with plan-first orders active and the refusal's two ways on prove not enough; a target is found to hold another instance's records at this order's paths and the order needs to edit them; status offering a step the action refuses is reported as confusing; or the read guard's pre-gate step is found to miss a read the gate catches.",
+          "targets": [],
+          "at": "2026-11-15T00:32:41.628Z"
+        }
+      ]
     },
     {
       "id": "FUP-e63587acfe83df97",
@@ -58274,7 +58708,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D092 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A registration is found that the title rule neither reads nor counts and that the silent boundary does not name; a field-label reader is found that the shape does not name and the written boundary does not list; or a Codex source is found to report input without its cached part while meaning none was cached.",
+          "targets": [],
+          "at": "2026-11-15T00:32:33.519Z"
+        }
+      ]
     },
     {
       "id": "FUP-8530888b3e0b2de5",
@@ -58289,7 +58732,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No instance with a moved document root has reported the publish's refusal as unexplained. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance has run two initiatives by layouts and its operator wants the index to show planned counts by phase; a layout is found to need a form a check can read; the planner's unchecked sentence on filing only the next wave is found not to hold in use; an instance with a moved root reports the publish's refusal as unexplained; or a gate fails on a read or a consumer that the narrowed procedure did not run.",
+          "targets": [],
+          "at": "2026-11-15T00:32:39.927Z"
+        }
+      ]
     },
     {
       "id": "FUP-13211d95082b288a",
@@ -58304,7 +58756,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D094 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A registration is found that the rule neither reads nor counts and whose route a declaration, an assignment or the callee itself names; the case's diagnostic names a member of node's test function that the family does not run; or the family is found not to run under node 24.",
+          "targets": [],
+          "at": "2026-11-15T00:32:31.660Z"
+        }
+      ]
     },
     {
       "id": "FUP-a3293167324ba77d",
@@ -58319,7 +58780,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D095 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A registration is found that the rule neither reads nor counts and that neither silent entry names; a file with no branch or loop is found for which the rule reports a title node registers once; or the unread figure over the repository's suites moves without a registration to account for it.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.843Z"
+        }
+      ]
     },
     {
       "id": "FUP-f03c0b5e12b40280",
@@ -58334,7 +58804,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D097 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A suite file of the repository registers a case by a route of the contract's third part; a run shows a repeat reported that node does not register, or a form of the first part missed; or the supported node versions change.",
+          "targets": [],
+          "at": "2026-11-15T00:32:33.654Z"
+        }
+      ]
     },
     {
       "id": "FUP-09787e49791b1282",
@@ -58349,7 +58828,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D096 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "As D093 records; and a reader of workstream documents is added that takes more than the marked block or a named section.",
+          "targets": [],
+          "at": "2026-11-15T00:32:31.527Z"
+        }
+      ]
     },
     {
       "id": "FUP-a484b783ba4c13e4",
@@ -58364,7 +58852,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D098 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The idle interval is re-read on an instance's journals and found to drop worked time or to keep idle time; a host is found that writes a turn's end row while its own call is still running; an instance asks for a figure summed across checkouts or people; the day's reading at a prompt is measured to cost more than the prompt hook's own time; a second role is found to need a standing.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.972Z"
+        }
+      ]
     },
     {
       "id": "FUP-b97c63ea66c278cc",
@@ -58379,7 +58876,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No Codex phase paused overnight has been refused since Part P; the router's binding stays as built. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A host is found to write the same call identifier for two calls, or none on rows Claude Code writes; the lenient window of finding 6 is observed to admit a check; an instance's journals show the idle interval dropping worked time; Codex gains tool hooks.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.853Z"
+        }
+      ]
     },
     {
       "id": "FUP-eb9d2aaee0dd8234",
@@ -58394,7 +58900,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "As WO-276-D098 and D102 record; no instance has reported an idle interval dropping worked time. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "As D098 and D102 record; and the case the first gate failed fails again, in which case its message now names what the boundary threw.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.983Z"
+        }
+      ]
     },
     {
       "id": "FUP-a09f496a8b89a228",
@@ -58409,7 +58924,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D104 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A host that loads the emitted settings is found to evaluate a matcher otherwise than observed here; a new tool name joins harnessToolEffects under a kind a unit judges and the unit's own name test does not follow.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.714Z"
+        }
+      ]
     },
     {
       "id": "FUP-dd19c26097859895",
@@ -58424,7 +58948,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "WO-276-D106's first item repeats this row's ask: one attended Copilot run on the matcher's form. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "As FUP-70f79af022d4466a records.",
+          "targets": [
+            "FUP-70f79af022d4466a"
+          ],
+          "at": "2026-11-15T00:32:44.591Z"
+        }
+      ]
     },
     {
       "id": "FUP-70f79af022d4466a",
@@ -58439,7 +58974,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No Copilot run on an excluding matcher has been made and no hook timing is reported as a cost; the dispatcher stays the larger cut (see FUP-e1cc0a62d60b3f2a). [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A host is observed to start a narrowed hook for a name its matcher leaves out, or not to start one for a name it admits; Copilot is observed on an excluding matcher; a heartbeat is found recorded twice for one event, or missing on a path a generated hook file takes other than the two named; an authorship snapshot is found to keep a hash a full read would not; the tool table gains a kind that writes, or a unit comes to judge a name the table does not hold.",
+          "targets": [],
+          "at": "2026-11-15T00:32:39.793Z"
+        }
+      ]
     },
     {
       "id": "FUP-31c92aeaa3dbad03",
@@ -58454,7 +58998,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D108 named a duty for WO-276's closing preparation and a practice for that order's later parts; both were that order's, which closed as v1.0.0, and the preflight advisory WO-276 added (WO-276-D112) now names a suite an order's plan leaves out. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A later gate or the complete run fails a case that reads the host profiles, the generated hooks or the emitted settings for a reason this part introduced.",
+          "targets": [],
+          "at": "2026-11-15T00:32:34.053Z"
+        }
+      ]
     },
     {
       "id": "FUP-f9783edbe0b0fb56",
@@ -58469,7 +59022,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The meta critic as the first row of the kinds table, from the kept charter and launcher: WO-279, on opus at xhigh by default as the operator directed on 2026-11-15. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The kept launcher's output for this order differs from the charter as run; a later launch is made from another copy; the planning pass that takes the follow-up finds the kept files insufficient to start from.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:35.937Z"
+        }
+      ]
     },
     {
       "id": "FUP-fd4fadccb76a8a9a",
@@ -58484,7 +59048,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Mined in this pass: the sixteen classes of docs/evidence/WO-276/critic/criticisms.md each have a disposition in the pass document (a role sentence, a check a command makes, or nothing). The check for the most frequent class, a stale recovery record, and the kit's place for a critic's findings are WO-279's. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A row is found to misstate the decision it names; a later critic's points are judged, which are then appended to the record; the planning pass that takes the follow-up finds the record insufficient to work from.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:36.468Z"
+        }
+      ]
     },
     {
       "id": "FUP-349d50f3d73f070d",
@@ -58499,7 +59074,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Four low-priority remainders of Part R; none changes what an instance does today. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance reports a behavior tied to one of core's order numbers that these sites do not cover; a hand-written legacy row folds differently than at checkpoint 50; the advisory names a structural or a generated row; a kit root's refuter is compared with core's identity by a reader; a receipt is refused at its write or its read for a row dated near its episode's completion.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.583Z"
+        }
+      ]
     },
     {
       "id": "FUP-7fb5568a139c9621",
@@ -58514,7 +59098,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The pass document says which side of the thirtieth launch each class's disposition rests on; WO-279 builds the check that rests on both sides. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A critic before the thirtieth is found to have read the transcripts itself; a later critic's points are appended, which changes the later side's counts.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:36.599Z"
+        }
+      ]
     },
     {
       "id": "FUP-ba14f6042abb2d58",
@@ -58529,7 +59124,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Item 7 (the record route decides a split round before judging its table) is WO-278 step 3. Items 1 to 6 and 8 to 12 are declined, each with its reason and condition in the pass document's NoOps: none is a failure observed. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The ladder or the complete run shows one of the declined notes as a failure; a later measurement splits the runner mode's time by phase.",
+          "targets": [
+            "WO-278"
+          ],
+          "at": "2026-11-15T00:32:34.989Z"
+        }
+      ]
     },
     {
       "id": "FUP-9b9aaa27aa208bde",
@@ -58544,7 +59150,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The independent critic of conduct is WO-279's row; the briefed critic of plan and cost waits for the operator's word, its reopening condition, and WO-279 records what a command could render for it. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The operator says which kind a later order should run, or how the briefed kind is to be told what it is told.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:36.070Z"
+        }
+      ]
     },
     {
       "id": "FUP-f5abf0346fdc9c0c",
@@ -58559,7 +59176,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D116 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The complete run or the final review finds main ahead of this base; a later step edits a judged feedback source; a timing is taken as a bound by a criterion.",
+          "targets": [],
+          "at": "2026-11-15T00:32:33.786Z"
+        }
+      ]
     },
     {
       "id": "FUP-9a546892dff2e2b8",
@@ -58581,7 +59207,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-276-D117 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A recheck finds one of the three still open; a suite file of the repository writes a case whose body is the result of a call that returns a function which registers; a document with more than one leading byte-order mark is met.",
+          "targets": [],
+          "at": "2026-11-15T00:32:32.586Z"
+        }
+      ]
     },
     {
       "id": "FUP-c2ff437aee8cdb29",
@@ -58596,7 +59231,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The paired first round launched as one, a first-round launch naming a report refused, and the dry-run line: WO-278 step 2. Until it lands each order launches its first round as WO-276-D118 records, which WO-277, WO-279 and WO-281 carry as a known issue. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The operator asks for the paired round after all; the verification or the final review finds one of D117's three repairs wrong.",
+          "targets": [
+            "WO-278"
+          ],
+          "at": "2026-11-15T00:32:34.856Z"
+        }
+      ]
     },
     {
       "id": "FUP-5e0f2493927f0c90",
@@ -58611,7 +59257,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-276 built the close of Codex's leftover server (WO-276-D143, D161); the documentation question stays open with no leftover reported since. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A Codex process is found on the host after this session's handoff; Codex's documentation shows the server is started by something other than the command line's runs.",
+          "targets": [],
+          "at": "2026-11-15T00:32:39.260Z"
+        }
+      ]
     },
     {
       "id": "FUP-197d2df229999795",
@@ -58626,7 +59281,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "None of this pass's orders is divided into parts; the check is the planner's when it next files one. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A pass files an order divided into parts: it reads the preflight advisory against that order's plan before filing.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.317Z"
+        }
+      ]
     },
     {
       "id": "FUP-d6863b3c5aa7b48e",
@@ -58641,7 +59305,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D121 names no follow-up action (\"No new follow-up\" or \"None\"); what it held for WO-276's closing preparation or step Z1 was done before that order closed as v1.0.0, and its reopening conditions stay in the decision record. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The verification finds a criterion line wrong on the final candidate, or the document gate fails on a record this decision or the handoff added.",
+          "targets": [],
+          "at": "2026-11-15T00:32:33.245Z"
+        }
+      ]
     },
     {
       "id": "FUP-958a4e82b4fb9f00",
@@ -58656,7 +59329,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The document gate has not failed again on an amendment's binding. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The document gate fails again on an amendment's binding, or the verification finds the re-binding row's reason misstates what changed.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.057Z"
+        }
+      ]
     },
     {
       "id": "FUP-9de04198f561eb27",
@@ -58702,7 +59384,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No shell file writes a here-document in another language that the grammar misreads; the comment check stays core's. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A shell file this repository holds writes a here-document in another language whose text the grammar reads as a comment, or the comment check is carried to an instance.",
+          "targets": [],
+          "at": "2026-11-15T00:32:39.125Z"
+        }
+      ]
     },
     {
       "id": "FUP-c5343087653dc9a9",
@@ -58764,7 +59455,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The seven planning findings of VER-002 stay under the decision's condition; none has recurred in use. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A header read from an order's lead differs from the whole document's on any input; a source the source reader parses stands outside the screen; a snapshot omits a file Git tracks; the route and the close read different close histories; a host fact that cannot be read is printed as a known one, or a path with a space in a name reaches the host report as a host gave it; an execution record's label inside a list, quotation or code block, or emphasis that opens a line, is refused, or a label of the order's own is admitted; a day's least amount falls when an uncounted observation is added; or an order withdrawn before activation is not read by the index.",
+          "targets": [],
+          "at": "2026-11-15T00:32:39.661Z"
+        }
+      ]
     },
     {
       "id": "FUP-ab48eed76d79dc10",
@@ -58786,7 +59486,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "A wrapped label's reading changes the text planning receipts bind; no reader is found acting on a wrapped label, and WO-276-D199's class waits on the operator's choice. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A reader the inventory names is found that no recorded comparison calls and the map gives no reason for; a recorded comparison shows an unnamed difference when rerun; a class keyed for every input of a comparison is found to cover a difference of another kind; or the base's code can be shown to read an input differently from the answer recorded for it.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.456Z"
+        }
+      ]
     },
     {
       "id": "FUP-6df4bd24f57a0249",
@@ -58801,7 +59510,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D136 named the next repair's three items (F1 to F3) for VER-003; the repair of VER-003 made them (WO-276-D137), and VER-007 and FINAL-002 passed on the order that holds them. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The named repair changes the failing functions or supplies the missing comparisons; re-derive all criteria touched by that change and keep unaffected earlier evidence. The current complete row becomes stale only if its code identity changes.",
+          "targets": [],
+          "at": "2026-11-15T00:32:33.922Z"
+        }
+      ]
     },
     {
       "id": "FUP-36884e4e8f78b6a2",
@@ -58823,7 +59541,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "No snapshot has failed for a directory that became a repository since the case WO-276 added. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A snapshot fails or differs from the working tree for a tracked path whose place changed shape; a source the reader parses under the screen's two roots is unselected and is no test, fixture, reader module or proven carried file; a reader the inventory names is found with a committed input and no recorded comparison; or a recorded comparison shows an unnamed difference when rerun.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.719Z"
+        }
+      ]
     },
     {
       "id": "FUP-b3d2847373e48096",
@@ -58838,7 +59565,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No script under scripts/ has been found importing a module that does not exist since the scan WO-276-D138 records. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A snapshot holds a name the working tree does not, leaves out a tracked file a rule ignores, or passes over a tracked path it cannot read; a row of the comparison map is found to name a reading that did not move, or to have a committed input and no comparison; or a script under scripts/ is found importing a module that does not exist.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.722Z"
+        }
+      ]
     },
     {
       "id": "FUP-a81dd3a30ac1108d",
@@ -58853,7 +59589,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No complete run has failed on memory pressure since the fourteenth run of WO-276's repair; the nested gate's admission stays as built. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A complete run fails again on host memory pressure; inspection of a directory an acquisition prepared reports the reader unavailable; or either failing suite fails at this candidate for a reason in the repair's own change.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.048Z"
+        }
+      ]
     },
     {
       "id": "FUP-309ff4feeae7ab27",
@@ -58875,7 +59620,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Condition occurred: the daemon was restarted and a complete run was watched, and it stayed flat (WO-276-D145). The gate's use of the reading is not needed while it stays so. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The overflow line appears in the daemon's log again, a gate refuses on the daemon's size, or a subscriber is shown to hold the daemon's memory.",
+          "targets": [],
+          "at": "2026-11-15T00:32:37.914Z"
+        }
+      ]
     },
     {
       "id": "FUP-532530eb14c5703d",
@@ -58890,7 +59644,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Item 4 (the critic's clock kept by hand) is WO-279's cadence; items 1 to 3 (the Codex transports that close nothing, the Codex documentation, a standalone helper) stay under the decision's condition: no leftover server has been reported since WO-276's close was built. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A Codex background-server process is found on the host after a dispatch or a helper launch that should have closed it; a close ends a server that a live Codex session was using; a fixture's dispatch prints the close line; or a fixture gate started inside a running gate fails again on its host task's command line.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:36.334Z"
+        }
+      ]
     },
     {
       "id": "FUP-0fd5498635e93b90",
@@ -58905,7 +59670,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The comparison of file counts on and off the daemon's volume is not made; the restarted daemon stayed flat under the seventeenth complete run (WO-276-D145). [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The watched run shows the restarted daemon growing past the limit; the overflow line appears in the daemon's log again; or a gate refuses on the daemon's size on a host whose daemon proves healthy.",
+          "targets": [],
+          "at": "2026-11-15T00:32:37.780Z"
+        }
+      ]
     },
     {
       "id": "FUP-c964896b30330ea2",
@@ -58920,7 +59694,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Where an instance turns the cadence on, the clock starts one interval after the dispatch and ends at the passing complete run: WO-279's cadence module and role text. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The verification of this repair fails a criterion on the seventeenth run's tree; or the daemon passes its limit again, at which point its log and what ran beside the gate are read first.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:36.202Z"
+        }
+      ]
     },
     {
       "id": "FUP-c6f928195975c40d",
@@ -58961,7 +59746,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The operator directed this out of WO-276 as a follow-up fix (WO-276-D151): WO-280 instruments the bound, reproduces each candidate cause and repairs the one found, or records the outcome. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The follow-up obtains a controlled reproduction or better child-process evidence. A new concrete cleanup counterexample remains a separate reason to reopen the VER-004 repair.",
+          "targets": [
+            "WO-280"
+          ],
+          "at": "2026-11-15T00:32:36.991Z"
+        }
+      ]
     },
     {
       "id": "FUP-348ac9430f5e66f3",
@@ -58976,7 +59772,19 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Item 2 (the guide's update section on the private list's comment and marker forms) is WO-277 step 12; item 3 (the never-refuses sentence names the two target routes) is in WO-281's rewrite; item 1 (the verbatim screen reads a sentence in backticks as prose) stays under its condition: no committed record has been found holding the operator's words in a code span. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A committed record is found to hold a run of the operator's captured words inside a code span; an owner reports an entry that stopped matching, or began matching an ordinary word, after taking this release; or an instance reports a planning publication into a target held by a context entry.",
+          "targets": [
+            "WO-277",
+            "WO-281"
+          ],
+          "at": "2026-11-15T00:32:34.722Z"
+        }
+      ]
     },
     {
       "id": "FUP-5e8613230ee9c07c",
@@ -58991,7 +59799,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "None of the four is a failure observed since WO-276 closed. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A tool name with a dot joins the lint hook's list; a worker is found to have handed back with a Monitor task running; or an instance paces by the day's figure under Codex.",
+          "targets": [],
+          "at": "2026-11-15T00:32:39.532Z"
+        }
+      ]
     },
     {
       "id": "FUP-79439387f395813a",
@@ -59006,7 +59823,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Item 4 (the preflight advisory leaves core-only rows out in a kit root) is WO-278 step 6 with the light module of core-only marks; items 1 to 3 stay under the decision's condition. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A gate is refused on the daemon's size on a machine whose operator cannot restart it; a case registered without a title joins a sharded row; or a session is found with either shard variable set.",
+          "targets": [
+            "WO-278"
+          ],
+          "at": "2026-11-15T00:32:35.259Z"
+        }
+      ]
     },
     {
       "id": "FUP-15b0b2a93e939481",
@@ -59021,7 +59849,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Item 4 was taken by the repair of FINAL-001 (WO-276-D177); items 1 to 3 and 5 to 9 stay under the decision's condition, none a failure observed. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An unproven file appears under the vendor directory; the document check's peak passes the bounded wrapper's budget; or a resident reports a changed contract clause on an order whose text did not change.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.182Z"
+        }
+      ]
     },
     {
       "id": "FUP-aef88807af184d12",
@@ -59036,7 +59873,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No close has accepted a named merge commit that did not carry the change, and none has lost a branch's later commits. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A close accepts a named merge commit that did not carry the change; a branch's last commits are lost after a squash match; or a status of a closed target order is reported slow.",
+          "targets": [],
+          "at": "2026-11-15T00:32:40.590Z"
+        }
+      ]
     },
     {
       "id": "FUP-78b4c1ed19b20051",
@@ -59051,7 +59897,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Item 1 (the update's history reads with a grafts file) is WO-277 step 8; item 2 was taken by the repair of FINAL-001 (WO-276-D177). [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An instance reports an update publish refused as sharing no history on a clone that does share it.",
+          "targets": [
+            "WO-277"
+          ],
+          "at": "2026-11-15T00:32:34.317Z"
+        }
+      ]
     },
     {
       "id": "FUP-953b83228d3a6594",
@@ -59066,7 +59923,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No Codex session has lost its background server at a dispatch, and no usage report has been misread for a missing class. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A Codex session loses its background server at a lifecycle dispatch; or a usage report is read as a whole role's figure where one host reported no class.",
+          "targets": [],
+          "at": "2026-11-15T00:32:39.395Z"
+        }
+      ]
     },
     {
       "id": "FUP-c2004496635379d9",
@@ -59081,7 +59947,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Items 1 (the guide's sentence on the release-note contract an instance's own order no longer switches on) and 3 (the register's stale refusal names the revision) are WO-277 steps 12 and 10; items 2, 4, 5 and 6 are left with their condition: no instance has reported a lost release-note section or met the rule table's check. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An instance reports release entries that lost their sections after taking this release; or a later order edits a shared rule and meets the table's check.",
+          "targets": [
+            "WO-277"
+          ],
+          "at": "2026-11-15T00:32:34.450Z"
+        }
+      ]
     },
     {
       "id": "FUP-8ad1dbd8da33320b",
@@ -59096,7 +59973,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-276-D163's items 1 to 4, 6, 7, 9 and 10 were taken by the repair of FINAL-001 (WO-276-D177); item 8, the four standing passages that called the Teammate-ready rung 1.0, is done by this pass (products 00, 05, 06 and 11, and the map's tracks paragraph, now say v2.0.0 with WO-276-D073 linked); item 5, the legal page's class, is carried with FUP-b9d4f046b5aa5419 as WO-276-D177 says. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An upgrading instance asks a question one of the six sentences answers; or a reader takes a standing passage's 1.0 for this release.",
+          "targets": [],
+          "at": "2026-11-15T00:32:34.184Z"
+        }
+      ]
     },
     {
       "id": "FUP-3b2b31a1f1aa53b9",
@@ -59111,7 +59997,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "F53, F67 and F70 were taken by the repair of FINAL-001 (WO-276-D177). F54 (receipts filed under an earlier reader) and the other items stay under the decision's condition: the reporting instance's planning receipt was not refused after it took v1.0.0. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance's planning receipt is refused after it takes the release, which makes F54 blocking for the next release or returns this order; a file the four readers named as unread is found to hold a defect; or the rehearsal's script stops reproducing its result on the candidate FINAL-001 judged.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.854Z"
+        }
+      ]
     },
     {
       "id": "FUP-b9d4f046b5aa5419",
@@ -59126,7 +60021,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No committed order puts a provenance label between two dollar figures; the legal page's class stays as WO-276-D177 left it. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A committed order puts a provenance label between two dollar figures, or the legal page's class is challenged by a check.",
+          "targets": [],
+          "at": "2026-11-15T00:32:41.111Z"
+        }
+      ]
     },
     {
       "id": "FUP-187c6e9dea8903cb",
@@ -59141,7 +60045,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The change-review prompt names every field its schema requires: WO-279 step 2, which pays the live feedback episode the judged protocol file owes together with the transport's. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A same-host review return is refused again for a field its brief did not name, a status is announced that the checked command did not print, or a shared module's behavior changes before its readers are listed.",
+          "targets": [
+            "WO-279"
+          ],
+          "at": "2026-11-15T00:32:36.731Z"
+        }
+      ]
     },
     {
       "id": "FUP-0ababcfbaa44a912",
@@ -59156,7 +60071,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No order this pass files adds a control-log metric (WO-279 journals launches in the session journal), so main's lifecycle commands fold every log they meet. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An order adds a control-log metric, or main's lifecycle commands refuse to fold an order's log.",
+          "targets": [],
+          "at": "2026-11-15T00:32:37.647Z"
+        }
+      ]
     },
     {
       "id": "FUP-fd53a36c83596313",
@@ -59171,7 +60095,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Low priority; no supported application consumer has lost an obligation, link or judgment to the punctuation case. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The incomplete-list refusal handles every admitted written identifier and the controls still hold, or evidence changes the supported-input classification.",
+          "targets": [],
+          "at": "2026-11-15T00:32:41.885Z"
+        }
+      ]
     },
     {
       "id": "FUP-d2e2a9af488d3de7",
@@ -59186,7 +60119,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The choice of repair is the operator's (WO-276-D199), and the census found the class in no committed document; this pass's report asks the operator for that choice. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "A document is found, here or in an instance, that holds a wrapped line of the class where a reader acts on it; or the operator decides the repair.",
+          "targets": [],
+          "at": "2026-11-15T00:32:41.371Z"
+        }
+      ]
     },
     {
       "id": "FUP-d3cc376ffee92ed7",
@@ -59201,7 +60143,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The first half (the update plan's runtime guard over the incoming and pending manifests' runtime paths) is WO-277 step 7; the second half (the close's rebase rule after a squash reading) stays for the order that next touches the close, under its condition. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An instance reports an update whose retry was refused for a runtime file its incoming kit dropped, or a close that deleted a branch whose last commit its base did not hold.",
+          "targets": [
+            "WO-277"
+          ],
+          "at": "2026-11-15T00:32:34.585Z"
+        }
+      ]
     },
     {
       "id": "FUP-55056f2ba92f082c",
@@ -59216,7 +60169,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No order this pass files touches the resident store. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An instance's index command takes longer than the bound, or an operator acts on the launcher instruction shown during a first read.",
+          "targets": [],
+          "at": "2026-11-15T00:32:38.989Z"
+        }
+      ]
     },
     {
       "id": "FUP-b9fd92a20037ab95",
@@ -59231,7 +60193,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "No order this pass files touches the work-order reader. [the 2026-11-14 planning pass (docs/planning/passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)]",
+          "reopenWhen": "An order is refused whose criteria list is complete, or a handoff is admitted over a criteria list the reader returned as none.",
+          "targets": [],
+          "at": "2026-11-15T00:32:41.242Z"
+        }
+      ]
     }
   ]
 }
