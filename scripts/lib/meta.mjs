@@ -1755,16 +1755,13 @@ export function planCostTable(meta, subject) {
   };
 }
 
-/** The table's bytes as `--plan-cost` writes them. A table over its bound is
- * refused whole, never written in part. */
-export const PLAN_COST_BYTES = 65536;
+/** The table's bytes as `--plan-cost` writes them, whole. The 64 KB cap it
+ * once carried was removed on the operator's direction of 2026-11-15: the
+ * table holds the meter's whole-record data, the cap guarded nothing the
+ * plan's review reads, and it refused every planning pass once WO-276's
+ * record entered the meter's window. */
 export function planCostText(table) {
-  const text = prettyJson(table);
-  if (Buffer.byteLength(text) > PLAN_COST_BYTES)
-    throw new Error(
-      "Planning cost table exceeds 64 KB; select the bounded subject rows",
-    );
-  return text;
+  return prettyJson(table);
 }
 
 /** Reconcile an explicit cost promise against recorded outcomes. Ambiguous prose

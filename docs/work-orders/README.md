@@ -5,6 +5,7 @@
 ## Proposed order
 
 - [ ] [WO-277] — The starter's commands page tells a person every step · **queued**
+- [ ] [WO-283] — Planning stops writing a table nobody acts on · **queued**
 - [ ] [WO-282] — An update leaves nothing to repair by hand · **queued**
 - [ ] [WO-279] — A critic of conduct the kit launches when asked · **queued**
 - [ ] [WO-281] — The kit guide is easy to follow · **queued**
@@ -56,6 +57,23 @@ None.
 - Track: delivery
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-277-the-starters-commands-page-tells-a-person-every-step.md](WO-277-the-starters-commands-page-tells-a-person-every-step.md)
+
+### WO-283
+
+[WO-283 — Planning stops writing a table of past costs that nobody acts on (version assigned at activation)](WO-283-planning-stops-writing-a-table-nobody-acts-on.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-283-planning-stops-writing-a-table-nobody-acts-on.md](WO-283-planning-stops-writing-a-table-nobody-acts-on.md)
 
 ### WO-282
 
@@ -304,3 +322,4 @@ None.
 [WO-280]: WO-280-the-discovery-timeout-is-found-and-fixed.md
 [WO-281]: WO-281-the-kit-guide-is-easy-to-follow.md
 [WO-282]: WO-282-an-update-leaves-nothing-to-repair-by-hand.md
+[WO-283]: WO-283-planning-stops-writing-a-table-nobody-acts-on.md

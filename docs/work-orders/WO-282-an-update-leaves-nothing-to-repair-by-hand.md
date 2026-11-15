@@ -43,7 +43,7 @@ meets, and WO-258-D004's (an update merge that conflicts in a generated
 surface the re-emit cannot repair), which its entry 1 meets. Clean-room
 screen: the entries are in generic words and name kit files only.
 **Depends on:** WO-277 by placement (both edit `docs/KIT.md`); no hard edge.
-**Recommended placement:** second, after WO-277.
+**Recommended placement:** third, after WO-277 and WO-283.
 **Cites (read these sections):** `docs/KIT.md` §Taking upstream updates;
 `scripts/lib/harness.mjs` (`emitHarness`, `walkOwned`); `scripts/launchpad.mjs`
 (`planUpdate`, `renderUpdatePlan`, `changedOnBothSides`);

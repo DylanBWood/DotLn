@@ -23,7 +23,7 @@ Sections: 198. Idea entries: 1186. Counts are lifecycle-tag memberships in entry
 
 ## Sections lacking a lifecycle tag
 
-- [2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-282 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) — prose-only section; no idea entries.
+- [2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-283 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) — prose-only section; no idea entries.
 - [2026-11-10 — Planning pass: one order for the whole queue (WO-276 filed; WO-261 to WO-275 made umbrella records); registration only; the record is the planning document](idea-ledger.md?plain=1#L59) — prose-only section; no idea entries.
 - [2026-11-09 — Planning pass: whole plan and codebase review (WO-261 to WO-263 amended, WO-264 to WO-273 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L74) — prose-only section; no idea entries.
 - [2026-11-08 — Planning pass: Git 2.31 support and fork returns (WO-260, WO-261, WO-262 and WO-263 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L89) — prose-only section; no idea entries.
@@ -55,7 +55,7 @@ Sections: 198. Idea entries: 1186. Counts are lifecycle-tag memberships in entry
 
 | Section | Line | Idea entries | Lifecycle tags |
 | --- | ---: | ---: | ---: |
-| [2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-282 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) | 43 | 0 | 0 |
+| [2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-283 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) | 43 | 0 | 0 |
 | [2026-11-10 — Planning pass: one order for the whole queue (WO-276 filed; WO-261 to WO-275 made umbrella records); registration only; the record is the planning document](idea-ledger.md?plain=1#L59) | 59 | 0 | 0 |
 | [2026-11-09 — Planning pass: whole plan and codebase review (WO-261 to WO-263 amended, WO-264 to WO-273 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L74) | 74 | 0 | 0 |
 | [2026-11-08 — Planning pass: Git 2.31 support and fork returns (WO-260, WO-261, WO-262 and WO-263 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L89) | 89 | 0 | 0 |

@@ -53,7 +53,7 @@ confirmation). Clean-room screen: core's own documents.
 first paragraph and §First steps' marked blocks and makes `docs/OPERATOR.md`
 the person's page, which this rewrite keeps; WO-282 edits §Taking upstream
 updates); no hard edge.
-**Recommended placement:** fourth, after WO-277, WO-282 and WO-279.
+**Recommended placement:** fifth, after WO-277, WO-283, WO-282 and WO-279.
 **Cites (read these sections):** `docs/KIT.md` whole; `docs/README.md`;
 product 07 §Operator-opened planning pass item 7 (the three kinds of
 document and how each changes), §Documentation freshness and ownership and

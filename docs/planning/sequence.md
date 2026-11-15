@@ -106,6 +106,9 @@ reported after taking v1.0.0, and what WO-276 left
   each step does and what to do when it fails; the starter's front page
   names it first. A small documentation release, to run as soon as this
   pass merges: its release close puts the page in the starter.
+- WO-283: planning stops writing a table of past costs that nobody acts
+  on, whose size limit stopped this pass (the operator's direction under
+  override, 2026-11-15).
 - WO-282: an update leaves nothing to repair by hand (the emit keeps an
   instance's own host surfaces, a re-keyed register row keeps its
   dispositions, three update-path repairs).
@@ -123,7 +126,7 @@ reported after taking v1.0.0, and what WO-276 left
 
 WO-277 (delivery) and WO-280 (machinery) have disjoint surfaces and no hard
 edge, so they may run as a lane pair if the operator says to run both at
-once; otherwise the six run in this order.
+once; otherwise the seven run in this order.
 
 ## Not now
 
@@ -167,6 +170,7 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 
 <!-- dotln-work-order-sequence:start -->
 - WO-277 — The starter's commands page tells a person every step
+- WO-283 — Planning stops writing a table nobody acts on
 - WO-282 — An update leaves nothing to repair by hand
 - WO-279 — A critic of conduct the kit launches when asked
 - WO-281 — The kit guide is easy to follow

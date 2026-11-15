@@ -52,7 +52,7 @@ Non-goals). Clean-room screen: the entries are in generic words and name
 kit files only.
 **Depends on:** WO-279 and WO-281 by placement only (WO-279 edits the same
 launch path and WO-281 the guide); no hard edge.
-**Recommended placement:** fifth, after WO-281 and before WO-280; its
+**Recommended placement:** sixth, after WO-281 and before WO-280; its
 paired launch serves every later order's first round.
 **Cites (read these sections):** product 07 §Review helper and round
 reports, §Preflight before the full gate; `docs/KIT.md` §What runs here,

@@ -712,8 +712,6 @@ export function buildPlanSubject(
           "Planning cost table missing; run npm run meta -- --plan-cost after measuring the subject",
         );
       const source = read(path);
-      if (Buffer.byteLength(source) > 65536)
-        throw new Error("Planning cost table exceeds its bounded 64 KB input");
       costs = JSON.parse(source);
       if (
         costs.schemaVersion !== 1 ||

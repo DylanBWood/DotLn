@@ -412,7 +412,7 @@ all hold, and three changed the plan:
 
 ## Orders filed and amended
 
-Six orders, one subsystem each. Under the standing rule a pass does not
+Seven orders, one subsystem each. Under the standing rule a pass does not
 bundle unrelated subsystems by its own choice; the operator may direct a
 merge. The page and the update's repairs were first one order; the
 operator's message 19 (setting up the work instance now, why wait for
@@ -425,6 +425,10 @@ tag), so the page ships alone and first.
   paragraph per step on what it does and what to do when it fails, the
   front page leading with the page; a patch release whose close refreshes
   the starter. From the operator's messages 2 to 10 and 19.
+- **WO-283 — Planning stops writing a table nobody acts on.** The table of
+  past costs each pass writes and hands its review, whose size limit stopped
+  this pass, is removed with its command and checks; receipts filed with it
+  keep validating. From the operator's direction under override.
 - **WO-282 — An update leaves nothing to repair by hand.** The emit keeps an
   instance's own host surfaces; a re-keyed register row keeps its
   dispositions; three update-path repairs; the guide's update section
@@ -528,8 +532,8 @@ Each declined candidate, with why and what reverses it:
 
 ## Sequence
 
-WO-276 leaves the list. The six orders come first, in this order: WO-277,
-WO-282, WO-279, WO-281, WO-278, WO-280; then the Not now orders as they were. The
+WO-276 leaves the list. The seven orders come first, in this order: WO-277,
+WO-283, WO-282, WO-279, WO-281, WO-278, WO-280; then the Not now orders as they were. The
 "Serial for now" rule is replaced by the lane-pair rule it suspended. WO-207's
 and WO-096's Not now entries now state what WO-276 delivered for each.
 
@@ -593,3 +597,32 @@ One question back: does this instance keep a PreToolUse hook of its own outside 
   chat before the answer was understood to belong in the starter.
 
 ## Validation
+
+- `npm run test:docs` on the committed subject (`a3cdfaf2b`): every task
+  passes but `plan` and `plan-refutation-current`, which fail because the
+  pass has no receipt yet.
+- The receipt cannot be filed: filing rebuilds the subject with the
+  planning cost table, and `npm run meta -- --plan-cost` refuses to write it
+  ("exceeds 64 KB"). The table would be 67,334 bytes, of which the
+  subject's own fifteen rows are 1,532; the rest is the meter's
+  whole-record data, the trap signals (41,786) and the dated acceptances
+  (19,035), and the traps cover the last five closed orders, WO-276 among
+  them, so every planning pass is refused the same way until five more
+  orders close. The bound is code (`scripts/lib/meta.mjs` `PLAN_COST_BYTES`
+  and the reader in `scripts/lib/plan-subject.mjs`, pinned by a case in
+  `scripts/test-process-debt.mjs`), which a planning branch refuses to
+  write; the pass stops here for the operator.
+- Cleared on the operator's word. At 03:13Z on 2026-11-15 the operator
+  entered `operator override:` with the direction that what is not shown
+  useful goes. The cap was judged on its evidence: the table's trap signals
+  enter the plan's review prompt, which was already 146 KB, and the cap
+  refused a 3 KB overflow with no route but code, stopping every planning
+  pass. It was removed, not raised: `scripts/lib/meta.mjs` (`planCostText`
+  writes the table whole), `scripts/lib/plan-subject.mjs` (no byte check),
+  the case in `scripts/test-process-debt.mjs` (a table past the old cap
+  writes whole; the single case passed under the bounded wrapper), and
+  product 07's sentence that called the table bounded. The table was then
+  written (67,335 bytes). Bypassed under the override: the planning branch's
+  refusal of writes outside `docs/` (WO-135), for these three code files
+  alone. The real fix, a table that holds only the plan being judged so it
+  cannot grow with the record, is a candidate for the next pass.
