@@ -545,6 +545,8 @@ function projected(root, options) {
   const state = readFollowups(root, options),
     sources = collectFollowupSources(root),
     present = new Set(sources.map((row) => row.key));
+  const created = [],
+    retired = [];
   // Displayed excerpts are projections; source identity and disposition history
   // stay unchanged when a private home prefix is replaced with its placeholder.
   for (const entry of state.entries)
@@ -562,6 +564,7 @@ function projected(root, options) {
         dispositions: [],
       };
       state.entries.push(entry);
+      if (entry.kind === "candidate") created.push(entry);
     }
     // A title-excerpt change alone must not reopen a disposition. The raw
     // source hash continues to carry identity after display normalization.
@@ -582,12 +585,49 @@ function projected(root, options) {
       entry.kind !== "decision" &&
       !present.has(entry.key) &&
       !entry.revisions.at(-1).missing
-    )
+    ) {
       entry.revisions.push({
         ...entry.revisions.at(-1),
         hash: null,
         missing: true,
       });
+      if (entry.kind === "candidate") retired.push(entry);
+    }
+  // A reader can change a title's key without changing the source item.
+  // Carry only a unique pair created and retired by this projection, with
+  // a disposition that was current before retirement. Older missing rows
+  // and changed bodies remain for an explicit judgment.
+  const sameSource = (old, fresh) => {
+    const before = old.revisions.at(-2),
+      after = fresh.revisions[0];
+    return before.ref === after.ref && before.hash === after.hash;
+  };
+  for (const old of retired) {
+    const matches = created.filter((fresh) => sameSource(old, fresh));
+    const latest = old.dispositions.at(-1);
+    if (
+      matches.length !== 1 ||
+      latest?.sourceRevision !== old.revisions.length - 1
+    )
+      continue;
+    const fresh = matches[0];
+    if (retired.filter((entry) => sameSource(entry, fresh)).length !== 1)
+      continue;
+    fresh.dispositions = old.dispositions.map((disposition) => ({
+      ...disposition,
+      sourceRevision: 1,
+      targets: [...disposition.targets],
+    }));
+    old.dispositions.push({
+      sourceRevision: old.revisions.length,
+      status: "duplicate",
+      reason:
+        "The candidate's key changed while its source body and section stayed the same.",
+      reopenWhen: "The candidate's source changes.",
+      targets: [fresh.id],
+      at: latest.at,
+    });
+  }
   return validate(state, root);
 }
 function persist(root, state) {
@@ -648,7 +688,7 @@ function dispose(root, state, revision, request, at) {
       "reopenWhen",
       "targets",
     ]) && request.expectedRevision === revision,
-    "stale register revision or request shape; reread follow-ups",
+    `stale register revision or request shape; reread follow-ups at register revision ${revision}`,
   );
   const entry = state.entries.find((row) => row.id === request.id);
   requireFollowup(

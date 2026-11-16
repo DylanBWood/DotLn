@@ -3314,11 +3314,14 @@ opens the pull request without the publish
      `node scripts/bootstrap.mjs`.
 
 - **A host the starter lacks.** The starter is Claude-only. An instance that
-  has Codex or Copilot on, by an election or by its attestations, sees that
-  host's surfaces as `remove` rows in the preview and in the merge, and the
-  re-emit on the update branch writes them back. A host that only a
-  discovery record showed is off, and its surfaces stay removed until the
-  instance elects it.
+  has Codex or Copilot on, by an election or by its attestations, sees no
+  host-specific rows once neither kit manifest lists those surfaces; Git
+  removes nothing that the merge base lacks. The re-emit writes an elected
+  host's surfaces under the instance's configuration. If the merge took the
+  starter's harness manifest, the emit recognizes an existing Codex file
+  whose bytes match the hash in `main`'s manifest and preserves the refusal
+  of an operator-edited file. A host that only a discovery record showed is
+  off until the instance elects it.
 - **The clone map.** For gates and `npm run sync` after records have moved
   into a target, the moved-record readers find the ignored clone mapping in
   the running launchpad checkout, then its primary checkout (the common Git
@@ -3330,6 +3333,7 @@ opens the pull request without the publish
 Decisions:
 [passes take no update unasked, and the opt-out](evidence/WO-258/decisions.md#wo-258-d005),
 [a host's surfaces through an update](evidence/WO-258/decisions.md#wo-258-d004),
+[the emit recognizes the instance's recorded Codex bytes](evidence/WO-282/decisions.md#wo-282-d002--codex-ownership-follows-recorded-bytes-through-a-starter-merge),
 [a discovery record turns no host on](evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file).
 
 ### What the preview shows
@@ -3371,6 +3375,9 @@ other instance file a merge changes is one the starter alone changed.
 The kit's own rows follow the plan of
 [Core's own update of the starter](#cores-own-update-of-the-starter), the
 `re-emitted:` row among them, against this instance's current files.
+When the harness manifest has that row, a line above the kit rows says to
+keep this instance's side of `.claude/harness-manifest.json` in a conflicted
+merge because the emit rewrites it under this instance's configuration.
 
 - `replace`, `add` and `remove` identify byte changes against the incoming
   manifest.
@@ -3470,10 +3477,12 @@ Which bytes are this instance's:
   its changes read as this instance's. The refusal says that too, and such a
   file is taken.
 
-Two clones cannot be judged:
+These histories cannot be judged:
 
 - A clone too shallow to hold the merge base is refused with that cause and
   the fetch that mends it.
+- A grafts file that hides the merge base is named in the refusal; set it
+  aside and retry against the original history.
 - A whole clone whose history shares no commit with the starter's is refused
   as that, since nothing then tells this instance's changes from the
   starter's.
@@ -3516,6 +3525,10 @@ Before the release is taken:
   `refuse:` on its own line; that subsection shows both classes and the
   shipped example. Until then a stage's reading of the listed lines is all
   that stands between such an entry and a commit.
+
+  Reread entries containing a `#` after a space or tab, which opens a comment,
+  or beginning with `context:` or its alias `review:`, which are markers, using the forms in
+  [First steps, The local-terms list](#the-local-terms-list).
 - **Elect a host that only a discovery record showed.** Such a host is off:
   elect it under `features` in `dotln.config.json` and run
   `node scripts/harness.mjs emit` to keep its surfaces.
@@ -3542,6 +3555,13 @@ After the update:
   not run keeps its old text; take its authority, capability checklist,
   deliverables and second and third criteria from
   `scripts/kit/first-order.template.md`.
+- **Commit each order's release notes.** An instance's own `WO-024` no
+  longer switches on core's release-note contract merely by matching core's
+  order number ([Order numbers](#order-numbers)), and the kit provides no
+  instance switch for it. A release still reads an order's reviewed
+  `RELEASE-NOTES.md` wherever the order's merge commits it. Without the
+  contract, a release is no longer refused for an order that committed
+  none: it lists that order by its commit subjects.
 
 Nothing is asked of the instance for the rest:
 
@@ -3662,12 +3682,15 @@ a generated harness surface (a surface the incoming emit writes, or the
 harness manifest). Where such a file holds neither manifest's bytes:
 
 1. The plan asks the instance's own `node scripts/harness.mjs check`, as a
-   child process and only then, and only where every compiled runtime file
-   the prior kit listed holds bytes a kit wrote, since the check loads that
-   runtime.
+   child process and only then, and only where every present compiled
+   runtime file listed by the prior, incoming or pending kit holds bytes
+   one of those kits wrote, since the check loads that runtime. An absent
+   prior file is admitted where the pending kit already dropped it.
 2. Where the check passes, the bytes are that emit's: the row reads
-   `re-emitted: <path>`, the file is replaced, and the emit the update ends
-   with writes it again under the instance's configuration.
+   `re-emitted: <path>`. A from-core update replaces the file. In a Git merge
+   that conflicts on `.claude/harness-manifest.json`, keep the instance's
+   side; the emit the update ends with rewrites it under the instance's
+   configuration.
 3. Where the check fails, nothing is installed there to run it or a compiled
    runtime file differs, so that it was not run, the file is refused as
    locally modified and the row says which.
@@ -3686,6 +3709,11 @@ Review that re-emit with this instance's configuration and overlay.
 Decisions:
 [a surface the instance's emit wrote is re-emitted](evidence/WO-276/decisions.md#wo-276-d065--part-i-as-built-an-updates-merge-keeps-the-instances-bytes-the-preview-lists-the-files-both-sides-changed-a-surface-the-instances-emit-wrote-is-re-emitted-and-every-spelling-of-a-worker-launch-counts),
 [the runtime is compared first](evidence/WO-276/decisions.md#wo-276-d174--kit-verification-and-an-updates-plan-compare-every-carried-compiled-runtime-file-before-any-of-the-instances-code-runs).
+
+The current update rules are recorded in
+[the manifest preview decision](evidence/WO-282/decisions.md#wo-282-d003--the-preview-identifies-the-manifest-side-to-keep),
+[the runtime inventory decision](evidence/WO-282/decisions.md#wo-282-d004--the-runtime-guard-covers-all-three-manifest-inventories)
+and [the grafts diagnostic decision](evidence/WO-282/decisions.md#wo-282-d005--an-unreadable-grafted-history-names-its-actual-cause).
 
 ## Opting in to instance actions
 

@@ -860,6 +860,10 @@
     {
       "name": "v1.0.1",
       "object": "0c01ad62617dd632e84895e21f4950c075d8c46e"
+    },
+    {
+      "name": "v1.1.0",
+      "object": "8f4626d33b9080ceaf37d1a0c7398d064c9f51ac"
     }
   ],
   "table": "v1.0.1"

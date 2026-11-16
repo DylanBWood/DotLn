@@ -1,4 +1,4 @@
-# WO-282 — An instance takes a release without repairing by hand what the update left (version assigned at activation)
+# WO-282 — An instance takes a release without repairing by hand what the update left (v1.2.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

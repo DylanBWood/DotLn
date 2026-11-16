@@ -8367,6 +8367,117 @@ test("WO-054 Codex installation preserves unowned configuration before any bundl
   }
 });
 
+test("WO-282: a starter manifest replaces older Codex bytes main owns and refuses edits or an enclosing repository's ownership before any write", () => {
+  const root = fixture({ hosts: true });
+  try {
+    const harness = (action) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", action], {
+        cwd: root,
+        encoding: "utf8",
+      });
+    const baseline = harness("emit");
+    assert.equal(baseline.status, 0, baseline.stderr);
+    const manifestPath = join(root, ".claude/harness-manifest.json");
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    const codex = manifest.installed.filter(({ path }) =>
+      path.startsWith(".codex/"),
+    );
+    assert.equal(codex.length, 3);
+    const configPath = join(root, ".codex/config.toml");
+    const currentConfig = readFileSync(configPath, "utf8");
+    const olderConfig = "# Older generated Codex configuration.\n";
+    writeFileSync(configPath, olderConfig);
+    codex.find(({ path }) => path === ".codex/config.toml").hash =
+      `fnv1a64:${fnv1a64(olderConfig)}`;
+    writeFileSync(manifestPath, json(manifest));
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "core.hooksPath=/dev/null", "commit", "-qm", "instance emit"],
+      fixtureGitOptions,
+    );
+    runGit(root, ["branch", "main"], fixtureGitOptions);
+    const starter = {
+      ...manifest,
+      installed: manifest.installed.filter(
+        ({ path }) => !path.startsWith(".codex/"),
+      ),
+    };
+    writeFileSync(manifestPath, json(starter));
+    const accepted = harness("emit");
+    assert.equal(accepted.status, 0, accepted.stderr);
+    assert.equal(readFileSync(configPath, "utf8"), currentConfig);
+    const checked = harness("check");
+    assert.equal(checked.status, 0, checked.stderr);
+    const nested = join(root, "nested-instance");
+    write(
+      nested,
+      "dotln.config.json",
+      readFileSync(join(root, "dotln.config.json")),
+    );
+    write(nested, "CLAUDE.md", "# Nested instance's locked floor\n");
+    write(nested, ".claude/harness-manifest.json", json(starter));
+    write(nested, ".codex/config.toml", olderConfig);
+    assert.throws(
+      () => emitHarness(nested),
+      /unowned Codex output refuses replacement: \.codex\/config\.toml/,
+    );
+    assert.equal(
+      readFileSync(join(nested, ".codex/config.toml"), "utf8"),
+      olderConfig,
+    );
+    assert.equal(
+      readFileSync(join(nested, ".claude/harness-manifest.json"), "utf8"),
+      json(starter),
+    );
+    writeFileSync(configPath, olderConfig);
+    for (const { path } of codex) {
+      writeFileSync(manifestPath, json(starter));
+      const original = readFileSync(join(root, path));
+      writeFileSync(join(root, path), `${original}\n# Operator edit.\n`);
+      const before = new Map(
+        [
+          ...manifest.installed.map(({ path }) => path),
+          ".claude/harness-manifest.json",
+        ].map((path) => [path, readFileSync(join(root, path))]),
+      );
+      const refused = harness("emit");
+      assert.equal(refused.status, 1, refused.stdout);
+      assert.ok(
+        refused.stderr.includes(
+          `unowned Codex output refuses replacement: ${path}`,
+        ),
+        refused.stderr,
+      );
+      for (const [path, bytes] of before)
+        assert.deepEqual(readFileSync(join(root, path)), bytes, path);
+      writeFileSync(join(root, path), original);
+    }
+    // Build before changing the environment: CLI host observation has its
+    // own Git boundary; this arm judges the ownership lookup alone.
+    const installation = harnessInstallation({ features: HOST_ELECTIONS });
+    const savedGitEnv = new Map(
+      ["GIT_DIR", "GIT_COMMON_DIR"].map((name) => [name, process.env[name]]),
+    );
+    try {
+      for (const name of savedGitEnv.keys())
+        process.env[name] = join(root, "unrelated.git");
+      emitHarness(root, {}, installation);
+      assert.equal(
+        readFileSync(configPath, "utf8"),
+        installation.files.find(({ path }) => path === ".codex/config.toml")
+          .contents,
+      );
+    } finally {
+      for (const [name, value] of savedGitEnv)
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-276 criterion G2: a host that only a discovery record shows is off, so the check names the drift of the surfaces an earlier emit wrote for it and the next emit removes them, an operator's own file beside them kept", () => {
   const root = fixture({ hosts: true });
   try {

@@ -1,0 +1,147 @@
+{
+  "probe": "docs/evidence/WO-282/final-review-001/release-note-entries.mjs",
+  "reader": "releaseNoteEntries of scripts/release.mjs, exported for this process by a load hook",
+  "arms": {
+    "kitNotesAndNone": {
+      "kitRoot": true,
+      "orders": [
+        {
+          "id": "WO-002",
+          "notes": true
+        },
+        {
+          "id": "WO-003",
+          "notes": false
+        }
+      ],
+      "switchesContract": [
+        {
+          "id": "WO-002",
+          "activates": false
+        },
+        {
+          "id": "WO-003",
+          "activates": false
+        }
+      ],
+      "entries": [
+        {
+          "id": "WO-002",
+          "legacy": true,
+          "notesPath": "docs/final-reviews/WO-002/RELEASE-NOTES.md",
+          "overview": "Reviewed overview of WO-002.",
+          "substantive": "- Reviewed change of WO-002."
+        },
+        {
+          "id": "WO-003",
+          "legacy": true,
+          "notesPath": null,
+          "overview": "Reviewed release-overview prose is unavailable for this work order.",
+          "substantive": "**Fallback: no reviewed notes for WO-003 (predates WO-024); commit subjects:**\n\n- Merge the reviewed change of WO-003"
+        }
+      ]
+    },
+    "kitOwnOrderOfCoresNumber": {
+      "kitRoot": true,
+      "orders": [
+        {
+          "id": "WO-024",
+          "notes": true
+        },
+        {
+          "id": "WO-025",
+          "notes": false
+        }
+      ],
+      "switchesContract": [
+        {
+          "id": "WO-024",
+          "activates": false
+        },
+        {
+          "id": "WO-025",
+          "activates": false
+        }
+      ],
+      "entries": [
+        {
+          "id": "WO-024",
+          "legacy": true,
+          "notesPath": "docs/final-reviews/WO-024/RELEASE-NOTES.md",
+          "overview": "Reviewed overview of WO-024.",
+          "substantive": "- Reviewed change of WO-024."
+        },
+        {
+          "id": "WO-025",
+          "legacy": true,
+          "notesPath": null,
+          "overview": "Reviewed release-overview prose is unavailable for this work order.",
+          "substantive": "**Fallback: no reviewed notes for WO-025 (predates WO-024); commit subjects:**\n\n- Merge the reviewed change of WO-025"
+        }
+      ]
+    },
+    "coreContractRefuses": {
+      "kitRoot": false,
+      "orders": [
+        {
+          "id": "WO-024",
+          "notes": true
+        },
+        {
+          "id": "WO-025",
+          "notes": false
+        }
+      ],
+      "switchesContract": [
+        {
+          "id": "WO-024",
+          "activates": true
+        },
+        {
+          "id": "WO-025",
+          "activates": false
+        }
+      ],
+      "refused": "docs/final-reviews/WO-025/RELEASE-NOTES.md: release-notes file is missing from HEAD"
+    },
+    "coreContractReads": {
+      "kitRoot": false,
+      "orders": [
+        {
+          "id": "WO-024",
+          "notes": true
+        },
+        {
+          "id": "WO-025",
+          "notes": true
+        }
+      ],
+      "switchesContract": [
+        {
+          "id": "WO-024",
+          "activates": true
+        },
+        {
+          "id": "WO-025",
+          "activates": false
+        }
+      ],
+      "entries": [
+        {
+          "id": "WO-024",
+          "legacy": false,
+          "notesPath": "docs/final-reviews/WO-024/RELEASE-NOTES.md",
+          "overview": "Reviewed overview of WO-024.",
+          "substantive": "- Reviewed change of WO-024."
+        },
+        {
+          "id": "WO-025",
+          "legacy": false,
+          "notesPath": "docs/final-reviews/WO-025/RELEASE-NOTES.md",
+          "overview": "Reviewed overview of WO-025.",
+          "substantive": "- Reviewed change of WO-025."
+        }
+      ]
+    }
+  }
+}

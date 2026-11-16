@@ -1807,19 +1807,22 @@ export function planUpdate(
   const plan = [];
   const surfaces = harnessSurfaces(directory);
   // The instance's harness check loads the carried compiled runtime, so it
-  // is asked only where every compiled runtime file the prior kit listed
+  // is asked only where every present compiled runtime file any kit listed
   // holds bytes a kit wrote (the prior kit's, the incoming kit's or an
   // interrupted update's): carried compiled code is verified before any of
   // the instance's code runs. Otherwise a surface is refused as locally
   // modified with that reason, and the runtime file with its own.
-  const runtimeVerified = [...previous.keys()]
+  const runtimeVerified = [
+    ...new Set([...previous.keys(), ...following.keys(), ...planned.keys()]),
+  ]
     .filter((path) => COMPILED_RUNTIME.test(path))
     .every((path) => {
-      if (!destinationStat(directory, path)) return false;
+      if (!destinationStat(directory, path))
+        return !previous.has(path) || (pending !== null && !planned.has(path));
       const current = sha256Hex(readDestination(directory, path));
       return (
         current === following.get(path)?.sha256 ||
-        current === previous.get(path).sha256 ||
+        current === previous.get(path)?.sha256 ||
         current === planned.get(path)
       );
     });
@@ -2598,7 +2601,7 @@ const pathStates = (root, revision, paths, options = {}) => {
  * judges. Where Git names more than one merge base the first is read, and
  * the result names the base used. A base that cannot be read (a shallow or
  * grafted clone, or two histories that share no commit) throws, naming
- * which of the two it is and what to do. `options` reaches
+ * the observed cause and what to do. `options` reaches
  * every Git read: the preview passes the environment that keeps an inherited
  * GIT_DIR from naming another repository. */
 export function changedOnBothSides(root, instance, starter, options = {}) {
@@ -2607,13 +2610,30 @@ export function changedOnBothSides(root, instance, starter, options = {}) {
     onFailure: () => null,
   });
   if (!base) {
+    const graftsPath = runGit(
+      root,
+      ["rev-parse", "--git-path", "info/grafts"],
+      {
+        ...options,
+        onFailure: () => null,
+      },
+    );
+    const graftsOverride = (options.env ?? process.env).GIT_GRAFT_FILE;
+    if (
+      [graftsPath, graftsOverride].some(
+        (path) => path && existsSync(resolve(root, path)),
+      )
+    )
+      throw new Error(
+        "the update's merge base cannot be read while this clone has a grafts file (info/grafts or GIT_GRAFT_FILE). Set the grafts file aside and run this again against the original history",
+      );
     const shallow =
       runGit(root, ["rev-parse", "--is-shallow-repository"], {
         ...options,
         onFailure: () => "false",
       }) === "true";
     throw new Error(
-      `the update's merge base cannot be read: this clone holds no commit that ${shortCommit(instance)} and the starter's revision ${shortCommit(starter)} share (${shallow ? "a shallow or grafted clone). Fetch the history the clone lacks, by an unshallow fetch from the remote that holds it, and run this again" : "the clone is whole, so the two histories share nothing: an instance whose first commit was its own, or a starter whose history was written again). Without a shared commit nothing tells this instance's changes from the starter's, and this command cannot judge the merge: compare this instance's own files with the commit before the merge by hand, and open the pull request yourself"}`,
+      `the update's merge base cannot be read: this clone holds no commit that ${shortCommit(instance)} and the starter's revision ${shortCommit(starter)} share (${shallow ? "a shallow clone). Fetch the history the clone lacks, by an unshallow fetch from the remote that holds it, and run this again" : "the clone is whole, so the two histories share nothing: an instance whose first commit was its own, or a starter whose history was written again). Without a shared commit nothing tells this instance's changes from the starter's, and this command cannot judge the merge: compare this instance's own files with the commit before the merge by hand, and open the pull request yourself"}`,
     );
   }
   let listed = [];
@@ -3440,6 +3460,14 @@ export function renderUpdatePlan(planned, { preview = false } = {}) {
     );
   else if (planned.bothChanged)
     lines.push("instance files both sides changed: none");
+  if (
+    planned.plan.some(
+      (entry) => entry.reEmitted && entry.path === HARNESS_MANIFEST,
+    )
+  )
+    lines.push(
+      `If the merge conflicts in ${HARNESS_MANIFEST}, keep this instance's side: the emit rewrites it under this instance's configuration.`,
+    );
   for (const entry of planned.plan)
     lines.push(
       entry.reEmitted

@@ -1,0 +1,99 @@
+{
+  "observedAt": "2026-11-16T09:00:23.763Z",
+  "command": "npm run resume --silent -- status --json",
+  "projection": {
+    "omitted": [
+      "orders"
+    ],
+    "normalized": {
+      "route.cwd": "<worktree>",
+      "route.launchpad": "<worktree>"
+    },
+    "reason": "Selected-order observation; unrelated order inventory omitted and local absolute worktree paths normalized."
+  },
+  "status": {
+    "schemaVersion": 1,
+    "workOrder": "WO-282",
+    "workOrderPath": "docs/work-orders/WO-282-an-update-leaves-nothing-to-repair-by-hand.md",
+    "phase": "ready-to-verify",
+    "route": {
+      "action": "verify",
+      "role": "verifier",
+      "phrase": "resume: verify",
+      "stop": null,
+      "mode": "dispatch",
+      "transport": "claude-cli-print",
+      "cwd": "<worktree>",
+      "launchpad": "<worktree>",
+      "eventCount": 2
+    },
+    "latestVerification": null,
+    "verificationPath": null,
+    "latestVerdict": null,
+    "finalReview": null,
+    "finalReviewPath": null,
+    "latestAttestation": {
+      "harness": "codex-cli",
+      "harnessVersion": "0.169.0",
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "source": "codex-session-readback",
+      "accountLabel": "not-applicable"
+    },
+    "effortDrift": [
+      {
+        "effort": "max"
+      }
+    ],
+    "recordedAt": "2026-11-16T08:57:31.294Z",
+    "elapsed": {
+      "implementation": 11932652
+    },
+    "latestCheckpoint": {
+      "sha": "3f64ef92cdde46c29dd414fe386580192973940f",
+      "ref": "refs/dotln/checkpoint/WO-282/2",
+      "restoreCommand": "git checkout refs/dotln/checkpoint/WO-282/2 -- ."
+    },
+    "legalNextActions": [
+      "verify"
+    ],
+    "legalOffRamps": [
+      "withdraw",
+      "correct",
+      "override-record",
+      "reopen-handoff"
+    ],
+    "boundAcceptances": [],
+    "waivedCriteria": [],
+    "unmetCriteria": [],
+    "withdrawal": null,
+    "corrections": [],
+    "overrideRecords": [],
+    "defectiveCriteria": [],
+    "retractedOffRamps": [],
+    "reopenedHandoffs": [],
+    "dependencies": {
+      "source": "conservative-tokens",
+      "entries": [
+        {
+          "workOrderId": "WO-277",
+          "state": "control-closed"
+        },
+        {
+          "workOrderId": "WO-281",
+          "state": "control-closed"
+        }
+      ],
+      "blocking": []
+    },
+    "currentSession": {
+      "available": true,
+      "harness": "codex-cli",
+      "harnessVersion": "0.169.0",
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "source": "codex-session-readback",
+      "observedAt": "2026-11-16T07:23:04.485Z"
+    }
+  }
+}
