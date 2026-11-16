@@ -60547,6 +60547,110 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-433d0e43d06b215a",
+      "key": "decision:docs/evidence/WO-281/decisions.md#wo-281-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "82d805cd1ad346c0f0e01de37f83fd2409975c2d9d4c246d9b9aea749bb585d8",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d014--step-6-the-reader-answered-nine-of-the-ten-tasks-more-easily-from-the-rewritten-guide-and-one-about-as-easily-and-its-report-changed-seven-things-in-the-guide",
+          "title": "WO-281-D014: Planning, priority low: the kit guide states, each checked against the code, (1) what to do for each class of a stopped release close and the retry command as the close prints it, (2)…",
+          "summary": "{ \"id\": \"WO-281-D014\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; step 6 of the execution plan\", \"decision\": \"One fresh worker of the instance's default worker for Claude answered the ten tasks of docs/evidence/WO-281/tasks.md from the guide at the base and from the candidate, told nothing else of the order, reading the base first for odd-numbered tasks and the candidate first for even. Both answer sets, with the sections used, are in docs/evidence/WO-281/reader-record.md beside the revisions read. Its comparison: the candidate was the easier text for nine tasks and about even for one, running an order, where both texts kept the steps in the comments above the marked blocks and neither",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6d8e6bf5dc056d06",
+      "key": "decision:docs/evidence/WO-281/decisions.md#wo-281-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5f881d0deeaf70c740efd2965c7a2761929b15154fc69d86addf0bc310f94fda",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d020--round-one-of-the-review-ladder-the-four-standard-reviewers-thirty-two-findings-three-of-them-blocking-each-with-who-found-it-its-class-and-what-becomes-of-it",
+          "title": "WO-281-D020: Planning, priority low: (1) a case for a starter's map written from an older template and proven through the starter's history, once a release changes the map's template; (2) one table…",
+          "summary": "{ \"id\": \"WO-281-D020\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next\", \"decision\": \"Round one ran six reviewers at once over one tree (dcc789cf37e12934c5c2348668f7188442ae8db2, base 5edc7798b), from 22:52 to 23:08 UTC; no file of the worktree changed between the launch and the last report. This decision records the four standard reviewers' findings before any is fixed; WO-281-D021 records the two reviewers the operator added. Blocking, all to be fixed: F01, the rule-by-role table of WO-276 part F pins each rule's size, the rule this order lengthened is 1,392 bytes against the table's 1,316, the table's command was not run, and the document gate's case over it fails; F02, criterion 3 names ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ace4a3d957b6c009",
+      "key": "decision:docs/evidence/WO-281/decisions.md#wo-281-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "30d4bc0fd5d1403877ead50efbd75e866cad5f1bc1cab54318f37a75b9986819",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d021--round-ones-two-added-reviewers-on-gpt-6-astra-thirteen-findings-on-the-pages-as-instructions-and-eleven-on-filler-each-checked-against-the-base-guide-twenty-three-to-be-fixed-and-one-left-to-planning",
+          "title": "WO-281-D021: Planning, priority low: the kit guide gains a table under its gates that leads from a gate's refusal (host requirements, stale generated pages, a private term's match, an unavailable…",
+          "summary": "{ \"id\": \"WO-281-D021\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next; the operator's two messages that WO-281-D003 records\", \"decision\": \"The two reviewers of WO-281-D003 read the rewritten guide and the map's template in the same round and on the same tree as the ladder's four. Their findings are outside the four kinds the round's findings array admits, so they are recorded here, each with what becomes of it. The reviewer of the pages as instructions marked four as blocking a reader and nine as improvements. U1, fixed: the update procedure came before the preparation an instance older than v1.0.0 owes, which the base guide set first; the procedure now opens by sending that reader there. U",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6449fdb000fc3414",
+      "key": "decision:docs/evidence/WO-281/decisions.md#wo-281-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8504f274d957e70c22163c7e3d3ff0ae73cf4288e59e16722f7cd34573dde697",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d026--the-second-reading-of-the-candidate-one-fresh-reader-the-final-text-alone-its-bytes-kept-and-what-it-could-not-find-left-to-planning",
+          "title": "WO-281-D026: Planning, priority low: the kit guide, each point checked against the code, (1) says for each command whether a person types it or a session runs it, in the setup's last two steps, the…",
+          "summary": "{ \"id\": \"WO-281-D026\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: next\", \"decision\": \"A second fresh reader answered the order's ten tasks from the final candidate alone, after both rounds of review, and its report is recorded whole in the reader's record under The second reading. This answers round one's F12 and the third critic's third point: the text is named by its SHA-256 and its Git blob, both read before the launch and again by the reader, its bytes were written to the object store and copied to session scratch first, and the guide is not edited after the reading, so the tree the complete run reads holds the text the answers came from. The reader answered all ten tasks and found each ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5797443b7cab8b6b",
+      "key": "decision:docs/evidence/WO-281/decisions.md#wo-281-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4f2961d277dcb800b8ee9c6f8bf64fd1681edd5b27f30dc4dac50721edcae267",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d027--independent-verification-preserve-the-subject-consume-its-complete-row-and-board-safe-evidence-replay",
+          "title": "WO-281-D027: Planning, priority low: add a read-only check or caller-selected output directory to the WO-281 inventory and historical-map reproduction commands so a verifier can replay them without…",
+          "summary": "{ \"id\": \"WO-281-D027\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: verify\", \"decision\": \"The verifier judges all six original criteria met at code identity 63a17b38c1ef26919b8e722d4cdd8ea47e62752d1d69c1aa9261a389fc7ea796. The implementation is left unchanged. Independent probes reproduce the inventory, its negative control, all five historical map renderings, a refresh from an older template-backed map, owner customization retention, paragraph boundary cases and the installed reviewer rule. The complete review row at that identity covers the product claims and the declared Preflight, so no additional complete product run is warranted; a document gate over the verifier's authored records is th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-28c9cf8ed5401f5e",
+      "key": "decision:docs/evidence/WO-281/decisions.md#wo-281-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cf9d67a2c1c93c259cf07b2322df5582d736deb18541f60dd10a0a9ef4d364c7",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d029--final-review-the-verified-subject-passes-and-is-left-byte-for-byte-the-reviewers-own-comparison-of-the-guides-prose-with-its-base-and-one-follow-up-on-sentences-that-keep-the-bases-dense-wording",
+          "title": "WO-281-D029: Planning, priority low, for the order that next writes into the kit guide, with the second reader's points (WO-281-D026): reword, each checked against the code it describes, the…",
+          "summary": "{ \"id\": \"WO-281-D029\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review\", \"decision\": \"All six criteria are met and the review passes. Integration took in nothing: origin's main is the branch's base. The code identity is the one the executor's complete review run and the verifier judged, so that run's passing row is reused and no second complete run is started; the document gate runs once, after this review's records. The reviewer changed no byte of the subject: no source, no test, no sentence of the guide, the map or product 07. Read for the judgment: the order; the whole diff of source and tests; the rewritten guide whole, all 4,365 lines; the map's template beside the text the expo",
+          "missing": false
+        },
+        {
+          "hash": "3011fe02ad1ee0f2fc2cfdcac3c1df5049338f0c4dec92c1b4afc90fdfc6152b",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d029--final-review-the-verified-subject-passes-and-is-left-byte-for-byte-the-reviewers-own-comparison-of-the-guides-prose-with-its-base-and-one-follow-up-on-sentences-that-keep-the-bases-dense-wording",
+          "title": "WO-281-D029: Planning, priority low, for the order that next writes into the kit guide, with the second reader's points (WO-281-D026): reword, each checked against the code it describes, the…",
+          "summary": "{ \"id\": \"WO-281-D029\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review\", \"decision\": \"All six criteria are met and the review passes. Integration took in nothing: origin's main is the branch's base. The code identity is the one the executor's complete review run and the verifier judged, so that run's passing row is reused and no second complete run is started; the document gate runs once, after this review's records. The reviewer changed no byte of the subject: no source, no test, no sentence of the guide, the map or product 07. Read for the judgment: the order; the whole diff of source and tests; the rewritten guide whole, all 4,365 lines; the map's template beside the text the expo",
+          "missing": false
+        },
+        {
+          "hash": "f5819ecddf88c5348c0476049b27698ae640951e47e6fda55670888c860f568b",
+          "ref": "docs/evidence/WO-281/decisions.md#wo-281-d029--final-review-the-verified-subject-passes-and-is-left-byte-for-byte-the-reviewers-own-comparison-of-the-guides-prose-with-its-base-and-one-follow-up-on-sentences-that-keep-the-bases-dense-wording",
+          "title": "WO-281-D029: Planning, priority low, for the order that next writes into the kit guide, with the second reader's points (WO-281-D026): reword, each checked against the code it describes, the…",
+          "summary": "{ \"id\": \"WO-281-D029\", \"date\": \"2026-11-15\", \"dispatch\": \"resume: final review\", \"decision\": \"All six criteria are met and the review passes. Integration took in nothing: origin's main is the branch's base. The code identity is the one the executor's complete review run and the verifier judged, so that run's passing row is reused and no second complete run is started; the document gate runs once, after this review's records. The reviewer changed no byte of the subject: no source, no test, no sentence of the guide, the map or product 07. Read for the judgment: the order; the whole diff of source and tests; the rewritten guide whole, all 4,365 lines; the map's template beside the text the expo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

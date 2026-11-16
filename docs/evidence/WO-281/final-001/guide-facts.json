@@ -1,0 +1,155 @@
+{
+  "guide": "docs/KIT.md",
+  "base": {
+    "revision": "5edc7798b9eccaa880467d41a28b6a43f4b54226",
+    "lines": 2765,
+    "sha256": "09147e2230fe478e1195cbd6e4c34bd9ba7d5243e3e76091a5d452897e638471"
+  },
+  "candidate": {
+    "lines": 4365,
+    "sha256": "2787606d26f649eb427762bb1b7767b657e187ecc088a573d366da5f8c624ba7"
+  },
+  "inventory": {
+    "heading": {
+      "base": 17,
+      "candidate": 168,
+      "absent": []
+    },
+    "codeSpan": {
+      "base": 795,
+      "candidate": 808,
+      "absent": [
+        "diff WO-NNN",
+        "apply WO-NNN",
+        "draft WO-NNN --new"
+      ]
+    },
+    "blockLine": {
+      "base": 89,
+      "candidate": 104,
+      "absent": []
+    },
+    "linkTarget": {
+      "base": 70,
+      "candidate": 152,
+      "absent": []
+    }
+  },
+  "secondLevelHeadings": {
+    "base": 15,
+    "candidate": 15,
+    "sameTextAndOrder": true
+  },
+  "candidateLinksToItsHeadings": {
+    "distinct": 86,
+    "unresolved": [],
+    "duplicateHeadingSlugs": 0
+  },
+  "alignment": {
+    "window": 8,
+    "sentences": 1017,
+    "whole": 924,
+    "histogram": {
+      "1.0": 924,
+      "0.9": 65,
+      "0.8": 22,
+      "0.7": 5,
+      "0.5": 1
+    },
+    "below080": [
+      {
+        "baseLine": 728,
+        "candidateLine": 999,
+        "blocks": 8,
+        "score": 0.56,
+        "lacking": [
+          "old",
+          "equip",
+          "unequip",
+          "choic",
+          "accept",
+          "migration",
+          "advisory",
+          "through",
+          "kit",
+          "v0.118.0",
+          "sinc",
+          "v0.119.0"
+        ],
+        "nowhere": [
+          "migration",
+          "v0.118.0",
+          "v0.119.0"
+        ],
+        "sentence": "The old overlay `equip`/`unequip` choice for it was accepted with a migration advisory through kit release v0.118.0 and is refused since v0.119.0: an overlay that names `tinkerer-economy` refuses the emit, the feature table and the elections read until the entry is removed and the election made in `features.tinkerer-economy`."
+      },
+      {
+        "baseLine": 2194,
+        "candidateLine": 3351,
+        "blocks": 8,
+        "score": 0.73,
+        "lacking": [
+          "from-cor",
+          "abov",
+          "decision"
+        ],
+        "nowhere": [],
+        "sentence": "The kit's own rows follow the from-core plan above, the `re-emitted:` row among them (decision)."
+      },
+      {
+        "baseLine": 835,
+        "candidateLine": 1167,
+        "blocks": 8,
+        "score": 0.75,
+        "lacking": [
+          "pac"
+        ],
+        "nowhere": [
+          "pac"
+        ],
+        "sentence": "An order may be paced across days."
+      },
+      {
+        "baseLine": 2226,
+        "candidateLine": 1187,
+        "blocks": 8,
+        "score": 0.75,
+        "lacking": [
+          "show",
+          "shap"
+        ],
+        "nowhere": [],
+        "sentence": "It shows the same plan shape against this instance's current files."
+      },
+      {
+        "baseLine": 674,
+        "candidateLine": 990,
+        "blocks": 8,
+        "score": 0.76,
+        "lacking": [
+          "host",
+          "claud",
+          "unles",
+          "log",
+          "attest"
+        ],
+        "nowhere": [],
+        "sentence": "An absent section keeps the existing defaults: Tinkerer economy on, plan-first, private-destination, desktop-control, auto-update-upstream and verbatim-operator-words off, and each host other than Claude off unless this instance's control log attests it."
+      },
+      {
+        "baseLine": 728,
+        "candidateLine": 1029,
+        "blocks": 8,
+        "score": 0.78,
+        "lacking": [
+          "tinkerer",
+          "economy",
+          "executor",
+          "decision"
+        ],
+        "nowhere": [],
+        "sentence": "Turning Tinkerer economy off removes its executor support; turning a host off removes the surfaces the previous manifest installed for it and the directories that leaves empty, and keeps any other file there (decision)."
+      }
+    ]
+  }
+}

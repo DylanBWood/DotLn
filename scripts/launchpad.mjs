@@ -59,7 +59,13 @@ import {
 import { isMainModule } from "./lib/paths.mjs";
 import { dispatchSession } from "./lib/dispatch-bound.mjs";
 import { requireOperatorCapture } from "./lib/off-ramps.mjs";
-import { exportConfiguration, exportSeedPaths } from "./lib/starter-seeds.mjs";
+import {
+  DOCS_MAP_SEED,
+  DOCS_MAP_TEMPLATE,
+  docsMapUnlinked,
+  exportConfiguration,
+  exportSeedPaths,
+} from "./lib/starter-seeds.mjs";
 import {
   freshHostFeatures,
   readFeatures,
@@ -323,6 +329,7 @@ export const KIT_TEMPLATE_FILES = Object.freeze([
   "budgets.template.json",
   "CLAUDE.template.md",
   "README.client.md",
+  DOCS_MAP_TEMPLATE,
   "dotln.config.example.json",
   "first-order.template.md",
   "for-core.template.md",
@@ -334,6 +341,8 @@ export const KIT_TEMPLATE_FILES = Object.freeze([
 ]);
 
 // Root keys whose directories the export seeds with a README convention.
+// The documentation map (scripts/kit/docs-map.template.md) says in a few
+// words what each root holds: change a convention here and its row there.
 const SEEDED_ROOTS = Object.freeze({
   control:
     "Control records of this instance: one JSONL segment per order under orders/, the generated current.md projection, and local/ (ignored) for harness observations, usage and the private local-terms list. Written by the lifecycle commands; never edited by hand.",
@@ -1205,30 +1214,21 @@ export async function prepareKit({
     defaultDocRelative("workOrders", FIRST_ORDER),
     template("first-order.template.md"),
   );
-  // The map links each root's README the export seeds, so every one of them
-  // is a page a reader reaches from the front page; a root whose README does
-  // not exist yet (the generated work-order index, ignored intake) is named.
-  const mapLink = (...parts) =>
-    `[${defaultDocRelative(...parts)}/](${posix.relative(defaultDocRelative("docs"), defaultDocRelative(...parts, "README.md"))})`;
-  addSeed(
-    defaultDocRelative("docs", "README.md"),
-    [
-      `# ${defaultDocRelative("docs")}`,
-      "",
-      "The document roots of this launchpad use the default layout; its instance-owned",
-      "`dotln.config.json` can override them. Each root's README states its convention; `UPSTREAM.md` at the",
-      "repository root names the kit's commit and the upstream documents the kit",
-      `points to. [${defaultDocRelative("docs", "KIT.md")}](KIT.md) is the kit's guide to first steps, planning, releases and updates.`,
-      "",
-      ...Object.keys(SEEDED_ROOTS).map((key) => `- ${mapLink(key)}`),
-      `- \`${defaultDocRelative("workOrders")}/\` — one scope authority per order, WO-NNN-<slug>.md, with **Model:** and **Effort:** as its leading metadata; its README is the index \`npm run work-orders -- index\` generates at the first lifecycle transition (activate)`,
-      `- ${mapLink("lineage")} — idea-ledger.md, an append-only idea history; its README is the index the export seeds and \`node scripts/lineage.mjs index\` regenerates after ledger edits; an older export generates it on its update branch or in its first steps, and bootstrap never writes it`,
-      `- \`${defaultDocRelative("intake")}/\` — ignored, single-copy raw material`,
-      `- ${mapLink("workstreams")} — one document per outcome; the README holds the convention and template`,
-      `- ${mapLink("docs", "repositories")} — one profile per registered repository; the README holds the convention and template`,
-      "",
-    ].join("\n"),
-  );
+  // The map is a template, so that a starter refresh can tell a copy an
+  // export wrote from one its owner changed (starter-seeds.mjs). It links
+  // each root's README the export seeds, so every one of them is a page a
+  // reader reaches from the front page; a root whose README does not exist
+  // yet (the generated work-order index, ignored intake) is named as a code
+  // span in the template. The template is written for the default layout,
+  // as every seed is: an export whose seeded roots it does not link is
+  // refused here, by the seed list's own roots.
+  const map = template(DOCS_MAP_TEMPLATE);
+  const unlinked = docsMapUnlinked(markdownLinks(map).map(({ href }) => href));
+  if (unlinked.length)
+    throw new Error(
+      `${KIT_TEMPLATES}/${DOCS_MAP_TEMPLATE} links no ${unlinked.join(", ")}; the map links the README of every root the export seeds`,
+    );
+  addSeed(DOCS_MAP_SEED, map);
   for (const [key, convention] of Object.entries(SEEDED_ROOTS))
     addSeed(defaultDocRelative(key, "README.md"), rootReadme(key, convention));
   // The generated index reads the proposed sequence at every lifecycle

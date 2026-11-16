@@ -318,5 +318,8 @@
   "drivenPhaseTimeoutMs": null,
   "prune": {
     "startBudgetMs": 1800000
+  },
+  "documents": {
+    "paragraphWords": 120
   }
 }

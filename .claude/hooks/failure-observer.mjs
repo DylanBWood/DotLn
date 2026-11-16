@@ -192,8 +192,8 @@ control = recoveryInput ? await (async function operatorControl(input, event) {
     }
 })({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;
 if (control && !control.overrideExit) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/0bd6aa1fcefe0bcd/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/0bd6aa1fcefe0bcd/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/16d9dbb669990f8e/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/16d9dbb669990f8e/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
   "compilerPackageVersion": "0.44.0",
   "runtime": {
@@ -369,7 +369,7 @@ await runHarnessHook({
         "hash": "fnv1a64:648734592818b19e"
       }
     ],
-    "snapshot": ".runtime/harness/0bd6aa1fcefe0bcd"
+    "snapshot": ".runtime/harness/16d9dbb669990f8e"
   },
   "event": "PostToolUseFailure",
   "tools": {
@@ -840,7 +840,7 @@ const { join } = await import("node:path");
 const { createHash } = await import("node:crypto");
 const { fileURLToPath } = await import("node:url");
 const root = fileURLToPath(new URL("../../", import.meta.url));
-const snapshot = ".runtime/harness/0bd6aa1fcefe0bcd";
+const snapshot = ".runtime/harness/16d9dbb669990f8e";
 let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
   const hash = (value) => {

@@ -39,7 +39,12 @@ import {
   readDocumentJson,
 } from "./lib/paths.mjs";
 import { readDecisions } from "./lib/meta.mjs";
-import { addsLine, branchChanges } from "./lib/branch-changes.mjs";
+import {
+  addsLine,
+  branchChanges,
+  readChangedText,
+} from "./lib/branch-changes.mjs";
+import { PARAGRAPH_WORDS, paragraphWordsKey } from "./lib/process-budget.mjs";
 import { readFeatures } from "./lib/features.mjs";
 import { verbatimScreen } from "./lib/verbatim-screen.mjs";
 import {
@@ -60,6 +65,7 @@ import {
   markdownLinks,
   markdownNodes as nodes,
   markdownText as renderedText,
+  nodeSource,
   parseMarkdown,
   parseMarkdownWithExtensions,
   withoutHtmlComments,
@@ -1898,6 +1904,118 @@ export function forCoreFailures(text, path = FOR_CORE) {
   return failures;
 }
 
+/** The figure of the long-paragraph list: the instance's own, from
+ * `documents.paragraphWords` in its budgets; the kit's where the file or the
+ * key is absent; null where the instance turns the list off. A value that
+ * is none of those falls back to the kit's figure with a note, and so does
+ * a `documents` section that holds some other key and no figure, which is
+ * how a misspelled key shows: this check refuses nothing over a
+ * paragraph's length, and it is the key's one reader. */
+export function paragraphFigure(root) {
+  const path = docRelative(root, "control", "budgets.json");
+  const kit = { figure: PARAGRAPH_WORDS, source: "the kit's figure" };
+  if (!documentEntry(root, path)) return kit;
+  try {
+    const budgets = readDocumentJson(root, path);
+    const key = paragraphWordsKey(budgets);
+    if (key !== undefined)
+      return { figure: key, source: `documents.paragraphWords in ${path}` };
+    const others = Object.keys(budgets?.documents ?? {});
+    return others.length
+      ? {
+          ...kit,
+          note: `${path}: documents holds ${others.join(", ")} and no paragraphWords; the long-paragraph list uses the kit's figure, ${PARAGRAPH_WORDS} words`,
+        }
+      : kit;
+  } catch (error) {
+    return {
+      ...kit,
+      note: `${path}: ${error.message}; the long-paragraph list uses the kit's figure, ${PARAGRAPH_WORDS} words`,
+    };
+  }
+}
+
+/** Each paragraph of a document that runs past `figure` words, with its
+ * first and last line and its count. A paragraph is the parser's: a block
+ * of running text, in a list item or a quotation as much as at the top
+ * level; a table, a fenced block and a heading are none. Words are counted
+ * as written, split at white space. */
+export function paragraphsOver(text, figure) {
+  return [...nodes(parseMarkdown(text))]
+    .filter((node) => node.type === "paragraph")
+    .map((node) => ({
+      line: node.position.start.line,
+      endLine: node.position.end.line,
+      words: nodeSource(text, node).split(/\s+/u).filter(Boolean).length,
+    }))
+    .filter((row) => row.words > figure);
+}
+
+/** The first line the check prints of the list: off, or the figure and
+ * where it came from, then what `scope` says the rows below it are. */
+const paragraphStatus = ({ figure, source }, scope) =>
+  figure === null
+    ? `long paragraphs: off (${source} is null)`
+    : `long paragraphs: over ${figure} words (${source})${scope}`;
+
+/** The kit's own files in an instance, as its manifest lists them; null in
+ * core, which has no manifest. */
+const kitFileSet = (root) =>
+  documentEntry(root, "KIT-MANIFEST.json")
+    ? new Set(
+        readDocumentJson(root, "KIT-MANIFEST.json").files.map(
+          (entry) => entry.path,
+        ),
+      )
+    : null;
+
+// A standing document the instance may rewrite: Markdown, and in an instance
+// not one of the kit's own documents, which an update replaces.
+const rewritable = (kinds, kitFiles, file) =>
+  kinds.get(file)?.kind === "standing" &&
+  isMarkdownName(file) &&
+  !kitFiles?.has(file);
+
+/** The long paragraphs a branch writes: each paragraph of a standing
+ * document that the branch adds or changes and that runs past the figure,
+ * by file and line. A long paragraph is a smell for the stage at hand to
+ * read and, where it is hard to follow, rewrite; it is never a failure, and
+ * no total is kept of it. A document can be long and easy to follow, so the
+ * list reads a paragraph and never a document's size. */
+export function longParagraphs(root, { kinds, changes, kitFiles, figure }) {
+  if (figure === null) return [];
+  const rows = [];
+  for (const file of [...changes.files.keys()].sort()) {
+    if (!rewritable(kinds, kitFiles, file)) continue;
+    const text = readChangedText(root, file);
+    if (text === null) continue;
+    for (const row of paragraphsOver(text, figure))
+      if (addsLine(changes, file, row.line, row.endLine))
+        rows.push({ file, line: row.line, words: row.words });
+  }
+  return rows;
+}
+
+/** The same reading over every standing document whole, for a reader
+ * planning what to rewrite next: each document with a long paragraph, and
+ * each such paragraph's line and words. */
+export function standingLongParagraphs(root, figure) {
+  if (figure === null) return [];
+  const { kinds } = documentReport(root);
+  const kitFiles = kitFileSet(root);
+  return [...kinds.keys()]
+    .filter((file) => rewritable(kinds, kitFiles, file))
+    .sort()
+    .map((file) => ({
+      file,
+      paragraphs: paragraphsOver(
+        readDocumentInput(root, file, "document"),
+        figure,
+      ),
+    }))
+    .filter((row) => row.paragraphs.length);
+}
+
 export function checkDocs(
   root,
   {
@@ -1913,14 +2031,7 @@ export function checkDocs(
 ) {
   // Carried operating documents retain upstream history and links. This
   // instance owns the editorial baseline for its own documents.
-  const manifestPath = join(root, "KIT-MANIFEST.json");
-  const kitFiles = existsSync(manifestPath)
-    ? new Set(
-        readDocumentJson(root, "KIT-MANIFEST.json").files.map(
-          (entry) => entry.path,
-        ),
-      )
-    : null;
+  const kitFiles = kitFileSet(root);
   baseline ??= readDocumentJson(
     root,
     docRelative(root, "control", "doc-baseline.json"),
@@ -2054,6 +2165,18 @@ export function checkDocs(
   // forward-only checks below judge only those records and lines, so a record
   // written before the branch keeps its bytes (WO-259).
   changes ??= branchChanges(root);
+  // A long paragraph the branch writes in a standing document is listed for
+  // the stage at hand to read, and judged by nothing here.
+  const paragraphFigureRead = paragraphFigure(root);
+  const paragraphList = {
+    ...paragraphFigureRead,
+    rows: longParagraphs(root, {
+      kinds: documents.kinds,
+      changes,
+      kitFiles,
+      figure: paragraphFigureRead.figure,
+    }),
+  };
   features ??= readFeatures(root);
   const verbatimElected = features["verbatim-operator-words"] === true;
   const spans = decisionSections(root, decisions);
@@ -2166,6 +2289,7 @@ export function checkDocs(
     historicalHomePaths,
     notices,
     operatorWords,
+    paragraphList,
     documents: {
       counts: documents.counts,
       recordsNamed: documents.recordsNamed,
@@ -2181,10 +2305,11 @@ if (isMainModule(import.meta.url)) {
     const args = process.argv.slice(2);
     if (
       args.length > 1 ||
-      (args.length === 1 && args[0] !== "--write-home-path-baseline")
+      (args.length === 1 &&
+        !["--write-home-path-baseline", "--long-paragraphs"].includes(args[0]))
     )
       throw new Error(
-        "usage: node scripts/docs-check.mjs [--write-home-path-baseline]",
+        "usage: node scripts/docs-check.mjs [--write-home-path-baseline | --long-paragraphs]",
       );
     const root = findLaunchpad();
     // This command reads every document in several passes and exits: it
@@ -2195,6 +2320,24 @@ if (isMainModule(import.meta.url)) {
       console.log(
         `Wrote ${result.path}: ${result.lines} historical private-path lines in ${result.files} files; removed ${result.removed} stale fingerprints.`,
       );
+    } else if (args[0] === "--long-paragraphs") {
+      // The whole list, for planning a rewrite: every standing document
+      // with a paragraph past the figure. It judges nothing and exits zero.
+      const read = paragraphFigure(root);
+      if (read.note) console.log(`ADVISORY ${read.note}`);
+      console.log(
+        paragraphStatus(
+          read,
+          ", in every standing document, as file: line (words)",
+        ),
+      );
+      for (const { file, paragraphs } of standingLongParagraphs(
+        root,
+        read.figure,
+      ))
+        console.log(
+          `${file}: ${paragraphs.map((row) => `${row.line} (${row.words})`).join(", ")}`,
+        );
     } else {
       const result = checkDocs(root, {
         frontPageAmendment: await amendedFrontPageScope(root),
@@ -2226,6 +2369,20 @@ if (isMainModule(import.meta.url)) {
       );
       for (const advisory of result.advisories)
         console.log(`ADVISORY ${advisory}`);
+      const long = result.paragraphList;
+      if (long.note) console.log(`ADVISORY ${long.note}`);
+      console.log(
+        paragraphStatus(
+          long,
+          long.rows.length
+            ? "; this branch writes the ones listed"
+            : "; none among the paragraphs this branch adds or changes in standing documents",
+        ),
+      );
+      for (const row of long.rows)
+        console.log(
+          `ADVISORY ${row.file}:${row.line}: a paragraph of ${row.words} words, over ${long.figure}; a long paragraph is a smell: read it, and rewrite it where it is hard to follow`,
+        );
       for (const failure of result.failures) console.error(`FAIL ${failure}`);
       console.log(
         `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.historicalHomePaths} declared historical home-path lines; ${result.failures.length} failures`,

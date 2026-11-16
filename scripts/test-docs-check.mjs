@@ -2092,6 +2092,136 @@ test("a product document's bytes are reported and judge nothing: no ceiling, no 
   assert.deepEqual(f.check().failures, []);
 });
 
+test("WO-281 criterion 4: a long paragraph a branch writes in a standing document is listed by file and line and refuses nothing; one the branch left alone, a record's, a table and a fenced block are not listed, the figure is the instance's own, and the whole list is one command", (t) => {
+  const f = branchFixture(t);
+  const run = (count, word) =>
+    Array.from({ length: count }, () => word).join(" ");
+  const page = "docs/guide.md";
+  // On main: a standing page whose one long paragraph the branch leaves be.
+  f.git("checkout", "-q", "main");
+  const held = `# Guide\n\n${run(130, "held")}\n\nA short paragraph.\n`;
+  f.write(page, held);
+  // And a second page whose long paragraph the branch edits in place.
+  const second = "docs/second.md";
+  f.write(second, `# Second\n\n${run(140, "kept")}\n`);
+  f.git("add", "-A");
+  f.git("commit", "-qm", "a standing page");
+  f.git("checkout", "-q", "wo-999");
+  f.git("merge", "-q", "--ff-only", "main");
+  // On the branch: a long paragraph, a long one inside a list item, a short
+  // one, and the same number of words in a fenced block and in a table.
+  const added = [
+    held,
+    run(130, "added"),
+    "",
+    `- ${run(125, "item")}`,
+    "",
+    "A second short paragraph.",
+    "",
+    "```text",
+    run(300, "fenced"),
+    "```",
+    "",
+    "| Column |",
+    "| --- |",
+    `| ${run(300, "cell")} |`,
+    "",
+  ].join("\n");
+  f.write(page, added);
+  f.write(second, `# Second\n\n${run(139, "kept")} edited\n`);
+  // A record is dated and never rewritten: its long paragraph is no smell.
+  f.record("resume: next");
+  f.write(
+    `${f.evidence}/WO-999/notes.md`,
+    `# Notes\n\n${run(400, "record")}\n`,
+  );
+  const lineOf = (text) =>
+    added.split("\n").findIndex((line) => line.startsWith(text)) + 1;
+  let result = f.cli();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.doesNotMatch(result.stderr, /FAIL/u);
+  assert.match(
+    result.stdout,
+    /^long paragraphs: over 120 words \(the kit's figure\); this branch writes the ones listed$/mu,
+  );
+  const listed = result.stdout
+    .split("\n")
+    .filter((line) => / a paragraph of \d+ words, over /u.test(line));
+  assert.deepEqual(listed, [
+    `ADVISORY ${page}:${lineOf("added")}: a paragraph of 130 words, over 120; a long paragraph is a smell: read it, and rewrite it where it is hard to follow`,
+    `ADVISORY ${page}:${lineOf("- item")}: a paragraph of 125 words, over 120; a long paragraph is a smell: read it, and rewrite it where it is hard to follow`,
+    // One line changed inside a paragraph that was already long.
+    `ADVISORY ${second}:3: a paragraph of 140 words, over 120; a long paragraph is a smell: read it, and rewrite it where it is hard to follow`,
+  ]);
+  // The instance's own figure, from its budgets: a higher one lists nothing,
+  // null turns the list off, and a value the budgets loader would refuse
+  // falls back to the kit's figure with a note. None of them fails.
+  const budgets = `${f.control}/budgets.json`;
+  f.write(budgets, JSON.stringify({ documents: { paragraphWords: 200 } }));
+  result = f.cli();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(
+    result.stdout,
+    /^long paragraphs: over 200 words \(documents\.paragraphWords in docs\/control\/budgets\.json\); none among the paragraphs this branch adds or changes in standing documents$/mu,
+  );
+  assert.doesNotMatch(result.stdout, / a paragraph of \d+ words/u);
+  f.write(budgets, JSON.stringify({ documents: { paragraphWords: null } }));
+  result = f.cli();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(
+    result.stdout,
+    /^long paragraphs: off \(documents\.paragraphWords in docs\/control\/budgets\.json is null\)$/mu,
+  );
+  f.write(budgets, JSON.stringify({ documents: { paragraphWords: "many" } }));
+  result = f.cli();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(
+    result.stdout,
+    /^ADVISORY docs\/control\/budgets\.json: Invalid budget: documents\.paragraphWords; the long-paragraph list uses the kit's figure, 120 words$/mu,
+  );
+  assert.match(result.stdout, /^long paragraphs: over 120 words/mu);
+  // A section that holds some other key and no figure, as a misspelled key
+  // leaves it, is said and not passed over in silence.
+  f.write(budgets, JSON.stringify({ documents: { paragraphWord: 200 } }));
+  result = f.cli();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(
+    result.stdout,
+    /^ADVISORY docs\/control\/budgets\.json: documents holds paragraphWord and no paragraphWords; the long-paragraph list uses the kit's figure, 120 words$/mu,
+  );
+  // The whole list reads every standing document, changed or not, judges
+  // nothing and exits zero.
+  rmSync(join(f.root, budgets));
+  const whole = spawnSync(process.execPath, [script, "--long-paragraphs"], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.equal(whole.status, 0, whole.stdout + whole.stderr);
+  assert.deepEqual(whole.stdout.trimEnd().split("\n"), [
+    "long paragraphs: over 120 words (the kit's figure), in every standing document, as file: line (words)",
+    `${page}: 3 (130), ${lineOf("added")} (130), ${lineOf("- item")} (125)`,
+    `${second}: 3 (140)`,
+  ]);
+  // In an instance the kit's own documents are an update's to replace:
+  // neither list names one, whatever the branch did to it.
+  f.write("KIT-MANIFEST.json", JSON.stringify({ files: [{ path: second }] }));
+  result = f.cli();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, / a paragraph of 130 words, over 120/u);
+  assert.doesNotMatch(result.stdout, /second\.md/u);
+  const instance = spawnSync(process.execPath, [script, "--long-paragraphs"], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.equal(instance.status, 0, instance.stdout + instance.stderr);
+  assert.deepEqual(instance.stdout.trimEnd().split("\n"), [
+    "long paragraphs: over 120 words (the kit's figure), in every standing document, as file: line (words)",
+    `${page}: 3 (130), ${lineOf("added")} (130), ${lineOf("- item")} (125)`,
+  ]);
+});
+
 test("every document is standing, record or generated by its path, a marker line or the override list", (t) => {
   const f = fixture(t);
   const generated =
@@ -3573,7 +3703,7 @@ test("document gate forwards explicit success diagnostics and preserves full fai
   for (const exitCode of [0, 1]) {
     f.write(
       "scripts/notice.mjs",
-      `console.log("ordinary detail");\nconsole.log("ADVISORY fixture notice");\nconsole.log("NEWER fixture history");\nconsole.log("criteria advisory: WO-999 criterion 1: fixture");\nprocess.exitCode = ${exitCode};\n`,
+      `console.log("ordinary detail");\nconsole.log("ADVISORY fixture notice");\nconsole.log("NEWER fixture history");\nconsole.log("criteria advisory: WO-999 criterion 1: fixture");\nconsole.log("long paragraphs: over 120 words (fixture); none listed");\nprocess.exitCode = ${exitCode};\n`,
     );
     const lines = [];
     const saved = console.log;
@@ -3593,6 +3723,7 @@ test("document gate forwards explicit success diagnostics and preserves full fai
         "ADVISORY fixture notice",
         "NEWER fixture history",
         "criteria advisory: WO-999 criterion 1: fixture",
+        "long paragraphs: over 120 words (fixture); none listed",
       ])
         assert.equal(
           lines.filter((line) => line.endsWith(diagnostic)).length,

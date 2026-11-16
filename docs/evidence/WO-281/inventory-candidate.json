@@ -1,0 +1,6195 @@
+{
+  "file": "docs/KIT.md",
+  "revision": "working tree",
+  "commit": null,
+  "sha256": "2787606d26f649eb427762bb1b7767b657e187ecc088a573d366da5f8c624ba7",
+  "lines": 4365,
+  "counts": {
+    "heading": {
+      "distinct": 168,
+      "total": 168
+    },
+    "code span": {
+      "distinct": 808,
+      "total": 1274
+    },
+    "block line": {
+      "distinct": 104,
+      "total": 123
+    },
+    "link target": {
+      "distinct": 152,
+      "total": 252
+    }
+  },
+  "items": {
+    "heading": [
+      {
+        "value": "# DotLn kit guide",
+        "count": 1,
+        "line": 1
+      },
+      {
+        "value": "## First steps",
+        "count": 1,
+        "line": 53
+      },
+      {
+        "value": "### What the host needs",
+        "count": 1,
+        "line": 74
+      },
+      {
+        "value": "#### The host report",
+        "count": 1,
+        "line": 76
+      },
+      {
+        "value": "#### What the kit needs",
+        "count": 1,
+        "line": 98
+      },
+      {
+        "value": "#### How the Node and Git floors are held",
+        "count": 1,
+        "line": 122
+      },
+      {
+        "value": "#### Host access the gate runner needs",
+        "count": 1,
+        "line": 151
+      },
+      {
+        "value": "### Start a private repository from the starter",
+        "count": 1,
+        "line": 178
+      },
+      {
+        "value": "### The setup, step by step",
+        "count": 1,
+        "line": 215
+      },
+      {
+        "value": "### Run and close an order",
+        "count": 1,
+        "line": 315
+      },
+      {
+        "value": "### The local-terms list",
+        "count": 1,
+        "line": 368
+      },
+      {
+        "value": "#### The two classes",
+        "count": 1,
+        "line": 375
+      },
+      {
+        "value": "#### How the list is written",
+        "count": 1,
+        "line": 393
+      },
+      {
+        "value": "#### How an entry is matched",
+        "count": 1,
+        "line": 408
+      },
+      {
+        "value": "#### Register the list",
+        "count": 1,
+        "line": 421
+      },
+      {
+        "value": "#### What a screen prints: a worked example",
+        "count": 1,
+        "line": 464
+      },
+      {
+        "value": "#### When the list is empty or absent",
+        "count": 1,
+        "line": 501
+      },
+      {
+        "value": "#### Where the list is applied",
+        "count": 1,
+        "line": 510
+      },
+      {
+        "value": "### The configuration file",
+        "count": 1,
+        "line": 532
+      },
+      {
+        "value": "#### Document roots",
+        "count": 1,
+        "line": 541
+      },
+      {
+        "value": "#### A registered repository",
+        "count": 1,
+        "line": 547
+      },
+      {
+        "value": "#### The sandbox of a routed run",
+        "count": 1,
+        "line": 573
+      },
+      {
+        "value": "### Register another repository",
+        "count": 1,
+        "line": 588
+      },
+      {
+        "value": "#### What target publication needs",
+        "count": 1,
+        "line": 595
+      },
+      {
+        "value": "#### How the registration lands",
+        "count": 1,
+        "line": 607
+      },
+      {
+        "value": "#### The profile and its area notes",
+        "count": 1,
+        "line": 643
+      },
+      {
+        "value": "### Publish a target order's change",
+        "count": 1,
+        "line": 665
+      },
+      {
+        "value": "#### What the publish checks",
+        "count": 1,
+        "line": 692
+      },
+      {
+        "value": "#### Confirm the listed words",
+        "count": 1,
+        "line": 713
+      },
+      {
+        "value": "#### Where the order's records go",
+        "count": 1,
+        "line": 720
+      },
+      {
+        "value": "#### Which forms of the command run",
+        "count": 1,
+        "line": 748
+      },
+      {
+        "value": "#### How a session reaches the target",
+        "count": 1,
+        "line": 761
+      },
+      {
+        "value": "#### Registration settings a target order uses",
+        "count": 1,
+        "line": 775
+      },
+      {
+        "value": "### Recover a first order activated on main",
+        "count": 1,
+        "line": 804
+      },
+      {
+        "value": "## Plan-first mode",
+        "count": 1,
+        "line": 861
+      },
+      {
+        "value": "### What the operator does",
+        "count": 1,
+        "line": 879
+      },
+      {
+        "value": "### The three documents",
+        "count": 1,
+        "line": 895
+      },
+      {
+        "value": "### When an approval holds",
+        "count": 1,
+        "line": 928
+      },
+      {
+        "value": "### The executor's commands",
+        "count": 1,
+        "line": 946
+      },
+      {
+        "value": "## Features",
+        "count": 1,
+        "line": 969
+      },
+      {
+        "value": "### What each feature does",
+        "count": 1,
+        "line": 988
+      },
+      {
+        "value": "### Host support",
+        "count": 1,
+        "line": 1027
+      },
+      {
+        "value": "### The feature table",
+        "count": 1,
+        "line": 1059
+      },
+      {
+        "value": "### The build overlay",
+        "count": 1,
+        "line": 1084
+      },
+      {
+        "value": "## Planning in this instance",
+        "count": 1,
+        "line": 1165
+      },
+      {
+        "value": "### Run the first pass",
+        "count": 1,
+        "line": 1187
+      },
+      {
+        "value": "### Rules a pass records",
+        "count": 1,
+        "line": 1216
+      },
+      {
+        "value": "### An order nobody activated",
+        "count": 1,
+        "line": 1239
+      },
+      {
+        "value": "### Captures and re-tasked workers",
+        "count": 1,
+        "line": 1265
+      },
+      {
+        "value": "### Plan an initiative in waves",
+        "count": 1,
+        "line": 1288
+      },
+      {
+        "value": "### Pace an order across days",
+        "count": 1,
+        "line": 1336
+      },
+      {
+        "value": "### A pass takes no starter update",
+        "count": 1,
+        "line": 1378
+      },
+      {
+        "value": "### What core should hear",
+        "count": 1,
+        "line": 1398
+      },
+      {
+        "value": "### The commands a pass runs",
+        "count": 1,
+        "line": 1439
+      },
+      {
+        "value": "#### How an order's text is read",
+        "count": 1,
+        "line": 1511
+      },
+      {
+        "value": "### Publish the pass",
+        "count": 1,
+        "line": 1538
+      },
+      {
+        "value": "### The seeds a pass reads",
+        "count": 1,
+        "line": 1581
+      },
+      {
+        "value": "#### What a starter refresh does to a seed",
+        "count": 1,
+        "line": 1599
+      },
+      {
+        "value": "### Planning inputs a fresh instance lacks",
+        "count": 1,
+        "line": 1628
+      },
+      {
+        "value": "### Study a large target an area at a time",
+        "count": 1,
+        "line": 1661
+      },
+      {
+        "value": "### Publish a pass into a target",
+        "count": 1,
+        "line": 1693
+      },
+      {
+        "value": "## Releases in this instance",
+        "count": 1,
+        "line": 1713
+      },
+      {
+        "value": "### Order numbers",
+        "count": 1,
+        "line": 1717
+      },
+      {
+        "value": "### Change an order's scope",
+        "count": 1,
+        "line": 1739
+      },
+      {
+        "value": "### What a review and a release carry",
+        "count": 1,
+        "line": 1752
+      },
+      {
+        "value": "### The release name and the README's release block",
+        "count": 1,
+        "line": 1768
+      },
+      {
+        "value": "### Version numbers",
+        "count": 1,
+        "line": 1796
+      },
+      {
+        "value": "### How an order's pull requests merge",
+        "count": 1,
+        "line": 1828
+      },
+      {
+        "value": "## Working as a team on one instance",
+        "count": 1,
+        "line": 1884
+      },
+      {
+        "value": "## What runs here, and what does not",
+        "count": 1,
+        "line": 1930
+      },
+      {
+        "value": "### Desktop control and browser checks",
+        "count": 1,
+        "line": 1946
+      },
+      {
+        "value": "### Review workers",
+        "count": 1,
+        "line": 1974
+      },
+      {
+        "value": "#### Launch a review",
+        "count": 1,
+        "line": 1976
+      },
+      {
+        "value": "#### What a report must hold",
+        "count": 1,
+        "line": 2016
+      },
+      {
+        "value": "#### Record an Agent worker's report",
+        "count": 1,
+        "line": 2029
+      },
+      {
+        "value": "### The review ladder",
+        "count": 1,
+        "line": 2063
+      },
+      {
+        "value": "### What a worker may run",
+        "count": 1,
+        "line": 2113
+      },
+      {
+        "value": "### The gates",
+        "count": 1,
+        "line": 2143
+      },
+      {
+        "value": "#### What every selection runs first",
+        "count": 1,
+        "line": 2148
+      },
+      {
+        "value": "#### What the gates test",
+        "count": 1,
+        "line": 2180
+      },
+      {
+        "value": "#### The selections in a fresh instance",
+        "count": 1,
+        "line": 2193
+      },
+      {
+        "value": "### The checks an order owes at its closeout",
+        "count": 1,
+        "line": 2220
+      },
+      {
+        "value": "### Suites that stay core-only",
+        "count": 1,
+        "line": 2250
+      },
+      {
+        "value": "### The carried runtime and the console",
+        "count": 1,
+        "line": 2315
+      },
+      {
+        "value": "### Hooks",
+        "count": 1,
+        "line": 2357
+      },
+      {
+        "value": "#### Which hooks run for a call",
+        "count": 1,
+        "line": 2366
+      },
+      {
+        "value": "#### The presence heartbeat",
+        "count": 1,
+        "line": 2400
+      },
+      {
+        "value": "#### The writer reservation",
+        "count": 1,
+        "line": 2416
+      },
+      {
+        "value": "#### A denied activation",
+        "count": 1,
+        "line": 2447
+      },
+      {
+        "value": "#### A fork's `gh`",
+        "count": 1,
+        "line": 2462
+      },
+      {
+        "value": "#### An operator's question",
+        "count": 1,
+        "line": 2498
+      },
+      {
+        "value": "#### Codex after compaction",
+        "count": 1,
+        "line": 2511
+      },
+      {
+        "value": "#### Quiet advisories",
+        "count": 1,
+        "line": 2525
+      },
+      {
+        "value": "#### Your own hooks",
+        "count": 1,
+        "line": 2532
+      },
+      {
+        "value": "#### A blocked turn",
+        "count": 1,
+        "line": 2542
+      },
+      {
+        "value": "## Attestations",
+        "count": 1,
+        "line": 2549
+      },
+      {
+        "value": "## Kit files and instance files",
+        "count": 1,
+        "line": 2569
+      },
+      {
+        "value": "### Kit files",
+        "count": 1,
+        "line": 2584
+      },
+      {
+        "value": "### Instance files",
+        "count": 1,
+        "line": 2624
+      },
+      {
+        "value": "### Settings and host rules",
+        "count": 1,
+        "line": 2644
+      },
+      {
+        "value": "### Generated and seeded pages",
+        "count": 1,
+        "line": 2669
+      },
+      {
+        "value": "### Whose commits are the instance's own",
+        "count": 1,
+        "line": 2691
+      },
+      {
+        "value": "### What each worker runs",
+        "count": 1,
+        "line": 2710
+      },
+      {
+        "value": "#### Bind a worker to a model",
+        "count": 1,
+        "line": 2735
+      },
+      {
+        "value": "#### Add or replace a model",
+        "count": 1,
+        "line": 2757
+      },
+      {
+        "value": "#### Apply a worker or model change",
+        "count": 1,
+        "line": 2781
+      },
+      {
+        "value": "#### What the configuration refuses",
+        "count": 1,
+        "line": 2799
+      },
+      {
+        "value": "#### Name a worker at a launch",
+        "count": 1,
+        "line": 2819
+      },
+      {
+        "value": "#### How a launch reaches its model",
+        "count": 1,
+        "line": 2833
+      },
+      {
+        "value": "### The usage report",
+        "count": 1,
+        "line": 2851
+      },
+      {
+        "value": "#### What it reads",
+        "count": 1,
+        "line": 2861
+      },
+      {
+        "value": "#### How it counts a session across days",
+        "count": 1,
+        "line": 2873
+      },
+      {
+        "value": "#### Estimates in dollars",
+        "count": 1,
+        "line": 2894
+      },
+      {
+        "value": "### Your orders live here",
+        "count": 1,
+        "line": 2913
+      },
+      {
+        "value": "## Extending this instance",
+        "count": 1,
+        "line": 2936
+      },
+      {
+        "value": "### The root that is yours: `extensions/`",
+        "count": 1,
+        "line": 2947
+      },
+      {
+        "value": "### Your hooks and permission rules",
+        "count": 1,
+        "line": 2981
+      },
+      {
+        "value": "#### What the fragment may hold",
+        "count": 1,
+        "line": 3040
+      },
+      {
+        "value": "#### The three events a hook may not use",
+        "count": 1,
+        "line": 3066
+      },
+      {
+        "value": "#### What an added rule or hook cannot do",
+        "count": 1,
+        "line": 3082
+      },
+      {
+        "value": "#### Running your hooks",
+        "count": 1,
+        "line": 3091
+      },
+      {
+        "value": "### Your tools' settings",
+        "count": 1,
+        "line": 3104
+      },
+      {
+        "value": "### What a tool may read",
+        "count": 1,
+        "line": 3111
+      },
+      {
+        "value": "### Where each kind of extension goes",
+        "count": 1,
+        "line": 3129
+      },
+      {
+        "value": "### What you send core",
+        "count": 1,
+        "line": 3144
+      },
+      {
+        "value": "## Taking upstream updates",
+        "count": 1,
+        "line": 3159
+      },
+      {
+        "value": "### Take a starter update",
+        "count": 1,
+        "line": 3178
+      },
+      {
+        "value": "### What the preview shows",
+        "count": 1,
+        "line": 3335
+      },
+      {
+        "value": "#### Floors this host does not meet",
+        "count": 1,
+        "line": 3341
+      },
+      {
+        "value": "#### Instance files both sides changed",
+        "count": 1,
+        "line": 3351
+      },
+      {
+        "value": "#### The kit's rows",
+        "count": 1,
+        "line": 3369
+      },
+      {
+        "value": "#### Declared instance actions",
+        "count": 1,
+        "line": 3388
+      },
+      {
+        "value": "### What the update's publish checks",
+        "count": 1,
+        "line": 3407
+      },
+      {
+        "value": "### A file both sides changed",
+        "count": 1,
+        "line": 3446
+      },
+      {
+        "value": "### Preview a named starter release",
+        "count": 1,
+        "line": 3485
+      },
+      {
+        "value": "### An instance older than v1.0.0",
+        "count": 1,
+        "line": 3503
+      },
+      {
+        "value": "### What an update replaces",
+        "count": 1,
+        "line": 3567
+      },
+      {
+        "value": "### Editing a kit file",
+        "count": 1,
+        "line": 3586
+      },
+      {
+        "value": "### Core's own update of the starter",
+        "count": 1,
+        "line": 3605
+      },
+      {
+        "value": "#### The plan",
+        "count": 1,
+        "line": 3619
+      },
+      {
+        "value": "#### What the update does to each file",
+        "count": 1,
+        "line": 3645
+      },
+      {
+        "value": "#### After a from-core update",
+        "count": 1,
+        "line": 3675
+      },
+      {
+        "value": "## Opting in to instance actions",
+        "count": 1,
+        "line": 3690
+      },
+      {
+        "value": "### Apply the declared actions",
+        "count": 1,
+        "line": 3701
+      },
+      {
+        "value": "### The actions the kit may declare",
+        "count": 1,
+        "line": 3717
+      },
+      {
+        "value": "## Owned cleanup and retention",
+        "count": 1,
+        "line": 3748
+      },
+      {
+        "value": "### When a prune runs",
+        "count": 1,
+        "line": 3768
+      },
+      {
+        "value": "#### The budget of a prune",
+        "count": 1,
+        "line": 3788
+      },
+      {
+        "value": "### How a prune judges and removes",
+        "count": 1,
+        "line": 3811
+      },
+      {
+        "value": "### What a close keeps of an order's sessions",
+        "count": 1,
+        "line": 3840
+      },
+      {
+        "value": "### What a close removes from a target",
+        "count": 1,
+        "line": 3856
+      },
+      {
+        "value": "### The steps of a close, and a close that stops",
+        "count": 1,
+        "line": 3888
+      },
+      {
+        "value": "### What a gate and a session leave",
+        "count": 1,
+        "line": 3936
+      },
+      {
+        "value": "### Ownership markers",
+        "count": 1,
+        "line": 3962
+      },
+      {
+        "value": "### The bounds on a phase",
+        "count": 1,
+        "line": 3988
+      },
+      {
+        "value": "### Accept an overrun",
+        "count": 1,
+        "line": 4046
+      },
+      {
+        "value": "### A criterion nothing can meet, waivers and retractions",
+        "count": 1,
+        "line": 4085
+      },
+      {
+        "value": "### Retention windows",
+        "count": 1,
+        "line": 4112
+      },
+      {
+        "value": "## Document quality",
+        "count": 1,
+        "line": 4143
+      },
+      {
+        "value": "### The three kinds of document",
+        "count": 1,
+        "line": 4149
+      },
+      {
+        "value": "### Reader entry points",
+        "count": 1,
+        "line": 4165
+      },
+      {
+        "value": "### Long paragraphs",
+        "count": 1,
+        "line": 4196
+      },
+      {
+        "value": "### The screen of this instance's scripts",
+        "count": 1,
+        "line": 4223
+      },
+      {
+        "value": "### The operator's words are paraphrased",
+        "count": 1,
+        "line": 4235
+      },
+      {
+        "value": "### The terms task",
+        "count": 1,
+        "line": 4284
+      },
+      {
+        "value": "### Artifacts follow their contract",
+        "count": 1,
+        "line": 4310
+      },
+      {
+        "value": "### Ask for a quality pass",
+        "count": 1,
+        "line": 4323
+      },
+      {
+        "value": "## License",
+        "count": 1,
+        "line": 4349
+      }
+    ],
+    "code span": [
+      {
+        "value": "node scripts/launchpad.mjs commands",
+        "count": 2,
+        "line": 7
+      },
+      {
+        "value": "Decisions:",
+        "count": 1,
+        "line": 10
+      },
+      {
+        "value": "operator-commands",
+        "count": 1,
+        "line": 12
+      },
+      {
+        "value": "quality pass:",
+        "count": 1,
+        "line": 30
+      },
+      {
+        "value": "scripts/",
+        "count": 3,
+        "line": 35
+      },
+      {
+        "value": "@dotln/kernel",
+        "count": 1,
+        "line": 36
+      },
+      {
+        "value": "@dotln/compiler",
+        "count": 1,
+        "line": 36
+      },
+      {
+        "value": "@dotln/skeleton",
+        "count": 1,
+        "line": 37
+      },
+      {
+        "value": "@dotln/console",
+        "count": 1,
+        "line": 37
+      },
+      {
+        "value": "packages/<name>/dist/src/",
+        "count": 1,
+        "line": 37
+      },
+      {
+        "value": "dist/test/",
+        "count": 1,
+        "line": 38
+      },
+      {
+        "value": "packages/beacons",
+        "count": 1,
+        "line": 39
+      },
+      {
+        "value": ".claude/",
+        "count": 2,
+        "line": 40
+      },
+      {
+        "value": ".agents/",
+        "count": 2,
+        "line": 40
+      },
+      {
+        "value": ".codex/",
+        "count": 3,
+        "line": 40
+      },
+      {
+        "value": "node scripts/harness.mjs emit",
+        "count": 10,
+        "line": 41
+      },
+      {
+        "value": "UPSTREAM.md",
+        "count": 6,
+        "line": 45
+      },
+      {
+        "value": "KIT-MANIFEST.json",
+        "count": 5,
+        "line": 46
+      },
+      {
+        "value": "node scripts/doctor.mjs",
+        "count": 2,
+        "line": 78
+      },
+      {
+        "value": "--json",
+        "count": 5,
+        "line": 84
+      },
+      {
+        "value": "npm run doctor",
+        "count": 1,
+        "line": 84
+      },
+      {
+        "value": "unknown",
+        "count": 6,
+        "line": 86
+      },
+      {
+        "value": "engines.node",
+        "count": 3,
+        "line": 100
+      },
+      {
+        "value": "package.json",
+        "count": 8,
+        "line": 101
+      },
+      {
+        "value": "^24.15.0 || ^26.0.0",
+        "count": 1,
+        "line": 101
+      },
+      {
+        "value": ".node-version",
+        "count": 1,
+        "line": 102
+      },
+      {
+        "value": "engines.git",
+        "count": 4,
+        "line": 104
+      },
+      {
+        "value": ">=2.31.0",
+        "count": 1,
+        "line": 104
+      },
+      {
+        "value": "cc",
+        "count": 1,
+        "line": 107
+      },
+      {
+        "value": "gh",
+        "count": 5,
+        "line": 108
+      },
+      {
+        "value": "node scripts/harness.mjs check",
+        "count": 12,
+        "line": 124
+      },
+      {
+        "value": "harness evidence",
+        "count": 1,
+        "line": 124
+      },
+      {
+        "value": "npm test",
+        "count": 6,
+        "line": 124
+      },
+      {
+        "value": "host",
+        "count": 5,
+        "line": 126
+      },
+      {
+        "value": "node scripts/bootstrap.mjs",
+        "count": 4,
+        "line": 128
+      },
+      {
+        "value": "^major.minor.patch",
+        "count": 1,
+        "line": 130
+      },
+      {
+        "value": ">=major.minor.patch",
+        "count": 1,
+        "line": 131
+      },
+      {
+        "value": "git rev-parse --path-format",
+        "count": 1,
+        "line": 137
+      },
+      {
+        "value": "GIT_CONFIG_COUNT",
+        "count": 1,
+        "line": 138
+      },
+      {
+        "value": "scripts/lib/git-surface.mjs",
+        "count": 1,
+        "line": 149
+      },
+      {
+        "value": ".runtime/",
+        "count": 2,
+        "line": 157
+      },
+      {
+        "value": "dotln-host-v1-<uid>",
+        "count": 1,
+        "line": 159
+      },
+      {
+        "value": "getconf DARWIN_USER_TEMP_DIR",
+        "count": 1,
+        "line": 160
+      },
+      {
+        "value": "/tmp",
+        "count": 1,
+        "line": 161
+      },
+      {
+        "value": "TMPDIR",
+        "count": 1,
+        "line": 162
+      },
+      {
+        "value": "AI-HARNESS-SECURITY.md",
+        "count": 2,
+        "line": 172
+      },
+      {
+        "value": "inForce: false",
+        "count": 1,
+        "line": 175
+      },
+      {
+        "value": "upstream",
+        "count": 6,
+        "line": 181
+      },
+      {
+        "value": "git clone --no-tags --branch main <starter url> <name>",
+        "count": 1,
+        "line": 198
+      },
+      {
+        "value": "git config",
+        "count": 1,
+        "line": 200
+      },
+      {
+        "value": "--no-tags",
+        "count": 1,
+        "line": 200
+      },
+      {
+        "value": "harness check",
+        "count": 1,
+        "line": 206
+      },
+      {
+        "value": "local-terms list: unavailable",
+        "count": 2,
+        "line": 206
+      },
+      {
+        "value": "npm run meta",
+        "count": 5,
+        "line": 208
+      },
+      {
+        "value": "main",
+        "count": 54,
+        "line": 220
+      },
+      {
+        "value": "docs/lineage/README.md",
+        "count": 3,
+        "line": 226
+      },
+      {
+        "value": "node scripts/lineage.mjs index",
+        "count": 5,
+        "line": 228
+      },
+      {
+        "value": "npm run test:docs",
+        "count": 10,
+        "line": 229
+      },
+      {
+        "value": "dotln.config.json",
+        "count": 17,
+        "line": 231
+      },
+      {
+        "value": "npm ci",
+        "count": 4,
+        "line": 234
+      },
+      {
+        "value": "npm ci --offline",
+        "count": 1,
+        "line": 234
+      },
+      {
+        "value": "@dotln/*",
+        "count": 1,
+        "line": 236
+      },
+      {
+        "value": "node_modules/@dotln/",
+        "count": 1,
+        "line": 237
+      },
+      {
+        "value": ".runtime/harness/",
+        "count": 1,
+        "line": 246
+      },
+      {
+        "value": "packages/<name>/dist/",
+        "count": 2,
+        "line": 247
+      },
+      {
+        "value": "snapshot-missing",
+        "count": 1,
+        "line": 250
+      },
+      {
+        "value": "docs/control/local/terms.txt",
+        "count": 2,
+        "line": 254
+      },
+      {
+        "value": "dotln.config.example.json",
+        "count": 3,
+        "line": 259
+      },
+      {
+        "value": "docs/",
+        "count": 2,
+        "line": 261
+      },
+      {
+        "value": "origin",
+        "count": 11,
+        "line": 271
+      },
+      {
+        "value": "git remote add origin <private url>",
+        "count": 1,
+        "line": 273
+      },
+      {
+        "value": "git push -u origin main",
+        "count": 1,
+        "line": 274
+      },
+      {
+        "value": "origin/main",
+        "count": 3,
+        "line": 276
+      },
+      {
+        "value": "v0.1.0",
+        "count": 2,
+        "line": 277
+      },
+      {
+        "value": "npm run worktree -- start WO-001 docs/work-orders/WO-001-environment-truth.md",
+        "count": 1,
+        "line": 278
+      },
+      {
+        "value": "wo-001",
+        "count": 6,
+        "line": 279
+      },
+      {
+        "value": "worktree start",
+        "count": 5,
+        "line": 288
+      },
+      {
+        "value": "npm run resume -- status",
+        "count": 5,
+        "line": 291
+      },
+      {
+        "value": "docs/control/current.md",
+        "count": 1,
+        "line": 292
+      },
+      {
+        "value": "npm run resume -- status --refresh",
+        "count": 1,
+        "line": 293
+      },
+      {
+        "value": "resume: next",
+        "count": 5,
+        "line": 304
+      },
+      {
+        "value": "CLAUDE.md",
+        "count": 7,
+        "line": 306
+      },
+      {
+        "value": "AGENTS.md",
+        "count": 1,
+        "line": 307
+      },
+      {
+        "value": ".claude/skills/",
+        "count": 1,
+        "line": 308
+      },
+      {
+        "value": ".agents/skills/",
+        "count": 2,
+        "line": 308
+      },
+      {
+        "value": "<name>-woNNN",
+        "count": 1,
+        "line": 322
+      },
+      {
+        "value": "resume: verify",
+        "count": 2,
+        "line": 340
+      },
+      {
+        "value": "resume: final review",
+        "count": 2,
+        "line": 341
+      },
+      {
+        "value": "resume: fix",
+        "count": 2,
+        "line": 342
+      },
+      {
+        "value": "resume: status",
+        "count": 1,
+        "line": 344
+      },
+      {
+        "value": "drive: WO-NNN",
+        "count": 3,
+        "line": 345
+      },
+      {
+        "value": "refuse",
+        "count": 1,
+        "line": 377
+      },
+      {
+        "value": "context",
+        "count": 1,
+        "line": 380
+      },
+      {
+        "value": "npm run plan -- target-publish",
+        "count": 1,
+        "line": 388
+      },
+      {
+        "value": "refuse:",
+        "count": 6,
+        "line": 395
+      },
+      {
+        "value": "context:",
+        "count": 3,
+        "line": 395
+      },
+      {
+        "value": "refuse: <entry>",
+        "count": 1,
+        "line": 397
+      },
+      {
+        "value": "review:",
+        "count": 1,
+        "line": 399
+      },
+      {
+        "value": "#",
+        "count": 1,
+        "line": 401
+      },
+      {
+        "value": "scripts/kit/terms.example.txt",
+        "count": 1,
+        "line": 423
+      },
+      {
+        "value": "local-terms list: present",
+        "count": 1,
+        "line": 453
+      },
+      {
+        "value": "FAIL",
+        "count": 3,
+        "line": 455
+      },
+      {
+        "value": "docs/sample.md",
+        "count": 1,
+        "line": 466
+      },
+      {
+        "value": "node scripts/terms.mjs branch",
+        "count": 5,
+        "line": 475
+      },
+      {
+        "value": "CONTEXT",
+        "count": 5,
+        "line": 498
+      },
+      {
+        "value": "present",
+        "count": 1,
+        "line": 503
+      },
+      {
+        "value": "unavailable",
+        "count": 1,
+        "line": 505
+      },
+      {
+        "value": "npm run terms -- check <paths>",
+        "count": 2,
+        "line": 514
+      },
+      {
+        "value": "terms",
+        "count": 4,
+        "line": 516
+      },
+      {
+        "value": "features",
+        "count": 5,
+        "line": 537
+      },
+      {
+        "value": "workers",
+        "count": 2,
+        "line": 538
+      },
+      {
+        "value": "docs",
+        "count": 2,
+        "line": 543
+      },
+      {
+        "value": "gate",
+        "count": 1,
+        "line": 551
+      },
+      {
+        "value": "documentationRoot",
+        "count": 1,
+        "line": 553
+      },
+      {
+        "value": "records",
+        "count": 9,
+        "line": 554
+      },
+      {
+        "value": "target",
+        "count": 6,
+        "line": 554
+      },
+      {
+        "value": "instance",
+        "count": 8,
+        "line": 555
+      },
+      {
+        "value": "drive.sandbox",
+        "count": 2,
+        "line": 575
+      },
+      {
+        "value": "off",
+        "count": 2,
+        "line": 579
+      },
+      {
+        "value": "sandbox.enabled false",
+        "count": 1,
+        "line": 580
+      },
+      {
+        "value": "--sandbox danger-full-access",
+        "count": 1,
+        "line": 581
+      },
+      {
+        "value": "docs/control/outward-vocabulary.json",
+        "count": 1,
+        "line": 600
+      },
+      {
+        "value": "reviewTerms",
+        "count": 2,
+        "line": 601
+      },
+      {
+        "value": "packages/skeleton/loadouts/grants.json",
+        "count": 1,
+        "line": 605
+      },
+      {
+        "value": "repositories",
+        "count": 1,
+        "line": 610
+      },
+      {
+        "value": "npm test -- --only authority-grants",
+        "count": 1,
+        "line": 637
+      },
+      {
+        "value": "outward-lint",
+        "count": 2,
+        "line": 639
+      },
+      {
+        "value": "docs/repositories/<id>/<area>.md",
+        "count": 2,
+        "line": 647
+      },
+      {
+        "value": "docs/repositories/<id>.md",
+        "count": 1,
+        "line": 648
+      },
+      {
+        "value": "npm run resume -- target-records",
+        "count": 2,
+        "line": 675
+      },
+      {
+        "value": "WO-NNN",
+        "count": 1,
+        "line": 700
+      },
+      {
+        "value": "WO-NNN-DNNN",
+        "count": 1,
+        "line": 700
+      },
+      {
+        "value": "FUP-<16 hex>",
+        "count": 1,
+        "line": 700
+      },
+      {
+        "value": "VER-NNN",
+        "count": 1,
+        "line": 700
+      },
+      {
+        "value": "FINAL-NNN",
+        "count": 1,
+        "line": 700
+      },
+      {
+        "value": "REVIEW-NNN",
+        "count": 1,
+        "line": 700
+      },
+      {
+        "value": "WS-NNN",
+        "count": 1,
+        "line": 700
+      },
+      {
+        "value": "--confirm-terms sha256:<digest>",
+        "count": 1,
+        "line": 716
+      },
+      {
+        "value": "npm run worktree -- publish",
+        "count": 1,
+        "line": 751
+      },
+      {
+        "value": "--draft",
+        "count": 1,
+        "line": 757
+      },
+      {
+        "value": "verified",
+        "count": 1,
+        "line": 757
+      },
+      {
+        "value": "codex --add-dir <target>",
+        "count": 1,
+        "line": 764
+      },
+      {
+        "value": "copilot --allow-tool …",
+        "count": 1,
+        "line": 764
+      },
+      {
+        "value": "claude",
+        "count": 2,
+        "line": 765
+      },
+      {
+        "value": "Next (run manually)",
+        "count": 1,
+        "line": 766
+      },
+      {
+        "value": "--add-dir",
+        "count": 1,
+        "line": 767
+      },
+      {
+        "value": "target-worktree",
+        "count": 1,
+        "line": 769
+      },
+      {
+        "value": "active",
+        "count": 1,
+        "line": 771
+      },
+      {
+        "value": "repairing",
+        "count": 1,
+        "line": 771
+      },
+      {
+        "value": "hostRules: \"literal\"",
+        "count": 1,
+        "line": 777
+      },
+      {
+        "value": ".claude/settings.local.json",
+        "count": 4,
+        "line": 778
+      },
+      {
+        "value": ".codex/rules/",
+        "count": 1,
+        "line": 778
+      },
+      {
+        "value": "disposable",
+        "count": 1,
+        "line": 782
+      },
+      {
+        "value": "**",
+        "count": 2,
+        "line": 785
+      },
+      {
+        "value": "*",
+        "count": 2,
+        "line": 786
+      },
+      {
+        "value": "\"disposable\": [\"**/node_modules\", \"**/.vite\", \"**/.vitest\"]",
+        "count": 1,
+        "line": 789
+      },
+      {
+        "value": "**/*",
+        "count": 1,
+        "line": 791
+      },
+      {
+        "value": "libs/**",
+        "count": 1,
+        "line": 791
+      },
+      {
+        "value": "*.*",
+        "count": 1,
+        "line": 791
+      },
+      {
+        "value": ".*",
+        "count": 1,
+        "line": 791
+      },
+      {
+        "value": "baseDisposablePolicy: \"judge-only\"",
+        "count": 1,
+        "line": 794
+      },
+      {
+        "value": "\"delete\"",
+        "count": 1,
+        "line": 796
+      },
+      {
+        "value": "release: { \"policy\": \"declared\", \"displayName\": \"My product\" }",
+        "count": 1,
+        "line": 797
+      },
+      {
+        "value": "**Target release classification:**",
+        "count": 1,
+        "line": 798
+      },
+      {
+        "value": "git show upstream/main:docs/KIT.md",
+        "count": 1,
+        "line": 818
+      },
+      {
+        "value": "git status --porcelain --untracked-files=all",
+        "count": 1,
+        "line": 828
+      },
+      {
+        "value": "git stash push --include-untracked -m 'WO-001 main recovery'",
+        "count": 1,
+        "line": 835
+      },
+      {
+        "value": "git fetch origin",
+        "count": 1,
+        "line": 841
+      },
+      {
+        "value": "git merge --ff-only origin/main",
+        "count": 2,
+        "line": 841
+      },
+      {
+        "value": "git worktree add -b wo-001 <sibling path> main",
+        "count": 1,
+        "line": 843
+      },
+      {
+        "value": "git -C <worktree> stash apply <stash hash>",
+        "count": 1,
+        "line": 844
+      },
+      {
+        "value": "conversation.md",
+        "count": 2,
+        "line": 884
+      },
+      {
+        "value": "PlanApproved",
+        "count": 1,
+        "line": 889
+      },
+      {
+        "value": "evidence/WO-NNN/plan-first/",
+        "count": 1,
+        "line": 897
+      },
+      {
+        "value": "plan.md",
+        "count": 1,
+        "line": 900
+      },
+      {
+        "value": "proposal.md",
+        "count": 1,
+        "line": 902
+      },
+      {
+        "value": "records: instance",
+        "count": 1,
+        "line": 923
+      },
+      {
+        "value": "node scripts/plan-first.mjs draft WO-NNN",
+        "count": 1,
+        "line": 953
+      },
+      {
+        "value": "node scripts/plan-first.mjs diff WO-NNN",
+        "count": 1,
+        "line": 954
+      },
+      {
+        "value": "node scripts/plan-first.mjs apply WO-NNN",
+        "count": 1,
+        "line": 955
+      },
+      {
+        "value": "node scripts/plan-first.mjs draft WO-NNN --new",
+        "count": 1,
+        "line": 956
+      },
+      {
+        "value": "tinkerer-economy",
+        "count": 3,
+        "line": 994
+      },
+      {
+        "value": "plan-first",
+        "count": 1,
+        "line": 995
+      },
+      {
+        "value": "private-destination",
+        "count": 1,
+        "line": 996
+      },
+      {
+        "value": "desktop-control",
+        "count": 1,
+        "line": 997
+      },
+      {
+        "value": "auto-update-upstream",
+        "count": 1,
+        "line": 998
+      },
+      {
+        "value": "verbatim-operator-words",
+        "count": 1,
+        "line": 999
+      },
+      {
+        "value": "host-codex",
+        "count": 2,
+        "line": 1000
+      },
+      {
+        "value": "host-copilot",
+        "count": 2,
+        "line": 1000
+      },
+      {
+        "value": "npm run features -- list",
+        "count": 2,
+        "line": 1003
+      },
+      {
+        "value": "kit.applyInstanceActions",
+        "count": 1,
+        "line": 1004
+      },
+      {
+        "value": "release.*",
+        "count": 1,
+        "line": 1004
+      },
+      {
+        "value": "build.*",
+        "count": 1,
+        "line": 1004
+      },
+      {
+        "value": "features.tinkerer-economy",
+        "count": 2,
+        "line": 1018
+      },
+      {
+        "value": "docs/control/resume.jsonl",
+        "count": 1,
+        "line": 1033
+      },
+      {
+        "value": "docs/control/orders/",
+        "count": 1,
+        "line": 1034
+      },
+      {
+        "value": "codex-cli",
+        "count": 1,
+        "line": 1034
+      },
+      {
+        "value": "copilot-cli",
+        "count": 1,
+        "line": 1034
+      },
+      {
+        "value": "docs/discovery/environment.json",
+        "count": 2,
+        "line": 1037
+      },
+      {
+        "value": "elected",
+        "count": 1,
+        "line": 1043
+      },
+      {
+        "value": "inferred:",
+        "count": 1,
+        "line": 1043
+      },
+      {
+        "value": "false",
+        "count": 2,
+        "line": 1045
+      },
+      {
+        "value": "npm run features -- render",
+        "count": 1,
+        "line": 1064
+      },
+      {
+        "value": "docs/control/FEATURES.md",
+        "count": 1,
+        "line": 1064
+      },
+      {
+        "value": "npm run features -- check",
+        "count": 1,
+        "line": 1065
+      },
+      {
+        "value": "scripts/lib/feature-registry.mjs",
+        "count": 1,
+        "line": 1069
+      },
+      {
+        "value": "unread",
+        "count": 1,
+        "line": 1073
+      },
+      {
+        "value": "build.loadout",
+        "count": 1,
+        "line": 1078
+      },
+      {
+        "value": "build.profile",
+        "count": 1,
+        "line": 1078
+      },
+      {
+        "value": "docs/control/budgets.json",
+        "count": 9,
+        "line": 1080
+      },
+      {
+        "value": "build/overlay.json",
+        "count": 1,
+        "line": 1087
+      },
+      {
+        "value": "\"build\": { \"overlay\": \"build/overlay.json\" }",
+        "count": 1,
+        "line": 1088
+      },
+      {
+        "value": "\"version\": 1",
+        "count": 2,
+        "line": 1089
+      },
+      {
+        "value": ".claude/harness-manifest.json",
+        "count": 4,
+        "line": 1093
+      },
+      {
+        "value": "check",
+        "count": 3,
+        "line": 1109
+      },
+      {
+        "value": "version",
+        "count": 4,
+        "line": 1114
+      },
+      {
+        "value": "1",
+        "count": 1,
+        "line": 1114
+      },
+      {
+        "value": "build",
+        "count": 2,
+        "line": 1115
+      },
+      {
+        "value": "\"contributor\"",
+        "count": 1,
+        "line": 1115
+      },
+      {
+        "value": "\"none\"",
+        "count": 1,
+        "line": 1115
+      },
+      {
+        "value": "{\"version\":1,\"build\":\"none\"}",
+        "count": 1,
+        "line": 1116
+      },
+      {
+        "value": "build: none",
+        "count": 1,
+        "line": 1119
+      },
+      {
+        "value": "identity",
+        "count": 1,
+        "line": 1121
+      },
+      {
+        "value": "identityId",
+        "count": 1,
+        "line": 1121
+      },
+      {
+        "value": "name",
+        "count": 1,
+        "line": 1122
+      },
+      {
+        "value": "dispositions",
+        "count": 1,
+        "line": 1122
+      },
+      {
+        "value": "invariants",
+        "count": 1,
+        "line": 1122
+      },
+      {
+        "value": "updateLaws",
+        "count": 1,
+        "line": 1123
+      },
+      {
+        "value": "lineage",
+        "count": 1,
+        "line": 1123
+      },
+      {
+        "value": "equip",
+        "count": 1,
+        "line": 1125
+      },
+      {
+        "value": "unequip",
+        "count": 1,
+        "line": 1125
+      },
+      {
+        "value": "adjacent-repair",
+        "count": 1,
+        "line": 1126
+      },
+      {
+        "value": "decision-receipts",
+        "count": 1,
+        "line": 1126
+      },
+      {
+        "value": "follow-up-queue",
+        "count": 1,
+        "line": 1126
+      },
+      {
+        "value": "operator-check-in",
+        "count": 1,
+        "line": 1127
+      },
+      {
+        "value": "communication-observation",
+        "count": 1,
+        "line": 1127
+      },
+      {
+        "value": "communication-recommendation",
+        "count": 1,
+        "line": 1128
+      },
+      {
+        "value": "communication-intent",
+        "count": 1,
+        "line": 1128
+      },
+      {
+        "value": "process-cost",
+        "count": 1,
+        "line": 1128
+      },
+      {
+        "value": "goal-alignment",
+        "count": 1,
+        "line": 1129
+      },
+      {
+        "value": "narrow",
+        "count": 1,
+        "line": 1136
+      },
+      {
+        "value": "allowedEffects",
+        "count": 2,
+        "line": 1137
+      },
+      {
+        "value": "deniedEffects",
+        "count": 1,
+        "line": 1138
+      },
+      {
+        "value": "requiredEvidence",
+        "count": 1,
+        "line": 1138
+      },
+      {
+        "value": "revocationEventTypes",
+        "count": 1,
+        "line": 1138
+      },
+      {
+        "value": "revocationConditions",
+        "count": 1,
+        "line": 1139
+      },
+      {
+        "value": "registryId",
+        "count": 1,
+        "line": 1140
+      },
+      {
+        "value": "params",
+        "count": 1,
+        "line": 1140
+      },
+      {
+        "value": "resourceLimits",
+        "count": 1,
+        "line": 1141
+      },
+      {
+        "value": "expiresAt",
+        "count": 1,
+        "line": 1141
+      },
+      {
+        "value": "AUTHORITY WIDENING",
+        "count": 1,
+        "line": 1148
+      },
+      {
+        "value": "grants",
+        "count": 1,
+        "line": 1149
+      },
+      {
+        "value": "grantId",
+        "count": 1,
+        "line": 1151
+      },
+      {
+        "value": "grantedBy",
+        "count": 1,
+        "line": 1151
+      },
+      {
+        "value": "operator",
+        "count": 1,
+        "line": 1151
+      },
+      {
+        "value": "host-policy",
+        "count": 1,
+        "line": 1152
+      },
+      {
+        "value": "effects",
+        "count": 1,
+        "line": 1152
+      },
+      {
+        "value": "operations",
+        "count": 1,
+        "line": 1152
+      },
+      {
+        "value": "repo: \"project\"",
+        "count": 1,
+        "line": 1153
+      },
+      {
+        "value": "reason",
+        "count": 1,
+        "line": 1153
+      },
+      {
+        "value": "npm run plan -- start first-pass",
+        "count": 1,
+        "line": 1199
+      },
+      {
+        "value": "plan start",
+        "count": 5,
+        "line": 1200
+      },
+      {
+        "value": "docs/lineage/idea-ledger.md",
+        "count": 2,
+        "line": 1203
+      },
+      {
+        "value": "Rules recorded",
+        "count": 1,
+        "line": 1218
+      },
+      {
+        "value": "npm run plan -- check",
+        "count": 2,
+        "line": 1224
+      },
+      {
+        "value": "host-agent-handback",
+        "count": 1,
+        "line": 1229
+      },
+      {
+        "value": "Umbrella record",
+        "count": 1,
+        "line": 1247
+      },
+      {
+        "value": "superseded",
+        "count": 1,
+        "line": 1247
+      },
+      {
+        "value": "docs/retired/",
+        "count": 1,
+        "line": 1249
+      },
+      {
+        "value": "--work-order",
+        "count": 1,
+        "line": 1251
+      },
+      {
+        "value": "docs/control/local/plan/",
+        "count": 1,
+        "line": 1270
+      },
+      {
+        "value": "docs/workstreams/WS-NNN-<slug>.md",
+        "count": 1,
+        "line": 1294
+      },
+      {
+        "value": "npm run meta -- --usage",
+        "count": 3,
+        "line": 1322
+      },
+      {
+        "value": "planning/",
+        "count": 4,
+        "line": 1326
+      },
+      {
+        "value": "spend.daily",
+        "count": 1,
+        "line": 1338
+      },
+      {
+        "value": "tokens",
+        "count": 1,
+        "line": 1340
+      },
+      {
+        "value": "usd",
+        "count": 1,
+        "line": 1340
+      },
+      {
+        "value": "dotln.models.json",
+        "count": 3,
+        "line": 1341
+      },
+      {
+        "value": "docs/evidence/WO-NNN/standing.md",
+        "count": 1,
+        "line": 1360
+      },
+      {
+        "value": "implementation-ready",
+        "count": 1,
+        "line": 1369
+      },
+      {
+        "value": "repair-complete",
+        "count": 1,
+        "line": 1370
+      },
+      {
+        "value": "node scripts/launchpad.mjs update --finish",
+        "count": 2,
+        "line": 1383
+      },
+      {
+        "value": "update --publish",
+        "count": 2,
+        "line": 1383
+      },
+      {
+        "value": "export --update",
+        "count": 2,
+        "line": 1384
+      },
+      {
+        "value": "planning:",
+        "count": 2,
+        "line": 1384
+      },
+      {
+        "value": "ideation:",
+        "count": 2,
+        "line": 1385
+      },
+      {
+        "value": "--operator-request --capture <ignored intake file> --capture-hash sha256:<digest>",
+        "count": 2,
+        "line": 1387
+      },
+      {
+        "value": "features.auto-update-upstream",
+        "count": 2,
+        "line": 1391
+      },
+      {
+        "value": "FOR-CORE.md",
+        "count": 4,
+        "line": 1401
+      },
+      {
+        "value": "answered",
+        "count": 2,
+        "line": 1409
+      },
+      {
+        "value": "json",
+        "count": 1,
+        "line": 1416
+      },
+      {
+        "value": "kit",
+        "count": 1,
+        "line": 1416
+      },
+      {
+        "value": "stopsNextOrder",
+        "count": 2,
+        "line": 1416
+      },
+      {
+        "value": "true",
+        "count": 1,
+        "line": 1417
+      },
+      {
+        "value": "null",
+        "count": 2,
+        "line": 1417
+      },
+      {
+        "value": "node scripts/docs-check.mjs",
+        "count": 2,
+        "line": 1421
+      },
+      {
+        "value": "npm run plan -- followups",
+        "count": 1,
+        "line": 1443
+      },
+      {
+        "value": "--export <file>",
+        "count": 1,
+        "line": 1443
+      },
+      {
+        "value": "--apply <batch.json>",
+        "count": 1,
+        "line": 1444
+      },
+      {
+        "value": "npm run plan -- followups --sync",
+        "count": 1,
+        "line": 1445
+      },
+      {
+        "value": "npm run plan -- failures",
+        "count": 1,
+        "line": 1449
+      },
+      {
+        "value": "npm run plan -- conditions",
+        "count": 1,
+        "line": 1449
+      },
+      {
+        "value": "npm run meta -- --plan-cost",
+        "count": 1,
+        "line": 1456
+      },
+      {
+        "value": "npm run work-orders -- index",
+        "count": 2,
+        "line": 1459
+      },
+      {
+        "value": "--check",
+        "count": 1,
+        "line": 1460
+      },
+      {
+        "value": "npm run plan -- refute",
+        "count": 2,
+        "line": 1466
+      },
+      {
+        "value": "npm run plan -- receipt <result.json> --statement <statement.txt>",
+        "count": 1,
+        "line": 1468
+      },
+      {
+        "value": "--timing",
+        "count": 1,
+        "line": 1471
+      },
+      {
+        "value": "npm run entropy -- subject",
+        "count": 1,
+        "line": 1478
+      },
+      {
+        "value": "review --transport fake",
+        "count": 1,
+        "line": 1480
+      },
+      {
+        "value": "<tmp>/…",
+        "count": 1,
+        "line": 1482
+      },
+      {
+        "value": "npm run release -- check-surfaces --local",
+        "count": 2,
+        "line": 1502
+      },
+      {
+        "value": "index --check",
+        "count": 1,
+        "line": 1513
+      },
+      {
+        "value": "criteria advisory: WO-NNN criterion N: <what matched>",
+        "count": 1,
+        "line": 1517
+      },
+      {
+        "value": "<title>",
+        "count": 1,
+        "line": 1527
+      },
+      {
+        "value": "<dir>",
+        "count": 1,
+        "line": 1528
+      },
+      {
+        "value": "node scripts/refute-plan.mjs publish --title <title> --body-file <path>",
+        "count": 1,
+        "line": 1540
+      },
+      {
+        "value": "npm run plan -- publish",
+        "count": 1,
+        "line": 1541
+      },
+      {
+        "value": "planning/<date>-<slug>",
+        "count": 1,
+        "line": 1543
+      },
+      {
+        "value": "title",
+        "count": 1,
+        "line": 1558
+      },
+      {
+        "value": "body",
+        "count": 1,
+        "line": 1558
+      },
+      {
+        "value": "outward-vocabulary.json",
+        "count": 1,
+        "line": 1562
+      },
+      {
+        "value": ".claude/settings.json",
+        "count": 5,
+        "line": 1570
+      },
+      {
+        "value": "node scripts/launchpad.mjs update --publish",
+        "count": 2,
+        "line": 1572
+      },
+      {
+        "value": "node scripts/worktree.mjs publish",
+        "count": 1,
+        "line": 1573
+      },
+      {
+        "value": "autoMode.classifyAllShell",
+        "count": 1,
+        "line": 1575
+      },
+      {
+        "value": "git push",
+        "count": 1,
+        "line": 1576
+      },
+      {
+        "value": "npm run",
+        "count": 1,
+        "line": 1576
+      },
+      {
+        "value": "docs/planning/sequence.md",
+        "count": 1,
+        "line": 1588
+      },
+      {
+        "value": "docs/planning/followups.json",
+        "count": 1,
+        "line": 1589
+      },
+      {
+        "value": "docs/control/doc-baseline.json",
+        "count": 1,
+        "line": 1590
+      },
+      {
+        "value": "README.md",
+        "count": 5,
+        "line": 1605
+      },
+      {
+        "value": "keptSeeds",
+        "count": 3,
+        "line": 1606
+      },
+      {
+        "value": "rewrittenSeeds",
+        "count": 1,
+        "line": 1607
+      },
+      {
+        "value": "seeds published:",
+        "count": 1,
+        "line": 1608
+      },
+      {
+        "value": "seeds kept: README.md (<reason>)",
+        "count": 1,
+        "line": 1609
+      },
+      {
+        "value": "docs/README.md",
+        "count": 2,
+        "line": 1611
+      },
+      {
+        "value": ".gitignore",
+        "count": 2,
+        "line": 1618
+      },
+      {
+        "value": "docs/product/00-vision.md",
+        "count": 1,
+        "line": 1630
+      },
+      {
+        "value": "docs/product/13-uifa-roles.md",
+        "count": 1,
+        "line": 1631
+      },
+      {
+        "value": "docs/planning/capability-table.md",
+        "count": 1,
+        "line": 1631
+      },
+      {
+        "value": "docs/planning/passes/critical-path-2026-09-08.md",
+        "count": 1,
+        "line": 1632
+      },
+      {
+        "value": "publication: no editions declared",
+        "count": 1,
+        "line": 1638
+      },
+      {
+        "value": "npm run reader -- profile <surface>",
+        "count": 1,
+        "line": 1642
+      },
+      {
+        "value": "dotln-goal-rules",
+        "count": 1,
+        "line": 1649
+      },
+      {
+        "value": "docs/product/purpose.md",
+        "count": 1,
+        "line": 1653
+      },
+      {
+        "value": "<!-- dotln-purpose:start -->",
+        "count": 1,
+        "line": 1654
+      },
+      {
+        "value": "<!-- dotln-purpose:end -->",
+        "count": 1,
+        "line": 1655
+      },
+      {
+        "value": "paths",
+        "count": 1,
+        "line": 1674
+      },
+      {
+        "value": "commit",
+        "count": 1,
+        "line": 1675
+      },
+      {
+        "value": "product/",
+        "count": 1,
+        "line": 1702
+      },
+      {
+        "value": "historicalWorkOrders",
+        "count": 2,
+        "line": 1730
+      },
+      {
+        "value": "npm run plan -- amend-order",
+        "count": 1,
+        "line": 1741
+      },
+      {
+        "value": "docs/OPERATOR.md",
+        "count": 2,
+        "line": 1759
+      },
+      {
+        "value": "not carried",
+        "count": 1,
+        "line": 1774
+      },
+      {
+        "value": "release.displayName",
+        "count": 1,
+        "line": 1778
+      },
+      {
+        "value": "npm run release -- prepare --local",
+        "count": 2,
+        "line": 1779
+      },
+      {
+        "value": "DotLn-Enterprise-Starter",
+        "count": 1,
+        "line": 1782
+      },
+      {
+        "value": "DotLn",
+        "count": 1,
+        "line": 1783
+      },
+      {
+        "value": "docs/LEGAL.md",
+        "count": 2,
+        "line": 1792
+      },
+      {
+        "value": "release prepare --local",
+        "count": 1,
+        "line": 1810
+      },
+      {
+        "value": "(v0.1.0)",
+        "count": 1,
+        "line": 1818
+      },
+      {
+        "value": "Release classification: minor",
+        "count": 1,
+        "line": 1819
+      },
+      {
+        "value": "--merged-as <commit>",
+        "count": 1,
+        "line": 1866
+      },
+      {
+        "value": "contributions.authors",
+        "count": 2,
+        "line": 1917
+      },
+      {
+        "value": "operatorAuthor",
+        "count": 1,
+        "line": 1917
+      },
+      {
+        "value": "\"features\": { \"desktop-control\": true }",
+        "count": 1,
+        "line": 1951
+      },
+      {
+        "value": "{ \"on\": true, \"note\": \"the operator's reason\" }",
+        "count": 1,
+        "line": 1952
+      },
+      {
+        "value": "--recheck <report>",
+        "count": 1,
+        "line": 1993
+      },
+      {
+        "value": ".json",
+        "count": 1,
+        "line": 1994
+      },
+      {
+        "value": "docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md",
+        "count": 1,
+        "line": 1995
+      },
+      {
+        "value": "repair-<n>/",
+        "count": 1,
+        "line": 1996
+      },
+      {
+        "value": "--model <name>",
+        "count": 1,
+        "line": 2000
+      },
+      {
+        "value": "npm run worker -- list",
+        "count": 2,
+        "line": 2000
+      },
+      {
+        "value": "--effort <level>",
+        "count": 1,
+        "line": 2001
+      },
+      {
+        "value": "--model",
+        "count": 3,
+        "line": 2001
+      },
+      {
+        "value": "--effort",
+        "count": 3,
+        "line": 2001
+      },
+      {
+        "value": "default",
+        "count": 3,
+        "line": 2001
+      },
+      {
+        "value": "--subject planning",
+        "count": 1,
+        "line": 2002
+      },
+      {
+        "value": "planning-<branch>/",
+        "count": 1,
+        "line": 2002
+      },
+      {
+        "value": "--capture <file>",
+        "count": 1,
+        "line": 2003
+      },
+      {
+        "value": "## Items",
+        "count": 1,
+        "line": 2003
+      },
+      {
+        "value": "--target <id> --order WO-NNN",
+        "count": 1,
+        "line": 2004
+      },
+      {
+        "value": "--since <tree>",
+        "count": 1,
+        "line": 2005
+      },
+      {
+        "value": "--part <letter>",
+        "count": 1,
+        "line": 2006
+      },
+      {
+        "value": "--dry-run",
+        "count": 2,
+        "line": 2007
+      },
+      {
+        "value": "Traced consumers",
+        "count": 1,
+        "line": 2018
+      },
+      {
+        "value": "Agent",
+        "count": 1,
+        "line": 2044
+      },
+      {
+        "value": "--host",
+        "count": 1,
+        "line": 2045
+      },
+      {
+        "value": "--tree",
+        "count": 1,
+        "line": 2045
+      },
+      {
+        "value": "--format prose",
+        "count": 1,
+        "line": 2050
+      },
+      {
+        "value": "--format json",
+        "count": 1,
+        "line": 2051
+      },
+      {
+        "value": "--format",
+        "count": 1,
+        "line": 2052
+      },
+      {
+        "value": "inputFormat",
+        "count": 1,
+        "line": 2055
+      },
+      {
+        "value": "auto",
+        "count": 1,
+        "line": 2055
+      },
+      {
+        "value": "**Review ladder:**",
+        "count": 1,
+        "line": 2066
+      },
+      {
+        "value": "full",
+        "count": 1,
+        "line": 2070
+      },
+      {
+        "value": "combined",
+        "count": 1,
+        "line": 2071
+      },
+      {
+        "value": "paired",
+        "count": 1,
+        "line": 2072
+      },
+      {
+        "value": "roundFindings",
+        "count": 1,
+        "line": 2072
+      },
+      {
+        "value": "self-review:",
+        "count": 1,
+        "line": 2082
+      },
+      {
+        "value": "--keep-going",
+        "count": 1,
+        "line": 2099
+      },
+      {
+        "value": "--since",
+        "count": 1,
+        "line": 2105
+      },
+      {
+        "value": "node scripts/harness.mjs evidence --wait",
+        "count": 1,
+        "line": 2121
+      },
+      {
+        "value": "dotln-worker",
+        "count": 3,
+        "line": 2123
+      },
+      {
+        "value": "DOTLN_WORKER_GATE_REFUSED",
+        "count": 1,
+        "line": 2124
+      },
+      {
+        "value": "node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>",
+        "count": 1,
+        "line": 2126
+      },
+      {
+        "value": "subagentCap",
+        "count": 4,
+        "line": 2127
+      },
+      {
+        "value": "SendMessage",
+        "count": 1,
+        "line": 2129
+      },
+      {
+        "value": "node scripts/harness.mjs usage <session>",
+        "count": 2,
+        "line": 2131
+      },
+      {
+        "value": "npm test -- --review",
+        "count": 3,
+        "line": 2146
+      },
+      {
+        "value": "npm run sync",
+        "count": 4,
+        "line": 2157
+      },
+      {
+        "value": "kit-verify",
+        "count": 4,
+        "line": 2165
+      },
+      {
+        "value": "node scripts/launchpad.mjs verify",
+        "count": 4,
+        "line": 2170
+      },
+      {
+        "value": "node scripts/harness.mjs lanes",
+        "count": 1,
+        "line": 2177
+      },
+      {
+        "value": "node scripts/target-gate.mjs WO-NNN [--review]",
+        "count": 1,
+        "line": 2187
+      },
+      {
+        "value": "format",
+        "count": 3,
+        "line": 2197
+      },
+      {
+        "value": "configuration-root",
+        "count": 3,
+        "line": 2197
+      },
+      {
+        "value": "registrations",
+        "count": 3,
+        "line": 2197
+      },
+      {
+        "value": "declarations",
+        "count": 3,
+        "line": 2197
+      },
+      {
+        "value": "generated",
+        "count": 3,
+        "line": 2197
+      },
+      {
+        "value": "license-surfaces",
+        "count": 1,
+        "line": 2198
+      },
+      {
+        "value": "docs-check",
+        "count": 1,
+        "line": 2198
+      },
+      {
+        "value": "harness-context",
+        "count": 1,
+        "line": 2198
+      },
+      {
+        "value": "plan-refutation-current",
+        "count": 1,
+        "line": 2198
+      },
+      {
+        "value": "plan",
+        "count": 1,
+        "line": 2198
+      },
+      {
+        "value": "reader-profiles",
+        "count": 1,
+        "line": 2198
+      },
+      {
+        "value": "entropy",
+        "count": 1,
+        "line": 2198
+      },
+      {
+        "value": "npm test -- --only <suite>",
+        "count": 1,
+        "line": 2212
+      },
+      {
+        "value": "npm run test:machinery",
+        "count": 1,
+        "line": 2213
+      },
+      {
+        "value": "npm run resume -- briefing",
+        "count": 1,
+        "line": 2227
+      },
+      {
+        "value": "worktree integrate",
+        "count": 1,
+        "line": 2228
+      },
+      {
+        "value": "--review",
+        "count": 1,
+        "line": 2232
+      },
+      {
+        "value": "--list",
+        "count": 2,
+        "line": 2255
+      },
+      {
+        "value": "--only <suite>",
+        "count": 1,
+        "line": 2257
+      },
+      {
+        "value": "artifact-evidence",
+        "count": 1,
+        "line": 2264
+      },
+      {
+        "value": "authority-evidence",
+        "count": 1,
+        "line": 2265
+      },
+      {
+        "value": "browser-evidence",
+        "count": 1,
+        "line": 2266
+      },
+      {
+        "value": "comment-labels",
+        "count": 1,
+        "line": 2267
+      },
+      {
+        "value": "comment-labels-fixtures",
+        "count": 1,
+        "line": 2268
+      },
+      {
+        "value": "compiler",
+        "count": 1,
+        "line": 2269
+      },
+      {
+        "value": "console",
+        "count": 1,
+        "line": 2270
+      },
+      {
+        "value": "console-docs",
+        "count": 1,
+        "line": 2271
+      },
+      {
+        "value": "docs-check-fixtures",
+        "count": 1,
+        "line": 2272
+      },
+      {
+        "value": "evidence-sources",
+        "count": 1,
+        "line": 2273
+      },
+      {
+        "value": "feedback-evidence",
+        "count": 1,
+        "line": 2274
+      },
+      {
+        "value": "git-surface",
+        "count": 1,
+        "line": 2275
+      },
+      {
+        "value": "github-body",
+        "count": 1,
+        "line": 2276
+      },
+      {
+        "value": "harness-evidence",
+        "count": 1,
+        "line": 2277
+      },
+      {
+        "value": "harness-fixtures",
+        "count": 1,
+        "line": 2278
+      },
+      {
+        "value": "harness-probe",
+        "count": 1,
+        "line": 2279
+      },
+      {
+        "value": "instance-history",
+        "count": 1,
+        "line": 2280
+      },
+      {
+        "value": "kernel",
+        "count": 1,
+        "line": 2281
+      },
+      {
+        "value": "kernel-docs",
+        "count": 1,
+        "line": 2282
+      },
+      {
+        "value": "launchpad",
+        "count": 1,
+        "line": 2283
+      },
+      {
+        "value": "launchpad-docs",
+        "count": 1,
+        "line": 2284
+      },
+      {
+        "value": "launchpad-planning",
+        "count": 1,
+        "line": 2285
+      },
+      {
+        "value": "license-fixtures",
+        "count": 1,
+        "line": 2286
+      },
+      {
+        "value": "lineage-fixtures",
+        "count": 1,
+        "line": 2287
+      },
+      {
+        "value": "local-runner-double",
+        "count": 1,
+        "line": 2288
+      },
+      {
+        "value": "plan-refutation",
+        "count": 1,
+        "line": 2290
+      },
+      {
+        "value": "process-debt",
+        "count": 1,
+        "line": 2291
+      },
+      {
+        "value": "reader-fixtures",
+        "count": 1,
+        "line": 2292
+      },
+      {
+        "value": "release",
+        "count": 1,
+        "line": 2293
+      },
+      {
+        "value": "resume",
+        "count": 1,
+        "line": 2294
+      },
+      {
+        "value": "resume-docs",
+        "count": 1,
+        "line": 2295
+      },
+      {
+        "value": "runner-fixtures",
+        "count": 1,
+        "line": 2296
+      },
+      {
+        "value": "skeleton",
+        "count": 1,
+        "line": 2297
+      },
+      {
+        "value": "skeleton-docs",
+        "count": 1,
+        "line": 2298
+      },
+      {
+        "value": "sync-fixtures",
+        "count": 1,
+        "line": 2299
+      },
+      {
+        "value": "target-publish",
+        "count": 1,
+        "line": 2300
+      },
+      {
+        "value": "verification-evidence",
+        "count": 1,
+        "line": 2301
+      },
+      {
+        "value": "vertical",
+        "count": 1,
+        "line": 2302
+      },
+      {
+        "value": "wo107-schema",
+        "count": 1,
+        "line": 2303
+      },
+      {
+        "value": "workstream-pilot",
+        "count": 1,
+        "line": 2304
+      },
+      {
+        "value": "worktree",
+        "count": 1,
+        "line": 2305
+      },
+      {
+        "value": "worktree-integration",
+        "count": 1,
+        "line": 2306
+      },
+      {
+        "value": "scripts/fixtures/wo138-local-role-qualification.json",
+        "count": 1,
+        "line": 2312
+      },
+      {
+        "value": "emit",
+        "count": 1,
+        "line": 2322
+      },
+      {
+        "value": "npm run harness -- check",
+        "count": 1,
+        "line": 2323
+      },
+      {
+        "value": "npm run build",
+        "count": 1,
+        "line": 2324
+      },
+      {
+        "value": "carried runtime is the build; nothing to compile",
+        "count": 1,
+        "line": 2324
+      },
+      {
+        "value": "npm run console",
+        "count": 1,
+        "line": 2325
+      },
+      {
+        "value": "npm run dotln",
+        "count": 1,
+        "line": 2325
+      },
+      {
+        "value": "npm run skeleton",
+        "count": 1,
+        "line": 2325
+      },
+      {
+        "value": "npm run console -- live --store .runtime/resident",
+        "count": 1,
+        "line": 2333
+      },
+      {
+        "value": "npm run console -- board --json",
+        "count": 1,
+        "line": 2334
+      },
+      {
+        "value": "packages/console/uifa-board-v1.schema.json",
+        "count": 1,
+        "line": 2336
+      },
+      {
+        "value": "packages/console/runtime-status-v1.schema.json",
+        "count": 1,
+        "line": 2337
+      },
+      {
+        "value": "vertical-host",
+        "count": 1,
+        "line": 2339
+      },
+      {
+        "value": "docs/control/local/harness/",
+        "count": 2,
+        "line": 2361
+      },
+      {
+        "value": "harnessToolEffects",
+        "count": 1,
+        "line": 2371
+      },
+      {
+        "value": "DOTLN_RESIDENT_STORE",
+        "count": 1,
+        "line": 2404
+      },
+      {
+        "value": "node scripts/harness.mjs writer --show",
+        "count": 1,
+        "line": 2421
+      },
+      {
+        "value": "node scripts/harness.mjs writer --release",
+        "count": 1,
+        "line": 2422
+      },
+      {
+        "value": "node scripts/harness.mjs writer --release --force",
+        "count": 1,
+        "line": 2425
+      },
+      {
+        "value": "Z",
+        "count": 1,
+        "line": 2428
+      },
+      {
+        "value": "writer-events.jsonl",
+        "count": 1,
+        "line": 2430
+      },
+      {
+        "value": "--force",
+        "count": 1,
+        "line": 2432
+      },
+      {
+        "value": "dispatchStopped",
+        "count": 1,
+        "line": 2439
+      },
+      {
+        "value": "release close --publish",
+        "count": 1,
+        "line": 2439
+      },
+      {
+        "value": "docs/control/local/worktree-start-denials.jsonl",
+        "count": 1,
+        "line": 2456
+      },
+      {
+        "value": "gh pr",
+        "count": 1,
+        "line": 2466
+      },
+      {
+        "value": "gh issue",
+        "count": 1,
+        "line": 2467
+      },
+      {
+        "value": "-R <origin>",
+        "count": 2,
+        "line": 2467
+      },
+      {
+        "value": "cd",
+        "count": 1,
+        "line": 2468
+      },
+      {
+        "value": "-R",
+        "count": 3,
+        "line": 2472
+      },
+      {
+        "value": "--repo",
+        "count": 1,
+        "line": 2472
+      },
+      {
+        "value": "GH_REPO=",
+        "count": 1,
+        "line": 2473
+      },
+      {
+        "value": "gh repo set-default",
+        "count": 2,
+        "line": 2475
+      },
+      {
+        "value": "remote.<name>.gh-resolved",
+        "count": 1,
+        "line": 2476
+      },
+      {
+        "value": "gh repo set-default --view",
+        "count": 1,
+        "line": 2476
+      },
+      {
+        "value": "gh auth",
+        "count": 1,
+        "line": 2478
+      },
+      {
+        "value": "gh --version",
+        "count": 1,
+        "line": 2478
+      },
+      {
+        "value": "github.com",
+        "count": 2,
+        "line": 2490
+      },
+      {
+        "value": "github.com-work",
+        "count": 1,
+        "line": 2490
+      },
+      {
+        "value": "gh repo set-default origin",
+        "count": 2,
+        "line": 2492
+      },
+      {
+        "value": "-R <upstream>",
+        "count": 1,
+        "line": 2495
+      },
+      {
+        "value": "question",
+        "count": 1,
+        "line": 2501
+      },
+      {
+        "value": "<key>.codex-messages.jsonl",
+        "count": 1,
+        "line": 2514
+      },
+      {
+        "value": "compactionProbe",
+        "count": 1,
+        "line": 2519
+      },
+      {
+        "value": "stop-last-message",
+        "count": 1,
+        "line": 2522
+      },
+      {
+        "value": ".claude/settings.instance.json",
+        "count": 3,
+        "line": 2535
+      },
+      {
+        "value": "PreToolUse",
+        "count": 5,
+        "line": 2537
+      },
+      {
+        "value": "SubagentStop",
+        "count": 3,
+        "line": 2539
+      },
+      {
+        "value": "UserPromptSubmit",
+        "count": 3,
+        "line": 2539
+      },
+      {
+        "value": "!",
+        "count": 1,
+        "line": 2546
+      },
+      {
+        "value": "CLAUDE_EFFORT",
+        "count": 1,
+        "line": 2556
+      },
+      {
+        "value": "--source claude-session-readback",
+        "count": 1,
+        "line": 2557
+      },
+      {
+        "value": "scripts/**",
+        "count": 1,
+        "line": 2589
+      },
+      {
+        "value": "scripts/kit/",
+        "count": 2,
+        "line": 2589
+      },
+      {
+        "value": "packages/beacons/**",
+        "count": 1,
+        "line": 2591
+      },
+      {
+        "value": "packages/<name>/dist/{src,test}/**",
+        "count": 1,
+        "line": 2592
+      },
+      {
+        "value": "packages/kernel/test/fixtures/",
+        "count": 1,
+        "line": 2594
+      },
+      {
+        "value": "packages/compiler/fixtures/",
+        "count": 1,
+        "line": 2595
+      },
+      {
+        "value": "packages/skeleton/fixtures/",
+        "count": 1,
+        "line": 2595
+      },
+      {
+        "value": "corpus/",
+        "count": 1,
+        "line": 2597
+      },
+      {
+        "value": "corpus/mutation/",
+        "count": 1,
+        "line": 2598
+      },
+      {
+        "value": ".prettierignore",
+        "count": 1,
+        "line": 2599
+      },
+      {
+        "value": ".prettierrc.json",
+        "count": 1,
+        "line": 2599
+      },
+      {
+        "value": "packages/*/src/*.mjs",
+        "count": 1,
+        "line": 2600
+      },
+      {
+        "value": "package-lock.json",
+        "count": 1,
+        "line": 2604
+      },
+      {
+        "value": "THIRD_PARTY_NOTICES",
+        "count": 3,
+        "line": 2605
+      },
+      {
+        "value": "docs/product/07-execution-guide.md",
+        "count": 1,
+        "line": 2606
+      },
+      {
+        "value": "docs/product/operator-reference.md",
+        "count": 1,
+        "line": 2607
+      },
+      {
+        "value": "docs/product/08-publication-compiler.md",
+        "count": 1,
+        "line": 2608
+      },
+      {
+        "value": "docs/PLAYBOOK.md",
+        "count": 1,
+        "line": 2608
+      },
+      {
+        "value": "docs/KIT.md",
+        "count": 2,
+        "line": 2609
+      },
+      {
+        "value": "docs/publication/implementation-overlay-template.md",
+        "count": 1,
+        "line": 2611
+      },
+      {
+        "value": "scripts/lib/vendor/",
+        "count": 1,
+        "line": 2616
+      },
+      {
+        "value": "scripts/lib/vendored-parser.json",
+        "count": 1,
+        "line": 2617
+      },
+      {
+        "value": "docs/control/",
+        "count": 1,
+        "line": 2629
+      },
+      {
+        "value": "docs/work-orders/",
+        "count": 3,
+        "line": 2629
+      },
+      {
+        "value": "docs/evidence/",
+        "count": 2,
+        "line": 2629
+      },
+      {
+        "value": "docs/verifications/",
+        "count": 2,
+        "line": 2630
+      },
+      {
+        "value": "docs/final-reviews/",
+        "count": 2,
+        "line": 2630
+      },
+      {
+        "value": "docs/workstreams/",
+        "count": 1,
+        "line": 2630
+      },
+      {
+        "value": "docs/repositories/",
+        "count": 1,
+        "line": 2631
+      },
+      {
+        "value": "docs/planning/",
+        "count": 2,
+        "line": 2631
+      },
+      {
+        "value": ".gitattributes",
+        "count": 2,
+        "line": 2637
+      },
+      {
+        "value": "* -text",
+        "count": 1,
+        "line": 2638
+      },
+      {
+        "value": ".codex/rules/dotln-WO-NNN.rules",
+        "count": 1,
+        "line": 2655
+      },
+      {
+        "value": "local/host-rules/",
+        "count": 1,
+        "line": 2659
+      },
+      {
+        "value": "activate",
+        "count": 1,
+        "line": 2672
+      },
+      {
+        "value": "docs/control/doc-ceilings.json",
+        "count": 1,
+        "line": 2681
+      },
+      {
+        "value": "seeds added:",
+        "count": 1,
+        "line": 2683
+      },
+      {
+        "value": "seeds removed:",
+        "count": 1,
+        "line": 2683
+      },
+      {
+        "value": "contributions.operatorAuthor",
+        "count": 1,
+        "line": 2693
+      },
+      {
+        "value": "Name <email>",
+        "count": 1,
+        "line": 2694
+      },
+      {
+        "value": "codex",
+        "count": 1,
+        "line": 2714
+      },
+      {
+        "value": "opus",
+        "count": 1,
+        "line": 2721
+      },
+      {
+        "value": "fable",
+        "count": 1,
+        "line": 2721
+      },
+      {
+        "value": "sonnet",
+        "count": 1,
+        "line": 2721
+      },
+      {
+        "value": "sol",
+        "count": 1,
+        "line": 2721
+      },
+      {
+        "value": "astra",
+        "count": 1,
+        "line": 2722
+      },
+      {
+        "value": "luna",
+        "count": 1,
+        "line": 2722
+      },
+      {
+        "value": "advanced",
+        "count": 1,
+        "line": 2727
+      },
+      {
+        "value": "verifier",
+        "count": 2,
+        "line": 2728
+      },
+      {
+        "value": "judge",
+        "count": 1,
+        "line": 2729
+      },
+      {
+        "value": "npm run worker -- show <name>",
+        "count": 1,
+        "line": 2732
+      },
+      {
+        "value": "description",
+        "count": 1,
+        "line": 2738
+      },
+      {
+        "value": "packages/skeleton/src/worker-models.mjs",
+        "count": 1,
+        "line": 2777
+      },
+      {
+        "value": ".claude/agents/",
+        "count": 1,
+        "line": 2790
+      },
+      {
+        "value": "resume: next night-review",
+        "count": 1,
+        "line": 2793
+      },
+      {
+        "value": "low",
+        "count": 1,
+        "line": 2808
+      },
+      {
+        "value": "medium",
+        "count": 1,
+        "line": 2808
+      },
+      {
+        "value": "high",
+        "count": 1,
+        "line": 2809
+      },
+      {
+        "value": "xhigh",
+        "count": 1,
+        "line": 2809
+      },
+      {
+        "value": "max",
+        "count": 1,
+        "line": 2809
+      },
+      {
+        "value": "npm run worker -- review",
+        "count": 1,
+        "line": 2823
+      },
+      {
+        "value": "npm run entropy -- review",
+        "count": 1,
+        "line": 2824
+      },
+      {
+        "value": "--provider",
+        "count": 1,
+        "line": 2825
+      },
+      {
+        "value": "show",
+        "count": 2,
+        "line": 2838
+      },
+      {
+        "value": "codex-spawn-agent",
+        "count": 1,
+        "line": 2845
+      },
+      {
+        "value": "--since <YYYY-MM-DD>",
+        "count": 1,
+        "line": 2858
+      },
+      {
+        "value": "prices",
+        "count": 2,
+        "line": 2896
+      },
+      {
+        "value": "uncachedInput",
+        "count": 1,
+        "line": 2897
+      },
+      {
+        "value": "cacheRead",
+        "count": 1,
+        "line": 2897
+      },
+      {
+        "value": "cacheWrite",
+        "count": 1,
+        "line": 2897
+      },
+      {
+        "value": "output",
+        "count": 1,
+        "line": 2898
+      },
+      {
+        "value": "npm run plan -- start <slug>",
+        "count": 1,
+        "line": 2919
+      },
+      {
+        "value": "dotln-…",
+        "count": 1,
+        "line": 2944
+      },
+      {
+        "value": "extensions/",
+        "count": 4,
+        "line": 2947
+      },
+      {
+        "value": "Extensions/",
+        "count": 1,
+        "line": 2953
+      },
+      {
+        "value": "extensions/hooks/",
+        "count": 1,
+        "line": 3009
+      },
+      {
+        "value": "node scripts/harness.mjs emit --target <worktree>",
+        "count": 2,
+        "line": 3015
+      },
+      {
+        "value": "DOTLN_LAUNCHPAD",
+        "count": 2,
+        "line": 3019
+      },
+      {
+        "value": "hooks",
+        "count": 2,
+        "line": 3042
+      },
+      {
+        "value": "PermissionDenied",
+        "count": 1,
+        "line": 3042
+      },
+      {
+        "value": "PostToolUse",
+        "count": 1,
+        "line": 3042
+      },
+      {
+        "value": "PostToolUseFailure",
+        "count": 1,
+        "line": 3042
+      },
+      {
+        "value": "SessionStart",
+        "count": 1,
+        "line": 3043
+      },
+      {
+        "value": "Stop",
+        "count": 1,
+        "line": 3043
+      },
+      {
+        "value": "matcher",
+        "count": 1,
+        "line": 3044
+      },
+      {
+        "value": "type",
+        "count": 1,
+        "line": 3045
+      },
+      {
+        "value": "command",
+        "count": 2,
+        "line": 3045
+      },
+      {
+        "value": "timeout",
+        "count": 1,
+        "line": 3046
+      },
+      {
+        "value": "permissions",
+        "count": 1,
+        "line": 3047
+      },
+      {
+        "value": "allow",
+        "count": 3,
+        "line": 3047
+      },
+      {
+        "value": "ask",
+        "count": 1,
+        "line": 3047
+      },
+      {
+        "value": "deny",
+        "count": 1,
+        "line": 3047
+      },
+      {
+        "value": "autoMemoryEnabled",
+        "count": 1,
+        "line": 3052
+      },
+      {
+        "value": "attribution",
+        "count": 1,
+        "line": 3052
+      },
+      {
+        "value": "env",
+        "count": 1,
+        "line": 3053
+      },
+      {
+        "value": "disableAllHooks",
+        "count": 1,
+        "line": 3053
+      },
+      {
+        "value": "permissions.defaultMode",
+        "count": 1,
+        "line": 3054
+      },
+      {
+        "value": "async",
+        "count": 1,
+        "line": 3054
+      },
+      {
+        "value": "permissions.deny",
+        "count": 1,
+        "line": 3070
+      },
+      {
+        "value": "continue: false",
+        "count": 1,
+        "line": 3075
+      },
+      {
+        "value": "analysis:",
+        "count": 2,
+        "line": 3076
+      },
+      {
+        "value": "operator override:",
+        "count": 1,
+        "line": 3076
+      },
+      {
+        "value": "extensions",
+        "count": 1,
+        "line": 3106
+      },
+      {
+        "value": "docs/control/orders/WO-NNN.jsonl",
+        "count": 1,
+        "line": 3116
+      },
+      {
+        "value": "schemaVersion",
+        "count": 3,
+        "line": 3117
+      },
+      {
+        "value": "npm run resume -- status --json",
+        "count": 2,
+        "line": 3119
+      },
+      {
+        "value": "--all",
+        "count": 1,
+        "line": 3120
+      },
+      {
+        "value": "npm run meta -- --usage --json",
+        "count": 1,
+        "line": 3122
+      },
+      {
+        "value": "dotln-",
+        "count": 1,
+        "line": 3133
+      },
+      {
+        "value": "repositories.<id>.gate",
+        "count": 1,
+        "line": 3137
+      },
+      {
+        "value": "npm --prefix extensions test",
+        "count": 1,
+        "line": 3142
+      },
+      {
+        "value": "update --finish",
+        "count": 1,
+        "line": 3184
+      },
+      {
+        "value": "remote.upstream.tagOpt",
+        "count": 1,
+        "line": 3223
+      },
+      {
+        "value": "git fetch upstream --tags",
+        "count": 1,
+        "line": 3224
+      },
+      {
+        "value": "remote.upstream.tagOpt --no-tags",
+        "count": 1,
+        "line": 3225
+      },
+      {
+        "value": ".runtime/upstream-preview",
+        "count": 1,
+        "line": 3230
+      },
+      {
+        "value": "git worktree remove --force .runtime/upstream-preview",
+        "count": 1,
+        "line": 3232
+      },
+      {
+        "value": "git worktree prune",
+        "count": 1,
+        "line": 3233
+      },
+      {
+        "value": "both changed:",
+        "count": 2,
+        "line": 3236
+      },
+      {
+        "value": "refused",
+        "count": 2,
+        "line": 3237
+      },
+      {
+        "value": "chore/<slug>",
+        "count": 2,
+        "line": 3243
+      },
+      {
+        "value": "chore/starter-update",
+        "count": 1,
+        "line": 3243
+      },
+      {
+        "value": "git checkout main -- <path>",
+        "count": 1,
+        "line": 3248
+      },
+      {
+        "value": "git rm <path>",
+        "count": 1,
+        "line": 3250
+      },
+      {
+        "value": "git checkout main -- .claude/harness-manifest.json",
+        "count": 1,
+        "line": 3252
+      },
+      {
+        "value": "node scripts/launchpad.mjs update --publish --from <revision> --title <title> --body-file <path>",
+        "count": 1,
+        "line": 3261
+      },
+      {
+        "value": "git merge",
+        "count": 1,
+        "line": 3264
+      },
+      {
+        "value": "plan publish",
+        "count": 1,
+        "line": 3281
+      },
+      {
+        "value": "-R <fork>",
+        "count": 1,
+        "line": 3289
+      },
+      {
+        "value": "--fetch-timeout <seconds>",
+        "count": 1,
+        "line": 3311
+      },
+      {
+        "value": "git fetch origin main",
+        "count": 1,
+        "line": 3313
+      },
+      {
+        "value": "remove",
+        "count": 3,
+        "line": 3318
+      },
+      {
+        "value": "both changed: <path>",
+        "count": 1,
+        "line": 3358
+      },
+      {
+        "value": "instance files both sides changed: none",
+        "count": 1,
+        "line": 3360
+      },
+      {
+        "value": "re-emitted:",
+        "count": 1,
+        "line": 3373
+      },
+      {
+        "value": "replace",
+        "count": 3,
+        "line": 3375
+      },
+      {
+        "value": "add",
+        "count": 2,
+        "line": 3375
+      },
+      {
+        "value": "unchanged",
+        "count": 1,
+        "line": 3377
+      },
+      {
+        "value": "unchanged upstream; no merge conflict expected",
+        "count": 1,
+        "line": 3382
+      },
+      {
+        "value": "apply",
+        "count": 1,
+        "line": 3393
+      },
+      {
+        "value": "cannot apply",
+        "count": 1,
+        "line": 3394
+      },
+      {
+        "value": "--apply",
+        "count": 4,
+        "line": 3397
+      },
+      {
+        "value": "node scripts/lineage.mjs index --check",
+        "count": 1,
+        "line": 3415
+      },
+      {
+        "value": "--from <revision>",
+        "count": 1,
+        "line": 3423
+      },
+      {
+        "value": "--from",
+        "count": 4,
+        "line": 3427
+      },
+      {
+        "value": "upstream/main",
+        "count": 2,
+        "line": 3428
+      },
+      {
+        "value": "refs/upstream-releases/",
+        "count": 1,
+        "line": 3429
+      },
+      {
+        "value": "git checkout <commit> -- <path>",
+        "count": 1,
+        "line": 3454
+      },
+      {
+        "value": "--take <path>",
+        "count": 1,
+        "line": 3455
+      },
+      {
+        "value": "taken: <path>",
+        "count": 1,
+        "line": 3456
+      },
+      {
+        "value": "docs/control/release-history.json",
+        "count": 1,
+        "line": 3526
+      },
+      {
+        "value": "docs/control/workstream-observations.json",
+        "count": 1,
+        "line": 3527
+      },
+      {
+        "value": "npm run work-orders -- index --check",
+        "count": 1,
+        "line": 3530
+      },
+      {
+        "value": "node scripts/resident.mjs",
+        "count": 1,
+        "line": 3532
+      },
+      {
+        "value": "node scripts/resident-bind.mjs",
+        "count": 1,
+        "line": 3532
+      },
+      {
+        "value": "git add --renormalize .",
+        "count": 1,
+        "line": 3539
+      },
+      {
+        "value": "scripts/kit/first-order.template.md",
+        "count": 1,
+        "line": 3544
+      },
+      {
+        "value": "scripts/kit/repository-profile.template.md",
+        "count": 1,
+        "line": 3552
+      },
+      {
+        "value": "scripts/kit/workstream.template.md",
+        "count": 1,
+        "line": 3553
+      },
+      {
+        "value": "re-emitted",
+        "count": 1,
+        "line": 3622
+      },
+      {
+        "value": "re-emitted: <path>",
+        "count": 1,
+        "line": 3669
+      },
+      {
+        "value": "\"kit\": { \"applyInstanceActions\": true }",
+        "count": 1,
+        "line": 3705
+      },
+      {
+        "value": "--preview",
+        "count": 1,
+        "line": 3707
+      },
+      {
+        "value": "scripts/kit/KIT-ACTIONS.json",
+        "count": 1,
+        "line": 3719
+      },
+      {
+        "value": "actions",
+        "count": 1,
+        "line": 3720
+      },
+      {
+        "value": "id",
+        "count": 1,
+        "line": 3720
+      },
+      {
+        "value": "date",
+        "count": 1,
+        "line": 3720
+      },
+      {
+        "value": "YYYY-MM-DD",
+        "count": 1,
+        "line": 3721
+      },
+      {
+        "value": "rename-root",
+        "count": 1,
+        "line": 3723
+      },
+      {
+        "value": "root",
+        "count": 1,
+        "line": 3723
+      },
+      {
+        "value": "from",
+        "count": 2,
+        "line": 3723
+      },
+      {
+        "value": "to",
+        "count": 2,
+        "line": 3724
+      },
+      {
+        "value": "add-config-field",
+        "count": 1,
+        "line": 3728
+      },
+      {
+        "value": "field",
+        "count": 1,
+        "line": 3728
+      },
+      {
+        "value": "value",
+        "count": 1,
+        "line": 3728
+      },
+      {
+        "value": "change-phrase",
+        "count": 1,
+        "line": 3731
+      },
+      {
+        "value": "harness prune --apply",
+        "count": 1,
+        "line": 3774
+      },
+      {
+        "value": "node scripts/harness.mjs prune --apply",
+        "count": 1,
+        "line": 3782
+      },
+      {
+        "value": "prune.startBudgetMs",
+        "count": 1,
+        "line": 3791
+      },
+      {
+        "value": "budget",
+        "count": 1,
+        "line": 3807
+      },
+      {
+        "value": "removed N; remaining M; resume with node scripts/harness.mjs prune --apply",
+        "count": 1,
+        "line": 3808
+      },
+      {
+        "value": "closed-journal",
+        "count": 3,
+        "line": 3815
+      },
+      {
+        "value": "restricted-entry",
+        "count": 1,
+        "line": 3826
+      },
+      {
+        "value": "--list-material",
+        "count": 1,
+        "line": 3836
+      },
+      {
+        "value": "docs/control/local/retained/<WO>/harness/",
+        "count": 1,
+        "line": 3843
+      },
+      {
+        "value": "*.jsonl",
+        "count": 1,
+        "line": 3844
+      },
+      {
+        "value": "*.json",
+        "count": 1,
+        "line": 3844
+      },
+      {
+        "value": "checks.json",
+        "count": 1,
+        "line": 3845
+      },
+      {
+        "value": "suite-success/",
+        "count": 1,
+        "line": 3845
+      },
+      {
+        "value": "deadlines/",
+        "count": 1,
+        "line": 3845
+      },
+      {
+        "value": "journals: { lane, files, bytes, outcome }",
+        "count": 1,
+        "line": 3850
+      },
+      {
+        "value": "plan failures",
+        "count": 3,
+        "line": 3853
+      },
+      {
+        "value": "harness usage <session>",
+        "count": 1,
+        "line": 3854
+      },
+      {
+        "value": ".runtime/.metadata_never_index",
+        "count": 1,
+        "line": 3864
+      },
+      {
+        "value": ".runtime/harness/<hash>",
+        "count": 1,
+        "line": 3865
+      },
+      {
+        "value": ".env",
+        "count": 1,
+        "line": 3868
+      },
+      {
+        "value": "residue",
+        "count": 1,
+        "line": 3871
+      },
+      {
+        "value": ".dotln-snapshot.json",
+        "count": 1,
+        "line": 3879
+      },
+      {
+        "value": "--publish",
+        "count": 1,
+        "line": 3890
+      },
+      {
+        "value": "children",
+        "count": 1,
+        "line": 3900
+      },
+      {
+        "value": "base-fetch",
+        "count": 2,
+        "line": 3901
+      },
+      {
+        "value": "disposable-deletion",
+        "count": 1,
+        "line": 3901
+      },
+      {
+        "value": "finder-metadata",
+        "count": 1,
+        "line": 3902
+      },
+      {
+        "value": "journal-retention",
+        "count": 1,
+        "line": 3902
+      },
+      {
+        "value": "git-worktree-remove",
+        "count": 1,
+        "line": 3902
+      },
+      {
+        "value": "branch-delete",
+        "count": 1,
+        "line": 3903
+      },
+      {
+        "value": "preservation",
+        "count": 1,
+        "line": 3903
+      },
+      {
+        "value": "blocker: { class, step, message }",
+        "count": 1,
+        "line": 3905
+      },
+      {
+        "value": "undeclared-ignored-material",
+        "count": 2,
+        "line": 3909
+      },
+      {
+        "value": "not-clean",
+        "count": 1,
+        "line": 3910
+      },
+      {
+        "value": "writer-held",
+        "count": 2,
+        "line": 3911
+      },
+      {
+        "value": "preservation-refused",
+        "count": 1,
+        "line": 3912
+      },
+      {
+        "value": "declared-root-unreadable",
+        "count": 1,
+        "line": 3913
+      },
+      {
+        "value": "host-denied",
+        "count": 1,
+        "line": 3914
+      },
+      {
+        "value": "foreign-tag",
+        "count": 1,
+        "line": 3916
+      },
+      {
+        "value": "starter-refresh",
+        "count": 1,
+        "line": 3917
+      },
+      {
+        "value": "publication",
+        "count": 1,
+        "line": 3918
+      },
+      {
+        "value": "other",
+        "count": 1,
+        "line": 3919
+      },
+      {
+        "value": "blockers",
+        "count": 1,
+        "line": 3931
+      },
+      {
+        "value": "close blocker repeated: <class> across N orders",
+        "count": 1,
+        "line": 3934
+      },
+      {
+        "value": "device-renumbered",
+        "count": 1,
+        "line": 3970
+      },
+      {
+        "value": "dotln-removing-<token>",
+        "count": 1,
+        "line": 3982
+      },
+      {
+        "value": "rmdir",
+        "count": 1,
+        "line": 3984
+      },
+      {
+        "value": "dispatches",
+        "count": 1,
+        "line": 3990
+      },
+      {
+        "value": "wallClockMs",
+        "count": 3,
+        "line": 3991
+      },
+      {
+        "value": "completeRuns",
+        "count": 2,
+        "line": 3991
+      },
+      {
+        "value": "local-median",
+        "count": 1,
+        "line": 3996
+      },
+      {
+        "value": "dispatches.executor.repair",
+        "count": 1,
+        "line": 4008
+      },
+      {
+        "value": "drivenSessionCeiling",
+        "count": 1,
+        "line": 4010
+      },
+      {
+        "value": "drivenPhaseTimeoutMs",
+        "count": 1,
+        "line": 4011
+      },
+      {
+        "value": "dispatch standing: unavailable (<named read error>)",
+        "count": 1,
+        "line": 4035
+      },
+      {
+        "value": "--ceiling unlimited",
+        "count": 1,
+        "line": 4064
+      },
+      {
+        "value": "unlimited",
+        "count": 1,
+        "line": 4070
+      },
+      {
+        "value": "status --json",
+        "count": 1,
+        "line": 4076
+      },
+      {
+        "value": "npm run resume -- defect <criterion> --class <class> --evidence <text> <actor-flags>",
+        "count": 1,
+        "line": 4089
+      },
+      {
+        "value": "npm run resume -- waive",
+        "count": 1,
+        "line": 4090
+      },
+      {
+        "value": "npm run resume -- retract <ordinal> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>",
+        "count": 1,
+        "line": 4091
+      },
+      {
+        "value": "npm run resume -- reopen-handoff",
+        "count": 1,
+        "line": 4092
+      },
+      {
+        "value": "**Criterion <id>:** unmet, defective (<class>) by <ordinal>",
+        "count": 1,
+        "line": 4095
+      },
+      {
+        "value": "release prepare",
+        "count": 1,
+        "line": 4097
+      },
+      {
+        "value": "[]",
+        "count": 1,
+        "line": 4106
+      },
+      {
+        "value": "**Criterion <id>:** unmet",
+        "count": 1,
+        "line": 4108
+      },
+      {
+        "value": "basis",
+        "count": 1,
+        "line": 4109
+      },
+      {
+        "value": "reproduction",
+        "count": 1,
+        "line": 4109
+      },
+      {
+        "value": "retention",
+        "count": 1,
+        "line": 4114
+      },
+      {
+        "value": "gate-fixture-passed",
+        "count": 1,
+        "line": 4119
+      },
+      {
+        "value": "gate-fixture-failed",
+        "count": 1,
+        "line": 4120
+      },
+      {
+        "value": "session-scratch",
+        "count": 1,
+        "line": 4121
+      },
+      {
+        "value": "worker-capture",
+        "count": 1,
+        "line": 4122
+      },
+      {
+        "value": "warm-fixture",
+        "count": 1,
+        "line": 4123
+      },
+      {
+        "value": "legacy-backfill",
+        "count": 1,
+        "line": 4124
+      },
+      {
+        "value": "coordination",
+        "count": 1,
+        "line": 4125
+      },
+      {
+        "value": "docs/planning/passes/",
+        "count": 1,
+        "line": 4157
+      },
+      {
+        "value": "docs/control/documents.json",
+        "count": 1,
+        "line": 4167
+      },
+      {
+        "value": "How to start: <path>.",
+        "count": 1,
+        "line": 4170
+      },
+      {
+        "value": "Read:",
+        "count": 1,
+        "line": 4172
+      },
+      {
+        "value": "entryPoints",
+        "count": 1,
+        "line": 4178
+      },
+      {
+        "value": "front-page",
+        "count": 1,
+        "line": 4180
+      },
+      {
+        "value": "npm run plan -- documents",
+        "count": 1,
+        "line": 4187
+      },
+      {
+        "value": "ADVISORY",
+        "count": 2,
+        "line": 4201
+      },
+      {
+        "value": "documents.paragraphWords",
+        "count": 1,
+        "line": 4209
+      },
+      {
+        "value": "documents",
+        "count": 1,
+        "line": 4211
+      },
+      {
+        "value": "node scripts/docs-check.mjs --long-paragraphs",
+        "count": 1,
+        "line": 4213
+      },
+      {
+        "value": "packages/*/src/",
+        "count": 2,
+        "line": 4226
+      },
+      {
+        "value": "scripts/lib/markdown-links.mjs",
+        "count": 1,
+        "line": 4229
+      },
+      {
+        "value": "JSON.parse",
+        "count": 1,
+        "line": 4229
+      },
+      {
+        "value": "scripts/lib/markdown-screen.mjs",
+        "count": 1,
+        "line": 4230
+      },
+      {
+        "value": "operatorQuote",
+        "count": 2,
+        "line": 4242
+      },
+      {
+        "value": "verbatim screen: no captures",
+        "count": 1,
+        "line": 4257
+      },
+      {
+        "value": "docs/control/local/",
+        "count": 1,
+        "line": 4266
+      },
+      {
+        "value": "captureSha256",
+        "count": 1,
+        "line": 4272
+      },
+      {
+        "value": "requestedIn",
+        "count": 1,
+        "line": 4272
+      },
+      {
+        "value": "features.verbatim-operator-words",
+        "count": 1,
+        "line": 4276
+      },
+      {
+        "value": "quality pass: <target>",
+        "count": 1,
+        "line": 4325
+      },
+      {
+        "value": "quality pass: the opening paragraph of README.md",
+        "count": 1,
+        "line": 4327
+      },
+      {
+        "value": "--license none",
+        "count": 1,
+        "line": 4353
+      },
+      {
+        "value": "LICENSE-PENDING.md",
+        "count": 1,
+        "line": 4353
+      },
+      {
+        "value": "UNLICENSED",
+        "count": 1,
+        "line": 4355
+      },
+      {
+        "value": "packages/*/package.json",
+        "count": 1,
+        "line": 4357
+      }
+    ],
+    "block line": [
+      {
+        "value": "gh repo create <org>/<name> --private",
+        "count": 1,
+        "line": 186
+      },
+      {
+        "value": "git clone --no-tags <starter url> <name>",
+        "count": 1,
+        "line": 187
+      },
+      {
+        "value": "cd <name>",
+        "count": 1,
+        "line": 188
+      },
+      {
+        "value": "node scripts/doctor.mjs",
+        "count": 1,
+        "line": 189
+      },
+      {
+        "value": "git remote rename origin upstream",
+        "count": 1,
+        "line": 190
+      },
+      {
+        "value": "git config remote.upstream.tagOpt --no-tags",
+        "count": 2,
+        "line": 191
+      },
+      {
+        "value": "git remote add origin <private url>",
+        "count": 1,
+        "line": 192
+      },
+      {
+        "value": "git push -u origin main",
+        "count": 1,
+        "line": 193
+      },
+      {
+        "value": "node scripts/bootstrap.mjs",
+        "count": 1,
+        "line": 194
+      },
+      {
+        "value": "node scripts/harness.mjs check",
+        "count": 1,
+        "line": 195
+      },
+      {
+        "value": "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md",
+        "count": 1,
+        "line": 326
+      },
+      {
+        "value": "resume: next",
+        "count": 1,
+        "line": 335
+      },
+      {
+        "value": "resume: verify",
+        "count": 1,
+        "line": 336
+      },
+      {
+        "value": "resume: final review",
+        "count": 1,
+        "line": 337
+      },
+      {
+        "value": "resume: release close",
+        "count": 1,
+        "line": 360
+      },
+      {
+        "value": "# Example local-terms list. Copy it to docs/control/local/terms.txt,",
+        "count": 1,
+        "line": 426
+      },
+      {
+        "value": "# which Git ignores, and replace every entry with your own, one a line.",
+        "count": 1,
+        "line": 427
+      },
+      {
+        "value": "# A # at a line's start, or after a space, begins a comment: say what each",
+        "count": 1,
+        "line": 428
+      },
+      {
+        "value": "# entry names, above it or after it.",
+        "count": 1,
+        "line": 429
+      },
+      {
+        "value": "refuse:",
+        "count": 1,
+        "line": 431
+      },
+      {
+        "value": "# An internal codename. It must never appear.",
+        "count": 1,
+        "line": 432
+      },
+      {
+        "value": "Project Lantern",
+        "count": 1,
+        "line": 433
+      },
+      {
+        "value": "# An internal host name.",
+        "count": 1,
+        "line": 434
+      },
+      {
+        "value": "build.lantern.example",
+        "count": 1,
+        "line": 435
+      },
+      {
+        "value": "context:",
+        "count": 1,
+        "line": 437
+      },
+      {
+        "value": "# A product name that is also an ordinary word. A stage reads each match.",
+        "count": 1,
+        "line": 438
+      },
+      {
+        "value": "Harbor",
+        "count": 1,
+        "line": 439
+      },
+      {
+        "value": "mkdir -p docs/control/local",
+        "count": 1,
+        "line": 447
+      },
+      {
+        "value": "cp scripts/kit/terms.example.txt docs/control/local/terms.txt",
+        "count": 1,
+        "line": 448
+      },
+      {
+        "value": "npm run terms -- check CLAUDE.md README.md",
+        "count": 1,
+        "line": 449
+      },
+      {
+        "value": "The ferry left the harbor at dawn.",
+        "count": 1,
+        "line": 469
+      },
+      {
+        "value": "Harbor 2.1 moves the scheduler to its own service.",
+        "count": 1,
+        "line": 470
+      },
+      {
+        "value": "Ask the Project-Lantern team for the token.",
+        "count": 1,
+        "line": 471
+      },
+      {
+        "value": "m = {a: har}|{bor: b}",
+        "count": 1,
+        "line": 472
+      },
+      {
+        "value": "FAIL docs/sample.md:3: a local term in refuse mode",
+        "count": 1,
+        "line": 479
+      },
+      {
+        "value": "local-terms list: present; entries: 2 refuse, 1 context; changed files screened: 1; lines found: 1 refuse, 2 context",
+        "count": 1,
+        "line": 485
+      },
+      {
+        "value": "CONTEXT docs/sample.md:1: a local term in context mode",
+        "count": 1,
+        "line": 486
+      },
+      {
+        "value": "CONTEXT docs/sample.md:2: a local term in context mode",
+        "count": 1,
+        "line": 487
+      },
+      {
+        "value": "npm run worktree -- clone <id> <absolute-path>",
+        "count": 1,
+        "line": 623
+      },
+      {
+        "value": "node scripts/worktree.mjs publish WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file <committed-reviewed-body-path> [--confirm-terms sha256:<digest>]",
+        "count": 1,
+        "line": 681
+      },
+      {
+        "value": "{ \"version\": 1, \"features\": { \"plan-first\": true } }",
+        "count": 1,
+        "line": 867
+      },
+      {
+        "value": "npm run resume -- plan-proposed WO-NNN <actor-flags>",
+        "count": 1,
+        "line": 962
+      },
+      {
+        "value": "npm run resume -- plan-approved WO-NNN --capture <ignored-intake-path> --capture-hash sha256:<digest> <actor-flags>",
+        "count": 1,
+        "line": 963
+      },
+      {
+        "value": "{",
+        "count": 6,
+        "line": 976
+      },
+      {
+        "value": "\"version\": 1,",
+        "count": 2,
+        "line": 977
+      },
+      {
+        "value": "\"features\": {",
+        "count": 1,
+        "line": 978
+      },
+      {
+        "value": "\"tinkerer-economy\": false,",
+        "count": 1,
+        "line": 979
+      },
+      {
+        "value": "\"private-destination\": { \"on\": true, \"note\": \"This repository holds our own project records.\" }",
+        "count": 1,
+        "line": 980
+      },
+      {
+        "value": "}",
+        "count": 9,
+        "line": 981
+      },
+      {
+        "value": "\"unequip\": [\"process-cost\"],",
+        "count": 1,
+        "line": 1103
+      },
+      {
+        "value": "\"narrow\": { \"resourceLimits\": { \"writers\": 0 } }",
+        "count": 1,
+        "line": 1104
+      },
+      {
+        "value": "planning: first pass",
+        "count": 1,
+        "line": 1194
+      },
+      {
+        "value": "npm run resume -- withdraw --disposition abandoned --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>",
+        "count": 1,
+        "line": 1255
+      },
+      {
+        "value": "cat FOR-CORE.md",
+        "count": 1,
+        "line": 1432
+      },
+      {
+        "value": "node scripts/docs-check.mjs",
+        "count": 1,
+        "line": 1495
+      },
+      {
+        "value": "npm run publication:check",
+        "count": 1,
+        "line": 1496
+      },
+      {
+        "value": "npm run reader -- check",
+        "count": 1,
+        "line": 1497
+      },
+      {
+        "value": "npm run test:docs",
+        "count": 1,
+        "line": 1498
+      },
+      {
+        "value": "npm run plan -- target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path>",
+        "count": 1,
+        "line": 1699
+      },
+      {
+        "value": "npm run worker -- review --kind criteria|design|consistency|combined --host codex|claude",
+        "count": 1,
+        "line": 1981
+      },
+      {
+        "value": "npm run worker -- review --kind criteria --host codex",
+        "count": 1,
+        "line": 1988
+      },
+      {
+        "value": "npm run worker -- record --kind <kind> --round <N> --from <file> [--format prose|json] [--batch N] [--brief-sha256 <digest>]",
+        "count": 1,
+        "line": 2034
+      },
+      {
+        "value": "npm run worker -- record --kind criteria --round 1 --from <file> --format prose",
+        "count": 1,
+        "line": 2041
+      },
+      {
+        "value": "Advisory: attestation recorded as supplied; <harness> <version> effort <effort> has no matching discovery observation.",
+        "count": 1,
+        "line": 2566
+      },
+      {
+        "value": "\"workers\": {",
+        "count": 1,
+        "line": 2742
+      },
+      {
+        "value": "\"default\": { \"claude\": \"opus\", \"codex\": \"sol\" },",
+        "count": 1,
+        "line": 2743
+      },
+      {
+        "value": "\"advanced\": { \"claude\": \"fable\", \"codex\": \"astra\" },",
+        "count": 1,
+        "line": 2744
+      },
+      {
+        "value": "\"night-review\": {",
+        "count": 1,
+        "line": 2745
+      },
+      {
+        "value": "\"description\": \"Reviews that run unattended.\",",
+        "count": 1,
+        "line": 2746
+      },
+      {
+        "value": "\"codex\": { \"model\": \"astra\", \"effort\": \"high\" }",
+        "count": 1,
+        "line": 2747
+      },
+      {
+        "value": "\"schemaVersion\": 1,",
+        "count": 1,
+        "line": 2765
+      },
+      {
+        "value": "\"models\": {",
+        "count": 1,
+        "line": 2766
+      },
+      {
+        "value": "\"small\": { \"provider\": \"claude\", \"id\": \"<the exact id>\", \"effort\": \"high\", \"family\": \"<the family>\" }",
+        "count": 1,
+        "line": 2767
+      },
+      {
+        "value": "},",
+        "count": 2,
+        "line": 2768
+      },
+      {
+        "value": "\"prices\": {}",
+        "count": 1,
+        "line": 2769
+      },
+      {
+        "value": "\"hooks\": {",
+        "count": 1,
+        "line": 2988
+      },
+      {
+        "value": "\"PostToolUse\": [",
+        "count": 1,
+        "line": 2989
+      },
+      {
+        "value": "\"matcher\": \"Edit|Write\",",
+        "count": 1,
+        "line": 2991
+      },
+      {
+        "value": "\"hooks\": [",
+        "count": 1,
+        "line": 2992
+      },
+      {
+        "value": "\"type\": \"command\",",
+        "count": 1,
+        "line": 2994
+      },
+      {
+        "value": "\"command\": \"node \\\"${DOTLN_LAUNCHPAD:-$CLAUDE_PROJECT_DIR}/extensions/hooks/after-edit.mjs\\\"\",",
+        "count": 1,
+        "line": 2995
+      },
+      {
+        "value": "\"timeout\": 30",
+        "count": 1,
+        "line": 2996
+      },
+      {
+        "value": "]",
+        "count": 2,
+        "line": 2998
+      },
+      {
+        "value": "\"permissions\": { \"deny\": [\"Bash(extensions/tools/deploy *)\"] }",
+        "count": 1,
+        "line": 3002
+      },
+      {
+        "value": "git fetch --no-tags upstream",
+        "count": 1,
+        "line": 3217
+      },
+      {
+        "value": "git worktree add --detach .runtime/upstream-preview upstream/main",
+        "count": 1,
+        "line": 3218
+      },
+      {
+        "value": "node .runtime/upstream-preview/scripts/launchpad.mjs preview --from upstream/main",
+        "count": 1,
+        "line": 3219
+      },
+      {
+        "value": "git worktree remove .runtime/upstream-preview",
+        "count": 2,
+        "line": 3220
+      },
+      {
+        "value": "git switch -c chore/starter-update",
+        "count": 1,
+        "line": 3269
+      },
+      {
+        "value": "git merge upstream/main",
+        "count": 1,
+        "line": 3270
+      },
+      {
+        "value": "node scripts/harness.mjs emit",
+        "count": 2,
+        "line": 3271
+      },
+      {
+        "value": "node scripts/lineage.mjs index",
+        "count": 1,
+        "line": 3272
+      },
+      {
+        "value": "npm run sync",
+        "count": 1,
+        "line": 3273
+      },
+      {
+        "value": "git add -A",
+        "count": 1,
+        "line": 3274
+      },
+      {
+        "value": "git commit -m \"Take the starter update\"",
+        "count": 1,
+        "line": 3275
+      },
+      {
+        "value": "node scripts/launchpad.mjs update --publish --from upstream/main --title \"<title>\" --body-file <path>",
+        "count": 1,
+        "line": 3276
+      },
+      {
+        "value": "git switch main",
+        "count": 1,
+        "line": 3297
+      },
+      {
+        "value": "node scripts/launchpad.mjs update --finish",
+        "count": 1,
+        "line": 3298
+      },
+      {
+        "value": "git fetch --no-tags upstream refs/tags/v0.85.0:refs/upstream-releases/v0.85.0",
+        "count": 1,
+        "line": 3493
+      },
+      {
+        "value": "git worktree add --detach .runtime/upstream-preview refs/upstream-releases/v0.85.0",
+        "count": 1,
+        "line": 3494
+      },
+      {
+        "value": "node .runtime/upstream-preview/scripts/launchpad.mjs preview --from refs/upstream-releases/v0.85.0",
+        "count": 1,
+        "line": 3495
+      },
+      {
+        "value": "node scripts/launchpad.mjs export --update /absolute/path/to/starter --preview",
+        "count": 1,
+        "line": 3612
+      },
+      {
+        "value": "node scripts/launchpad.mjs export --update /absolute/path/to/starter",
+        "count": 1,
+        "line": 3613
+      },
+      {
+        "value": "npm run resume -- accept-overrun <wallClockMs|completeRuns|subagentCap> --ceiling <value> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>",
+        "count": 1,
+        "line": 4057
+      }
+    ],
+    "link target": [
+      {
+        "value": "OPERATOR.md",
+        "count": 3,
+        "line": 6
+      },
+      {
+        "value": "#first-steps",
+        "count": 3,
+        "line": 17
+      },
+      {
+        "value": "#plan-first-mode",
+        "count": 2,
+        "line": 18
+      },
+      {
+        "value": "#features",
+        "count": 4,
+        "line": 19
+      },
+      {
+        "value": "#planning-in-this-instance",
+        "count": 5,
+        "line": 20
+      },
+      {
+        "value": "#releases-in-this-instance",
+        "count": 5,
+        "line": 21
+      },
+      {
+        "value": "#working-as-a-team-on-one-instance",
+        "count": 3,
+        "line": 22
+      },
+      {
+        "value": "#what-runs-here-and-what-does-not",
+        "count": 4,
+        "line": 23
+      },
+      {
+        "value": "#attestations",
+        "count": 1,
+        "line": 24
+      },
+      {
+        "value": "#kit-files-and-instance-files",
+        "count": 6,
+        "line": 25
+      },
+      {
+        "value": "#extending-this-instance",
+        "count": 3,
+        "line": 26
+      },
+      {
+        "value": "#taking-upstream-updates",
+        "count": 8,
+        "line": 27
+      },
+      {
+        "value": "#opting-in-to-instance-actions",
+        "count": 3,
+        "line": 28
+      },
+      {
+        "value": "#owned-cleanup-and-retention",
+        "count": 3,
+        "line": 29
+      },
+      {
+        "value": "#document-quality",
+        "count": 3,
+        "line": 30
+      },
+      {
+        "value": "#license",
+        "count": 1,
+        "line": 31
+      },
+      {
+        "value": "#what-the-host-needs",
+        "count": 1,
+        "line": 64
+      },
+      {
+        "value": "#start-a-private-repository-from-the-starter",
+        "count": 1,
+        "line": 65
+      },
+      {
+        "value": "#the-setup-step-by-step",
+        "count": 1,
+        "line": 66
+      },
+      {
+        "value": "#run-and-close-an-order",
+        "count": 1,
+        "line": 67
+      },
+      {
+        "value": "#the-local-terms-list",
+        "count": 5,
+        "line": 68
+      },
+      {
+        "value": "#the-configuration-file",
+        "count": 6,
+        "line": 69
+      },
+      {
+        "value": "#register-another-repository",
+        "count": 2,
+        "line": 70
+      },
+      {
+        "value": "#publish-a-target-orders-change",
+        "count": 3,
+        "line": 71
+      },
+      {
+        "value": "#recover-a-first-order-activated-on-main",
+        "count": 2,
+        "line": 72
+      },
+      {
+        "value": "product/07-execution-guide.md#discipline",
+        "count": 1,
+        "line": 313
+      },
+      {
+        "value": "#how-an-orders-pull-requests-merge",
+        "count": 3,
+        "line": 353
+      },
+      {
+        "value": "#the-steps-of-a-close-and-a-close-that-stops",
+        "count": 2,
+        "line": 366
+      },
+      {
+        "value": "#publish-a-pass-into-a-target",
+        "count": 3,
+        "line": 390
+      },
+      {
+        "value": "#a-registered-repository",
+        "count": 1,
+        "line": 611
+      },
+      {
+        "value": "#the-profile-and-its-area-notes",
+        "count": 1,
+        "line": 613
+      },
+      {
+        "value": "repositories/README.md",
+        "count": 1,
+        "line": 661
+      },
+      {
+        "value": "#where-the-orders-records-go",
+        "count": 1,
+        "line": 676
+      },
+      {
+        "value": "#confirm-the-listed-words",
+        "count": 1,
+        "line": 686
+      },
+      {
+        "value": "#the-three-documents",
+        "count": 1,
+        "line": 877
+      },
+      {
+        "value": "evidence/WO-242/decisions.md#wo-242-d026--verification-boards-the-approval-an-integrate-first-fast-forward-clears",
+        "count": 1,
+        "line": 967
+      },
+      {
+        "value": "#host-support",
+        "count": 1,
+        "line": 1000
+      },
+      {
+        "value": "evidence/WO-258/decisions.md#wo-258-d005",
+        "count": 3,
+        "line": 1024
+      },
+      {
+        "value": "evidence/WO-259/decisions.md#wo-259-d005",
+        "count": 1,
+        "line": 1025
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d057--part-g-as-judged-the-seeds-name-claude-code-alone-a-discovery-record-turns-no-host-on-the-operators-commands-are-a-generated-page-and-what-core-should-hear-is-one-file",
+        "count": 4,
+        "line": 1055
+      },
+      {
+        "value": "evidence/WO-258/decisions.md#wo-258-d003",
+        "count": 1,
+        "line": 1056
+      },
+      {
+        "value": "evidence/WO-258/decisions.md#wo-258-d004",
+        "count": 2,
+        "line": 1057
+      },
+      {
+        "value": "#run-the-first-pass",
+        "count": 1,
+        "line": 1172
+      },
+      {
+        "value": "#rules-a-pass-records",
+        "count": 3,
+        "line": 1173
+      },
+      {
+        "value": "#an-order-nobody-activated",
+        "count": 2,
+        "line": 1174
+      },
+      {
+        "value": "#captures-and-re-tasked-workers",
+        "count": 1,
+        "line": 1175
+      },
+      {
+        "value": "#plan-an-initiative-in-waves",
+        "count": 1,
+        "line": 1176
+      },
+      {
+        "value": "#pace-an-order-across-days",
+        "count": 1,
+        "line": 1177
+      },
+      {
+        "value": "#a-pass-takes-no-starter-update",
+        "count": 2,
+        "line": 1178
+      },
+      {
+        "value": "#what-core-should-hear",
+        "count": 3,
+        "line": 1179
+      },
+      {
+        "value": "#the-commands-a-pass-runs",
+        "count": 2,
+        "line": 1180
+      },
+      {
+        "value": "#publish-the-pass",
+        "count": 3,
+        "line": 1181
+      },
+      {
+        "value": "#the-seeds-a-pass-reads",
+        "count": 1,
+        "line": 1182
+      },
+      {
+        "value": "#planning-inputs-a-fresh-instance-lacks",
+        "count": 1,
+        "line": 1183
+      },
+      {
+        "value": "#study-a-large-target-an-area-at-a-time",
+        "count": 1,
+        "line": 1184
+      },
+      {
+        "value": "evidence/WO-259/decisions.md#wo-259-d008",
+        "count": 1,
+        "line": 1237
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d109--part-r-opens-on-checkpoint-50-the-sites-that-compare-an-orders-number-with-one-of-cores-the-readers-of-what-the-part-moves-and-the-two-gates",
+        "count": 2,
+        "line": 1262
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d112--part-r-as-built-the-predicate-at-ten-sites-a-withdrawal-as-an-orders-first-event-a-register-judged-as-it-is-left-a-known-issue-disposed-the-preflight-advisory-and-the-re-task-and-capture-rules",
+        "count": 2,
+        "line": 1263
+      },
+      {
+        "value": "workstreams/README.md",
+        "count": 1,
+        "line": 1302
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d093--part-o-begins-on-checkpoint-43-an-initiatives-layout-is-a-section-of-its-workstream-document-planned-items-are-not-orders-and-a-pass-files-the-next-wave-and-the-twenty-seventh-critics-four-points",
+        "count": 1,
+        "line": 1334
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d131--the-repair-of-ver-002-ten-findings-in-code-each-closed-as-the-class-it-names",
+        "count": 2,
+        "line": 1375
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d098--part-p-begins-on-checkpoint-45-the-bound-reads-worked-time-from-the-phases-journals-the-days-figure-is-advisory-and-the-standing-is-a-file-of-its-own-with-the-parts-consumer-map-and-its-two-gates",
+        "count": 1,
+        "line": 1376
+      },
+      {
+        "value": "planning/passes/whole-plan-and-codebase-review-2026-11-09.md",
+        "count": 2,
+        "line": 1437
+      },
+      {
+        "value": "evidence/WO-258/decisions.md#wo-258-d015",
+        "count": 1,
+        "line": 1534
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d175--a-criteria-list-the-parser-reads-as-shorter-than-written-is-refused-by-every-reader-of-it-and-never-returned-shorter",
+        "count": 1,
+        "line": 1535
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d199--the-block-opener-class-where-a-wrapped-line-opens-a-block-the-moved-readers-return-less-than-the-bases-line-readers-read-in-about-thirty-readers-and-in-no-committed-document-and-the-choice-of-repair-is-the-operators",
+        "count": 1,
+        "line": 1536
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d010--where-each-screen-lists-a-context-mode-match-steps-a2-to-a4",
+        "count": 2,
+        "line": 1579
+      },
+      {
+        "value": "evidence/WO-281/decisions.md#wo-281-d012--step-3-the-documentation-map-is-a-kit-template-rewritten-as-a-table-of-the-roots-and-a-starter-refresh-brings-a-copy-an-older-export-wrote-to-it-and-keeps-one-its-owner-changed",
+        "count": 1,
+        "line": 1626
+      },
+      {
+        "value": "product/07-execution-guide.md#research-and-guided-operator-work-orders",
+        "count": 1,
+        "line": 1664
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d086--part-l-as-built-area-notes-beside-a-targets-profile-read-by-the-document-check-and-the-briefing-and-one-sentence-in-three-roles",
+        "count": 1,
+        "line": 1691
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d155--follow-ups-on-the-terms-and-verbatim-screens-a-quoted-sentence-inside-a-code-span-passes-a-list-written-before-this-release-can-change-meaning-and-the-guides-never-refuses-sentence-leaves-out-a-target",
+        "count": 1,
+        "line": 1711
+      },
+      {
+        "value": "evidence/WO-259/decisions.md#wo-259-d012",
+        "count": 1,
+        "line": 1826
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d087--part-m-as-built-a-target-order-closes-when-its-base-holds-the-reviewed-change-by-ancestry-a-squash-or-a-rebase-or-under-a-commit-named-for-it-the-instance-lists-its-authors-and-the-drive-settles-a-targets-own-release",
+        "count": 3,
+        "line": 1880
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d167--the-closes-rebase-rule-takes-one-base-commit-for-each-of-the-branchs-commits-in-the-branchs-order",
+        "count": 1,
+        "line": 1881
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d200--follow-ups-on-the-update-plan-and-the-close-a-runtime-file-the-incoming-kit-adds-is-loaded-before-it-is-compared-a-retry-refused-for-a-file-the-kit-dropped-and-a-squash-reading-that-answers-before-the-rebase-rule",
+        "count": 1,
+        "line": 1882
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d090--part-n-as-built-a-registration-says-whether-its-orders-records-are-filed-into-the-target-or-stay-in-the-instance-mains-value-governs-every-reader-and-a-committed-records-binding-decides-an-order-in-flight",
+        "count": 1,
+        "line": 1928
+      },
+      {
+        "value": "#desktop-control-and-browser-checks",
+        "count": 1,
+        "line": 1936
+      },
+      {
+        "value": "#review-workers",
+        "count": 1,
+        "line": 1937
+      },
+      {
+        "value": "#the-review-ladder",
+        "count": 1,
+        "line": 1938
+      },
+      {
+        "value": "#what-a-worker-may-run",
+        "count": 1,
+        "line": 1939
+      },
+      {
+        "value": "#the-gates",
+        "count": 1,
+        "line": 1940
+      },
+      {
+        "value": "#the-checks-an-order-owes-at-its-closeout",
+        "count": 1,
+        "line": 1941
+      },
+      {
+        "value": "#suites-that-stay-core-only",
+        "count": 1,
+        "line": 1942
+      },
+      {
+        "value": "#the-carried-runtime-and-the-console",
+        "count": 1,
+        "line": 1943
+      },
+      {
+        "value": "#hooks",
+        "count": 2,
+        "line": 1944
+      },
+      {
+        "value": "#what-each-worker-runs",
+        "count": 2,
+        "line": 2000
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d023--a-review-launch-names-the-part-whose-criteria-are-due",
+        "count": 1,
+        "line": 2059
+      },
+      {
+        "value": "evidence/WO-257/decisions.md#wo-257-d041--preserve-batch-table-semantics-and-unique-finding-identities",
+        "count": 1,
+        "line": 2060
+      },
+      {
+        "value": "evidence/WO-255/decisions.md#wo-255-d042--every-embedded-possible-result-requires-declared-intent",
+        "count": 1,
+        "line": 2061
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d039--part-c-as-built-the-blocking-rule-in-every-brief-one-review-for-a-fix-the-ladder-line-and-the-paired-record",
+        "count": 1,
+        "line": 2110
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d021--the-role-text-of-steps-a6-a7-a9-a11-a12-and-a15-and-the-installed-roots-bytes",
+        "count": 1,
+        "line": 2111
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d015--what-the-host-gives-at-a-workers-stop-and-what-the-hook-reads-of-it-steps-a8-and-a9",
+        "count": 1,
+        "line": 2140
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d143--the-kit-closes-the-background-server-codex-leaves-running-the-sixteenth-complete-run-is-stopped-for-that-change-the-critics-record-and-clock-are-brought-up-to-date-in-the-repair",
+        "count": 1,
+        "line": 2141
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d142--a-gate-shows-the-file-events-daemons-size-at-every-start-and-refuses-above-1-gib-after-a-restart-showed-the-daemon-healthy-and-a-measured-comparison-showed-that-where-the-gates-files-are-made-does-not-matter",
+        "count": 1,
+        "line": 2216
+      },
+      {
+        "value": "evidence/WO-260/decisions.md#wo-260-d010--the-git-floor-is-git-2310-and-wo-258-d009-is-superseded",
+        "count": 1,
+        "line": 2217
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d174--kit-verification-and-an-updates-plan-compare-every-carried-compiled-runtime-file-before-any-of-the-instances-code-runs",
+        "count": 2,
+        "line": 2218
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d105--a-units-matcher-is-an-anchored-exclusion-of-the-names-its-kinds-do-not-cover-observed-on-claude-code-documented-and-not-observed-on-copilot-where-the-host-refused-the-run-and-the-units-own-name-tests-stay-as-they-are",
+        "count": 1,
+        "line": 2396
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d106--part-q-as-built-with-both-readings-of-what-a-call-costs-in-hooks",
+        "count": 1,
+        "line": 2397
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d108--part-qs-gates-and-what-changed-after-d106-two-edits-to-a-parser-a-pinned-digest-the-part-had-not-run-and-one-statistic-joined-to-the-wrong-sample",
+        "count": 1,
+        "line": 2398
+      },
+      {
+        "value": "#kit-files",
+        "count": 2,
+        "line": 2575
+      },
+      {
+        "value": "#instance-files",
+        "count": 1,
+        "line": 2576
+      },
+      {
+        "value": "#settings-and-host-rules",
+        "count": 1,
+        "line": 2577
+      },
+      {
+        "value": "#generated-and-seeded-pages",
+        "count": 1,
+        "line": 2578
+      },
+      {
+        "value": "#whose-commits-are-the-instances-own",
+        "count": 1,
+        "line": 2579
+      },
+      {
+        "value": "#the-usage-report",
+        "count": 2,
+        "line": 2581
+      },
+      {
+        "value": "#your-orders-live-here",
+        "count": 1,
+        "line": 2582
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d032--the-carried-parser-is-proven-by-recorded-hash-and-left-out-of-the-screens-by-its-bytes",
+        "count": 1,
+        "line": 2622
+      },
+      {
+        "value": "#what-a-starter-refresh-does-to-a-seed",
+        "count": 2,
+        "line": 2686
+      },
+      {
+        "value": "evidence/WO-258/decisions.md#wo-258-d012",
+        "count": 1,
+        "line": 2689
+      },
+      {
+        "value": "#apply-a-worker-or-model-change",
+        "count": 1,
+        "line": 2755
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d077--worker-models-as-redesigned-on-the-operators-direction-models-are-rows-of-data-workers-are-names-an-instance-binds-to-them-one-resolver-and-two-commands-answer-every-launch-and-no-worker-definition-hook-or-sentence-names-a-model",
+        "count": 1,
+        "line": 2849
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d069--part-j-as-built-an-instances-workers-section-decides-what-each-worker-runs-one-resolver-answers-every-reader-and-the-usage-report-gives-tokens-by-class-and-by-day-with-an-estimate-from-the-instances-own-prices",
+        "count": 1,
+        "line": 2911
+      },
+      {
+        "value": "evidence/WO-258/decisions.md#wo-258-d011",
+        "count": 1,
+        "line": 2933
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d008--the-lists-two-classes-and-the-runs-a-match-joins-across-step-a1",
+        "count": 3,
+        "line": 2934
+      },
+      {
+        "value": "#running-your-hooks",
+        "count": 1,
+        "line": 3021
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d074--part-k-as-built-one-root-that-is-the-instances-by-guarantee-a-settings-fragment-that-only-adds-and-takes-no-pretooluse-hook-and-what-the-host-was-observed-to-do",
+        "count": 1,
+        "line": 3157
+      },
+      {
+        "value": "#take-a-starter-update",
+        "count": 3,
+        "line": 3168
+      },
+      {
+        "value": "#what-the-preview-shows",
+        "count": 2,
+        "line": 3169
+      },
+      {
+        "value": "#what-the-updates-publish-checks",
+        "count": 2,
+        "line": 3170
+      },
+      {
+        "value": "#a-file-both-sides-changed",
+        "count": 2,
+        "line": 3171
+      },
+      {
+        "value": "#preview-a-named-starter-release",
+        "count": 1,
+        "line": 3172
+      },
+      {
+        "value": "#an-instance-older-than-v100",
+        "count": 2,
+        "line": 3173
+      },
+      {
+        "value": "#what-an-update-replaces",
+        "count": 1,
+        "line": 3174
+      },
+      {
+        "value": "#editing-a-kit-file",
+        "count": 1,
+        "line": 3175
+      },
+      {
+        "value": "#cores-own-update-of-the-starter",
+        "count": 2,
+        "line": 3176
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d060--part-h-as-built-the-host-report-a-kit-roots-host-check-sized-to-its-carried-tasks-the-previews-floor-lines-the-compilers-failure-and-the-attributes-seed",
+        "count": 1,
+        "line": 3403
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d065--part-i-as-built-an-updates-merge-keeps-the-instances-bytes-the-preview-lists-the-files-both-sides-changed-a-surface-the-instances-emit-wrote-is-re-emitted-and-every-spelling-of-a-worker-launch-counts",
+        "count": 4,
+        "line": 3405
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d068--the-thirteenth-critic-the-sixth-attack-on-part-i-and-rolling-review-21-judged-the-publish-takes-the-revision-it-is-told-and-the-instances-bytes-are-those-of-the-commits-the-branch-holds",
+        "count": 1,
+        "line": 3483
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d033--what-this-part-changes-in-the-ported-readers-one-build-free-source-reader-no-committed-cards-one-parse-a-document",
+        "count": 1,
+        "line": 3562
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d170--a-resident-that-holds-no-reader-of-mission-documents-records-the-checks-failure-as-documents-unread-and-the-hold-names-the-launcher",
+        "count": 1,
+        "line": 3563
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d163--follow-ups-in-standing-documents-sentences-the-kit-guides-update-section-is-said-to-carry-and-does-not-a-seeds-check-that-names-three-files-of-four-dated-accounts-a-stale-synopsis-and-four-passages-that-still-call-the-teammate-ready-rung-10",
+        "count": 1,
+        "line": 3564
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d164--the-second-reading-the-files-the-first-sixteen-readers-left-unread-and-an-update-from-the-previous-releases-kit-add-one-blocking-finding-three-readers-under-criterion-25-and-nineteen-follow-ups",
+        "count": 1,
+        "line": 3565
+      },
+      {
+        "value": "#when-a-prune-runs",
+        "count": 1,
+        "line": 3756
+      },
+      {
+        "value": "#how-a-prune-judges-and-removes",
+        "count": 1,
+        "line": 3757
+      },
+      {
+        "value": "#what-a-close-keeps-of-an-orders-sessions",
+        "count": 1,
+        "line": 3758
+      },
+      {
+        "value": "#what-a-close-removes-from-a-target",
+        "count": 2,
+        "line": 3759
+      },
+      {
+        "value": "#what-a-gate-and-a-session-leave",
+        "count": 1,
+        "line": 3761
+      },
+      {
+        "value": "#ownership-markers",
+        "count": 1,
+        "line": 3762
+      },
+      {
+        "value": "#the-bounds-on-a-phase",
+        "count": 1,
+        "line": 3763
+      },
+      {
+        "value": "#accept-an-overrun",
+        "count": 1,
+        "line": 3764
+      },
+      {
+        "value": "#a-criterion-nothing-can-meet-waivers-and-retractions",
+        "count": 1,
+        "line": 3765
+      },
+      {
+        "value": "#retention-windows",
+        "count": 1,
+        "line": 3766
+      },
+      {
+        "value": "#the-writer-reservation",
+        "count": 1,
+        "line": 3925
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d102--the-attack-on-steps-p1-and-p6-six-findings-tool-rows-name-their-call-so-a-calls-rows-pair-exactly-a-host-that-journals-no-tool-call-reads-elapsed-time-and-a-dispatch-names-an-order-by-its-line",
+        "count": 1,
+        "line": 4044
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d016--a-cap-accepted-for-one-dispatch-is-read-by-every-counter-of-that-dispatch-step-a11",
+        "count": 1,
+        "line": 4083
+      },
+      {
+        "value": "evidence/WO-281/decisions.md#wo-281-d010--step-4-the-document-check-lists-the-long-paragraphs-a-branch-writes-in-standing-documents-at-a-figure-of-120-words-and-prints-the-whole-list-on-request",
+        "count": 1,
+        "line": 4219
+      },
+      {
+        "value": "evidence/WO-281/decisions.md#wo-281-d022--round-ones-fixes-as-built-the-rule-table-regenerated-a-case-for-criterion-3-no-refusal-over-the-figure-the-cases-the-reviewers-found-missing-and-the-guide-and-the-map-changed-where-a-reader-was-stopped-or-the-text-read-as-filler",
+        "count": 1,
+        "line": 4220
+      },
+      {
+        "value": "evidence/WO-281/decisions.md#wo-281-d011--step-5-the-final-reviewer-returns-a-changed-standing-passage-its-reader-cannot-follow-in-the-rule-every-role-carries-and-in-product-07",
+        "count": 1,
+        "line": 4221
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d031--part-b-begins-on-part-as-checkpoint-and-is-ported-from-the-earlier-worktree-whose-choices-are-restated-here",
+        "count": 1,
+        "line": 4233
+      },
+      {
+        "value": "evidence/WO-276/decisions.md#wo-276-d019--the-verbatim-screen-compares-words-and-reads-the-base-tree-once-step-a14",
+        "count": 1,
+        "line": 4280
+      },
+      {
+        "value": "evidence/WO-259/decisions.md#wo-259-d006",
+        "count": 1,
+        "line": 4282
+      },
+      {
+        "value": "evidence/WO-259/decisions.md#wo-259-d009",
+        "count": 1,
+        "line": 4306
+      }
+    ]
+  }
+}

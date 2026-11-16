@@ -1,0 +1,36 @@
+{
+  "product": {
+    "evidenceRefs": [
+      "host-gate:63a17b38c1ef26919b8e722d4cdd8ea47e62752d1d69c1aa9261a389fc7ea796:npm test"
+    ],
+    "checkId": "npm test",
+    "treeHash": "8b3c9b748b300e67c548741209e64b8b41e00cc6",
+    "codeIdentity": "63a17b38c1ef26919b8e722d4cdd8ea47e62752d1d69c1aa9261a389fc7ea796",
+    "durationMs": 3350242,
+    "evidenceRef": "host-gate:63a17b38c1ef26919b8e722d4cdd8ea47e62752d1d69c1aa9261a389fc7ea796:npm test",
+    "recordedAt": "2026-11-16T01:06:46.448Z",
+    "executed": true,
+    "exitCode": 0
+  },
+  "document": {
+    "checkId": "npm run test:docs",
+    "treeHash": "eb39b790ca10166de51ecdc1382e9b6b405e4eb4",
+    "codeIdentity": "63a17b38c1ef26919b8e722d4cdd8ea47e62752d1d69c1aa9261a389fc7ea796",
+    "documentTreeHash": "b8bd792feda64063380c3f83c66be9fe45f0cade",
+    "documentTreeExcludes": "docs/evidence/WO-281",
+    "durationMs": 161128,
+    "evidenceRef": "host-gate:63a17b38c1ef26919b8e722d4cdd8ea47e62752d1d69c1aa9261a389fc7ea796:npm run test:docs",
+    "recordedAt": "2026-11-16T02:15:56.273Z",
+    "executed": true,
+    "exitCode": 0
+  },
+  "documentSummary": {
+    "passed": 29,
+    "failed": 0,
+    "freshTasks": 29,
+    "termRefusals": 0,
+    "termContextLinesRead": 0
+  },
+  "handoffStart": "2026-11-16T01:59:05.784Z",
+  "recordedAt": "2026-11-16T02:17:26.748Z"
+}

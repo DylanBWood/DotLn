@@ -1,0 +1,303 @@
+# The inventory's difference: docs/KIT.md
+
+Written by `node docs/evidence/WO-281/inventory.mjs`. The base is `5edc7798b` (2765 lines, SHA-256 `09147e2230fe478e1195cbd6e4c34bd9ba7d5243e3e76091a5d452897e638471`); the candidate is the working tree's file (4365 lines, SHA-256 `2787606d26f649eb427762bb1b7767b657e187ecc088a573d366da5f8c624ba7`).
+
+| Kind | Base, distinct | Candidate, distinct | Absent from the candidate | Named in a decision | Unnamed | New in the candidate |
+| --- | --- | --- | --- | --- | --- | --- |
+| heading | 17 | 168 | 0 | 0 | 0 | 151 |
+| code span | 795 | 808 | 3 | 3 | 0 | 24 |
+| block line | 89 | 104 | 0 | 0 | 0 | 2 |
+| link target | 70 | 152 | 0 | 0 | 0 | 82 |
+
+## Absent from the candidate
+
+- code span, base line 651: `diff WO-NNN`: WO-281-D022: Renamed to the whole command, node scripts/plan-first.mjs diff WO-NNN: as a row of a table of commands the short form read as a command of its own (round one, the filler reviewer's first finding).
+- code span, base line 651: `apply WO-NNN`: WO-281-D022: Renamed to the whole command, node scripts/plan-first.mjs apply WO-NNN, for the same reason.
+- code span, base line 652: `draft WO-NNN --new`: WO-281-D022: Renamed to the whole command, node scripts/plan-first.mjs draft WO-NNN --new, for the same reason.
+
+## Words of the base's prose the candidate nowhere holds
+
+An aid to reading, outside the four kinds: each word with the base line it first stands on, and that line.
+
+- `spanning`, base line 402: `` `--confirm-terms sha256:<digest>` with the digest the refusal printed; a ``
+- `5`, base line 413: ``(`records` is `target`, step 5), before `npm run resume --``
+- `enter`, base line 521: `` `node scripts/lineage.mjs index` after editing the ledger. Then enter ``
+- `wo-242-d026`, base line 641: `[WO-242-D026](evidence/WO-242/decisions.md#wo-242-d026--verification-boards-the-approval-an-integrate-first-fast-forward-clears).`
+- `migration`, base line 732: ``any other file there ([decision](evidence/WO-258/decisions.md#wo-258-d004)). The old overlay `equip`/`unequip` choice for it was``
+- `118`, base line 732: ``any other file there ([decision](evidence/WO-258/decisions.md#wo-258-d004)). The old overlay `equip`/`unequip` choice for it was``
+- `119`, base line 732: ``any other file there ([decision](evidence/WO-258/decisions.md#wo-258-d004)). The old overlay `equip`/`unequip` choice for it was``
+- `withdraws`, base line 782: ``--capture <path> --capture-hash sha256:<digest> <actor-flags>` withdraws it,``
+- `handed`, base line 814: `[workstreams page](workstreams/README.md) carries the section with a worked`
+- `paced`, base line 835: `An order may be paced across days. Where this instance states what a day`
+- `2026-11-09`, base line 887: ``route used meanwhile. `node scripts/docs-check.mjs` and the document gate``
+- `wo-257`, base line 958: `` `node scripts/worktree.mjs publish` (a target order's publication, admitted by ``
+- `wo-246`, base line 958: `` `node scripts/worktree.mjs publish` (a target order's publication, admitted by ``
+- `flag`, base line 1260: `` it preserves the report and adopts no example findings. Use `--format json` ``
+- `denies`, base line 1553: `- **A denied activation.** When the host denies a step after`
+- `except`, base line 2067: `A preview writes nothing to the destination, its pending manifest, core's`
+- `classed`, base line 2501: ``}`, classed where the refusal is raised as `undeclared-ignored-material`,``
+- `interpret`, base line 2574: ``reproductions stay available. Use `analysis:` for diagnosis. When the operator``
+- `yourself`, base line 2579: ``<actor-flags>` yourself with your actual actor attestation. The executor can``
+- `2026-11-07`, base line 2685: `` `operatorQuote` naming the capture's digest and the request's, or where ``
+
+## New in the candidate
+
+- heading, candidate line 74: `### What the host needs`
+- heading, candidate line 76: `#### The host report`
+- heading, candidate line 98: `#### What the kit needs`
+- heading, candidate line 122: `#### How the Node and Git floors are held`
+- heading, candidate line 151: `#### Host access the gate runner needs`
+- heading, candidate line 178: `### Start a private repository from the starter`
+- heading, candidate line 215: `### The setup, step by step`
+- heading, candidate line 315: `### Run and close an order`
+- heading, candidate line 368: `### The local-terms list`
+- heading, candidate line 375: `#### The two classes`
+- heading, candidate line 393: `#### How the list is written`
+- heading, candidate line 408: `#### How an entry is matched`
+- heading, candidate line 421: `#### Register the list`
+- heading, candidate line 464: `#### What a screen prints: a worked example`
+- heading, candidate line 501: `#### When the list is empty or absent`
+- heading, candidate line 510: `#### Where the list is applied`
+- heading, candidate line 532: `### The configuration file`
+- heading, candidate line 541: `#### Document roots`
+- heading, candidate line 547: `#### A registered repository`
+- heading, candidate line 573: `#### The sandbox of a routed run`
+- heading, candidate line 588: `### Register another repository`
+- heading, candidate line 595: `#### What target publication needs`
+- heading, candidate line 607: `#### How the registration lands`
+- heading, candidate line 643: `#### The profile and its area notes`
+- heading, candidate line 665: `### Publish a target order's change`
+- heading, candidate line 692: `#### What the publish checks`
+- heading, candidate line 713: `#### Confirm the listed words`
+- heading, candidate line 720: `#### Where the order's records go`
+- heading, candidate line 748: `#### Which forms of the command run`
+- heading, candidate line 761: `#### How a session reaches the target`
+- heading, candidate line 775: `#### Registration settings a target order uses`
+- heading, candidate line 804: `### Recover a first order activated on main`
+- heading, candidate line 879: `### What the operator does`
+- heading, candidate line 895: `### The three documents`
+- heading, candidate line 928: `### When an approval holds`
+- heading, candidate line 946: `### The executor's commands`
+- heading, candidate line 988: `### What each feature does`
+- heading, candidate line 1027: `### Host support`
+- heading, candidate line 1059: `### The feature table`
+- heading, candidate line 1084: `### The build overlay`
+- heading, candidate line 1187: `### Run the first pass`
+- heading, candidate line 1216: `### Rules a pass records`
+- heading, candidate line 1239: `### An order nobody activated`
+- heading, candidate line 1265: `### Captures and re-tasked workers`
+- heading, candidate line 1288: `### Plan an initiative in waves`
+- heading, candidate line 1336: `### Pace an order across days`
+- heading, candidate line 1378: `### A pass takes no starter update`
+- heading, candidate line 1398: `### What core should hear`
+- heading, candidate line 1439: `### The commands a pass runs`
+- heading, candidate line 1511: `#### How an order's text is read`
+- heading, candidate line 1538: `### Publish the pass`
+- heading, candidate line 1581: `### The seeds a pass reads`
+- heading, candidate line 1599: `#### What a starter refresh does to a seed`
+- heading, candidate line 1628: `### Planning inputs a fresh instance lacks`
+- heading, candidate line 1661: `### Study a large target an area at a time`
+- heading, candidate line 1693: `### Publish a pass into a target`
+- heading, candidate line 1717: `### Order numbers`
+- heading, candidate line 1739: `### Change an order's scope`
+- heading, candidate line 1752: `### What a review and a release carry`
+- heading, candidate line 1768: `### The release name and the README's release block`
+- heading, candidate line 1796: `### Version numbers`
+- heading, candidate line 1828: `### How an order's pull requests merge`
+- heading, candidate line 1946: `### Desktop control and browser checks`
+- heading, candidate line 1974: `### Review workers`
+- heading, candidate line 1976: `#### Launch a review`
+- heading, candidate line 2016: `#### What a report must hold`
+- heading, candidate line 2029: `#### Record an Agent worker's report`
+- heading, candidate line 2063: `### The review ladder`
+- heading, candidate line 2113: `### What a worker may run`
+- heading, candidate line 2143: `### The gates`
+- heading, candidate line 2148: `#### What every selection runs first`
+- heading, candidate line 2180: `#### What the gates test`
+- heading, candidate line 2193: `#### The selections in a fresh instance`
+- heading, candidate line 2220: `### The checks an order owes at its closeout`
+- heading, candidate line 2250: `### Suites that stay core-only`
+- heading, candidate line 2315: `### The carried runtime and the console`
+- heading, candidate line 2366: `#### Which hooks run for a call`
+- heading, candidate line 2400: `#### The presence heartbeat`
+- heading, candidate line 2416: `#### The writer reservation`
+- heading, candidate line 2447: `#### A denied activation`
+- heading, candidate line 2462: `` #### A fork's `gh` ``
+- heading, candidate line 2498: `#### An operator's question`
+- heading, candidate line 2511: `#### Codex after compaction`
+- heading, candidate line 2525: `#### Quiet advisories`
+- heading, candidate line 2532: `#### Your own hooks`
+- heading, candidate line 2542: `#### A blocked turn`
+- heading, candidate line 2584: `### Kit files`
+- heading, candidate line 2624: `### Instance files`
+- heading, candidate line 2644: `### Settings and host rules`
+- heading, candidate line 2669: `### Generated and seeded pages`
+- heading, candidate line 2691: `### Whose commits are the instance's own`
+- heading, candidate line 2710: `### What each worker runs`
+- heading, candidate line 2735: `#### Bind a worker to a model`
+- heading, candidate line 2757: `#### Add or replace a model`
+- heading, candidate line 2781: `#### Apply a worker or model change`
+- heading, candidate line 2799: `#### What the configuration refuses`
+- heading, candidate line 2819: `#### Name a worker at a launch`
+- heading, candidate line 2833: `#### How a launch reaches its model`
+- heading, candidate line 2851: `### The usage report`
+- heading, candidate line 2861: `#### What it reads`
+- heading, candidate line 2873: `#### How it counts a session across days`
+- heading, candidate line 2894: `#### Estimates in dollars`
+- heading, candidate line 2913: `### Your orders live here`
+- heading, candidate line 2947: `` ### The root that is yours: `extensions/` ``
+- heading, candidate line 2981: `### Your hooks and permission rules`
+- heading, candidate line 3040: `#### What the fragment may hold`
+- heading, candidate line 3066: `#### The three events a hook may not use`
+- heading, candidate line 3082: `#### What an added rule or hook cannot do`
+- heading, candidate line 3091: `#### Running your hooks`
+- heading, candidate line 3104: `### Your tools' settings`
+- heading, candidate line 3111: `### What a tool may read`
+- heading, candidate line 3129: `### Where each kind of extension goes`
+- heading, candidate line 3144: `### What you send core`
+- heading, candidate line 3178: `### Take a starter update`
+- heading, candidate line 3335: `### What the preview shows`
+- heading, candidate line 3341: `#### Floors this host does not meet`
+- heading, candidate line 3351: `#### Instance files both sides changed`
+- heading, candidate line 3369: `#### The kit's rows`
+- heading, candidate line 3388: `#### Declared instance actions`
+- heading, candidate line 3407: `### What the update's publish checks`
+- heading, candidate line 3446: `### A file both sides changed`
+- heading, candidate line 3485: `### Preview a named starter release`
+- heading, candidate line 3503: `### An instance older than v1.0.0`
+- heading, candidate line 3567: `### What an update replaces`
+- heading, candidate line 3586: `### Editing a kit file`
+- heading, candidate line 3605: `### Core's own update of the starter`
+- heading, candidate line 3619: `#### The plan`
+- heading, candidate line 3645: `#### What the update does to each file`
+- heading, candidate line 3675: `#### After a from-core update`
+- heading, candidate line 3701: `### Apply the declared actions`
+- heading, candidate line 3717: `### The actions the kit may declare`
+- heading, candidate line 3768: `### When a prune runs`
+- heading, candidate line 3788: `#### The budget of a prune`
+- heading, candidate line 3811: `### How a prune judges and removes`
+- heading, candidate line 3840: `### What a close keeps of an order's sessions`
+- heading, candidate line 3856: `### What a close removes from a target`
+- heading, candidate line 3888: `### The steps of a close, and a close that stops`
+- heading, candidate line 3936: `### What a gate and a session leave`
+- heading, candidate line 3962: `### Ownership markers`
+- heading, candidate line 3988: `### The bounds on a phase`
+- heading, candidate line 4046: `### Accept an overrun`
+- heading, candidate line 4085: `### A criterion nothing can meet, waivers and retractions`
+- heading, candidate line 4112: `### Retention windows`
+- heading, candidate line 4149: `### The three kinds of document`
+- heading, candidate line 4165: `### Reader entry points`
+- heading, candidate line 4196: `### Long paragraphs`
+- heading, candidate line 4223: `### The screen of this instance's scripts`
+- heading, candidate line 4235: `### The operator's words are paraphrased`
+- heading, candidate line 4284: `### The terms task`
+- heading, candidate line 4310: `### Artifacts follow their contract`
+- heading, candidate line 4323: `### Ask for a quality pass`
+- code span, candidate line 10: `Decisions:`
+- code span, candidate line 12: `operator-commands`
+- code span, candidate line 30: `quality pass:`
+- code span, candidate line 322: `<name>-woNNN`
+- code span, candidate line 344: `resume: status`
+- code span, candidate line 610: `repositories`
+- code span, candidate line 954: `node scripts/plan-first.mjs diff WO-NNN`
+- code span, candidate line 955: `node scripts/plan-first.mjs apply WO-NNN`
+- code span, candidate line 956: `node scripts/plan-first.mjs draft WO-NNN --new`
+- code span, candidate line 995: `plan-first`
+- code span, candidate line 996: `private-destination`
+- code span, candidate line 997: `desktop-control`
+- code span, candidate line 1611: `docs/README.md`
+- code span, candidate line 2052: `--format`
+- code span, candidate line 3009: `extensions/hooks/`
+- code span, candidate line 3236: `both changed:`
+- code span, candidate line 3248: `git checkout main -- <path>`
+- code span, candidate line 3250: `git rm <path>`
+- code span, candidate line 3252: `git checkout main -- .claude/harness-manifest.json`
+- code span, candidate line 3264: `git merge`
+- code span, candidate line 4201: `ADVISORY`
+- code span, candidate line 4209: `documents.paragraphWords`
+- code span, candidate line 4211: `documents`
+- code span, candidate line 4213: `node scripts/docs-check.mjs --long-paragraphs`
+- block line, candidate line 1988: `npm run worker -- review --kind criteria --host codex`
+- block line, candidate line 2041: `npm run worker -- record --kind criteria --round 1 --from <file> --format prose`
+- link target, candidate line 17: `#first-steps`
+- link target, candidate line 18: `#plan-first-mode`
+- link target, candidate line 24: `#attestations`
+- link target, candidate line 26: `#extending-this-instance`
+- link target, candidate line 28: `#opting-in-to-instance-actions`
+- link target, candidate line 31: `#license`
+- link target, candidate line 64: `#what-the-host-needs`
+- link target, candidate line 65: `#start-a-private-repository-from-the-starter`
+- link target, candidate line 66: `#the-setup-step-by-step`
+- link target, candidate line 67: `#run-and-close-an-order`
+- link target, candidate line 68: `#the-local-terms-list`
+- link target, candidate line 69: `#the-configuration-file`
+- link target, candidate line 70: `#register-another-repository`
+- link target, candidate line 71: `#publish-a-target-orders-change`
+- link target, candidate line 72: `#recover-a-first-order-activated-on-main`
+- link target, candidate line 353: `#how-an-orders-pull-requests-merge`
+- link target, candidate line 366: `#the-steps-of-a-close-and-a-close-that-stops`
+- link target, candidate line 390: `#publish-a-pass-into-a-target`
+- link target, candidate line 611: `#a-registered-repository`
+- link target, candidate line 613: `#the-profile-and-its-area-notes`
+- link target, candidate line 676: `#where-the-orders-records-go`
+- link target, candidate line 686: `#confirm-the-listed-words`
+- link target, candidate line 877: `#the-three-documents`
+- link target, candidate line 1000: `#host-support`
+- link target, candidate line 1172: `#run-the-first-pass`
+- link target, candidate line 1173: `#rules-a-pass-records`
+- link target, candidate line 1174: `#an-order-nobody-activated`
+- link target, candidate line 1175: `#captures-and-re-tasked-workers`
+- link target, candidate line 1176: `#plan-an-initiative-in-waves`
+- link target, candidate line 1177: `#pace-an-order-across-days`
+- link target, candidate line 1178: `#a-pass-takes-no-starter-update`
+- link target, candidate line 1179: `#what-core-should-hear`
+- link target, candidate line 1180: `#the-commands-a-pass-runs`
+- link target, candidate line 1181: `#publish-the-pass`
+- link target, candidate line 1182: `#the-seeds-a-pass-reads`
+- link target, candidate line 1183: `#planning-inputs-a-fresh-instance-lacks`
+- link target, candidate line 1184: `#study-a-large-target-an-area-at-a-time`
+- link target, candidate line 1626: `evidence/WO-281/decisions.md#wo-281-d012--step-3-the-documentation-map-is-a-kit-template-rewritten-as-a-table-of-the-roots-and-a-starter-refresh-brings-a-copy-an-older-export-wrote-to-it-and-keeps-one-its-owner-changed`
+- link target, candidate line 1711: `evidence/WO-276/decisions.md#wo-276-d155--follow-ups-on-the-terms-and-verbatim-screens-a-quoted-sentence-inside-a-code-span-passes-a-list-written-before-this-release-can-change-meaning-and-the-guides-never-refuses-sentence-leaves-out-a-target`
+- link target, candidate line 1936: `#desktop-control-and-browser-checks`
+- link target, candidate line 1937: `#review-workers`
+- link target, candidate line 1938: `#the-review-ladder`
+- link target, candidate line 1939: `#what-a-worker-may-run`
+- link target, candidate line 1940: `#the-gates`
+- link target, candidate line 1941: `#the-checks-an-order-owes-at-its-closeout`
+- link target, candidate line 1942: `#suites-that-stay-core-only`
+- link target, candidate line 1943: `#the-carried-runtime-and-the-console`
+- link target, candidate line 1944: `#hooks`
+- link target, candidate line 2000: `#what-each-worker-runs`
+- link target, candidate line 2575: `#kit-files`
+- link target, candidate line 2576: `#instance-files`
+- link target, candidate line 2577: `#settings-and-host-rules`
+- link target, candidate line 2578: `#generated-and-seeded-pages`
+- link target, candidate line 2579: `#whose-commits-are-the-instances-own`
+- link target, candidate line 2581: `#the-usage-report`
+- link target, candidate line 2582: `#your-orders-live-here`
+- link target, candidate line 2686: `#what-a-starter-refresh-does-to-a-seed`
+- link target, candidate line 2755: `#apply-a-worker-or-model-change`
+- link target, candidate line 3021: `#running-your-hooks`
+- link target, candidate line 3168: `#take-a-starter-update`
+- link target, candidate line 3169: `#what-the-preview-shows`
+- link target, candidate line 3170: `#what-the-updates-publish-checks`
+- link target, candidate line 3171: `#a-file-both-sides-changed`
+- link target, candidate line 3172: `#preview-a-named-starter-release`
+- link target, candidate line 3173: `#an-instance-older-than-v100`
+- link target, candidate line 3174: `#what-an-update-replaces`
+- link target, candidate line 3175: `#editing-a-kit-file`
+- link target, candidate line 3176: `#cores-own-update-of-the-starter`
+- link target, candidate line 3756: `#when-a-prune-runs`
+- link target, candidate line 3757: `#how-a-prune-judges-and-removes`
+- link target, candidate line 3758: `#what-a-close-keeps-of-an-orders-sessions`
+- link target, candidate line 3759: `#what-a-close-removes-from-a-target`
+- link target, candidate line 3761: `#what-a-gate-and-a-session-leave`
+- link target, candidate line 3762: `#ownership-markers`
+- link target, candidate line 3763: `#the-bounds-on-a-phase`
+- link target, candidate line 3764: `#accept-an-overrun`
+- link target, candidate line 3765: `#a-criterion-nothing-can-meet-waivers-and-retractions`
+- link target, candidate line 3766: `#retention-windows`
+- link target, candidate line 3925: `#the-writer-reservation`
+- link target, candidate line 4219: `evidence/WO-281/decisions.md#wo-281-d010--step-4-the-document-check-lists-the-long-paragraphs-a-branch-writes-in-standing-documents-at-a-figure-of-120-words-and-prints-the-whole-list-on-request`
+- link target, candidate line 4220: `evidence/WO-281/decisions.md#wo-281-d022--round-ones-fixes-as-built-the-rule-table-regenerated-a-case-for-criterion-3-no-refusal-over-the-figure-the-cases-the-reviewers-found-missing-and-the-guide-and-the-map-changed-where-a-reader-was-stopped-or-the-text-read-as-filler`
+- link target, candidate line 4221: `evidence/WO-281/decisions.md#wo-281-d011--step-5-the-final-reviewer-returns-a-changed-standing-passage-its-reader-cannot-follow-in-the-rule-every-role-carries-and-in-product-07`

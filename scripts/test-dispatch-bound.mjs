@@ -60,6 +60,28 @@ function fixture(t) {
   return { root, budgets };
 }
 
+test("WO-281: the budgets loader leaves the long-paragraph figure to the document check, so a mistyped figure stops no dispatch", (t) => {
+  const { root, budgets } = fixture(t);
+  for (const documents of [
+    { paragraphWords: "many" },
+    { paragraphWords: 0 },
+    { paragraphWords: 120.5 },
+    { paragraphWord: 200 },
+    "none",
+  ]) {
+    write(
+      root,
+      "docs/control/budgets.json",
+      JSON.stringify({ ...budgets, documents }),
+    );
+    assert.equal(
+      readBudgets(root).dispatches.executor.completeRuns,
+      3,
+      JSON.stringify(documents),
+    );
+  }
+});
+
 test("each consumer derives time bounds from its own history, with an eight-hour floor and stable dispatch cutoff", (t) => {
   const hour = 60 * 60 * 1000;
   const template = JSON.parse(

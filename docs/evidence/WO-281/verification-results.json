@@ -1,0 +1,28 @@
+[
+  {
+    "probe": "inventory and preserved final reader subject",
+    "pass": true,
+    "base": "5edc7798b9eccaa880467d41a28b6a43f4b54226",
+    "candidateSha256": "2787606d26f649eb427762bb1b7767b657e187ecc088a573d366da5f8c624ba7",
+    "absentNamed": 3,
+    "unnamed": 0,
+    "baseLongParagraphs": 63,
+    "candidateLongParagraphs": 0
+  },
+  {
+    "probe": "inventory detects an unaccounted removed code span in scratch",
+    "pass": true
+  },
+  {
+    "probe": "all five historical map hashes reproduced from 28 source revisions",
+    "pass": true
+  },
+  {
+    "probe": "paragraph deletion join, strict threshold, quote, fence, invalid figures and opt-out",
+    "pass": true
+  },
+  {
+    "probe": "prior template-backed map advances; owner-edited map stays",
+    "pass": true
+  }
+]

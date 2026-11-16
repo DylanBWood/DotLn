@@ -128,6 +128,14 @@ including stored PR and release bodies; this does not establish navigation on a
 published PR page. Pending report IDs in the generated work-order index become
 links only after a verdict is recorded; missing completed reports still fail.
 
+The check also lists, and never refuses, each paragraph a branch adds or
+changes in a standing document that runs past the figure in
+[`control/budgets.json`](control/budgets.json) (`documents.paragraphWords`,
+120 words when unset): a long paragraph is a smell for the stage at hand to
+read and, where it is hard to follow, rewrite.
+`node scripts/docs-check.mjs --long-paragraphs` prints every standing
+document's.
+
 ## Host-posture correction — 2026-09-25
 
 [WO-161](work-orders/WO-161-sandbox-vocabulary.md) aligns generated Contributor

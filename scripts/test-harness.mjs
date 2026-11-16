@@ -8,6 +8,7 @@ import {
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
 import * as gitCommands from "./lib/git.mjs";
+import { docPath } from "./lib/config.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import {
   releaseCloseHandoff,
@@ -2956,6 +2957,39 @@ test("WO-254 every emitted role root carries the question's two pathways and the
         1,
         `${file.path} holds ${id}`,
       );
+});
+
+test("WO-281 criterion 3: the final reviewer's root, as emit installs it on each host, says once and in the rule record's words that a changed standing passage its reader cannot follow returns to repair, and product 07 states the same clause", () => {
+  const rule = sharedRuleText("document-kinds");
+  // The clause is named here, so that a write-back which drops it from the
+  // record fails this case: the roots follow the record and would still
+  // agree with it.
+  const clause =
+    "returns to repair, and so does a changed passage its reader cannot follow, which the review names";
+  assert.ok(rule.includes(clause), rule);
+  assert.ok(sharedRuleRoles("document-kinds").includes("reviewer"));
+  const roots = harnessInstallation().files;
+  for (const host of [".claude", ".agents"]) {
+    const root = roots.find(
+      (file) => file.path === `${host}/skills/dotln-reviewer/SKILL.md`,
+    );
+    assert.ok(root, `${host} reviewer`);
+    assert.equal(
+      root.contents.split("\n").filter((line) => line === rule).length,
+      1,
+      `${root.path} holds document-kinds`,
+    );
+  }
+  // Product 07 states it for the same reader, wherever its lines break.
+  assert.ok(
+    readFileSync(
+      docPath(sourceRoot, "product", "07-execution-guide.md"),
+      "utf8",
+    )
+      .replace(/\s+/gu, " ")
+      .includes(clause),
+    "product 07 §Documentation freshness and ownership",
+  );
 });
 
 test("WO-254 the three host-decided shell advisories are journaled without a systemMessage while a refused command's advisory is still shown", () => {
