@@ -580,9 +580,10 @@ each step's check is one case, by the screen this pass added.
 ## Register
 
 Thirty-five rows are disposed: the one open row, the eighteen untriaged,
-three earlier rows whose conditions have occurred and the thirteen
-candidates this pass records in the planning map, two of which the
-refutation added. None is left untriaged. The batches are in the ignored
+three earlier rows whose conditions have occurred and thirteen of the
+fourteen candidates this pass records in the planning map, two of which
+the refutation added. The fourteenth, from the document gate, was
+disposed with them afterwards. None is left untriaged. The batches are in the ignored
 local planning lane. The seventh candidate was disposed a second time
 when the meta critic's correction changed its wording.
 
@@ -639,7 +640,7 @@ these orders edit, among them FUP-17ea51254e5a7256 (a gate that holds
 off system sleep), whose seam, the suite timer, WO-284 opens; no host in
 the record reports a limit missed for sleep since.
 
-The thirteen candidates this pass records in the planning map enter the
+The fourteen candidates this pass records in the planning map enter the
 register with the dispositions the map gives them.
 
 ## Red tags
@@ -753,7 +754,7 @@ on an instance's path and by what the instance reported.
   a new subsection, the queue form.
 - The sequence, as above. The planning map: the catalog rows of the five
   orders filed and of the three absorbed, the known issues of receipt 070
-  in three of them, and this pass's thirteen candidates. The idea ledger:
+  in three of them, and this pass's fourteen candidates. The idea ledger:
   the registration heading. `docs/control/budgets.json`: one acceptance,
   for the sequence's size, by the standing route for a breach.
 - No other standing document changes. What the orders change in the kit
@@ -1132,4 +1133,33 @@ detour, and `e80769571` the restoration.
 
 ## Validation
 
-@@VALIDATION@@
+Each status below is the command's own exit status, read with the
+command's whole output kept in session scratch; the meta critic's third
+point changed how this pass reads a check.
+
+- `npm run work-orders -- index --check`: exit 0. One criteria advisory,
+  on WO-244, an older order.
+- `node scripts/docs-check.mjs`: exit 0, no failure. The verbatim screen
+  found no run of twelve words shared with a capture. Of the long
+  paragraphs it lists in standing documents this pass wrote, one is this
+  pass's: a list item of 126 words in product 07, the screen on stops,
+  read and left as one rule with its source.
+- `npm run publication:check`: exit 0.
+- `node scripts/terms.mjs branch`: exit 0. No line was found in refuse
+  mode and none in context mode, so there was no line to read beside a
+  list entry.
+- `npm run plan -- check`: exit 0 with receipt 070. The continuation
+  admits the ten disposed repairs and the regenerated cost observation.
+  Its preflight advisory names none of the three new orders, because it
+  cannot read their plans (The refutation, above).
+- `npm run test:docs`: of the four full runs on this pass's trees that
+  reached the task, three failed one task of twenty-nine, `console-docs`,
+  which the host guard stopped on its memory budget at 3.01, 3.04 and
+  3.13 GiB against 3 GiB. The fourth passed it at 2.97 GiB, and the task
+  run alone passed at 2.93 GiB. The other twenty-eight tasks passed in
+  both runs made after the receipt was filed. The cause is not traced; the fourteenth candidate
+  holds the measurements. The run on the tree that is published is made
+  with `--serial`, and the pull request states its result.
+- Not run: any complete run, since the pass changes documents alone; and
+  the interim route for the work laptop, which was read in the code and
+  the kit guide and not run on that machine.

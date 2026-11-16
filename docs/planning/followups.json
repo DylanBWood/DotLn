@@ -61512,6 +61512,30 @@
           "at": "2026-11-16T21:04:41.648Z"
         }
       ]
+    },
+    {
+      "id": "FUP-8414e5792a5c6028",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-stops-time-limits-and-whose-rules-recorded-2026-11-16::64024d200fc2f3d78c31697eed2e216f95ba0c114b6f264ddb6f90da7570a6c7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a39a32e5826692594db08a1aec132de0c5dd7649e957139577c808251788656a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-stops-time-limits-and-whose-rules-recorded-2026-11-16",
+          "title": "The console's document task against its memory budget.",
+          "summary": "14. **The console's document task against its memory budget.** In this pass's document gates the `console-docs` task peaked at 2.93 to 3.13 GiB against a task budget of 3 GiB (`memoryBudgets` in `scripts/lib/host-resources.mjs`: half the host's memory divided by the recorded lane capacity). Of the four full runs that reached the task, the host guard stopped it in three; the fourth passed it at 2.97 GiB, and run alone it passed at 2.93 GiB. The gate record holds three more rows at that level, all on 2026-11-15, and 0.7 to 2.2 GiB on other days. Measured apart on this branch, the work-order index command peaks at 0.79 GiB and the planning check at 2.1 GiB over 34 s. Not filed: this pass's subj",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Measured in this pass's document gates and not traced to a cause: the task peaked at 2.93 to 3.13 GiB against a task budget of 3 GiB and was stopped in three of the four full runs that reached it. This pass's subject is what stops an instance. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The next planning pass, where it is read first, or a document gate that fails on this budget outside a planning pass.",
+          "targets": [],
+          "at": "2026-11-16T21:27:27.283Z"
+        }
+      ]
     }
   ]
 }
