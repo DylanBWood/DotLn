@@ -6,7 +6,7 @@
 
 - [x] [WO-277] — The starter's commands page tells a person every step · **final-reviewed**
 - [x] [WO-281] — The kit guide is easy to follow · **final-reviewed**
-- [ ] [WO-282] — An update leaves nothing to repair by hand · **queued**
+- [x] [WO-282] — An update leaves nothing to repair by hand · **final-reviewed**
 - [ ] [WO-279] — A critic of conduct the kit launches when asked · **queued**
 - [ ] [WO-278] — The review helper reads a report as written · **queued**
 - [ ] [WO-280] — The discovery timeout traced and repaired · **queued**
@@ -40,23 +40,6 @@ None.
 
 ## Open
 
-### WO-282
-
-[WO-282 — An instance takes a release without repairing by hand what the update left (version assigned at activation)](WO-282-an-update-leaves-nothing-to-repair-by-hand.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-277: control-closed; WO-281: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-282-an-update-leaves-nothing-to-repair-by-hand.md](WO-282-an-update-leaves-nothing-to-repair-by-hand.md)
-
 ### WO-279
 
 [WO-279 — A critic of conduct is a worker the kit launches by name when asked, on the model an instance chooses, Opus 5.5 at xhigh by default, and on a cadence only where an instance turns one on (version assigned at activation)](WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md)
@@ -64,7 +47,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-281: control-closed; WO-282: not-control-closed.
+- References: WO-281: control-closed; WO-282: control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

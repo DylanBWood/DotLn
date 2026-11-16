@@ -4374,7 +4374,12 @@ and generated evidence, including fixtures, manifests and installed guidance.
   admits no record writes. Completion consumes the rows and runs no gate. A
   source edit changes code identity, so the complete row must run at the new
   identity, as must the final review; report, control and
-  generated-document edits keep code identity. The document row binds the exact
+  generated-document edits keep code identity. An edit to documents alone
+  keeps it too, the kit guide and every other authored document included: it
+  owes `npm run test:docs` on the exact tree, and no role runs the complete
+  gate after it, whatever a pending follow-up row proposes or an earlier
+  order did ([operator direction, 2026-11-16](../evidence/WO-282/decisions.md#wo-282-d024--critical-errors-a-complete-run-after-a-document-only-edit-and-the-rule-that-none-ever-follows-one)).
+  The document row binds the exact
   candidate tree, including current reports, decisions and generated indexes.
 - **Scratch repositories (WO-188).** A nested repository outside the intake
   lane that the tracked tree does not declare as a submodule is scratch. An

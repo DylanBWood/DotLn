@@ -52977,6 +52977,27 @@
           "title": "WO-245-D005: Bind guide-sensitive validation to current documentation bytes: declare executable document inputs in the shared product identity/reuse contract or move their consumers to exact-tree…",
           "summary": "{ \"id\": \"WO-245-D005\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Declare docs/KIT.md in the launchpad suite and launchpad-planning machinery selectors; defer the wider documentation-byte reuse boundary to planning.\", \"evidence\": [ \"Consistency review C1: the former scripts/kit/README.client.md matched both selectors; docs/KIT.md did not. scripts/test-runner.mjs now names the moved input in both places.\", \"Consistency review C2: packages/skeleton/src/gate-evidence.mjs excludes docs from gateCodeIdentity and gateInstanceInputDigest returns undefined in core. scripts/lib/gate-reuse.mjs filters product rows by code identity, not candidate tree. Adding selectors does not guar",
           "missing": false
+        },
+        {
+          "hash": "2a57babfcd3267e9cc0fb9b7f6e9bcbc6ff6671601c641a81bbc5bf014646a11",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d005",
+          "title": "WO-245-D005: Bind guide-sensitive validation to current documentation bytes: declare executable document inputs in the shared product identity/reuse contract or move their consumers to exact-tree…",
+          "summary": "{ \"id\": \"WO-245-D005\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Declare docs/KIT.md in the launchpad suite and launchpad-planning machinery selectors; defer the wider documentation-byte reuse boundary to planning.\", \"evidence\": [ \"Consistency review C1: the former scripts/kit/README.client.md matched both selectors; docs/KIT.md did not. scripts/test-runner.mjs now names the moved input in both places.\", \"Consistency review C2: packages/skeleton/src/gate-evidence.mjs excludes docs from gateCodeIdentity and gateInstanceInputDigest returns undefined in core. scripts/lib/gate-reuse.mjs filters product rows by code identity, not candidate tree. Adding selectors does not guar",
+          "missing": false
+        },
+        {
+          "hash": "9d61be4d300a6e669db01b33dfd8489fd541296a0b90505b1fff274d3f925468",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d005",
+          "title": "WO-245-D005: Bind guide-sensitive validation to current documentation bytes: declare executable document inputs in the shared product identity/reuse contract or move their consumers to exact-tree…",
+          "summary": "{ \"id\": \"WO-245-D005\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Declare docs/KIT.md in the launchpad suite and launchpad-planning machinery selectors; defer the wider documentation-byte reuse boundary to planning.\", \"evidence\": [ \"Consistency review C1: the former scripts/kit/README.client.md matched both selectors; docs/KIT.md did not. scripts/test-runner.mjs now names the moved input in both places.\", \"Consistency review C2: packages/skeleton/src/gate-evidence.mjs excludes docs from gateCodeIdentity and gateInstanceInputDigest returns undefined in core. scripts/lib/gate-reuse.mjs filters product rows by code identity, not candidate tree. Adding selectors does not guar",
+          "missing": false
+        },
+        {
+          "hash": "766b7e3dc2e33d5cc0ea002ce4bc8c763efc89d11cbbd9b25308698da436fa8e",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d005",
+          "title": "WO-245-D005: Bind guide-sensitive validation to current documentation bytes: declare executable document inputs in the shared product identity/reuse contract or move their consumers to exact-tree…",
+          "summary": "{ \"id\": \"WO-245-D005\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Declare docs/KIT.md in the launchpad suite and launchpad-planning machinery selectors; defer the wider documentation-byte reuse boundary to planning.\", \"evidence\": [ \"Consistency review C1: the former scripts/kit/README.client.md matched both selectors; docs/KIT.md did not. scripts/test-runner.mjs now names the moved input in both places.\", \"Consistency review C2: packages/skeleton/src/gate-evidence.mjs excludes docs from gateCodeIdentity and gateInstanceInputDigest returns undefined in core. scripts/lib/gate-reuse.mjs filters product rows by code identity, not candidate tree. Adding selectors does not guar",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -53003,6 +53024,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-11-15T18:14:29.692Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "declined",
+          "reason": "Declined on the operator's direction of 2026-11-16 (WO-282-D024): a complete gate never runs after a change to documents alone, and such a change is judged by the document gate on the exact candidate tree. Product 07, Discipline, now states the rule. This row proposed binding product validation to the bytes of documents.",
+          "reopenWhen": "The operator directs that a change to documents alone should run product suites.",
+          "targets": [],
+          "at": "2026-11-16T15:40:32.771Z"
         }
       ]
     },
@@ -57614,6 +57643,14 @@
           "reopenWhen": "A source-change candidate is refused on a Git from 2.47 to 2.49 for a shared reference that fsck reports, or Git's own records show that fsck checked no references before 2.50.",
           "targets": [],
           "at": "2026-11-09T23:56:10.749Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its condition occurred and the correction was not taken: WO-282 edited scripts/lib/git-surface.json only through the inventory's recording command, which added one form (WO-282-D017). The correction pairs the inventory's note with a comment in a judged feedback source, which owes a live episode that WO-282's cost line excludes. It stays with the next order that edits either file (WO-282-D023).",
+          "reopenWhen": "A source-change candidate is refused on a Git from 2.47 to 2.49 for a shared reference that fsck reports, or an order edits packages/skeleton/src/source-change-worktree.ts or the fsck entry of scripts/lib/git-surface.json.",
+          "targets": [],
+          "at": "2026-11-16T15:40:32.518Z"
         }
       ]
     },
@@ -60295,7 +60332,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Its condition occurred in WO-282: the sync suite's recovery case failed on a tree whose record names a tag the roadmap's table lacks. The executor repaired the case, which now builds a complete table in its copy before it removes the record (WO-282-D018), and it passes in that state in the order's complete runs. What is left for a planning pass is which step writes the roadmap's table after a close: the table ends at v1.0.1 while the record names v1.1.0, a state product 07 permits.",
+          "reopenWhen": "A planning pass decides which step writes the roadmap's release table, or the recovery case fails again on a tree whose record names a tag the table lacks.",
+          "targets": [],
+          "at": "2026-11-16T15:40:32.262Z"
+        }
+      ]
     },
     {
       "id": "FUP-5621408816545b95",
@@ -60317,7 +60363,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Its condition occurred: WO-282 repaired the emit. The route is not taken out, because the repair covers a merge that took the starter's manifest and a merge that stops on the manifest still needs a side. The guide and the preview now name this instance's side, and the commands page's git checkout main for that file is that side, so the page names no route the emit made unnecessary (WO-282-D023).",
+          "reopenWhen": "An update's merge can no longer stop on the harness manifest, or the guide names another side for it.",
+          "targets": [],
+          "at": "2026-11-16T15:40:32.389Z"
+        }
+      ]
     },
     {
       "id": "FUP-858a24b8de5b5313",
@@ -60465,7 +60520,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined on the operator's direction of 2026-11-16 (WO-282-D024): a complete gate never runs after a change to documents alone, and such a change is judged by the document gate on the exact candidate tree. Product 07, Discipline, now states the rule. This row proposed that the runner run a suite again when a document among its declared sources changed.",
+          "reopenWhen": "The operator directs that a change to documents alone should run product suites.",
+          "targets": [],
+          "at": "2026-11-16T15:40:32.901Z"
+        }
+      ]
     },
     {
       "id": "FUP-bd0e52a14e35c026",
@@ -60650,7 +60714,93 @@
           "missing": false
         }
       ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-282 wrote into the kit guide and did not take these five sentences: none is in a passage the order changed, and rewording them is outside its criteria. Its final review rewrote one bullet of the section on taking upstream updates and boarded the placement of three decision links for the same later order (WO-282-D023).",
+          "reopenWhen": "A planning pass files an order that writes into the kit guide, or a reader is stopped by one of the five sentences.",
+          "targets": [],
+          "at": "2026-11-16T15:40:32.645Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c9cd8c268ae9677a",
+      "key": "decision:docs/evidence/WO-282/decisions.md#wo-282-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1d237650ba4322a3b902921e9f6cf501fbaad13c447cecadbf59b85dd95e7436",
+          "ref": "docs/evidence/WO-282/decisions.md#wo-282-d022--independent-verification-every-criterion-met-at-the-executors-code-identity-and-one-follow-up-on-the-guides-release-note-sentence",
+          "title": "WO-282-D022: Priority low, inside this order's declared surface for a later repair or the planning pass: the kit guide's bullet 'Keep any custom release-note process' (docs/KIT.md, An instance older…",
+          "summary": "{ \"id\": \"WO-282-D022\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: verify\", \"decision\": \"The verifier judges all five criteria met at code identity f6f4596eaa1a4dda49bcfc16a850832b3161d1b880423f574bee804eaee89030 and leaves the implementation unchanged. Its own probes add what the executor's fixtures held constant: the emit's ownership reading in a linked worktree, in a repository with no main, with main's manifest unreadable and with no manifest on disk; the register's carry of an allocated disposition, a source edit after a carry, two retired rows matching one created row, and this repository's own register read in check mode; and the completion's own gate-claim reader, which accepts the pa",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Fixed in WO-282's final review (WO-282-D023). The guide's bullet and the release notes now say that a release reads an order's reviewed RELEASE-NOTES.md where its merge commits it, and that without core's contract an order that committed none is listed by its commit subjects with no refusal. An executed probe of the reader in a kit root and in core's root holds it; the suite case this row asked for is boarded in WO-282-D023.",
+          "reopenWhen": "The guide's bullet or the reading of an instance's notes in scripts/release.mjs changes, or a release in an instance lists commit subjects for an order whose merge committed its notes.",
+          "targets": [],
+          "at": "2026-11-16T15:40:32.128Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9f7e5bd9a023ab45",
+      "key": "decision:docs/evidence/WO-282/decisions.md#wo-282-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bc30bef3ce2a0c7ac9964c8803a9363901bf2c739e01a8fbe510abc8922db39b",
+          "ref": "docs/evidence/WO-282/decisions.md#wo-282-d023--final-review-the-subject-passes-the-guides-release-note-bullet-is-corrected-from-an-executed-reading-and-seven-follow-up-rows-are-disposed",
+          "title": "WO-282-D023: Planning, priority low, two things from WO-282's final review. (1) No suite holds what a release reads of an instance's notes: scripts/test-release-preparation.mjs, beside the WO-276…",
+          "summary": "{ \"id\": \"WO-282-D023\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: final review\", \"decision\": \"All five criteria are met and the review passes. Integration took in nothing: origin's main is the branch's base, b77e5173ec8564f3f1f0ddda432edac53ad9098f. The reviewer changed one bullet of the kit guide and no source or test. That bullet is the verifier's finding F1 (WO-282-D022): it said the kit uses commit subjects for an instance's release entries. The verifier had read scripts/release.mjs for it and executed nothing. The reviewer ran the release's own reader in four repositories. In a kit root, an order whose merge commits its reviewed RELEASE-NOTES.md has those notes read, and an order that c",
+          "missing": false
+        },
+        {
+          "hash": "62e853313747e705fc18c62d65b52e7a6ef5ca4a0956015d09e6c5d473f1e4e4",
+          "ref": "docs/evidence/WO-282/decisions.md#wo-282-d023--final-review-the-subject-passes-the-guides-release-note-bullet-is-corrected-from-an-executed-reading-and-seven-follow-up-rows-are-disposed",
+          "title": "WO-282-D023: Planning, priority low, two things from WO-282's final review. (1) No suite holds what a release reads of an instance's notes: scripts/test-release-preparation.mjs, beside the WO-276…",
+          "summary": "{ \"id\": \"WO-282-D023\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: final review\", \"decision\": \"All five criteria are met and the review passes. Integration took in nothing: origin's main is the branch's base, b77e5173ec8564f3f1f0ddda432edac53ad9098f. The reviewer changed one bullet of the kit guide and no source or test. That bullet is the verifier's finding F1 (WO-282-D022): it said the kit uses commit subjects for an instance's release entries. The verifier had read scripts/release.mjs for it and executed nothing. The reviewer ran the release's own reader in four repositories. In a kit root, an order whose merge commits its reviewed RELEASE-NOTES.md has those notes read, and an order that c",
+          "missing": false
+        },
+        {
+          "hash": "90f91bf830ba14c9cfc0cb83c6d636f9e95c121c4809d075ab8f8a0e98a6182f",
+          "ref": "docs/evidence/WO-282/decisions.md#wo-282-d023--final-review-the-subject-passes-the-guides-release-note-bullet-is-corrected-from-an-executed-reading-and-seven-follow-up-rows-are-disposed",
+          "title": "WO-282-D023: Planning, priority low, two things from WO-282's final review. (1) No suite holds what a release reads of an instance's notes: scripts/test-release-preparation.mjs, beside the WO-276…",
+          "summary": "{ \"id\": \"WO-282-D023\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: final review\", \"decision\": \"All five criteria are met and the review passes. Integration took in nothing: origin's main is the branch's base, b77e5173ec8564f3f1f0ddda432edac53ad9098f. The reviewer changed one bullet of the kit guide and no source or test. That bullet is the verifier's finding F1 (WO-282-D022): it said the kit uses commit subjects for an instance's release entries. The verifier had read scripts/release.mjs for it and executed nothing. The reviewer ran the release's own reader in four repositories. In a kit root, an order whose merge commits its reviewed RELEASE-NOTES.md has those notes read, and an order that c",
+          "missing": false
+        }
+      ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-915d215fcc824d1a",
+      "key": "decision:docs/evidence/WO-282/decisions.md#wo-282-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ff90f5a6d0d991e597242b77ca93755772f2af672846d2c08d5515b049110aa4",
+          "ref": "docs/evidence/WO-282/decisions.md#wo-282-d024--critical-errors-a-complete-run-after-a-document-only-edit-and-the-rule-that-none-ever-follows-one",
+          "title": "WO-282-D024: Critical, as the operator classified it, for the next planning session: a complete gate never runs after a change to documents alone. Product 07, Discipline, states it and WO-245-D005's…",
+          "summary": "{ \"id\": \"WO-282-D024\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: final review; the operator's corrections during the review and the direction to mark the errors critical\", \"kind\": \"correction\", \"misread\": \"The reviewer treated its one edit of docs/KIT.md as a change that owed a complete review run. It read two pending follow-up rows (WO-245-D005 and WO-277-D018) and one earlier session's choice in WO-277's repair as though they were the rule, called reuse of the executor's passing row a trap, and ran npm test -- --review --again --keep-going. When the operator objected, the reviewer checked texts and wrote records for about five minutes before it answered. Its answer then left the two rows ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Critical, as the operator classified it (WO-282-D024). Open so that plan start lists it before the untriaged rows: the role texts still need the sentence that a change to documents alone owes the document gate and never a complete run.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-11-16T15:40:33.030Z"
+        }
+      ]
     }
   ]
 }

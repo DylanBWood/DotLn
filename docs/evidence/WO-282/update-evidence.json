@@ -1,0 +1,125 @@
+{
+  "observedAt": "2026-11-16T06:29:43.961Z",
+  "ownership": {
+    "admittedExitCode": 0,
+    "olderOwnedBytesReplaced": true,
+    "olderConfigHash": "349fad8a2e3a9f7fd8e6486ed58c32c56cb2d1eb085712fe0b9d699135151c26",
+    "emittedConfigHash": "fc1e5fe1a12f023b0cfd1811ce4e39ca4a2ee06973effc8398f58ccf35a25131",
+    "checkExitCode": 0,
+    "refusedExitCode": 1,
+    "refusal": "unowned Codex output refuses replacement: .codex/config.toml",
+    "refusedWrites": 0,
+    "codexPaths": [
+      ".codex/config.toml",
+      ".codex/hooks.json",
+      ".codex/hooks/continuation.mjs"
+    ]
+  },
+  "preview": {
+    "command": "node scripts/launchpad.mjs preview --from main",
+    "exitCode": 0,
+    "output": "Preview of the DotLn kit at b77e5173ec8564f3f1f0ddda432edac53ad9098f in <fixture>.\nkit files: 1 replaced; 0 added; 0 removed; 0 refused; 0 unchanged.\nincoming: b77e5173ec8564f3f1f0ddda432edac53ad9098f (untagged)\nstarter revision: b81ddc7e22888792f15e62e5b90f789a7cda08bb\nscope: manifest-listed kit files; Git merge results may differ; instance actions are manual after the merge.\nbuild: fnv1a64:72879302474176db -> fnv1a64:72879302474176db\nreceipt: none (a starter merge writes no core sibling receipt)\ninstance files both sides changed: none\nIf the merge conflicts in .claude/harness-manifest.json, keep this instance's side: the emit rewrites it under this instance's configuration.\nre-emitted: .claude/harness-manifest.json\nInstance-actions note (2026-11-16): manual after merge.\nNo instance actions declared.\nre-emit: node scripts/harness.mjs emit\nPreview only: no destination, receipt or registry writes.\n"
+  },
+  "followups": {
+    "before": {
+      "schemaVersion": 1,
+      "entries": [
+        {
+          "id": "FUP-1e985716794bd0ee",
+          "key": "candidate:docs/product/ideas.md#candidates::e077944664e0e7c75737a212d0fbf9d0555863dd44d9800c209a103567882bb1",
+          "kind": "candidate",
+          "revisions": [
+            {
+              "hash": "81d288e52bb43f550cecdb40ad9c41148717e42335d0b129fc91e3ee50eb9688",
+              "ref": "docs/product/ideas.md#candidates",
+              "title": "Files under /.mjs.",
+              "summary": "- **Files under `**/*.mjs`.** Keep their public descriptions.",
+              "missing": false
+            }
+          ],
+          "dispositions": [
+            {
+              "sourceRevision": 1,
+              "status": "settled",
+              "reason": "Public evidence settled it.",
+              "reopenWhen": "The source changes.",
+              "targets": [],
+              "at": "2026-11-01T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    "after": {
+      "schemaVersion": 1,
+      "entries": [
+        {
+          "id": "FUP-1e985716794bd0ee",
+          "key": "candidate:docs/product/ideas.md#candidates::e077944664e0e7c75737a212d0fbf9d0555863dd44d9800c209a103567882bb1",
+          "kind": "candidate",
+          "revisions": [
+            {
+              "hash": "81d288e52bb43f550cecdb40ad9c41148717e42335d0b129fc91e3ee50eb9688",
+              "ref": "docs/product/ideas.md#candidates",
+              "title": "Files under /.mjs.",
+              "summary": "- **Files under `**/*.mjs`.** Keep their public descriptions.",
+              "missing": false
+            },
+            {
+              "hash": null,
+              "ref": "docs/product/ideas.md#candidates",
+              "title": "Files under /.mjs.",
+              "summary": "- **Files under `**/*.mjs`.** Keep their public descriptions.",
+              "missing": true
+            }
+          ],
+          "dispositions": [
+            {
+              "sourceRevision": 1,
+              "status": "settled",
+              "reason": "Public evidence settled it.",
+              "reopenWhen": "The source changes.",
+              "targets": [],
+              "at": "2026-11-01T00:00:00.000Z"
+            },
+            {
+              "sourceRevision": 2,
+              "status": "duplicate",
+              "reason": "The candidate's key changed while its source body and section stayed the same.",
+              "reopenWhen": "The candidate's source changes.",
+              "targets": [
+                "FUP-d6995fdedf7e7405"
+              ],
+              "at": "2026-11-01T00:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "FUP-d6995fdedf7e7405",
+          "key": "candidate:docs/product/ideas.md#candidates::9e2b386284a4603ede32f81bcf86ae099158906f2e0543fd4176edce26736ece",
+          "kind": "candidate",
+          "revisions": [
+            {
+              "hash": "81d288e52bb43f550cecdb40ad9c41148717e42335d0b129fc91e3ee50eb9688",
+              "ref": "docs/product/ideas.md#candidates",
+              "title": "Files under /.mjs.",
+              "summary": "- **Files under `**/*.mjs`.** Keep their public descriptions.",
+              "missing": false
+            }
+          ],
+          "dispositions": [
+            {
+              "sourceRevision": 1,
+              "status": "settled",
+              "reason": "Public evidence settled it.",
+              "reopenWhen": "The source changes.",
+              "targets": [],
+              "at": "2026-11-01T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    "pending": 0
+  }
+}

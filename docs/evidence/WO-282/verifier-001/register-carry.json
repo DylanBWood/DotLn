@@ -1,0 +1,54 @@
+{
+  "probe": "P3 register-carry",
+  "observedAt": "2026-11-16T14:06:11.439Z",
+  "pass": true,
+  "results": [
+    {
+      "label": "V1: an allocated disposition is carried; the old row is a duplicate of the new one; plan followups counts no needs-review or untriaged row",
+      "pass": true,
+      "detail": {
+        "old": "duplicate",
+        "new": "allocated",
+        "counts": {
+          "duplicate": 1,
+          "allocated": 1
+        },
+        "pending": 0
+      }
+    },
+    {
+      "label": "V3: a body edit after the carry reopens the carried row for review and creates no row",
+      "pass": true,
+      "detail": {
+        "new": "needs-review",
+        "addedRows": 0
+      }
+    },
+    {
+      "label": "V2: two retired rows match one created row; nothing is carried",
+      "pass": true,
+      "detail": [
+        {
+          "row": "first",
+          "status": "needs-review",
+          "dispositions": 1
+        },
+        {
+          "row": "second",
+          "status": "needs-review",
+          "dispositions": 1
+        },
+        {
+          "row": "created",
+          "status": "untriaged",
+          "dispositions": 0
+        }
+      ]
+    },
+    {
+      "label": "V4: this repository's register reads current under the carry (check mode)",
+      "pass": true,
+      "detail": "current"
+    }
+  ]
+}

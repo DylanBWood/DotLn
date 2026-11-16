@@ -1,0 +1,18 @@
+{
+  "probe": "P4 gate-claims",
+  "observedAt": "2026-11-16T14:06:15.631Z",
+  "currentCodeIdentity": "f6f4596eaa1a4dda49bcfc16a850832b3161d1b880423f574bee804eaee89030",
+  "refusal": null,
+  "advisories": [],
+  "warnings": [],
+  "productGate": {
+    "checkId": "npm test",
+    "codeIdentity": "f6f4596eaa1a4dda49bcfc16a850832b3161d1b880423f574bee804eaee89030",
+    "treeHash": "d7f1ef203a1ab0f6b86bffe14024b01b65b89173",
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-11-16T08:46:10.834Z",
+    "evidenceRef": "host-gate:f6f4596eaa1a4dda49bcfc16a850832b3161d1b880423f574bee804eaee89030:npm test"
+  },
+  "pass": true
+}

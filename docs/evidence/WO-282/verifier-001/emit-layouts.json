@@ -1,0 +1,47 @@
+{
+  "probe": "P1 emit-layouts",
+  "observedAt": "2026-11-16T14:06:01.797Z",
+  "pass": true,
+  "results": [
+    {
+      "label": "A: linked worktree, starter's manifest on disk, bytes main records",
+      "expect": "emitted",
+      "outcome": "emitted",
+      "configBefore": "OLD",
+      "configAfter": "NEW",
+      "pass": true
+    },
+    {
+      "label": "A2: linked worktree, starter's manifest on disk, operator-edited bytes",
+      "expect": "refused: unowned Codex output refuses replacement: .codex/config.toml",
+      "outcome": "refused: unowned Codex output refuses replacement: .codex/config.toml",
+      "configBefore": "OTHER",
+      "configAfter": "OTHER",
+      "pass": true
+    },
+    {
+      "label": "B: no main branch, starter's manifest on disk",
+      "expect": "refused: unowned Codex output refuses replacement: .codex/config.toml",
+      "outcome": "refused: unowned Codex output refuses replacement: .codex/config.toml",
+      "configBefore": "OLD",
+      "configAfter": "OLD",
+      "pass": true
+    },
+    {
+      "label": "C: no harness manifest on disk, bytes main records",
+      "expect": "emitted",
+      "outcome": "emitted",
+      "configBefore": "OLD",
+      "configAfter": "NEW",
+      "pass": true
+    },
+    {
+      "label": "D: main's manifest is not JSON",
+      "expect": "refused: unowned Codex output refuses replacement: .codex/config.toml",
+      "outcome": "refused: unowned Codex output refuses replacement: .codex/config.toml",
+      "configBefore": "OLD",
+      "configAfter": "OLD",
+      "pass": true
+    }
+  ]
+}
