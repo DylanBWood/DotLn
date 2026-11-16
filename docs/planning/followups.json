@@ -61214,6 +61214,14 @@
           "reopenWhen": "A class recurs within a week of its disposition because the role text could not change before an order shipped.",
           "targets": [],
           "at": "2026-11-16T17:35:45.242Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "The classes that came back had rules; what failed, where a session's record names it, was a kit output, a pending register row or an order's own steps saying the opposite, which WO-284 and WO-288 change. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "A class recurs within a week of its disposition because the role text could not change before an order shipped.",
+          "targets": [],
+          "at": "2026-11-16T20:17:44.663Z"
         }
       ]
     },
