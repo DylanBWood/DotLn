@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "subagentCap": 20,
   "memory": {
-    "gateShare": 0.5,
+    "gateShare": 0.6,
     "hostShare": 0.6666666666666666,
     "signalIntervalMs": 1000,
     "footprintIntervalMs": 4000,
@@ -300,6 +300,14 @@
       "dispatch": "executor",
       "ceiling": 34876,
       "reason": "WO-258 records the standing breach FUP-c61f76f60798e1b2 names: the planner root measures 30,780 bytes in each installed skill root against its effective acceptance, left advisory since the reviewed rules of WO-241 to WO-257 added to it. Under product 07's standing 2026-09-17 route, preserve those reviewed rules and accept the measured 30,780 plus one 4,096-byte step, 34,876; the byte-reduction row stays deferred with that follow-up. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-258/decisions.md#wo-258-d013."
+    },
+    {
+      "date": "2026-11-16",
+      "metric": "sequenceBytes",
+      "scope": null,
+      "dispatch": "planner",
+      "ceiling": 18028,
+      "reason": "The 2026-11-16 planning pass measured docs/planning/sequence.md at 13,932 bytes against the 12,369 accepted on 2026-09-22, after adding the six rules the operator directed that day (the queue form, stops, the override, time limits, whose rules and criticisms), each with the digest of its capture, and writing the orders paragraph for WO-284, WO-287 and WO-288. Under the standing 2026-09-17 route a breach is raised to the measured bytes plus one 4,096-byte step with the rule named, never trimmed around or left advisory across orders. Reassess when a pass folds the rules whose orders have closed."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",

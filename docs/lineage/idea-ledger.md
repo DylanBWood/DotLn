@@ -40,6 +40,25 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-16 — Planning pass: stops, time limits and whose rules (WO-284, WO-287 and WO-288 filed; WO-285 and WO-286 filed as WO-287's parts; WO-279 amended); registration only; the record is the planning document
+
+Dispatch: `planning:` on the launchpad stopping the operator's work,
+journaled at 2026-11-16T16:11:54.334Z (hook time) in Claude Code (Fable 5.2
+at max, operator-selected), captured in
+`docs/intake/planning-dispatch-2026-11-16-the-kit-stops-no-work.md` (the
+journal's digest of the message
+`babcf9a61812f0d17b80b3f0ae08c7a2022282f864b056d4cdcf5e745d9f9c58`), with
+the further messages of the pass captured beside it. The pass reads the
+kit's stops, its fixed time limits, the rules it ships and the critics'
+record against the code, answers the work instance's four entries, files
+WO-284 (an instance sets every time limit of its gate) and the rest of
+the queue as two orders of the queue form, which becomes a form a planner
+can choose (WO-287, what an instance meets, and WO-288, core's own
+tooling), and records the rules on stops, time limits, whose
+rules the kit's are and what becomes of a critic's findings.
+Record:
+[the planning document](../planning/passes/the-kit-stops-no-work-2026-11-16.md).
+
 ## 2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-282 filed); registration only; the record is the planning document
 
 Dispatch: `planning:` asking for a standard pass with the follow-ups left

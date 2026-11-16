@@ -35,16 +35,24 @@ pointers and continuation command. Untouched items persist across passes.
 - **Order size.** One subsystem's chain of work is one order with one
   outcome; the binding cost is the complete run and the fixed cycle every
   order pays. A pass does not bundle unrelated subsystems by its own
-  choice. The queue of 2026-11-09 is one order, WO-276, on the operator's
-  direction of 2026-11-10 (ignored capture SHA-256
-  `c1b4fac22420c3dc15f5bb20381de2c34a920129b4c036a93ae2841656a652f8`):
-  fifteen cycles were the cost the operator would not pay. The complete
+  choice. The complete
   review run was 24.9 minutes when this rule was written on 2026-10-13 and
   46.7 and 52.1 minutes in the committed rows of 2026-11-06 and
   2026-11-09, and 42.0 minutes on 2026-11-11 after Part D of WO-276
   (54.3 before it on the same host). Reopen when its
   median falls to half the figure of 2026-10-13, or when merged orders
   fail first verification more often than five of eight.
+- **The queue form.** Several queued orders may land as the parts of one
+  order ([product 07](../product/07-execution-guide.md#the-queue-form)),
+  which the operator made a planner's option on 2026-11-16 (ignored
+  capture SHA-256
+  `1c7d296020603d7dc0479c9533fb8089137cf2543d83534624da4a8e1f713a9c`).
+  WO-276 was the first, for the queue of 2026-11-09 (operator direction,
+  2026-11-10, ignored capture SHA-256
+  `c1b4fac22420c3dc15f5bb20381de2c34a920129b4c036a93ae2841656a652f8`:
+  fifteen cycles were the cost the operator would not pay); WO-287 and
+  WO-288 are the second and third. An order that something is waiting on
+  is not a part: one release ships nothing until its last part lands.
 - **Placement.** The operator places an order by one sequence edit; the
   order of everything the operator did not place is the planner's.
 - **Hosts.** The kit runs on Git 2.31.0, the Git on the operator's work
@@ -68,6 +76,42 @@ pointers and continuation command. Untouched items persist across passes.
   operator direction, 2026-11-09, ignored capture SHA-256
   `e1c8d0ae73fb667fbfa8aa82a58b9c6d054eaa53a521fd82a84bc8612e573237`: the
   number of reviewers follows the evidence).
+- **Stops.** A stop is core's discipline for building the starter, and
+  core keeps its own. In an instance, which does its owner's work, a stop
+  that guards the kit's own records, order or form, a host property or a
+  bound advises and the work goes on; a stop that guards the owner's work
+  or private material from loss or exposure that cannot be undone stays a
+  refusal; every stop has a setting its owner can change; and no order
+  adds one an instance cannot lower (operator direction, 2026-11-16,
+  ignored captures SHA-256
+  `f896a7fe179dfc0f81950e23c70c0c3f57c0f46e42247b961b7efaf801c077f8` and
+  `f588639f7f20b37e4fdbac3693e3b5c60758c8caf27bddfc5dcfbad5926854e4`;
+  [the 2026-11-16 pass](passes/the-kit-stops-no-work-2026-11-16.md#what-a-stop-protects-and-where-it-belongs)).
+- **The override.** `operator override:` stays the operator's last resort
+  for pushing something through whatever state the repository is in, and
+  no refusal names it as its route (operator
+  direction, 2026-11-16, ignored capture SHA-256
+  `5715e710a470b4e836468382dc2f47a68946060b98de608f31e544d263eeb3f4`).
+- **Time limits.** Every time limit a test or a check carries is a row of
+  one table, and a file the instance owns raises any of them or turns
+  them all off; the kit's figures leave room for a machine slower than
+  core's (operator direction, 2026-11-16, ignored capture SHA-256
+  `babcf9a61812f0d17b80b3f0ae08c7a2022282f864b056d4cdcf5e745d9f9c58`;
+  WO-284).
+- **Whose rules.** What the operator wants in this repository is core's
+  own loadout and is not taken for what the kit's and the starter's users
+  want: a rule the kit puts into a session's instructions says whether it
+  is the platform's or the author's, and an instance can remove the
+  author's (operator direction, 2026-11-16, ignored capture SHA-256
+  `bfec526c5a181ab51d95b25df28c16700408dc88bfc7705eed55c2af9dc41f43`;
+  ADR-0006; WO-287's Part B).
+- **Criticisms.** What a critic finds comes back. Each planning pass runs
+  the critic of the critics over the points since the last pass and, for
+  each class, changes a document in the pass, files the change or
+  declines it with what would show the decline wrong
+  ([product 07](../product/07-execution-guide.md#operator-opened-planning-pass),
+  the pass's eighth input; operator direction, 2026-11-16, the same
+  capture as the time limits').
 - **Early access.** The period below `v2.0.0`, the roadmap's Teammate-ready
   rung, is early access (operator direction, 2026-09-30; the rung was
   numbered `v1.0.0` until 2026-11-11,
@@ -94,38 +138,41 @@ capture SHA-256
 stream of work in this repository depends on it. The fork and
 DotLn-Angular remain where the same route is exercised in the open.
 
+Core cannot see that instance's journals: what stops core's own sessions says
+little about what stops it, so a pass ranks a stop by whether it lies on
+an instance's path and by what the instance reported (operator direction,
+2026-11-16, ignored capture SHA-256
+`35e0177daa25798a102fa3714519a96cb8bbc28336a255219ff42b22af03f128`).
+
 ## The orders, one at a time
 
-WO-276 closed as v1.0.0 on 2026-11-14. What comes next is what the
-operator met setting up the work laptop that day, what an instance
-reported after taking v1.0.0, and what WO-276 left
-([the 2026-11-14 pass](passes/v1-0-0-instance-returns-and-followups-2026-11-14.md)):
+WO-277, WO-281 and WO-282 closed as v1.0.1, v1.1.0 and v1.2.0 on
+2026-11-15 and 2026-11-16. What comes next is what the operator directed
+on 2026-11-16, when the work instance was stopped a fifth time before its
+first order ([the 2026-11-16 pass](passes/the-kit-stops-no-work-2026-11-16.md)):
 
-- WO-277: the starter's commands page, `docs/OPERATOR.md`, tells a person
-  every step, the private terms list before anything publishes, with what
-  each step does and what to do when it fails; the starter's front page
-  names it first. A small documentation release, to run as soon as this
-  pass merges: its release close puts the page in the starter.
-- WO-281: the kit guide rewritten to be easy to follow, its facts kept, and
-  its later write-backs held to the rule that already asks for it. Second
-  because documents a person can read were most of what the operator asked
-  of the pass, and the orders after it then write into the rewritten guide.
-- WO-282: an update leaves nothing to repair by hand (the emit keeps an
-  instance's own host surfaces, a re-keyed register row keeps its
-  dispositions, three update-path repairs).
-- WO-279: the critic of conduct WO-276 ran by hand becomes a worker the kit
-  launches by name when someone asks, on Opus 5.5 at xhigh unless an
-  instance chooses another, so it runs on the work laptop; a cadence runs
-  only where an instance turns on its feature, off by default.
-- WO-278: the review helper reads a report's table where it stands, a paired
-  first round is launched as one, and a worker in an instance probes only
-  what the instance carries.
-- WO-280: the five-second discovery timeout traced and repaired, or left
-  with what it needs recorded.
+- WO-284: an instance sets every time limit of its gate in one file, the
+  kit's figures leave room for a slower machine, an instance's gate no
+  longer runs the kit's own configuration cases, and a tree that is
+  already green is not run again. First and on its own, because the work
+  instance cannot pass a gate until its release.
+- WO-287: what an instance meets, as one order of the queue form. Part A:
+  in an instance a stop that has nothing to do with its owner's work
+  advises, in a sibling repository as in the launchpad, and the owner
+  sets every stop (WO-285). Part B: the author's rules are a loadout an
+  instance chooses (WO-286).
+- WO-288: core's own tooling, as a second order of the form. Part A: a
+  critic of conduct the kit launches, whose points come back to planning
+  by class (WO-279). Part B: the review helper (WO-278). Part C: the
+  discovery timeout (WO-280). Part D: every time limit outside the gate
+  path, the shipped test files' own among them. It needs WO-287's table
+  of stops as well as WO-284's table of limits.
 
-WO-277 (delivery) and WO-280 (machinery) have disjoint surfaces and no hard
-edge, so they may run as a lane pair if the operator says to run both at
-once; otherwise the six run in this order.
+The queue is two orders of the form and not one because WO-276's record
+shows what one cannot hold: 42 hours and six repairs between its
+`implementation-ready` and its final pass, and nothing released for four
+days. The five orders the two absorb are umbrella records and have no
+entry here.
 
 ## Not now
 
@@ -168,12 +215,9 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
   requests to a hook, or the operator records approval friction.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-277 — The starter's commands page tells a person every step
-- WO-281 — The kit guide is easy to follow
-- WO-282 — An update leaves nothing to repair by hand
-- WO-279 — A critic of conduct the kit launches when asked
-- WO-278 — The review helper reads a report as written
-- WO-280 — The discovery timeout traced and repaired
+- WO-284 — An instance sets every time limit of its gate
+- WO-287 — What an instance meets lands as one order
+- WO-288 — Core's own tooling lands as one order
 - WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel

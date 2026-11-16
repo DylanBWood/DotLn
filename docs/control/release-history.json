@@ -864,6 +864,10 @@
     {
       "name": "v1.1.0",
       "object": "8f4626d33b9080ceaf37d1a0c7398d064c9f51ac"
+    },
+    {
+      "name": "v1.2.0",
+      "object": "e6b98db25520e8a7802c0355994565df273beb4d"
     }
   ],
   "table": "v1.0.1"
