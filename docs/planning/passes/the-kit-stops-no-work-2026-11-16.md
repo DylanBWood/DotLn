@@ -968,9 +968,11 @@ The eight new findings are five distinct ones.
    of the new limits module (consistency). WO-284 and WO-285 now find the
    manifests by search, and WO-284 names all four.
 
-Round three is one combined reader on GPT-6 Astra over what round two's
-fixes changed, since they changed an order's contract. Its result is
-under Validation.
+Round three was one combined reader on GPT-6 Astra over what round two's
+fixes changed, since they changed an order's contract (tree
+`bc6d3e2b8d76fab687233bfbd581f52e8d3b08ab` against round two's): 0 h 12
+min, no finding, and each of round two's eight confirmed. The ladder ends
+there, and no reviewer reads the subject after it.
 
 self-review: found 26; fixed 25; recorded 1
 
