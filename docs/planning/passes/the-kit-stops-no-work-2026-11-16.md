@@ -480,8 +480,11 @@ Each was read against the code.
 
 **WO-284, filed: an instance sets every time limit of its gate.** One
 table of the gate path's limits and a file the instance owns that raises
-any, scales all or turns all off; the kit's figures with tenfold room,
-checked at a third in the export fixture; an instance's gate that loads
+any, scales all or turns all off, and in which a figure the owner has not
+set follows the kit's through releases; the kit's figures with tenfold
+room on the paths an instance runs, checked at a third in the export
+fixture, where a task ended for time fails whatever else advises; an
+instance's gate that loads
 its own configuration and no longer runs the kit's configuration cases;
 a closeout selection that says when a complete run is already satisfied,
 and no forced rerun at a green identity without a stated reason; and the
@@ -492,17 +495,24 @@ of its own and first.
 form.** Part A is WO-285: in an instance a stop that guards the kit's
 records, a host property or a bound advises, a sibling repository
 included; a stop that guards the owner's work stays; every stop has a
-level its owner sets. Part B is WO-286: the author's units and shared
-rules carry a layer, and an instance's overlay removes any of the
-author's.
+level its owner sets, the host deny rules the kit emits among them; and a
+gate task that holds checks of both kinds answers failure by failure, so
+the private-path screen still refuses beside a record defect that
+advises. Part B is WO-286: the author's units and shared rules carry a
+layer, and an instance's overlay removes any of the author's, in a
+sibling repository's bundle as in the launchpad's.
 
 **WO-288, filed: core's own tooling, as a second order of the form.**
 Part A is WO-279, the critic the kit launches and what its critics find.
 Part B is WO-278, the review helper. Part C is WO-280, the discovery
 timeout. Part D, set out in the order itself, moves every time limit
-outside the gate path into WO-284's table. Its frame also changes the
-role text's rules for an order in parts to the form's, and has core's own
-configuration elect the critic's cadence.
+outside the gate path into WO-284's table: 139 shipped rows at 327 sites
+by the census, the shipped test files' own among them, apart from a bound
+a test sets in order to watch a time-out happen. Its frame also changes
+the role text's rules for an order in parts to the form's, and has core's
+own configuration elect the critic's cadence. It depends on WO-284's
+table of limits and on WO-287's table of stops, to which it adds two
+rows.
 
 **WO-285 and WO-286, filed as the records of WO-287's parts.** Each is
 written as a whole order, so that its part's design, gap and plan stand
@@ -521,13 +531,18 @@ round findings admit `to-fix`; the launch prints requested and reported
 settings apart; a malformed `kinds` row advises in an instance instead of
 refusing; and within a dispatch the clock runs from one interval after it
 begins to its passing run, which is what the operator directed twice
-during WO-276.
+during WO-276. From the review ladder: the worker reads a screened copy
+of the transcripts and never the live files; a failed final review does
+not end the clock; and each point's judgment is an entry of a
+`criticPoints` array in the decisions, which `npm run plan -- failures`
+counts by class.
 
 **Why three orders and not one.** The operator asked for the next five to
 eight orders in the queue form. This pass first cut them as WO-284 and one
 order of six parts, and changed that when the study of WO-276 came back:
 an order of the form ships nothing until its last part lands, and one
-verification could not hold eighteen parts. So WO-284 stays alone and
+verification could not hold WO-276's eighteen parts. So WO-284 stays
+alone and
 first, since the work instance cannot pass a gate until its release;
 what an instance meets is the first order of the form; and core's
 tooling is the second. The placement is the planner's, and the operator
@@ -552,6 +567,13 @@ Thirty-three rows are disposed: the one open row, the eighteen untriaged,
 three earlier rows whose conditions have occurred and the eleven
 candidates this pass records in the planning map. None is left untriaged.
 The batch is in the ignored local planning lane.
+
+A second batch moves to WO-288, by part, the seventeen rows the
+2026-11-15 pass allocated to WO-278, WO-279 and WO-280: nine to Part A,
+seven to Part B and one to Part C. What each covers and what reopens it
+are unchanged. The 2026-11-10 pass did the same for the thirty rows of
+the orders WO-276 absorbed, and the combined reviewer found that this
+pass had not.
 
 Allocated to WO-284: FUP-915d215fcc824d1a (WO-282-D024, critical as the
 operator classed it: no complete run after documents alone);
@@ -855,6 +877,64 @@ Answers from core's planning pass of 2026-11-16 to this instance's four entries 
 
 What changes for an instance in the release that carries WO-287, so that you do not report what is already filed: a hook or a gate task that guards the kit's own records, a host property or a bound will advise and let the work go on, in a registered sibling repository as in the launchpad; a stop that guards your work or private material stays; every stop has one line in dotln.config.json that changes it; and the build overlay removes any of the author's rules. The critic the kit launches, the review helper's repairs and the remaining time limits follow in the release that carries WO-288. Keep sending what stops this instance: core cannot see your journals.
 ```
+
+## The review ladder
+
+The operator asked for a full review ladder before the critic, with the
+combined reviewer on GPT-6 Astra (Dispatch and capture, items 10 and 11).
+Round one read the committed subject, tree
+`acabe23bcbe6a8af0d568c4c532cfabc44fc9279` against `38c333ab2`. Each
+reviewer ran as two workers, because the brief was over the helper's
+ceiling for one.
+
+| Reviewer | Worker | Time | Findings |
+| --- | --- | --- | --- |
+| criteria | Codex `gpt-6.1-sol` at `max` (`default`) | 0 h 33 min | 12, of them 5 blocking |
+| design | the same | 0 h 17 min | 11, none blocking |
+| consistency | the same | 0 h 38 min | 9, of them 3 blocking |
+| combined | Codex `gpt-6-astra` at `max` (`astra`) | 0 h 39 min | 14, of them 3 blocking |
+
+The criteria reviewer's table answers the dispatch item by item: every
+item is acted on, apart from the ones that order this ladder, the critic
+and the refuter and the ones that correct the pass's own swing, which it
+marks reviewed.
+
+The forty-six findings are eighteen distinct ones. Each was judged before
+any was fixed, each holds against the code it cites, and each is fixed in
+the subject. Three were found by the combined reviewer alone, seven by
+the three kinds alone and eight by both.
+
+| # | Finding | Found by | Fixed in |
+| --- | --- | --- | --- |
+| 1 | One level for a whole gate task would lower the private-path screen with the record checks beside it in the document check | criteria, design, combined | WO-285: a failure names its stop; three cases |
+| 2 | A limits file seeded with every figure would freeze an instance at the day's figures | design | WO-284: an unset key reads `"kit"` and follows releases |
+| 3 | A part ended on its readings being judged, and the next part did not wait for them | all four | the form's rules 2 and 3, in product 07 and both orders: readers go out on the checkpoint and are judged before the end's ladder |
+| 4 | WO-288 adds rows to a table WO-287 creates and declared only a placement | design, consistency, combined | WO-288: a typed dependency on WO-287 |
+| 5 | A critic's points had no field for their class, no count and no case that carries one to the next pass | criteria, design, combined | WO-279: the `criticPoints` array and criterion 12 |
+| 6 | The brief for the critic of the critics named closed orders, leaving out an open order's and a planning session's records | design | the brief: by interval |
+| 7 | Cutting a part left its typed supersession entry in place | design | the form's rule 10 |
+| 8 | The shipped test files' own limits belonged to neither order | criteria, consistency, combined | WO-288 Part D and its criteria D1 and D3 |
+| 9 | The new planning input pointed an instance at a brief the kit does not carry | criteria, combined | product 07: the input is core's until the kit launches the kind |
+| 10 | The critic read live transcripts after the screen had passed them | criteria | WO-279: a screened copy; this pass's own launcher changed the same way |
+| 11 | The check at a third of the figures could pass on a time-out an instance advises | criteria, combined | WO-284 criterion 5; WO-285: a task ended for time fails at any level |
+| 12 | A failed final review would have ended the critic's clock for the repair after it | criteria, combined | WO-279: the passing result ends it |
+| 13 | A part's cost and non-goals, left in its record, dropped out of the planning subject and the cost table | consistency | both orders restate them; product 07 says why |
+| 14 | The two new shared modules were not registered as evidence sources or in the fixture lists | consistency | WO-284 and WO-285: the first step of each |
+| 15 | The instance's renamed configuration row missed the second list of structural rows | consistency | WO-284 step 5 |
+| 16 | Seventeen register rows still named the three absorbed orders | combined | the register's second batch |
+| 17 | A target worktree's emit read no overlay and required the author's units | combined | WO-286: the target's emit, and criterion 8 |
+| 18 | The host deny rules the kit emits did not follow a stop's level | combined | WO-285: emitted by level, and criterion 11 |
+
+The pass's own reading while fixing found three more, also fixed.
+WO-284's rule for the kit's figures gave a core suite that runs near
+its fifteen-minute bound a limit of over two hours; a row only core runs
+now gets threefold room. The absorbed records' placement lines still
+named the places they had as orders of their own. And
+WO-288 gave the count of limits outside the gate path as about 140 with a
+breakdown that added up to 125; the census gives 139 shipped rows at 327
+sites, 32 of the rows in shipped test files.
+
+self-review: found 21; fixed 21; recorded 0
 
 ## Process cost
 

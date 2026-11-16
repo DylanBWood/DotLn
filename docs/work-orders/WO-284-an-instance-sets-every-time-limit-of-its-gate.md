@@ -166,24 +166,35 @@ and a forced complete run there starts only with a reason the row keeps.
   source; thirty-five sites that each read a setting drift, and a file
   that claims to list every limit cannot be checked against them).
 - The instance's file is `time-limits.json` in the control root, seeded
-  from `scripts/kit/time-limits.template.json` with every key at the kit's
-  figure. It holds `enforce` (false: no limit of the table ends anything),
-  `scale` (every figure is multiplied by it) and `limits` (a key's own
-  figure, or `null` for that limit off). A value the resolver cannot use
-  is named in one advisory and the kit's figure applies; no command stops
-  for it. An instance without the file gets the kit's figures.
-  `npm run limits` prints every key with what it bounds, the kit's figure,
-  this root's figure and where it came from, and `npm run limits --
-  --write` writes the file with every key, keeping the owner's values, so
-  a release that adds a limit adds it to the file without a hand edit.
+  from `scripts/kit/time-limits.template.json`. It holds `enforce`
+  (false: no limit of the table ends anything), `scale` (every figure is
+  multiplied by it) and `limits`, an entry for every key. An entry holds
+  `set`, which is the owner's own figure, `null` for that limit off, or
+  `"kit"`; and `kit`, the kit's figure at the release that last wrote the
+  file, which nothing reads. A key the owner has not set reads `"kit"` and
+  follows the kit's figure through releases, so a release that raises a
+  figure reaches every instance that had not set its own, and the owner
+  still sees every limit and its number in one file. A value the resolver
+  cannot use is named in one advisory and the kit's figure applies; no
+  command stops for it. An instance without the file gets the kit's
+  figures. `npm run limits` prints every key with what it bounds, the
+  kit's figure, this root's figure and where it came from, and
+  `npm run limits -- --write` writes the file with every key, keeping each
+  `set` and refreshing each `kit`, so a release that adds a limit adds it
+  to the file without a hand edit. Rejected: a file of figures alone
+  (axis: an instance that set nothing would keep the day's figures when a
+  release raises one).
   Rejected: more keys in `docs/control/budgets.json` (axis: the operator's
   direction names a second file, and that file already mixes five kinds of
   bound).
 - A limit stays a limit: it ends a step that hangs. What changes is whose
-  number it is and how much room it leaves. Each kit figure is at least
-  ten times the slowest passing time of its step in core's gate record of
-  the thirty days before the order, and no suite row's is under five
-  minutes; the decisions record each figure with the times it rests on.
+  number it is and how much room it leaves. A figure on a path an
+  instance runs is at least ten times the slowest passing time of its step
+  in core's gate record of the thirty days before the order, and no suite
+  row's is under five minutes. A row only core runs gets at least three
+  times its slowest passing time, since core raises its own in its own
+  file and a hung suite should not hold a complete run for hours. The
+  decisions record each figure with the times it rests on.
   Rejected: limits that only advise in an instance (axis: the operator
   asked for limits an instance can raise or ignore, not for their removal,
   and a hung gate under an unattended session would then wait without
@@ -230,7 +241,12 @@ failure that run names.
 
 1. `packages/skeleton/src/time-limits.mjs` (new; build-free): the table and
    `timeLimit(root, key)`, which applies the root's file;
-   `scripts/launchpad.mjs` (`BUILD_FREE_MODULES`);
+   `scripts/launchpad.mjs` (`BUILD_FREE_MODULES`); the module's
+   registration in `scripts/lib/evidence-sources.mjs` and in the fixture
+   lists that copy build-free modules
+   (`scripts/test-harness.fixture-inputs.json`,
+   `scripts/test-beacon-fixture.fixture-inputs.json`), before the first
+   re-mint;
    `scripts/kit/time-limits.template.json` (new) and the seed list that
    writes an instance's control files; `scripts/time-limits.mjs` (new: the
    listing and `--write`) and `package.json` (`limits`). Check: a case in
@@ -261,11 +277,15 @@ failure that run names.
 5. `scripts/lib/generated-artifacts.mjs` (`STRUCTURAL_TASKS` names a
    `configuration` row for an instance), `scripts/structural-checks.mjs`
    (the `configuration` argument: load this root's configuration and
-   report) and `scripts/test-runner.mjs` (the row, and
+   report), `scripts/test-runner.mjs` (the row, and
    `configuration-root` as a core structural row an instance runs by name
-   alone). Check: a case in `scripts/test-launchpad-export.mjs` that an
-   exported instance's selections list `configuration` and not
-   `configuration-root`.
+   alone) and `scripts/lib/gate-reuse.mjs` (`STRUCTURAL_SUITES`, the second
+   list of structural rows, which a handoff reads and which names
+   `configuration-root` today). Check: a case in
+   `scripts/test-launchpad-export.mjs` that an exported instance's
+   selections list `configuration` and not `configuration-root`, and the
+   structural-list equality case of `scripts/test-runner.test.mjs`
+   extended to an instance.
 6. `scripts/test-launchpad-export.mjs` (the exported instance's document
    gate runs with `scale` at one third) and a core-only case, in
    `scripts/test-runner.test.mjs`, that no file on the gate path passes a
@@ -314,14 +334,20 @@ and editions.
 3. `npm run limits` prints one row for every key of the table with what it
    bounds, the kit's figure, this root's figure and its source, and
    `npm run limits -- --write` writes a file holding every key and leaves a
-   value the owner set as it was (`npm test -- --only configuration-root`).
+   value the owner set as it was. After the kit's figure for a key changes,
+   an instance whose entry reads `"kit"` applies the new figure, one that
+   set a number keeps its number, and `--write` refreshes the entry's `kit`
+   (`npm test -- --only configuration-root`).
 4. No file on the gate path passes a time limit that is not read from the
    table, by a case that names each file it reads; the case runs in core
    alone (`npm test -- --only runner-fixtures`).
 5. In the export fixture an instance's selections list a `configuration`
    row that loads the instance's own configuration, and
-   `configuration-root` runs there only when named; with `scale` at one
-   third the exported instance's document gate passes
+   `configuration-root` runs there only when named. With `scale` at one
+   third, every task of the exported instance's document gate finishes
+   inside its reduced figure; a task ended for time fails the case
+   whatever levels the instance sets, and a fixture arm with a task that
+   outlives its reduced figure shows the case failing
    (`npm test -- --only launchpad`).
 6. Where a passing complete review row stands at the current code
    identity, the closeout selection the briefing and `worktree integrate`
@@ -366,11 +392,11 @@ of that file.
 
 **Known issues and carry-ins:**
 
-- The census's other rows, about 140 limits in lifecycle commands, hooks,
-  worker launches and product code, keep their figures where they are. An
-  order that next edits one moves it into the table (this pass's planning
-  screen), and an instance's report of one stopping it reopens the rest.
-  The discovery bound WO-280 traces is among them.
+- The census's other 139 shipped rows, in lifecycle commands, hooks,
+  worker launches, host tooling and the shipped test files' own fixtures,
+  keep their figures until WO-288's Part D moves them into this table. An
+  instance's report of one stopping it before that release reopens the
+  placement. The discovery bound WO-280 traces is among them.
 - A product case that reads a document (the export fixture's reading of
   the kit guide and the commands page, WO-277-D018) can turn red on a
   change to documents alone and is then met at the next complete run. The

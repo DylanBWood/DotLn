@@ -49507,6 +49507,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:36.861Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; verification-003-probe.mjs usage U4's current standing names docs/control/local/harness/checks.json.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:15.348Z"
         }
       ]
     },
@@ -53423,6 +53433,16 @@
             "WO-278"
           ],
           "at": "2026-11-15T00:32:35.666Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part B (the record WO-278), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; An order is refused at the cap while using no more distinct agents than a comparable earlier order (the order's known issue), or a session exceeds the cap on a path this order does not count.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:15.487Z"
         }
       ]
     },
@@ -55776,6 +55796,16 @@
             "WO-278"
           ],
           "at": "2026-11-15T00:32:35.530Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part B (the record WO-278), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A caller's genuine result with ordinary closing prose cannot be recorded with --format json, or the documentation's claim changes.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:15.625Z"
         }
       ]
     },
@@ -56268,6 +56298,16 @@
             "WO-278"
           ],
           "at": "2026-11-15T00:32:35.393Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part B (the record WO-278), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A split round's admitted parts are refused at the merge in an actual pass, or the final reviewer judges the record route within criterion 12.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:15.761Z"
         }
       ]
     },
@@ -58429,6 +58469,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:35.803Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A Claude Code version resolves a model family to a model other than the row's id, or stops taking an effort for one launch (rerun the two-launch probe of D076 on each new version); an instance needs two models of one provider under one id, or a model on a provider the kit has no adapter for; a name is found to resolve two ways, or a refusal to name no file and key; a dispatch line the operator types stops dispatching or a prose line starts to; or a copied fixture is found short of a file its entry loads that the check did not name.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:15.898Z"
         }
       ]
     },
@@ -58455,6 +58505,16 @@
             "WO-278"
           ],
           "at": "2026-11-15T00:32:35.125Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part B (the record WO-278), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A model id is found in live kit source outside the data module, the named leftovers and the dated-record scripts; a refusal of the worker table names no entry of the instance's, or the wrong file; a probe or the entropy reviewer launches a model the table did not resolve; a release-close line the operator types is not recovered; or the session hook is found running a runtime older than the last emit.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.033Z"
         }
       ]
     },
@@ -59104,6 +59164,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:35.937Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The kept launcher's output for this order differs from the charter as run; a later launch is made from another copy; the planning pass that takes the follow-up finds the kept files insufficient to start from.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.168Z"
         }
       ]
     },
@@ -59130,6 +59200,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:36.468Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A row is found to misstate the decision it names; a later critic's points are judged, which are then appended to the record; the planning pass that takes the follow-up finds the record insufficient to work from.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.304Z"
         }
       ]
     },
@@ -59180,6 +59260,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:36.599Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A critic before the thirtieth is found to have read the transcripts itself; a later critic's points are appended, which changes the later side's counts.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.437Z"
         }
       ]
     },
@@ -59206,6 +59296,16 @@
             "WO-278"
           ],
           "at": "2026-11-15T00:32:34.989Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part B (the record WO-278), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The ladder or the complete run shows one of the declined notes as a failure; a later measurement splits the runner mode's time by phase.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.570Z"
         }
       ]
     },
@@ -59232,6 +59332,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:36.070Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The operator says which kind a later order should run, or how the briefed kind is to be told what it is told.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.706Z"
         }
       ]
     },
@@ -59313,6 +59423,16 @@
             "WO-278"
           ],
           "at": "2026-11-15T00:32:34.856Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part B (the record WO-278), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The operator asks for the paired round after all; the verification or the final review finds one of D117's three repairs wrong.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.843Z"
         }
       ]
     },
@@ -59726,6 +59846,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:36.334Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A Codex background-server process is found on the host after a dispatch or a helper launch that should have closed it; a close ends a server that a live Codex session was using; a fixture's dispatch prints the close line; or a fixture gate started inside a running gate fails again on its host task's command line.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:16.977Z"
         }
       ]
     },
@@ -59776,6 +59906,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:36.202Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The verification of this repair fails a criterion on the seventeenth run's tree; or the daemon passes its limit again, at which point its log and what ran beside the gate are read first.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:17.113Z"
         }
       ]
     },
@@ -59828,6 +59968,16 @@
             "WO-280"
           ],
           "at": "2026-11-15T00:32:36.991Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part C (the record WO-280), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; The follow-up obtains a controlled reproduction or better child-process evidence. A new concrete cleanup counterexample remains a separate reason to reopen the VER-004 repair.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:17.248Z"
         }
       ]
     },
@@ -59916,6 +60066,16 @@
             "WO-278"
           ],
           "at": "2026-11-15T00:32:35.259Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part B (the record WO-278), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A gate is refused on the daemon's size on a machine whose operator cannot restart it; a case registered without a title joins a sharded row; or a session is found with either shard variable set.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:17.381Z"
         }
       ]
     },
@@ -60158,6 +60318,16 @@
             "WO-279"
           ],
           "at": "2026-11-15T00:32:36.731Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part A (the record WO-279), which the 2026-11-16 pass made of the queued order on the operator's direction to file the next orders in the queue form; what the allocation covers is unchanged. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; A same-host review return is refused again for a field its brief did not name, a status is announced that the checked command did not print, or a shared module's behavior changes before its readers are listed.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T18:50:17.514Z"
         }
       ]
     },

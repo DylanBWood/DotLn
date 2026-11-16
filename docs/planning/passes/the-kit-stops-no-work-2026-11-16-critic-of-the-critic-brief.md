@@ -11,9 +11,14 @@ kept beside this file. A later pass fills the fields and launches it
 unchanged, until WO-279 makes it a kind the kit launches by name.
 
 Fields: `@SINCE@` is the last planning pass before this one; `@RECORDS@`
-are the criticisms files and the decisions files of the orders closed
-since then; `@OPEN_CRITIC_ORDER@` is the open order that builds or changes
-the critic, if one is open.
+are every criticisms file and every decisions file written to since then,
+whether its order is closed, open or was never an order (a planning
+pass's own critic and the corrections recorded in its document are among
+them); `@OPEN_CRITIC_ORDER@` is the open order that builds or changes the
+critic, if one is open. The pass of 2026-11-16 named the orders closed
+since the last pass, in this field and in the wording of item 3, which
+left out an unfinished order's records and a planning session's; a review
+reader found that, and both are by interval from this file on.
 
 ```text
 You are the critic of the critic: an independent review, read-only. Judge
@@ -41,8 +46,8 @@ failures recur, and nothing checks that a finding changed anything.
 
 3. Recurrence. For each kind, find whether it happened again later: in
    later criticisms, in the operator's recorded corrections in the
-   decisions of the orders closed since @SINCE@, or in the final reviews'
-   findings. A kind that came back after a change was made for it is the
+   decisions and pass documents written to since @SINCE@, or in the final
+   reviews' findings. A kind that came back after a change was made for it is the
    most important thing to report: say what the change was and why it did
    not hold. Look first for what the kit itself said at the moment of
    choice: a command's output, an order's form, a record's schema, a

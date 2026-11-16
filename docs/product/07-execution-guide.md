@@ -2072,12 +2072,14 @@ captureDigest}` with an optional `class`, and the plan check reads that
    every standing document
    ([WO-281](../evidence/WO-281/decisions.md#wo-281-d010--step-4-the-document-check-lists-the-long-paragraphs-a-branch-writes-in-standing-documents-at-a-figure-of-120-words-and-prints-the-whole-list-on-request);
    [a figure the check cannot use stops no command](../evidence/WO-281/decisions.md#wo-281-d022--round-ones-fixes-as-built-the-rule-table-regenerated-a-case-for-criterion-3-no-refusal-over-the-figure-the-cases-the-reviewers-found-missing-and-the-guide-and-the-map-changed-where-a-reader-was-stopped-or-the-text-read-as-filler)).
-8. The critics' record is read at every pass, by a critic of the critics.
-   Until the kit launches it by name (WO-279's second kind), the pass
+8. The critics' record is read at every pass, by a critic of the critics,
+   from the release in which the kit launches it by name (the second kind
+   of WO-288's Part A). Until then the input is core's alone: its pass
    launches one research worker with
    [the brief the 2026-11-16 pass kept](../planning/passes/the-kit-stops-no-work-2026-11-16-critic-of-the-critic-brief.md),
-   over the criticisms and the operator's recorded corrections since the
-   last pass. For each class it reports, the pass changes a document in
+   which an instance does not carry, over the criticisms and the
+   operator's recorded corrections since the last pass. For each class it
+   reports, the pass changes a document in
    the pass, files the change in an order, or declines it with what would
    show the decline wrong; a class given nothing is read again when it
    comes back.
@@ -2607,6 +2609,11 @@ eight parts, each about the size of an ordinary order. After filing, the
 index check's count of its criteria is compared with the list's last
 number.
 
+The queue order's Cost and Non-goals state every part's in full, since
+the planning subject, the cost table and the refuter read the sequenced
+order and not the records it absorbs. Its typed dependencies name every
+order whose output a part consumes.
+
 **How it runs.**
 
 1. The parts run in the order given, and a part others lean on comes
@@ -2616,11 +2623,14 @@ number.
    hold what it changed, at most three, found by searching the tests and
    fixtures for every wording, pin and list it changed; with what it
    regenerates clean, its write-backs passing the document check and the
-   terms screen, its two readings judged, a checkpoint made and the
-   standing file rewritten. No part has a ladder of its own.
-3. Two readers go out at each part's end, and the next part does not wait
-   for them: one combined reviewer over the part's change, and one reader
-   over everything changed so far. No reviewer runs on a clock.
+   terms screen, a checkpoint made, its two readers launched on that
+   checkpoint and the standing file rewritten, naming the readers still
+   out. No part has a ladder of its own.
+3. Two readers go out on each part's checkpoint, and the next part does
+   not wait for them: one combined reviewer over the part's change, and
+   one reader over everything changed so far. Their findings are judged
+   as they come, and all of them before the ladder at the end. No
+   reviewer runs on a clock.
 4. The critic of conduct runs on a clock, from one interval after a
    dispatch begins until that dispatch's passing run. Nothing waits for
    it, and its report goes to the operator whole before it is answered.
@@ -2640,13 +2650,16 @@ number.
    one for what the parts share, and then send workers over whatever
    those left unread.
 10. A part can be cut on the operator's word without rewriting another.
+    The cut amends the queue order, makes the part's record an open order
+    again by removing its umbrella label and its typed `superseded` entry,
+    gives it an entry in the sequence and regenerates the index.
 
 The workers, the critic's interval and any midpoint are the order's to
 state. In this repository the critic on a cadence is on for an order of
 this form by core's own election, on the worker the operator named; an
-instance elects its own. Until WO-288's Part A changes it, the executor's
-role text gives an order in parts a ladder for each part, and a queue
-order's own text is the one to follow.
+instance elects its own. Until WO-288 changes it, the executor's role
+text gives an order in parts a ladder for each part, and a queue order's
+own text is the one to follow.
 
 ### Paired passes and the synthesis pass
 

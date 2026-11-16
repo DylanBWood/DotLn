@@ -6,6 +6,11 @@
     "workOrderId": "WO-284",
     "relation": "satisfied-by-close",
     "reason": "the table of time limits and the instance's file, which Part D extends to every other limit"
+  },
+  {
+    "workOrderId": "WO-287",
+    "relation": "satisfied-by-close",
+    "reason": "the table of stops, to which Parts A and B add the two stops they introduce"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -30,15 +35,38 @@ a work row) and a first-round review launch that names a report (Part B,
 a command's refusal of its own arguments); each is added to WO-287's
 table of stops with its class. Assigned at activation under the standing
 opt-out default.
-**Cost:** each part adds and removes what its record's Cost line states,
-with these differences. The parts share one activation, one verification,
+**Cost:** Part A adds a build-free kinds module and an instance `kinds`
+section, one launch command, a cadence module and a `due` command, one
+line in the prompt hook's context and one beside the Stop hook's standing
+line, a counts-only screen over a copy of the transcripts a critic is then
+granted, one request kind in the worker transport and its protocol, the
+standing file's age check, a second kind's charter, the points' record
+and its count by class, one more disposition word in the round findings
+and four changed sentences of role text, with twenty-two to twenty-seven
+cases; each critic launch is a worker run of about fifteen to twenty
+minutes and one worker use; it removes the copied launcher, the timer
+kept by hand and the critic's dependence on a Codex host. Part B adds the
+review helper's table reader and merge, the paired launch and its dry-run
+line, the record route's order, the JSON return reader, `worker show` and
+`list` reading the emitted definition, the receipt filing, the hook's
+launch matcher and the bounded wrapper's answer with one light module of
+core-only marks, with ten to twelve cases; it removes a refused round's
+lost record, two mis-launched paired rounds and a probe that fails in an
+instance for a reason the change did not cause. Part C adds the bound
+error's fields and the observed spawn, fixture-local controls, three to
+five cases and whatever repair a reproduced cause needs; it removes a
+complete run lost to an intermittent failure and an error that cannot be
+told from two others. Part D adds a key for each of 139 limits and a
+reading of the table at up to 327 sites (209 in commands, hooks, launches
+and host tooling, and 118 in shipped test files, less the bounds that are
+a test's own input), and removes a figure from each. All are estimates,
+not bounds. The parts share one activation, one verification,
 one final review, one release and one complete run in place of three of
 each. Each step that edits a judged feedback source owes one live
 feedback self-host episode before its check (in Parts A, C and D by this
 pass's reading; one episode ran 32 seconds in WO-275's record), and the
 editions a part stales are re-minted by `npm run sync` at that part's
-end. Part D adds about 140 call sites that read the table and removes a
-figure from each. Workers: two readers a part, the paired round at the
+end. Workers: two readers a part, the paired round at the
 end and the critic every 75 minutes, about sixty uses by this pass's
 count, which one acceptance at the start covers. Tokens and steps are
 unknown until run.
@@ -55,11 +83,11 @@ check carries is the instance's to raise or ignore (journal digest
 absorbed part's own provenance is in its record. Clean-room screen:
 core's own source and records; the work instance's entries name the kit's
 files and commands alone.
-**Depends on:** WO-284 (the table of limits and the instance's file);
-WO-287 by placement only (each edits
-`packages/skeleton/src/harness-host.ts`,
-`packages/skeleton/src/loadouts/contributor.ts` and the features page;
-no hard edge). The three orders this one absorbs are umbrella records.
+**Depends on:** WO-284 (the table of limits and the instance's file) and
+WO-287 (the table of stops, to which Parts A and B add their two; each
+also edits `packages/skeleton/src/harness-host.ts`,
+`packages/skeleton/src/loadouts/contributor.ts` and the features page).
+The three orders this one absorbs are umbrella records.
 **Recommended placement:** third, after WO-287.
 **Cites (read these sections):** for each of Parts A to C, the whole of
 its record and that record's Cites list; for Part D, the time-limits
@@ -91,11 +119,15 @@ in parts the queue form's rules.
    `scripts/lib/review-worker.mjs`), the hook's count of launches in
    `packages/skeleton/src/harness-host.ts` and the executor's steps in
    `packages/skeleton/src/loadouts/contributor.ts`.
-3. The time-limits census counts about 140 limits outside the gate path:
-   36 rows in lifecycle commands, 18 in hooks, 37 in worker and external
-   launches and 34 elsewhere. Anything an instance sets changes six of all
-   175. WO-284 moves the gate path's into one table; the rest keep a
-   figure in the code. Among them are the 15 s every hook is given
+3. The time-limits census counts 139 shipped limits outside the gate
+   path, at 327 sites: 32 rows in lifecycle commands, 18 in hooks, 37 in
+   worker and external launches, 20 in host tooling, and 32 in the
+   shipped test files' own fixtures and cases (its rows A17 to A48, 118
+   sites, among them the 12 s a fixture gives the lifecycle commands it
+   runs, `scripts/test-work-orders.mjs` 1292 and 1314). Anything an
+   instance sets changes six of all 175 rows. WO-284 moves the gate
+   path's 33 rows into one table; the rest keep a figure in the code.
+   Among them are the 15 s every hook is given
    (`packages/compiler/src/harness.ts` 1618 to 1622) with lifecycle
    children of 10 to 12 s inside it
    (`packages/skeleton/src/harness-host.ts` 1052, 1436), and the 5 s of the
@@ -123,19 +155,21 @@ in parts, this text is the order's.
    wording, pin and list the part changed; what it regenerates is clean
    (`npm run sync` where it edits a generated source);
    `node scripts/docs-check.mjs` and `node scripts/terms.mjs branch` pass
-   over its write-backs; its two readings are judged; `npm run resume --
-   checkpoint` has made its checkpoint; and
-   `docs/evidence/WO-288/standing.md` is rewritten. No part has a ladder
-   of its own, and no other suite is run for it: a part that had to be
-   perfect before the next began would pay each absorbed order's cycle
-   again inside this one, which is what WO-276's frame first asked for
-   and the operator replaced within four hours.
-3. Two readers go out at each part's end, and the next part begins
+   over its write-backs; `npm run resume -- checkpoint` has made its
+   checkpoint; its two readers are launched on that checkpoint; and
+   `docs/evidence/WO-288/standing.md` is rewritten, naming the readers
+   still out. No part has a ladder of its own, and no other suite is run
+   for it: a part that had to be perfect before the next began would pay
+   each absorbed order's cycle again inside this one, which is what
+   WO-276's frame first asked for and the operator replaced within four
+   hours.
+3. Two readers go out on each part's checkpoint, and the next part begins
    without waiting for either: one combined reviewer, carrying the three
    briefs, over that part's change, on `astra`; and one reader over
    everything changed so far, the three kinds in turn, on the instance's
    `default` worker. Their findings are judged by the round-one standard
-   and fixed as they come. No reviewer runs on a clock: WO-276 ran 104
+   and fixed as they come, and every reader's findings are judged before
+   the paired round at the end. No reviewer runs on a clock: WO-276 ran 104
    review rounds, most of them on clocks, and 89 findings still reached
    its final reviews.
 4. The critic of conduct goes out every 75 minutes of a dispatch, from
@@ -169,9 +203,13 @@ in parts, this text is the order's.
    verification, with one reader, found two defects, its second, with
    twenty, eleven more, and its first final review nine more.
 10. A part can be cut on the operator's word without rewriting another:
-    its criteria carry its letter and its design is its own file. Cutting
-    one is an amendment of this order and the removal of the umbrella
-    label from its record, which makes that record an open order again.
+    its criteria carry its letter, and its design is its own file or its
+    own bullet and step here. Cutting one is an amendment of this order,
+    which takes out its criteria, its cost and its non-goals; for a part
+    with a record, the removal of the umbrella label and of the typed
+    `superseded` entry from that record, which makes it an open order
+    again, and for a part set out here a new order filed for it; an entry
+    for it in the sequence; and the index regenerated.
 
 *The parts.*
 
@@ -199,11 +237,19 @@ in parts, this text is the order's.
   candidate cause with its control, the repair or the recorded outcome.
 - **Part D, set out here.** Every time limit the kit ships outside the
   gate path is a row of WO-284's table: the census's classes B, C, D and
-  E, the discovery bound of Part C among them. Each site reads its key;
+  E, the discovery bound of Part C among them, and in the shipped test
+  files (its rows A17 to A48) the bounds given to the processes a fixture
+  runs, the case time-outs and the durations a case asserts. A bound
+  whose child is built to outlive it, and an assertion that a time-out
+  fired within a figure, test the time-out itself: each is the test's own
+  input, marked on its line with a comment the scan case reads, and keeps
+  its figure under any `scale` and with `enforce` false. Each site reads
+  its key;
   the hook time limits the emit writes come from the table as the
   instance's file sets and scales them; the file's `enforce` and `scale`
   reach every row; a miss names its key and the file; and WO-284's
-  core-only case reads every shipped file that is not a test. A figure
+  core-only case reads every shipped file, the tests among them, and
+  admits the marked inputs alone. A figure
   keeps its value unless the gate record shows it short of tenfold room,
   and each change is in the decisions with the times it rests on.
   Rejected: leaving these until an instance reports one (axis: the
@@ -236,12 +282,15 @@ run to make.
    ships: move its figures into `packages/skeleton/src/time-limits.mjs`
    with their keys and have each site read its key;
    `packages/compiler/src/harness.ts` writes the hooks' time limits from
-   the table; `scripts/time-limits.mjs` lists the new rows; WO-284's
-   core-only case reads every shipped file that is not a test. The live
-   feedback episode after the first judged source it edits. Check: a case
-   in `scripts/test-runner.test.mjs` that no shipped file outside the
-   tests passes a time limit the table does not hold. Then the end of
-   part.
+   the table; `scripts/time-limits.mjs` lists the new rows. Then the
+   shipped test files of its rows A17 to A48: each bound, case time-out
+   and asserted duration reads its key, and each bound that is a test's
+   own input is marked and named in the decisions. WO-284's core-only
+   case reads every shipped file. The live feedback episode after the
+   first judged source it edits. Check: a case in
+   `scripts/test-runner.test.mjs` that no shipped file passes a time
+   limit the table does not hold, apart from the marked inputs. Then the
+   end of part.
 6. (End) Read every standing section the parts changed, whole; the paired
    round over the whole change, its fixes and rechecks; then the handoff
    sequence of product 07 §Discipline, whose one complete run is this
@@ -271,15 +320,19 @@ editions.
    kit's row launches (`npm test -- --only configuration-root`).
 3. (A3) With a refuse-class entry of the private list present in a transcript,
    the launch is withheld, its output names the counts of lines by class and
-   no term, and no worker starts; with none, the launch proceeds (`npm test
-   -- --only harness-fixtures`).
+   no term, and no worker starts; with none, the launch proceeds, and what
+   the worker is granted is the screened copy: a refuse-class entry
+   appended to the live transcript after the screen is absent from it
+   (`npm test -- --only harness-fixtures`).
 4. (A4) With `features.critic-cadence` absent or off, `npm run worker -- due`
    names nothing at any time and neither hook adds a line. With it on,
    `due` names a critic launch due one interval after the dispatch began,
    names none while a gate runs and names none in that dispatch after its
    complete run has passed; names one in a later verification or
    final-review dispatch of the same order one interval after that
-   dispatch began; and names none after the order's final-review result;
+   dispatch began; names none after the order's passing final-review
+   result; and after a failed one names a launch again in the repair's and
+   the next verification's dispatches;
    the prompt hook's context and the Stop hook's line carry the same
    answer (`npm test -- --only harness-fixtures`).
 5. (A5) The hook counts `npm run worker -- launch critic` as one use and
@@ -308,7 +361,14 @@ editions.
     the earlier ones stood, and the planner's root names the
     `critic-review` launch, by a case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
-12. (B1) Under `npm test -- --only plan-refutation`: a criteria report whose
+12. (A12) With two orders whose decisions each hold a `criticPoints` array that
+    accepts two points of one class and declines a third,
+    `npm run plan -- failures` gives that class four accepted points and
+    counts the declined ones apart; an accepted point that names a cause
+    and carries a `followup` is a register row after a sync; and the case
+    fails on an implementation that counts launches alone
+    (`npm test -- --only plan-refutation`).
+13. (B1) Under `npm test -- --only plan-refutation`: a criteria report whose
     `## Items` section holds a sentence, or a subheading, before its table is
     recorded with its items; a report whose Items section holds no table is
     refused with a reason that names the section and says it holds no table;
@@ -316,24 +376,24 @@ editions.
     routes and a quoted table cannot shadow the real section" passes
     unchanged; and a split round whose batch table follows a sentence merges
     that batch's rows.
-13. (B2) Under the same suite: the paired launch's dry run prints one line for
+14. (B2) Under the same suite: the paired launch's dry run prints one line for
     each of its four launches with round 1, one base and that base's source,
     and naming no report; a first-round launch that names a report is
     refused naming the report; a later round's launch prints the base it
     takes; a split round recorded without `--batch` is told to record its
     batches; and a `--format json` return whose closing prose holds a brace
     that opens no object is recorded.
-14. (B3) Under `npm test -- --only launchpad-planning`: with the worker table
+15. (B3) Under `npm test -- --only launchpad-planning`: with the worker table
     changed and no emit, `npm run worker -- show default` prints the emitted
     definition's model and says an emit is owed. Under `npm test -- --only
     plan-refutation`: a direct refutation receipt filed with
     `dotln-worker-fable` is refused naming the types accepted, and a receipt
     filed earlier with it still reads.
-15. (B4) Under `npm test -- --only harness-fixtures`: the hook counts the paired
+16. (B4) Under `npm test -- --only harness-fixtures`: the hook counts the paired
     launch as four uses and `npm run plan -- refute --transport fake` and
     `npm run entropy -- review --transport fake` as one each, and none of
     them under `--dry-run`.
-16. (B5) Under `npm test -- --only runner-fixtures`: in an exported kit root,
+17. (B5) Under `npm test -- --only runner-fixtures`: in an exported kit root,
     `node scripts/harness.mjs bounded -- node --test --test-name-pattern x
     scripts/test-lineage.mjs` prints that the suite is not run with the
     runner's core-only reason and exits nonzero with a status that differs
@@ -342,49 +402,53 @@ editions.
     that path runs. Under `npm test -- --only plan-refutation`: in a kit root
     the preflight advisory names no core-only suite, and the review brief
     names the suites the instance carries.
-17. (B6) After `node scripts/harness.mjs emit`, `.claude/skills/dotln-executor/SKILL.md`,
+18. (B6) After `node scripts/harness.mjs emit`, `.claude/skills/dotln-executor/SKILL.md`,
     product 07 §Preflight before the full gate and `docs/KIT.md` say that
     `--keep-going` belongs to `npm test -- --review` and that a target order's
     run after a failed target gate is `node scripts/target-gate.mjs WO-NNN
     --review` again. Check: `node scripts/harness.mjs check` and
     `npm run test:docs`.
-18. (C1) Under `npm test -- --only skeleton`, a discovery check that runs past its
+19. (C1) Under `npm test -- --only skeleton`, a discovery check that runs past its
     bound fails with an error naming the check, its command, the error code,
     signal, status and elapsed time, and an output overflow and a failed spawn
     each fail with their own code.
-19. (C2) Each candidate cause of the Observed gap has a record under
+20. (C2) Each candidate cause of the Observed gap has a record under
     `docs/evidence/WO-288/` labelled `observed`, `blocked`, `unavailable` or
     `ambiguous`, with its control and both arms' exit codes where it ran, and
     the reason where it did not.
-20. (C3) The execution record's first sentence names the outcome as `ready`,
+21. (C3) The execution record's first sentence names the outcome as `ready`,
     `negative` or `inconclusive`. Where `ready`, the repair's case fails with the repair
     reverted and passes with it, both arms recorded; real npm lifecycle and
     environment coverage remains in the case, and a timed-out check is never
     a candidate.
-21. (C4) The feedback re-mint and the live episode are recorded under
+22. (C4) The feedback re-mint and the live episode are recorded under
     `docs/evidence/WO-288/`, or their recorded absence with the host's reason.
-22. (D1) `npm run limits` prints a row for each time limit the kit ships
+23. (D1) `npm run limits` prints a row for each time limit the kit ships
     outside the gate path, with what it bounds, the kit's figure and this
     root's; a figure raised in the instance's file is the one its site
     applies, and a miss names its key and the file, by cases for one
-    lifecycle command, one hook's child process and one worker launch
-    (`npm test -- --only configuration-root`; `npm test -- --only
-    harness-fixtures`).
-23. (D2) The hook time limits an emit writes come from the table, as the
+    lifecycle command, one hook's child process, one worker launch and one
+    shipped test's fixture child, whose bound follows the file's `scale` and
+    ends nothing with `enforce` false (`npm test -- --only
+    configuration-root`; `npm test -- --only harness-fixtures`; `npm test --
+    --only work-orders-fixtures`).
+24. (D2) The hook time limits an emit writes come from the table, as the
     instance's file sets and scales them (`npm test -- --only
     harness-fixtures`).
-24. (D3) No shipped file that is not a test passes a time limit the table
-    does not hold, by a case that names each file it reads; the case runs in
-    core alone (`npm test -- --only runner-fixtures`).
-25. (Z1) The emitted executor, verifier and reviewer roots state, for an
+25. (D3) No shipped file, the tests among them, passes a time limit the
+    table does not hold, apart from a bound marked as a test's own input, by
+    a case that names each file it reads and each marked input; a marked
+    input keeps its figure under any `scale` and with `enforce` false; the
+    case runs in core alone (`npm test -- --only runner-fixtures`).
+26. (Z1) The emitted executor, verifier and reviewer roots state, for an
     order whose plan is divided into parts, the frame's rules 2 to 6 and 9 in
     place of a ladder for each part, by a case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
-26. (Z2) In core's root `npm run features -- list` shows the critic's cadence
+27. (Z2) In core's root `npm run features -- list` shows the critic's cadence
     elected by core's own configuration, and `npm run worker -- show critic`
     names `astra` there; in an exported instance the cadence is off and the
     critic's worker is the kit's (`npm test -- --only launchpad`).
-27. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+28. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only artifact-evidence`,
 `npm test -- --only authority-evidence`,
@@ -402,7 +466,8 @@ editions.
 `npm test -- --only runner-fixtures`,
 `npm test -- --only skeleton`,
 `npm test -- --only sync-fixtures`,
-`npm test -- --only verification-evidence` are the suites the parts' changes reach, whose
+`npm test -- --only verification-evidence`,
+`npm test -- --only work-orders-fixtures` are the suites the parts' changes reach, whose
 rows the order's complete run supplies; the structural phase; the
 complete run with `npm test -- --review` at final review. A part's end
 runs at most three of them, by the frame's rule 2.
@@ -433,10 +498,18 @@ that `npm run limits` now lists every limit.
 - The records' line numbers are those of `38c333ab2` or, for Parts B and
   C, of `ed66a822c`; WO-284 and WO-287 land first and move some of them.
 
-**Non-goals:** each part's, as its record states them; running parts side
-by side; a ladder or a full suite list for a part on its own; any stop an
-instance cannot lower; a time limit's value changed without the record
-that shows it short of room.
+**Non-goals:** for Part A, a background scheduler or timer, the briefed
+critic, moving the review kinds into the table, launching a critic on a
+host the instance has not elected, and any change to what a critic may
+write; for Part B, restating a helper-launched report by the worker that
+wrote it, the change-review protocol's output contract, a target order's
+review repair lane on a failed target gate, and the change review's
+budget as instance configuration; for Part C, raising the bound without a
+cause, changing the sandbox profile's rules, and a retry; for Part D, a
+time limit's value changed without the record that shows it short of
+room, and any change to a bound that is a test's own input; for the
+order, running parts side by side, a ladder or a full suite list for a
+part on its own, and any stop an instance cannot lower.
 
 **Operator-review assumptions:** this order follows WO-287, so that what
 an instance meets is not held behind it; the readers, the critic's clock

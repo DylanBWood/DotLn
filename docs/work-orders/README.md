@@ -77,8 +77,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-284.
-- References: WO-284: satisfied-by-close (unmet) — the table of time limits and the instance's file, which Part D extends to every other limit.
+- Dependencies: typed; blocked on WO-284, WO-287.
+- References: WO-284: satisfied-by-close (unmet) — the table of time limits and the instance's file, which Part D extends to every other limit; WO-287: satisfied-by-close (unmet) — the table of stops, to which Parts A and B add the two stops they introduce.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

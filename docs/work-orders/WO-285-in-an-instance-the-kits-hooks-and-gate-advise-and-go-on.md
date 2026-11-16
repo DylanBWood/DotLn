@@ -5,9 +5,9 @@ this order's obligations as its Part A under the operator's direction of
 2026-11-16 ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md));
 not activatable. The text below is this order's form as that pass filed it, kept
 as the record of what WO-287 absorbed: its design, its observed gap, its
-execution plan, its cost detail and its cited code are read from here, its
-criteria are restated in WO-287, and where the two differ WO-287's text
-binds.
+execution plan, its cost detail and its cited code are read from here; its
+cost, its non-goals and its criteria are restated in WO-287; and where
+the two differ WO-287's text binds.
 
 <!-- dotln-dependencies:start -->
 [
@@ -35,10 +35,11 @@ and lets the selection pass. A stop that guards the owner's work or
 private material refuses there as before. Core refuses as before. No stop
 is added. Assigned at activation under the standing opt-out default.
 **Cost:** adds one build-free table of stops, a `stops` section and its
-validator, the levels carried by the emit into each hook's configuration,
-the answer by level in the two hook entry functions, an advised outcome in
-the runner's rows and the stop rows of the features page, with twenty to
-thirty cases (estimates, not bounds). The level is compiled into a hook's
+validator, the levels carried by the emit into each hook's configuration
+and into the host deny rules it derives, the answer by level in the two
+hook entry functions, a failure's own stop in the document check, an
+advised outcome in the runner's rows and the stop rows of the features
+page, with twenty to thirty cases (estimates, not bounds). The level is compiled into a hook's
 configuration at emit, so a tool call reads no further file; that cost is
 unmeasured, and the order records it from the harness fixture's reading
 before and after. It removes, in an instance, the denials and gate
@@ -67,9 +68,9 @@ that is (journal digests
 `f588639f7f20b37e4fdbac3693e3b5c60758c8caf27bddfc5dcfbad5926854e4` and
 `43f4d6a7015d51aef3c8d78715dc8443aa87b9a08d98b1f7a13d0de1cd5ff975`).
 Clean-room screen: core's own source and records; nothing from an instance.
-**Depends on:** WO-284 by placement only (each edits
-`scripts/test-runner.mjs`); no hard edge.
-**Recommended placement:** second, after WO-284.
+**Depends on:** as WO-287's Part A, on WO-284 (the runner's suite table
+as that order leaves it).
+**Recommended placement:** WO-287's Part A.
 **Cites (read these sections):** the census of this pass,
 `docs/planning/passes/the-kit-stops-no-work-2026-11-16-stops-census.md`
 (rows S01 to S139, each with its file, line and class);
@@ -188,9 +189,12 @@ sends a person to `operator override:` to get past a stop.
   a phrase, and its switch where it has one. The emit resolves each level
   from the root's kind and its configuration and writes it into each
   hook's configuration, launchpad and target, as it does the
-  desktop-control and plan-first values. Rejected: reading the
-  configuration in every hook call (axis: cost per tool call, which WO-272
-  measured and cut).
+  desktop-control and plan-first values. The host deny rules the emit
+  derives from the denied effects (ssh, scp, sftp and a package publish,
+  rows S03 and S04) follow their stops' levels as well: at `advise` or
+  `off` the rule is not emitted, since a host rule denies before any hook
+  can answer. Rejected: reading the configuration in every hook call
+  (axis: cost per tool call, which WO-272 measured and cut).
 - `protocolRefusal` takes the stop's id and answers by its level: a denial
   at `refuse`, the advisory at `advise`, nothing at `off`. Each launchpad
   refusal site names its id. `runTargetHarnessHook` gives each reason its
@@ -201,11 +205,16 @@ sends a person to `operator override:` to get past a stop.
   judged and which command restores it, since a guard that cannot run
   protects nothing by denying everything. A stop at `refuse` in a target
   worktree honours the recovery controls as the launchpad's does.
-- In the runner a row names the stop it is. In an instance a failed row at
-  `advise` is recorded as advised with its output, the selection goes on to
-  the rows after it and passes, and its recorded row names what was
-  advised; at `refuse` it fails as today. A structural row is treated the
-  same way.
+- In the runner a failure names the stop it is. A task that holds one
+  check names its stop. A task that holds checks of more than one class, as
+  the document check holds record checks and the private-path screen
+  (rows S110 to S124), reports each failure with its own stop's id. In an
+  instance a task is recorded as advised, with its output, when every
+  failure in it is at `advise`, and the selection goes on to the tasks
+  after it and passes; a task with one failure at `refuse` fails, naming
+  that failure, and prints the others as advised. A structural row is
+  treated the same way. A task ended for time is no stop of this table: it
+  fails as WO-284's file says, whatever the level of its checks.
 - The `stops` section holds `"<id>": "refuse" | "advise" | "off"`. An
   unknown id or value is named in one advisory and ignored, and in an
   instance an unknown `features` key is treated the same way, so a
@@ -240,8 +249,12 @@ failure that run names.
 1. `packages/skeleton/src/stops.mjs` (new; build-free): the table, one row
    for each census row S01 to S139 that ships, with row S30 as two, and
    the function that resolves a level from a root's kind, a row's class
-   and the `stops` section; `scripts/launchpad.mjs` (`BUILD_FREE_MODULES`).
-   Check: a case in `scripts/test-configuration-root.mjs` that an instance
+   and the `stops` section; `scripts/launchpad.mjs` (`BUILD_FREE_MODULES`);
+   the module's registration in `scripts/lib/evidence-sources.mjs` and in
+   the fixture lists that copy build-free modules
+   (`scripts/test-harness.fixture-inputs.json`,
+   `scripts/test-beacon-fixture.fixture-inputs.json`), before the first
+   re-mint. Check: a case in `scripts/test-configuration-root.mjs` that an instance
    root resolves an unset record row to `advise` and an unset work row to
    `refuse`, and core's root resolves both to `refuse`.
 2. `scripts/lib/config.mjs` (`SECTION_KEYS`, the `stops` validator) and
@@ -252,8 +265,10 @@ failure that run names.
 3. `scripts/lib/harness.mjs` (`harnessInstallation` passes the resolved
    levels) and `packages/compiler/src/harness.ts` (each hook's
    configuration carries them; `HARNESS_REFUSALS` rows carry their ids;
-   `HARNESS_BOUNDARIES` names the setting; the target bundle's preamble
-   reads the operator-control mode). Check: a case in
+   `HARNESS_BOUNDARIES` names the setting; the host deny rules it derives
+   from `deniedEffects` are emitted by level, in the launchpad's settings
+   and a target's; the target bundle's preamble reads the operator-control
+   mode). Check: a case in
    `scripts/test-harness.mjs` that an emit under a `stops` section writes
    that level into the launchpad's and a target's hook configuration.
 4. `packages/skeleton/src/harness-host.ts` (`protocolRefusal` and each
@@ -267,10 +282,13 @@ failure that run names.
    cannot be reached). Check: cases in
    `scripts/test-target-worktree-start.mjs` for rows S28 to S33 at the
    default and at `refuse`, and for a denied effect at the default.
-6. `scripts/test-runner.mjs` (a row's stop id, the advised outcome, the
-   structural loop). Check: a case in `scripts/test-runner.test.mjs` that a
-   failed record row in an instance fixture leaves the selection passing
-   with the row named as advised, and fails it at `refuse`.
+6. `scripts/docs-check.mjs` (each failure carries its stop's id) and
+   `scripts/test-runner.mjs` (a task's failures by stop, the advised
+   outcome, the structural loop). Check: a case in
+   `scripts/test-runner.test.mjs` that a failed record check in an instance
+   fixture leaves the selection passing with the task named as advised,
+   fails it at `refuse`, and fails it for a private path beside a record
+   defect.
 7. `scripts/lib/features.mjs` (`notElectable` leaves; the stop rows) and
    `scripts/features.mjs` (the rendered table). Check: a case in
    `scripts/test-features.mjs` that the list names every row of the table
@@ -326,9 +344,13 @@ messages; the write-backs, decisions, regenerated roots and editions.
 6. In an instance fixture a failed task whose stop is a record, host or
    bound row is recorded as advised with its output, the tasks after it
    run, the selection exits 0 and its recorded row names the advised
-   tasks; with that stop at `refuse` the selection fails as today; a
-   refuse-class match of the private terms list fails the `terms` task at
-   any level; in core's root the selection fails as before
+   tasks; with that stop at `refuse` the selection fails as today. In the
+   document check a document with a record-form defect alone leaves its
+   task advised, one with a private absolute path alone fails it, and one
+   with both fails it naming the private path and prints the form defect
+   as advised. A refuse-class match of the private terms list fails the
+   `terms` task at any level, and a task ended for time fails at any
+   level. In core's root the selection fails as before
    (`npm test -- --only runner-fixtures`).
 7. A `stops` section sets a stop to `refuse`, `advise` or `off`; an unknown
    id, an unknown level and, in an instance, an unknown `features` key are
@@ -349,7 +371,11 @@ messages; the write-backs, decisions, regenerated roots and editions.
     that remains names its stop id and its line of `dotln.config.json`, by
     a case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
-11. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+11. With the ssh stop or the package-publish stop set to `advise` or
+    `off`, the emitted settings carry no deny rule for it, in the
+    launchpad's bundle and a target worktree's; unset in an instance, the
+    rule is emitted as before (`npm test -- --only harness-fixtures`).
+12. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`, `npm test -- --only
 target-worktree`, `npm test -- --only runner-fixtures`, `npm test -- --only
@@ -391,7 +417,7 @@ read the list, and the one line that changes any of them.
 **Non-goals:** changing what a lifecycle command refuses (rows S42 to S93);
 removing a protection from core; lowering a work row's default; a new stop
 of any kind; a per-user or per-session level; changing what the host's own
-permission rules decide.
+permission rules decide, apart from the deny rules the kit's emit writes.
 
 **Operator-review assumptions:** the class of each stop is the census's,
 and the 28 work rows are listed in this pass's document for the operator

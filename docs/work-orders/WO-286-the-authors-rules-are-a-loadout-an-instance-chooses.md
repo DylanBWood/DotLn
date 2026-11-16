@@ -5,9 +5,9 @@ this order's obligations as its Part B under the operator's direction of
 2026-11-16 ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md));
 not activatable. The text below is this order's form as that pass filed it, kept
 as the record of what WO-287 absorbed: its design, its observed gap, its
-execution plan, its cost detail and its cited code are read from here, its
-criteria are restated in WO-287, and where the two differ WO-287's text
-binds.
+execution plan, its cost detail and its cited code are read from here; its
+cost, its non-goals and its criteria are restated in WO-287; and where
+the two differ WO-287's text binds.
 
 <!-- dotln-dependencies:start -->
 [
@@ -35,7 +35,8 @@ keeps the rules it has. No refusal is added. Assigned at activation under
 the standing opt-out default.
 **Cost:** adds a layer on thirty-four rule records and a reading of the
 ten units' existing scope, the overlay's wider `equip` and `unequip`, the
-filter in the configured program and in the emit, the rule rows of the
+filter in the configured program and in the launchpad's and a target
+worktree's emit, the rule rows of the
 features page and one section of the kit guide, with twelve to twenty
 cases (estimates, not bounds). It removes the only route an owner has
 today to decline one of the author's rules: dropping the whole bundle with
@@ -64,10 +65,10 @@ instance now is) and FUP-edefd92233980b63 (core-operator decisions marked
 in kit text for an instance to decline, closed by WO-241 as a registry
 field). Clean-room screen: core's own source and records; nothing from an
 instance.
-**Depends on:** WO-285 by placement only (each edits
-`scripts/lib/features.mjs` and the kit guide's Features section); no hard
-edge.
-**Recommended placement:** third, after WO-285.
+**Depends on:** as WO-287's Part B, on its Part A (the table of stops,
+and `scripts/lib/features.mjs` and the kit guide's Features section as
+that part leaves them).
+**Recommended placement:** WO-287's Part B.
 **Cites (read these sections):** ADR-0006
 (`docs/decisions/0006-platform-mechanisms-instance-doctrine.md`), decisions
 1 to 4 and 6; product 01's layer labels and product 03's boundary table
@@ -161,6 +162,22 @@ nothing keeps what it has.
   in one advisory and ignored. Rejected: a new file or section for this
   choice (axis: one place; the overlay already equips and unequips, and
   WO-076 recorded this as its reopening).
+- A unit that also refuses is two things. The writer reservation and the
+  attribution rule each have a sentence in the role text, which is the
+  unit, and a refusal, which is a row of WO-285's table. Unequipping the
+  unit removes its sentence and its advisory, and its refusal goes with
+  it: the stop reads `off` while the unit is unequipped, and a `stops`
+  line that asks otherwise for it is advised as a line with no effect.
+  The attribution setting the emit writes into the host's settings is
+  written only where that unit is equipped, as the launchpad's settings
+  already are (`packages/compiler/src/harness.ts` 1602) and a target's
+  are not (1950).
+- A target worktree's bundle follows the same selection. Today
+  `emit --target` does not read the overlay, compiles the whole feedback
+  program for the target and requires the writer and attribution units
+  (`scripts/harness.mjs`; `emitTargetUnlocked` in `scripts/lib/harness.mjs`;
+  `lowerTargetWorker` in `packages/compiler/src/harness.ts`), so a rule an
+  owner removed would stay in every sibling repository.
 - The default changes nothing: with no such id in its overlay an instance
   emits the units and rules it emits today, so taking the release moves no
   session's instructions. Rejected: a new instance starting without the
@@ -202,7 +219,12 @@ failure that run names.
 3. `scripts/lib/harness.mjs` (`harnessInstallation` compiles the feedback
    program from the equipped units and passes the equipped rules) and
    `packages/compiler/src/harness.ts` (`lowerToHarness` writes no line and
-   registers no hook for an absent unit). Check: a case in
+   registers no hook for an absent unit); for a target worktree,
+   `scripts/harness.mjs` (`emit --target` reads the overlay),
+   `scripts/lib/harness.mjs` (`emitTargetUnlocked` compiles the owner's
+   selection) and `packages/compiler/src/harness.ts` (`lowerTargetWorker`:
+   the two units it requires, and the attribution setting it writes
+   whatever the units are). Check: a case in
    `scripts/test-harness.mjs` that an emit under `"unequip": ["author"]`
    writes role roots whose Origin comment names no author-layer unit and
    settings that register no hook of one.
@@ -257,10 +279,15 @@ layer and reason; regenerated roots and editions.
    (`npm test -- --only launchpad`).
 7. Each shared rule's layer and its one-line reason are in
    `docs/evidence/WO-286/decisions.md`.
-8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+8. With the attribution unit unequipped, or `author`, an emit into a
+   registered target worktree writes no attribution setting and registers
+   no attribution hook, its check passes, and the writer reservation there
+   still answers at its stop's level (`npm test -- --only target-worktree`).
+9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`, `npm test -- --only
 configuration-root`, `npm test -- --only launchpad`, `npm test -- --only
+target-worktree`, `npm test -- --only
 harness-evidence`, `npm test -- --only authority-evidence`, `npm test --
 --only artifact-evidence` and `npm test -- --only verification-evidence`,
 whose rows the order's one complete run supplies; the structural phase;

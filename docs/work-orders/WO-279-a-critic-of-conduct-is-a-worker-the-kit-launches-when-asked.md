@@ -3,11 +3,11 @@
 **Umbrella record (2026-11-16):** superseded whole by WO-288, which carries
 this order's obligations as its Part A under the operator's direction of
 2026-11-16 ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md));
-not activatable. The text below is this order's last committed form, kept
+not activatable. The text below is this order's form as that pass amended it, kept
 as the record of what WO-288 absorbed: its design, its observed gap, its
-execution plan, its cost detail and its cited code are read from here, its
-criteria are restated in WO-288, and where the two differ WO-288's text
-binds.
+execution plan, its cost detail and its cited code are read from here; its
+cost, its non-goals and its criteria are restated in WO-288; and where
+the two differ WO-288's text binds.
 
 <!-- dotln-dependencies:start -->
 [
@@ -45,10 +45,12 @@ Assigned at activation under the standing opt-out default.
 **Cost:** adds a build-free kinds module and an instance `kinds` section,
 one launch command, a cadence module and a `due` command, one line in the
 prompt hook's context and one beside the Stop hook's standing line, a
-counts-only transcript screen, one request kind in the worker transport and
-its protocol, the standing file's age check, a second kind's charter, one
-more disposition word in the round findings, four changed sentences of
-role text, and twenty to twenty-five cases (estimates, not bounds). Where an instance turns the cadence on, each
+counts-only screen over a copy of the transcripts the worker is then
+granted, one request kind in the worker transport and its protocol, the
+standing file's age check, a second kind's charter, the points' record in
+the decisions and its count by class, one more disposition word in the
+round findings, four changed sentences of role text, and twenty-two to
+twenty-seven cases (estimates, not bounds). Where an instance turns the cadence on, each
 prompt in a dispatch reads the dispatch's journals and gate rows once more
 (the standing reads them in about 6 ms a megabyte, WO-276-D103; this reading
 unmeasured); with it off, as by default, nothing more is read.
@@ -94,11 +96,11 @@ gate-row reader that a malformed checks file stops) are allocated here.
 Clean-room screen: the critic reads transcripts that in an instance hold
 whatever its sessions read; the screen of this order's design withholds a
 launch over a refuse-class entry and prints counts only.
-**Depends on:** WO-281 and WO-282 by placement only (each edits
-`docs/KIT.md`); no hard edge.
-**Recommended placement:** fourth, after WO-277, WO-281 and WO-282: the operator
-asked for it during this pass, and every later order can then run its
-critic through the kit on the work laptop.
+**Depends on:** as WO-288's Part A, on WO-284 and WO-287 (the table of
+stops, to which this part adds one row).
+**Recommended placement:** WO-288's Part A: the operator asked for it
+during the 2026-11-15 pass, and every later order can then run its critic
+through the kit on the work laptop.
 **Cites (read these sections):** `docs/evidence/WO-276/critic/README.md`,
 `charter.md`, `launch.mjs` and `criticisms.md`; WO-276-D077, D101, D110,
 D111, D113, D115, D143, D145, D165, D166 and D182;
@@ -262,8 +264,13 @@ back and what allowed them.
   change-review request keeps its four kinds and its schema. Rejected:
   shipping the kept script as a kit file (axis: transport; it bypasses the
   launch path, the journal and the count, and needs Codex).
+- The worker reads a copy. The launch copies the transcripts the brief
+  names into a directory of session scratch, screens that copy and grants
+  the worker the copy alone, so that nothing a session appends after the
+  screen reaches the worker; a session goes on working while its critic
+  reads, and its next tool result is in the live file within seconds.
 - The screen: a counts-only entry point over a directory outside the
-  repository reads the transcripts the brief names against the private
+  repository reads the copied transcripts against the private
   list; a refuse-class line withholds the launch and says how many lines of
   which class, never a term; an absent list is said and does not withhold a
   launch in core, as `terms check` treats it, and does in an instance whose
@@ -288,7 +295,9 @@ back and what allowed them.
   review or a repair, starts a clock of its own one interval after it
   begins, since the errors the operator recorded in WO-282 came in its
   final review, after the executor's passing run (WO-282-D024); no launch
-  falls due after the order's final-review result. `npm run worker -- due` prints it; the prompt
+  falls due after the order's passing final-review result, and a failed
+  one is followed by a repair and a verification whose dispatches each
+  start a clock. `npm run worker -- due` prints it; the prompt
   hook adds one line to the session's context and the Stop hook one beside
   the standing line when a launch is due. The executor's role text for the
   active and repairing phases says to launch a due kind where the instance
@@ -302,11 +311,15 @@ back and what allowed them.
   command could render for it and builds no such command.
 - The record of criticisms gets a kit place: the launch writes the report
   to the lane, and the session that received it records each point's
-  judgment in the order's decisions as WO-276 did, with the class the
-  point names. An accepted point that names a sentence or an output as its
-  cause carries a `followup` naming it, which the register turns into a
-  row; `npm run plan -- failures` counts a dispatch's critic launches
-  beside its review rounds and the accepted points by class. The launch's
+  judgment in its decisions as an entry of a `criticPoints` array: the
+  launch's number, the point's number, the class it names, `accepted` or
+  `declined`, and the cause it names or null. The document check reads the
+  array's shape and nothing else, as it reads a round's findings. An
+  accepted point that names a sentence or an output as its cause carries a
+  `followup` naming it, which the register turns into a row.
+  `npm run plan -- failures` counts a dispatch's critic launches beside its
+  review rounds, and the accepted points by class from those arrays, in
+  closed orders, open ones and planning passes alike. The launch's
   last line prints what was requested and what the host reported apart.
 - Four sentences of role text change where they stand, each for a class
   that came back: an operator's message is answered in the next message
@@ -387,7 +400,9 @@ order's one complete run except to reproduce a failure that run names.
    `npm test -- --only runner-fixtures` and `npm test -- --only
    process-debt`.
 8. `scripts/lib/plan-failures.mjs`: count a dispatch's critic launches
-   beside its review rounds. Check: `npm test -- --only plan-refutation`.
+   beside its review rounds, and the accepted points by class from the
+   decisions' `criticPoints` arrays; `scripts/docs-check.mjs`: the array's
+   shape. Check: `npm test -- --only plan-refutation`.
 9. `scripts/lib/round-findings.mjs` (`ROUND_DISPOSITIONS` admits
    `to-fix`) and `scripts/lib/handoff-ledger.mjs` (the advisory for one
    left at a handoff); `packages/skeleton/src/loadouts/contributor.ts`: the
@@ -435,15 +450,19 @@ decisions, the episode's record, regenerated roots and editions.
    kit's row launches (`npm test -- --only configuration-root`).
 3. With a refuse-class entry of the private list present in a transcript,
    the launch is withheld, its output names the counts of lines by class and
-   no term, and no worker starts; with none, the launch proceeds (`npm test
-   -- --only harness-fixtures`).
+   no term, and no worker starts; with none, the launch proceeds, and what
+   the worker is granted is the screened copy: a refuse-class entry
+   appended to the live transcript after the screen is absent from it
+   (`npm test -- --only harness-fixtures`).
 4. With `features.critic-cadence` absent or off, `npm run worker -- due`
    names nothing at any time and neither hook adds a line. With it on,
    `due` names a critic launch due one interval after the dispatch began,
    names none while a gate runs and names none in that dispatch after its
    complete run has passed; names one in a later verification or
    final-review dispatch of the same order one interval after that
-   dispatch began; and names none after the order's final-review result;
+   dispatch began; names none after the order's passing final-review
+   result; and after a failed one names a launch again in the repair's and
+   the next verification's dispatches;
    the prompt hook's context and the Stop hook's line carry the same
    answer (`npm test -- --only harness-fixtures`).
 5. The hook counts `npm run worker -- launch critic` as one use and
@@ -472,7 +491,14 @@ decisions, the episode's record, regenerated roots and editions.
     the earlier ones stood, and the planner's root names the
     `critic-review` launch, by a case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
-12. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+12. With two orders whose decisions each hold a `criticPoints` array that
+    accepts two points of one class and declines a third,
+    `npm run plan -- failures` gives that class four accepted points and
+    counts the declined ones apart; an accepted point that names a cause
+    and carries a `followup` is a register row after a sync; and the case
+    fails on an implementation that counts launches alone
+    (`npm test -- --only plan-refutation`).
+13. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only plan-refutation`, `npm test -- --only
 harness-fixtures`, `npm test -- --only configuration-root`, `npm test --

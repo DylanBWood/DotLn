@@ -27,9 +27,24 @@ instance's build overlay removes any of the author's. No stop is added.
 Stops lowered in an instance: the record, host and bound rows of the
 census. Core refuses as before and equips what it equips today. Assigned
 at activation under the standing opt-out default.
-**Cost:** each part adds and removes what its record's Cost line states.
-The two share one activation, one verification, one final review, one
-release and one complete run in place of two of each, and Part B is
+**Cost:** Part A adds one build-free table of stops, a `stops` section
+and its validator, the levels carried by the emit into each hook's
+configuration and into the host deny rules, the answer by level in the two
+hook entry functions, a failure's own stop in the document check, an
+advised outcome in the runner's rows and the stop rows of the features
+page, with twenty to thirty cases; it removes, in an instance, twenty-six
+hook denials and thirty-seven gate failures that have nothing to do with
+the owner's work, the authorizations asked of the operator to pass a bound
+(twelve in November's record) and the one refusal whose only route was the
+recovery override. Part B adds a layer on thirty-four rule records and a
+reading of the ten units' scope, the overlay's wider lists, the filter in
+the configured program and in the launchpad's and a target's emit, the
+rule rows of the features page and one section of the kit guide, with
+twelve to twenty cases; it removes the only route an owner has to decline
+one of the author's rules, which is dropping the whole bundle. All are
+estimates, not bounds. The two share one activation, one verification,
+one final review, one release and one complete run in place of two of
+each, and Part B is
 written against the files Part A has just changed
 (`scripts/lib/features.mjs`, `scripts/lib/config.mjs`,
 `packages/compiler/src/harness.ts`, the kit guide's Features section)
@@ -114,19 +129,21 @@ in parts, this text is the order's.
    wording, pin and list the part changed; what it regenerates is clean
    (`npm run sync` where it edits a generated source);
    `node scripts/docs-check.mjs` and `node scripts/terms.mjs branch` pass
-   over its write-backs; its two readings are judged; `npm run resume --
-   checkpoint` has made its checkpoint; and
-   `docs/evidence/WO-287/standing.md` is rewritten. No part has a ladder
-   of its own, and no other suite is run for it: a part that had to be
-   perfect before the next began would pay each absorbed order's cycle
-   again inside this one, which is what WO-276's frame first asked for
-   and the operator replaced within four hours.
-3. Two readers go out at each part's end, and the next part begins
+   over its write-backs; `npm run resume -- checkpoint` has made its
+   checkpoint; its two readers are launched on that checkpoint; and
+   `docs/evidence/WO-287/standing.md` is rewritten, naming the readers
+   still out. No part has a ladder of its own, and no other suite is run
+   for it: a part that had to be perfect before the next began would pay
+   each absorbed order's cycle again inside this one, which is what
+   WO-276's frame first asked for and the operator replaced within four
+   hours.
+3. Two readers go out on each part's checkpoint, and the next part begins
    without waiting for either: one combined reviewer, carrying the three
    briefs, over that part's change, on `astra`; and one reader over
    everything changed so far, the three kinds in turn, on the instance's
    `default` worker. Their findings are judged by the round-one standard
-   and fixed as they come. No reviewer runs on a clock: WO-276 ran 104
+   and fixed as they come, and every reader's findings are judged before
+   the paired round at the end. No reviewer runs on a clock: WO-276 ran 104
    review rounds, most of them on clocks, and 89 findings still reached
    its final reviews.
 4. The critic of conduct goes out every 75 minutes of a dispatch, from
@@ -160,20 +177,28 @@ in parts, this text is the order's.
    verification, with one reader, found two defects, its second, with
    twenty, eleven more, and its first final review nine more.
 10. A part can be cut on the operator's word without rewriting another:
-    its criteria carry its letter and its design is its own file. Cutting
-    one is an amendment of this order and the removal of the umbrella
-    label from its record, which makes that record an open order again.
+    its criteria carry its letter, and its design is its own file or its
+    own bullet and step here. Cutting one is an amendment of this order,
+    which takes out its criteria, its cost and its non-goals; for a part
+    with a record, the removal of the umbrella label and of the typed
+    `superseded` entry from that record, which makes it an open order
+    again, and for a part set out here a new order filed for it; an entry
+    for it in the sequence; and the index regenerated.
 
 *The parts.*
 
 - **Part A, WO-285** as filed: the table of stops, the `stops` section,
   the answer by level in the launchpad's and a target worktree's hooks,
-  the runner's advised outcome, the features page's stop rows and the
-  texts that named the recovery override.
+  the host deny rules by level, a failure's own stop inside a task that
+  holds checks of more than one class, the runner's advised outcome, the
+  features page's stop rows and the texts that named the recovery
+  override.
 - **Part B, WO-286** as filed: the layer on every unit and shared rule,
   the overlay's wider lists, the features page's rule rows, the seed's
-  wording and the kit guide's section. It writes the features page and
-  the kit guide's Features section as Part A leaves them.
+  wording and the kit guide's section, in a target worktree's bundle as
+  in the launchpad's. It writes the features page and the kit guide's
+  Features section as Part A leaves them, and a unit that also refuses
+  follows its row of Part A's table.
 
 Rejected: one order of six parts for the whole queue (axis: what one
 verification can hold; WO-276's whole could not be held by its
@@ -241,9 +266,13 @@ critic's points judged; regenerated roots and editions.
 6. (A6) In an instance fixture a failed task whose stop is a record, host or
    bound row is recorded as advised with its output, the tasks after it
    run, the selection exits 0 and its recorded row names the advised
-   tasks; with that stop at `refuse` the selection fails as today; a
-   refuse-class match of the private terms list fails the `terms` task at
-   any level; in core's root the selection fails as before
+   tasks; with that stop at `refuse` the selection fails as today. In the
+   document check a document with a record-form defect alone leaves its
+   task advised, one with a private absolute path alone fails it, and one
+   with both fails it naming the private path and prints the form defect
+   as advised. A refuse-class match of the private terms list fails the
+   `terms` task at any level, and a task ended for time fails at any
+   level. In core's root the selection fails as before
    (`npm test -- --only runner-fixtures`).
 7. (A7) A `stops` section sets a stop to `refuse`, `advise` or `off`; an unknown
    id, an unknown level and, in an instance, an unknown `features` key are
@@ -264,34 +293,42 @@ critic's points judged; regenerated roots and editions.
     that remains names its stop id and its line of `dotln.config.json`, by
     a case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
-11. (B1) `npm run features -- list` prints one row for each feedback unit and
+11. (A11) With the ssh stop or the package-publish stop set to `advise` or
+    `off`, the emitted settings carry no deny rule for it, in the
+    launchpad's bundle and a target worktree's; unset in an instance, the
+    rule is emitted as before (`npm test -- --only harness-fixtures`).
+12. (B1) `npm run features -- list` prints one row for each feedback unit and
     each shared role rule with its id, its layer, how it is enforced,
     whether this root equips it and the overlay line that changes it
     (`npm test -- --only configuration-root`).
-12. (B2) With `"unequip": ["author"]` in an instance's overlay, the emitted role
+13. (B2) With `"unequip": ["author"]` in an instance's overlay, the emitted role
     roots carry no author-layer unit's line and no author-layer rule's
     sentence, the emitted settings register no hook of an author-layer
     unit, and every role's numbered steps and every platform-layer rule
     remain (`npm test -- --only harness-fixtures`).
-13. (B3) An overlay that names single ids removes or restores exactly those; a
+14. (B3) An overlay that names single ids removes or restores exactly those; a
     platform-layer id in `unequip` is named in one advisory and kept; in an
     instance an unknown id is named in one advisory and ignored
     (`npm test -- --only configuration-root`).
-14. (B4) With no unit or rule id in its overlay, an instance's emitted role
+15. (B4) With no unit or rule id in its overlay, an instance's emitted role
     roots name in their Origin comments the unit ids they named at the
     order's base and carry every shared rule's sentence
     (`npm test -- --only harness-fixtures`).
-15. (B5) `node scripts/harness.mjs check` passes in an instance whose overlay
+16. (B5) `node scripts/harness.mjs check` passes in an instance whose overlay
     unequips author-layer rules, and a later emit leaves them absent
     (`npm test -- --only harness-fixtures`).
-16. (B6) The features list prints no line saying the clean-room floor cannot be
+17. (B6) The features list prints no line saying the clean-room floor cannot be
     chosen; an exported instance's `CLAUDE.md` says its Clean Room and
     Secrets sections are the owner's own text, and its kit guide has the
     section that states which layer is whose
     (`npm test -- --only launchpad`).
-17. (B7) Each shared rule's layer and its one-line reason are in
+18. (B7) Each shared rule's layer and its one-line reason are in
     `docs/evidence/WO-287/decisions.md`.
-18. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+19. (B8) With the attribution unit unequipped, or `author`, an emit into a
+    registered target worktree writes no attribution setting and registers
+    no attribution hook, its check passes, and the writer reservation there
+    still answers at its stop's level (`npm test -- --only target-worktree`).
+20. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only artifact-evidence`,
 `npm test -- --only authority-evidence`,
@@ -337,9 +374,16 @@ changes each.
 - The role text's rules for an order in parts give each part a ladder
   until WO-288 changes them; this order's text is the one to follow.
 
-**Non-goals:** each part's, as its record states them; running the parts
-side by side; a ladder or a full suite list for a part on its own; any
-stop an instance cannot lower; anything of WO-288's.
+**Non-goals:** for Part A, changing what a lifecycle command refuses,
+removing a protection from core, lowering a work row's default, a new
+stop of any kind, a per-user or per-session level, and changing what the
+host's own permission rules decide, apart from the deny rules the kit's
+emit writes; for Part B, changing which rules core
+equips, rewriting any rule's text, a new instance without the author's
+layer, replacing a rule's text from an instance, the role steps and a
+second loadout; for the order, running the parts side by side, a ladder or
+a full suite list for a part on its own, any stop an instance cannot
+lower, and anything of WO-288's.
 
 **Operator-review assumptions:** the queue is cut into two orders of the
 form and not one, on WO-276's record, with what an instance meets first;

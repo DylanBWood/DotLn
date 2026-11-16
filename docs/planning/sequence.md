@@ -165,7 +165,8 @@ first order ([the 2026-11-16 pass](passes/the-kit-stops-no-work-2026-11-16.md)):
   critic of conduct the kit launches, whose points come back to planning
   by class (WO-279). Part B: the review helper (WO-278). Part C: the
   discovery timeout (WO-280). Part D: every time limit outside the gate
-  path.
+  path, the shipped test files' own among them. It needs WO-287's table
+  of stops as well as WO-284's table of limits.
 
 The queue is two orders of the form and not one because WO-276's record
 shows what one cannot hold: 42 hours and six repairs between its
