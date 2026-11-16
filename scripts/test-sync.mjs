@@ -713,6 +713,11 @@ test(
     const { execGit } = await import("./lib/git.mjs");
     const { appendFileSync, existsSync, lstatSync } = await import("node:fs");
     const { copy } = editionCopy(t, { workspace: true });
+    const { writeReleaseHistory } = await import("./lib/release-history.mjs");
+    // A clone may legitimately retain a table through an older tag. Give
+    // these recovery cases a complete table so its boundary can be recovered
+    // from the table itself after its observation record is lost.
+    writeReleaseHistory(copy);
     const inventory = generatedArtifacts(copy);
     const byName = (name) => inventory.find((row) => row.name === name);
     const bytes = (file) => readFileSync(join(copy, file));

@@ -20,6 +20,7 @@ export const machinerySources = {
     "scripts/lib/harness.mjs",
     "scripts/meta.mjs",
     "scripts/release.mjs",
+    "scripts/lib/release-history.mjs",
     // The close's step names, blocker classes and removal children, which
     // release.mjs, worktree.mjs and plan failures import.
     "scripts/lib/release-steps.mjs",

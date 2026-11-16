@@ -39,6 +39,7 @@ import {
   TEST_FIXTURE_TREES,
   TEST_SUPPORT_FILES,
   planUpdate,
+  changedOnBothSides,
   unmetIncomingFloors,
   verifyKit,
 } from "./launchpad.mjs";
@@ -940,10 +941,38 @@ test("WO-276 criteria I1 and I2: update --publish refuses a merge that changed a
   assert.equal(cut.status, 1, cut.stdout);
   assert.ok(
     cut.stderr.includes(
-      `update --publish refused: the update's merge base cannot be read: this clone holds no commit that ${short(later)} and the starter's revision ${short(commits.starter)} share (a shallow or grafted clone). Fetch the history the clone lacks`,
+      `update --publish refused: the update's merge base cannot be read: this clone holds no commit that ${short(later)} and the starter's revision ${short(commits.starter)} share (a shallow clone). Fetch the history the clone lacks`,
     ),
     cut.stderr,
   );
+  assert.equal(forge.pushes().length, pushes);
+  // Grafts hide the same shared commits without making the clone shallow.
+  // Name that cause and preserve the publish's no-push boundary.
+  const graftsFile = join(destination, ".git/info/grafts");
+  writeFileSync(graftsFile, `${commits.instance}\n${commits.starter}\n`);
+  const grafted = publish();
+  rmSync(graftsFile);
+  assert.equal(grafted.status, 1, grafted.stdout);
+  assert.match(
+    grafted.stderr,
+    /merge base cannot be read while this clone has a grafts file/u,
+  );
+  assert.match(grafted.stderr, /Set the grafts file aside/u);
+  assert.doesNotMatch(grafted.stderr, /the clone is whole|unshallow fetch/u);
+  assert.equal(forge.pushes().length, pushes);
+  const alternateGrafts = join(destination, ".git/alternate-grafts");
+  writeFileSync(alternateGrafts, `${commits.instance}\n${commits.starter}\n`);
+  try {
+    assert.throws(
+      () =>
+        changedOnBothSides(destination, later, commits.starter, {
+          env: { ...env, GIT_GRAFT_FILE: alternateGrafts },
+        }),
+      /merge base cannot be read while this clone has a grafts file.*Set the grafts file aside/u,
+    );
+  } finally {
+    rmSync(alternateGrafts);
+  }
   assert.equal(forge.pushes().length, pushes);
   // A starter revision that shares no commit with a whole clone is another
   // cause, and the refusal says so and does not send the operator to fetch.
@@ -3776,6 +3805,15 @@ test("export update preserves ownership, validates actions and keeps the exporte
           /^re-emitted: \.claude\/harness-manifest\.json$/mu,
           label,
         );
+        const advice = `If the merge conflicts in ${HARNESS_MANIFEST}, keep this instance's side: the emit rewrites it under this instance's configuration.`;
+        assert.ok(result.stdout.includes(advice), label);
+        assert.ok(
+          result.stdout.indexOf(advice) <
+            result.stdout.search(
+              /^(?:re-emitted|replace|add|remove|unchanged|refused): /mu,
+            ),
+          label,
+        );
         assert.doesNotMatch(result.stdout, /^refused: /mu, label);
         assert.match(
           result.stdout,
@@ -5752,6 +5790,80 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     /^100755 /u,
   );
   assert.equal(manifestOf(checkout).commit, head);
+});
+
+test("WO-282: an update checks incoming and pending runtime additions before the harness, and admits an interrupted removal", () => {
+  const root = join(scratch, "runtime-update-union");
+  mkdirSync(root, { recursive: true });
+  try {
+    const surface = ".claude/settings.json";
+    const runtime = "packages/skeleton/dist/src/incoming.js";
+    const put = (path, bytes) => {
+      mkdirSync(dirname(join(root, path)), { recursive: true });
+      writeFileSync(join(root, path), bytes);
+    };
+    put(surface, "instance emit\n");
+    put(HARNESS_MANIFEST, JSON.stringify({ installed: [{ path: surface }] }));
+    const prior = { files: [{ path: surface, sha256: sha256("prior emit") }] };
+    const next = {
+      files: [{ path: surface, sha256: sha256("incoming emit") }],
+    };
+    const entry = { path: runtime, sha256: sha256("kit runtime") };
+    const withRuntime = (manifest) => ({ files: [...manifest.files, entry] });
+    let asked = 0;
+    const options = {
+      generated: new Set([surface]),
+      harnessCheck: () => {
+        asked++;
+        return "passes";
+      },
+    };
+    for (const [incoming, pending] of [
+      [withRuntime(next), null],
+      [next, withRuntime(next)],
+    ]) {
+      put(runtime, "operator edit");
+      const before = asked;
+      const refused = planUpdate(prior, incoming, root, pending, options);
+      assert.equal(
+        asked,
+        before,
+        "no instance code runs with an altered addition",
+      );
+      assert.equal(
+        refused.find(({ path }) => path === surface).harnessCheck,
+        "runtime-differs",
+      );
+      put(runtime, "kit runtime");
+      assert.equal(
+        planUpdate(prior, incoming, root, pending, options)[0].reEmitted,
+        true,
+      );
+      assert.equal(asked, before + 1);
+    }
+    rmSync(join(root, runtime));
+    const before = asked;
+    const removed = planUpdate(withRuntime(prior), next, root, next, options);
+    assert.equal(
+      asked,
+      before + 1,
+      "the pending kit already removed the prior runtime",
+    );
+    assert.equal(removed.find(({ path }) => path === surface).reEmitted, true);
+    assert.equal(removed.find(({ path }) => path === runtime).absent, true);
+    const missing = planUpdate(withRuntime(prior), next, root, null, options);
+    assert.equal(
+      asked,
+      before + 1,
+      "without a pending kit, a prior runtime's absence stays untrusted",
+    );
+    assert.equal(
+      missing.find(({ path }) => path === surface).harnessCheck,
+      "runtime-differs",
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("WO-276 F8: every carried compiled runtime file is compared before any of the instance's code runs, in kit verification and in an update's plan", () => {

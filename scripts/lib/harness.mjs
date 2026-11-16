@@ -16,7 +16,7 @@ export {
   harnessInstructionBlock,
   composeHarnessInstruction,
 } from "./harness-instruction.mjs";
-import { spawnGit, runGit } from "./git.mjs";
+import { spawnGit, runGit, nestedGitArgs } from "./git.mjs";
 import {
   json as targetJson,
   json as prettyJson,
@@ -497,13 +497,56 @@ export function emitHarness(
   const previous = existsSync(join(root, manifestPath))
     ? JSON.parse(readFileSync(contained(root, manifestPath), "utf8"))
     : null;
+  // A starter merge can replace the manifest without removing an elected
+  // host's files. Main's recorded bytes establish ownership of those files,
+  // but a path alone must never authorize replacing an operator's edits.
+  let mainInstalled;
+  const ownedOnMain = (file) => {
+    if (mainInstalled === undefined) {
+      try {
+        const env = { ...process.env };
+        for (const name of [
+          "GIT_DIR",
+          "GIT_WORK_TREE",
+          "GIT_COMMON_DIR",
+          "GIT_OBJECT_DIRECTORY",
+          "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+          "GIT_NAMESPACE",
+        ])
+          delete env[name];
+        const manifest = JSON.parse(
+          runGit(
+            root,
+            [
+              ...nestedGitArgs(root),
+              "--no-replace-objects",
+              "show",
+              `main:${manifestPath}`,
+            ],
+            { env, onFailure: () => "null" },
+          ),
+        );
+        mainInstalled = Array.isArray(manifest?.installed)
+          ? manifest.installed
+          : [];
+      } catch {
+        mainInstalled = [];
+      }
+    }
+    return mainInstalled.some(
+      (entry) =>
+        entry.path === relative(root, file.path) &&
+        entry.hash === hash(readFileSync(file.path, "utf8")),
+    );
+  };
   for (const file of writes)
     if (
       relative(root, file.path).startsWith(".codex/") &&
       existsSync(file.path) &&
       !previous?.installed?.some(
         (entry) => entry.path === relative(root, file.path),
-      )
+      ) &&
+      !ownedOnMain(file)
     )
       throw new Error(
         `unowned Codex output refuses replacement: ${relative(root, file.path)}`,
