@@ -61500,6 +61500,13 @@
           "title": "The execution-plan label and the Preflight fields of WO-284, WO-287 and WO-288.",
           "summary": "13. **The execution-plan label and the Preflight fields of WO-284, WO-287 and WO-288.** The five orders this pass wrote, and its amendment of WO-279, end the execution plan's label in a period where the kit's reader takes a colon, so the planning gate's preflight advisory reads no plan in them; read with a colon it names ten suite and order pairs their Preflight fields omit, listed in each order's catalog row. The planner found it after the judgment, and a judged order's text outside its criteria and Cost is not changed after its judgment. Deferred: the complete run supplies every row, and the advisory refuses nothing. Reopen: a pass amends one of these orders, or the operator authorizes the",
           "missing": false
+        },
+        {
+          "hash": "6ab40ecadf22510fa54b36f0add9226b5a3160a0fa7ac8999e1cb74d1a27bd98",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-stops-time-limits-and-whose-rules-recorded-2026-11-16",
+          "title": "The execution-plan label and the Preflight fields of WO-284, WO-287 and WO-288.",
+          "summary": "13. **The execution-plan label and the Preflight fields of WO-284, WO-287 and WO-288.** The five orders this pass wrote, and its amendment of WO-279, end the execution plan's label in a period where the kit's reader takes a colon, so the planning gate's preflight advisory reads no plan in them; read with a colon it names ten suite and order pairs their Preflight fields omit, listed in each order's catalog row. The planner found it after the judgment, and a judged order's text outside its criteria and Cost is not changed after its judgment. Carried by WO-288's Part E: its criterion E5 has the planning check name an open order whose plan its reader cannot find, and WO-288's own label and Prefl",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -61510,6 +61517,16 @@
           "reopenWhen": "A pass amends WO-284, WO-287 or WO-288, or the operator authorizes the amendment of their labels and Preflight fields.",
           "targets": [],
           "at": "2026-11-16T21:04:41.648Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "The planning check is to name an open order whose execution plan its reader cannot find (criterion E5 of WO-288, Part E, added on the direction recorded as WO-288-D001), and the amendment corrected the label and the Preflight field of WO-288 itself. The labels of WO-284 and WO-287 stay as judged; the complete run supplies every row their Preflight fields omit. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; WO-284 or WO-287 is amended before it runs.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T21:55:16.481Z"
         }
       ]
     },
@@ -61524,6 +61541,13 @@
           "title": "The console's document task against its memory budget.",
           "summary": "14. **The console's document task against its memory budget.** In this pass's document gates the `console-docs` task peaked at 2.93 to 3.13 GiB against a task budget of 3 GiB (`memoryBudgets` in `scripts/lib/host-resources.mjs`: half the host's memory divided by the recorded lane capacity). Of the four full runs that reached the task, the host guard stopped it in three; the fourth passed it at 2.97 GiB, and run alone it passed at 2.93 GiB. The gate record holds three more rows at that level, all on 2026-11-15, and 0.7 to 2.2 GiB on other days. Measured apart on this branch, the work-order index command peaks at 0.79 GiB and the planning check at 2.1 GiB over 34 s. Not filed: this pass's subj",
           "missing": false
+        },
+        {
+          "hash": "3dbfcbc66e6854ce4ea6b9de9b9b6b6b05ea769aed9a85e50f55c70ac8229ec1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-stops-time-limits-and-whose-rules-recorded-2026-11-16",
+          "title": "The console's document task against its memory budget.",
+          "summary": "14. **The console's document task against its memory budget.** In this pass's document gates the `console-docs` task peaked at 2.93 to 3.13 GiB against a task budget of 3 GiB (`memoryBudgets` in `scripts/lib/host-resources.mjs`: half the host's memory divided by the recorded lane capacity). Of the four full runs that reached the task, the host guard stopped it in three; the fourth passed it at 2.97 GiB, and run alone it passed at 2.93 GiB. The gate record holds three more rows at that level, all on 2026-11-15, and 0.7 to 2.2 GiB on other days. Measured apart on this branch, the work-order index command peaks at 0.79 GiB and the planning check at 2.1 GiB over 34 s. Carried by WO-288's Part E,",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -61534,6 +61558,16 @@
           "reopenWhen": "The next planning pass, where it is read first, or a document gate that fails on this budget outside a planning pass.",
           "targets": [],
           "at": "2026-11-16T21:27:27.283Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Carried by WO-288 as its Part E, added on the direction recorded as WO-288-D001: the part measures first, then has the planning check take a verified receipt from its filed page, keeps the console document cases from starting the planning check, and has the memory stop name the line that raises it. This pass raised memory.gateShare from 0.5 to 0.6 to finish. [the 2026-11-16 pass (docs/planning/passes/the-kit-stops-no-work-2026-11-16.md)]",
+          "reopenWhen": "The allocated order is withdrawn or closes without this item; a document gate is stopped on the memory budget again before WO-288 lands.",
+          "targets": [
+            "WO-288"
+          ],
+          "at": "2026-11-16T21:55:16.617Z"
         }
       ]
     }

@@ -583,7 +583,8 @@ Thirty-five rows are disposed: the one open row, the eighteen untriaged,
 three earlier rows whose conditions have occurred and thirteen of the
 fourteen candidates this pass records in the planning map, two of which
 the refutation added. The fourteenth, from the document gate, was
-disposed with them afterwards. None is left untriaged. The batches are in the ignored
+disposed with them afterwards, and it and the thirteenth were then
+allocated to WO-288 when Part E was added. None is left untriaged. The batches are in the ignored
 local planning lane. The seventh candidate was disposed a second time
 when the meta critic's correction changed its wording.
 
@@ -1100,6 +1101,51 @@ supplies every row those fields omit. The advisory should have been run
 before the refuter. Commits `c671d8069` and `c4d92be93` hold the
 detour, and `e80769571` the restoration.
 
+## After the judgment, on the operator's direction
+
+The document gate would not pass: one task, the console's document
+tests, was stopped on its memory budget. Measured that evening, the
+planning check peaks at 1,990 MB over 34.5 s on `main` and at 2,113 MB
+on this branch, the index command at 789 MB, and one console case holds a
+process of 2,082 MB; two of those side by side fill a task budget of
+3 GiB. This pass added about 6 % to a cost that stood on `main` already.
+
+The planner reported that to the operator with a choice to make. The
+operator's answer was that what a pass finds goes into an order and is
+not handed back, that nothing is asked of the operator, and that the
+pass be finished (ignored captures SHA-256
+`84972ad445b30ba70a2e3779715c0fa5981d2be767fe59a39e6b72c563de8302`,
+`f28f3162dc886fac817246bf6a98f2e3f9156747cbd5962e69b371e606fd5e99` and
+`5786dba623acac3a69954a8c836684490fbcadae362e1847bcf6aa6f679ddc92`). Four
+earlier messages of the same hour asked what was using the memory, why,
+and what it is for (`ce09872f43992bd021bb318e76870e2925528c5f23bf229639039e6c5b10a16d`,
+`8b4a0948f9c92d8bfedc70acad3b6344f9c0bb77b61126d61b3a453956188761`,
+`c756f11e74b23a01e937a48a32401cd02e89aba3dac7ded5c6550e9d84b43223`,
+`9794fbc26330bb4fdc973c304fe988e4df620b7e222c42058aa472047f971886`).
+
+Two things follow, both recorded in
+[WO-288-D001](../../evidence/WO-288/decisions.md):
+
+- **WO-288 gains Part E**, by the kit's route for a direction given
+  after a judgment (`npm run plan -- amend-order`): the planning check
+  takes a verified receipt from its filed page and rebuilds the newest
+  alone; the console's document cases start a command over the checkout
+  once and never the planning check; the guard's memory stop says the
+  line that raises it and the gate's summary names a task above four
+  fifths of its budget; and the planning check names an open order whose
+  plan its reader cannot find. The part measures first, since this pass
+  did not profile where the memory goes. The thirteenth and fourteenth
+  candidates are carried by it.
+- **`memory.gateShare` is raised from 0.5 to 0.6** in
+  `docs/control/budgets.json`, which gives a task 3.6 GiB on this host.
+  It is the owner's line for this, and Part E is what makes it
+  temporary: each planning pass adds a receipt to what the check
+  rebuilds.
+
+The error of conduct here was the planner's: it reported a cost in the
+kit's own tooling to the operator and asked for a decision, in a planning
+pass, whose work is to turn what it finds into orders.
+
 ## Process cost
 
 - Model and effort: `claude-fable-5-2`, as the host names the model to
@@ -1152,14 +1198,15 @@ point changed how this pass reads a check.
   admits the ten disposed repairs and the regenerated cost observation.
   Its preflight advisory names none of the three new orders, because it
   cannot read their plans (The refutation, above).
-- `npm run test:docs`: of the four full runs on this pass's trees that
-  reached the task, three failed one task of twenty-nine, `console-docs`,
-  which the host guard stopped on its memory budget at 3.01, 3.04 and
-  3.13 GiB against 3 GiB. The fourth passed it at 2.97 GiB, and the task
-  run alone passed at 2.93 GiB. The other twenty-eight tasks passed in
-  both runs made after the receipt was filed. The cause is not traced; the fourteenth candidate
-  holds the measurements. The run on the tree that is published is made
-  with `--serial`, and the pull request states its result.
+- `npm run test:docs`: of the five full runs on this pass's trees that
+  reached the task, four failed one task of twenty-nine, `console-docs`,
+  which the host guard stopped on its memory budget at 3.01, 3.04, 3.13
+  and, run with `--serial`, 3.17 GiB against 3 GiB. The fifth passed it
+  at 2.97 GiB, and the task run alone passed at 2.93 GiB. The other
+  twenty-eight tasks passed in both parallel runs made after the receipt
+  was filed. What was measured and what the pass did about it is in the
+  section before this one. The pull request states the result of the run
+  on the tree that is published.
 - Not run: any complete run, since the pass changes documents alone; and
   the interim route for the work laptop, which was read in the code and
   the kit guide and not run on that machine.

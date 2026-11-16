@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "subagentCap": 20,
   "memory": {
-    "gateShare": 0.5,
+    "gateShare": 0.6,
     "hostShare": 0.6666666666666666,
     "signalIntervalMs": 1000,
     "footprintIntervalMs": 4000,

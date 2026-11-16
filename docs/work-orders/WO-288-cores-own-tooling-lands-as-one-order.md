@@ -20,14 +20,17 @@
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
 **Track:** machinery
 **Review ladder:** paired
-**Release classification:** minor. Four parts, each the order whose number
-its heading gives or, for Part D, set out here: a critic of conduct the
+**Release classification:** minor. Five parts, each the order whose number
+its heading gives or, for Parts D and E, set out here: a critic of conduct the
 kit launches by name, whose points name their class and cause, and a
 critic of the critics a planning pass launches (Part A); the review
 helper's table reader, paired launch and answer for a suite an instance
 does not carry (Part B); the discovery bound's error and its cause
-(Part C); and every time limit outside the gate path read from the table
-WO-284 made (Part D). The role text's rules for an order in parts become
+(Part C); every time limit outside the gate path read from the table
+WO-284 made (Part D); and the planning check, the console's document
+tests and the gate's memory stop made to cost less than what they protect
+(Part E, added on the operator's direction after the judgment,
+WO-288-D001). The role text's rules for an order in parts become
 the queue form's, and core's own configuration elects the critic's
 cadence. Stops added: the two the absorbed records name, a critic launch
 withheld over a refuse-class entry of the owner's private list (Part A,
@@ -66,8 +69,14 @@ each. Each step that edits a judged feedback source owes one live
 feedback self-host episode before its check (in Parts A, C and D by this
 pass's reading; one episode ran 32 seconds in WO-275's record), and the
 editions a part stales are re-minted by `npm run sync` at that part's
-end. Workers: two readers a part, the paired round at the
-end and the critic every 75 minutes, about sixty uses by this pass's
+end. Part E adds one measuring script and its record, the planning
+check's reading of a receipt it has already verified, one shared command
+output in the console's document cases, the memory stop's message, an
+advisory in the gate's summary and one in the planning check, with six to
+ten cases; it is to remove about 2 GiB and half a minute from every
+planning check, and the document gate's stop on the console task's
+memory. Workers: two readers a part, the paired round at the
+end and the critic every 75 minutes, about sixty-two uses by this pass's
 count, which one acceptance at the start covers. Tokens and steps are
 unknown until run.
 **Nomination provenance:** as WO-287's, the operator's messages of the
@@ -79,7 +88,11 @@ digests
 `b8b6d760e8f41cf4bee0dd2350c9e25f9c7604c9df7b295a839320ca3ce90d21`); for
 Part D, the dispatch's second item, that every time limit a test or a
 check carries is the instance's to raise or ignore (journal digest
-`babcf9a61812f0d17b80b3f0ae08c7a2022282f864b056d4cdcf5e745d9f9c58`). Each
+`babcf9a61812f0d17b80b3f0ae08c7a2022282f864b056d4cdcf5e745d9f9c58`); for
+Part E, the operator's direction, given when this pass's document gate
+was stopped on a memory budget, that what a pass finds goes into an order
+and is not handed back (ignored capture SHA-256
+`84972ad445b30ba70a2e3779715c0fa5981d2be767fe59a39e6b72c563de8302`). Each
 absorbed part's own provenance is in its record. Clean-room screen:
 core's own source and records; the work instance's entries name the kit's
 files and commands alone.
@@ -104,8 +117,10 @@ finishes the time limits. When it closes, the kit launches its critic by
 name and its critics' points come back to planning by class; a planning
 pass launches the critic of the critics; a paired review round is one
 command; the discovery bound says what ran out; no time limit in the kit
-is a number an instance cannot change; and the role text gives an order
-in parts the queue form's rules.
+is a number an instance cannot change; the role text gives an order in
+parts the queue form's rules; and a planning check and a document gate
+cost a fraction of what they cost at this order's base, with a margin
+that is read before it is gone.
 
 **Observed gap (dated 2026-11-16 at `main` `38c333ab2`, v1.2.0):**
 
@@ -137,6 +152,25 @@ in parts the queue form's rules.
    emitted on an order whose plan is divided into parts), which is what
    WO-276's frame first asked for and the operator replaced within four
    hours of its start.
+5. The kit's own checks have come to cost more than the 2026-11-16 pass
+   could pay. Measured that day: `node scripts/refute-plan.mjs check`
+   peaks at 1,990 MB over 34.5 s on `main` `38c333ab2` with 69 receipts
+   and at 2,113 MB with the seventieth;
+   `node scripts/work-orders.mjs index --json` peaks at 789 MB; one
+   document case of `packages/console/test/console-commands.test.ts`
+   starts a process of 2,082 MB, and `board.test.ts` the index at 791 MB,
+   the two files running side by side. The `console-docs` task then
+   peaked at 2.93 to 3.17 GiB against a task budget of 3 GiB
+   (`memoryBudgets`, `scripts/lib/host-resources.mjs` 167 to 207), and
+   the host guard stopped it in four of the five full document gates that
+   reached it; the fifth passed it at 2.97 GiB, and the task run alone
+   passed at 2.93 GiB. Before 2026-11-15 the task peaked at 0.64 to 2.25
+   GiB. That pass raised
+   `memory.gateShare` from 0.5 to 0.6 to finish. Where the planning
+   check's memory goes was not profiled, and what the 2,082 MB process
+   is was not traced. The same pass wrote five orders whose execution
+   plan's label the planning gate's reader could not take, and nothing
+   said so: its preflight advisory read no plan and printed nothing.
 
 **Design (scope discipline):**
 
@@ -194,7 +228,7 @@ in parts, this text is the order's.
    order. A part's write-backs touch only its own sections, and the end
    reads every changed standing section whole before the paired round.
 8. At the start the executor states once, in one message, the bound this
-   order needs, a worker cap of sixty uses and no wall-clock bound, and records the operator's acceptance; it does
+   order needs, a worker cap of sixty-four uses and no wall-clock bound, and records the operator's acceptance; it does
    not ask again part by part. Progress is reported as parts done and
    parts left.
 9. The verifier reads with one worker for each part and one for what the
@@ -256,12 +290,36 @@ in parts, this text is the order's.
   operator's direction; the work instance met a fifth stop before its
   first order, and each of these is a sixth waiting).
 
-Rejected: these four in WO-287 (axis: what an instance waits for; an
+- **Part E, set out here.** A check costs less than what it protects,
+  and its margin is read before it is gone. The part measures first: one
+  script records the planning check's peak memory and time and the
+  console document task's peak, and the decisions say where the base's
+  memory goes and what the console case's largest process is. Then, by
+  what the profile shows: the planning check takes a receipt it has
+  already verified from its filed page and hash and rebuilds the subject
+  of the newest receipt of a pass alone, since a filed receipt does not
+  change; the console's document cases start a command over the whole
+  checkout once for the task and share its output, and none starts the
+  planning check; the guard's memory stop says the task's peak, its
+  budget and the line of `docs/control/budgets.json` that raises it, and
+  the gate's summary names a task that peaked above four fifths of its
+  budget; and the planning check names an open order whose execution
+  plan its reader cannot find. Each of these advises or informs and none
+  refuses. Rejected: a gate case that asserts a memory figure (axis: a
+  fixed figure is the kind of stop this order removes; the record of
+  before and after is the evidence). Rejected: raising the share again
+  and nothing else (axis: each planning pass adds a receipt, and the
+  2026-11-16 pass added 6 % to the check's peak).
+
+This order has five parts, so it names one midpoint for a complete run,
+as the queue form asks of an order of more than four: the end of Part C.
+
+Rejected: these five in WO-287 (axis: what an instance waits for; an
 order of the form ships nothing until its last part lands, and none of
 these is something an instance is stopped on).
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16).** A step's check is one case run under
+`38c333ab2`, 2026-11-16):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; the
 suite a record names beside a step is where that case lives and is not a
 run to make.
@@ -291,13 +349,26 @@ run to make.
    `scripts/test-runner.test.mjs` that no shipped file passes a time
    limit the table does not hold, apart from the marked inputs. Then the
    end of part.
-6. (End) Read every standing section the parts changed, whole; the paired
+6. (Part E) `scripts/measure-check-cost.mjs` (new): the planning check's
+   peak memory and time and the console document task's peak, written to
+   `docs/evidence/WO-288/part-e/` at the base and at the head. Then, by
+   what it shows: `scripts/lib/plan-receipts.mjs` (`checkPlanGate`, the
+   receipt reads and rebuilds; `executionPlanSpans` and the advisory for
+   a plan it cannot find); `packages/console/test/board.test.ts` and
+   `console-commands.test.ts` (one shared output for the index command,
+   no planning check); `scripts/lib/host-resources.mjs` and the runner's
+   summary in `scripts/test-runner.mjs` (the stop's message and the
+   advisory above four fifths). Check: a case in
+   `scripts/test-plan-refutation.mjs` that the check rebuilds no subject
+   of a receipt older than the newest of its pass. Then the end of part.
+7. (End) Read every standing section the parts changed, whole; the paired
    round over the whole change, its fixes and rechecks; then the handoff
    sequence of product 07 §Discipline, whose one complete run is this
    order's.
 
 **Deliverables:** each part's, as its record lists them; Part D's table
-rows and sites; the standing file while the order runs; the decisions,
+rows and sites; Part E's measuring script and its two records; the
+standing file while the order runs; the decisions,
 with each reader's and each critic's points judged; regenerated roots and
 editions.
 
@@ -442,23 +513,48 @@ editions.
     a case that names each file it reads and each marked input; a marked
     input keeps its figure under any `scale` and with `enforce` false; the
     case runs in core alone (`npm test -- --only runner-fixtures`).
-26. (Z1) The emitted executor, verifier and reviewer roots state, for an
+26. (E1) `docs/evidence/WO-288/part-e/` holds, from one script kept in the
+    kit, the planning check's peak memory and time and the console document
+    task's peak, at the order's base and at its head, and the decisions say
+    where the base's memory went and what the console case's largest process
+    was.
+27. (E2) On core's record at the order's head the planning check's peak
+    memory is at most half its figure at the base, or the decisions record
+    `negative` with the profile and what would have to change; and the check
+    rebuilds no subject of a receipt older than the newest of its pass, by a
+    case that counts the rebuilds (`npm test -- --only plan-refutation`).
+28. (E3) No document case of the console package starts the planning check,
+    and the index command over the checkout is started at most once for the
+    task, by a case in `packages/console/test/` that counts the task's child
+    commands (`npm test -- --only console`).
+29. (E4) A task the guard stops for memory fails with its peak, its budget
+    and the line of `docs/control/budgets.json` that raises it, and the gate's
+    summary names, as an advisory that fails nothing, each task that peaked
+    above four fifths of its budget, by cases in
+    `scripts/test-host-guard.test.mjs` and `scripts/test-runner.test.mjs`
+    (`npm test -- --only runner-fixtures`).
+30. (E5) `npm run plan -- check` names, as an advisory, each open order whose
+    execution plan its reader cannot find, with the label it looked for
+    (`npm test -- --only plan-refutation`).
+31. (Z1) The emitted executor, verifier and reviewer roots state, for an
     order whose plan is divided into parts, the frame's rules 2 to 6 and 9 in
     place of a ladder for each part, by a case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
-27. (Z2) In core's root `npm run features -- list` shows the critic's cadence
+32. (Z2) In core's root `npm run features -- list` shows the critic's cadence
     elected by core's own configuration, and `npm run worker -- show critic`
     names `astra` there; in an exported instance the cadence is off and the
     critic's worker is the kit's (`npm test -- --only launchpad`).
-28. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+33. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only artifact-evidence`,
 `npm test -- --only authority-evidence`,
 `npm test -- --only configuration-root`,
+`npm test -- --only console`,
 `npm test -- --only evidence-sources`,
 `npm test -- --only feedback-evidence`,
 `npm test -- --only harness-evidence`,
 `npm test -- --only harness-fixtures`,
+`npm test -- --only harness-probe`,
 `npm test -- --only launchpad`,
 `npm test -- --only launchpad-planning`,
 `npm test -- --only meta`,
@@ -521,8 +617,10 @@ review repair lane on a failed target gate, and the change review's
 budget as instance configuration; for Part C, raising the bound without a
 cause, changing the sandbox profile's rules, and a retry; for Part D, a
 time limit's value changed without the record that shows it short of
-room, and any change to a bound that is a test's own input; for the
-order, running parts side by side, a ladder or a full suite list for a
+room, and any change to a bound that is a test's own input; for Part E,
+a gate case that asserts a memory figure, a change to what the planning
+check requires of a pass, and any new refusal; for the order, running
+parts side by side, a ladder or a full suite list for a
 part on its own, and any stop an instance cannot lower.
 
 **Operator-review assumptions:** this order follows WO-287, so that what
