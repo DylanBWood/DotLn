@@ -200,7 +200,7 @@ nothing keeps what it has.
   for the supports, so an owner who unequips a rule is not told of drift.
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16):** A step's check is one case run under
+`38c333ab2`, 2026-11-16).** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
 failure that run names.
@@ -288,18 +288,13 @@ layer and reason; regenerated roots and editions.
    still answers at its stop's level (`npm test -- --only target-worktree`).
 9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
-**Preflight:** `npm test -- --only harness-fixtures`,
-`npm test -- --only configuration-root`, `npm test -- --only launchpad`,
-`npm test -- --only launchpad-planning`,
-`npm test -- --only target-worktree`, `npm test -- --only runner-fixtures`,
-`npm test -- --only plan-refutation`, `npm test -- --only sync-fixtures`,
-`npm test -- --only harness-context`, `npm test -- --only harness-probe`,
-`npm test -- --only process-debt`, `npm test -- --only harness-evidence`,
-`npm test -- --only authority-evidence`,
-`npm test -- --only artifact-evidence` and
-`npm test -- --only verification-evidence`, whose rows the order's one
-complete run supplies; the structural phase; the complete run with
-`npm test -- --review` at final review.
+**Preflight:** `npm test -- --only harness-fixtures`, `npm test -- --only
+configuration-root`, `npm test -- --only launchpad`, `npm test -- --only
+target-worktree`, `npm test -- --only
+harness-evidence`, `npm test -- --only authority-evidence`, `npm test --
+--only artifact-evidence` and `npm test -- --only verification-evidence`,
+whose rows the order's one complete run supplies; the structural phase;
+the complete run with `npm test -- --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-286/`: the features list of
 core and of an instance fixture; an emit under `"unequip": ["author"]`

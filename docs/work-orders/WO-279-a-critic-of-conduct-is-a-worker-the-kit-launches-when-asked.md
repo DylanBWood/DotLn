@@ -357,7 +357,7 @@ back and what allowed them.
   schema requires, read from the schema (WO-276-D182).
 
 **Execution plan (the executor follows these steps in order; observed at
-`ed66a822c`, 2026-11-14, and amended on 2026-11-16 at `38c333ab2`):** A
+`ed66a822c`, 2026-11-14, and amended on 2026-11-16 at `38c333ab2`).** A
 step's check is one case run under `node scripts/harness.mjs bounded --
 node --test --test-name-pattern`; the suite named beside a step is where
 that case lives and is not a run to make. No suite runs alone before the
@@ -463,7 +463,8 @@ decisions, the episode's record, regenerated roots and editions.
    kit's row launches (`npm test -- --only configuration-root`).
 3. With a refuse-class entry of the private list present in a transcript,
    the launch is withheld, its output names the counts of lines by class and
-   no term, and no worker starts; with none, the launch proceeds, and what
+   no term, no worker starts and `due` names the next launch one interval
+   later; with none, the launch proceeds, and what
    the worker is granted is the screened copy: a refuse-class entry
    appended to the live transcript after the screen is absent from it
    (`npm test -- --only harness-fixtures`).
@@ -474,9 +475,8 @@ decisions, the episode's record, regenerated roots and editions.
    complete run has passed; names one in a later verification or
    final-review dispatch of the same order one interval after that
    dispatch began; names none after the order's passing final-review
-   result; after a failed one names a launch again in the repair's and
-   the next verification's dispatches; and after a launch the screen
-   withheld names the next one interval later;
+   result; and after a failed one names a launch again in the repair's and
+   the next verification's dispatches;
    the prompt hook's context and the Stop hook's line carry the same
    answer (`npm test -- --only harness-fixtures`).
 5. The hook counts `npm run worker -- launch critic` as one use and
@@ -520,10 +520,9 @@ harness-fixtures`, `npm test -- --only configuration-root`, `npm test --
 test -- --only runner-fixtures`, `npm test -- --only process-debt`, `npm
 test -- --only harness-evidence`, `npm test -- --only authority-evidence`,
 `npm test -- --only artifact-evidence`, `npm test -- --only
-verification-evidence`, `npm test -- --only feedback-evidence`,
-`npm test -- --only harness-probe`, `npm test -- --only sync-fixtures`,
-`npm test -- --only meta` and `npm test -- --only registrations` for the
-steps that name them; the structural phase; the complete run with `npm test --
+verification-evidence`, `npm test -- --only feedback-evidence`, `npm test
+-- --only meta` and `npm test -- --only registrations` for the steps that
+name them; the structural phase; the complete run with `npm test --
 --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-279/`: a fake-transport launch on

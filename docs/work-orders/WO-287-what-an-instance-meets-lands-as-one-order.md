@@ -37,7 +37,8 @@ page, with twenty to thirty cases; it removes, in an instance, twenty-six
 hook denials and thirty-seven gate failures that have nothing to do with
 the owner's work, the authorization an owner is asked for to pass a bound
 (core's own record holds twelve in November; an instance's is not visible
-to core) and the one refusal whose only route was the recovery override. Part B adds a layer on thirty-four rule records and a
+to core) and the one refusal whose only route was the recovery override.
+Part B adds a layer on thirty-four rule records and a
 reading of the ten units' scope, the overlay's wider lists, the filter in
 the configured program and in the launchpad's and a target's emit, the
 rule rows of the features page and one section of the kit guide, with
@@ -210,7 +211,7 @@ for a fix that was done on the first). Rejected: the two as separate
 orders (axis: the cycle; they share six files and one page).
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16):** A step's check is one case run under
+`38c333ab2`, 2026-11-16).** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; the
 suite a record names beside a step is where that case lives and is not a
 run to make.
@@ -351,17 +352,12 @@ critic's points judged; regenerated roots and editions.
 **Preflight:** `npm test -- --only artifact-evidence`,
 `npm test -- --only authority-evidence`,
 `npm test -- --only configuration-root`,
-`npm test -- --only evidence-sources`,
-`npm test -- --only harness-context`,
 `npm test -- --only harness-evidence`,
 `npm test -- --only harness-fixtures`,
 `npm test -- --only harness-probe`,
 `npm test -- --only launchpad`,
-`npm test -- --only launchpad-planning`,
 `npm test -- --only plan-refutation`,
-`npm test -- --only process-debt`,
 `npm test -- --only runner-fixtures`,
-`npm test -- --only sync-fixtures`,
 `npm test -- --only target-worktree`,
 `npm test -- --only verification-evidence` are the suites the parts' changes reach, whose
 rows the order's complete run supplies; the structural phase; the

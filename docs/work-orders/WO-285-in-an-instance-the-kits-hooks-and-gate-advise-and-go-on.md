@@ -262,7 +262,7 @@ sends a person to `operator override:` to get past a stop.
   hooks and the gate are what stop work in progress).
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16):** A step's check is one case run under
+`38c333ab2`, 2026-11-16).** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
 failure that run names.
@@ -419,16 +419,13 @@ messages; the write-backs, decisions, regenerated roots and editions.
     rule is emitted as before (`npm test -- --only harness-fixtures`).
 12. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
-**Preflight:** `npm test -- --only harness-fixtures`,
-`npm test -- --only target-worktree`, `npm test -- --only runner-fixtures`,
-`npm test -- --only configuration-root`, `npm test -- --only launchpad`,
-`npm test -- --only launchpad-planning`,
-`npm test -- --only plan-refutation`, `npm test -- --only sync-fixtures`,
-`npm test -- --only harness-context`, `npm test -- --only process-debt`,
-`npm test -- --only evidence-sources`, `npm test -- --only harness-evidence`
-and `npm test -- --only harness-probe`, whose rows the order's one complete
-run supplies; the structural phase; the complete run with
-`npm test -- --review` at final review.
+**Preflight:** `npm test -- --only harness-fixtures`, `npm test -- --only
+target-worktree`, `npm test -- --only runner-fixtures`, `npm test -- --only
+configuration-root`, `npm test -- --only launchpad`, `npm test -- --only
+plan-refutation`, `npm test -- --only harness-evidence` and
+`npm test -- --only harness-probe`, whose rows the
+order's one complete run supplies; the structural phase; the complete run
+with `npm test -- --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-285/`: the features list of an
 instance fixture and of core; a target worktree's calls of criteria 1 to 3
