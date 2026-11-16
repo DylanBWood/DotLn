@@ -3352,12 +3352,16 @@ async function runGateChecks(
           `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
         );
         // Successful checks still deliver their explicit diagnostics, the
-        // criteria screen's advisories among them (WO-249) and the lines a
-        // passing terms task lists for the stage to read.
+        // criteria screen's advisories among them (WO-249), the lines a
+        // passing terms task lists for the stage to read, and the document
+        // check's one line on its long-paragraph list: the figure, where it
+        // came from and whether the list is empty or off (WO-281).
         for (const line of (row.output ?? "").trimEnd().split("\n"))
           if (
             row.exitCode !== 0 ||
-            /^(?:(?:ADVISORY|NEWER)\b|criteria advisory: )/u.test(line) ||
+            /^(?:(?:ADVISORY|NEWER)\b|criteria advisory: |long paragraphs: )/u.test(
+              line,
+            ) ||
             (row.name === "kit-verify" && line.startsWith("kit: ")) ||
             (row.name === "terms" && line.startsWith("CONTEXT "))
           )

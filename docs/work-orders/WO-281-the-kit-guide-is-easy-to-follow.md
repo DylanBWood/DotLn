@@ -1,4 +1,4 @@
-# WO-281 — The kit guide is easy to follow: rewritten for its readers, and its write-backs held to the rule that already asks for it (version assigned at activation)
+# WO-281 — The kit guide is easy to follow: rewritten for its readers, and its write-backs held to the rule that already asks for it (v1.1.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

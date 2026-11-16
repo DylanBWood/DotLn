@@ -14,6 +14,7 @@ import {
   validateConfig,
 } from "./config.mjs";
 import { releaseClaimLine } from "./release-preparation.mjs";
+import { posix } from "node:path";
 
 // These are the direct template seeds emitted by prepareKit. Generated
 // indexes, control records and planning history are never refresh inputs.
@@ -33,6 +34,38 @@ const seeds = [
   ],
   [defaultDocRelative("control", "budgets.json"), "budgets.template.json"],
 ];
+/** The documentation map every instance carries, and the kit template the
+ * export writes it from. It follows the front page's rule, not a template
+ * seed's: a starter that lacks it has it added with the other absent seeds,
+ * one that still holds an export's bytes is brought to the current map, and
+ * one its owner changed is kept with the reason and never refuses a
+ * refresh. */
+export const DOCS_MAP_SEED = defaultDocRelative("docs", "README.md");
+export const DOCS_MAP_TEMPLATE = "docs-map.template.md";
+/** The SHA-256 of each map an export wrote before the map had a template,
+ * when the export rendered it in code and no kit file held its text. A
+ * starter's copy at one of these is an export's own output. The list is
+ * closed: a map written from the template is proven as a template seed is,
+ * by the template the starter carried at the export that wrote it. Each
+ * was computed from scripts/launchpad.mjs as it stood at every commit of
+ * main in the range named, and the first equals the copy the starter held
+ * (docs/evidence/WO-281/map-renderings.md). */
+export const LEGACY_DOCS_MAPS = Object.freeze([
+  // 57a35d9dc to 21b94f251 (2026-10-09 to 2026-10-14).
+  "46020271d73a06bab3e77fa25885f4bffadc454079bd266f27e7c0edd50eed82",
+  // 7f539327e (2026-10-15).
+  "e9de062a7df85478fe0afe986114b5377a8af797072b3a62b34920f47e03a970",
+  // d77886704 to 61aa912c3 (2026-10-17 to 2026-11-01).
+  "b3585265990a24797fff18959d428485363f278b494a89198b4d129737156272",
+  // 5b1130e30 to aeabb70a1 (2026-11-02 to 2026-11-06).
+  "aa84b05470d80c7d70f14319903af815d4160a6ff196a00b7f763abbba406ead",
+  // 7a9c290cd to 1763a2e28 (2026-11-08 to 2026-11-14), the last in code.
+  "f7e227382649b6516b77e9921f858760f6aff9edc58f6a7cf457434018fca49d",
+]);
+// The seeds a refresh keeps, with the reason, where their owner changed
+// them: the two pages a person edits first.
+const KEPT_WHEN_CUSTOMIZED = new Set(["README.md", DOCS_MAP_SEED]);
+
 /** Every seed path the export writes, in its order: UPSTREAM.md's
  * `## Instance seeds` list and the starter refresh's absent-seed additions
  * read this one list, and the export refuses when its seeds differ from it
@@ -76,6 +109,18 @@ export const exportSeedPaths = () => [
   "packages/skeleton/loadouts/grants.json",
   "AGENTS.md",
 ];
+
+/** The READMEs of the export's seeded roots that the documentation map
+ * does not link, each by its path from the map: `links` are the map's link
+ * targets. The roots are exportSeedPaths' own, so a root added to the seeds
+ * is one the map must link, and the export refuses a map that links fewer. */
+export const docsMapUnlinked = (links) => {
+  const linked = new Set(links);
+  return exportSeedPaths()
+    .filter((path) => path.endsWith("/README.md") && path !== DOCS_MAP_SEED)
+    .map((path) => posix.relative(posix.dirname(DOCS_MAP_SEED), path))
+    .filter((target) => !linked.has(target));
+};
 
 /** The configuration the export seeds; a starter refresh adds the same
  * bytes where a starter lacks it (WO-258). */
@@ -214,7 +259,7 @@ export function planStarterSeeds({
 }) {
   const pending = [];
   const displayName = addedDisplayName ?? releaseName(checkout, remote);
-  for (const [path, name] of seeds) {
+  for (const [path, name] of [...seeds, [DOCS_MAP_SEED, DOCS_MAP_TEMPLATE]]) {
     const template = `scripts/kit/${name}`;
     const incoming = blob(main, head, template);
     if (incoming === null)
@@ -224,6 +269,8 @@ export function planStarterSeeds({
     // not change a legacy default or overwrite its instance configuration.
     const bytes = namedStarterSeed(path, incoming, displayName);
     const mode = entryMode(checkout, remote, path);
+    // A starter that lacks the map has it added with the other absent seeds.
+    if (path === DOCS_MAP_SEED && mode === null) continue;
     const regularFile = mode === "100644";
     if (!regularFile || !matches(path, current, bytes))
       pending.push({
@@ -247,6 +294,15 @@ export function planStarterSeeds({
     .split("\n")
     .filter(Boolean);
   const proven = new Set();
+  // A map that an export rendered in code, before the map had a template to
+  // be proven by, is that export's output by its bytes.
+  for (const item of pending)
+    if (
+      item.path === DOCS_MAP_SEED &&
+      item.regularFile &&
+      LEGACY_DOCS_MAPS.includes(sha256Hex(Buffer.from(item.current)))
+    )
+      proven.add(item.path);
   const latestTemplates = new Map();
   for (const revision of history) {
     let manifest;
@@ -299,7 +355,7 @@ export function planStarterSeeds({
   // refresh. A known older exported copy still advances to the incoming seed.
   const refused = pending.filter(
     (item) =>
-      item.path !== "README.md" &&
+      !KEPT_WHEN_CUSTOMIZED.has(item.path) &&
       !proven.has(item.path) &&
       latestTemplates.get(item.path) !== item.templateBytes,
   );
@@ -353,7 +409,9 @@ export function planStarterSeeds({
       .filter((item) => proven.has(item.path))
       .sort((left, right) => left.path.localeCompare(right.path)),
     kept: pending
-      .filter((item) => item.path === "README.md" && !proven.has(item.path))
+      .filter(
+        (item) => KEPT_WHEN_CUSTOMIZED.has(item.path) && !proven.has(item.path),
+      )
       .map((item) => ({
         path: item.path,
         reason:

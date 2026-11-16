@@ -2044,6 +2044,22 @@ captureDigest}` with an optional `class`, and the plan check reads that
    ([the 2026-10-28 pass](../planning/passes/document-contract-and-release-close-2026-10-28.md);
    [WO-238](../evidence/WO-238/decisions.md#wo-238-d001--kinds-by-path-class-the-entry-points-and-a-reader-binding-that-counts-programs)).
 
+   A long paragraph is a smell, and length alone is no fault: a document
+   that is easy to follow may be long. `npm run test:docs` lists each
+   paragraph a branch adds or changes in a standing document that runs past
+   the instance's figure, by file and line, for the stage at hand to read
+   and, where it is hard to follow, rewrite.
+
+   The figure is `documents.paragraphWords` in `docs/control/budgets.json`,
+   120 words when unset and null for no list; any other value is named in an
+   advisory and the list then uses 120 words. The list refuses nothing and
+   keeps no total,
+   an instance's list leaves out the kit's own documents, and
+   `node scripts/docs-check.mjs --long-paragraphs` prints the same reading of
+   every standing document
+   ([WO-281](../evidence/WO-281/decisions.md#wo-281-d010--step-4-the-document-check-lists-the-long-paragraphs-a-branch-writes-in-standing-documents-at-a-figure-of-120-words-and-prints-the-whole-list-on-request);
+   [a figure the check cannot use stops no command](../evidence/WO-281/decisions.md#wo-281-d022--round-ones-fixes-as-built-the-rule-table-regenerated-a-case-for-criterion-3-no-refusal-over-the-figure-the-cases-the-reviewers-found-missing-and-the-guide-and-the-map-changed-where-a-reader-was-stopped-or-the-text-read-as-filler)).
+
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
 `npm run plan -- refute` (add `--scope full` for the whole horizon; `--direct`
@@ -3498,87 +3514,112 @@ and resumes that commit, then completes cleanup after publication.
 
 ## Documentation freshness and ownership
 
-The executor owns current factual documentation for its change. Before declaring
-implementation ready, update affected blueprint facts and their reader entry
-points in the same pass: examples, names and paths, component/source claims,
-capability limitations, runbook instructions, planning recommendations, and
-publication links where the change reaches them. Use the diff and inbound
-references to bound the check. Write back by editing the sentence that is now
-wrong and citing the evidence; a dated paragraph appended under a product
-heading is a receipt and belongs in the order's evidence README, and a
-candidate belongs in the planning map; `scripts/docs-check.mjs` in
-`npm run test:docs` refuses both shapes in a product document. The same rule
-holds for every standing document, not only a product document: the sequence,
-the map's catalog, a workstream, a repository profile and an instance's
-operator record state what is so for their readers and are replaced in place,
-and the dated account of what happened lives in a record, which is the order's
-decisions, the pass's document, a verification or a receipt (§Operator-opened
-planning pass, item 7, which also names the kinds, the reader entry points,
-the read census and the red tags). The final reviewer judges a changed
-standing document's diff: a replacement passes, and a dated account added
-under a standing heading returns to repair. No operator message is saved
-verbatim in a committed artifact (operator direction, 2026-11-07, ignored
-capture SHA-256
+The executor owns current factual documentation for its change. Before
+declaring implementation ready, update affected blueprint facts and their
+reader entry points in the same pass: examples, names and paths,
+component/source claims, capability limitations, runbook instructions, planning
+recommendations, and publication links where the change reaches them. Use the
+diff and inbound references to bound the check.
+
+Write back by editing the sentence that is now wrong and citing the evidence; a
+dated paragraph appended under a product heading is a receipt and belongs in
+the order's evidence README, and a candidate belongs in the planning map;
+`scripts/docs-check.mjs` in `npm run test:docs` refuses both shapes in a
+product document.
+
+The same rule holds for every standing document, not only a product document:
+the sequence, the map's catalog, a workstream, a repository profile and an
+instance's operator record state what is so for their readers and are replaced
+in place, and the dated account of what happened lives in a record, which is
+the order's decisions, the pass's document, a verification or a receipt
+(§Operator-opened planning pass, item 7, which also names the kinds, the reader
+entry points, the read census and the red tags).
+
+The final reviewer judges a changed standing document's diff: a replacement
+passes, a dated account added under a standing heading returns to repair,
+and so does a changed passage its reader cannot follow, which the review
+names. The rule the write-back is held to is the one every role carries: a
+passage is judged by what its reader can understand, and accumulated prose
+is rewritten or split. A long paragraph is a smell and no fault, and the
+document check lists the ones a branch writes (§Operator-opened planning
+pass, item 7)
+([WO-281](../evidence/WO-281/decisions.md#wo-281-d011--step-5-the-final-reviewer-returns-a-changed-standing-passage-its-reader-cannot-follow-in-the-rule-every-role-carries-and-in-product-07)).
+
+No operator message is saved verbatim in a committed artifact (operator
+direction, 2026-11-07, ignored capture SHA-256
 `123eb18018301f41fb4b107f0fb0ad53eb40eb38b13c75a906f588dc913c6cd6`): a
-committed document, record or source file paraphrases the operator and
-cites the ignored intake capture by its digest; a quotation is written only
-where the operator asks in the session for that message to be saved,
-recorded as an `operatorQuote` naming the capture's digest and the
-request's, or where a clone or fork has turned the rule off in its
-configuration. Every role and every worker carries the rule, and
-`npm run test:docs` enforces it on what a branch adds against its merge base
-with `main`, so a record written before keeps its bytes: the verbatim screen
-compares each line a branch adds, or joins by deleting what stood between, to
-Markdown under a document root or at the repository root, or to source under
-`scripts/` and `packages/*/src/`, with
-every text capture under this checkout's ignored intake root, and a run of
-twelve consecutive words both hold fails naming the file, the line and the
-capture's digest, never the words; a run the repository already held at the
-merge base is its own text, which a capture may quote, and a checkout with no
-capture prints `verbatim screen: no captures` and passes. A changed file the
-screen cannot read, and an intake root it cannot list, fail naming the path; a
-directory or a capture below the intake root that its owner closed is private
-material, which never fails the check, so it is named in an advisory and the
-status line reads `no readable captures` when nothing could be read
-([WO-259-D020](../evidence/WO-259/decisions.md#wo-259-d020)). A current record's
-operator-attributed words without a capture citation fail where the branch
-adds or changes them, stay an advisory elsewhere, and the historical baseline
-keeps its note. The exception is typed: `operatorQuote` carries
-`captureSha256` and `requestedIn`, the digest of the capture holding the
-operator's request to save that message, which a record the branch adds must
-name and the screen exempts for that capture alone; an instance that elects
+committed document, record or source file paraphrases the operator and cites
+the ignored intake capture by its digest; a quotation is written only where the
+operator asks in the session for that message to be saved, recorded as an
+`operatorQuote` naming the capture's digest and the request's, or where a clone
+or fork has turned the rule off in its configuration.
+
+Every role and every worker carries the rule, and `npm run test:docs` enforces
+it on what a branch adds against its merge base with `main`, so a record
+written before keeps its bytes.
+
+The verbatim screen compares each line a branch adds, or joins by deleting what
+stood between, to Markdown under a document root or at the repository root, or
+to source under `scripts/` and `packages/*/src/`, with every text capture under
+this checkout's ignored intake root, and a run of twelve consecutive words both
+hold fails naming the file, the line and the capture's digest, never the words;
+a run the repository already held at the merge base is its own text, which a
+capture may quote, and a checkout with no capture prints `verbatim screen: no
+captures` and passes.
+
+A changed file the screen cannot read, and an intake root it cannot list, fail
+naming the path; a directory or a capture below the intake root that its owner
+closed is private material, which never fails the check, so it is named in an
+advisory and the status line reads `no readable captures` when nothing could be
+read ([WO-259-D020](../evidence/WO-259/decisions.md#wo-259-d020)).
+
+A current record's operator-attributed words without a capture citation fail
+where the branch adds or changes them, stay an advisory elsewhere, and the
+historical baseline keeps its note.
+
+The exception is typed: `operatorQuote` carries `captureSha256` and
+`requestedIn`, the digest of the capture holding the operator's request to save
+that message, which a record the branch adds must name and the screen exempts
+for that capture alone; an instance that elects
 `features.verbatim-operator-words` turns the rule off, and both checks then
 advise instead of failing
-([WO-259-D006](../evidence/WO-259/decisions.md#wo-259-d006)). A document that moves keeps its
-bytes, and [`docs/control/document-moves.json`](../control/document-moves.json)
-names where it went. Every reader of a reference gives it one meaning: the
-link check, the entry points, the reader bindings, the red tags, the read
-census and `plan documents` read a moved document's own links from the
-directory it was written in, and an old path the map lists names the document
-where it lives now. A moved path is never reused: the document check refuses a
-file at one, so an old path names one document whenever it was read or linked.
-The accounts of how this guide's own rules arrived are in
-the [execution-guide record](../planning/passes/execution-guide-record.md). Record the affected surfaces
-and evidence in the existing work-order outcome or breakout receipt; do not
-create a new ceremony or rewrite unrelated historical artifacts. The front
-page, `README.md`, is edited only by an order whose leading header carries
-`**Front page:** README.md` on main, or whose current order bytes and recorded
-operator decision carry that declaration through a validated execution
+([WO-259-D006](../evidence/WO-259/decisions.md#wo-259-d006)).
+
+A document that moves keeps its bytes, and
+[`docs/control/document-moves.json`](../control/document-moves.json) names
+where it went. Every reader of a reference gives it one meaning: the link
+check, the entry points, the reader bindings, the red tags, the read census and
+`plan documents` read a moved document's own links from the directory it was
+written in, and an old path the map lists names the document where it lives
+now. A moved path is never reused: the document check refuses a file at one, so
+an old path names one document whenever it was read or linked.
+
+The accounts of how this guide's own rules arrived are in the [execution-guide
+record](../planning/passes/execution-guide-record.md). Record the affected
+surfaces and evidence in the existing work-order outcome or breakout receipt;
+do not create a new ceremony or rewrite unrelated historical artifacts.
+
+The front page, `README.md`, is edited only by an order whose leading header
+carries `**Front page:** README.md` on main, or whose current order bytes and
+recorded operator decision carry that declaration through a validated execution
 amendment. Amendment authority admits page prose only; it cannot change the
-control record. Both routes retain the “What runs today” line budget
-that `docs/control/front-page.json` records on main: the section is named once
-among the headings, the page holds no raw HTML outside its marker lines and no
+control record.
+
+Both routes retain the “What runs today” line budget that
+`docs/control/front-page.json` records on main: the section is named once among
+the headings, the page holds no raw HTML outside its marker lines and no
 receipt outside its generated blocks, and each counted line is one whole,
 unwrapped sentence of Markdown prose; a new bypass or wrongly refused sentence
 becomes a row of `scripts/fixtures/front-page-corpus.json` before the check
 changes, and the front-page order applies the operator's recorded judgment,
 asking only about a choice no record covers.
-The release block between its markers holds only the version line
-`release prepare` writes. Any other order proposes a capability the page should
-mention as one sentence in its evidence README, and when a planning pass finds
-two such proposals waiting, it files a front-page order
-([WO-189-D001](../evidence/WO-189/decisions.md#wo-189-d001),
-[closed judgment](../evidence/WO-189/decisions.md#wo-189-d021--repair-close-the-surfaces-where-github-and-the-parser-disagree-and-judge-each-line-twice)).
+
+The release block between its markers holds only the version line `release
+prepare` writes. Any other order proposes a capability the page should mention
+as one sentence in its evidence README, and when a planning pass finds two such
+proposals waiting, it files a front-page order
+([WO-189-D001](../evidence/WO-189/decisions.md#wo-189-d001), [closed
+judgment](../evidence/WO-189/decisions.md#wo-189-d021--repair-close-the-surfaces-where-github-and-the-parser-disagree-and-judge-each-line-twice)).
 
 Apply the [corpus maintenance constraint](03-architecture.md#corpus-policy)
 when choosing that surface: reuse an existing outcome or receipt, link canonical

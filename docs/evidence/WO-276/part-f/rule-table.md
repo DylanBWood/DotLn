@@ -71,7 +71,7 @@ Opens: "Derive every artifact's shape from its contract and the check that judge
 
 ## `document-kinds`
 
-Opens: "Every committed document is standing, record or generated, derived from its path with the overrides in docs/co …" (1316 bytes with its line end).
+Opens: "Every committed document is standing, record or generated, derived from its path with the overrides in docs/co …" (1392 bytes with its line end).
 
 | Role | Reason |
 | --- | --- |

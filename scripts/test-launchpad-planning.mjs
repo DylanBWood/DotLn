@@ -2448,11 +2448,19 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
       "AI-HARNESS-SECURITY.md",
       "CLAUDE.md",
       "docs/control/budgets.json",
+      // Its map still holds the bytes its own export wrote, so the refresh
+      // brings it to the current one (WO-281).
+      "docs/README.md",
       "docs/repositories/README.md",
       "docs/work-orders/WO-001-environment-truth.md",
       "docs/workstreams/README.md",
       "README.md",
     ]);
+    assert.equal(
+      readFileSync(join(starter, "docs/README.md"), "utf8"),
+      readFileSync(join(core, "scripts/kit/docs-map.template.md"), "utf8"),
+      "the refreshed starter carries the current documentation map",
+    );
     assert.equal(
       readFileSync(join(starter, "docs/workstreams/README.md"), "utf8"),
       readFileSync(join(core, "scripts/kit/workstream.template.md"), "utf8"),
@@ -2534,10 +2542,25 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
         "The session started in `main` writes no other file in that worktree",
       ),
     );
+    // The session opened in the worktree prepares it first: what the guide
+    // says that session does opens with the bootstrap and the terms list.
+    // The sentence's paragraph and the numbered list under it, however
+    // long either grows: no window of characters.
+    const blocks = guide
+      .split(/\n{2,}/u)
+      .map((block) => block.replace(/\s+/gu, " ").trim());
+    const openedAt = blocks.findIndex((block) =>
+      block.includes("The operator then opens a session in `wo-001`"),
+    );
+    let listEnd = openedAt + 1;
+    while (listEnd < blocks.length && /^\d+\. /u.test(blocks[listEnd]))
+      listEnd += 1;
+    const opened = blocks.slice(Math.max(openedAt, 0), listEnd).join(" ");
     assert.ok(
-      prose.includes(
-        "The operator then opens a session in `wo-001`. That session runs `node scripts/bootstrap.mjs`, registers its own ignored local-terms list",
-      ),
+      openedAt >= 0 &&
+        opened.includes("runs `node scripts/bootstrap.mjs`") &&
+        opened.includes("registers its own ignored local-terms list"),
+      "the session in the worktree runs the bootstrap and registers its terms list first",
     );
     assert.ok(!prose.includes("The session moves to that directory"));
     // The export seeds the lineage index and bootstrap never writes it.
@@ -2559,8 +2582,8 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
       // its team's (WO-276 Part M).
       "The operator merges each pull request of the instance's own repository with a merge commit",
       "If `git status --porcelain --untracked-files=all` then lists an untracked lineage index (`docs/lineage/README.md` under the default documentation root), the session deletes that file before the stash",
-      "The export seeds the lineage index; for an older export, step 1 or the update branch of §Taking upstream updates generates and commits it, and bootstrap never writes it",
-      "regenerates it after ledger edits and generates it for an older export, in step 1 or on the update branch, and bootstrap never writes it",
+      "the export seeds it, and bootstrap never writes it. For an older export, step 1 or the update branch of [Taking upstream updates](#taking-upstream-updates) generates and commits it",
+      "regenerates it after ledger edits and generates it for an older export, in step 1 of the setup or on the update branch. Bootstrap never writes it",
     ])
       assert.ok(prose.includes(sentence), sentence);
     const manifest = readFileSync(join(fork, "KIT-MANIFEST.json"));

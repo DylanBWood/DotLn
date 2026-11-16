@@ -200,11 +200,9 @@ test("WO-275 criterion 3: the operator commands page holds the kit guide's marke
   assert.equal(read(root, "docs/OPERATOR.md"), before);
   // A longer fence keeps its length on the page, so a block that holds a
   // three-backtick line (a here-document writing a fence) keeps its bytes.
-  const longer = changed.replace(
-    "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md\n```\n",
-    "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md\n```\n\n<!-- operator-commands run-order -->\n````sh\ncat <<'EOF' > fence.md\n```\nEOF\n````\n",
-  );
-  assert.notEqual(longer, changed);
+  // The block is added at the guide's end, so the case does not depend on
+  // where the guide sets its own blocks.
+  const longer = `${changed}\n<!-- operator-commands run-order -->\n\`\`\`\`sh\ncat <<'EOF' > fence.md\n\`\`\`\nEOF\n\`\`\`\`\n`;
   const { page: rendered, faults: longerFaults } = renderOperatorPage(root, {
     guide: longer,
   });

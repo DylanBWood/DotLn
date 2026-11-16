@@ -40,6 +40,35 @@ export function pruneStartBudgetKey(budgets) {
   return value;
 }
 
+/** The words past which the document check lists a paragraph a branch writes
+ * in a standing document, where a budgets document sets none. */
+export const PARAGRAPH_WORDS = 120;
+/** The `documents.paragraphWords` key of a parsed budgets document:
+ * undefined when unset, where PARAGRAPH_WORDS applies; null, which turns the
+ * list off; otherwise a positive whole number of words. Anything else
+ * throws `Invalid budget: documents.paragraphWords`. The document check is
+ * the key's one reader: it refuses nothing over a paragraph's length, so it
+ * falls back to PARAGRAPH_WORDS and says so. readBudgets does not read the
+ * key, so a mistyped figure stops no dispatch.
+ * @param {any} budgets @returns {number|null|undefined} */
+export function paragraphWordsKey(budgets) {
+  const documents = budgets?.documents;
+  if (documents === undefined) return undefined;
+  const value = documents?.paragraphWords;
+  if (
+    !documents ||
+    typeof documents !== "object" ||
+    Array.isArray(documents) ||
+    !(
+      value === undefined ||
+      value === null ||
+      (Number.isSafeInteger(value) && value > 0)
+    )
+  )
+    throw new Error("Invalid budget: documents.paragraphWords");
+  return value;
+}
+
 /** What a day may use, as a budgets document declares it: the instance's
  * own figure, advisory, in tokens, dollars or both, each a positive number
  * or null for none. Returns the figure, or undefined where the document

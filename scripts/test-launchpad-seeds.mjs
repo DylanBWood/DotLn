@@ -245,6 +245,8 @@ test("historical starter floors retain provenance through navigation migration",
     ["docs/repositories/README.md", "repository-profile.template.md"],
     ["docs/work-orders/WO-001-environment-truth.md", "first-order.template.md"],
     ["docs/control/budgets.json", "budgets.template.json"],
+    // The documentation map, which a refresh plans beside the template seeds.
+    ["docs/README.md", "docs-map.template.md"],
   ];
   const legacy =
     "# Personal floor\n\nRead[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.\n";
@@ -636,6 +638,24 @@ test("WO-276 criteria H1, H2, H7 and H9: before any install a fresh export's hos
   );
 });
 
+test("WO-281: the documentation map's template links the README of every root the export seeds, and one that links fewer is named by the root it leaves out", async () => {
+  const { docsMapUnlinked } = await import("./lib/starter-seeds.mjs");
+  const links = markdownLinks(
+    readFileSync(join(repository, "scripts/kit/docs-map.template.md"), "utf8"),
+  ).map(({ href }) => href);
+  assert.deepEqual(docsMapUnlinked(links), []);
+  // What the export refuses: a map that drops a seeded root's README.
+  assert.deepEqual(
+    docsMapUnlinked(
+      links.filter(
+        (href) =>
+          !["lineage/README.md", "repositories/README.md"].includes(href),
+      ),
+    ),
+    ["repositories/README.md", "lineage/README.md"],
+  );
+});
+
 test("WO-258 criterion 6: a refresh plans every absent export seed, removes a retired seed at its kit rendering and keeps a customized one with its reason", async () => {
   const { planSeedChanges, RETIRED_SEEDS, TEMPLATE_SEED_PATHS } =
     await import("./lib/starter-seeds.mjs");
@@ -649,6 +669,7 @@ test("WO-258 criterion 6: a refresh plans every absent export seed, removes a re
     (path) =>
       ![
         "dotln.config.json",
+        "docs/README.md",
         "docs/lineage/README.md",
         "docs/intake/.gitkeep",
         "AGENTS.md",
@@ -676,8 +697,11 @@ test("WO-258 criterion 6: a refresh plans every absent export seed, removes a re
     remote: "HEAD",
     exportSeeds: exportSeedPaths(),
   });
+  // The documentation map among them (WO-281): it has a template and is
+  // still added where a starter lacks it, since it is no template seed.
   assert.deepEqual(planned.added, [
     "dotln.config.json",
+    "docs/README.md",
     "docs/intake/.gitkeep",
     "docs/lineage/README.md",
     "AGENTS.md",
