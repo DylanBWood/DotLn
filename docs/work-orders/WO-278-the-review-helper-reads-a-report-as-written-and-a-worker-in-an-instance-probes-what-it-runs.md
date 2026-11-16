@@ -1,5 +1,25 @@
 # WO-278 — The review helper reads a report as written, a paired round is launched as one, and a worker in an instance probes what the instance runs (version assigned at activation)
 
+**Umbrella record (2026-11-16):** superseded whole by WO-288, which carries
+this order's obligations as its Part B under the operator's direction of
+2026-11-16 ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md));
+not activatable. The text below is this order's last committed form, kept
+as the record of what WO-288 absorbed: its design, its observed gap, its
+execution plan, its cost detail and its cited code are read from here, its
+criteria are restated in WO-288, and where the two differ WO-288's text
+binds.
+
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-288",
+    "relation": "superseded",
+    "reason": "2026-11-16 planning merge: this order's obligations are carried by WO-288 as its Part B.",
+    "by": "WO-288"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.

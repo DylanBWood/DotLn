@@ -4,12 +4,9 @@
 
 ## Proposed order
 
-- [x] [WO-277] — The starter's commands page tells a person every step · **final-reviewed**
-- [x] [WO-281] — The kit guide is easy to follow · **final-reviewed**
-- [x] [WO-282] — An update leaves nothing to repair by hand · **final-reviewed**
-- [ ] [WO-279] — A critic of conduct the kit launches when asked · **queued**
-- [ ] [WO-278] — The review helper reads a report as written · **queued**
-- [ ] [WO-280] — The discovery timeout traced and repaired · **queued**
+- [ ] [WO-284] — An instance sets every time limit of its gate · **queued**
+- [ ] [WO-287] — What an instance meets lands as one order · **queued**
+- [ ] [WO-288] — Core's own tooling lands as one order · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -40,43 +37,9 @@ None.
 
 ## Open
 
-### WO-279
+### WO-284
 
-[WO-279 — A critic of conduct is a worker the kit launches by name when asked, on the model an instance chooses, Opus 5.5 at xhigh by default, and on a cadence only where an instance turns one on (version assigned at activation)](WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-281: control-closed; WO-282: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md](WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md)
-
-### WO-278
-
-[WO-278 — The review helper reads a report as written, a paired round is launched as one, and a worker in an instance probes what the instance runs (version assigned at activation)](WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-279: not-control-closed; WO-281: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md](WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md)
-
-### WO-280
-
-[WO-280 — The five-second discovery timeout is traced to its child and its cause, and repaired or left recording what it needs (version assigned at activation)](WO-280-the-discovery-timeout-is-found-and-fixed.md)
+[WO-284 — An instance sets every time limit of its gate in one file, the kit's own figures leave room for a slower machine, and a tree that is already green is not run again (version assigned at activation)](WO-284-an-instance-sets-every-time-limit-of-its-gate.md)
 
 - State: draft.
 - Application target: unassigned.
@@ -87,9 +50,43 @@ None.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-284-an-instance-sets-every-time-limit-of-its-gate.md](WO-284-an-instance-sets-every-time-limit-of-its-gate.md)
+
+### WO-287
+
+[WO-287 — What an instance meets lands as one order: in an instance a stop that has nothing to do with its owner's work advises, in a sibling repository as in the launchpad, and the author's rules are a loadout an instance chooses, under one activation, one verification, one final review and one release (version assigned at activation)](WO-287-what-an-instance-meets-lands-as-one-order.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-284.
+- References: WO-284: satisfied-by-close (unmet) — the runner's suite table as WO-284 leaves it, which Part A's advised outcome is written against.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-287-what-an-instance-meets-lands-as-one-order.md](WO-287-what-an-instance-meets-lands-as-one-order.md)
+
+### WO-288
+
+[WO-288 — Core's own tooling lands as one order: the critic the kit launches and what its critics find, the review helper, the discovery timeout and every time limit outside the gate path, under one activation, one verification, one final review and one release (version assigned at activation)](WO-288-cores-own-tooling-lands-as-one-order.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-284.
+- References: WO-284: satisfied-by-close (unmet) — the table of time limits and the instance's file, which Part D extends to every other limit.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
 - Track: machinery
 - Review ladder: paired
-- Authority: [docs/work-orders/WO-280-the-discovery-timeout-is-found-and-fixed.md](WO-280-the-discovery-timeout-is-found-and-fixed.md)
+- Authority: [docs/work-orders/WO-288-cores-own-tooling-lands-as-one-order.md](WO-288-cores-own-tooling-lands-as-one-order.md)
 
 ### WO-244
 
@@ -247,9 +244,6 @@ None.
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
 [WO-244]: WO-244-paired-planning-passes-and-the-synthesis-pass.md
-[WO-277]: WO-277-the-starters-commands-page-tells-a-person-every-step.md
-[WO-278]: WO-278-the-review-helper-reads-a-report-as-written-and-a-worker-in-an-instance-probes-what-it-runs.md
-[WO-279]: WO-279-a-critic-of-conduct-is-a-worker-the-kit-launches-when-asked.md
-[WO-280]: WO-280-the-discovery-timeout-is-found-and-fixed.md
-[WO-281]: WO-281-the-kit-guide-is-easy-to-follow.md
-[WO-282]: WO-282-an-update-leaves-nothing-to-repair-by-hand.md
+[WO-284]: WO-284-an-instance-sets-every-time-limit-of-its-gate.md
+[WO-287]: WO-287-what-an-instance-meets-lands-as-one-order.md
+[WO-288]: WO-288-cores-own-tooling-lands-as-one-order.md

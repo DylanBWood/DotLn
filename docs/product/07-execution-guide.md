@@ -109,18 +109,31 @@ work.
 
 <!-- dotln-goal-rules:end -->
 
-**Platform lens.** Four checks from the platforms lesson the operator
+**Platform lens.** Five checks from the platforms lesson the operator
 pointed at (Steve Yegge's 2011 account of the Amazon service mandate) apply
-to any capability a plan or order lands: it arrives as an interface
-something else consumes (a transport profile, a typed event, a projection, a
-handoff packet), never only as a script or a session; it is externalizable
-by construction (content-addressed inputs, declared contracts, no private
-setting as the source of a guarantee); this repository and the operator's
-own repository consume it before any export; and its result is usable by a
-stranger to the session, so a receipt that needs reverse-engineering is an
-accessibility failure [[vision-into-use pass](../planning/vision-into-use-2026-09-17.md)
-§12, 2026-09-17]. The planning refuter's platform-first standard is
-unchanged.
+to any capability a plan or order lands
+[[vision-into-use pass](../planning/vision-into-use-2026-09-17.md) §12,
+2026-09-17; [the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#what-a-stop-protects-and-where-it-belongs)]:
+
+- It arrives as an interface something else consumes (a transport profile,
+  a typed event, a projection, a handoff packet), never only as a script or
+  a session.
+- It is externalizable by construction: content-addressed inputs, declared
+  contracts, no private setting as the source of a guarantee.
+- This repository and the operator's own repository consume it before any
+  export.
+- Its result is usable by a stranger to the session, so a receipt that
+  needs reverse-engineering is an accessibility failure.
+- An owner who is not the author can reach it on a machine that is not
+  core's. One product is not right for everyone, so a stop, a fixed figure
+  or a rule that such an owner cannot change fails this check before it
+  protects anything.
+
+Where reach and protection pull apart in an instance, a protection stays
+on only where it guards what cannot be undone, and it stays the owner's to
+lower. That does not make every stop useless: which ones earn their place
+is judged stop by stop, from what each protects. The planning refuter's
+platform-first standard is unchanged.
 
 <!-- dotln-goal-rules:start -->
 
@@ -2059,6 +2072,21 @@ captureDigest}` with an optional `class`, and the plan check reads that
    every standing document
    ([WO-281](../evidence/WO-281/decisions.md#wo-281-d010--step-4-the-document-check-lists-the-long-paragraphs-a-branch-writes-in-standing-documents-at-a-figure-of-120-words-and-prints-the-whole-list-on-request);
    [a figure the check cannot use stops no command](../evidence/WO-281/decisions.md#wo-281-d022--round-ones-fixes-as-built-the-rule-table-regenerated-a-case-for-criterion-3-no-refusal-over-the-figure-the-cases-the-reviewers-found-missing-and-the-guide-and-the-map-changed-where-a-reader-was-stopped-or-the-text-read-as-filler)).
+8. The critics' record is read at every pass, by a critic of the critics.
+   Until the kit launches it by name (WO-279's second kind), the pass
+   launches one research worker with
+   [the brief the 2026-11-16 pass kept](../planning/passes/the-kit-stops-no-work-2026-11-16-critic-of-the-critic-brief.md),
+   over the criticisms and the operator's recorded corrections since the
+   last pass. For each class it reports, the pass changes a document in
+   the pass, files the change in an order, or declines it with what would
+   show the decline wrong; a class given nothing is read again when it
+   comes back.
+
+   A class that came back while a rule for it stood is answered first by
+   looking for what the kit itself said at the moment of choice: a
+   command's output, an order's form, a record's schema. The two costliest
+   recurrences of November had a written rule and a kit text that said the
+   opposite ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#the-critics-record)).
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
@@ -2297,11 +2325,12 @@ Standard artifacts, all doc-only:
   wall-clock, context bytes, commands, tokens and steps, provenance, a dated
   observed gap, acceptance criteria whose last names both `npm test` and
   `npm run test:docs` [off-ramps pass, 2026-09-25; WO-111 VER-001 B3](../planning/passes/off-ramps-5s-entropy-2026-09-25.md),
-  a Preflight line spelling each single-suite check as
-  `npm test -- --only <suite>` for its steps; these suites and the
-  structural phase are the order's handoff gate (a target order keeps its
-  repository's declared target gate), with the complete gate paid once at
-  final review (§Preflight before the full gate), a Design naming at
+  a Preflight line naming, as `npm test -- --only <suite>`, each suite
+  the order's change reaches: the lifecycle reads the line, the order's one
+  complete run supplies those suites' rows (a target order keeps its
+  repository's declared target gate), and a step's own check is a single
+  case, by the screen below (§Preflight before the full gate), a Design
+  naming at
   least one rejected alternative and the axis it differs on (2026-10-17
   pass), evidence, non-goals,
   and operator-review assumptions; an order
@@ -2443,6 +2472,24 @@ failures behind each are in the
   a work laptop on Git 2.31, and v0.121.0 refused that laptop at every gate
   ([the 2026-11-08 pass](../planning/passes/git-2-31-support-and-fork-returns-2026-11-08.md);
   [WO-260](../work-orders/WO-260-the-kit-runs-on-git-2-31.md)).
+- An order adds no stop that an instance's owner cannot lower. A refusal,
+  a failing check or a fixed figure an order adds is named in its Release
+  classification line with what it protects. In an instance it advises and
+  the work goes on, unless it keeps the owner's work or private material
+  from loss or exposure that cannot be undone; either way it has a setting
+  the owner can change. A time limit on a gate's path is a row of the
+  kit's table of limits. Core's own gate may gain a stop, since a stop is
+  core's discipline for building the starter
+  ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#what-a-stop-protects-and-where-it-belongs),
+  whose census counted 139 stops, 133 of them shipped to an instance and
+  19 that an instance could lower).
+- A step's check is one case, run alone under the bounded wrapper, or a
+  read of a command's output; no step asks for a suite run. WO-281's
+  executor ran its order's per-step suites one at a time, sixteen runs and
+  74 minutes of gate time, while its role text said that a focused run
+  never precedes the complete run
+  ([WO-281-D019](../evidence/WO-281/decisions.md#wo-281-d019--the-operators-word-on-the-time-the-focused-suites-run-one-at-a-time-had-taken-longer-than-a-complete-run-the-rest-go-into-the-one-complete-run);
+  [the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#the-critics-record)).
 - Five defect classes
   ([the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md)):
   a criterion states a behavior observable on the uncommitted candidate by a
@@ -2527,6 +2574,79 @@ produced. A code or configuration
 change it identifies becomes a work order or a named boy-scout item for the
 next activation. Its output lands through the ordinary pull request from a
 planning branch, since `main` requires one; the `:memo:` title rule applies.
+
+### The queue form
+
+A pass may file several queued orders as the parts of one order, under
+one activation, one verification, one final review and one release. The
+operator made it a form a planner can choose on 2026-11-16
+([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#the-queue-form-what-wo-276-showed)).
+WO-276 was the first such order, and WO-287 and WO-288 are the second and
+third. The rules below come from the operator's own messages as WO-276
+ran and from that order's record, read in
+[the study the pass kept](../planning/passes/the-kit-stops-no-work-2026-11-16-wo-276-form-study.md).
+
+**When it fits.** The queued orders would run one after another, each
+paying its own cycle, and they share files or the editions they re-mint.
+Three things keep an order out of it. Something is waiting on it: one
+release means nothing ships until the last part does, so an order an
+instance is stopped on is filed by itself, ahead. Another part consumes a
+contract it changes, as a shared reader's rewrite did inside WO-276: that
+order goes alone and first. And the whole would be more than one
+verification can hold: a queue is cut into two or three orders of the
+form, what is needed soonest first, before it is filed as one of many
+parts.
+
+**How it is filed.** Each absorbed order stays a file, as an umbrella
+record, and its design, observed gap, plan and known issues are read from
+there. The queue order holds a frame: the parts in order with the reason
+for that order, the rules it runs by, what each part differs in from its
+record, every part's criteria restated under the part's letter, one
+Preflight line, and whatever the frame adds of its own. It holds two to
+eight parts, each about the size of an ordinary order. After filing, the
+index check's count of its criteria is compared with the list's last
+number.
+
+**How it runs.**
+
+1. The parts run in the order given, and a part others lean on comes
+   first. After a part the executor regenerates what it changed, and the
+   next part is written against the files as that part left them.
+2. A part ends on its steps' cases, each run alone; on the suites that
+   hold what it changed, at most three, found by searching the tests and
+   fixtures for every wording, pin and list it changed; with what it
+   regenerates clean, its write-backs passing the document check and the
+   terms screen, its two readings judged, a checkpoint made and the
+   standing file rewritten. No part has a ladder of its own.
+3. Two readers go out at each part's end, and the next part does not wait
+   for them: one combined reviewer over the part's change, and one reader
+   over everything changed so far. No reviewer runs on a clock.
+4. The critic of conduct runs on a clock, from one interval after a
+   dispatch begins until that dispatch's passing run. Nothing waits for
+   it, and its report goes to the operator whole before it is answered.
+5. The whole change is read by a full ladder once, at the end, and then
+   run in full. An order of more than four parts names one midpoint for a
+   complete run.
+6. The standing file says where the work is and carries no forecast. It
+   is rewritten at each part's end and whenever a session stops, and a
+   session may end at a part's boundary.
+7. A defect met beside a part's change is fixed in the order; what cannot
+   be settled is boarded and does not hold the order. A part's write-backs
+   touch only its own sections, and the end reads every changed standing
+   section whole.
+8. The executor states the bound the order needs once, at its start, and
+   records the operator's acceptance; it does not ask again part by part.
+9. Verification and final review read with one worker for each part and
+   one for what the parts share, and then send workers over whatever
+   those left unread.
+10. A part can be cut on the operator's word without rewriting another.
+
+The workers, the critic's interval and any midpoint are the order's to
+state. In this repository the critic on a cadence is on for an order of
+this form by core's own election, on the worker the operator named; an
+instance elects its own. Until WO-288's Part A changes it, the executor's
+role text gives an order in parts a ladder for each part, and a queue
+order's own text is the one to follow.
 
 ### Paired passes and the synthesis pass
 
