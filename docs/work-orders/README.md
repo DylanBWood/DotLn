@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-277] — The starter's commands page tells a person every step · **final-reviewed**
-- [ ] [WO-281] — The kit guide is easy to follow · **queued**
+- [x] [WO-281] — The kit guide is easy to follow · **final-reviewed**
 - [ ] [WO-282] — An update leaves nothing to repair by hand · **queued**
 - [ ] [WO-279] — A critic of conduct the kit launches when asked · **queued**
 - [ ] [WO-278] — The review helper reads a report as written · **queued**
@@ -40,23 +40,6 @@ None.
 
 ## Open
 
-### WO-281
-
-[WO-281 — The kit guide is easy to follow: rewritten for its readers, and its write-backs held to the rule that already asks for it (version assigned at activation)](WO-281-the-kit-guide-is-easy-to-follow.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-277: control-closed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-281-the-kit-guide-is-easy-to-follow.md](WO-281-the-kit-guide-is-easy-to-follow.md)
-
 ### WO-282
 
 [WO-282 — An instance takes a release without repairing by hand what the update left (version assigned at activation)](WO-282-an-update-leaves-nothing-to-repair-by-hand.md)
@@ -64,7 +47,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-277: control-closed; WO-281: not-control-closed.
+- References: WO-277: control-closed; WO-281: control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -81,7 +64,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-281: not-control-closed; WO-282: not-control-closed.
+- References: WO-281: control-closed; WO-282: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -98,7 +81,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: WO-279: not-control-closed; WO-281: not-control-closed.
+- References: WO-279: not-control-closed; WO-281: control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

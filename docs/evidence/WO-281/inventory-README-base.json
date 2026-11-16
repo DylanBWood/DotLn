@@ -1,0 +1,785 @@
+{
+  "file": "docs/README.md",
+  "revision": "5edc7798b9eccaa880467d41a28b6a43f4b54226",
+  "commit": "5edc7798b9eccaa880467d41a28b6a43f4b54226",
+  "sha256": "7dc6fe54d03ba380bdd7798e9829377c4c58970d80b394579363c152a35cfab5",
+  "lines": 367,
+  "counts": {
+    "heading": {
+      "distinct": 10,
+      "total": 10
+    },
+    "code span": {
+      "distinct": 48,
+      "total": 56
+    },
+    "block line": {
+      "distinct": 75,
+      "total": 75
+    },
+    "link target": {
+      "distinct": 17,
+      "total": 17
+    }
+  },
+  "items": {
+    "heading": [
+      {
+        "value": "# DotLn documentation",
+        "count": 1,
+        "line": 1
+      },
+      {
+        "value": "## Map",
+        "count": 1,
+        "line": 3
+      },
+      {
+        "value": "## Directory pages",
+        "count": 1,
+        "line": 74
+      },
+      {
+        "value": "## Host-posture correction — 2026-09-25",
+        "count": 1,
+        "line": 131
+      },
+      {
+        "value": "## Why intake is gitignored",
+        "count": 1,
+        "line": 142
+      },
+      {
+        "value": "## Private account-label meanings",
+        "count": 1,
+        "line": 158
+      },
+      {
+        "value": "## Dumping into intake",
+        "count": 1,
+        "line": 168
+      },
+      {
+        "value": "## Backing up local intake",
+        "count": 1,
+        "line": 195
+      },
+      {
+        "value": "## Resuming the control loop",
+        "count": 1,
+        "line": 225
+      },
+      {
+        "value": "## Config log",
+        "count": 1,
+        "line": 257
+      }
+    ],
+    "code span": [
+      {
+        "value": "ideation:",
+        "count": 2,
+        "line": 88
+      },
+      {
+        "value": "docs/product/07-execution-guide.md",
+        "count": 1,
+        "line": 90
+      },
+      {
+        "value": "planning:",
+        "count": 2,
+        "line": 91
+      },
+      {
+        "value": "npm run test:docs",
+        "count": 1,
+        "line": 98
+      },
+      {
+        "value": "scripts/docs-check.mjs",
+        "count": 1,
+        "line": 99
+      },
+      {
+        "value": "control/documents.json",
+        "count": 1,
+        "line": 107
+      },
+      {
+        "value": "dotln-release-history",
+        "count": 1,
+        "line": 111
+      },
+      {
+        "value": "control/document-moves.json",
+        "count": 1,
+        "line": 114
+      },
+      {
+        "value": "host-confinement.mjs",
+        "count": 1,
+        "line": 139
+      },
+      {
+        "value": "docs/intake/",
+        "count": 3,
+        "line": 144
+      },
+      {
+        "value": "docs/control/local/account-labels.md",
+        "count": 1,
+        "line": 161
+      },
+      {
+        "value": "chats/",
+        "count": 1,
+        "line": 170
+      },
+      {
+        "value": "images/",
+        "count": 1,
+        "line": 171
+      },
+      {
+        "value": "notes/",
+        "count": 1,
+        "line": 172
+      },
+      {
+        "value": "git worktree list --porcelain",
+        "count": 1,
+        "line": 179
+      },
+      {
+        "value": ".from-WO-NNN",
+        "count": 1,
+        "line": 183
+      },
+      {
+        "value": "--dry-run",
+        "count": 1,
+        "line": 184
+      },
+      {
+        "value": "docs/control/local/",
+        "count": 1,
+        "line": 187
+      },
+      {
+        "value": "docs/control/local/retained/WO-NNN/",
+        "count": 1,
+        "line": 188
+      },
+      {
+        "value": "DotLn-wo003-intake-20260831T190000Z.zip",
+        "count": 1,
+        "line": 204
+      },
+      {
+        "value": "npm run resume --silent -- status --json",
+        "count": 1,
+        "line": 228
+      },
+      {
+        "value": "docs/control/current.md",
+        "count": 1,
+        "line": 228
+      },
+      {
+        "value": "status",
+        "count": 1,
+        "line": 241
+      },
+      {
+        "value": "times",
+        "count": 2,
+        "line": 241
+      },
+      {
+        "value": "next",
+        "count": 1,
+        "line": 241
+      },
+      {
+        "value": "fix",
+        "count": 1,
+        "line": 242
+      },
+      {
+        "value": "verify",
+        "count": 1,
+        "line": 242
+      },
+      {
+        "value": "final-review",
+        "count": 1,
+        "line": 242
+      },
+      {
+        "value": "npm run resume -- <action>",
+        "count": 1,
+        "line": 242
+      },
+      {
+        "value": "status --json",
+        "count": 1,
+        "line": 243
+      },
+      {
+        "value": "release close",
+        "count": 1,
+        "line": 247
+      },
+      {
+        "value": "release.mjs",
+        "count": 1,
+        "line": 249
+      },
+      {
+        "value": "npm run release -- close WO-NNN --publish",
+        "count": 1,
+        "line": 251
+      },
+      {
+        "value": "docs/PLAYBOOK.md",
+        "count": 1,
+        "line": 255
+      },
+      {
+        "value": ".claude/",
+        "count": 2,
+        "line": 259
+      },
+      {
+        "value": "CLAUDE.md",
+        "count": 3,
+        "line": 261
+      },
+      {
+        "value": "harness writer --show",
+        "count": 1,
+        "line": 298
+      },
+      {
+        "value": "harness writer --release [--force]",
+        "count": 1,
+        "line": 299
+      },
+      {
+        "value": ".agents/",
+        "count": 1,
+        "line": 310
+      },
+      {
+        "value": "harness check",
+        "count": 1,
+        "line": 312
+      },
+      {
+        "value": ".claude/settings.json",
+        "count": 1,
+        "line": 316
+      },
+      {
+        "value": "autoMemoryEnabled: false",
+        "count": 1,
+        "line": 316
+      },
+      {
+        "value": "resume:",
+        "count": 1,
+        "line": 322
+      },
+      {
+        "value": "docs/AI-HARNESS-SECURITY.md",
+        "count": 1,
+        "line": 338
+      },
+      {
+        "value": "defaultMode: \"default\"",
+        "count": 1,
+        "line": 348
+      },
+      {
+        "value": "acceptEdits",
+        "count": 1,
+        "line": 350
+      },
+      {
+        "value": "accept edits on",
+        "count": 1,
+        "line": 355
+      },
+      {
+        "value": "claude doctor",
+        "count": 1,
+        "line": 355
+      }
+    ],
+    "block line": [
+      {
+        "value": "../README.md repo front door — what DotLn is, what runs today, horizons",
+        "count": 1,
+        "line": 6
+      },
+      {
+        "value": "../scripts/kit/ templates the launchpad export renders (npm run launchpad -- export)",
+        "count": 1,
+        "line": 7
+      },
+      {
+        "value": "docs/intake/ raw, local-only (gitignored) — the founding dump lives here",
+        "count": 1,
+        "line": 8
+      },
+      {
+        "value": "docs/PLAYBOOK.md the operator's canonical loop (models, worktrees, verify)",
+        "count": 1,
+        "line": 9
+      },
+      {
+        "value": "docs/AI-HARNESS-SECURITY.md",
+        "count": 1,
+        "line": 10
+      },
+      {
+        "value": "dated Claude/Codex/Copilot host posture and retained setup references",
+        "count": 1,
+        "line": 11
+      },
+      {
+        "value": "docs/LEGAL.md decided licenses, contribution rule, and remaining distribution gates",
+        "count": 1,
+        "line": 12
+      },
+      {
+        "value": "CONTRIBUTING.md outbound licenses, DCO sign-offs, clean-room boundary, and review route",
+        "count": 1,
+        "line": 13
+      },
+      {
+        "value": "docs/product/ the blueprint: vision, principles, domain model,",
+        "count": 1,
+        "line": 14
+      },
+      {
+        "value": "architecture, interfaces, patterns, roadmap, execution guide,",
+        "count": 1,
+        "line": 15
+      },
+      {
+        "value": "publication compiler, audit/resilience map, IR compatibility,",
+        "count": 1,
+        "line": 16
+      },
+      {
+        "value": "the προτείνω first-party application thesis,",
+        "count": 1,
+        "line": 17
+      },
+      {
+        "value": "the candidate end-user workstream application,",
+        "count": 1,
+        "line": 18
+      },
+      {
+        "value": "and the five UIFA human roles",
+        "count": 1,
+        "line": 19
+      },
+      {
+        "value": "docs/publication/ audience/status index, audience outlines, shared sample,",
+        "count": 1,
+        "line": 20
+      },
+      {
+        "value": "implementation overlay template, and staleness proof",
+        "count": 1,
+        "line": 21
+      },
+      {
+        "value": "docs/planning/ README.md — the planning entry points; capability inventory,",
+        "count": 1,
+        "line": 22
+      },
+      {
+        "value": "human recommendation/preflight map, the dated planning-pass",
+        "count": 1,
+        "line": 23
+      },
+      {
+        "value": "documents and retired planning records under passes/, and",
+        "count": 1,
+        "line": 24
+      },
+      {
+        "value": "immutable blinded refutation receipts under refutations/",
+        "count": 1,
+        "line": 25
+      },
+      {
+        "value": "(npm run plan -- refute);",
+        "count": 1,
+        "line": 26
+      },
+      {
+        "value": "sequence.md — the proposed order, the one input to the",
+        "count": 1,
+        "line": 27
+      },
+      {
+        "value": "index and the refutation subject;",
+        "count": 1,
+        "line": 28
+      },
+      {
+        "value": "followups.json — the follow-up register, followups.md how",
+        "count": 1,
+        "line": 29
+      },
+      {
+        "value": "to read it; cost-table.json — generated plan costs",
+        "count": 1,
+        "line": 30
+      },
+      {
+        "value": "entropy-reviews/ — generated accepted-finding rows per",
+        "count": 1,
+        "line": 31
+      },
+      {
+        "value": "Entropy Reducer review",
+        "count": 1,
+        "line": 32
+      },
+      {
+        "value": "docs/lineage/ idea-ledger.md — append-only idea history;",
+        "count": 1,
+        "line": 33
+      },
+      {
+        "value": "README.md — generated section/line and lifecycle index;",
+        "count": 1,
+        "line": 34
+      },
+      {
+        "value": "decisions-index.md — generated per-order decision index;",
+        "count": 1,
+        "line": 35
+      },
+      {
+        "value": "remining/ — bounded re-mining runs over the ledger;",
+        "count": 1,
+        "line": 36
+      },
+      {
+        "value": "resolutions.md — settled founding tensions;",
+        "count": 1,
+        "line": 37
+      },
+      {
+        "value": "inspirations.md — best-known public influence register",
+        "count": 1,
+        "line": 38
+      },
+      {
+        "value": "docs/decisions/ ADRs — settled questions",
+        "count": 1,
+        "line": 39
+      },
+      {
+        "value": "docs/proposals/ filed Entropy Reducer proposal packets (filing is not promotion)",
+        "count": 1,
+        "line": 40
+      },
+      {
+        "value": "docs/work-orders/ stable scope addresses + the generated evidence index:",
+        "count": 1,
+        "line": 41
+      },
+      {
+        "value": "README.md (the work ahead) and HISTORY.md (settled orders)",
+        "count": 1,
+        "line": 42
+      },
+      {
+        "value": "docs/siblings/ generated sibling registry (node scripts/siblings.mjs index):",
+        "count": 1,
+        "line": 43
+      },
+      {
+        "value": "one entry per declared sibling with purpose, upstream",
+        "count": 1,
+        "line": 44
+      },
+      {
+        "value": "relation, kit version, build hash and receipts; siblings.json",
+        "count": 1,
+        "line": 45
+      },
+      {
+        "value": "is the once-per-sibling declaration",
+        "count": 1,
+        "line": 46
+      },
+      {
+        "value": "docs/verifications/ immutable numbered verifier reports, grouped by work order",
+        "count": 1,
+        "line": 47
+      },
+      {
+        "value": "docs/final-reviews/ immutable numbered closeout reports and PR handoffs",
+        "count": 1,
+        "line": 48
+      },
+      {
+        "value": "docs/control/ legacy resume log, per-order segments, generated overview,",
+        "count": 1,
+        "line": 49
+      },
+      {
+        "value": "and the separate plan-refutations.jsonl override log;",
+        "count": 1,
+        "line": 50
+      },
+      {
+        "value": "entropy-reducer.jsonl — the Entropy Reducer review log;",
+        "count": 1,
+        "line": 51
+      },
+      {
+        "value": "budgets.json — caps, cold-start ceilings and acceptances;",
+        "count": 1,
+        "line": 52
+      },
+      {
+        "value": "documents.json — the reader entry points and the kinds",
+        "count": 1,
+        "line": 53
+      },
+      {
+        "value": "their paths do not say; document-moves.json — where moved",
+        "count": 1,
+        "line": 54
+      },
+      {
+        "value": "documents went; doc-baseline.json — the document gate's",
+        "count": 1,
+        "line": 55
+      },
+      {
+        "value": "activation baseline;",
+        "count": 1,
+        "line": 56
+      },
+      {
+        "value": "outward-vocabulary.json — the outward lint's commit types",
+        "count": 1,
+        "line": 57
+      },
+      {
+        "value": "and review words (`reviewTerms`)",
+        "count": 1,
+        "line": 58
+      },
+      {
+        "value": "docs/control/local/ ignored gate/session/usage observations, private terms and opaque account-label meanings",
+        "count": 1,
+        "line": 59
+      },
+      {
+        "value": "docs/evidence/ per-order decisions, handoffs, evidence editions, bounded",
+        "count": 1,
+        "line": 60
+      },
+      {
+        "value": "comparisons and fixture transcripts; current.json — the",
+        "count": 1,
+        "line": 61
+      },
+      {
+        "value": "edition each evidence kind currently reads; siblings/",
+        "count": 1,
+        "line": 62
+      },
+      {
+        "value": "holds export/update and starter-refresh receipts, the latter",
+        "count": 1,
+        "line": 63
+      },
+      {
+        "value": "carried from release close by the next worktree start",
+        "count": 1,
+        "line": 64
+      },
+      {
+        "value": "docs/releases/ historical v0.2.0 records + forward tag-manifest template;",
+        "count": 1,
+        "line": 65
+      },
+      {
+        "value": "later immutable manifests/notes live in annotated tags",
+        "count": 1,
+        "line": 66
+      },
+      {
+        "value": "docs/discovery/ labeled machine-audit outputs, runtime target maps, and the",
+        "count": 1,
+        "line": 67
+      },
+      {
+        "value": "bounded local-inference capability packet",
+        "count": 1,
+        "line": 68
+      },
+      {
+        "value": "docs/instance/ generated and reviewed instance projections; currently the",
+        "count": 1,
+        "line": 69
+      },
+      {
+        "value": "Entropy Reducer operator guide, residue, refutation plan,",
+        "count": 1,
+        "line": 70
+      },
+      {
+        "value": "and run evidence",
+        "count": 1,
+        "line": 71
+      },
+      {
+        "value": "npm run backup:intake",
+        "count": 1,
+        "line": 200
+      },
+      {
+        "value": "bash scripts/backup-intake.sh /path/to/backup-directory",
+        "count": 1,
+        "line": 219
+      },
+      {
+        "value": "resume: status",
+        "count": 1,
+        "line": 232
+      },
+      {
+        "value": "resume: times",
+        "count": 1,
+        "line": 233
+      },
+      {
+        "value": "resume: next",
+        "count": 1,
+        "line": 234
+      },
+      {
+        "value": "resume: fix",
+        "count": 1,
+        "line": 235
+      },
+      {
+        "value": "resume: verify",
+        "count": 1,
+        "line": 236
+      },
+      {
+        "value": "resume: final review",
+        "count": 1,
+        "line": 237
+      },
+      {
+        "value": "resume: release close",
+        "count": 1,
+        "line": 238
+      }
+    ],
+    "link target": [
+      {
+        "value": "evidence/README.md",
+        "count": 1,
+        "line": 76
+      },
+      {
+        "value": "final-reviews/README.md",
+        "count": 1,
+        "line": 78
+      },
+      {
+        "value": "retired/README.md",
+        "count": 1,
+        "line": 80
+      },
+      {
+        "value": "lineage/remining/README.md",
+        "count": 1,
+        "line": 82
+      },
+      {
+        "value": "work-orders/TEMPLATE.md",
+        "count": 1,
+        "line": 83
+      },
+      {
+        "value": "../scripts/docs-check.mjs",
+        "count": 1,
+        "line": 99
+      },
+      {
+        "value": "product/06-roadmap.md",
+        "count": 1,
+        "line": 101
+      },
+      {
+        "value": "planning/work-order-map.md#moved-from-the-roadmap-2026-09-30",
+        "count": 1,
+        "line": 103
+      },
+      {
+        "value": "control/documents.json",
+        "count": 1,
+        "line": 107
+      },
+      {
+        "value": "control/document-moves.json",
+        "count": 1,
+        "line": 114
+      },
+      {
+        "value": "control/doc-baseline.json",
+        "count": 1,
+        "line": 115
+      },
+      {
+        "value": "work-orders/WO-161-sandbox-vocabulary.md",
+        "count": 1,
+        "line": 133
+      },
+      {
+        "value": "PLAYBOOK.md#harness-safety-baseline",
+        "count": 1,
+        "line": 134
+      },
+      {
+        "value": "product/07-execution-guide.md",
+        "count": 1,
+        "line": 135
+      },
+      {
+        "value": "decisions/0003-personal-ai-harness-security.md#amendments",
+        "count": 1,
+        "line": 137
+      },
+      {
+        "value": "AI-HARNESS-SECURITY.md",
+        "count": 1,
+        "line": 138
+      },
+      {
+        "value": "PLAYBOOK.md#who-does-what",
+        "count": 1,
+        "line": 164
+      }
+    ]
+  }
+}
