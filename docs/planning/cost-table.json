@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:5ff8261b5ac561222530a28725ab08cc9713884c92d70fa8caa938f9d5b511e4",
+  "subjectSourceHash": "sha256:54a36f458bba3260a486387b201a1dd4e166717aed8f855d4ae7fea88fe207b0",
   "acceptances": [
     {
       "date": "2026-10-28",
@@ -227,67 +227,67 @@
       "reason": "The 2026-11-16 planning pass measured docs/planning/sequence.md at 13,932 bytes against the 12,369 accepted on 2026-09-22, after adding the six rules the operator directed that day (the queue form, stops, the override, time limits, whose rules and criticisms), each with the digest of its capture, and writing the orders paragraph for WO-284, WO-287 and WO-288. Under the standing 2026-09-17 route a breach is raised to the measured bytes plus one 4,096-byte step with the rule named, never trimmed around or left advisory across orders. Reassess when a pass folds the rules whose orders have closed."
     }
   ],
-  "observedAt": "2026-11-16T20:17:00.989Z",
-  "subjectRevision": "0e569b21a1b52c36c5a7f6b5096b9085de7081e1",
+  "observedAt": "2026-11-16T20:53:13.661Z",
+  "subjectRevision": "c671d8069e7da36766c306a696e531ea288a4a7e",
   "rows": [
     {
       "workOrder": "WO-284",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-287",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-288",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-244",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-11-16T20:17:00.989Z",
+      "observedAt": "2026-11-16T20:53:13.661Z",
       "metrics": null
     }
   ],
