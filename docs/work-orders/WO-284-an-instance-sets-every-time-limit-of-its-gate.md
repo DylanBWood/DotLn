@@ -242,11 +242,15 @@ failure that run names.
 1. `packages/skeleton/src/time-limits.mjs` (new; build-free): the table and
    `timeLimit(root, key)`, which applies the root's file;
    `scripts/launchpad.mjs` (`BUILD_FREE_MODULES`); the module's
-   registration in `scripts/lib/evidence-sources.mjs` and in the fixture
-   lists that copy build-free modules
-   (`scripts/test-harness.fixture-inputs.json`,
-   `scripts/test-beacon-fixture.fixture-inputs.json`), before the first
-   re-mint;
+   registration in `scripts/lib/evidence-sources.mjs` and in every fixture
+   manifest that copies one of its importers, found by searching the
+   `*.fixture-inputs.json` files for each importer (four copy
+   `gate-evidence.mjs` or `host-resources.mjs` at `38c333ab2`:
+   `scripts/test-harness.fixture-inputs.json`,
+   `scripts/test-beacon-fixture.fixture-inputs.json`,
+   `scripts/test-control-copy-sites.fixture-inputs.json` and
+   `packages/skeleton/test/control-beacon-cli.fixture-inputs.json`),
+   before the first re-mint;
    `scripts/kit/time-limits.template.json` (new) and the seed list that
    writes an instance's control files; `scripts/time-limits.mjs` (new: the
    listing and `--write`) and `package.json` (`limits`). Check: a case in

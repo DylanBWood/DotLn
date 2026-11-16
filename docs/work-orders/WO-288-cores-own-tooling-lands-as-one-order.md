@@ -493,6 +493,18 @@ that `npm run limits` now lists every limit.
   round is its one command.
 - The absorbed records ask for a status capture in their evidence gates
   as filed; this order asks for none.
+- Four of Part D's rows already have a figure the instance owns: a target
+  repository's gate commands (`dotln.config.json`, census B06), the
+  dispatch bound's worked time and a driven phase's limit
+  (`docs/control/budgets.json`, B07 and D23) and the routine prune's
+  budget (`prune.startBudgetMs`, B19). A round-two reader asked which
+  setting wins. The planner's reading for the executor: each keeps its one
+  setting where it is; `npm run limits` lists the row with that setting as
+  its source; the limits file holds no second figure for it; `scale`
+  multiplies the kit's figures and not one the owner wrote; `enforce`
+  false reaches B06, B19 and D23 with the rest; and B07 is a bound, whose
+  answer is its stop's level (WO-287), not a limit that ends a process. A
+  figure found to need both settings reopens this reading.
 - Part A's record names per-step `npm test -- --only` checks as filed;
   under this plan's lead each names where the step's case lives.
 - The records' line numbers are those of `38c333ab2` or, for Parts B and

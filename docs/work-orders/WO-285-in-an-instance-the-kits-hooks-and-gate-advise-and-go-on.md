@@ -37,7 +37,8 @@ is added. Assigned at activation under the standing opt-out default.
 **Cost:** adds one build-free table of stops, a `stops` section and its
 validator, the levels carried by the emit into each hook's configuration
 and into the host deny rules it derives, the answer by level in the two
-hook entry functions, a failure's own stop in the document check, an
+hook entry functions and in the bounds' admissions inside four commands,
+a failure's own stop in the document check, an
 advised outcome in the runner's rows and the stop rows of the features
 page, with twenty to thirty cases (estimates, not bounds). The level is compiled into a hook's
 configuration at emit, so a tool call reads no further file; that cost is
@@ -195,6 +196,19 @@ sends a person to `operator override:` to get past a stop.
   `off` the rule is not emitted, since a host rule denies before any hook
   can answer. Rejected: reading the configuration in every hook call
   (axis: cost per tool call, which WO-272 measured and cut).
+- A stop is one row however many places enforce it, and every place
+  reads that row's level, so that an owner who lowers a stop is not met by
+  its twin. The dispatch bound is enforced by the hook (S16), by the
+  bounded wrapper before it starts its child (S90,
+  `scripts/lib/bounded-command.mjs` 59), by a re-dispatch
+  (`requireRedispatchBound`, `scripts/lib/dispatch-bound.mjs`) and by the
+  gate's structural row (S102). The worker cap and the driven budget are
+  enforced by the hooks (S17, S18, S37), by the review helper before a
+  Codex launch (`admitCodexLaunch`, `scripts/lib/review-worker.mjs`) and
+  by the driver before a phase (`scripts/lib/drive-session.mjs`). Ssh and
+  a package publish are each denied by a host rule (S03, S04) and by the
+  hook's denied effect. A command reads the level from the root's
+  configuration when it runs; a hook has it from the emit.
 - `protocolRefusal` takes the stop's id and answers by its level: a denial
   at `refuse`, the advisory at `advise`, nothing at `off`. Each launchpad
   refusal site names its id. `runTargetHarnessHook` gives each reason its
@@ -234,7 +248,8 @@ sends a person to `operator override:` to get past a stop.
   override reaches a target worktree's hooks, which it does not today.
 - A lifecycle command that declines its own job (a publish without a
   reviewed change, a close of an unmerged order, a record that would
-  rewrite a verdict: rows S42 to S93) is not changed here. Each is listed
+  rewrite a verdict: rows S42 to S93) is not changed here, apart from a
+  bound's own admission inside a command, which is its stop's. Each is listed
   on the features page as a command's refusal with its way forward, so
   what remains is in the open. Rejected: converting them in this order
   (axis: risk; each needs its own answer to what going on means, and the
@@ -247,16 +262,17 @@ suite runs alone before the order's one complete run except to reproduce a
 failure that run names.
 
 1. `packages/skeleton/src/stops.mjs` (new; build-free): the table, one row
-   for each census row S01 to S139 that ships, with row S30 as two, and
-   the function that resolves a level from a root's kind, a row's class
-   and the `stops` section; `scripts/launchpad.mjs` (`BUILD_FREE_MODULES`);
-   the module's registration in `scripts/lib/evidence-sources.mjs` and in
-   the fixture lists that copy build-free modules
-   (`scripts/test-harness.fixture-inputs.json`,
-   `scripts/test-beacon-fixture.fixture-inputs.json`), before the first
-   re-mint. Check: a case in `scripts/test-configuration-root.mjs` that an instance
-   root resolves an unset record row to `advise` and an unset work row to
-   `refuse`, and core's root resolves both to `refuse`.
+   for each stop that the census's rows S01 to S139 describe and that
+   ships (a stop enforced in several places is one row, naming the census
+   rows it covers; row S30 is two), and the function that resolves a level
+   from a root's kind, a row's class and the `stops` section;
+   `scripts/launchpad.mjs` (`BUILD_FREE_MODULES`); the module's
+   registration in `scripts/lib/evidence-sources.mjs` and in every fixture
+   manifest that copies one of its importers, found by searching the
+   `*.fixture-inputs.json` files for each importer, before the first
+   re-mint. Check: a case in `scripts/test-configuration-root.mjs` that an
+   instance root resolves an unset record row to `advise` and an unset
+   work row to `refuse`, and core's root resolves both to `refuse`.
 2. `scripts/lib/config.mjs` (`SECTION_KEYS`, the `stops` validator) and
    `scripts/lib/feature-registry.mjs` (an unknown `features` key in an
    instance is an advisory). Check: a case in
@@ -272,11 +288,18 @@ failure that run names.
    `scripts/test-harness.mjs` that an emit under a `stops` section writes
    that level into the launchpad's and a target's hook configuration.
 4. `packages/skeleton/src/harness-host.ts` (`protocolRefusal` and each
-   launchpad refusal site). Check: cases in `scripts/test-harness.mjs` for
-   the planning-branch write, the live-gate write, the dispatch bound and
-   the worker cap in an instance root (allowed, with the advisory) and in
-   core's (denied as before), and for the writer reservation and the
-   outside-project write in an instance root (denied as before).
+   launchpad refusal site), and the bounds' admissions inside commands,
+   each reading its stop's level: `scripts/lib/dispatch-bound.mjs`
+   (`requireDispatchBound`, `requireRedispatchBound`),
+   `scripts/lib/bounded-command.mjs`, `scripts/lib/review-worker.mjs`
+   (`admitCodexLaunch`) and `scripts/lib/drive-session.mjs`. Check: cases
+   in `scripts/test-harness.mjs` for the planning-branch write, the
+   live-gate write, the dispatch bound and the worker cap in an instance
+   root (allowed, with the advisory) and in core's (denied as before), and
+   for the writer reservation and the outside-project write in an instance
+   root (denied as before); and a case in `scripts/test-dispatch-bound.mjs`
+   that a probe past the bound starts its child in an instance root and is
+   withheld at `refuse`.
 5. `packages/skeleton/src/harness-host.ts` (`runTargetHarnessHook`: typed
    reasons, row S30's two halves, the answer by level, the runtime that
    cannot be reached). Check: cases in
@@ -334,8 +357,15 @@ messages; the write-backs, decisions, regenerated roots and editions.
    write while a gate runs in the worktree, a launch past the dispatch
    bound and a worker launch past the cap each go on with an advisory that
    names the stop and what it protects; in core's root each is denied as
-   before, and the existing cases for the nine refusals pass unchanged
-   (`npm test -- --only harness-fixtures`).
+   before, and the existing cases for the nine refusals pass unchanged.
+   The same holds where a command enforces the bound itself: with the
+   dispatch bound exhausted in an instance root,
+   `node scripts/harness.mjs bounded` starts a command that is no
+   diagnostic selection and prints the advisory, and a review helper's
+   launch past the cap starts its worker and prints the advisory; at
+   `refuse` each is withheld as today
+   (`npm test -- --only harness-fixtures`;
+   `npm test -- --only plan-refutation`).
 5. In an instance root a write while another session holds the worktree's
    writer reservation and a write to a known destination outside the
    project are each refused as before, and the refusal names its id and
@@ -380,7 +410,8 @@ messages; the write-backs, decisions, regenerated roots and editions.
 **Preflight:** `npm test -- --only harness-fixtures`, `npm test -- --only
 target-worktree`, `npm test -- --only runner-fixtures`, `npm test -- --only
 configuration-root`, `npm test -- --only launchpad`, `npm test -- --only
-harness-evidence` and `npm test -- --only harness-probe`, whose rows the
+plan-refutation`, `npm test -- --only harness-evidence` and
+`npm test -- --only harness-probe`, whose rows the
 order's one complete run supplies; the structural phase; the complete run
 with `npm test -- --review` at final review.
 
@@ -414,7 +445,8 @@ read the list, and the one line that changes any of them.
 - WO-284 runs first and edits the runner's suite table; this order's step
   6 is written against the table as that order leaves it.
 
-**Non-goals:** changing what a lifecycle command refuses (rows S42 to S93);
+**Non-goals:** changing what a lifecycle command refuses (rows S42 to S93),
+apart from a bound's own admission inside a command;
 removing a protection from core; lowering a work row's default; a new stop
 of any kind; a per-user or per-session level; changing what the host's own
 permission rules decide, apart from the deny rules the kit's emit writes.

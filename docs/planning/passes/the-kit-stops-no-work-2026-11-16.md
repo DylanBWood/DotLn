@@ -934,7 +934,45 @@ WO-288 gave the count of limits outside the gate path as about 140 with a
 breakdown that added up to 125; the census gives 139 shipped rows at 327
 sites, 32 of the rows in shipped test files.
 
-self-review: found 21; fixed 21; recorded 0
+Round two was the recheck: the same four reviewers on the fixed subject,
+tree `13080fac88e60ecec60236228cdb57554eeec406`, each confirming its own
+findings and then reading the whole change again under the ladder's
+admission rule.
+
+| Reviewer | Time | Its earlier findings confirmed fixed | New |
+| --- | --- | --- | --- |
+| criteria | 0 h 29 min | 12 of 12 | 1, blocking |
+| design | 0 h 21 min | 11 of 11 | 2 notes |
+| consistency | 0 h 38 min | 8 of 9 | 3, of them 1 note |
+| combined | 0 h 35 min | 14 of 14 | 2, of them 1 note |
+
+The eight new findings are five distinct ones.
+
+1. A bound is enforced inside commands as well as in hooks (criteria;
+   admitted, since it fails WO-287's criterion A4 as written). The
+   bounded wrapper, the review helper, the driver and a re-dispatch each
+   refuse past a bound in their own process, so a hook that advised
+   would still have left the launch withheld. Fixed in WO-285: a stop is
+   one row however many places enforce it, every place reads that row's
+   level, and criterion 4 has the two command cases.
+2. Two rows can guard one action, as a host rule and a hook both deny
+   ssh (design, a note). Settled by the same rule.
+3. Four limits of WO-288's Part D already have a setting the instance
+   owns (design, a note). Recorded in that order's known issues with the
+   planner's reading: each keeps its one setting, and the limits file
+   holds no second figure for it.
+4. The cost table still described round one's subject (consistency and
+   combined). It is regenerated once the last edit is committed, which is
+   where the procedure puts it.
+5. The one fix not confirmed: two more fixture manifests copy an importer
+   of the new limits module (consistency). WO-284 and WO-285 now find the
+   manifests by search, and WO-284 names all four.
+
+Round three is one combined reader on GPT-6 Astra over what round two's
+fixes changed, since they changed an order's contract. Its result is
+under Validation.
+
+self-review: found 26; fixed 25; recorded 1
 
 ## Process cost
 

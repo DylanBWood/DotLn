@@ -30,7 +30,8 @@ at activation under the standing opt-out default.
 **Cost:** Part A adds one build-free table of stops, a `stops` section
 and its validator, the levels carried by the emit into each hook's
 configuration and into the host deny rules, the answer by level in the two
-hook entry functions, a failure's own stop in the document check, an
+hook entry functions and in the bounds' admissions inside four commands,
+a failure's own stop in the document check, an
 advised outcome in the runner's rows and the stop rows of the features
 page, with twenty to thirty cases; it removes, in an instance, twenty-six
 hook denials and thirty-seven gate failures that have nothing to do with
@@ -189,8 +190,10 @@ in parts, this text is the order's.
 
 - **Part A, WO-285** as filed: the table of stops, the `stops` section,
   the answer by level in the launchpad's and a target worktree's hooks,
-  the host deny rules by level, a failure's own stop inside a task that
-  holds checks of more than one class, the runner's advised outcome, the
+  the host deny rules by level, one row for a stop however many places
+  enforce it (a bound's admission inside a command among them), a
+  failure's own stop inside a task that holds checks of more than one
+  class, the runner's advised outcome, the
   features page's stop rows and the texts that named the recovery
   override.
 - **Part B, WO-286** as filed: the layer on every unit and shared rule,
@@ -256,8 +259,15 @@ critic's points judged; regenerated roots and editions.
    write while a gate runs in the worktree, a launch past the dispatch
    bound and a worker launch past the cap each go on with an advisory that
    names the stop and what it protects; in core's root each is denied as
-   before, and the existing cases for the nine refusals pass unchanged
-   (`npm test -- --only harness-fixtures`).
+   before, and the existing cases for the nine refusals pass unchanged.
+   The same holds where a command enforces the bound itself: with the
+   dispatch bound exhausted in an instance root,
+   `node scripts/harness.mjs bounded` starts a command that is no
+   diagnostic selection and prints the advisory, and a review helper's
+   launch past the cap starts its worker and prints the advisory; at
+   `refuse` each is withheld as today
+   (`npm test -- --only harness-fixtures`;
+   `npm test -- --only plan-refutation`).
 5. (A5) In an instance root a write while another session holds the worktree's
    writer reservation and a write to a known destination outside the
    project are each refused as before, and the refusal names its id and
@@ -337,6 +347,7 @@ critic's points judged; regenerated roots and editions.
 `npm test -- --only harness-fixtures`,
 `npm test -- --only harness-probe`,
 `npm test -- --only launchpad`,
+`npm test -- --only plan-refutation`,
 `npm test -- --only runner-fixtures`,
 `npm test -- --only target-worktree`,
 `npm test -- --only verification-evidence` are the suites the parts' changes reach, whose
@@ -374,8 +385,9 @@ changes each.
 - The role text's rules for an order in parts give each part a ladder
   until WO-288 changes them; this order's text is the one to follow.
 
-**Non-goals:** for Part A, changing what a lifecycle command refuses,
-removing a protection from core, lowering a work row's default, a new
+**Non-goals:** for Part A, changing what a lifecycle command refuses
+apart from a bound's own admission inside a command, removing a
+protection from core, lowering a work row's default, a new
 stop of any kind, a per-user or per-session level, and changing what the
 host's own permission rules decide, apart from the deny rules the kit's
 emit writes; for Part B, changing which rules core
