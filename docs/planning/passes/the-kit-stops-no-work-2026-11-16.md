@@ -579,10 +579,12 @@ each step's check is one case, by the screen this pass added.
 
 ## Register
 
-Thirty-three rows are disposed: the one open row, the eighteen untriaged,
-three earlier rows whose conditions have occurred and the eleven
-candidates this pass records in the planning map. None is left untriaged.
-The batch is in the ignored local planning lane.
+Thirty-five rows are disposed: the one open row, the eighteen untriaged,
+three earlier rows whose conditions have occurred and the thirteen
+candidates this pass records in the planning map, two of which the
+refutation added. None is left untriaged. The batches are in the ignored
+local planning lane. The seventh candidate was disposed a second time
+when the meta critic's correction changed its wording.
 
 A second batch moves to WO-288, by part, the seventeen rows the
 2026-11-15 pass allocated to WO-278, WO-279 and WO-280: nine to Part A,
@@ -637,7 +639,7 @@ these orders edit, among them FUP-17ea51254e5a7256 (a gate that holds
 off system sleep), whose seam, the suite timer, WO-284 opens; no host in
 the record reports a limit missed for sleep since.
 
-The eleven candidates this pass records in the planning map enter the
+The thirteen candidates this pass records in the planning map enter the
 register with the dispositions the map gives them.
 
 ## Red tags
@@ -749,8 +751,11 @@ on an instance's path and by what the instance reported.
   run beside a step; two screens, that an order adds no stop an
   instance's owner cannot lower and that a step's check is one case; and
   a new subsection, the queue form.
-- The sequence, as above. The planning map: four catalog rows and this
-  pass's candidates. The idea ledger: the registration heading.
+- The sequence, as above. The planning map: the catalog rows of the five
+  orders filed and of the three absorbed, the known issues of receipt 070
+  in three of them, and this pass's thirteen candidates. The idea ledger:
+  the registration heading. `docs/control/budgets.json`: one acceptance,
+  for the sequence's size, by the standing route for a breach.
 - No other standing document changes. What the orders change in the kit
   guide, the role text and the features page is theirs to write.
 
@@ -1040,12 +1045,90 @@ figures marked by whether this pass checked them.
 The first class is new; the other three are classes of the record above,
 and each came back in this pass while its rule stood.
 
+## The refutation
+
+One refuter judged the committed subject after the critic had reported,
+in the order the operator set: a fresh `dotln-worker` with no inherited
+conversation, given the canonical prompt of `npm run plan -- refute` and
+nothing else. The host named its model to it as `claude-opus-5-5`, and
+it took no effort readback. Dispatch to the filed receipt took 0 h 19
+min.
+
+[Receipt 070](../refutations/2026-11-16-planning-47cb7272ac079856-070.md):
+pass scope; WO-284, WO-287 and WO-288 each aligned with findings; the
+nine older orders' verdicts carried by hash; no hold. Its nineteen
+findings on the three orders are known issues, each with the observation
+that reopens it.
+
+Ten are repaired in the criterion each names, under a recorded
+disposition, which is the one change the kit admits to a judged order's
+text.
+
+| Order | Criterion | What the finding showed | The repair |
+| --- | --- | --- | --- |
+| WO-284 | 5 | Levels the order does not define; one of three selections exercised | Each task's own result is read; all three selections run at one third |
+| WO-284 | 6 | Nothing said of a gate index that cannot be read | The complete run is listed as owed and the command exits as before |
+| WO-287 | 6 (A6) | An advised row could stand for a passing one | No selection reuses an advised task as passing |
+| WO-287 | 8 (A8) | Two stops fail at any level and are set elsewhere | The features list names that file |
+| WO-287 | 10 (A10) | A refusal could name a line it forbids writing, and whose a level is went unsaid | The text says where the line is written; the instruction block says a level is its owner's |
+| WO-287 | 17 (B6) | Core's own Clean Room section was pinned by no case | In core's root no route names it |
+| WO-287 | 18 (B7) | A rule's layer was recorded and not constrained | No rule that guards secrets or the private-terms screen is the author's |
+| WO-287 | 4 (A4) and the Cost line | Core's twelve authorizations were set against an instance | The Cost line says whose record holds them |
+| WO-288 | 1 (A1) | A point's cause could carry an operator's wording into committed text | A cause is named by its place |
+| WO-288 | 3 (A3) | A withheld critic launch stayed due at every prompt | The next is named one interval later |
+
+The other nine are in the three orders' catalog rows of the planning map,
+each with the planner's reading for the executor and what reopens it.
+
+The pass made an error here, and the record holds it. After the receipt
+was filed the planner ran the planning gate's preflight advisory over the
+new orders by hand and found that it read no plan in them: the five
+orders this pass wrote, and its amendment of WO-279, end the execution
+plan's label in a period where the kit's reader takes a colon. No reader
+of the ladder had found it. Read with a colon, the advisory names ten
+suite and order pairs that the Preflight fields omit.
+
+The planner then corrected the labels, the Preflight fields and several
+passages in the judged orders and committed that. The planning check
+refused it: after its judgment an order's bytes change only in a
+criterion or a Cost line that a disposition binds, and a pass has one
+judgment. The orders were restored to the bytes the receipt judged, and
+the ten repairs above are what remains of the edit. The label and the
+Preflight fields are this pass's thirteenth candidate; the complete run
+supplies every row those fields omit. The advisory should have been run
+before the refuter. Commits `c671d8069` and `c4d92be93` hold the
+detour, and `e80769571` the restoration.
+
 ## Process cost
 
 - Model and effort: `claude-fable-5-2`, as the host names the model to
   the session, at `max`, as `CLAUDE_EFFORT` reads in it.
-- Workers, of a cap of 20: @@WORKERS@@
-- Usage at the pass's handoff: @@USAGE@@
+- Workers, of a cap of 20: 15 by the harness's count, 5 remaining. By
+  the pass's own count sixteen launches: five research workers and the
+  refuter (`dotln-worker`), nine launches of the review helper over three
+  rounds, and the critic. Eight of the helper's launches ran two Codex
+  workers each, the brief being over the ceiling for one, so twenty-four
+  worker processes ran.
+- Usage at the pass's handoff: 195,375,191 tokens (896 input,
+  193,217,582 cached input, 1,430,312 cache writes, 726,401 output;
+  reasoning tokens and cost are unknown, the host supplying no counter);
+  source `claude-transcript-message-usage`, scope dispatch, observed
+  2026-11-16T21:05:04Z. The review helper's nine launches report
+  92,985,248 tokens of their own in their result envelopes: 43,656,234,
+  46,219,723 and 3,109,291 by round. The refuter used 195,064. The
+  critic's and the research workers' counts were not kept.
+- Time: the dispatch reached the session at 16:11 UTC and this section
+  was written at 21:07 UTC, 4 h 55 min. Of that, 2 h 02 min was the
+  longest reader of each wait: 0 h 39 min, 0 h 38 min and 0 h 12 min for the
+  ladder's rounds, 0 h 14 min for the critic and 0 h 19 min for the
+  refuter.
+- What the ladder bought, against a standard pass that refutes once: the
+  first round found eighteen distinct defects and the second one more
+  that mattered, a bound enforced inside commands. Two defects reached
+  past all three rounds: a cause stated beyond its evidence, which the
+  critic found, and the plan label, which the planner found by running
+  the gate's own advisory. Neither kind of reader is a substitute for
+  the other.
 
 ## Validation
 
