@@ -200,7 +200,7 @@ nothing keeps what it has.
   for the supports, so an owner who unequips a rule is not told of drift.
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16).** A step's check is one case run under
+`38c333ab2`, 2026-11-16):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
 failure that run names.
@@ -275,23 +275,31 @@ layer and reason; regenerated roots and editions.
 6. The features list prints no line saying the clean-room floor cannot be
    chosen; an exported instance's `CLAUDE.md` says its Clean Room and
    Secrets sections are the owner's own text, and its kit guide has the
-   section that states which layer is whose
-   (`npm test -- --only launchpad`).
+   section that states which layer is whose; in core's root the Clean Room
+   section is emitted as before, and no overlay id, stop or unequip route
+   names it (`npm test -- --only launchpad`;
+   `npm test -- --only harness-fixtures`).
 7. Each shared rule's layer and its one-line reason are in
-   `docs/evidence/WO-286/decisions.md`.
+   `docs/evidence/WO-286/decisions.md`, and no rule that guards secrets
+   or the private-terms screen is in the author's layer.
 8. With the attribution unit unequipped, or `author`, an emit into a
    registered target worktree writes no attribution setting and registers
    no attribution hook, its check passes, and the writer reservation there
    still answers at its stop's level (`npm test -- --only target-worktree`).
 9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
-**Preflight:** `npm test -- --only harness-fixtures`, `npm test -- --only
-configuration-root`, `npm test -- --only launchpad`, `npm test -- --only
-target-worktree`, `npm test -- --only
-harness-evidence`, `npm test -- --only authority-evidence`, `npm test --
---only artifact-evidence` and `npm test -- --only verification-evidence`,
-whose rows the order's one complete run supplies; the structural phase;
-the complete run with `npm test -- --review` at final review.
+**Preflight:** `npm test -- --only harness-fixtures`,
+`npm test -- --only configuration-root`, `npm test -- --only launchpad`,
+`npm test -- --only launchpad-planning`,
+`npm test -- --only target-worktree`, `npm test -- --only runner-fixtures`,
+`npm test -- --only plan-refutation`, `npm test -- --only sync-fixtures`,
+`npm test -- --only harness-context`, `npm test -- --only harness-probe`,
+`npm test -- --only process-debt`, `npm test -- --only harness-evidence`,
+`npm test -- --only authority-evidence`,
+`npm test -- --only artifact-evidence` and
+`npm test -- --only verification-evidence`, whose rows the order's one
+complete run supplies; the structural phase; the complete run with
+`npm test -- --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-286/`: the features list of
 core and of an instance fixture; an emit under `"unequip": ["author"]`

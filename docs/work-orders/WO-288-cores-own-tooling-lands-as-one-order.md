@@ -261,7 +261,7 @@ order of the form ships nothing until its last part lands, and none of
 these is something an instance is stopped on).
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16).** A step's check is one case run under
+`38c333ab2`, 2026-11-16):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; the
 suite a record names beside a step is where that case lives and is not a
 run to make.
@@ -313,7 +313,8 @@ editions.
    line prints the requested model and effort and the host's reported ones
    apart; `--print` launches nothing, and its brief names the order's
    sessions in any phase as the subject and asks each criticism for its
-   class and for the sentence or output that allowed it.
+   class and for the sentence or output that allowed it, named by its
+   place and never by an operator's words.
 2. (A2) An instance's `kinds` section that names another worker and effort for
    `critic` changes the launch accordingly; in an instance a malformed row
    is named in one advisory with `dotln.config.json` and the key and the
@@ -331,8 +332,9 @@ editions.
    complete run has passed; names one in a later verification or
    final-review dispatch of the same order one interval after that
    dispatch began; names none after the order's passing final-review
-   result; and after a failed one names a launch again in the repair's and
-   the next verification's dispatches;
+   result; after a failed one names a launch again in the repair's and
+   the next verification's dispatches; and after a launch the screen
+   withheld names the next one interval later;
    the prompt hook's context and the Stop hook's line carry the same
    answer (`npm test -- --only harness-fixtures`).
 5. (A5) The hook counts `npm run worker -- launch critic` as one use and
@@ -457,6 +459,7 @@ editions.
 `npm test -- --only feedback-evidence`,
 `npm test -- --only harness-evidence`,
 `npm test -- --only harness-fixtures`,
+`npm test -- --only harness-probe`,
 `npm test -- --only launchpad`,
 `npm test -- --only launchpad-planning`,
 `npm test -- --only meta`,

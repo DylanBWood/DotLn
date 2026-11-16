@@ -35,9 +35,9 @@ a failure's own stop in the document check, an
 advised outcome in the runner's rows and the stop rows of the features
 page, with twenty to thirty cases; it removes, in an instance, twenty-six
 hook denials and thirty-seven gate failures that have nothing to do with
-the owner's work, the authorizations asked of the operator to pass a bound
-(twelve in November's record) and the one refusal whose only route was the
-recovery override. Part B adds a layer on thirty-four rule records and a
+the owner's work, the authorization an owner is asked for to pass a bound
+(core's own record holds twelve in November; an instance's is not visible
+to core) and the one refusal whose only route was the recovery override. Part B adds a layer on thirty-four rule records and a
 reading of the ten units' scope, the overlay's wider lists, the filter in
 the configured program and in the launchpad's and a target's emit, the
 rule rows of the features page and one section of the kit guide, with
@@ -210,7 +210,7 @@ for a fix that was done on the first). Rejected: the two as separate
 orders (axis: the cycle; they share six files and one page).
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16).** A step's check is one case run under
+`38c333ab2`, 2026-11-16):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; the
 suite a record names beside a step is where that case lives and is not a
 run to make.
@@ -276,7 +276,8 @@ critic's points judged; regenerated roots and editions.
 6. (A6) In an instance fixture a failed task whose stop is a record, host or
    bound row is recorded as advised with its output, the tasks after it
    run, the selection exits 0 and its recorded row names the advised
-   tasks; with that stop at `refuse` the selection fails as today. In the
+   tasks, none of which a later selection reuses as passing; with that
+   stop at `refuse` the selection fails as today. In the
    document check a document with a record-form defect alone leaves its
    task advised, one with a private absolute path alone fails it, and one
    with both fails it naming the private path and prints the form defect
@@ -291,7 +292,9 @@ critic's points judged; regenerated roots and editions.
 8. (A8) `npm run features -- list` prints one row for each stop of the table
    with its id, its class, what it protects, its level in this root,
    whether the kit or this root's configuration set it, and the line that
-   changes it; a lifecycle command's refusal is listed with its way
+   changes it, or, for a stop set elsewhere (a refuse-class entry of the
+   terms list, a time limit), that file; a lifecycle command's refusal is
+   listed with its way
    forward; no "Not electable" list is printed
    (`npm test -- --only configuration-root`).
 9. (A9) A stop with its own switch keeps that switch's behavior: with
@@ -299,9 +302,11 @@ critic's points judged; regenerated roots and editions.
    refusals answer as before in an instance root and in core's
    (`npm test -- --only harness-fixtures`).
 10. (A10) The emitted `CLAUDE.md` block, the role roots and each hook refusal's
-    text name no `operator override:` route past a refusal, and a refusal
-    that remains names its stop id and its line of `dotln.config.json`, by
-    a case that reads the emitted bundle
+    text name no `operator override:` route past a refusal; a refusal that
+    remains names its stop id and its line of `dotln.config.json`, and
+    where that line is written when the refusal covers the file itself;
+    and the block says that a stop's level is its owner's to change, by a
+    case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
 11. (A11) With the ssh stop or the package-publish stop set to `advise` or
     `off`, the emitted settings carry no deny rule for it, in the
@@ -330,10 +335,13 @@ critic's points judged; regenerated roots and editions.
 17. (B6) The features list prints no line saying the clean-room floor cannot be
     chosen; an exported instance's `CLAUDE.md` says its Clean Room and
     Secrets sections are the owner's own text, and its kit guide has the
-    section that states which layer is whose
-    (`npm test -- --only launchpad`).
+    section that states which layer is whose; in core's root the Clean Room
+    section is emitted as before, and no overlay id, stop or unequip route
+    names it (`npm test -- --only launchpad`;
+    `npm test -- --only harness-fixtures`).
 18. (B7) Each shared rule's layer and its one-line reason are in
-    `docs/evidence/WO-287/decisions.md`.
+    `docs/evidence/WO-287/decisions.md`, and no rule that guards secrets
+    or the private-terms screen is in the author's layer.
 19. (B8) With the attribution unit unequipped, or `author`, an emit into a
     registered target worktree writes no attribution setting and registers
     no attribution hook, its check passes, and the writer reservation there
@@ -343,12 +351,17 @@ critic's points judged; regenerated roots and editions.
 **Preflight:** `npm test -- --only artifact-evidence`,
 `npm test -- --only authority-evidence`,
 `npm test -- --only configuration-root`,
+`npm test -- --only evidence-sources`,
+`npm test -- --only harness-context`,
 `npm test -- --only harness-evidence`,
 `npm test -- --only harness-fixtures`,
 `npm test -- --only harness-probe`,
 `npm test -- --only launchpad`,
+`npm test -- --only launchpad-planning`,
 `npm test -- --only plan-refutation`,
+`npm test -- --only process-debt`,
 `npm test -- --only runner-fixtures`,
+`npm test -- --only sync-fixtures`,
 `npm test -- --only target-worktree`,
 `npm test -- --only verification-evidence` are the suites the parts' changes reach, whose
 rows the order's complete run supplies; the structural phase; the

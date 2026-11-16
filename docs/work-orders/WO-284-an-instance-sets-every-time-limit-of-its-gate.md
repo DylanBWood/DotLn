@@ -207,7 +207,8 @@ and a forced complete run there starts only with a reason the row keeps.
   and a hung gate under an unattended session would then wait without
   end).
 - Room is checked, not asserted: the export fixture, which already runs an
-  exported instance's document gate, runs it with `scale` at one third, so
+  exported instance's three selections (`npm test`, `npm run test:docs`
+  and `npm test -- --review`), runs them with `scale` at one third, so
   a release whose instance gate needs more than a third of any figure on
   core's host fails core's gate before it ships. This is core's check of
   the starter and runs in no instance.
@@ -226,7 +227,8 @@ and a forced complete run there starts only with a reason the row keeps.
 - The closeout selection reads the gate index: where a passing complete
   review row stands at the current code identity it prints that the run
   is satisfied, with the row's time, and lists the document gate alone as
-  owed. On a complete selection at such an identity `--again` or `--fresh`
+  owed. An index it cannot read is one that holds no such row: the
+  complete run is listed as owed, as before, and no command stops for it. On a complete selection at such an identity `--again` or `--fresh`
   without `--reason <text>` prints the standing row and what a fresh run
   costs, runs nothing and exits 0; with a reason it runs and the row keeps
   the reason. The measurement tools pass theirs. An instance's selections
@@ -245,7 +247,7 @@ and a forced complete run there starts only with a reason the row keeps.
   creates one from the example only where none is.
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16).** A step's check is one case run under
+`38c333ab2`, 2026-11-16):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
 failure that run names.
@@ -360,16 +362,19 @@ and editions.
 5. In the export fixture an instance's selections list a `configuration`
    row that loads the instance's own configuration, and
    `configuration-root` runs there only when named. With `scale` at one
-   third, every task of the exported instance's document gate finishes
-   inside its reduced figure; a task ended for time fails the case
-   whatever levels the instance sets, and a fixture arm with a task that
+   third, every task of the three selections the fixture runs in the
+   exported instance (`npm test`, `npm run test:docs` and
+   `npm test -- --review`) finishes inside its reduced figure. The case
+   reads each task's own result and not the selection's exit alone, so a
+   task ended for time fails it, and a fixture arm with a task that
    outlives its reduced figure shows the case failing
    (`npm test -- --only launchpad`).
 6. Where a passing complete review row stands at the current code
    identity, the closeout selection the briefing and `worktree integrate`
    print says the complete run is satisfied, names the row's time and
-   lists `npm run test:docs` alone as owed; where none stands it lists the
-   complete run as before (`npm test -- --only worktree-integration`).
+   lists `npm run test:docs` alone as owed; where none stands, or the
+   index cannot be read, it lists the complete run as before and exits as
+   before (`npm test -- --only worktree-integration`).
 7. On a review selection at an identity that holds a passing complete row,
    `--again` without `--reason` prints that row, runs no task and exits 0,
    and with `--reason <text>` runs and records the text on its row; a
@@ -387,13 +392,17 @@ and editions.
    reason.
 10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
-**Preflight:** `npm test -- --only runner-fixtures`, `npm test -- --only
-configuration-root`, `npm test -- --only sync-fixtures`, `npm test -- --only
-launchpad`, `npm test -- --only worktree-integration`, `npm test -- --only
-harness-fixtures`, `npm test -- --only feedback-evidence`, `npm test --
---only harness-evidence` and `npm test -- --only process-debt`, whose rows
-the order's one complete run supplies; the structural phase; the complete
-run with `npm test -- --review` at final review.
+**Preflight:** `npm test -- --only runner-fixtures`,
+`npm test -- --only configuration-root`, `npm test -- --only sync-fixtures`,
+`npm test -- --only launchpad`, `npm test -- --only launchpad-planning`,
+`npm test -- --only worktree-integration`,
+`npm test -- --only harness-fixtures`, `npm test -- --only plan-refutation`,
+`npm test -- --only fixture-temp-root`,
+`npm test -- --only evidence-sources`,
+`npm test -- --only feedback-evidence`,
+`npm test -- --only harness-evidence` and `npm test -- --only process-debt`,
+whose rows the order's one complete run supplies; the structural phase; the
+complete run with `npm test -- --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-284/`: the listing of an
 instance fixture and of core; a timed-out row's message; the exported

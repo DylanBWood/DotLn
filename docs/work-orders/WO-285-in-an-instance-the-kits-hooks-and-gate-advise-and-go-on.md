@@ -47,9 +47,10 @@ before and after. It removes, in an instance, the denials and gate
 failures that have nothing to do with the owner's work: twenty-six hook
 rows and thirty-seven gate rows of the census (the record, host and bound
 rows among S01 to S41 and S94 to S136, without those that have a switch of
-their own or are time limits); the authorizations asked of the operator to
-pass a bound (twelve in November's record); and the one refusal whose only
-route was the recovery override. One complete review run at final review;
+their own or are time limits); the authorization an owner is asked for to
+pass a bound (core's own record holds twelve in November; an instance's
+record is not visible to core); and the one refusal whose only route was
+the recovery override. One complete review run at final review;
 the editions its registered sources stale are re-minted with
 `npm run sync`. No judged feedback source is edited, so no live episode is
 owed. Tokens and steps are unknown until run.
@@ -228,7 +229,8 @@ sends a person to `operator override:` to get past a stop.
   after it and passes; a task with one failure at `refuse` fails, naming
   that failure, and prints the others as advised. A structural row is
   treated the same way. A task ended for time is no stop of this table: it
-  fails as WO-284's file says, whatever the level of its checks.
+  fails as WO-284's file says, whatever the level of its checks. An
+  advised task's row is never reused as a passing one.
 - The `stops` section holds `"<id>": "refuse" | "advise" | "off"`. An
   unknown id or value is named in one advisory and ignored, and in an
   instance an unknown `features` key is treated the same way, so a
@@ -238,7 +240,11 @@ sends a person to `operator override:` to get past a stop.
   kit, or this root's configuration) and the line that changes it. In core
   each row reads `refuse` as core's own choice.
 - A refusal that remains says its id and the configuration line that
-  lowers it. The three texts that name the recovery override as a route
+  lowers it. Where the refusal covers that file itself, as a planning
+  branch's refusal of writes outside `docs/` does in core, its text says
+  where the line is written (on `main`). A level is its owner's to
+  change: the kit's `CLAUDE.md` block says so, and that a session changes
+  one only when its owner asks for it in that session. The three texts that name the recovery override as a route
   past a refusal name the setting instead, and the sentence in every
   `CLAUDE.md` says where the levels are. The recovery controls stay what
   they are: `analysis:` and `operator override:`, the operator's last
@@ -256,7 +262,7 @@ sends a person to `operator override:` to get past a stop.
   hooks and the gate are what stop work in progress).
 
 **Execution plan (the executor follows these steps in order; observed at
-`38c333ab2`, 2026-11-16).** A step's check is one case run under
+`38c333ab2`, 2026-11-16):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
 failure that run names.
@@ -317,7 +323,8 @@ failure that run names.
    `scripts/test-features.mjs` that the list names every row of the table
    with its class, level and source.
 8. `scripts/kit/dotln.config.example.json` (a `stops` section with one
-   example line) and `scripts/kit/CLAUDE.template.md` (where the levels are
+   example line) and `scripts/kit/CLAUDE.template.md` (whose they are to
+   change, and where the levels are
    set). Then `node scripts/harness.mjs emit` and `npm run sync`. Check:
    `node scripts/harness.mjs check`.
 9. Write-backs: `docs/KIT.md` §Features (what a stop is, its classes and
@@ -374,7 +381,8 @@ messages; the write-backs, decisions, regenerated roots and editions.
 6. In an instance fixture a failed task whose stop is a record, host or
    bound row is recorded as advised with its output, the tasks after it
    run, the selection exits 0 and its recorded row names the advised
-   tasks; with that stop at `refuse` the selection fails as today. In the
+   tasks, none of which a later selection reuses as passing; with that
+   stop at `refuse` the selection fails as today. In the
    document check a document with a record-form defect alone leaves its
    task advised, one with a private absolute path alone fails it, and one
    with both fails it naming the private path and prints the form defect
@@ -389,7 +397,9 @@ messages; the write-backs, decisions, regenerated roots and editions.
 8. `npm run features -- list` prints one row for each stop of the table
    with its id, its class, what it protects, its level in this root,
    whether the kit or this root's configuration set it, and the line that
-   changes it; a lifecycle command's refusal is listed with its way
+   changes it, or, for a stop set elsewhere (a refuse-class entry of the
+   terms list, a time limit), that file; a lifecycle command's refusal is
+   listed with its way
    forward; no "Not electable" list is printed
    (`npm test -- --only configuration-root`).
 9. A stop with its own switch keeps that switch's behavior: with
@@ -397,9 +407,11 @@ messages; the write-backs, decisions, regenerated roots and editions.
    refusals answer as before in an instance root and in core's
    (`npm test -- --only harness-fixtures`).
 10. The emitted `CLAUDE.md` block, the role roots and each hook refusal's
-    text name no `operator override:` route past a refusal, and a refusal
-    that remains names its stop id and its line of `dotln.config.json`, by
-    a case that reads the emitted bundle
+    text name no `operator override:` route past a refusal; a refusal that
+    remains names its stop id and its line of `dotln.config.json`, and
+    where that line is written when the refusal covers the file itself;
+    and the block says that a stop's level is its owner's to change, by a
+    case that reads the emitted bundle
     (`npm test -- --only harness-fixtures`).
 11. With the ssh stop or the package-publish stop set to `advise` or
     `off`, the emitted settings carry no deny rule for it, in the
@@ -407,13 +419,16 @@ messages; the write-backs, decisions, regenerated roots and editions.
     rule is emitted as before (`npm test -- --only harness-fixtures`).
 12. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
-**Preflight:** `npm test -- --only harness-fixtures`, `npm test -- --only
-target-worktree`, `npm test -- --only runner-fixtures`, `npm test -- --only
-configuration-root`, `npm test -- --only launchpad`, `npm test -- --only
-plan-refutation`, `npm test -- --only harness-evidence` and
-`npm test -- --only harness-probe`, whose rows the
-order's one complete run supplies; the structural phase; the complete run
-with `npm test -- --review` at final review.
+**Preflight:** `npm test -- --only harness-fixtures`,
+`npm test -- --only target-worktree`, `npm test -- --only runner-fixtures`,
+`npm test -- --only configuration-root`, `npm test -- --only launchpad`,
+`npm test -- --only launchpad-planning`,
+`npm test -- --only plan-refutation`, `npm test -- --only sync-fixtures`,
+`npm test -- --only harness-context`, `npm test -- --only process-debt`,
+`npm test -- --only evidence-sources`, `npm test -- --only harness-evidence`
+and `npm test -- --only harness-probe`, whose rows the order's one complete
+run supplies; the structural phase; the complete run with
+`npm test -- --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-285/`: the features list of an
 instance fixture and of core; a target worktree's calls of criteria 1 to 3

@@ -295,8 +295,10 @@ back and what allowed them.
   standing's start, the kind's newest `WorkerLaunched` row in the dispatch's
   journals and the gate rows; a launch is due one interval after the later
   of the dispatch's start and the last launch, deferred while a gate runs,
-  and within a dispatch the clock ends at that dispatch's passing
-  complete run, as the operator directed twice during WO-276 (D145, D165,
+  and a launch the screen withholds counts as that interval's, so the next
+  is named one interval later and the hooks' line says the last was
+  withheld, with its counts; within a dispatch the clock ends at that
+  dispatch's passing complete run, as the operator directed twice during WO-276 (D145, D165,
   D166). A later dispatch of the same order, a verification, a final
   review or a repair, starts a clock of its own one interval after it
   begins, since the errors the operator recorded in WO-282 came in its
@@ -319,8 +321,12 @@ back and what allowed them.
   to the lane, and the session that received it records each point's
   judgment in its decisions as an entry of a `criticPoints` array: the
   launch's number, the point's number, the class it names, `accepted` or
-  `declined`, and the cause it names or null. The document check reads the
-  array's shape and nothing else, as it reads a round's findings. An
+  `declined`, and the cause it names or null. A cause is named by its
+  place (a file and line, a command and the first words of its output, or
+  a capture's digest) and never by an operator's words, and the brief
+  asks for it so, since the array is committed text. The document check
+  reads the array's shape and nothing else, as it reads a round's
+  findings. An
   accepted point that names a sentence or an output as its cause carries a
   `followup` naming it, which the register turns into a row.
   `npm run plan -- failures` counts a dispatch's critic launches beside its
@@ -351,7 +357,7 @@ back and what allowed them.
   schema requires, read from the schema (WO-276-D182).
 
 **Execution plan (the executor follows these steps in order; observed at
-`ed66a822c`, 2026-11-14, and amended on 2026-11-16 at `38c333ab2`).** A
+`ed66a822c`, 2026-11-14, and amended on 2026-11-16 at `38c333ab2`):** A
 step's check is one case run under `node scripts/harness.mjs bounded --
 node --test --test-name-pattern`; the suite named beside a step is where
 that case lives and is not a run to make. No suite runs alone before the
@@ -449,7 +455,8 @@ decisions, the episode's record, regenerated roots and editions.
    line prints the requested model and effort and the host's reported ones
    apart; `--print` launches nothing, and its brief names the order's
    sessions in any phase as the subject and asks each criticism for its
-   class and for the sentence or output that allowed it.
+   class and for the sentence or output that allowed it, named by its
+   place and never by an operator's words.
 2. An instance's `kinds` section that names another worker and effort for
    `critic` changes the launch accordingly; in an instance a malformed row
    is named in one advisory with `dotln.config.json` and the key and the
@@ -467,8 +474,9 @@ decisions, the episode's record, regenerated roots and editions.
    complete run has passed; names one in a later verification or
    final-review dispatch of the same order one interval after that
    dispatch began; names none after the order's passing final-review
-   result; and after a failed one names a launch again in the repair's and
-   the next verification's dispatches;
+   result; after a failed one names a launch again in the repair's and
+   the next verification's dispatches; and after a launch the screen
+   withheld names the next one interval later;
    the prompt hook's context and the Stop hook's line carry the same
    answer (`npm test -- --only harness-fixtures`).
 5. The hook counts `npm run worker -- launch critic` as one use and
@@ -512,9 +520,10 @@ harness-fixtures`, `npm test -- --only configuration-root`, `npm test --
 test -- --only runner-fixtures`, `npm test -- --only process-debt`, `npm
 test -- --only harness-evidence`, `npm test -- --only authority-evidence`,
 `npm test -- --only artifact-evidence`, `npm test -- --only
-verification-evidence`, `npm test -- --only feedback-evidence`, `npm test
--- --only meta` and `npm test -- --only registrations` for the steps that
-name them; the structural phase; the complete run with `npm test --
+verification-evidence`, `npm test -- --only feedback-evidence`,
+`npm test -- --only harness-probe`, `npm test -- --only sync-fixtures`,
+`npm test -- --only meta` and `npm test -- --only registrations` for the
+steps that name them; the structural phase; the complete run with `npm test --
 --review` at final review.
 
 **Evidence gate:** under `docs/evidence/WO-279/`: a fake-transport launch on
