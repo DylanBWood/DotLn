@@ -303,22 +303,38 @@ The 2026-11-14 pass gave thirteen of the sixteen classes "nothing" or
 "nothing new", with a reopening condition that waits on WO-279. Ten of
 those thirteen have come back since.
 
-The two costliest recurrences happened while a written rule stood, and in
-both the kit said the opposite at the moment of choice. This pass
-verified each:
+The two costliest recurrences happened while a written rule stood. For
+each, the session's own decision names what it went by, and that is a
+kit output, a pending record or the order's own steps saying the
+opposite. What a session read is stated here only where its record says
+so.
 
 - The complete run after a change to documents alone (WO-277's repair and
   WO-282's final review, 0 h 47 min and 0 h 51 min). The reuse rule was in
-  the reviewer's text four times. But `scripts/lib/closeout-scope.mjs`
-  prints "The complete launchpad run is owed" in the briefing and after
-  `worktree integrate` whether or not a passing row stands at that
-  identity: by its own comment it "supplies no passing row" (13 to 14;
-  487 to 505).
+  the reviewer's text four times. In WO-277 the runner's schedule line
+  called the suites that read the changed pages changed since the last
+  gate row while it reused their rows, and the executor's decision cites
+  that line and the pages among those suites' declared sources
+  (WO-277-D018). In WO-282 two pending register rows proposed
+  the rerun and the reviewer took WO-277's choice for the pattern
+  (WO-282-D024). A third text says a run is owed:
+  `scripts/lib/closeout-scope.mjs` prints "The complete launchpad run is
+  owed" in the briefing and after `worktree integrate` whether or not a
+  passing row stands at that identity (13 to 14; 487 to 505). Neither
+  record shows that it was read, so it is a defect this pass found and
+  not a cause it traced.
 - Suites run one at a time (WO-281: sixteen runs, 74 minutes of gate
   time). The executor's text says a focused run never precedes the
-  complete run. But this guide's order template asked a planner for a
-  per-step `npm test -- --only` check, and WO-279 as filed named one
-  beside every step.
+  complete run. The order's steps and its Preflight line named the
+  suites, and the executor ran them as named (WO-281-D019); the order
+  template asked a planner for such a check at each step, and WO-279 as
+  filed named one beside every step.
+
+An earlier form of this passage, and this pass's report to the operator
+before the meta critic ran, gave the closeout selection's line as the
+cause of the complete runs. The worker's report had marked that as
+unknown, and the two decisions name other things. The meta critic found
+it; WO-284 now also changes the schedule line that WO-277's record names.
 
 The critic could not have seen WO-282's final review at all: its charter
 covers the executor alone, and its clock ended at the first passing run.
@@ -889,10 +905,14 @@ ceiling for one.
 
 | Reviewer | Worker | Time | Findings |
 | --- | --- | --- | --- |
-| criteria | Codex `gpt-6.1-sol` at `max` (`default`) | 0 h 33 min | 12, of them 5 blocking |
+| criteria | Codex, `gpt-6.1-sol` at `max` requested (`default`) | 0 h 33 min | 12, of them 5 blocking |
 | design | the same | 0 h 17 min | 11, none blocking |
 | consistency | the same | 0 h 38 min | 9, of them 3 blocking |
-| combined | Codex `gpt-6-astra` at `max` (`astra`) | 0 h 39 min | 14, of them 3 blocking |
+| combined | Codex, `gpt-6-astra` at `max` requested (`astra`) | 0 h 39 min | 14, of them 3 blocking |
+
+The model and effort in this table, and for every later launch of the
+ladder and the critic, are what the helper asked the host for. The Codex
+host printed no readback, so the effort each worker ran at is unknown.
 
 The criteria reviewer's table answers the dispatch item by item: every
 item is acted on, apart from the ones that order this ladder, the critic
@@ -976,10 +996,54 @@ there, and no reviewer reads the subject after it.
 
 self-review: found 26; fixed 25; recorded 1
 
+## The meta critic of this pass
+
+The operator asked for a meta critic on GPT-6 Astra after the ladder,
+with its result in hand before the refuter was spawned (Dispatch and
+capture, item 9). It ran once, after round three: `gpt-6-astra` at `max`
+requested, no host readback, 0 h 14 min. It read a copy of the session's
+transcript and of its five workers' transcripts, six files, which the
+launcher screened against the private list first: no refuse-class line
+and no context-class line. Its report went to the operator whole before
+it was answered and is in the ignored reviews lane.
+
+It made four points, and the pass accepts all four.
+
+1. A supported position was dropped without new evidence: the swing this
+   document records under what a stop protects. Nothing in a kit text
+   invited it.
+2. A cause was stated beyond its evidence: the closeout selection's line
+   given as the cause of the redundant complete runs. Corrected above
+   from the two decisions, and WO-284 changed for what they name.
+3. A check's exit status was read from the filter behind a pipe, and the
+   document gate was run a second time, three minutes, to recover output
+   that had been cut. From that point a check's whole output goes to a
+   file, its own status is recorded, and the file is read.
+4. The review table gave requested settings as what ran. Corrected in
+   the table.
+
+It also named three things to keep: the subject left unchanged while
+reviewers read it, a finding applied to the pass's own launcher, and
+figures marked by whether this pass checked them.
+
+```json
+{
+  "criticPoints": [
+    { "launch": 1, "point": 1, "class": "A supported position dropped on a suggestion", "disposition": "accepted", "cause": null },
+    { "launch": 1, "point": 2, "class": "A result, cause or fact claimed before it was checked", "disposition": "accepted", "cause": null },
+    { "launch": 1, "point": 3, "class": "A costly check nobody owed, or checks chosen or timed poorly", "disposition": "accepted", "cause": null },
+    { "launch": 1, "point": 4, "class": "A figure, time or setting that does not match what was observed", "disposition": "accepted", "cause": null }
+  ]
+}
+```
+
+The first class is new; the other three are classes of the record above,
+and each came back in this pass while its rule stood.
+
 ## Process cost
 
-- Model and effort: `claude-fable-5-2` at `max`, the operator's selection
-  for the session.
+- Model and effort: `claude-fable-5-2`, as the host names the model to
+  the session, at `max`, as `CLAUDE_EFFORT` reads in it.
 - Workers, of a cap of 20: @@WORKERS@@
 - Usage at the pass's handoff: @@USAGE@@
 

@@ -129,17 +129,24 @@ and a forced complete run there starts only with a reason the row keeps.
    835.6 s in this pass's reading of `npm run plan -- conditions`, which
    itself returned `unknown` for eight of its seventeen rows on its own
    55 s budget while four workers ran.
-8. The closeout selection prints `The complete launchpad run is owed` in
-   the briefing, after `worktree integrate` and at completion, whether or
-   not a passing complete row stands at the code identity: by its own
-   comment it "supplies no passing row" (`scripts/lib/closeout-scope.mjs`
-   13 to 14; 487 to 505). The runner reuses passing tasks at an identity
-   unless `--again` or `--fresh` is given (`scripts/test-runner.mjs` 2725;
-   2861 to 2868). In WO-277's repair and in WO-282's final review a session
-   gave `--again` after a change to documents alone, for 0 h 47 min and
-   0 h 51 min (WO-277-D018; WO-282-D024), and `npm run plan -- failures`
-   counts four gate rows at an identity already green in the last three
-   orders.
+8. A complete run was started twice after a change to documents alone,
+   for 0 h 47 min and 0 h 51 min, and `npm run plan -- failures` counts
+   four gate rows at an identity already green in the last three orders.
+   The runner reuses passing tasks at an identity unless `--again` or
+   `--fresh` is given (`scripts/test-runner.mjs` 2725; 2861 to 2868), and
+   each session gave `--again`. Each session's own record names what it
+   went by. In WO-277's repair the runner's schedule line named the
+   suites that read the changed pages as changed since the last gate row
+   while it reused their rows (`scripts/test-runner.mjs` 3037 to 3041;
+   WO-277-D018). In WO-282's final review two pending register rows
+   proposed the rerun and the reviewer took WO-277's choice for the
+   pattern (WO-282-D024). A third text says a run is owed and neither
+   record shows that it was read: the closeout selection prints
+   `The complete launchpad run is owed` in the briefing, after
+   `worktree integrate` and at completion, whether or not a passing
+   complete row stands at the code identity; by its own comment it
+   "supplies no passing row" (`scripts/lib/closeout-scope.mjs` 13 to 14;
+   487 to 505).
 9. The reviewer's and the executor's role steps say that report, control
    and generated-document changes keep the code identity and do not name
    an authored document; product 07 §Discipline has carried the whole rule
@@ -223,7 +230,11 @@ and a forced complete run there starts only with a reason the row keeps.
   without `--reason <text>` prints the standing row and what a fresh run
   costs, runs nothing and exits 0; with a reason it runs and the row keeps
   the reason. The measurement tools pass theirs. An instance's selections
-  reuse nothing and are not changed. Rejected: a line of output alone
+  reuse nothing and are not changed. Where a selection reuses a suite's
+  row and every changed source of that suite is a document outside the
+  code identity, the runner's schedule line stops calling the suite
+  changed since the last gate row and names it as reused at that
+  identity, which is what the runner then does. Rejected: a line of output alone
   (axis: what held; the reuse rule stood in the role text four times when
   a session gave `--again` twice).
 - The reviewer's step 5 and the executor's step 8 each gain one sentence
@@ -295,9 +306,10 @@ failure that run names.
    `scripts/test-runner.test.mjs`, that no file on the gate path passes a
    time limit that is not read from the table. Check: that case.
 7. `scripts/lib/closeout-scope.mjs` (`closeoutCommands`, `closeoutText`:
-   the satisfied form) and `scripts/test-runner.mjs` (`--reason`, and the
-   forced selection's answer at an identity already green);
-   `scripts/measure-gates.mjs` passes its reason. Check: a case in
+   the satisfied form) and `scripts/test-runner.mjs` (`--reason`, the
+   forced selection's answer at an identity already green, and the
+   schedule line's word for a suite whose changed sources are documents
+   alone); `scripts/measure-gates.mjs` passes its reason. Check: a case in
    `scripts/test-runner.test.mjs` that a forced review selection at a green
    identity runs no task and exits 0, and runs with a reason that its row
    keeps.
@@ -361,8 +373,10 @@ and editions.
 7. On a review selection at an identity that holds a passing complete row,
    `--again` without `--reason` prints that row, runs no task and exits 0,
    and with `--reason <text>` runs and records the text on its row; a
-   selection at an identity with no passing row is unchanged
-   (`npm test -- --only runner-fixtures`).
+   selection at an identity with no passing row is unchanged; and in a
+   selection that reuses its row, the schedule line names a suite whose
+   only changed sources are documents as reused at the code identity,
+   not as changed (`npm test -- --only runner-fixtures`).
 8. The emitted reviewer and executor roots carry the sentence that an edit
    to documents alone owes `npm run test:docs` and no complete run, and the
    seeded first order's item 4 keeps a present terms list, by cases that

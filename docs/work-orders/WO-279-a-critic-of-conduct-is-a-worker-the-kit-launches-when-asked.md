@@ -202,13 +202,19 @@ back and what allowed them.
    "nothing new" with a reopening condition that waits on this order, and
    ten of those thirteen have recurred since.
 9. The recurrences that cost most happened while a written rule existed,
-   because the kit said the opposite at the moment of choice: the closeout
-   selection printed a complete run as owed at an identity already green
-   (WO-284 changes it), and the order template asks a planner for a
-   per-step `npm test -- --only` check while the executor's role says a
-   focused run never precedes the complete run (WO-281-D019: sixteen suite
-   runs and 74 minutes of gate time). This order's own plan named such a
-   check beside every step.
+   and each session's record names a kit output, a pending record or an
+   order's own steps that said the opposite. The runner's schedule line
+   called the suites that read a changed page changed while it reused
+   their rows (WO-277-D018); two pending register rows proposed the rerun
+   and an earlier session's choice was taken for the pattern
+   (WO-282-D024); and the order's steps named a suite run beside each
+   step, as the order template asks of a planner, while the executor's
+   role says a focused run never precedes the complete run (WO-281-D019:
+   sixteen suite runs and 74 minutes of gate time). WO-284 changes the
+   schedule line, the role sentence and the closeout selection, which
+   also prints a complete run as owed at an identity already green and
+   which neither record shows was read. This order's own plan named a
+   suite run beside every step.
 10. The charter's subject is the executor alone (`charter.md` 1) and the
     cadence ends at the first passing complete run (this order's Design as
     filed), so no critic could see WO-282's final review, where the

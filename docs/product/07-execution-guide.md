@@ -2086,9 +2086,11 @@ captureDigest}` with an optional `class`, and the plan check reads that
 
    A class that came back while a rule for it stood is answered first by
    looking for what the kit itself said at the moment of choice: a
-   command's output, an order's form, a record's schema. The two costliest
-   recurrences of November had a written rule and a kit text that said the
-   opposite ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#the-critics-record)).
+   command's output, an order's form, a record's schema. In the two
+   costliest recurrences of November a written rule stood, and the
+   session's own record names a kit output, a pending register row or the
+   order's steps that said the opposite
+   ([the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#the-critics-record)).
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
