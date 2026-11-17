@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { dispatchBoundResult } from "./lib/dispatch-bound.mjs";
 import { formatDuration } from "./lib/duration.mjs";
-import { findLaunchpad } from "./lib/config.mjs";
+import { findLaunchpad, loadConfig } from "./lib/config.mjs";
+import { readFeatures } from "./lib/features.mjs";
 import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { unownedTemporaryRootSites } from "./lib/temporary-root-declarations.mjs";
@@ -120,6 +121,32 @@ export function judgeFileEventDaemon(
       };
 }
 
+/** An instance's configuration row: load the configuration that governs
+ * `root`, with the document roots, registrations and feature elections it
+ * declares, and report what the loader refuses. Every later check resolves
+ * its paths through this configuration, so one the loader refuses is named
+ * here, by the loader's own message, before any of them reads through it.
+ * An absent configuration is the default layout and passes. */
+export function checkConfiguration(root) {
+  try {
+    const config = loadConfig(root);
+    // The elections are read as well as declared: a feature the registry
+    // refuses is refused here.
+    readFeatures(root);
+    const count = (items, one, many) =>
+      `${items.length} ${items.length === 1 ? one : many}`;
+    return {
+      exitCode: 0,
+      output: `Configuration: ${config.present ? "dotln.config.json loads" : "no dotln.config.json; the default layout applies"}; ${count(Object.keys(config.roots), "document root", "document roots")}, ${count(Object.keys(config.repositories), "registered repository", "registered repositories")}, ${count(Object.keys(config.features), "declared feature election", "declared feature elections")}.`,
+    };
+  } catch (error) {
+    return {
+      exitCode: 1,
+      output: `Configuration refused: ${error.message}\nRepair what it names in this root's configuration and rerun this command.`,
+    };
+  }
+}
+
 export function checkDeclarations(root, table, closures) {
   const machinery = uncoveredMachinerySources(root, table);
   const fixtures = uncoveredFixtureInputs(root, closures);
@@ -161,10 +188,16 @@ if (isMainModule(import.meta.url)) {
       rest[0] === "--under-running-gate";
     if (
       (rest.length && !buildPhaseOnly && !recording && !underRunningGate) ||
-      !["declarations", "generated", "git-surface", "host"].includes(mode)
+      ![
+        "configuration",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+      ].includes(mode)
     )
       throw new Error(
-        "usage: structural-checks.mjs declarations|generated [--build-phase-only]|git-surface [--record]|host [--under-running-gate]",
+        "usage: structural-checks.mjs configuration|declarations|generated [--build-phase-only]|git-surface [--record]|host [--under-running-gate]",
       );
     let result;
     if (recording) {
@@ -176,6 +209,7 @@ if (isMainModule(import.meta.url)) {
         output: `Recorded scripts/lib/git-surface.json: ${added.length} added${added.length ? ` (${added.join(", ")})` : ""}; ${removed.length} removed${removed.length ? ` (${removed.join(", ")})` : ""}. Confirm each added form against the declared Git floor's manual before committing.${scopedElsewhere.length ? ` A scoped form is named outside the files its entry admits, and the check keeps failing there until a reviewer adds the file to the entry: ${scopedElsewhere.join(", ")}.` : ""}`,
       };
     } else if (mode === "git-surface") result = checkGitSurface(root);
+    else if (mode === "configuration") result = checkConfiguration(root);
     else if (mode === "declarations") {
       const { suites, expandSuiteTasks } = await import("./test-runner.mjs");
       result = checkDeclarations(

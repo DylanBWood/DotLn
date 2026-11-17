@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "about": "Time limits of this root's gate, in milliseconds. set: your own figure, null to turn that limit off, or \"kit\" to follow the kit's figure through releases. kit: the kit's figure when this file was last written; nothing reads it. scale multiplies every figure, and enforce false turns every limit off. npm run limits lists what applies; npm run limits -- --write adds a new release's keys and refreshes kit.",
+  "enforce": true,
+  "scale": 1,
+  "limits": {
+    "suite.format": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "suite.configuration": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "suite.configuration-root": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "suite.registrations": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "suite.declarations": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "suite.generated": {
+      "set": "kit",
+      "kit": 600000
+    },
+    "suite.git-surface": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "suite.host": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "suite.default": {
+      "set": "kit",
+      "kit": 2700000
+    },
+    "suite.stop-grace": {
+      "set": "kit",
+      "kit": 1000
+    },
+    "suite.finish-grace": {
+      "set": "kit",
+      "kit": 100
+    },
+    "suite.guard-record": {
+      "set": "kit",
+      "kit": 1000
+    },
+    "generated.check": {
+      "set": "kit",
+      "kit": 180000
+    },
+    "generated.runtime-build": {
+      "set": "kit",
+      "kit": 120000
+    },
+    "sync.format": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "sync.write": {
+      "set": "kit",
+      "kit": 300000
+    },
+    "license.dry-run": {
+      "set": "kit",
+      "kit": 240000
+    },
+    "index.preflight-suites": {
+      "set": "kit",
+      "kit": 120000
+    },
+    "evidence.npm-test": {
+      "set": "kit",
+      "kit": 3600000
+    },
+    "evidence.diff-check": {
+      "set": "kit",
+      "kit": 150000
+    },
+    "evidence.stop-wait": {
+      "set": "kit",
+      "kit": 20000
+    },
+    "evidence.record-lock": {
+      "set": "kit",
+      "kit": 30000
+    },
+    "evidence.owner-start": {
+      "set": "kit",
+      "kit": 1000
+    },
+    "probe.command": {
+      "set": "kit",
+      "kit": 900000
+    },
+    "probe.test-selection": {
+      "set": "kit",
+      "kit": 21600000
+    },
+    "host.temp-root": {
+      "set": "kit",
+      "kit": 2000
+    },
+    "host.census": {
+      "set": "kit",
+      "kit": 10000
+    },
+    "host.footprint-fallback": {
+      "set": "kit",
+      "kit": 20000
+    },
+    "host.pressure-reading": {
+      "set": "kit",
+      "kit": 10000
+    },
+    "host.descriptor-capture": {
+      "set": "kit",
+      "kit": 10000
+    },
+    "host.sdk-path": {
+      "set": "kit",
+      "kit": 60000
+    },
+    "host.helper-compile": {
+      "set": "kit",
+      "kit": 120000
+    },
+    "host.file-events-sample": {
+      "set": "kit",
+      "kit": 10000
+    },
+    "host.lane-reader": {
+      "set": "kit",
+      "kit": 10000
+    },
+    "host.git-version": {
+      "set": "kit",
+      "kit": 30000
+    },
+    "guard.startup": {
+      "set": "kit",
+      "kit": 5000
+    },
+    "guard.child-stop": {
+      "set": "kit",
+      "kit": 1000
+    },
+    "guard.runner-stop": {
+      "set": "kit",
+      "kit": 1000
+    }
+  }
+}

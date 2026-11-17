@@ -62,9 +62,30 @@ export const LEGACY_DOCS_MAPS = Object.freeze([
   // 7a9c290cd to 1763a2e28 (2026-11-08 to 2026-11-14), the last in code.
   "f7e227382649b6516b77e9921f858760f6aff9edc58f6a7cf457434018fca49d",
 ]);
+/** The file in which an instance sets the time limits of its gate, and the
+ * kit template the export writes it from: every key at the kit's figure. It
+ * follows the documentation map's rule. A starter that lacks it has it added
+ * with the other absent seeds, one that still holds an export's bytes is
+ * brought to the current template, so that the starter lists a release's new
+ * keys, and one its owner changed is kept with the reason and never refuses
+ * a refresh. */
+export const TIME_LIMITS_SEED = defaultDocRelative(
+  "control",
+  "time-limits.json",
+);
+export const TIME_LIMITS_TEMPLATE = "time-limits.template.json";
+// The seeds that follow that rule, each with its template.
+const FOLLOWING_SEEDS = [
+  [DOCS_MAP_SEED, DOCS_MAP_TEMPLATE],
+  [TIME_LIMITS_SEED, TIME_LIMITS_TEMPLATE],
+];
 // The seeds a refresh keeps, with the reason, where their owner changed
-// them: the two pages a person edits first.
-const KEPT_WHEN_CUSTOMIZED = new Set(["README.md", DOCS_MAP_SEED]);
+// them: the two pages a person edits first, and the owner's time limits.
+const KEPT_WHEN_CUSTOMIZED = new Set([
+  "README.md",
+  DOCS_MAP_SEED,
+  TIME_LIMITS_SEED,
+]);
 
 /** Every seed path the export writes, in its order: UPSTREAM.md's
  * `## Instance seeds` list and the starter refresh's absent-seed additions
@@ -104,6 +125,7 @@ export const exportSeedPaths = () => [
   defaultDocRelative("planning", "followups.json"),
   defaultDocRelative("control", "doc-baseline.json"),
   defaultDocRelative("control", "budgets.json"),
+  TIME_LIMITS_SEED,
   defaultDocRelative("lineage", "idea-ledger.md"),
   defaultDocRelative("lineage", "README.md"),
   "packages/skeleton/loadouts/grants.json",
@@ -259,7 +281,7 @@ export function planStarterSeeds({
 }) {
   const pending = [];
   const displayName = addedDisplayName ?? releaseName(checkout, remote);
-  for (const [path, name] of [...seeds, [DOCS_MAP_SEED, DOCS_MAP_TEMPLATE]]) {
+  for (const [path, name] of [...seeds, ...FOLLOWING_SEEDS]) {
     const template = `scripts/kit/${name}`;
     const incoming = blob(main, head, template);
     if (incoming === null)
@@ -269,8 +291,10 @@ export function planStarterSeeds({
     // not change a legacy default or overwrite its instance configuration.
     const bytes = namedStarterSeed(path, incoming, displayName);
     const mode = entryMode(checkout, remote, path);
-    // A starter that lacks the map has it added with the other absent seeds.
-    if (path === DOCS_MAP_SEED && mode === null) continue;
+    // A starter that lacks the map or the time limits has the file added
+    // with the other absent seeds.
+    if (FOLLOWING_SEEDS.some(([seed]) => seed === path) && mode === null)
+      continue;
     const regularFile = mode === "100644";
     if (!regularFile || !matches(path, current, bytes))
       pending.push({

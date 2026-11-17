@@ -11,7 +11,14 @@
 // main's merge adopted unchanged are main's change, already gated on main.
 //
 // The selection runs no gate, supplies no passing row and refuses nothing:
-// an input it cannot read keeps the complete run and says why.
+// an input it cannot read keeps the complete run and says why. Where a
+// passing complete review row already stands at the current code identity,
+// under the time limits in force, it says the complete run is satisfied by
+// that row and lists the document gate alone: a change to documents alone
+// moves no code identity, so the row a session already holds is the one its
+// completion consumes. A changed time limit is not such a change: a row
+// recorded under other figures stands for neither the selection nor the
+// completion.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -23,7 +30,12 @@ import {
 } from "./config.mjs";
 import { eventsForOrder, readControl } from "./control-store.mjs";
 import { runGit, runGitPathList } from "./git.mjs";
-import { criterionGateClaims, declaredCriteria } from "./handoff-ledger.mjs";
+import {
+  criterionGateClaims,
+  declaredCriteria,
+  standingReviewRow,
+} from "./handoff-ledger.mjs";
+import { formatDuration } from "./duration.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
 import {
   launchpadInvocation,
@@ -72,6 +84,28 @@ export async function closeoutRunnerFor(root, order) {
     : undefined;
 }
 
+/** The passing complete review row that stands at `root`'s current code
+ * identity under the time limits in force, as the final review's claim
+ * would consume it: when it was recorded, how long it took and its evidence
+ * reference. Undefined where none stands, where the review selection cannot
+ * be listed or where the gate index cannot be read, so every reader then
+ * lists the complete run as it did. A reader loads it before it selects, as
+ * it loads the runner. */
+export async function closeoutStandingFor(root) {
+  try {
+    const { row } = await standingReviewRow(root);
+    return row
+      ? {
+          recordedAt: row.recordedAt,
+          durationMs: row.durationMs,
+          evidenceRef: row.evidenceRef,
+        }
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 // Files a record root holds as documents. Any other file under a record root
 // is classified only inside the order's own record lanes.
 const DOCUMENT_FILE =
@@ -97,9 +131,12 @@ function classifier(root, workOrder, runner) {
   const roots = loadConfig(root).roots;
   const control = docRelative(root, "control");
   const evidence = docRelative(root, "evidence");
+  // The time limits are among them: a changed figure changes what a run's
+  // pass would be, so a row recorded before it no longer stands.
   const gateInputs = new Set([
     `${control}/budgets.json`,
     `${control}/outward-vocabulary.json`,
+    `${control}/time-limits.json`,
     `${evidence}/current.json`,
   ]);
   // Minted evidence editions, which docs/evidence/current.json selects and
@@ -288,17 +325,34 @@ const summary = (label, items) =>
  * selection and its commands (null when the registration cannot be read).
  * `launchpad` is "complete" once any reason owes that run, "document"
  * otherwise. `runner` is loadCloseoutRunner's result; `receipt` is an
- * integration receipt to read instead of the saved one. It never throws: an
- * unexpected failure is one more uncertain reason, so every reader keeps the
- * complete run on the same terms.
+ * integration receipt to read instead of the saved one; `standing` is
+ * closeoutStandingFor's result, and where the complete run is owed and that
+ * row stands, `satisfied` holds it. It never throws: an unexpected failure
+ * is one more uncertain reason, so every reader keeps the complete run on
+ * the same terms.
  */
-export function closeoutScope(root, order, { runner, receipt } = {}) {
+export function closeoutScope(root, order, { runner, receipt, standing } = {}) {
+  return selectScope(root, order, { runner, receipt, standing });
+}
+
+/** A selection with the row that satisfies its owed complete run, where
+ * `standing` is one: a reader that has the selection in hand reads the gate
+ * index only then, and computes the selection once. */
+export const closeoutSatisfiedBy = (scope, standing) =>
+  scope.launchpad === "complete" &&
+  typeof standing?.recordedAt === "string" &&
+  Number.isFinite(Date.parse(standing.recordedAt))
+    ? { ...scope, satisfied: standing }
+    : scope;
+
+function selectScope(root, order, { runner, receipt, standing } = {}) {
   const workOrder = typeof order === "string" ? order : order?.workOrderId;
   const scope = {
     workOrder,
     repositoryId: null,
     target: null,
     launchpad: "document",
+    satisfied: null,
     reasons: [],
   };
   // Each reason recorded here owes the complete run; the document-only
@@ -313,6 +367,8 @@ export function closeoutScope(root, order, { runner, receipt } = {}) {
   } catch (error) {
     uncertain(`the selection failed: ${error.message}`);
   }
+  // The row that already satisfies an owed complete run, where one stands.
+  scope.satisfied = closeoutSatisfiedBy(scope, standing).satisfied;
   // Written after the instance's own paths where the selection named any.
   if (scope.launchpad === "document")
     scope.reasons.push(
@@ -498,7 +554,8 @@ export function closeoutCommands(root, scope, { qualified = false } = {}) {
             : `node scripts/target-gate.mjs ${scope.workOrder}${scope.target.selection === "review" ? " --review" : ""}`,
         ]
       : []),
-    ...(scope.launchpad === "complete"
+    // A complete run that a standing row satisfies is not listed as owed.
+    ...(scope.launchpad === "complete" && !scope.satisfied
       ? [local ? runner("--review") : "npm test -- --review"]
       : []),
     local ? runner("--document") : "npm run test:docs",
@@ -506,7 +563,12 @@ export function closeoutCommands(root, scope, { qualified = false } = {}) {
 }
 
 const because = (scope) =>
-  `${scope.launchpad === "complete" ? "The complete launchpad run is owed" : "No complete launchpad run is owed"} because ${scope.reasons.join("; ")}.`;
+  scope.satisfied
+    ? // A launchpad order's completion consumes the row. A target order's
+      // claim rests on its target's gate, which stays listed above, so its
+      // sentence says only what remains of the launchpad's own checks.
+      `The complete launchpad run is satisfied: a passing complete review row stands at the current code identity, recorded ${scope.satisfied.recordedAt}${Number.isFinite(scope.satisfied.durationMs) ? ` (it took ${formatDuration(scope.satisfied.durationMs)})` : ""}${scope.target ? ". Of the launchpad's checks only the document gate is owed, beside the target's own gate" : ", and completion consumes it. Only the document gate is owed"}; an edit to documents alone owes no complete run. The run was owed because ${scope.reasons.join("; ")}.`
+    : `${scope.launchpad === "complete" ? "The complete launchpad run is owed" : "No complete launchpad run is owed"} because ${scope.reasons.join("; ")}.`;
 
 /** The headings the readers print the selection under. */
 export const closeoutHeadings = Object.freeze({
@@ -523,6 +585,8 @@ export const closeoutText = (root, scope, { heading, qualified } = {}) =>
     .join("\n")}\n${because(scope)}`;
 
 /** One line for a completion's recorded advisories: launchpad-relative
- * commands, so no machine path enters the committed control record. */
+ * commands, so no machine path enters the committed control record. Its
+ * callers pass a scope selected without a standing row, so the committed
+ * record never holds this checkout's local gate observations. */
 export const closeoutAdvisory = (root, scope) =>
   `Closeout selection for ${scope.workOrder}: ${closeoutCommands(root, scope).join("; ")}. ${because(scope)} Completion consumes only the rows its criteria name.`;

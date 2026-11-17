@@ -247,6 +247,8 @@ test("historical starter floors retain provenance through navigation migration",
     ["docs/control/budgets.json", "budgets.template.json"],
     // The documentation map, which a refresh plans beside the template seeds.
     ["docs/README.md", "docs-map.template.md"],
+    // The file of time limits, which follows the map's rule (WO-284).
+    ["docs/control/time-limits.json", "time-limits.template.json"],
   ];
   const legacy =
     "# Personal floor\n\nRead[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.\n";
@@ -672,6 +674,8 @@ test("WO-258 criterion 6: a refresh plans every absent export seed, removes a re
         "docs/README.md",
         "docs/lineage/README.md",
         "docs/intake/.gitkeep",
+        // The file of time limits, which an export before v1.3.0 did not seed.
+        "docs/control/time-limits.json",
         "AGENTS.md",
       ].includes(path),
   );
@@ -697,12 +701,14 @@ test("WO-258 criterion 6: a refresh plans every absent export seed, removes a re
     remote: "HEAD",
     exportSeeds: exportSeedPaths(),
   });
-  // The documentation map among them (WO-281): it has a template and is
-  // still added where a starter lacks it, since it is no template seed.
+  // The documentation map among them (WO-281), and the file of time limits:
+  // each has a template and is still added where a starter lacks it, since
+  // neither is a template seed.
   assert.deepEqual(planned.added, [
     "dotln.config.json",
     "docs/README.md",
     "docs/intake/.gitkeep",
+    "docs/control/time-limits.json",
     "docs/lineage/README.md",
     "AGENTS.md",
   ]);

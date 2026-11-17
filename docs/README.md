@@ -50,6 +50,8 @@ docs/control/       legacy resume log, per-order segments, generated overview,
                     and the separate plan-refutations.jsonl override log;
                     entropy-reducer.jsonl — the Entropy Reducer review log;
                     budgets.json — caps, cold-start ceilings and acceptances;
+                    time-limits.json — a root's own time limits for its gate;
+                    absent here, so the kit's figures apply (npm run limits);
                     documents.json — the reader entry points and the kinds
                     their paths do not say; document-moves.json — where moved
                     documents went; doc-baseline.json — the document gate's

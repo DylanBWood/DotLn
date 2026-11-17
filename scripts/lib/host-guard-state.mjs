@@ -6,7 +6,9 @@ import {
   atomicJson,
   delay,
   ensureHostRoot,
+  hostLimitsRoot,
   hostStateRoot,
+  hostTimeLimit,
   memoryBudgets,
   recordedHostLaneCapacity,
   processAlive,
@@ -15,6 +17,7 @@ import {
   registerProcess,
   withHostLock,
 } from "./host-resources.mjs";
+import { timeLimitMiss } from "../../packages/skeleton/src/time-limits.mjs";
 
 export function agentAncestor(table, pid = process.pid, env = process.env) {
   const byPid = new Map(table.map((row) => [row.pid, row]));
@@ -35,7 +38,12 @@ export function agentAncestor(table, pid = process.pid, env = process.env) {
   );
 }
 
-export async function ensureHostGuard(directory = hostStateRoot()) {
+/** `limitsRoot` is the root whose file sets the wait for the guard's start
+ * and the pause before an unneeded guard process is killed. */
+export async function ensureHostGuard(
+  directory = hostStateRoot(),
+  { limitsRoot = hostLimitsRoot() } = {},
+) {
   ensureHostRoot(directory);
   return withHostLock(directory, "guard-start", async () => {
     const file = join(directory, "guard.json");
@@ -76,7 +84,10 @@ export async function ensureHostGuard(directory = hostStateRoot()) {
     }
     let adopted = false;
     try {
-      const deadline = Date.now() + 5000;
+      // Null is a limit the root turned off: the wait then ends only when
+      // the guard is observed or its process exits.
+      const startupMs = hostTimeLimit("guard.startup", limitsRoot);
+      const deadline = startupMs === null ? Infinity : Date.now() + startupMs;
       while (Date.now() < deadline) {
         const record = live();
         if (record) {
@@ -90,14 +101,17 @@ export async function ensureHostGuard(directory = hostStateRoot()) {
         await delay(50);
       }
       throw new Error(
-        "Host guard startup observation unavailable; inspect its private guard.log",
+        `Host guard startup observation unavailable; inspect its private guard.log. ${timeLimitMiss(limitsRoot, "guard.startup", startupMs)}`,
       );
     } finally {
       // A restored owner can win observation while our child waits on its
       // lock. Retire that child on reuse or failure, before releasing startup.
       if (!adopted && child.exitCode === null && child.signalCode === null) {
         await new Promise((done) => {
-          const timer = setTimeout(() => child.kill("SIGKILL"), 1000);
+          const timer = setTimeout(
+            () => child.kill("SIGKILL"),
+            hostTimeLimit("guard.child-stop", limitsRoot),
+          );
           child.once("exit", () => {
             clearTimeout(timer);
             done();

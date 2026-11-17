@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-282
+## WO-284
 
-- Work order: WO-282
-- Work-order path: docs/work-orders/WO-282-an-update-leaves-nothing-to-repair-by-hand.md
+- Work order: WO-284
+- Work-order path: docs/work-orders/WO-284-an-instance-sets-every-time-limit-of-its-gate.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-282/VER-001.md
+- Latest verification: VER-002
+- Verification path: docs/verifications/WO-284/VER-002.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-282/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.325; model claude-fable-5-2; effort max; source claude-session-readback; account not-applicable
-- Effort drift: none
-- Latest recordedAt: 2026-11-16T15:46:48.021Z
-- Elapsed implementation: 3 h 19 min
-- Elapsed verification: 0 h 29 min
-- Elapsed finalReview: 1 h 27 min
-- Latest checkpoint: c316128d499369866db6dd646212f3c6a493a599 (restore: `git checkout refs/dotln/checkpoint/WO-282/6 -- .`)
+- Final-review path: docs/final-reviews/WO-284/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.326; model claude-fable-5-2; effort xhigh; source claude-session-readback; account not-applicable
+- Effort drift: xhigh -> max
+- Latest recordedAt: 2026-11-17T13:56:20.697Z
+- Elapsed implementation: 6 h 6 min
+- Elapsed verification: 0 h 24 min
+- Elapsed repair: 2 h 14 min
+- Elapsed finalReview: 0 h 22 min
+- Latest checkpoint: 9c31c3d155d3c11290d390330b5e95bd0592da1d (restore: `git checkout refs/dotln/checkpoint/WO-284/10 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record, retract
 

@@ -248,7 +248,9 @@ identity; source changes require a complete run at the new identity.
 and composes the latest passing task results at the unchanged code identity,
 with their source rows retained. `--again` forces every task fresh, and a run
 that judges one Node line uses it, because reuse compares code identity and
-never the runtime that ran a task. Formatting
+never the runtime that ran a task. Where a passing complete row already
+stands at the code identity, `--again` prints that row and runs nothing
+unless `--reason <why>` says why; the row keeps the reason. Formatting
 runs freshly before the build and other tasks, including when product results
 can be reused.
 `npm run test:machinery` runs that inventory on demand; document-sensitive checks

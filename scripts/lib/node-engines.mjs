@@ -2,6 +2,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { TOOL_ROOT } from "./config.mjs";
 import { spawnGit } from "./git.mjs";
+import {
+  endedForTime,
+  timeLimit,
+  timeLimitMiss,
+} from "../../packages/skeleton/src/time-limits.mjs";
 
 // The grammar the kit declares: `^major.minor.patch` alternatives joined by
 // `||`. A caret at major 1 or above admits that major from the named floor.
@@ -107,18 +112,38 @@ export function declaredGitFloor(root) {
   }
 }
 
-/** The first line `git --version` prints, or null when Git cannot be run. */
-export function readGitVersion() {
+/** The read of the running Git's version: the first line `git --version`
+ * prints, or null when Git cannot be run, and, where the read was ended at
+ * its time limit, the text that names that limit. `root` is the root whose
+ * file sets the limit.
+ * @returns {{version: string|null, miss?: string}} */
+export function readGitVersionOutcome(root = TOOL_ROOT) {
+  const limit = timeLimit(root, "host.git-version");
   const result = spawnGit(["--version"], {
     encoding: "utf8",
-    timeout: 10_000,
+    // Null is a limit the root turned off.
+    timeout: limit ?? undefined,
   });
-  return result.status === 0 ? result.stdout.split("\n")[0].trim() : null;
+  if (endedForTime(result))
+    return {
+      version: null,
+      miss: timeLimitMiss(root, "host.git-version", limit),
+    };
+  return {
+    version: result.status === 0 ? result.stdout.split("\n")[0].trim() : null,
+  };
 }
 
+/** The first line `git --version` prints, or null when Git cannot be run or
+ * the read was ended for time. */
+export const readGitVersion = (root = TOOL_ROOT) =>
+  readGitVersionOutcome(root).version;
+
 /** Judges `git --version`'s output against the declared floor. `message`
- * names the floor and the version read, so the refusal says what to change. */
-export function judgeGitRuntime(version, floor) {
+ * names the floor and the version read, so the refusal says what to change.
+ * `miss` is the text of a read that was ended at its time limit: the refusal
+ * then names that limit and does not send the reader to PATH. */
+export function judgeGitRuntime(version, floor, { miss } = {}) {
   if (floor === undefined)
     return {
       admitted: true,
@@ -138,6 +163,11 @@ export function judgeGitRuntime(version, floor) {
     };
   const running =
     typeof version === "string" ? GIT_VERSION.exec(version) : null;
+  if (!running && version === null && miss)
+    return {
+      admitted: false,
+      message: `Git's version could not be read: git --version was ended for time before it printed anything, so Git cannot be judged against package.json engines.git ${floor}. ${miss} ${unaffected}`,
+    };
   if (!running)
     return {
       admitted: false,
@@ -162,6 +192,13 @@ export function judgeGitRuntime(version, floor) {
 }
 
 /** The Git on PATH judged against the checkout whose scripts are running. One
- * `git --version` spawn per call. */
-export const judgeRunningGit = (root = TOOL_ROOT, version = readGitVersion()) =>
-  judgeGitRuntime(version, declaredGitFloor(root));
+ * `git --version` spawn per call. `read` is a version line, null, or the
+ * outcome readGitVersionOutcome returns, whose `miss` the judgment keeps. */
+export const judgeRunningGit = (
+  root = TOOL_ROOT,
+  read = readGitVersionOutcome(root),
+) => {
+  const outcome =
+    typeof read === "object" && read !== null ? read : { version: read };
+  return judgeGitRuntime(outcome.version, declaredGitFloor(root), outcome);
+};

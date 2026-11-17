@@ -1,0 +1,76 @@
+[
+  {
+    "exitCode": 0,
+    "durationMs": 13199,
+    "startedAt": "2026-11-17T04:49:00.714Z",
+    "finishedAt": "2026-11-17T04:49:13.913Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-284' scripts/test-runner.test.mjs"
+  },
+  {
+    "exitCode": 0,
+    "durationMs": 8659,
+    "startedAt": "2026-11-17T04:49:34.375Z",
+    "finishedAt": "2026-11-17T04:49:43.034Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-284 criterion 6' scripts/test-worktree-integration.mjs"
+  },
+  {
+    "exitCode": 0,
+    "durationMs": 654,
+    "startedAt": "2026-11-17T04:53:48.376Z",
+    "finishedAt": "2026-11-17T04:53:49.030Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'time limits resolve|npm run limits lists every key' scripts/test-configuration-root.mjs"
+  },
+  {
+    "exitCode": 0,
+    "durationMs": 1962,
+    "startedAt": "2026-11-17T04:54:05.265Z",
+    "finishedAt": "2026-11-17T04:54:07.227Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-284 criterion 2' scripts/test-sync.mjs"
+  },
+  {
+    "exitCode": 0,
+    "durationMs": 312,
+    "startedAt": "2026-11-17T04:54:07.464Z",
+    "finishedAt": "2026-11-17T04:54:07.776Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-284 criterion 8' scripts/test-harness.mjs"
+  },
+  {
+    "exitCode": 0,
+    "durationMs": 2980,
+    "startedAt": "2026-11-17T04:54:08.006Z",
+    "finishedAt": "2026-11-17T04:54:10.986Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node scripts/feedback-evidence.mjs --check"
+  },
+  {
+    "exitCode": 0,
+    "durationMs": 11324,
+    "startedAt": "2026-11-17T04:50:22.530Z",
+    "finishedAt": "2026-11-17T04:50:33.854Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- npm run format:check"
+  },
+  {
+    "exitCode": 0,
+    "durationMs": 124,
+    "startedAt": "2026-11-17T04:54:51.567Z",
+    "finishedAt": "2026-11-17T04:54:51.691Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node docs/evidence/WO-284/verification-001-instance-selection.mjs",
+    "invocationNote": "Originally run from session scratch; the retained source differs only by formatting."
+  },
+  {
+    "exitCode": 1,
+    "durationMs": 3755,
+    "startedAt": "2026-11-17T04:53:30.013Z",
+    "finishedAt": "2026-11-17T04:53:33.768Z",
+    "droppedOutputBytes": 0,
+    "reproductionCommand": "node scripts/harness.mjs bounded -- node docs/evidence/WO-284/verification-001-probe.mjs",
+    "invocationNote": "An optional session scratch output directory argument is omitted from this reproduction command."
+  }
+]

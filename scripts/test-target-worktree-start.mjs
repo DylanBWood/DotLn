@@ -2276,6 +2276,19 @@ test("closeout checks follow the repositories a target order changed, and its br
     );
     rmSync(join(f.orderRoot, "scripts/lib/fixture-local.mjs"));
 
+    // The time limits, in the configured control root, are a record the
+    // gates read, as the budgets are: a changed figure changes what the
+    // complete run's pass would be, so the run is owed and the change is not
+    // one to documents alone (WO-284).
+    write(f.orderRoot, "records/state/time-limits.json", '{ "scale": 2 }\n');
+    selected = readers();
+    assert.deepEqual(selected.checks, withComplete);
+    assert.match(
+      selected.reason,
+      /because launchpad machinery changed \(records\/state\/time-limits\.json\)\.$/u,
+    );
+    rmSync(join(f.orderRoot, "records/state/time-limits.json"));
+
     // A change that lies only under the reserved root is the instance's
     // own: it owes no kit suite, and the selection says why (WO-276
     // criterion K6). Beside a machinery edit the run is owed as before.

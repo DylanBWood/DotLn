@@ -15,10 +15,15 @@ import {
 import { join } from "node:path";
 import { availableParallelism, totalmem } from "node:os";
 import { performance } from "node:perf_hooks";
-import { docPath } from "./config.mjs";
+import { TOOL_ROOT, docPath, findLaunchpad } from "./config.mjs";
 import { checksPath } from "./gate-evidence.mjs";
 import { dirname } from "node:path";
 import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  endedForTime,
+  timeLimit,
+  timeLimitMiss,
+} from "../../packages/skeleton/src/time-limits.mjs";
 
 export function hostLaneCapacity(parallelism = availableParallelism()) {
   if (!Number.isSafeInteger(parallelism) || parallelism < 1)
@@ -137,15 +142,53 @@ export function observeSwapGrowth(state, swapBytes, footprint = false) {
   return due;
 }
 
+// The host's own steps (its census, its helpers' compile, its guard) serve
+// every checkout on the host and take no repository. Their time limits are
+// rows of the table, as the launchpad these scripts serve sets them.
+let limitsRoot;
+export function hostLimitsRoot() {
+  if (limitsRoot === undefined) {
+    try {
+      limitsRoot = findLaunchpad();
+    } catch {
+      limitsRoot = TOOL_ROOT;
+    }
+  }
+  return limitsRoot;
+}
+/** The figure of the host-level limit `key` names, in milliseconds, or null
+ * where the root turned it off. */
+export const hostTimeLimit = (key, root = hostLimitsRoot()) =>
+  timeLimit(root, key);
+/** Run one host step under its limit: `run` receives the child's timeout,
+ * which is undefined for a limit turned off. A step ended for time throws
+ * its own error with the key, the figure, the file and the listing command
+ * added to its message and kept as `timeLimitMiss`, so a caller that writes
+ * its own message can lead with what ended the step. */
+export function underHostLimit(key, run, root = hostLimitsRoot()) {
+  const limit = hostTimeLimit(key, root);
+  try {
+    return run(limit ?? undefined);
+  } catch (error) {
+    if (endedForTime(error)) {
+      error.timeLimitMiss = timeLimitMiss(root, key, limit);
+      error.message = `${error.message}. ${error.timeLimitMiss}`;
+    }
+    throw error;
+  }
+}
+
 // TMPDIR is deliberately ignored: test roots, clones and exported instances
 // must rendezvous on the same host. This is within the system-temp role grant.
 export function hostStateRoot() {
   const base =
     process.platform === "darwin"
-      ? execFileSync("/usr/bin/getconf", ["DARWIN_USER_TEMP_DIR"], {
-          encoding: "utf8",
-          timeout: 2000,
-        }).trim()
+      ? underHostLimit("host.temp-root", (timeout) =>
+          execFileSync("/usr/bin/getconf", ["DARWIN_USER_TEMP_DIR"], {
+            encoding: "utf8",
+            timeout,
+          }),
+        ).trim()
       : "/tmp";
   if (!base.startsWith("/")) throw new Error("Host temporary root unavailable");
   return join(base, `dotln-host-v1-${process.getuid?.() ?? "user"}`);
@@ -231,6 +274,13 @@ export function compilerFailure(compiler, error, platform = process.platform) {
     .filter(Boolean)
     .join(" | ")
     .slice(0, 2000);
+  // A compiler that was ended at its time limit is not a compiler that
+  // cannot run: the message leads with the limit and gives no install remedy.
+  if (error?.timeLimitMiss)
+    return new Error(
+      `The native compiler ${compiler} was ended for time before it finished; nothing says it cannot run. ${error.timeLimitMiss} DotLn compiles two small C helpers once per host, the lock every gate task starts through and the memory reader beside it, and a suite's first task needs the first.`,
+      { cause: error },
+    );
   return new Error(
     `The native compiler ${compiler} ${error?.code === "ENOENT" ? "was not found" : "could not be run"}. DotLn compiles two small C helpers once per host, the lock every gate task starts through and the memory reader beside it, and a suite's first task needs the first; ${compilerRemedy(platform)}. The tool's own message: ${said || "none"}`,
     { cause: error },
@@ -248,10 +298,12 @@ export function nativeCompiler({
   const tools = "/Library/Developer/CommandLineTools/usr/bin/clang";
   let sdk;
   try {
-    sdk = run("/usr/bin/xcrun", ["--show-sdk-path"], {
-      encoding: "utf8",
-      timeout: 5000,
-    }).trim();
+    sdk = underHostLimit("host.sdk-path", (timeout) =>
+      run("/usr/bin/xcrun", ["--show-sdk-path"], {
+        encoding: "utf8",
+        timeout,
+      }),
+    ).trim();
   } catch (error) {
     throw compilerFailure("/usr/bin/xcrun", error, platform);
   }
@@ -282,14 +334,16 @@ function nativeBinary(directory, name, tools) {
     try {
       const { compiler, args } = (tools?.compiler ?? nativeCompiler)();
       try {
-        (tools?.run ?? execFileSync)(
-          compiler,
-          [...args, "-O2", "-std=c11", source, "-o", prepared],
-          {
-            timeout: 30_000,
-            maxBuffer: 65536,
-            stdio: ["ignore", "pipe", "pipe"],
-          },
+        underHostLimit("host.helper-compile", (timeout) =>
+          (tools?.run ?? execFileSync)(
+            compiler,
+            [...args, "-O2", "-std=c11", source, "-o", prepared],
+            {
+              timeout,
+              maxBuffer: 65536,
+              stdio: ["ignore", "pipe", "pipe"],
+            },
+          ),
         );
       } catch (error) {
         throw compilerFailure(compiler, error);
@@ -307,14 +361,16 @@ export const taskLauncher = (directory, tools) =>
 
 function macTopFootprint(sample) {
   const processes = sample.processes;
-  const top = execFileSync(
-    "/usr/bin/top",
-    ["-l", "1", "-s", "0", "-stats", "pid,ppid,mem"],
-    {
-      encoding: "utf8",
-      timeout: 5000,
-      maxBuffer: 4 * 1024 * 1024,
-    },
+  const top = underHostLimit("host.footprint-fallback", (timeout) =>
+    execFileSync(
+      "/usr/bin/top",
+      ["-l", "1", "-s", "0", "-stats", "pid,ppid,mem"],
+      {
+        encoding: "utf8",
+        timeout,
+        maxBuffer: 4 * 1024 * 1024,
+      },
+    ),
   );
   const byPid = new Map(processes.map((row) => [row.pid, row]));
   for (const line of top.split("\n")) {
@@ -329,10 +385,12 @@ function macTopFootprint(sample) {
     swapBytes = -1;
   for (const key of ["kern.memorystatus_vm_pressure_level", "vm.swapusage"]) {
     try {
-      const value = execFileSync("/usr/sbin/sysctl", ["-n", key], {
-        encoding: "utf8",
-        timeout: 2000,
-      });
+      const value = underHostLimit("host.pressure-reading", (timeout) =>
+        execFileSync("/usr/sbin/sysctl", ["-n", key], {
+          encoding: "utf8",
+          timeout,
+        }),
+      );
       if (key === "vm.swapusage")
         swapBytes = Number(value.match(/used\s*=\s*([\d.]+)M/)?.[1]) * 2 ** 20;
       else pressure = Number(value.trim());
@@ -450,10 +508,13 @@ export function holdTaskDescriptors(pid, directory) {
   };
   if (process.platform !== "darwin") return { descriptors: [], release };
   try {
-    const descriptors = execFileSync(
-      nativeBinary(directory, "host-footprint"),
-      ["--capture", String(pid), String(process.pid)],
-      { encoding: "utf8", timeout: 2000, maxBuffer: 4096 },
+    const reader = nativeBinary(directory, "host-footprint");
+    const descriptors = underHostLimit("host.descriptor-capture", (timeout) =>
+      execFileSync(reader, ["--capture", String(pid), String(process.pid)], {
+        encoding: "utf8",
+        timeout,
+        maxBuffer: 4096,
+      }),
     )
       .trim()
       .split("\n")
@@ -482,22 +543,25 @@ export function readHostSnapshot({
     const binary = nativeBinary(directory, "host-footprint");
     const census = (full) =>
       parseNativeSnapshot(
-        execFileSync(
-          binary,
-          [
-            ...(full ? [] : ["--light"]),
-            ...descriptorOwners.flatMap(({ key, descriptors, birth = "0.0" }) =>
-              descriptors.map(
-                ({ pid, birth: supervisorBirth, fd, handle }) =>
-                  `${key}:${pid}:${supervisorBirth}:${fd}:${handle}:${birth}`,
+        underHostLimit("host.census", (timeout) =>
+          execFileSync(
+            binary,
+            [
+              ...(full ? [] : ["--light"]),
+              ...descriptorOwners.flatMap(
+                ({ key, descriptors, birth = "0.0" }) =>
+                  descriptors.map(
+                    ({ pid, birth: supervisorBirth, fd, handle }) =>
+                      `${key}:${pid}:${supervisorBirth}:${fd}:${handle}:${birth}`,
+                  ),
               ),
-            ),
-          ],
-          {
-            encoding: "utf8",
-            timeout: 2000,
-            maxBuffer: 4 * 1024 * 1024,
-          },
+            ],
+            {
+              encoding: "utf8",
+              timeout,
+              maxBuffer: 4 * 1024 * 1024,
+            },
+          ),
         ),
       );
     // Ownership always comes from the same kernel identity reader. A ps
@@ -557,11 +621,13 @@ export function sampleFileEventDaemon({
     // The daemon belongs to the system user; the memory guard's per-user
     // process census cannot supply this independent sample. On macOS the
     // command must be last: ps truncates it when another column follows.
-    const output = execFile("ps", ["-A", "-o", "rss=,comm="], {
-      encoding: "utf8",
-      timeout: 3000,
-      maxBuffer: 4 * 1024 * 1024,
-    });
+    const output = underHostLimit("host.file-events-sample", (timeout) =>
+      execFile("ps", ["-A", "-o", "rss=,comm="], {
+        encoding: "utf8",
+        timeout,
+        maxBuffer: 4 * 1024 * 1024,
+      }),
+    );
     const rows = output.split("\n").flatMap((line) => {
       const match = /^\s*(\d+)\s+(?:.*\/)?fseventsd\s*$/.exec(line);
       return match ? [Number(match[1]) * 1024] : [];

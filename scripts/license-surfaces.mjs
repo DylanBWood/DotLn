@@ -21,6 +21,11 @@ import { dirname, join } from "node:path";
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
 import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  endedForTime,
+  timeLimit,
+  timeLimitMiss,
+} from "../packages/skeleton/src/time-limits.mjs";
 
 // docs/LEGAL.md, Decision — 2026-09-06. Changing the decision requires review.
 export const licenseHashes = {
@@ -95,7 +100,8 @@ const workspacePaths = (root, revision) => {
     .sort();
 };
 
-const dryRunRules = (manifests) => {
+// `launchpad` is the root whose file sets each dry run's time limit.
+const dryRunRules = (launchpad, manifests) => {
   // Only validated manifests enter this scratch snapshot. The exact
   // prepublishOnly command refuses before other lifecycle scripts can run.
   // No source files, .npmrc, or ambient credentials enter it.
@@ -110,6 +116,7 @@ const dryRunRules = (manifests) => {
     const globalConfig = join(scratch, "global.npmrc");
     writeFileSync(userConfig, "");
     writeFileSync(globalConfig, "");
+    const dryRunMs = timeLimit(launchpad, "license.dry-run");
     return manifests.map(({ path }) => {
       const result = spawnSync(
         "npm",
@@ -129,7 +136,8 @@ const dryRunRules = (manifests) => {
           cwd: dirname(join(root, path)),
           env: { PATH: process.env.PATH, npm_config_update_notifier: "false" },
           encoding: "utf8",
-          timeout: 30_000,
+          // Null is a limit the root turned off.
+          timeout: dryRunMs ?? undefined,
           maxBuffer: 1024 * 1024,
         },
       );
@@ -139,7 +147,10 @@ const dryRunRules = (manifests) => {
         .split(/\r?\n/)
         .includes(publishRefusal);
       const observed = result.error
-        ? `npm execution failed (${result.error.code ?? "unknown"})`
+        ? endedForTime(result)
+          ? // Ended for time: the dry run was not judged.
+            `npm was ended for time. ${timeLimitMiss(launchpad, "license.dry-run", dryRunMs)}`
+          : `npm execution failed (${result.error.code ?? "unknown"})`
         : `exit ${result.status ?? result.signal}; ${refused ? "DOTLN_PACKAGE_PUBLISH_REFUSED" : "no publication refusal marker"}`;
       return rule(
         `${path} npm publish --dry-run`,
@@ -275,7 +286,7 @@ export const licenseSurfaceRules = (root, revision) => {
       ),
     );
   }
-  if (manifestsValid) rules.push(...dryRunRules(manifests));
+  if (manifestsValid) rules.push(...dryRunRules(root, manifests));
   else
     rules.push(
       rule(

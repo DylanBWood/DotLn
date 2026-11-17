@@ -62,6 +62,11 @@ import {
   parseMarkdown,
 } from "./lib/markdown-links.mjs";
 import { suites, STRUCTURAL_TASKS } from "./test-runner.mjs";
+import {
+  TIME_LIMITS,
+  renderTimeLimits,
+  suiteTimeLimitKey,
+} from "../packages/skeleton/src/time-limits.mjs";
 
 import {
   repository,
@@ -632,6 +637,7 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "docs/control/README.md",
     "docs/control/budgets.json",
     "docs/control/doc-baseline.json",
+    "docs/control/time-limits.json",
     "docs/decisions/README.md",
     "docs/discovery/README.md",
     "docs/evidence/README.md",
@@ -1130,7 +1136,130 @@ test("the exported instance checks runtime, coordination records and explicit di
   assert.ok(binMode & 0o111);
   chmodSync(bin, 0o700);
   assert.deepEqual(runtimeState(), cleanRuntime);
+  // The instance's configuration row loads the instance's own configuration:
+  // it passes on the seeded one and names what the loader refuses in one the
+  // owner broke, where the kit's tests of the loader would still pass.
+  const configuration = () =>
+    run(process.execPath, ["scripts/structural-checks.mjs", "configuration"], {
+      cwd: destination,
+    });
+  assert.match(
+    ok(configuration(), "the instance's configuration row").stdout,
+    /^Configuration: dotln\.config\.json loads; /u,
+  );
+  const seededConfiguration = readFileSync(
+    join(destination, "dotln.config.json"),
+    "utf8",
+  );
+  try {
+    writeFileSync(
+      join(destination, "dotln.config.json"),
+      JSON.stringify({ version: 1, roots: { control: 7 } }),
+    );
+    const refused = configuration();
+    assert.equal(refused.status, 1, refused.stdout);
+    assert.match(refused.stdout, /^Configuration refused: .*roots\.control/mu);
+  } finally {
+    writeFileSync(join(destination, "dotln.config.json"), seededConfiguration);
+  }
+  // The kit's own configuration tests are no part of an instance's
+  // selections; named, they run after the instance's structural phase.
+  const namedSuite = ok(
+    run(
+      process.execPath,
+      [
+        "scripts/test-runner.mjs",
+        "--only",
+        "configuration-root",
+        "--list",
+        "--selected",
+      ],
+      { cwd: destination },
+    ),
+    "the kit's configuration tests, by name",
+  )
+    .stdout.split("\n")
+    .filter((line) => line.includes(" — protects:"))
+    .map((line) => line.split(" — ")[0]);
+  assert.deepEqual(namedSuite, [
+    ...STRUCTURAL_TASKS,
+    "kit-verify",
+    "configuration-root",
+  ]);
+  // And named, they run and pass there: the kit's tests of its loader and of
+  // the time-limit table, the template and the listing command among them.
+  const namedRun = ok(
+    run(
+      process.execPath,
+      ["scripts/test-runner.mjs", "--only", "configuration-root"],
+      { cwd: destination },
+    ),
+    "the kit's configuration tests run by name in the instance",
+  );
+  assert.match(namedRun.stdout, /^PASS configuration-root /mu);
+  // Room for a slower machine is checked here and not asserted: the three
+  // selections below run at one third of every time limit, so a release
+  // whose instance gate needs more than a third of a figure on core's host
+  // fails this case before it ships. The seed holds every key at the kit's
+  // figure; the instance's owner would set scale the same way.
+  const limitsPath = join(destination, "docs/control/time-limits.json");
+  const seededLimits = readFileSync(limitsPath, "utf8");
+  assert.equal(seededLimits, renderTimeLimits());
+  const setLimits = (change) => {
+    const body = JSON.parse(seededLimits);
+    change(body);
+    writeFileSync(limitsPath, `${JSON.stringify(body, null, 2)}\n`);
+  };
+  // Each task's own result, not the selection's exit alone: a task that was
+  // ended for time, that did not run or pass, or that ran as long as the
+  // figure that applied to it, is outside its limit.
+  const outsideLimits = (row) =>
+    row.taskTimeline.flatMap((task) =>
+      task.failureKind === "timeout"
+        ? [`${task.name} was ended for time at ${task.timeoutMs} ms`]
+        : task.executed !== true || task.exitCode !== 0
+          ? [`${task.name} did not pass`]
+          : !(task.durationMs < task.timeoutMs)
+            ? [`${task.name} took ${task.durationMs} ms of ${task.timeoutMs}`]
+            : [],
+    );
+  // The arm that shows the judgment failing: with one row's figure below
+  // what the row takes, the selection fails and the judgment names the row.
+  setLimits((body) => {
+    body.scale = 1 / 3;
+    body.limits["suite.format"].set = 1;
+  });
+  const outlivedStarted = performance.now();
+  const outlived = run(
+    process.execPath,
+    ["scripts/harness.mjs", "bounded", "--", "npm", "test"],
+    { cwd: destination },
+  );
+  const outlivedWallMs = Math.round(performance.now() - outlivedStarted);
+  assert.notEqual(outlived.status, 0, outlived.stdout);
+  assert.match(
+    outlived.stdout,
+    /Time limit suite\.format reached: 1 ms\. docs\/control\/time-limits\.json raises it, scales every limit or turns them off; npm run limits lists every key\./u,
+  );
+  assert.match(
+    outlived.stdout,
+    /Required format structural preflight was ended for time before it finished/u,
+  );
+  assert.deepEqual(
+    outsideLimits(
+      readGateChecks(destination)
+        .filter((row) => row.checkId !== "structural")
+        .at(-1),
+    ).filter((failure) => failure.startsWith("format ")),
+    ["format was ended for time at 1 ms"],
+  );
+  setLimits((body) => {
+    body.scale = 1 / 3;
+  });
   const observed = [];
+  // What each selection's tasks took beside the reduced figure they ran
+  // under, printed for the order's evidence.
+  const limited = [];
   const ran = new Set();
   for (const { command, args } of selections) {
     const list = ok(
@@ -1149,6 +1278,9 @@ test("the exported instance checks runtime, coordination records and explicit di
       .filter((line) => line.includes(" — protects:"))
       .map((line) => line.split(" — ")[0]);
     assert.deepEqual(names.slice(0, 6), STRUCTURAL_TASKS);
+    // The instance's own configuration row, never the kit's tests of it.
+    assert.ok(names.includes("configuration"));
+    assert.ok(!names.includes("configuration-root"));
     assert.ok(!names.includes("build"));
     // The recorded Git surface check is core's, as every core-only row is.
     assert.ok(!names.includes("git-surface"));
@@ -1199,6 +1331,27 @@ test("the exported instance checks runtime, coordination records and explicit di
       [...names].sort(),
     );
     for (const suite of row.cases) ran.add(suite.name);
+    // Every task ran under a third of its kit figure and finished inside it.
+    for (const task of row.taskTimeline) {
+      const key = suiteTimeLimitKey(task.name);
+      assert.equal(task.timeLimitKey, key, task.name);
+      assert.equal(
+        task.timeoutMs,
+        Math.round(TIME_LIMITS[key].ms / 3),
+        task.name,
+      );
+    }
+    assert.deepEqual(outsideLimits(row), [], `npm ${command.join(" ")}`);
+    limited.push({
+      command: `npm ${command.join(" ")}`,
+      durationMs: row.durationMs,
+      tasks: row.taskTimeline.map((task) => ({
+        name: task.name,
+        durationMs: Math.round(task.durationMs),
+        timeoutMs: task.timeoutMs,
+        timeLimitKey: task.timeLimitKey,
+      })),
+    });
     observed.push({
       command: `npm ${command.join(" ")}`,
       listedSuites: names,
@@ -1237,6 +1390,11 @@ test("the exported instance checks runtime, coordination records and explicit di
     });
   }
   assert.deepEqual([...ran].sort(), inventory);
+  // The seed is the instance's again: every key at the kit's figure.
+  writeFileSync(limitsPath, seededLimits);
+  t.diagnostic(
+    `WO284_INSTANCE_LIMITS ${JSON.stringify({ scale: 1 / 3, outlivedArm: { command: "npm test", wallMs: outlivedWallMs, key: "suite.format", figureMs: 1 }, selections: limited })}`,
+  );
   // With the instance's own files in the tree every selection above passed.
   // Its emit and its check pass too, it is still a kit root, and no task
   // rewrote a file under the reserved root or left one beside them.
@@ -1282,15 +1440,29 @@ test("the exported instance checks runtime, coordination records and explicit di
         "-e",
         `
     import assert from 'node:assert/strict';
-    import { readFileSync, rmSync } from 'node:fs';
+    import { readFileSync, rmSync, writeFileSync } from 'node:fs';
     import { findGateCheck, readGateChecks, gateInstanceInputDigest } from './scripts/lib/gate-evidence.mjs';
     import { gateCandidates, coveringGateCheck } from './scripts/lib/gate-reuse.mjs';
     import { prepareKitReleaseRuntime } from './scripts/lib/release-kit-runtime.mjs';
     const root = process.cwd();
     const row = readGateChecks(root).filter(row => row.checkId === 'npm test').at(-1);
-    assert.equal(findGateCheck(root, 'npm test', row.treeHash).evidenceRef, row.evidenceRef);
     assert.equal((await gateCandidates(root, 'npm test')).rows.at(-1).evidenceRef, row.evidenceRef);
-    assert.equal((await coveringGateCheck(root, 'npm test', ['kit-verify', 'generated'])).row.evidenceRef, row.evidenceRef);
+    // The row ran at a third of every figure. Under the seed's kit figures it
+    // stands for no claim and no evidence command; under the third it ran
+    // at, it does.
+    assert.equal(findGateCheck(root, 'npm test', row.treeHash), undefined);
+    assert.equal((await coveringGateCheck(root, 'npm test', ['kit-verify', 'generated'])).row, undefined);
+    const limits = 'docs/control/time-limits.json';
+    const seed = readFileSync(limits, 'utf8');
+    const third = JSON.parse(seed);
+    third.scale = 1 / 3;
+    writeFileSync(limits, JSON.stringify(third, null, 2) + '\\n');
+    try {
+      assert.equal(findGateCheck(root, 'npm test', row.treeHash).evidenceRef, row.evidenceRef);
+      assert.equal((await coveringGateCheck(root, 'npm test', ['kit-verify', 'generated'])).row.evidenceRef, row.evidenceRef);
+    } finally {
+      writeFileSync(limits, seed);
+    }
     await prepareKitReleaseRuntime(root);
     const runtime = JSON.parse(readFileSync('.claude/harness-manifest.json', 'utf8')).profiles[0].profile.runtime;
     rmSync(runtime.snapshot, {recursive: true});
@@ -1799,6 +1971,7 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
       "packages/skeleton/src/source-reading.mjs",
       "packages/skeleton/src/temporary-root-records.mjs",
       "packages/skeleton/src/test-selection.mjs",
+      "packages/skeleton/src/time-limits.mjs",
       "packages/skeleton/src/usage-observation.mjs",
       "packages/skeleton/src/usage-reading.mjs",
       "packages/skeleton/src/worker-catalog.mjs",
@@ -3373,4 +3546,23 @@ test("WO-225 kit carries the console schemas and npm console uses the carried bu
   );
   const json = console.stdout.slice(console.stdout.indexOf("{\n"));
   assert.equal(JSON.parse(json).viewModelVersion, "uifa-board-v1");
+});
+
+test("WO-284 criterion 8: a fresh export's first order keeps a terms list that is present and creates one from the example only where none is", () => {
+  const order = readFileSync(
+    join(kit, "docs/work-orders/WO-001-environment-truth.md"),
+    "utf8",
+  );
+  const item = order
+    .split(/^4\. /mu)[1]
+    .split(/^5\. /mu)[0]
+    .replace(/\s+/gu, " ");
+  assert.ok(
+    item.startsWith(
+      "Local-terms registration: where `docs/control/local/terms.txt` is present, keep it as it is. It holds the entries the operator registered before this order, and this order never replaces, rewrites or empties it. Only where none is present, create it from `scripts/kit/terms.example.txt` ",
+    ),
+    item,
+  );
+  // The item still screens the files the order writes.
+  assert.ok(item.includes("npm run terms -- check "), item);
 });

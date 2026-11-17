@@ -37,6 +37,8 @@ export const machinerySources = {
     "scripts/sync.mjs",
     "scripts/lib/generated-artifacts.mjs",
     "scripts/lib/build-freshness.mjs",
+    // The table whose miss text the suite's time-limit case reads (WO-284).
+    "packages/skeleton/src/time-limits.mjs",
     // The operator commands page's generator and its inputs (WO-275).
     "scripts/lib/operator-commands.mjs",
     defaultDocRelative("docs", "KIT.md"),
@@ -333,6 +335,8 @@ export const machinerySources = {
   "configuration-root": [
     "scripts/",
     "packages/skeleton/src/runtime-inputs.mjs",
+    // The table of time limits, whose resolver and listing the suite judges.
+    "packages/skeleton/src/time-limits.mjs",
   ],
   "harness-context": [
     "scripts/lib/markdown-links.mjs",
@@ -440,6 +444,15 @@ export const machinerySources = {
   ],
   "runner-fixtures": [
     "packages/skeleton/src/source-reading.mjs",
+    // The table the runner reads every suite's limit from, and the files on
+    // the gate path that the suite reads for a time limit kept outside it.
+    "packages/skeleton/src/time-limits.mjs",
+    // The closeout's standing row, which a pass recorded under other time
+    // limits does not supply.
+    "scripts/lib/closeout-scope.mjs",
+    "scripts/sync.mjs",
+    "scripts/work-orders.mjs",
+    "scripts/test-configuration-root.mjs",
     "scripts/lib/test-shards.mjs",
     "scripts/doctor.mjs",
     "scripts/lib/host-doctor.mjs",

@@ -5,17 +5,20 @@ import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { json } from "./lib/helpers.mjs";
 import {
+  CHECK_LIMIT,
+  WRITE_LIMIT,
   generatedArtifacts,
   checkArtifact,
   runArtifactCommand,
 } from "./lib/generated-artifacts.mjs";
 import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
+import { reportTimeLimitAdvisories } from "../packages/skeleton/src/time-limits.mjs";
 
 function publicationLocks(root, run) {
   const result = run(
     [process.execPath, "scripts/check-publication.mjs", "--print-locks"],
     root,
-    30_000,
+    CHECK_LIMIT,
   );
   if (result.exitCode !== 0) return result;
   const locks = [
@@ -75,7 +78,7 @@ async function remint(row, root, run) {
   const written = run(
     [process.execPath, row.file, ...mode, ...flags],
     root,
-    120_000,
+    WRITE_LIMIT,
   );
   if (written.exitCode !== 0)
     return {
@@ -91,7 +94,7 @@ async function remint(row, root, run) {
   const checked = run(
     [process.execPath, row.file, "--check", ...flags],
     root,
-    120_000,
+    CHECK_LIMIT,
   );
   if (checked.exitCode !== 0)
     return {
@@ -122,7 +125,8 @@ export async function syncArtifacts(
       name: "format",
       check: ["npm", "run", "format:check", "--silent"],
       write: ["npm", "run", "format", "--silent"],
-      timeoutMs: 120_000,
+      checkLimit: "sync.format",
+      writeLimit: "sync.format",
     },
     ...artifacts,
   ];
@@ -167,7 +171,7 @@ export async function syncArtifacts(
       changed = artifact.regenerate
         ? artifact.regenerate(root, run)
         : artifact.write
-          ? run(artifact.write, root, 120_000)
+          ? run(artifact.write, root, artifact.writeLimit ?? WRITE_LIMIT)
           : artifact.kind
             ? await mint(artifact, root, run)
             : artifact.publication
@@ -205,7 +209,10 @@ export async function syncArtifacts(
 if (isMainModule(import.meta.url)) {
   try {
     if (process.argv.length !== 2) throw new Error("usage: npm run sync");
-    const result = await syncArtifacts(findLaunchpad());
+    const launchpad = findLaunchpad();
+    // An unusable value in the root's time-limits file is named once, here.
+    reportTimeLimitAdvisories(launchpad);
+    const result = await syncArtifacts(launchpad);
     console.log("artifact | before | after | action");
     for (const row of result.rows)
       console.log(

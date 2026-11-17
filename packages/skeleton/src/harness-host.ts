@@ -21,6 +21,12 @@ import {
 import { formatDuration } from "./duration.mjs";
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import {
+  endedForTime,
+  timeLimit,
+  timeLimitMiss,
+  timeLimitsDigest,
+} from "./time-limits.mjs";
+import {
   withWriterRegistration,
   zombieProcessState,
 } from "./writer-teardown.mjs";
@@ -5017,10 +5023,20 @@ function runHarnessEvidenceChecks(
     if (cached) return cached;
     honourStop(checkId);
     const started = Date.now();
+    // The time limits the run starts under, recorded on the row this command
+    // writes when the runner's own row cannot be found, as the runner records
+    // them: such a row stands only under the limits it ran under.
+    const limitsDigest =
+      checkId === "npm test" ? timeLimitsDigest(root) : undefined;
+    // Each check's limit is a row of the time-limit table, as this root's
+    // file sets it; null is a limit the root turned off.
+    const limitKey =
+      checkId === "npm test" ? "evidence.npm-test" : "evidence.diff-check";
+    const limitMs = timeLimit(root, limitKey);
     const run = spawnSync(executable, args, {
       cwd: root,
       encoding: "utf8",
-      timeout: checkId === "npm test" ? 900_000 : 150_000,
+      ...(limitMs === null ? {} : { timeout: limitMs }),
       maxBuffer: 32 * 1024 * 1024,
     });
     process.stdout.write(run.stdout ?? "");
@@ -5029,7 +5045,7 @@ function runHarnessEvidenceChecks(
     const durationMs = Date.now() - started;
     if (run.error)
       process.stderr.write(
-        `Suite ${checkId} failed after ${formatDuration(durationMs)}: ${run.error.message}\n`,
+        `Suite ${checkId} failed after ${formatDuration(durationMs)}: ${run.error.message}${endedForTime(run) ? `. ${timeLimitMiss(root, limitKey, limitMs)}` : ""}\n`,
       );
     if (run.status === 0) {
       const recorded = findGateCheck(root, checkId, treeHash);
@@ -5040,6 +5056,10 @@ function runHarnessEvidenceChecks(
       subject: checkId === "npm test" ? codeIdentity : treeHash,
       treeHash,
       ...(checkId === "npm test" ? { codeIdentity } : {}),
+      ...(limitsDigest === undefined ? {} : { timeLimitsDigest: limitsDigest }),
+      ...(checkId === "npm test" && timeLimitsDigest(root) !== limitsDigest
+        ? { timeLimitsUnchanged: false }
+        : {}),
       durationMs,
       exitCode: run.status ?? 1,
       executed: true,

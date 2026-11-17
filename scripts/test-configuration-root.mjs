@@ -46,10 +46,19 @@ import {
 import { readFeatures } from "./lib/features.mjs";
 
 import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
+import { timeLimit } from "../packages/skeleton/src/time-limits.mjs";
 import "./test-features.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const sourceRoot = join(scriptRoot, "..");
+// The pipe case below bounds its child with a tenth of this suite's own
+// limit, as the root that holds these scripts sets it, so the suite's key
+// governs both and the case's own message is read before the suite ends;
+// undefined is no bound.
+const pipeChildLimit = () => {
+  const limit = timeLimit(sourceRoot, "suite.configuration-root");
+  return limit === null ? undefined : Math.max(1, Math.round(limit / 10));
+};
 // These disposable lifecycle fixtures are not live host sessions.
 const fixtureEnvironment = {
   ...process.env,
@@ -267,7 +276,10 @@ await test("configuration root", async (t) => {
             `import {loadConfig} from ${JSON.stringify(pathToFileURL(join(scriptRoot, "lib/config.mjs")).href)}; loadConfig(process.argv[1]);`,
             root,
           ],
-          { encoding: "utf8", timeout: 5000 },
+          {
+            encoding: "utf8",
+            timeout: pipeChildLimit(),
+          },
         );
         assert.equal(run.status, 1, run.stderr);
         assert.ok(run.stderr.includes(file));
@@ -1884,187 +1896,170 @@ await test("configuration root", async (t) => {
     },
   );
 
-  await t.test(
-    "worktree start and finish use the configured roots",
-    { timeout: 300_000 },
-    () => {
-      temporary("config-worktree", (root) => {
-        const roots = {
-          docs: "records",
-          control: "records/state",
-          workOrders: "records/orders",
-          verifications: "records/checks",
-          finalReviews: "records/reviews",
-        };
-        const origin = join(root, "origin.git");
-        const main = join(root, "project");
-        assert.equal(
-          spawnGit(["init", "--bare", "-b", "main", origin]).status,
-          0,
-        );
-        assert.equal(
-          spawnGit([
-            "-c",
-            "maintenance.auto=false",
-            "clone",
-            "-q",
-            origin,
-            main,
-          ]).status,
-          0,
-        );
-        runGit(
-          main,
-          ["config", "user.email", "fixture@example.invalid"],
-          fixtureGitOptions,
-        );
-        runGit(main, ["config", "user.name", "Fixture"], fixtureGitOptions);
-        runGit(main, ["switch", "-q", "-c", "main"], fixtureGitOptions);
+  await t.test("worktree start and finish use the configured roots", () => {
+    temporary("config-worktree", (root) => {
+      const roots = {
+        docs: "records",
+        control: "records/state",
+        workOrders: "records/orders",
+        verifications: "records/checks",
+        finalReviews: "records/reviews",
+      };
+      const origin = join(root, "origin.git");
+      const main = join(root, "project");
+      assert.equal(
+        spawnGit(["init", "--bare", "-b", "main", origin]).status,
+        0,
+      );
+      assert.equal(
+        spawnGit(["-c", "maintenance.auto=false", "clone", "-q", origin, main])
+          .status,
+        0,
+      );
+      runGit(
+        main,
+        ["config", "user.email", "fixture@example.invalid"],
+        fixtureGitOptions,
+      );
+      runGit(main, ["config", "user.name", "Fixture"], fixtureGitOptions);
+      runGit(main, ["switch", "-q", "-c", "main"], fixtureGitOptions);
 
-        mkdirSync(join(main, "scripts"), { recursive: true });
-        copyFixtureFiles(
-          join(scriptRoot, ".."),
-          main,
-          "scripts/test-configuration-root.fixture-inputs.json",
-          "configured control plane",
-        );
-        // The fixture has no dependency tree to install; worktree start still
-        // prepares the checkout through this entry point.
-        write(
-          main,
-          "scripts/bootstrap.mjs",
-          'import { mkdirSync, writeFileSync } from "node:fs";\nmkdirSync(".runtime", { recursive: true });\nwriteFileSync(".runtime/bootstrap-ready", "prepared");\n',
-        );
-        cpSync(join(scriptRoot, "lib"), join(main, "scripts/lib"), {
-          recursive: true,
-        });
-        installBeaconFixture(main);
-        declared({ root: main, body: { version: 1, roots } });
-        const order = `${roots.workOrders}/WO-999-fixture.md`;
-        write(
-          main,
-          order,
-          "# WO-999 — configuration-root worktree fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
-        );
-        write(main, "package.json", '{"private":true}\n');
-        write(main, ".gitignore", `${roots.control}/local/\n.runtime/\n`);
-        runGit(main, ["add", "."], fixtureGitOptions);
-        runGit(
-          main,
-          ["-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture"],
-          fixtureGitOptions,
-        );
-        runGit(main, ["push", "-q", "-u", "origin", "main"], fixtureGitOptions);
-
-        const worktree = (cwd, ...args) => {
-          const result = spawnSync(
-            process.execPath,
-            [join(main, "scripts/worktree.mjs"), ...args],
-            { encoding: "utf8", cwd, env: fixtureEnvironment },
-          );
-          return result;
-        };
-        const started = worktree(main, "start", "WO-999", order);
-        assert.equal(
-          started.status,
-          0,
-          `worktree start: ${started.stderr || started.stdout}`,
-        );
-        const subject = join(root, "project-wo999");
-        assert.ok(existsSync(subject), "the worktree was created");
-        assert.ok(
-          existsSync(join(subject, `${roots.control}/orders/WO-999.jsonl`)),
-          "activation recorded under the configured control root",
-        );
-        assert.equal(existsSync(join(subject, "docs/work-orders")), false);
-
-        const actor = [
-          "--harness",
-          "human",
-          "--harness-version",
-          "not-applicable",
-          "--model",
-          "human",
-          "--effort",
-          "unknown",
-          "--source",
-          "operator-attested",
-        ];
-        const attestation = {
-          harness: "human",
-          harnessVersion: "not-applicable",
-          model: "human",
-          effort: "unknown",
-          source: "operator-attested",
-        };
-        const resume = (...args) => {
-          const result = spawnSync(
-            process.execPath,
-            [join(subject, "scripts/resume.mjs"), ...args],
-            { encoding: "utf8", cwd: subject, env: fixtureEnvironment },
-          );
-          assert.equal(
-            result.status,
-            0,
-            `resume ${args[0]}: ${result.stderr || result.stdout}`,
-          );
-          return result.stdout;
-        };
-        resume("implementation-ready", ...actor);
-        resume("verify");
-        write(
-          subject,
-          `${roots.verifications}/WO-999/VER-001.md`,
-          `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`,
-        );
-        resume("verification-result", "pass", ...actor);
-        resume("final-review");
-        write(
-          subject,
-          `${roots.finalReviews}/WO-999/FINAL-001.md`,
-          `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`,
-        );
-        resume("final-review-result", "pass", ...actor);
-        runGit(subject, ["add", "."], fixtureGitOptions);
-        runGit(
-          subject,
-          [
-            "-c",
-            "maintenance.auto=false",
-            "commit",
-            "-q",
-            "-m",
-            "WO-999 closed",
-          ],
-          fixtureGitOptions,
-        );
-        runGit(
-          main,
-          ["merge", "-q", "--no-ff", "-m", "merge WO-999", "wo-999"],
-          fixtureGitOptions,
-        );
-        runGit(main, ["push", "-q", "origin", "main"], fixtureGitOptions);
-
-        const finished = worktree(main, "finish", "WO-999");
-        assert.equal(
-          finished.status,
-          0,
-          `worktree finish: ${finished.stderr || finished.stdout}`,
-        );
-        assert.equal(existsSync(subject), false, "the worktree was removed");
-        assert.equal(
-          runGit(main, ["branch", "--list", "wo-999"], fixtureGitOptions),
-          "",
-          "the merged branch was removed",
-        );
-        assert.equal(existsSync(join(main, "docs/work-orders")), false);
-        assert.ok(
-          existsSync(join(main, `${roots.finalReviews}/WO-999/FINAL-001.md`)),
-          "the merged review is present under its configured root",
-        );
+      mkdirSync(join(main, "scripts"), { recursive: true });
+      copyFixtureFiles(
+        join(scriptRoot, ".."),
+        main,
+        "scripts/test-configuration-root.fixture-inputs.json",
+        "configured control plane",
+      );
+      // The fixture has no dependency tree to install; worktree start still
+      // prepares the checkout through this entry point.
+      write(
+        main,
+        "scripts/bootstrap.mjs",
+        'import { mkdirSync, writeFileSync } from "node:fs";\nmkdirSync(".runtime", { recursive: true });\nwriteFileSync(".runtime/bootstrap-ready", "prepared");\n',
+      );
+      cpSync(join(scriptRoot, "lib"), join(main, "scripts/lib"), {
+        recursive: true,
       });
-    },
-  );
+      installBeaconFixture(main);
+      declared({ root: main, body: { version: 1, roots } });
+      const order = `${roots.workOrders}/WO-999-fixture.md`;
+      write(
+        main,
+        order,
+        "# WO-999 — configuration-root worktree fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
+      );
+      write(main, "package.json", '{"private":true}\n');
+      write(main, ".gitignore", `${roots.control}/local/\n.runtime/\n`);
+      runGit(main, ["add", "."], fixtureGitOptions);
+      runGit(
+        main,
+        ["-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture"],
+        fixtureGitOptions,
+      );
+      runGit(main, ["push", "-q", "-u", "origin", "main"], fixtureGitOptions);
+
+      const worktree = (cwd, ...args) => {
+        const result = spawnSync(
+          process.execPath,
+          [join(main, "scripts/worktree.mjs"), ...args],
+          { encoding: "utf8", cwd, env: fixtureEnvironment },
+        );
+        return result;
+      };
+      const started = worktree(main, "start", "WO-999", order);
+      assert.equal(
+        started.status,
+        0,
+        `worktree start: ${started.stderr || started.stdout}`,
+      );
+      const subject = join(root, "project-wo999");
+      assert.ok(existsSync(subject), "the worktree was created");
+      assert.ok(
+        existsSync(join(subject, `${roots.control}/orders/WO-999.jsonl`)),
+        "activation recorded under the configured control root",
+      );
+      assert.equal(existsSync(join(subject, "docs/work-orders")), false);
+
+      const actor = [
+        "--harness",
+        "human",
+        "--harness-version",
+        "not-applicable",
+        "--model",
+        "human",
+        "--effort",
+        "unknown",
+        "--source",
+        "operator-attested",
+      ];
+      const attestation = {
+        harness: "human",
+        harnessVersion: "not-applicable",
+        model: "human",
+        effort: "unknown",
+        source: "operator-attested",
+      };
+      const resume = (...args) => {
+        const result = spawnSync(
+          process.execPath,
+          [join(subject, "scripts/resume.mjs"), ...args],
+          { encoding: "utf8", cwd: subject, env: fixtureEnvironment },
+        );
+        assert.equal(
+          result.status,
+          0,
+          `resume ${args[0]}: ${result.stderr || result.stdout}`,
+        );
+        return result.stdout;
+      };
+      resume("implementation-ready", ...actor);
+      resume("verify");
+      write(
+        subject,
+        `${roots.verifications}/WO-999/VER-001.md`,
+        `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`,
+      );
+      resume("verification-result", "pass", ...actor);
+      resume("final-review");
+      write(
+        subject,
+        `${roots.finalReviews}/WO-999/FINAL-001.md`,
+        `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`,
+      );
+      resume("final-review-result", "pass", ...actor);
+      runGit(subject, ["add", "."], fixtureGitOptions);
+      runGit(
+        subject,
+        ["-c", "maintenance.auto=false", "commit", "-q", "-m", "WO-999 closed"],
+        fixtureGitOptions,
+      );
+      runGit(
+        main,
+        ["merge", "-q", "--no-ff", "-m", "merge WO-999", "wo-999"],
+        fixtureGitOptions,
+      );
+      runGit(main, ["push", "-q", "origin", "main"], fixtureGitOptions);
+
+      const finished = worktree(main, "finish", "WO-999");
+      assert.equal(
+        finished.status,
+        0,
+        `worktree finish: ${finished.stderr || finished.stdout}`,
+      );
+      assert.equal(existsSync(subject), false, "the worktree was removed");
+      assert.equal(
+        runGit(main, ["branch", "--list", "wo-999"], fixtureGitOptions),
+        "",
+        "the merged branch was removed",
+      );
+      assert.equal(existsSync(join(main, "docs/work-orders")), false);
+      assert.ok(
+        existsSync(join(main, `${roots.finalReviews}/WO-999/FINAL-001.md`)),
+        "the merged review is present under its configured root",
+      );
+    });
+  });
 
   await t.test("every declared root key is reachable", () => {
     temporary("config-keys", (root) => {
@@ -3004,4 +2999,575 @@ test("WO-276 criterion M3: with contributions.authors listing two identities a c
       assert.throws(() => loadConfig(root), refusal, JSON.stringify(authors));
     }
   });
+});
+
+// The time limits a root's owner sets in one file of its control root.
+const limitsFile = (root, body, path = "docs/control/time-limits.json") =>
+  write(root, path, typeof body === "string" ? body : prettyJson(body));
+
+test("a root's time limits resolve from the kit's table and the root's own file", async (t) => {
+  const {
+    TIME_LIMITS,
+    renderTimeLimits,
+    suiteTimeLimitKey,
+    timeLimit,
+    timeLimits,
+    timeLimitsDigest,
+    timeLimitsPath,
+  } = await import("../packages/skeleton/src/time-limits.mjs");
+  const keys = Object.keys(TIME_LIMITS);
+  const graces = keys.filter((key) => TIME_LIMITS[key].grace);
+  const applied = (root) =>
+    Object.fromEntries(keys.map((key) => [key, timeLimit(root, key)]));
+  // The same figures read without printing the file's advisories, for a
+  // fixture whose file holds values the resolver cannot use.
+  const quiet = (root) =>
+    Object.fromEntries(
+      keys.map((key) => [key, timeLimits(root).limits[key].ms]),
+    );
+
+  await t.test("with no file every limit is the kit's figure", () => {
+    temporary("limits-absent", (root) => {
+      const resolved = timeLimits(root);
+      assert.equal(resolved.present, false);
+      assert.deepEqual(resolved.advisories, []);
+      assert.deepEqual(
+        applied(root),
+        Object.fromEntries(keys.map((key) => [key, TIME_LIMITS[key].ms])),
+      );
+      assert.throws(
+        () => timeLimit(root, "suite.absent"),
+        /Unknown time limit/,
+      );
+    });
+  });
+
+  await t.test("a key the file raises applies its figure and no other", () => {
+    temporary("limits-raised", (root) => {
+      limitsFile(root, {
+        schemaVersion: 1,
+        limits: { "suite.format": { set: 900_000, kit: 1 } },
+      });
+      const resolved = timeLimits(root);
+      assert.equal(resolved.present, true);
+      assert.deepEqual(resolved.advisories, []);
+      assert.equal(resolved.limits["suite.format"].source, "set");
+      assert.deepEqual(applied(root), {
+        ...Object.fromEntries(keys.map((key) => [key, TIME_LIMITS[key].ms])),
+        "suite.format": 900_000,
+      });
+    });
+  });
+
+  await t.test(
+    "scale multiplies every figure, the owner's own included",
+    () => {
+      temporary("limits-scale", (root) => {
+        limitsFile(root, {
+          scale: 3,
+          limits: { "suite.host": { set: 40_000 } },
+        });
+        assert.deepEqual(applied(root), {
+          ...Object.fromEntries(
+            keys.map((key) => [key, TIME_LIMITS[key].ms * 3]),
+          ),
+          "suite.host": 120_000,
+        });
+        // A third of every figure, as core's check of an exported instance
+        // sets it, rounds to whole milliseconds and never to none. The
+        // pauses after a stop grow with a scale and are never shortened.
+        limitsFile(root, { scale: 1 / 3 });
+        for (const key of keys)
+          assert.equal(
+            timeLimit(root, key),
+            graces.includes(key)
+              ? TIME_LIMITS[key].ms
+              : Math.max(1, Math.round(TIME_LIMITS[key].ms / 3)),
+            key,
+          );
+      });
+    },
+  );
+
+  await t.test(
+    "null turns one limit off and enforce false turns all off, the pauses after a stop aside",
+    () => {
+      temporary("limits-off", (root) => {
+        limitsFile(root, { limits: { "suite.generated": { set: null } } });
+        assert.equal(timeLimit(root, "suite.generated"), null);
+        assert.equal(timeLimits(root).limits["suite.generated"].source, "off");
+        assert.equal(
+          timeLimit(root, "suite.format"),
+          TIME_LIMITS["suite.format"].ms,
+        );
+        limitsFile(root, { enforce: false, scale: 2 });
+        assert.deepEqual(timeLimits(root).advisories, []);
+        for (const key of keys)
+          assert.equal(
+            timeLimit(root, key),
+            graces.includes(key) ? TIME_LIMITS[key].ms * 2 : null,
+            key,
+          );
+        assert.ok(graces.length > 0);
+      });
+    },
+  );
+
+  await t.test(
+    "each value the resolver cannot use is named in one advisory and the kit's figure applies",
+    () => {
+      temporary("limits-unusable", (root) => {
+        limitsFile(root, {
+          enforce: "no",
+          scale: "fast",
+          limits: {
+            "suite.host": { set: "5 min" },
+            "suite.format": { set: -1 },
+            "suite.declarations": 700_000,
+            "suite.stop-grace": { set: null },
+            "suite.fromat": { set: 900_000 },
+          },
+        });
+        const resolved = timeLimits(root);
+        assert.deepEqual(
+          quiet(root),
+          Object.fromEntries(keys.map((key) => [key, TIME_LIMITS[key].ms])),
+        );
+        for (const named of [
+          /enforce "no" is neither true nor false/u,
+          /scale "fast" is not a number above zero/u,
+          /limits\.suite\.host\.set "5 min" is not a number of milliseconds above zero, null or "kit"/u,
+          /limits\.suite\.format\.set -1 is not a number/u,
+          /limits\.suite\.declarations 700000 is not an object/u,
+          /limits\.suite\.stop-grace\.set null cannot turn off the pause after a stop/u,
+          /"suite\.fromat" names no time limit of this kit/u,
+        ])
+          assert.equal(
+            resolved.advisories.filter((text) => named.test(text)).length,
+            1,
+            `${named}: ${resolved.advisories.join("\n")}`,
+          );
+        assert.equal(resolved.advisories.length, 7);
+        for (const text of resolved.advisories)
+          assert.ok(text.startsWith("docs/control/time-limits.json: "), text);
+        // A file that is not JSON, and one that is no object, read as absent
+        // with their own advisory.
+        limitsFile(root, "{ not json");
+        assert.match(timeLimits(root).advisories.join("\n"), /cannot be read/u);
+        assert.equal(quiet(root)["suite.host"], TIME_LIMITS["suite.host"].ms);
+        limitsFile(root, "[300000]\n");
+        assert.match(timeLimits(root).advisories.join("\n"), /not an object/u);
+        assert.equal(quiet(root)["suite.host"], TIME_LIMITS["suite.host"].ms);
+      });
+    },
+  );
+
+  await t.test(
+    "a command and the processes it starts print an advisory once",
+    () => {
+      temporary("limits-advised", (root) => {
+        limitsFile(root, { scale: "fast" });
+        const module = pathToFileURL(
+          join(sourceRoot, "packages/skeleton/src/time-limits.mjs"),
+        ).href;
+        // Reading a limit prints nothing. A command prints its root's
+        // advisories where it begins, and the processes it starts, which
+        // begin the same way, stay quiet.
+        const child = `import { reportTimeLimitAdvisories, timeLimit } from ${JSON.stringify(module)}; import { spawnSync } from "node:child_process"; const [root, mode, script] = process.argv.slice(1); timeLimit(root, "suite.host"); if (mode !== "read") { reportTimeLimitAdvisories(root); reportTimeLimitAdvisories(root); } timeLimit(root, "suite.format"); if (mode === "parent") { const run = spawnSync(process.execPath, ["--input-type=module", "-e", script, root, "child", ""], { encoding: "utf8" }); process.stderr.write(run.stderr); process.exitCode = run.status; }`;
+        const env = { ...process.env };
+        delete env.DOTLN_TIME_LIMITS_ADVISED;
+        const start = (mode) =>
+          spawnSync(
+            process.execPath,
+            ["--input-type=module", "-e", child, root, mode, child],
+            { encoding: "utf8", env },
+          );
+        const run = start("parent");
+        assert.equal(run.status, 0, run.stderr);
+        assert.deepEqual(run.stderr.trimEnd().split("\n"), [
+          'ADVISORY time limits: docs/control/time-limits.json: scale "fast" is not a number above zero; the kit\'s value applies',
+        ]);
+        const read = start("read");
+        assert.equal(read.status, 0, read.stderr);
+        assert.equal(read.stderr, "");
+      });
+    },
+  );
+
+  await t.test(
+    "with a configuration that cannot be read, no file is read and the kit's figures apply",
+    () => {
+      temporary("limits-unread-config", (root) => {
+        limitsFile(root, { limits: { "suite.host": { set: 12_345 } } });
+        assert.equal(timeLimit(root, "suite.host"), 12_345);
+        writeFileSync(join(root, "dotln.config.json"), "{ not json");
+        const resolved = timeLimits(root);
+        assert.equal(
+          resolved.limits["suite.host"].ms,
+          TIME_LIMITS["suite.host"].ms,
+        );
+        assert.equal(resolved.present, false);
+        assert.equal(
+          resolved.advisories.length,
+          1,
+          resolved.advisories.join("\n"),
+        );
+        assert.match(
+          resolved.advisories[0],
+          /the control root cannot be read from dotln\.config\.json .*the kit's time limits apply/u,
+        );
+      });
+    },
+  );
+
+  await t.test("a suite's name reaches only a suite's own row", () => {
+    assert.equal(suiteTimeLimitKey("format"), "suite.format");
+    assert.equal(suiteTimeLimitKey("generated:case"), "suite.generated");
+    // The default row and the pauses after a stop share the prefix and are
+    // no suite's row: a suite of that name has the default like any other.
+    for (const name of [
+      "default",
+      "stop-grace",
+      "finish-grace",
+      "guard-record",
+      "docs-check",
+    ])
+      assert.equal(suiteTimeLimitKey(name), "suite.default", name);
+  });
+
+  await t.test("the file is read from the configured control root", () => {
+    temporary("limits-configured", (root) => {
+      declared({
+        root,
+        body: { version: 1, roots: { control: "records/control" } },
+      });
+      assert.equal(
+        timeLimitsPath(root),
+        docRelative(root, "control", "time-limits.json"),
+      );
+      assert.equal(timeLimitsPath(root), "records/control/time-limits.json");
+      limitsFile(root, { limits: { "suite.host": { set: 40_000 } } });
+      assert.equal(timeLimit(root, "suite.host"), TIME_LIMITS["suite.host"].ms);
+      limitsFile(
+        root,
+        { limits: { "suite.host": { set: 40_000 } } },
+        "records/control/time-limits.json",
+      );
+      assert.equal(timeLimit(root, "suite.host"), 40_000);
+    });
+  });
+
+  await t.test(
+    "the digest a gate row records follows the figures that apply, not the file's bytes",
+    () => {
+      temporary("limits-digest", (root) => {
+        // The kit's figures, which a row records by naming no limits.
+        assert.equal(timeLimitsDigest(root), undefined);
+        for (const body of [
+          renderTimeLimits(),
+          { note: "the owner's own words", scale: 1, enforce: true },
+          { limits: { "suite.host": { set: TIME_LIMITS["suite.host"].ms } } },
+          { limits: { "suite.default": { set: "kit", kit: 1 } } },
+          { scale: "fast" },
+        ]) {
+          limitsFile(root, body);
+          assert.equal(
+            timeLimitsDigest(root),
+            undefined,
+            JSON.stringify(body).slice(0, 80),
+          );
+        }
+        // Each change of a figure has a digest of its own.
+        const raised = { limits: { "suite.default": { set: 5_400_000 } } };
+        const digests = new Map();
+        for (const body of [
+          raised,
+          { limits: { "suite.default": { set: 900_000 } } },
+          { scale: 2 },
+          { scale: 0.5 },
+          { limits: { "suite.default": { set: null } } },
+          { enforce: false },
+        ]) {
+          limitsFile(root, body);
+          const digest = timeLimitsDigest(root);
+          assert.match(digest, /^[0-9a-f]{64}$/u, JSON.stringify(body));
+          assert.ok(
+            ![...digests.values()].includes(digest),
+            JSON.stringify(body),
+          );
+          digests.set(JSON.stringify(body), digest);
+        }
+        // Two files that apply the same figures have one digest.
+        limitsFile(root, {
+          note: "the same figures",
+          limits: {
+            "suite.default": { set: 5_400_000, kit: 1 },
+            "suite.format": { set: "kit" },
+          },
+        });
+        assert.equal(
+          timeLimitsDigest(root),
+          digests.get(JSON.stringify(raised)),
+        );
+      });
+    },
+  );
+});
+
+test("npm run limits lists every key, and --write keeps what the owner set while it refreshes the kit's figures", async (t) => {
+  const { TIME_LIMITS, renderTimeLimits, timeLimit, timeLimits } =
+    await import("../packages/skeleton/src/time-limits.mjs");
+  const { listTimeLimits, writeTimeLimits } = await import("./time-limits.mjs");
+  const keys = Object.keys(TIME_LIMITS);
+  const command = (root, ...args) =>
+    spawnSync(
+      process.execPath,
+      [join(scriptRoot, "time-limits.mjs"), ...args],
+      {
+        encoding: "utf8",
+        env: { ...fixtureEnvironment, DOTLN_LAUNCHPAD: root },
+      },
+    );
+  const read = (root) =>
+    JSON.parse(
+      readFileSync(join(root, "docs/control/time-limits.json"), "utf8"),
+    );
+
+  await t.test(
+    "the kit's template holds every key at the table's figure",
+    () => {
+      assert.equal(
+        readFileSync(join(scriptRoot, "kit/time-limits.template.json"), "utf8"),
+        renderTimeLimits(),
+      );
+      const template = JSON.parse(renderTimeLimits());
+      assert.deepEqual(Object.keys(template.limits), keys);
+      for (const key of keys)
+        assert.deepEqual(template.limits[key], {
+          set: "kit",
+          kit: TIME_LIMITS[key].ms,
+        });
+    },
+  );
+
+  await t.test(
+    "the listing has one row for every key: what it bounds, the kit's figure, this root's and its source",
+    () => {
+      temporary("limits-listing", (root) => {
+        limitsFile(root, {
+          scale: 2,
+          limits: {
+            "suite.format": { set: 400_000 },
+            "suite.host": { set: null },
+          },
+        });
+        const { rows } = listTimeLimits(root);
+        assert.deepEqual(
+          rows.map((row) => row.key),
+          keys,
+        );
+        for (const row of rows) {
+          assert.equal(row.bounds, TIME_LIMITS[row.key].bounds);
+          assert.equal(row.kitMs, TIME_LIMITS[row.key].ms);
+        }
+        const byKey = Object.fromEntries(rows.map((row) => [row.key, row]));
+        assert.deepEqual(
+          [byKey["suite.format"].ms, byKey["suite.format"].source],
+          [800_000, "docs/control/time-limits.json (set) x scale 2"],
+        );
+        assert.deepEqual(
+          [byKey["suite.host"].ms, byKey["suite.host"].source],
+          [null, "docs/control/time-limits.json (set: null)"],
+        );
+        assert.deepEqual(
+          [byKey["suite.generated"].ms, byKey["suite.generated"].source],
+          [TIME_LIMITS["suite.generated"].ms * 2, "the kit x scale 2"],
+        );
+        const run = command(root);
+        assert.equal(run.status, 0, run.stderr);
+        const lines = run.stdout.split("\n");
+        for (const key of keys) {
+          const own = lines.filter((line) => line.startsWith(`${key} | `));
+          assert.equal(own.length, 1, key);
+          assert.ok(
+            own[0].includes(`| bounds ${TIME_LIMITS[key].bounds} |`),
+            key,
+          );
+          assert.ok(
+            own[0].includes(
+              `| kit ${TIME_LIMITS[key].ms >= 60_000 ? "" : `${TIME_LIMITS[key].ms} ms`}`,
+            ),
+            key,
+          );
+        }
+        assert.ok(
+          lines.includes(
+            `suite.format | kit 0 h 5 min (300000 ms) | here 0 h 13 min (800000 ms), from docs/control/time-limits.json (set) x scale 2 | bounds ${TIME_LIMITS["suite.format"].bounds} | passing it: ${TIME_LIMITS["suite.format"].miss}`,
+          ),
+          run.stdout,
+        );
+        assert.ok(
+          lines.some((line) =>
+            line.startsWith(
+              "suite.host | kit 0 h 5 min (300000 ms) | here off, from docs/control/time-limits.json (set: null) | ",
+            ),
+          ),
+        );
+        assert.equal(command(root, "--list").status, 1);
+      });
+    },
+  );
+
+  await t.test(
+    "--write creates the file with every key and then leaves an owner's values as they were",
+    () => {
+      temporary("limits-write", (root) => {
+        const created = command(root, "--write");
+        assert.equal(created.status, 0, created.stderr);
+        assert.match(
+          created.stdout,
+          /^Wrote docs\/control\/time-limits\.json with every key/u,
+        );
+        assert.equal(
+          readFileSync(join(root, "docs/control/time-limits.json"), "utf8"),
+          renderTimeLimits(),
+        );
+        assert.match(command(root, "--write").stdout, /nothing written/u);
+        // The owner raises one, turns one off, sets the scale and leaves a
+        // value the resolver cannot use; a file that lacks a key gains it.
+        const owned = read(root);
+        owned.scale = 1.5;
+        owned.limits["suite.format"].set = 900_000;
+        owned.limits["suite.host"].set = null;
+        owned.limits["suite.declarations"].set = "5 min";
+        delete owned.limits["suite.generated"];
+        owned.limits["suite.retired"] = { set: 5, kit: 5 };
+        // An entry written as a bare figure or a bare null, and a field of
+        // the owner's own on an entry or on the file, stay as written.
+        owned.limits["suite.registrations"] = 700_000;
+        owned.limits["suite.git-surface"] = null;
+        owned.limits["sync.write"] = {
+          set: 600_000,
+          kit: 1,
+          note: "raised for the laptop",
+        };
+        owned.note = "this machine is slow";
+        limitsFile(root, owned);
+        const rewritten = command(root, "--write");
+        assert.equal(rewritten.status, 0, rewritten.stderr);
+        const after = read(root);
+        assert.deepEqual(Object.keys(after.limits), [...keys, "suite.retired"]);
+        assert.equal(after.scale, 1.5);
+        assert.equal(after.enforce, true);
+        assert.deepEqual(after.limits["suite.format"], {
+          set: 900_000,
+          kit: 300_000,
+        });
+        assert.deepEqual(after.limits["suite.host"], {
+          set: null,
+          kit: 300_000,
+        });
+        assert.deepEqual(after.limits["suite.declarations"], {
+          set: "5 min",
+          kit: 300_000,
+        });
+        assert.deepEqual(after.limits["suite.generated"], {
+          set: "kit",
+          kit: TIME_LIMITS["suite.generated"].ms,
+        });
+        assert.deepEqual(after.limits["suite.retired"], { set: 5, kit: 5 });
+        assert.equal(after.limits["suite.registrations"], 700_000);
+        assert.equal(after.limits["suite.git-surface"], null);
+        assert.deepEqual(after.limits["sync.write"], {
+          set: 600_000,
+          kit: TIME_LIMITS["sync.write"].ms,
+          note: "raised for the laptop",
+        });
+        assert.equal(after.note, "this machine is slow");
+        // The resolver still names the two bare values after the write.
+        for (const named of [
+          /limits\.suite\.registrations 700000 is not an object/u,
+          /limits\.suite\.git-surface null is not an object/u,
+        ])
+          assert.match(timeLimits(root).advisories.join("\n"), named);
+        // A file this kit cannot read as its own is its owner's to repair and
+        // is never rewritten: one that does not parse, one that parses to
+        // something other than an object, and one of another schemaVersion,
+        // whose limits a rewrite would turn back on.
+        for (const [text, named] of [
+          ["{ not json", /cannot be read/u],
+          ["[300000]\n", /holds \[300000\], not an object/u],
+          [
+            JSON.stringify({ schemaVersion: 2, enforce: false }),
+            /schemaVersion 2, which this kit does not read/u,
+          ],
+        ]) {
+          limitsFile(root, text);
+          const refused = command(root, "--write");
+          assert.equal(refused.status, 1, text);
+          assert.match(refused.stderr, named);
+          assert.match(refused.stderr, /repair or remove it/u);
+          assert.equal(
+            readFileSync(join(root, "docs/control/time-limits.json"), "utf8"),
+            text,
+          );
+        }
+      });
+    },
+  );
+
+  await t.test(
+    "after the kit's figure for a key changes, an entry at kit follows it, a set number stays and --write refreshes kit",
+    () => {
+      temporary("limits-release", (root) => {
+        writeTimeLimits(root);
+        const owned = read(root);
+        owned.limits["suite.host"].set = 450_000;
+        limitsFile(root, owned);
+        // The next release's table: two figures raised and one key added.
+        const next = {
+          ...TIME_LIMITS,
+          "suite.format": { ...TIME_LIMITS["suite.format"], ms: 720_000 },
+          "suite.host": { ...TIME_LIMITS["suite.host"], ms: 720_000 },
+          "suite.added": {
+            ms: 60_000,
+            bounds: "a later release's row",
+            miss: "the row fails as time",
+          },
+        };
+        assert.equal(timeLimit(root, "suite.format", { table: next }), 720_000);
+        assert.equal(timeLimit(root, "suite.host", { table: next }), 450_000);
+        assert.equal(timeLimit(root, "suite.added", { table: next }), 60_000);
+        assert.deepEqual(read(root).limits["suite.format"], {
+          set: "kit",
+          kit: 300_000,
+        });
+        assert.deepEqual(writeTimeLimits(root, { table: next }), {
+          file: "docs/control/time-limits.json",
+          created: false,
+          changed: true,
+        });
+        const after = read(root);
+        assert.deepEqual(after.limits["suite.format"], {
+          set: "kit",
+          kit: 720_000,
+        });
+        assert.deepEqual(after.limits["suite.host"], {
+          set: 450_000,
+          kit: 720_000,
+        });
+        assert.deepEqual(after.limits["suite.added"], {
+          set: "kit",
+          kit: 60_000,
+        });
+        assert.deepEqual(Object.keys(after.limits), Object.keys(next));
+        assert.equal(
+          listTimeLimits(root, { table: next }).rows.find(
+            (row) => row.key === "suite.added",
+          ).source,
+          "the kit",
+        );
+      });
+    },
+  );
 });

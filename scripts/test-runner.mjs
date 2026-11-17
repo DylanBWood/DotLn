@@ -62,6 +62,14 @@ import {
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
+import {
+  reportTimeLimitAdvisories,
+  suiteTimeLimitKey,
+  timeLimit,
+  timeLimitMiss,
+  timeLimitsDigest,
+  timeLimitsPath,
+} from "../packages/skeleton/src/time-limits.mjs";
 import { SHARD_VARIABLE, shardValue } from "./lib/test-shards.mjs";
 import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
 import {
@@ -81,7 +89,9 @@ import {
 import {
   buildOutputAttested,
   buildOutputDigest,
+  coveringGateCheck,
   coveringTaskResults,
+  standingReviewCandidate,
 } from "./lib/gate-reuse.mjs";
 import {
   createReleaseFixtureContext,
@@ -102,6 +112,7 @@ import {
 
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
 import {
+  ALL_STRUCTURAL_TASKS,
   CORE_STRUCTURAL_TASKS,
   STRUCTURAL_TASKS,
   compileStaleRuntime,
@@ -198,6 +209,8 @@ const protection = {
     "feedback evidence matches its registered sources and live edition",
   mutation:
     "mutation enumeration and execution preserve baselines and result integrity",
+  configuration:
+    "this root's configuration loads: its document roots, registrations and elections are ones the kit accepts before any suite reads through them",
   declarations: "declared suite and copied fixture inputs cover direct imports",
   generated:
     "generated records and installed harness bytes are current before suites start",
@@ -258,7 +271,8 @@ const protection = {
     "artifact identity remains stable and collisions are refused",
 };
 function classifySuite(row) {
-  const structural = CORE_STRUCTURAL_TASKS.includes(row.name);
+  // Structural in some root's phase; a selection keeps its own root's.
+  const structural = ALL_STRUCTURAL_TASKS.includes(row.name);
   const machinery = Object.hasOwn(machinerySources, row.name);
   const document = Boolean(
     structural ||
@@ -428,12 +442,24 @@ export function lastFailedSuites(rows) {
   ].sort();
 }
 
+/** How far ahead a suite is scheduled, by what put it first. */
+export const SUITE_LEADS = Object.freeze({
+  branch: 100,
+  changed: 2000,
+  failed: 3000,
+});
+const SUITE_LEAD_REASONS = Object.freeze({
+  [SUITE_LEADS.failed]: "last execution failed",
+  [SUITE_LEADS.changed]: "changed since the last gate row",
+  [SUITE_LEADS.branch]: "changed on this branch",
+});
+
 export function suitePriorityLeads({ branch = [], changed = [], failed = [] }) {
   // Branch history raises ordinary work above unchanged shared tasks without
   // delaying exclusive work. Recent changes and unresolved failures lead both.
-  const first = new Map(branch.map((name) => [name, 100]));
-  for (const name of changed) first.set(name, 2000);
-  for (const name of failed) first.set(name, 3000);
+  const first = new Map(branch.map((name) => [name, SUITE_LEADS.branch]));
+  for (const name of changed) first.set(name, SUITE_LEADS.changed);
+  for (const name of failed) first.set(name, SUITE_LEADS.failed);
   return first;
 }
 
@@ -462,7 +488,7 @@ export function changedSinceLastGate(
         row.unrunSuites.length > 0 &&
         executed.length > 0 &&
         executed.every((task) =>
-          [...CORE_STRUCTURAL_TASKS, "build", "kit-verify"].includes(task.name),
+          [...ALL_STRUCTURAL_TASKS, "build", "kit-verify"].includes(task.name),
         )
       );
     })
@@ -517,6 +543,8 @@ export function changedSinceLastGate(
 export const structuralHostSlots = Object.freeze({
   format: 3,
   "configuration-root": 2,
+  // One Node process loading one configuration; not yet measured.
+  configuration: 1,
   registrations: 2,
   declarations: 4,
   generated: 2,
@@ -551,34 +579,31 @@ export const suites = [
     document: true,
     preflight: true,
     instance: "document",
-    timeoutMs: 30_000,
   },
   // test-configuration-root imports test-features for the registry/schema cases.
   nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
     needsBuild: false,
-    timeoutMs: 30_000,
     protects:
       "configuration and control-plane source declarations hold before suites start",
   }),
-  node("registrations", "scripts/check-registrations.mjs", {
-    timeoutMs: 30_000,
+  // An instance's structural phase loads the instance's own configuration
+  // here; the kit's tests of the loader, above, are core's row in its place.
+  node("configuration", "scripts/structural-checks.mjs", {
+    args: ["configuration"],
   }),
+  node("registrations", "scripts/check-registrations.mjs"),
   node("declarations", "scripts/structural-checks.mjs", {
     args: ["declarations"],
-    timeoutMs: 30_000,
   }),
   node("generated", "scripts/structural-checks.mjs", {
     args: ["generated"],
-    timeoutMs: 120_000,
   }),
   node("git-surface", "scripts/structural-checks.mjs", {
     args: ["git-surface"],
     kit: "core-only: the kit's Git surface is recorded and confirmed against the Git floor in core",
-    timeoutMs: 30_000,
   }),
   node("host", "scripts/structural-checks.mjs", {
     args: ["host"],
-    timeoutMs: 10_000,
   }),
   // The published runtime is ignored; its digest rides on the build's result.
   node("build", "scripts/build.mjs", {
@@ -1183,10 +1208,19 @@ export function expand(command, repo) {
   });
 }
 
-// How long a supervisor waits for the host guard's record of a stop it
-// did not make itself: fifty reads, twenty milliseconds apart.
-const GUARD_RECORD_WAITS = 50;
+// How often a supervisor reads for the host guard's record of a stop it did
+// not make itself; the table's suite.guard-record says for how long.
 const GUARD_RECORD_WAIT_MS = 20;
+
+/** The time limit of a suite row or task, with the key it was read from: a
+ * fixture row's own figure where it carries one, which names no key, and
+ * otherwise the table's figure for the row's key as `root`'s file sets it.
+ * A null figure is a limit the root turned off. */
+export function suiteTimeLimit(row, root) {
+  if (row.timeoutMs !== undefined) return { ms: row.timeoutMs };
+  const key = row.timeLimitKey ?? suiteTimeLimitKey(row.name);
+  return { ms: timeLimit(root, key), key };
+}
 
 /** The host task as a gate runs it. A gate that was started inside a gate
  * that was admitted, under a lease that gate holds and this one validated,
@@ -1205,11 +1239,22 @@ export const hostTaskUnder = (row, inheritedLease) =>
 export function executeSuite(
   row,
   repo,
-  timeoutMs = 900_000,
+  timeoutMs,
   onProgress = () => {},
   signal = undefined,
 ) {
   const started = Date.now();
+  // The root whose file sets this task's limits: the checkout it runs in,
+  // unless its caller runs it elsewhere for another root's gate.
+  const limitsRoot = row.limitsRoot ?? repo;
+  // A caller that passes a figure names the key it read it from, if any;
+  // otherwise the row's own limit applies. Null starts no timer.
+  let limitKey = row.timeLimitKey;
+  if (timeoutMs === undefined)
+    ({ ms: timeoutMs, key: limitKey } = suiteTimeLimit(row, limitsRoot));
+  const stopGraceMs = timeLimit(limitsRoot, "suite.stop-grace");
+  const finishGraceMs = timeLimit(limitsRoot, "suite.finish-grace");
+  const guardRecordMs = timeLimit(limitsRoot, "suite.guard-record");
   const hostDirectory = row.hostDirectory ?? hostStateRoot();
   const limits =
     row.memoryLimits ??
@@ -1255,7 +1300,10 @@ export function executeSuite(
       ...env,
       [SHARD_VARIABLE]: shardValue(row.shard.number, row.shard.count),
     };
-  const deadline = startDeadline(`suite:${row.name}`, timeoutMs, { env });
+  const deadline =
+    timeoutMs === null
+      ? undefined
+      : startDeadline(`suite:${row.name}`, timeoutMs, { env });
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
   let command;
   let readGuard;
@@ -1404,8 +1452,8 @@ export function executeSuite(
         // A descendant may deliberately leave the group or the host may deny
         // signalling. Its inherited descriptors must not hold the gate open.
         child.unref();
-        finishTimer = setTimeout(() => finish(null), 100);
-      }, 1000);
+        finishTimer = setTimeout(() => finish(null), finishGraceMs);
+      }, stopGraceMs);
     };
     const stop = () => {
       stopped = true;
@@ -1418,11 +1466,14 @@ export function executeSuite(
     };
     if (signal?.aborted) stop();
     else signal?.addEventListener("abort", stop, { once: true });
-    const timer = setTimeout(() => {
-      timedOut = true;
-      deadline.finish(true);
-      cancel();
-    }, timeoutMs);
+    const timer =
+      timeoutMs === null
+        ? undefined
+        : setTimeout(() => {
+            timedOut = true;
+            deadline.finish(true);
+            cancel();
+          }, timeoutMs);
     let progressCount = 0;
     const slowestCases = [];
     let lastProgressAt = started;
@@ -1607,7 +1658,7 @@ export function executeSuite(
         child.signalCode === "SIGKILL" &&
         !killTimer &&
         !resourceFailure &&
-        guardWaits < GUARD_RECORD_WAITS &&
+        guardWaits * GUARD_RECORD_WAIT_MS < guardRecordMs &&
         !incidentForProcess(hostDirectory, child.pid, started)
       ) {
         guardWaits++;
@@ -1674,7 +1725,7 @@ export function executeSuite(
       if (resourceFailure)
         renderedOutput += `\n${resourceFailure} ${JSON.stringify(resourceDetails ?? { survivingProcesses: survivors })}`;
       const durationMs = Date.now() - started;
-      deadline.finish();
+      deadline?.finish();
       let readFailures = [];
       if (readGuard) {
         try {
@@ -1731,7 +1782,11 @@ export function executeSuite(
           : {}),
         executed: true,
         ...(stopped ? { stopped: true } : {}),
-        output: `${renderedOutput}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${formatDuration(durationMs)}` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${formatDuration(durationMs)}` : ""}`,
+        // The limit that applied and the key it was read from, which a
+        // fixture's own figure has none of.
+        timeoutMs,
+        ...(limitKey ? { timeLimitKey: limitKey } : {}),
+        output: `${renderedOutput}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${formatDuration(durationMs)}${limitKey ? `. ${timeLimitMiss(limitsRoot, limitKey, timeoutMs)}` : ""}` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${formatDuration(durationMs)}` : ""}`,
       });
     };
     child.on("close", (code) => {
@@ -1742,7 +1797,7 @@ export function executeSuite(
     child.on("exit", (code) => {
       finishTimer ??= setTimeout(() => {
         finish(code);
-      }, 100);
+      }, finishGraceMs);
     });
     if (child.pid) {
       try {
@@ -1980,7 +2035,12 @@ export async function scheduleSuites(
         reservedSlots: occupiedSlots,
         slotCapacity: concurrency,
         hostCapacity: capacity,
-        timeoutMs: row.timeoutMs ?? 900_000,
+        // A result that did not come from the suite executor carries no
+        // limit of its own; its row's applies.
+        timeoutMs:
+          result.timeoutMs !== undefined
+            ? result.timeoutMs
+            : suiteTimeLimit(row, repo).ms,
         lanes: laneIndexes,
         ...(lease
           ? {
@@ -2110,7 +2170,12 @@ export async function scheduleSuites(
           exitCode: 1,
           executed: false,
           durationMs: 0,
-          output: `Required ${row.name} structural preflight failed. ${row.name === "format" ? "Run npm run format, then rerun this command." : "Repair the named failure and rerun this command."}\n${result.output ?? ""}`,
+          output: `${
+            result.failureKind === "timeout"
+              ? // Time, not a failed check: the row judged nothing.
+                `Required ${row.name} structural preflight was ended for time before it finished: nothing was judged, and this is its time limit, not a failed check. ${result.timeLimitKey ? timeLimitMiss(repo, result.timeLimitKey, result.timeoutMs) : "Rerun this command."}`
+              : `Required ${row.name} structural preflight failed. ${row.name === "format" ? "Run npm run format, then rerun this command." : "Repair the named failure and rerun this command."}`
+          }\n${result.output ?? ""}`,
         });
       return results;
     }
@@ -2410,7 +2475,6 @@ export function expandSuiteTasks(
           name: `${row.name}:file:${basename(file)}`,
           command: [...prefix, file],
           args: [],
-          timeoutMs: 900_000,
         }));
       }
       if (row.name === "vertical") {
@@ -2638,6 +2702,9 @@ export async function runGate(
   options = {},
 ) {
   if (args.includes("--list")) return runGateChecks(args, repo, options);
+  // An unusable value in the root's time-limits file is named here, once for
+  // this command and the processes it starts; reading a limit prints nothing.
+  reportTimeLimitAdvisories(repo);
   const only = args.indexOf("--only");
   const single =
     only < 0
@@ -2709,7 +2776,8 @@ async function runGateChecks(
     again = false,
     keepGoing = false,
     only,
-    against;
+    against,
+    reason;
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
     if (arg === "--document") document = true;
@@ -2723,6 +2791,16 @@ async function runGateChecks(
     // Both flags run the selection instead of reusing a covering row
     // (WO-173); --fresh keeps the meaning measure-gates.mjs relies on.
     else if (arg === "--fresh" || arg === "--again") again = true;
+    // Why a selection is run again at an identity that already holds its
+    // passing complete row; the row keeps the words.
+    else if (
+      arg === "--reason" &&
+      reason === undefined &&
+      typeof args[index + 1] === "string" &&
+      args[index + 1].trim() &&
+      !args[index + 1].startsWith("--")
+    )
+      reason = args[++index].trim();
     else if (
       arg === "--against" &&
       !against &&
@@ -2733,32 +2811,48 @@ async function runGateChecks(
     else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--again] [--keep-going] [--serial] [--list [--selected]]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--again [--reason <why>]] [--keep-going] [--serial] [--list [--selected]]",
       );
   }
   if (selectedOnly && !list) throw new Error("--selected requires --list");
+  if (reason !== undefined && !again)
+    throw new Error("--reason states why --again runs a selection again");
   if (against && !document)
     throw new Error("--against requires --document (npm run test:docs)");
   if (only && !table.some((row) => row.name === only))
     throw new Error(`Unknown suite: ${only}`);
+  // A structural task belongs to a root's own phase: the kit's tests of its
+  // configuration loader are core's, and the configuration row an instance's.
+  // The other root's row is no part of this root's selections; named with
+  // --only it runs as an ordinary task after this root's structural phase,
+  // and the review listing's inventory names it where it is a machinery
+  // suite, since it is available here by that name.
+  const ownStructural = structuralTasks(repo);
+  table = table.map((row) =>
+    row.structural && !ownStructural.includes(row.name)
+      ? { ...row, structural: false, otherRootStructural: true }
+      : row,
+  );
   // A consumer checks its installed runtime. Its separate document gate
   // checks coordination records; sibling product checks run in the target.
   // Shipping a fixture makes it available for an explicit diagnostic only.
   const inventory = list && review && !selectedOnly;
   const instance = instanceSelection(args, repo) && !inventory;
   let selected = table.filter((row) =>
-    row.generated && !only && !inventory
-      ? false
-      : instance
-        ? row.instance === "runtime" ||
-          (document && row.instance === "document")
-        : only
-          ? row.name === only
-          : document
-            ? row.document
-            : machinery
-              ? row.machinery
-              : row.product || (inventory && row.machinery),
+    row.otherRootStructural
+      ? row.name === only || (inventory && row.machinery)
+      : row.generated && !only && !inventory
+        ? false
+        : instance
+          ? row.instance === "runtime" ||
+            (document && row.instance === "document")
+          : only
+            ? row.name === only
+            : document
+              ? row.document
+              : machinery
+                ? row.machinery
+                : row.product || (inventory && row.machinery),
   );
   if (review && !inventory && !instance && !only && !document && !machinery)
     selected = [
@@ -2839,6 +2933,51 @@ async function runGateChecks(
   const outsideRange =
     !judgeRunningNode(process.version, repo).admitted ||
     !judgeRunningGit(repo).admitted;
+  // A complete selection forced at an identity that already holds its passing
+  // complete row, recorded under the time limits in force, repeats a run
+  // whose result is known: a change to documents alone moves no code
+  // identity, and the standing row is what a completion consumes. A row
+  // recorded under other limits answers nothing, and the selection runs.
+  // Without a stated reason the runner prints that row and what running
+  // again costs, runs nothing (no build either) and exits 0; with one it
+  // runs, and its row keeps the reason. An instance's selections reuse
+  // nothing and always run. A gate index that cannot be read answers
+  // nothing, and the selection runs as it always did.
+  if (
+    again &&
+    reason === undefined &&
+    !instance &&
+    !only &&
+    !document &&
+    !machinery &&
+    !confinedPartial
+  ) {
+    let standing;
+    try {
+      const names = selected.map((row) => row.name);
+      const found = await coveringGateCheck(repo, "npm test", names);
+      // A review selection is answered only by the row its closeout and the
+      // final review's claim consume: a review row in which every named
+      // suite ran and passed. A plain selection is answered by any passing
+      // complete row that covers it.
+      standing = review ? standingReviewCandidate(found, names) : found.row;
+    } catch {
+      standing = undefined;
+    }
+    if (standing) {
+      console.log(
+        `npm test: a passing complete row already stands at this code identity: recorded ${standing.recordedAt}, ${formatDuration(standing.durationMs)}, ${Array.isArray(standing.requiredSuites) ? standing.requiredSuites.length : "unknown"} suites, ${standing.evidenceRef}.`,
+      );
+      console.log(
+        `Nothing was run. Running the selection again would take about as long as that row did (${formatDuration(standing.durationMs)}) and count as a complete run of this dispatch, for a result the row already holds: a completion consumes it, and an edit to documents alone owes npm run test:docs and no complete run. To run it again all the same, state why and the row will keep it: npm test -- ${args.join(" ")} --reason "<why>".`,
+      );
+      return {
+        exitCode: 0,
+        executed: false,
+        satisfiedBy: standing.evidenceRef,
+      };
+    }
+  }
   // Compile once when needed: a stale runtime is rebuilt before the reuse
   // lookup and the subject capture, so an ordinary package edit reaches the
   // suites instead of a refusal to run npm run sync first. The compiled
@@ -2846,15 +2985,22 @@ async function runGateChecks(
   // reported, never installed here: live hooks change only through the
   // explicit sync step.
   if (!confinedPartial && !outsideRange)
-    for (const { exitCode } of compileStaleRuntime(repo))
+    for (const { exitCode, miss } of compileStaleRuntime(repo))
       console.log(
-        `compiled the stale runtime before the subject was captured${exitCode ? ` (the build exited ${exitCode}; the structural check judges it)` : ""}`,
+        `compiled the stale runtime before the subject was captured${exitCode ? ` (the build exited ${exitCode}; the structural check judges it)${miss ? `. ${miss}` : ""}` : ""}`,
       );
   const sharedRefsStart = readSharedRefs(repo);
   const instanceInputDigest = gateInstanceInputDigest(repo);
+  // The time limits this run starts under, which its row records: a pass is
+  // carried and a complete row stands only under the limits it ran under.
+  // Undefined is the kit's figures and is not written.
+  const limitsDigest = timeLimitsDigest(repo);
+  const limitsRecord =
+    limitsDigest === undefined ? {} : { timeLimitsDigest: limitsDigest };
   const refsStartedAt = Date.now();
   let reused = new Map();
   let reuseIdentity;
+  let otherLimits = [];
   // Plain and review selections compose the latest passing task executions.
   // Installed snapshots and coordination records are outside code identity.
   // Consumer checks must observe them afresh, even after a prior pass.
@@ -2878,6 +3024,11 @@ async function runGateChecks(
     try {
       covering = await coveringTaskResults(repo, "npm test", tasks);
       reused = covering.results;
+      otherLimits = covering.otherLimits ?? [];
+      if (otherLimits.length)
+        console.log(
+          `npm test: ${otherLimits.length} passing ${otherLimits.length === 1 ? "task" : "tasks"} at this code identity ran under time limits other than those ${timeLimitsPath(repo)} sets now, and ${otherLimits.length === 1 ? "runs" : "run"} again under the figures that apply`,
+        );
       for (const row of structural) reused.delete(row.name);
       reused.delete("format");
       reused.delete("kit-verify");
@@ -3034,18 +3185,48 @@ async function runGateChecks(
       const selectedNames = new Set(selected.map((row) => row.name));
       for (const name of [...first.keys()])
         if (!selectedNames.has(name)) first.delete(name);
-      const reason = {
-        3000: "last execution failed",
-        2000: "changed since the last gate row",
-        100: "changed on this branch",
+      // A suite whose row this selection reuses did not change inside the
+      // code identity: reuse compares that identity, so whatever changed in
+      // its sources since the last gate row is a document outside it. Such a
+      // suite is named as reused at the identity, which is what the runner
+      // then does, and never as changed.
+      const expanded = expandSuiteTasks(selected, repo, "<gate-template>");
+      const reusedSuite = (name) => {
+        const own = expanded.filter(
+          (task) => task.name === name || task.name.startsWith(`${name}:`),
+        );
+        return own.length > 0 && own.every((task) => reused.has(task.name));
       };
+      // The same holds for a reused suite that a branch change or an earlier
+      // failure put first: it does not run, so the line does not say it is
+      // scheduled.
+      const carried = [...first].filter(([name]) => reusedSuite(name));
+      for (const [name] of carried) first.delete(name);
+      const named = (lead) =>
+        carried
+          .filter(([, value]) => (value === SUITE_LEADS.changed) === lead)
+          .map(([name]) => name)
+          .sort();
+      const documents = named(true);
+      const reusedNote = carried.length
+        ? `reused at the code identity, not run again: ${[
+            ...(documents.length
+              ? [
+                  `${documents.join(", ")} (${documents.length === 1 ? "its sources" : "their sources"} changed since the last gate row are documents outside that identity)`,
+                ]
+              : []),
+            ...named(false),
+          ].join(", ")}`
+        : "";
       if (first.size)
         console.log(
           `scheduled first: ${[...first]
             .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
-            .map(([name, lead]) => `${name} (${reason[lead]})`)
-            .join(", ")}`,
+            .map(([name, lead]) => `${name} (${SUITE_LEAD_REASONS[lead]})`)
+            .join(", ")}${reusedNote ? `; ${reusedNote}` : ""}`,
         );
+      else if (reusedNote)
+        console.log(`scheduled in declared order; ${reusedNote}`);
     } catch (error) {
       first.clear();
       console.log(`scheduled in declared order: ${error.message}`);
@@ -3089,6 +3270,7 @@ async function runGateChecks(
       codeIdentity,
       subject: treeHash,
       ...(instanceInputDigest === undefined ? {} : { instanceInputDigest }),
+      ...limitsRecord,
       durationMs: Date.now() - started,
       exitCode: 1,
       executed: true,
@@ -3281,7 +3463,7 @@ async function runGateChecks(
                   activeOrder,
                 },
                 cwd,
-                row.timeoutMs ?? 900_000,
+                undefined,
                 ({ name, message, elapsedMs }) =>
                   console.log(
                     `PROGRESS [${name}] ${formatDuration(elapsedMs)} ${message}`,
@@ -3348,8 +3530,10 @@ async function runGateChecks(
           );
           return;
         }
+        // A task ended for time is reported as time: it judged nothing, so
+        // its line does not say that a check failed.
         console.log(
-          `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
+          `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : row.failureKind === "timeout" ? "TIME" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
         );
         // Successful checks still deliver their explicit diagnostics, the
         // criteria screen's advisories among them (WO-249), the lines a
@@ -3403,9 +3587,11 @@ async function runGateChecks(
                   memoryLimits: limits,
                   resourceMonitor: monitor,
                   hostDirectory,
+                  // The base's copy runs under this checkout's limits.
+                  limitsRoot: repo,
                 },
                 cwd,
-                900_000,
+                undefined,
                 undefined,
                 signal,
               );
@@ -3427,6 +3613,9 @@ async function runGateChecks(
     const unchanged =
       gateCodeIdentity(repo) === codeIdentity &&
       gateInstanceInputDigest(repo) === instanceInputDigest;
+    // A row whose limits changed before it ended ran some tasks under each:
+    // it still records its results, and supplies no pass under either.
+    const limitsUnchanged = timeLimitsDigest(repo) === limitsDigest;
     // Every task ran between the build's attestation and this check. An
     // output that changed in between leaves no task's pass tied to this
     // identity's build, exactly as changed code does.
@@ -3459,6 +3648,8 @@ async function runGateChecks(
       codeIdentity,
       sharedRefs: { start: sharedRefsStart, end: readSharedRefs(repo) },
       ...(instanceInputDigest === undefined ? {} : { instanceInputDigest }),
+      ...limitsRecord,
+      ...(limitsUnchanged ? {} : { timeLimitsUnchanged: false }),
       subject: treeHash,
       durationMs: Date.now() - started,
       exitCode:
@@ -3496,6 +3687,8 @@ async function runGateChecks(
       identityUnchanged: unchanged,
       ...(outputJudged ? { buildOutputUnchanged: outputUnchanged } : {}),
       ...(outputUnattested ? { buildOutputAttested: false } : {}),
+      // The words a forced run was given for running again.
+      ...(again && reason !== undefined ? { forcedReason: reason } : {}),
       freshReason: again
         ? "requested"
         : instance
@@ -3506,7 +3699,9 @@ async function runGateChecks(
               : freshTasks.length
                 ? "missing-passing-tasks"
                 : "no-fresh-tasks"
-            : "no-passing-tasks",
+            : otherLimits.length
+              ? "time-limits-changed"
+              : "no-passing-tasks",
       freshSuites: freshTasks.length,
       reusedSuites: taskRows.filter((row) => row.reused).length,
       requiredSuites: selected.map((row) => row.name),
@@ -3719,7 +3914,7 @@ async function runGateChecks(
       `Gate cleanup: ${check.temporaryCleanup.removed.length} roots removed; ${check.temporaryCleanup.retained.length} retained; ${check.temporaryCleanup.blockers.length} blockers. Churn: ${JSON.stringify(check.churn)}. fseventsd: ${JSON.stringify(check.fileEvents)}`,
     );
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${formatDuration(check.durationMs)}; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${check.abandonedRoots?.length ? `; abandoned fixture roots: ${check.abandonedRoots.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${formatDuration(check.durationMs)}; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${limitsUnchanged ? "" : `; the time limits ${timeLimitsPath(repo)} sets changed during the gate, so no pass of this row is carried or stands: run it again under the limits now in force`}${check.abandonedRoots?.length ? `; abandoned fixture roots: ${check.abandonedRoots.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {

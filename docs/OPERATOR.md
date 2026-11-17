@@ -2,7 +2,7 @@
 
 Generated from `docs/KIT.md` by `node scripts/lib/operator-commands.mjs`; edit the kit guide's marked blocks, never this page.
 
-The lines an operator types through the cycle of the DotLn kit at `v1.2.0`, step by step: each step's sentence, then the command blocks [the kit guide](KIT.md) marks for it, byte for byte, in its order. `node scripts/launchpad.mjs commands` prints this page in an instance before any install. The kit guide's linked section says more about each block, and a release's Read before upgrading says what that release changed for an instance.
+The lines an operator types through the cycle of the DotLn kit at `v1.3.0`, step by step: each step's sentence, then the command blocks [the kit guide](KIT.md) marks for it, byte for byte, in its order. `node scripts/launchpad.mjs commands` prints this page in an instance before any install. The kit guide's linked section says more about each block, and a release's Read before upgrading says what that release changed for an instance.
 
 ## 1. A new instance
 

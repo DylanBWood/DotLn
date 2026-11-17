@@ -1,4 +1,4 @@
-# WO-284 — An instance sets every time limit of its gate in one file, the kit's own figures leave room for a slower machine, and a tree that is already green is not run again (version assigned at activation)
+# WO-284 — An instance sets every time limit of its gate in one file, the kit's own figures leave room for a slower machine, and a tree that is already green is not run again (v1.3.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

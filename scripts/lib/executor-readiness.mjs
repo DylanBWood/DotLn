@@ -6,20 +6,31 @@ import {
   closeoutAdvisory,
   closeoutHeadings,
   closeoutRunnerFor,
+  closeoutSatisfiedBy,
   closeoutScope,
+  closeoutStandingFor,
   closeoutText,
 } from "./closeout-scope.mjs";
 
-export { closeoutRunnerFor, closeoutScope };
+export { closeoutRunnerFor, closeoutScope, closeoutStandingFor };
 
 /** The closeout selection as a lifecycle briefing prints it, spelled for
  * the target worktree of a target order. It describes the order's changes as
- * they stand, so the role reads it again at closeout. */
-export const closeoutBriefing = (root, state, runner) =>
-  `\n${closeoutText(root, closeoutScope(root, state, { runner }), {
-    heading: closeoutHeadings.briefing,
-    qualified: true,
-  })}`;
+ * they stand, so the role reads it again at closeout. `standing` is the
+ * passing complete review row at the current code identity, where one
+ * stands: the briefing then says the complete run is satisfied. `scope` is
+ * the selection where the caller has already computed it for this order. */
+export const closeoutBriefing = (root, state, runner, standing, scope) =>
+  `\n${closeoutText(
+    root,
+    closeoutSatisfiedBy(
+      scope && scope.workOrder === state?.workOrderId
+        ? scope
+        : closeoutScope(root, state, { runner }),
+      standing,
+    ),
+    { heading: closeoutHeadings.briefing, qualified: true },
+  )}`;
 
 /** The same selection as one line a completion records. */
 export const closeoutCompletionAdvisory = (root, state, runner) =>

@@ -68,7 +68,8 @@
       "packages/skeleton/src/runtime-inputs.mjs",
       "packages/skeleton/src/worker-catalog.mjs",
       "packages/skeleton/src/worker-models.mjs",
-      "packages/skeleton/src/writer-teardown.mjs"
+      "packages/skeleton/src/writer-teardown.mjs",
+      "packages/skeleton/src/time-limits.mjs"
     ],
     "directories": [
       "scripts/lib"

@@ -48,6 +48,8 @@ import { gateCodeIdentity, readGateChecks } from "./lib/gate-evidence.mjs";
 import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
 import {
   DOCS_MAP_SEED,
+  TIME_LIMITS_SEED,
+  TIME_LIMITS_TEMPLATE,
   DOCS_MAP_TEMPLATE,
   LEGACY_DOCS_MAPS,
   exportConfiguration,
@@ -5261,6 +5263,43 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   }
   // The cases below start from a starter that holds the export's own map.
   commitMap(currentMap, "test: the export's map again");
+  assert.deepEqual(refresh(tag, head, true)[0].keptSeeds, []);
+  // The file of time limits follows the same rule: the starter holds the
+  // template's bytes, and one its owner changed is kept with the reason and
+  // stops no refresh.
+  const currentLimits = readFileSync(
+    join(core, "scripts/kit", TIME_LIMITS_TEMPLATE),
+    "utf8",
+  );
+  assert.equal(
+    readFileSync(join(checkout, TIME_LIMITS_SEED), "utf8"),
+    currentLimits,
+  );
+  const commitLimits = (bytes, subject) => {
+    writeFileSync(join(checkout, TIME_LIMITS_SEED), bytes);
+    git(checkout, ["add", TIME_LIMITS_SEED]);
+    git(checkout, ["-c", "maintenance.auto=false", "commit", "-qm", subject]);
+    git(checkout, ["push", remote, "main"]);
+  };
+  const ownLimits = currentLimits.replace('"scale": 1,', '"scale": 2,');
+  assert.notEqual(ownLimits, currentLimits);
+  commitLimits(ownLimits, "test: time limits their owner changed");
+  for (const preview of [true, false]) {
+    const row = refresh(tag, head, preview)[0];
+    assert.equal(row.outcome, "current", JSON.stringify(row));
+    assert.deepEqual(row.keptSeeds, [
+      {
+        path: TIME_LIMITS_SEED,
+        reason: "customized; differs from proven prior exports",
+      },
+    ]);
+    assert.deepEqual(row.rewrittenSeeds, []);
+    assert.equal(
+      readFileSync(join(checkout, TIME_LIMITS_SEED), "utf8"),
+      ownLimits,
+    );
+  }
+  commitLimits(currentLimits, "test: the export's time limits again");
   assert.deepEqual(refresh(tag, head, true)[0].keptSeeds, []);
   // A starter an older export made lacks the lineage index and still carries
   // the retired ceilings file at the kit's rendering: a refresh of the same

@@ -2,24 +2,21 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  endedForTime,
+  timeLimit,
+  timeLimitMiss,
+} from "../../packages/skeleton/src/time-limits.mjs";
 import { buildFreshness } from "./build-freshness.mjs";
+import { CORE_STRUCTURAL_SUITES, STRUCTURAL_SUITES } from "./gate-reuse.mjs";
 
-export const STRUCTURAL_TASKS = [
-  "format",
-  "configuration-root",
-  "registrations",
-  "declarations",
-  "generated",
-  "host",
-];
-/** Core's structural phase: the six every selection runs, with the recorded
- * Git surface check, which an exported kit does not carry, before the host
- * task, which stays last so the dispatch bound counts a selection only after
- * every other structural check has passed. */
-export const CORE_STRUCTURAL_TASKS = Object.freeze([
-  ...STRUCTURAL_TASKS.slice(0, -1),
-  "git-surface",
-  "host",
+/** An instance's structural phase and core's: the lists the gate-reuse
+ * module holds, under the names the runner's tasks use. */
+export const STRUCTURAL_TASKS = STRUCTURAL_SUITES;
+export const CORE_STRUCTURAL_TASKS = CORE_STRUCTURAL_SUITES;
+/** Every name that is a structural task in some root's phase. */
+export const ALL_STRUCTURAL_TASKS = Object.freeze([
+  ...new Set([...CORE_STRUCTURAL_TASKS, ...STRUCTURAL_TASKS]),
 ]);
 /** The structural phase the checkout at `root` runs. */
 export const structuralTasks = (root) =>
@@ -35,9 +32,12 @@ const artifact = (name, file, checkArgs, writeArgs, extra = {}) => ({
   name,
   check: node(file, ...checkArgs),
   ...(writeArgs ? { write: node(file, ...writeArgs) } : {}),
-  timeoutMs: 30_000,
   ...extra,
 });
+/** The table's key for a row's check, and for a writer: a row names its own
+ * where it has one. */
+export const CHECK_LIMIT = "generated.check";
+export const WRITE_LIMIT = "sync.write";
 
 /** The gate and sync share this inventory: sync uses its writers, and a
  * selection compiles a stale runtime with the runtime writer before
@@ -51,7 +51,7 @@ export function generatedArtifacts(root) {
             name: "runtime",
             inspect: () => buildFreshness(root),
             write: node("scripts/build.mjs"),
-            timeoutMs: 120_000,
+            writeLimit: "generated.runtime-build",
           },
         ]
       : [
@@ -157,7 +157,11 @@ export function generatedArtifacts(root) {
   ];
 }
 
-export function runArtifactCommand(command, root, timeoutMs = 30_000) {
+/** Run one command of the inventory under the time limit the table holds
+ * for `limitKey`, as `root`'s file sets it. A command that is ended for time
+ * says so with its key, the figure, the file and the listing command. */
+export function runArtifactCommand(command, root, limitKey = CHECK_LIMIT) {
+  const timeoutMs = timeLimit(root, limitKey);
   const started = Date.now();
   const env = { ...process.env };
   // A child --test invocation must discover its own tests, even when sync
@@ -167,14 +171,16 @@ export function runArtifactCommand(command, root, timeoutMs = 30_000) {
     cwd: root,
     env,
     encoding: "utf8",
-    timeout: timeoutMs,
+    // Null is a limit the root turned off: the child then runs unbounded.
+    timeout: timeoutMs ?? undefined,
     maxBuffer: 8 * 1024 * 1024,
   });
+  const timedOut = endedForTime(run);
   return {
     exitCode: run.status ?? 1,
     durationMs: Date.now() - started,
-    output: `${run.stdout ?? ""}${run.stderr ?? ""}${run.error ? `\n${run.error.message}` : ""}`,
-    ...(run.error?.code === "ETIMEDOUT" ? { timedOut: true } : {}),
+    output: `${run.stdout ?? ""}${run.stderr ?? ""}${run.error ? `\n${run.error.message}` : ""}${timedOut ? `\n${timeLimitMiss(root, limitKey, timeoutMs)}` : ""}`,
+    ...(timedOut ? { timedOut: true, timeLimitKey: limitKey } : {}),
     ...(run.error || run.signal ? { unavailable: true } : {}),
   };
 }
@@ -244,7 +250,7 @@ export function checkArtifact(row, root, run = runArtifactCommand) {
         output: observation.reason ?? "",
         stale: observation.current === false,
       };
-    } else result = run(row.check, root, row.timeoutMs);
+    } else result = run(row.check, root, row.checkLimit ?? CHECK_LIMIT);
   } catch (error) {
     result = {
       exitCode: 1,
@@ -269,15 +275,28 @@ export function checkArtifact(row, root, run = runArtifactCommand) {
  * never thrown; the structural check still judges the artifact. The
  * installed harness is judged but never written here: live hooks change only
  * through the explicit sync step. Returns one row when it compiled. */
-export function compileStaleRuntime(root, { run = runArtifactCommand } = {}) {
+export function compileStaleRuntime(
+  root,
+  { run = runArtifactCommand, artifacts = generatedArtifacts(root) } = {},
+) {
   if (isKitRoot(root) || !existsSync(join(root, "packages/skeleton/src")))
     return [];
-  const runtime = generatedArtifacts(root).find(
+  const runtime = artifacts.find(
     (row) => row.name === "runtime" && Array.isArray(row.write),
   );
   if (!runtime || !checkArtifact(runtime, root, run).stale) return [];
-  const built = run(runtime.write, root, runtime.timeoutMs ?? 120_000);
-  return [{ name: "runtime", exitCode: built.exitCode }];
+  const built = run(runtime.write, root, runtime.writeLimit);
+  // A build ended for time says which limit ended it: the caller prints it,
+  // since the generated check that follows judges only the stale runtime.
+  return [
+    {
+      name: "runtime",
+      exitCode: built.exitCode,
+      ...(built.timedOut && built.timeLimitKey
+        ? { miss: timeLimitMiss(root, built.timeLimitKey) }
+        : {}),
+    },
+  ];
 }
 
 export function checkGenerated(
