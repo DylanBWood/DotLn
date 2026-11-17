@@ -61570,6 +61570,117 @@
           "at": "2026-11-16T21:55:16.617Z"
         }
       ]
+    },
+    {
+      "id": "FUP-6b0880cd686436b7",
+      "key": "decision:docs/evidence/WO-284/decisions.md#wo-284-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ecc2400405bca1b6dbf95548e632702dc02930c735123ce0f51968a5b838fc5b",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d019--the-operators-scope-expansion-for-the-drive-router-narrowed-by-the-operator-to-an-architecture-kept-for-planning-two-workers-proposals-and-their-synthesis",
+          "title": "WO-284-D019: Planning, priority high: the drive router's in-session phases and operator directions, from docs/evidence/WO-284/drive-architecture.md. Two orders are recommended: (1) operator…",
+          "summary": "{ \"id\": \"WO-284-D019\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; the operator's scope expansion of 00:46 UTC on 2026-11-17 and the three directions that followed it by 00:51 UTC\", \"decision\": \"The operator, on learning that drive starts each phase as a separate CLI session and takes no data for a phase, expanded this order's scope: the drive router was to gain a way to run phases as the router session's own subagents or as a host workflow, which the operator says was drive's original requirement and gives cost as the reason for, and a way to pass data that the router relays to named phases. Three directions followed within five minutes: a new, separate router is acceptable if that is ",
+          "missing": false
+        },
+        {
+          "hash": "c9e1d4b9ac95f21bfc87d64e01dac79c989ac715ba0c7c1c8f330316144ef9da",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d019--the-operators-scope-expansion-for-the-drive-router-narrowed-by-the-operator-to-an-architecture-kept-for-planning-two-workers-proposals-and-their-synthesis",
+          "title": "WO-284-D019: Planning, priority high: the drive router's in-session phases and operator directions, from docs/evidence/WO-284/drive-architecture.md. Two orders are recommended: (1) operator…",
+          "summary": "{ \"id\": \"WO-284-D019\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; the operator's scope expansion of 00:46 UTC on 2026-11-17 and the three directions that followed it by 00:51 UTC\", \"decision\": \"The operator, on learning that drive starts each phase as a separate CLI session and takes no data for a phase, expanded this order's scope: the drive router was to gain a way to run phases as the router session's own subagents or as a host workflow, which the operator says was drive's original requirement and gives cost as the reason for, and a way to pass data that the router relays to named phases. Three directions followed within five minutes: a new, separate router is acceptable if that is ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-43dcc85cd5df9fcb",
+      "key": "decision:docs/evidence/WO-284/decisions.md#wo-284-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02afc91fb5af32fffe81fc51fa2e69c09dde2c1fa5985aa3c07ddae100263988",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d030--retain-the-earlier-nonblocking-limits-with-a-named-follow-up",
+          "title": "WO-284-D030: WO-284 retained verification limits: preserve malformed top-level limits data on write; expand the AST inventory beyond inline expressions; prove cold guard startup room on a slower…",
+          "summary": "{ \"id\": \"WO-284-D030\", \"date\": \"2026-11-17\", \"dispatch\": \"Independent verification of WO-284; operator request captured only in ignored intake, SHA-256 178bcbd58fc08915589973085820ecdf0c626ff9a7489b401fc033f46f80faae\", \"decision\": \"Carry forward the documented nonblocking observations from D017, D021 and D022 without expanding verification into repair. The supported-input blocker is D029; these observations do not independently break a declared criterion or reproduce a regression from main.\", \"evidence\": [ \"docs/evidence/WO-284/handoff.md, retained notes\", \"docs/evidence/WO-284/decisions.md, D017, D021 and D022\", \"scripts/test-runner.test.mjs, gate-path AST inventory and lane-share fixture\",",
+          "missing": false
+        },
+        {
+          "hash": "641d61fab37117fd2c0219fb9a2082120d3d1ceb15f774362406ea80a66470ef",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d030--retain-the-earlier-nonblocking-limits-with-a-named-follow-up",
+          "title": "WO-284-D030: WO-284 retained verification limits: preserve malformed top-level limits data on write; expand the AST inventory beyond inline expressions; prove cold guard startup room on a slower…",
+          "summary": "{ \"id\": \"WO-284-D030\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: verify; independent judgment of WO-284. Ignored request capture SHA-256 178bcbd58fc08915589973085820ecdf0c626ff9a7489b401fc033f46f80faae\", \"decision\": \"Carry forward the documented nonblocking observations from D017, D021 and D022 without expanding verification into repair. The supported-input blocker is D029; these observations do not independently break a declared criterion or reproduce a regression from main.\", \"evidence\": [ \"docs/evidence/WO-284/handoff.md, retained notes\", \"docs/evidence/WO-284/decisions.md, D017, D021 and D022\", \"scripts/test-runner.test.mjs, gate-path AST inventory and lane-share fixture\", \"scripts/test",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-65f7511f598b6b16",
+      "key": "decision:docs/evidence/WO-284/decisions.md#wo-284-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "91b47ff9adeae57e771940c4076bee2854f1dbec3d98262e9105f262b0ce3360",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d009--the-closeout-selection-says-a-complete-run-is-satisfied-by-the-row-the-final-reviews-claim-would-consume",
+          "title": "WO-284-D009: Where the selection owes the complete launchpad run and a passing complete review row stands at the current code identity, the briefing and worktree integrate now print that the run is…",
+          "summary": "{ \"id\": \"WO-284-D009\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: next; step 7, the closeout selection\", \"decision\": \"Where the selection owes the complete launchpad run and a passing complete review row stands at the current code identity, the briefing and worktree integrate now print that the run is satisfied by that row, with when it was recorded and how long it took, and list the document gate alone. The row is found by the lookup the final review's claim already used, moved out of requireFinalReviewGate into standingReviewRow in the handoff ledger: the review selection as the runner would list it now, and the newest standing complete review row that covers it with each suite executed an",
+          "missing": false
+        },
+        {
+          "hash": "3e3bb8ba66791c16a2285ba59ccc36b50df0e03ddb91eea45f6b6e9f96ec2ad8",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d009--the-closeout-selection-says-a-complete-run-is-satisfied-by-the-row-the-final-reviews-claim-would-consume",
+          "title": "WO-284-D009: Where the selection owes the complete launchpad run and a passing complete review row stands at the current code identity, the briefing and worktree integrate now print that the run is…",
+          "summary": "{ \"id\": \"WO-284-D009\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: next; step 7, the closeout selection\", \"decision\": \"Where the selection owes the complete launchpad run and a passing complete review row stands at the current code identity, the briefing and worktree integrate now print that the run is satisfied by that row, with when it was recorded and how long it took, and list the document gate alone. The row is found by the lookup the final review's claim already used, moved out of requireFinalReviewGate into standingReviewRow in the handoff ledger: the review selection as the runner would list it now, and the newest standing complete review row that covers it with each suite executed an",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d008506721f57cc4",
+      "key": "decision:docs/evidence/WO-284/decisions.md#wo-284-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f0b29c9a3890dbe4ecdc299d17cc9829fd6d0de19c0ef3ea57f18f790b73fd7f",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d034--the-repairs-one-combined-review-five-notes-each-judged-and-recorded-and-two-texts-of-the-repair-corrected-to-say-only-what-the-code-does",
+          "title": "WO-284-D034: WO-284 repair review notes: judge a target order's change to the limits file (and the budgets) by the figures it changes, so an edit that changes none owes no launchpad run; give the…",
+          "summary": "{ \"id\": \"WO-284-D034\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: fix; the repair's one combined review over its change since the tree the verification judged, its five notes and what becomes of each\", \"decision\": \"One worker carrying the criteria, design and consistency briefs read the repair's change from base tree f080f9ca1bb1e539a85eb545c140a0e0716dacfe, the tree VER-001 judged, to reviewed tree 7604880ed05c3e2126f13eeb4b1e28309d1bfb30, from 06:39 to 06:56 UTC. It ran the repair's cases and the generated checks and found the rule held at every reader it traced, no regression against main and criterion 9's feedback edition still current. It made five findings, all notes. The rule of this ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3a53a5f411295493",
+      "key": "decision:docs/evidence/WO-284/decisions.md#wo-284-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f887fd7441918197954248ec8bdf8f99e3d1bd41bc38f6bce59914ee27a9bee3",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d003--the-tables-keys-and-the-kits-figures-each-with-the-times-it-rests-on",
+          "title": "WO-284-D003: packages/skeleton/src/time-limits.mjs holds 38 keys (39 before the review's round 1; WO-284-D017 holds what changed and why: three figures back at main's, two configuration-root keys…",
+          "summary": "{ \"id\": \"WO-284-D003\", \"date\": \"2026-11-16\", \"dispatch\": \"resume: next; step 1, the table of the gate path's time limits\", \"decision\": \"packages/skeleton/src/time-limits.mjs holds 38 keys (39 before the review's round 1; WO-284-D017 holds what changed and why: three figures back at main's, two configuration-root keys gone, the probe's selection key renamed and the guard's runner pause added). The order's rule sets each figure: a step an instance's own gate runs gets at least ten times its slowest passing time in core's gate record of the thirty days before the order, no suite row gets under five minutes, and a row only core's complete run uses gets at least three times its slowest passing ti",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c64f814adf5ff191",
+      "key": "decision:docs/evidence/WO-284/decisions.md#wo-284-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "744962d4866aa5bac5b79d23637658e9ff6319fe4699fcef1774b4e507bc732e",
+          "ref": "docs/evidence/WO-284/decisions.md#wo-284-d040--the-default-task-limits-reopening-condition-is-met-in-the-orders-own-passing-run-a-core-file-task-took-9209-s-the-figure-stays-and-the-finding-is-boarded",
+          "title": "WO-284-D040: Core's slowest test file and the default task limit: bring scripts/test-target-worktree-close.mjs back to a time the default covers three times over, by dividing or lightening the file,…",
+          "summary": "{ \"id\": \"WO-284-D040\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: final review; a reopening condition of the figures decision, met in the gate row this review consumes\", \"decision\": \"In the passing complete review row that stands at the reviewed code identity, the target-worktree close file took 920,870 ms under suite.default at 2,700,000 ms. WO-284-D003 names a core row passing 900 s as the first reason to reopen that figure, so it is reopened here. Its rule for a row only core runs is three times the slowest passing time: three times this run is 2,762,610 ms, 62,610 ms above the figure, which leaves 2.93 times. The order's Design states the rule over core's gate record of the thirty days b",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

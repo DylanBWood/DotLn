@@ -1,0 +1,790 @@
+{
+  "schemaVersion": 1,
+  "subjectCodeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+  "priorFinding": {
+    "reproduction": "docs/evidence/WO-284/verification-001-probe.mjs",
+    "exitCode": 0,
+    "contractFailures": [],
+    "raised": {
+      "resolved": 5400000,
+      "identityUnchanged": true,
+      "task": [
+        {
+          "name": "document-barrier",
+          "timeoutMs": 5400000
+        },
+        {
+          "name": "slow",
+          "timeoutMs": 5400000
+        }
+      ]
+    },
+    "changed": {
+      "resolved": 27,
+      "identityUnchanged": true,
+      "standingReview": false,
+      "forced": {
+        "exitCode": 1,
+        "forcedReason": "independent check after changing the limits configuration",
+        "tasks": [
+          {
+            "name": "document-barrier",
+            "exitCode": 0,
+            "timeoutMs": 27
+          },
+          {
+            "name": "slow",
+            "exitCode": 1,
+            "failureKind": "timeout",
+            "timeoutMs": 27,
+            "timeLimitKey": "suite.default"
+          }
+        ]
+      }
+    },
+    "unreasoned": {
+      "exitCode": 1,
+      "executed": true
+    },
+    "checks": [
+      {
+        "name": "enforce false lets slow row finish",
+        "pass": true
+      },
+      {
+        "name": "invalid value advises once, scaled fallback, owner fields preserved, every key listed",
+        "pass": true
+      },
+      {
+        "name": "same-process configuration root relocation invalidates cached reading",
+        "pass": true
+      }
+    ]
+  },
+  "independent": {
+    "observedAt": "2026-11-17T08:35:12.342Z",
+    "subject": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+    "checks": [
+      {
+        "name": "A linked worktree cannot carry main results under different effective limits",
+        "pass": true
+      },
+      {
+        "name": "Equivalent scale and explicit-per-key files carry main results and stand locally",
+        "pass": true
+      },
+      {
+        "name": "A later main execution under other limits displaces an earlier carried pass through every reader",
+        "pass": true
+      },
+      {
+        "name": "A fresh execution restores standing; an authored prose edit preserves the forced-run answer",
+        "pass": true
+      },
+      {
+        "name": "A changed nested-child limit invalidates standing even when the suite timeout is unchanged",
+        "pass": true
+      }
+    ]
+  },
+  "export": {
+    "scale": 0.3333333333333333,
+    "outlivedArm": {
+      "command": "npm test",
+      "wallMs": 1488,
+      "key": "suite.format",
+      "figureMs": 1
+    },
+    "selections": [
+      {
+        "command": "npm test",
+        "durationMs": 15119,
+        "tasks": [
+          {
+            "name": "format",
+            "durationMs": 6277,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.format"
+          },
+          {
+            "name": "configuration",
+            "durationMs": 82,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.configuration"
+          },
+          {
+            "name": "registrations",
+            "durationMs": 100,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.registrations"
+          },
+          {
+            "name": "declarations",
+            "durationMs": 1304,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.declarations"
+          },
+          {
+            "name": "generated",
+            "durationMs": 6534,
+            "timeoutMs": 200000,
+            "timeLimitKey": "suite.generated"
+          },
+          {
+            "name": "host",
+            "durationMs": 136,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.host"
+          },
+          {
+            "name": "kit-verify",
+            "durationMs": 164,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          }
+        ]
+      },
+      {
+        "command": "npm run test:docs",
+        "durationMs": 31308,
+        "tasks": [
+          {
+            "name": "format",
+            "durationMs": 6130,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.format"
+          },
+          {
+            "name": "configuration",
+            "durationMs": 81,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.configuration"
+          },
+          {
+            "name": "registrations",
+            "durationMs": 99,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.registrations"
+          },
+          {
+            "name": "declarations",
+            "durationMs": 1292,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.declarations"
+          },
+          {
+            "name": "generated",
+            "durationMs": 6783,
+            "timeoutMs": 200000,
+            "timeLimitKey": "suite.generated"
+          },
+          {
+            "name": "host",
+            "durationMs": 137,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.host"
+          },
+          {
+            "name": "kit-verify",
+            "durationMs": 163,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "terms",
+            "durationMs": 100,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "harness-context",
+            "durationMs": 419,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "docs-check",
+            "durationMs": 1602,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "license-surfaces",
+            "durationMs": 4592,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "reader-profiles",
+            "durationMs": 62,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "entropy",
+            "durationMs": 126,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "plan",
+            "durationMs": 467,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          },
+          {
+            "name": "plan-refutation-current",
+            "durationMs": 11317,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          }
+        ]
+      },
+      {
+        "command": "npm test -- --review",
+        "durationMs": 14646,
+        "tasks": [
+          {
+            "name": "format",
+            "durationMs": 6155,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.format"
+          },
+          {
+            "name": "configuration",
+            "durationMs": 84,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.configuration"
+          },
+          {
+            "name": "registrations",
+            "durationMs": 102,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.registrations"
+          },
+          {
+            "name": "declarations",
+            "durationMs": 1308,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.declarations"
+          },
+          {
+            "name": "generated",
+            "durationMs": 6166,
+            "timeoutMs": 200000,
+            "timeLimitKey": "suite.generated"
+          },
+          {
+            "name": "host",
+            "durationMs": 137,
+            "timeoutMs": 100000,
+            "timeLimitKey": "suite.host"
+          },
+          {
+            "name": "kit-verify",
+            "durationMs": 163,
+            "timeoutMs": 900000,
+            "timeLimitKey": "suite.default"
+          }
+        ]
+      }
+    ]
+  },
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-284/verification-001-probe.mjs",
+      "startedAt": "2026-11-17T08:24:03.085Z",
+      "finishedAt": "2026-11-17T08:24:07.711Z",
+      "durationMs": 4626,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'WO-284 criterion 1|WO-284 criterion 7|WO-284 criterion 4|WO-284 criteria 1 and 2' scripts/test-runner.test.mjs",
+      "startedAt": "2026-11-17T08:24:36.904Z",
+      "finishedAt": "2026-11-17T08:25:02.587Z",
+      "durationMs": 25683,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern '^the exported instance checks runtime, coordination records and explicit diagnostics separately$' scripts/test-launchpad-export.mjs",
+      "startedAt": "2026-11-17T08:26:48.162Z",
+      "finishedAt": "2026-11-17T08:29:30.901Z",
+      "durationMs": 162738,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern '^WO-284 criterion 6' scripts/test-worktree-integration.mjs",
+      "startedAt": "2026-11-17T08:30:28.999Z",
+      "finishedAt": "2026-11-17T08:30:38.682Z",
+      "durationMs": 9683,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern 'time limits resolve|limits lists every key' scripts/test-configuration-root.mjs",
+      "startedAt": "2026-11-17T08:31:05.606Z",
+      "finishedAt": "2026-11-17T08:31:06.178Z",
+      "durationMs": 571,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-284/verification-002-probe.mjs",
+      "startedAt": "2026-11-17T08:35:12.269Z",
+      "finishedAt": "2026-11-17T08:35:14.643Z",
+      "durationMs": 2374,
+      "exitCode": 0,
+      "executed": true,
+      "droppedOutputBytes": 0
+    }
+  ],
+  "consumedGates": {
+    "observedAt": "2026-11-17T08:31:54.363Z",
+    "identity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+    "timeLimitsDigest": null,
+    "standingReview": {
+      "checkId": "npm test",
+      "treeHash": "0894a66d34b68ef9b16763208ce31ead1c44fb77",
+      "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+      "durationMs": 3073649,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:npm test",
+      "recordedAt": "2026-11-17T07:53:35.669Z",
+      "gateSelection": "review",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 124,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "launchpad",
+        "workstream-pilot",
+        "instance-history",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "fixture-temp-root",
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "harness-fixtures",
+        "plan-refutation",
+        "runner-fixtures",
+        "sync-fixtures",
+        "process-debt"
+      ],
+      "taskCount": 124
+    },
+    "coveringProduct": {
+      "checkId": "npm test",
+      "treeHash": "dda6b5e549eb1f910f1cf698a220bcf503506cd8",
+      "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+      "durationMs": 61608,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:npm test",
+      "recordedAt": "2026-11-17T07:55:51.177Z",
+      "gateSelection": "plain",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 7,
+      "reusedSuites": 106,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "launchpad",
+        "workstream-pilot",
+        "instance-history",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants"
+      ],
+      "taskCount": 113
+    },
+    "plain": {
+      "checkId": "npm test",
+      "treeHash": "dda6b5e549eb1f910f1cf698a220bcf503506cd8",
+      "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+      "durationMs": 61608,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:npm test",
+      "recordedAt": "2026-11-17T07:55:51.177Z",
+      "gateSelection": "plain",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 7,
+      "reusedSuites": 106,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "launchpad",
+        "workstream-pilot",
+        "instance-history",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants"
+      ],
+      "taskCount": 113
+    },
+    "document": {
+      "checkId": "npm run test:docs",
+      "treeHash": "1eb4ad86ca0284d48bdb49c21c264e9ce11ab8c8",
+      "documentTreeHash": "e8caf61ea97254e87bdc944f14cb6ef78caf72df",
+      "documentTreeExcludes": "docs/evidence/WO-284",
+      "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+      "durationMs": 158339,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:npm run test:docs",
+      "recordedAt": "2026-11-17T08:09:57.550Z",
+      "gateSelection": "document",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 29,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+        "license-surfaces",
+        "resume-docs",
+        "launchpad-docs",
+        "docs-check",
+        "terms",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "harness-context",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "plan",
+        "reader-profiles",
+        "reader-fixtures",
+        "entropy"
+      ],
+      "taskCount": 29
+    },
+    "structural": {
+      "checkId": "structural",
+      "treeHash": "1eb4ad86ca0284d48bdb49c21c264e9ce11ab8c8",
+      "documentTreeHash": "e8caf61ea97254e87bdc944f14cb6ef78caf72df",
+      "documentTreeExcludes": "docs/evidence/WO-284",
+      "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+      "durationMs": 64815,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:structural:2026-11-17T08:09:57.422Z",
+      "recordedAt": "2026-11-17T08:09:57.422Z",
+      "gateSelection": "structural",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 7,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host"
+      ],
+      "taskCount": 7
+    }
+  },
+  "formatCheck": {
+    "command": "npm run format:check",
+    "exitCode": 0,
+    "result": "All matched files use Prettier code style!"
+  },
+  "terms": {
+    "command": "node scripts/terms.mjs branch",
+    "exitCode": 0,
+    "filesScreened": 127,
+    "refuseLines": 0,
+    "contextLines": 0,
+    "linesRead": 0
+  },
+  "documentAttempts": [
+    {
+      "checkId": "npm run test:docs",
+      "treeHash": "a8256288a3c42d26134e895f0b424176fd529dcc",
+      "documentTreeHash": "4de916bb0d6747bd90bc4193a17eaf2fe869475b",
+      "documentTreeExcludes": "docs/evidence/WO-284",
+      "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+      "durationMs": 118619,
+      "exitCode": 1,
+      "executed": true,
+      "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:npm run test:docs",
+      "recordedAt": "2026-11-17T08:38:56.716Z",
+      "gateSelection": "document",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 13,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+        "license-surfaces",
+        "resume-docs",
+        "launchpad-docs",
+        "docs-check",
+        "terms",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "harness-context",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "plan",
+        "reader-profiles",
+        "reader-fixtures",
+        "entropy"
+      ],
+      "taskCount": 29,
+      "failures": [
+        "D037 dispatch requires a control prefix",
+        "D038 dispatch requires a control prefix"
+      ]
+    },
+    {
+      "checkId": "npm run test:docs",
+      "treeHash": "8ff82537893a455574c9998ddf932be2bcd838c7",
+      "documentTreeHash": "05d4da357a563fe65a5e418889ba00b177cb0143",
+      "documentTreeExcludes": "docs/evidence/WO-284",
+      "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+      "durationMs": 147452,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:npm run test:docs",
+      "recordedAt": "2026-11-17T08:43:58.908Z",
+      "gateSelection": "document",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 29,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+        "license-surfaces",
+        "resume-docs",
+        "launchpad-docs",
+        "docs-check",
+        "terms",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "harness-context",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "plan",
+        "reader-profiles",
+        "reader-fixtures",
+        "entropy"
+      ],
+      "taskCount": 29
+    }
+  ],
+  "finalDocument": {
+    "checkId": "npm run test:docs",
+    "treeHash": "8ff82537893a455574c9998ddf932be2bcd838c7",
+    "documentTreeHash": "05d4da357a563fe65a5e418889ba00b177cb0143",
+    "documentTreeExcludes": "docs/evidence/WO-284",
+    "codeIdentity": "e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77",
+    "durationMs": 147452,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:e03bcca317eae92cb7ea8c5b7d5fbb7b9d4403b6beea8f2b46c91c6ab02a9c77:npm run test:docs",
+    "recordedAt": "2026-11-17T08:43:58.908Z",
+    "gateSelection": "document",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 29,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "git-surface",
+      "host",
+      "license-surfaces",
+      "resume-docs",
+      "launchpad-docs",
+      "docs-check",
+      "terms",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ],
+    "taskCount": 29
+  },
+  "dispatchValidation": {
+    "source": "scripts/docs-check.mjs validDispatch",
+    "records": [
+      "WO-284-D037",
+      "WO-284-D038",
+      "WO-284-D039"
+    ],
+    "exitCode": 0
+  },
+  "completionAttempts": [
+    {
+      "exitCode": 1,
+      "cause": "actor-header-mismatch: optional accountLabel present in report and absent from command",
+      "transitionRecorded": false,
+      "correction": "Supply --account-label not-applicable to match the unchanged report"
+    }
+  ]
+}

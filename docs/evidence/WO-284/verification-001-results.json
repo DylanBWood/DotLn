@@ -1,0 +1,130 @@
+{
+  "observedAt": "2026-11-17T04:53:30.091Z",
+  "checks": [
+    {
+      "name": "enforce false lets slow row finish",
+      "pass": true
+    },
+    {
+      "name": "invalid value advises once, scaled fallback, owner fields preserved, every key listed",
+      "pass": true
+    },
+    {
+      "name": "same-process configuration root relocation invalidates cached reading",
+      "pass": true
+    }
+  ],
+  "subject": {
+    "identity": "e092cbf784c70638a87324eaf3eb87b6f007c0b25a2dd2c419aed8c2eee8f302",
+    "row": {
+      "recordedAt": "2026-11-17T04:17:19.412Z",
+      "codeIdentity": "e092cbf784c70638a87324eaf3eb87b6f007c0b25a2dd2c419aed8c2eee8f302",
+      "evidenceRef": "host-gate:e092cbf784c70638a87324eaf3eb87b6f007c0b25a2dd2c419aed8c2eee8f302:npm test",
+      "exitCode": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "git-surface",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "launchpad",
+        "workstream-pilot",
+        "instance-history",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "fixture-temp-root",
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "harness-fixtures",
+        "plan-refutation",
+        "runner-fixtures",
+        "sync-fixtures",
+        "process-debt"
+      ],
+      "taskCount": 124
+    }
+  },
+  "raised": {
+    "resolved": 5400000,
+    "identityUnchanged": true,
+    "task": [
+      {
+        "name": "document-barrier",
+        "timeoutMs": 2700000,
+        "reused": true
+      },
+      {
+        "name": "slow",
+        "timeoutMs": 2700000,
+        "reused": true
+      }
+    ]
+  },
+  "changedConfiguration": {
+    "resolved": 27,
+    "identityUnchanged": true,
+    "standingReview": true,
+    "closeoutMessage": "Independent fixture closeout:\n  npm run test:docs\nThe complete launchpad run is satisfied: a passing complete review row stands at the current code identity, recorded 2026-11-17T04:53:32.588Z (it took 0 h 0 min), and completion consumes it. Only the document gate is owed; an edit to documents alone owes no complete run. The run was owed because the fixture owes its complete review selection.",
+    "skipped": {
+      "exitCode": 0,
+      "executed": false,
+      "satisfiedBy": "host-gate:8c54e7685acbbabfabe5b2778a269ad6850348648be2bae7204afcbfe36d47f1:npm test"
+    },
+    "skipLines": [
+      "npm test: a passing complete row already stands at this code identity: recorded 2026-11-17T04:53:32.588Z, 0 h 0 min, 2 suites, host-gate:8c54e7685acbbabfabe5b2778a269ad6850348648be2bae7204afcbfe36d47f1:npm test.",
+      "Nothing was run. Running the selection again would take about as long as that row did (0 h 0 min) and count as a complete run of this dispatch, for a result the row already holds: a completion consumes it, and an edit to documents alone owes npm run test:docs and no complete run. To run it again all the same, state why and the row will keep it: npm test -- --review --again --reason \"<why>\"."
+    ],
+    "forced": {
+      "exitCode": 1,
+      "forcedReason": "independent check after changing the limits configuration",
+      "tasks": [
+        {
+          "name": "document-barrier",
+          "exitCode": 0,
+          "timeoutMs": 27
+        },
+        {
+          "name": "slow",
+          "exitCode": 1,
+          "failureKind": "timeout",
+          "timeoutMs": 27,
+          "timeLimitKey": "suite.default"
+        }
+      ]
+    }
+  },
+  "contractFailures": [
+    "The raised limit is absent from the current task record.",
+    "The earlier pass still stands after a stricter scale is configured.",
+    "The forced selection skips the newly configured limit."
+  ]
+}
