@@ -233,7 +233,9 @@ export function documentCensus(
     generatedAt: new Date(now()).toISOString(),
     window,
     coverage: {
-      claude: "observed: the hooks journal Read, Edit, Write and Bash rows",
+      // A Bash row is journaled without the files its command reads.
+      claude:
+        "observed: the hooks journal Read, Edit, Write and Bash rows; a file read through the shell is not counted, so the counts are a lower bound",
       copilot: "observed through the shared Claude hook registration",
       codex:
         "unobserved: Codex tool calls are unhooked, so its sessions read nothing here and the counts are a lower bound",

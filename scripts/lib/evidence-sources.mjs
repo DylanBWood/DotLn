@@ -112,6 +112,9 @@ const commonSources = [
   "packages/skeleton/src/beacon-perception.ts",
   "packages/beacons/src/control-codebook.mjs",
   "packages/skeleton/src/gate-deadlines.mjs",
+  // The table of the gate path's time limits, which the gate evidence, the
+  // harness host and the host's native tools read their figures from.
+  "packages/skeleton/src/time-limits.mjs",
   "packages/skeleton/src/loadouts/entropy-reducer.ts",
   "packages/skeleton/src/scenario.ts",
   "packages/skeleton/src/verification-host.ts",

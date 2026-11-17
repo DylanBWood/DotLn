@@ -1,5 +1,6 @@
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { startDeadline } from "./gate-deadlines.mjs";
+import { timeLimit, timeLimitMiss, timeLimitsDigest } from "./time-limits.mjs";
 import {
   isKitRoot,
   packageDirectories,
@@ -421,8 +422,13 @@ export function gateStopRequested(root, runIds = gateRunLineage()) {
  * the markers to clear. The request is a file the running gate reads at its
  * next boundary; a gate that has not reached one yet keeps its request and
  * stays reported as active with its pids. Requests left by dead runs are swept.
- * @param {string} root @param {{waitMs?: number}} [options] */
-export function requestGateStop(root, { waitMs = 20_000 } = {}) {
+ * The wait is the table's evidence.stop-wait, as the root's file sets it;
+ * null, a limit turned off, waits until every run has ended.
+ * @param {string} root @param {{waitMs?: number|null}} [options] */
+export function requestGateStop(
+  root,
+  { waitMs = timeLimit(root, "evidence.stop-wait") } = {},
+) {
   const directory = gateRunsDirectory(root);
   const runs = activeGateRuns(root);
   /** @type {string[]} */
@@ -462,7 +468,8 @@ export function requestGateStop(root, { waitMs = 20_000 } = {}) {
     );
     renameSync(prepared, path);
   }
-  const deadline = Date.now() + Math.max(0, waitMs);
+  const deadline =
+    waitMs === null ? Infinity : Date.now() + Math.max(0, waitMs);
   let active = runs;
   while (active.length && Date.now() < deadline) {
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250);
@@ -486,23 +493,25 @@ export function requestGateStop(root, { waitMs = 20_000 } = {}) {
 }
 /** A PID birth observation prevents reuse from reviving an old marker when ps
  * is available. Signal zero still distinguishes an exited owner in a sandbox.
- * @param {number} pid */
-function gateProcessStart(pid) {
+ * `root` is the root whose file sets the read's time limit.
+ * @param {string} root @param {number} pid */
+function gateProcessStart(root, pid) {
+  const limit = timeLimit(root, "evidence.owner-start");
   const result = spawnSync("ps", ["-p", String(pid), "-o", "lstart="], {
     encoding: "utf8",
-    timeout: 1000,
+    ...(limit === null ? {} : { timeout: limit }),
   });
   return result.status === 0 ? result.stdout.trim() || null : null;
 }
-/** @param {GateRun} run */
-function gateOwnerAlive(run) {
+/** @param {string} root @param {GateRun} run */
+function gateOwnerAlive(root, run) {
   try {
     process.kill(run.pid, 0);
   } catch (error) {
     if (/** @type {NodeJS.ErrnoException} */ (error).code === "ESRCH")
       return false;
   }
-  const started = gateProcessStart(run.pid);
+  const started = gateProcessStart(root, run.pid);
   if (!started) return true;
   if (run.processStartedAt) return started === run.processStartedAt;
   // A legacy marker without a birth observation cannot belong to a process
@@ -549,7 +558,7 @@ export function activeGateRuns(root) {
         )
       )
         throw new Error("Malformed active gate marker");
-      return gateOwnerAlive(run) ? [run] : [];
+      return gateOwnerAlive(root, run) ? [run] : [];
     });
 }
 /** Gate-owned writes (build, preparation and evidence) are internal operations;
@@ -569,7 +578,7 @@ export function beginGateRun(root, command, { kind } = {}) {
     ...(kind ? { kind } : {}),
     pid: process.pid,
     startedAt: new Date().toISOString(),
-    processStartedAt: gateProcessStart(process.pid),
+    processStartedAt: gateProcessStart(root, process.pid),
   };
   const path = join(directory, `${run.runId}.json`);
   const prepared = `${path}.prepare`;
@@ -614,7 +623,7 @@ export function beginGateRun(root, command, { kind } = {}) {
 
 /** @typedef {{exitCode: number, executed: boolean, name?: string, durationMs?: number, finishedAt?: string, reused?: boolean, sourceRow?: {location?: string, task?: string, codeIdentity?: string}, failureKind?: string, timedOut?: boolean, stopped?: boolean, partial?: unknown, excludedSuites?: unknown, output?: string, outputRef?: string, cases?: GateDiagnostic[], taskTimeline?: GateDiagnostic[]}} GateDiagnostic */
 /** @typedef {{originMain: string, main: string, tags: {count: number|"unreadable", newest: string}, dotlnRefs: number|"unreadable"}} SharedRefs */
-/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, instanceInputDigest?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string, requiredSuites?: string[], identityUnchanged?: boolean, buildOutputUnchanged?: boolean, buildOutputAttested?: boolean, memory?: {failure?: unknown}, abandonedRoots?: unknown[], sharedRefs?: {start: SharedRefs, end: SharedRefs}}} GateCheck */
+/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, instanceInputDigest?: string, timeLimitsDigest?: string, timeLimitsUnchanged?: boolean, subject: string, durationMs: number, evidenceRef: string, recordedAt: string, requiredSuites?: string[], identityUnchanged?: boolean, buildOutputUnchanged?: boolean, buildOutputAttested?: boolean, memory?: {failure?: unknown}, abandonedRoots?: unknown[], sharedRefs?: {start: SharedRefs, end: SharedRefs}}} GateCheck */
 /** @param {string} root @param {string[]} args */
 function git(root, args) {
   const run = spawnSync("git", args, {
@@ -1141,18 +1150,30 @@ export function recordGateChecks(root, additions, { sourceRoot } = {}) {
   // Concurrent suites and sessions share this cache. Serialize the short
   // read/replace transaction so one successful record cannot erase another.
   const lock = `${path}.lock`;
-  const deadline = startDeadline("gate-evidence:record-lock", 5000);
+  // The wait for the lock is the table's evidence.record-lock, as the root's
+  // file sets it; null, a limit turned off, waits until the lock is free.
+  const lockMs = timeLimit(root, "evidence.record-lock");
+  const deadline =
+    lockMs === null
+      ? undefined
+      : startDeadline("gate-evidence:record-lock", lockMs);
   for (;;) {
     try {
       mkdirSync(lock);
-      deadline.finish();
+      deadline?.finish();
       break;
     } catch (error) {
       if (/** @type {NodeJS.ErrnoException} */ (error).code !== "EEXIST")
         throw new Error(
           "Host gate evidence lock unavailable; no evidence overwritten",
         );
-      deadline.check();
+      try {
+        deadline?.check();
+      } catch (missed) {
+        throw new Error(
+          `${/** @type {Error} */ (missed).message}. ${timeLimitMiss(root, "evidence.record-lock", lockMs)}`,
+        );
+      }
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10);
     }
   }
@@ -1258,6 +1279,23 @@ export const instanceDigestMismatch = (row, current) =>
     : row.instanceInputDigest === undefined
       ? "missing"
       : "different";
+/** The time limits a gate run starts under, in the form its row records
+ * them beside its code identity and installed inputs: one digest of every
+ * figure in force, undefined where each is the kit's own.
+ * @param {string} root */
+export const gateTimeLimitsDigest = (root) => timeLimitsDigest(root);
+/** Whether a row's passes hold under the time limits `current` names: the
+ * row ran under those limits (the digest it recorded at its start is
+ * `current`, both undefined where every figure was the kit's) and they did
+ * not change before it ended. A pass judged under other limits is not
+ * evidence under these: a raised figure was not the one applied, and a
+ * lowered one might have ended a task the row records as passing. A row
+ * that fails this check still displaces an older pass as an execution; it
+ * only supplies none.
+ * @param {{timeLimitsDigest?: string, timeLimitsUnchanged?: boolean}} row
+ * @param {string|undefined} current */
+export const ranUnderTimeLimits = (row, current) =>
+  row.timeLimitsUnchanged !== false && row.timeLimitsDigest === current;
 /** Row integrity applies to executions under every check, including runs
  * that supply no pass to the product gate.
  * @param {GateCheck} row */
@@ -1390,7 +1428,10 @@ export function latestGateExecution(rows, other, name, identity) {
 
 /** A complete row stands on the same execution decision used by the runner.
  * A carried main result is revalidated against main only when local history
- * supplies no execution of that task.
+ * supplies no execution of that task. Each task's deciding execution, the
+ * candidate's own included, must have run under the time limits the
+ * candidate recorded; a caller that asks whether the row stands now passes
+ * only a candidate recorded under the limits in force.
  * @param {GateCheck} candidate @param {GateCheck[]} rows @param {string} [root]
  */
 export function gateCheckStands(candidate, rows, root) {
@@ -1471,6 +1512,7 @@ export function gateCheckStands(candidate, rows, root) {
       latest.row &&
       latest.result &&
       !partialGateCheck(latest.row) &&
+      ranUnderTimeLimits(latest.row, candidate.timeLimitsDigest) &&
       intactGateExecutionRow(
         latest.row === candidate && candidate.requiredSuites === undefined
           ? { ...latest.row, requiredSuites: [] }
@@ -1485,18 +1527,18 @@ export function gateCheckStands(candidate, rows, root) {
 }
 
 /** Generic tree checks retain successful evidence; product checks also
- * reject complete rows displaced by a task's later failing execution.
+ * reject complete rows displaced by a task's later failing execution, and
+ * rows recorded under time limits other than those in force.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
 export const findGateCheck = (root, checkId, treeHash) => {
-  const codeIdentity =
-    checkId === "npm test" ? gateCodeIdentity(root) : undefined;
-  const instanceInputDigest =
-    checkId === "npm test" ? gateInstanceInputDigest(root) : undefined;
-  const rows = readGateChecks(
-    root,
-    checkId === "npm test" ? undefined : treeHash,
-  );
+  const product = checkId === "npm test";
+  const codeIdentity = product ? gateCodeIdentity(root) : undefined;
+  const instanceInputDigest = product
+    ? gateInstanceInputDigest(root)
+    : undefined;
+  const limits = product ? gateTimeLimitsDigest(root) : undefined;
+  const rows = readGateChecks(root, product ? undefined : treeHash);
   return [...rows]
     .reverse()
     .find(
@@ -1504,13 +1546,13 @@ export const findGateCheck = (root, checkId, treeHash) => {
         row.checkId === checkId &&
         (instanceInputDigest === undefined ||
           row.instanceInputDigest === instanceInputDigest) &&
-        (checkId === "npm test"
-          ? row.codeIdentity === codeIdentity
+        (product
+          ? row.codeIdentity === codeIdentity && ranUnderTimeLimits(row, limits)
           : row.treeHash === treeHash) &&
         !partialGateCheck(row) &&
         row.executed === true &&
         row.exitCode === 0 &&
-        (checkId !== "npm test" || gateCheckStands(row, rows, root)) &&
+        (!product || gateCheckStands(row, rows, root)) &&
         Number.isFinite(row.durationMs) &&
         row.durationMs >= 0 &&
         Boolean(row.evidenceRef),

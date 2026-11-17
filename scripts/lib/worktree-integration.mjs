@@ -47,7 +47,9 @@ import { dropInventoriedStash } from "./stash-drop.mjs";
 import {
   closeoutHeadings,
   closeoutRunnerFor,
+  closeoutSatisfiedBy,
   closeoutScope,
+  closeoutStandingFor,
   closeoutText,
   integrationReceiptPath,
 } from "./closeout-scope.mjs";
@@ -604,15 +606,19 @@ export async function mergedMachinery(root, before, upstream) {
 // The checks this order owes at its closeout, from the selection its briefing
 // and completion also print, spelled for the target worktree of a target
 // order. The selection never throws; what it cannot read keeps the run.
-const owedChecks = async (root, workOrder, receipt) =>
-  closeoutText(
+const owedChecks = async (root, workOrder, receipt) => {
+  const runner = await closeoutRunnerFor(root, workOrder);
+  const owed = closeoutScope(root, workOrder, { runner, receipt });
+  return closeoutText(
     root,
-    closeoutScope(root, workOrder, {
-      runner: await closeoutRunnerFor(root, workOrder),
-      receipt,
-    }),
+    // A selection that owes the complete run reads the gate index for the
+    // row at the identity the integration left, where one stands.
+    owed.launchpad === "complete"
+      ? closeoutSatisfiedBy(owed, await closeoutStandingFor(root))
+      : owed,
     { heading: closeoutHeadings.owed, qualified: true },
   );
+};
 
 export async function integrateWorktree(root, workOrder, args = []) {
   root = realpathSync(root);

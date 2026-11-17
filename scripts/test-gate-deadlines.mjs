@@ -19,7 +19,11 @@ import {
 import { executeSuite, scheduleSuites } from "./test-runner.mjs";
 import { suiteEnvironment } from "./lib/suite-evidence.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
-import { checkMeasurementSeries, measurementGate } from "./measure-gates.mjs";
+import {
+  MEASUREMENT_REASON,
+  checkMeasurementSeries,
+  measurementGate,
+} from "./measure-gates.mjs";
 
 const shared = {
   DOTLN_GATE_LOAD_CLASS: "shared",
@@ -473,6 +477,16 @@ test("three-run measurement requires capacity, task RSS, peers and successful ta
     })),
   };
   assert.equal(checkMeasurementSeries(series).runs, 3);
+  // A series written since a forced complete selection needs a stated reason
+  // records the reason the tool passed beside the command; one written
+  // before has none, and any other text is not the tool's.
+  assert.equal(
+    checkMeasurementSeries({ ...series, reason: MEASUREMENT_REASON }).runs,
+    3,
+  );
+  assert.throws(() =>
+    checkMeasurementSeries({ ...series, reason: "another reason" }),
+  );
   for (const mutate of [
     (copy) => {
       delete copy.runs[0].gate.taskTimeline[1].peakRssBytes;
@@ -575,7 +589,7 @@ test("lane wait unions overlapping tasks, attributes relation changes and separa
 });
 
 test("measured structural requests let a sibling document gate progress beside complete work", async (t) => {
-  const { runGate, suites, STRUCTURAL_TASKS, structuralHostSlots } =
+  const { runGate, suites, CORE_STRUCTURAL_TASKS, structuralHostSlots } =
     await import("./test-runner.mjs");
   const { acquireHostLaneCapacity } = await import("./lib/host-lanes.mjs");
   const { delay, processAlive, readHostSnapshot } =
@@ -666,17 +680,23 @@ test("measured structural requests let a sibling document gate progress beside c
           hostSlots:
             sizing === "measured" ? structuralHostSlots["kit-verify"] : 8,
         },
-        ...STRUCTURAL_TASKS.map((name) => ({
-          ...suites.find((row) => row.name === name),
-          args: [],
-          command: command(250),
-          needsBuild: false,
-          document: true,
-          hostSlots:
-            sizing === "measured"
-              ? suites.find((row) => row.name === name).hostSlots
-              : 8,
-        })),
+        // The fixture root holds no kit manifest, so it is core: its
+        // structural rows are core's, without the Git surface check, whose
+        // record the fixture does not carry. An instance's list here would
+        // leave its configuration row out of a core root's selection.
+        ...CORE_STRUCTURAL_TASKS.filter((name) => name !== "git-surface").map(
+          (name) => ({
+            ...suites.find((row) => row.name === name),
+            args: [],
+            command: command(250),
+            needsBuild: false,
+            document: true,
+            hostSlots:
+              sizing === "measured"
+                ? suites.find((row) => row.name === name).hostSlots
+                : 8,
+          }),
+        ),
       ];
       doc = await runGate(["--document", "--again"], documentRepo, {
         table: documentTable,

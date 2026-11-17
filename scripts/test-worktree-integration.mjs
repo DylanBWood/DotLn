@@ -3086,3 +3086,212 @@ test("integration guards the primary checkout while a planning pass has it off m
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.equal(text(f.subject, "authored-fixture.md"), "upstream intent\n");
 });
+
+test("WO-284 criterion 6: where a passing complete review row stands at the code identity, the owed list says the complete run is satisfied, names the row's time and lists the document gate alone; with no row or an unreadable gate index it lists the complete run as before", async (t) => {
+  const { gateCodeIdentity, gateTreeHash, recordGateChecks, checksPath } =
+    await import("./lib/gate-evidence.mjs");
+  const { closeoutScope, closeoutText, closeoutHeadings, closeoutStandingFor } =
+    await import("./lib/closeout-scope.mjs");
+  const f = fixture(t, { authored: false, generators: "focused" });
+  const owed =
+    /Owed by this order \(its closeout selection; not run\):\n  npm test -- --review\n  npm run test:docs\nThe complete launchpad run is owed because this is a launchpad order, and the complete run is its own repository's gate\.\n/u;
+  // No row stands: the complete run is listed, as it was.
+  const first = f.invoke();
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  assert.match(first.stdout, owed);
+  assert.equal(await closeoutStandingFor(f.subject), undefined);
+
+  // A passing complete review row at the identity the integration left,
+  // naming the review selection as the subject's own runner lists it.
+  const listing = run(f.subject, process.execPath, [
+    "scripts/test-runner.mjs",
+    "--review",
+    "--list",
+    "--selected",
+  ]);
+  assert.equal(listing.status, 0, listing.stderr);
+  const names = listing.stdout
+    .split("\n")
+    .map((line) => /^(\S+) — /u.exec(line)?.[1])
+    .filter(Boolean);
+  assert.ok(names.includes("worktree-integration"), names.join(" "));
+  const codeIdentity = gateCodeIdentity(f.subject);
+  const recordedAt = new Date(Date.now() - 60_000).toISOString();
+  const task = (name) => ({
+    name,
+    executed: true,
+    exitCode: 0,
+    durationMs: 1,
+    startedAt: recordedAt,
+    finishedAt: recordedAt,
+  });
+  const passing = {
+    checkId: "npm test",
+    gateSelection: "review",
+    treeHash: gateTreeHash(f.subject),
+    codeIdentity,
+    subject: gateTreeHash(f.subject),
+    durationMs: 2_820_000,
+    exitCode: 0,
+    executed: true,
+    identityUnchanged: true,
+    evidenceRef: `host-gate:${codeIdentity}:npm test`,
+    recordedAt,
+    requiredSuites: names,
+    cases: names.map(task),
+    taskTimeline: names.map(task),
+  };
+  recordGateChecks(f.subject, [passing]);
+  assert.deepEqual(await closeoutStandingFor(f.subject), {
+    recordedAt,
+    durationMs: 2_820_000,
+    evidenceRef: passing.evidenceRef,
+  });
+  const second = f.invokeStages([], []);
+  assert.equal(second.status, 0, second.stdout + second.stderr);
+  assert.ok(
+    second.stdout.includes(
+      `Owed by this order (its closeout selection; not run):\n  npm run test:docs\nThe complete launchpad run is satisfied: a passing complete review row stands at the current code identity, recorded ${recordedAt} (it took 0 h 47 min), and completion consumes it. Only the document gate is owed; an edit to documents alone owes no complete run. The run was owed because this is a launchpad order, and the complete run is its own repository's gate.\n`,
+    ),
+    second.stdout,
+  );
+  assert.doesNotMatch(second.stdout, /\n  npm test -- --review\n/u);
+
+  // The briefing command prints the satisfied form too, through its own
+  // read of the gate index: nothing is handed to it.
+  const briefed = () =>
+    run(f.subject, process.execPath, ["scripts/resume.mjs", "briefing"]);
+  const standingBriefing = briefed();
+  assert.equal(
+    standingBriefing.status,
+    0,
+    standingBriefing.stdout + standingBriefing.stderr,
+  );
+  assert.ok(
+    standingBriefing.stdout.includes(
+      `The complete launchpad run is satisfied: a passing complete review row stands at the current code identity, recorded ${recordedAt} (it took 0 h 47 min), and completion consumes it. Only the document gate is owed`,
+    ),
+    standingBriefing.stdout,
+  );
+  assert.doesNotMatch(standingBriefing.stdout, /\n\s*npm test -- --review\n/u);
+
+  // The row ran under the kit's figures. A changed time limit leaves it
+  // standing nowhere, so the briefing lists the complete run again; a file
+  // that names the kit's figures once more leaves it standing as before.
+  const { timeLimitsPath } =
+    await import("../packages/skeleton/src/time-limits.mjs");
+  const limits = join(f.subject, timeLimitsPath(f.subject));
+  const seeded = existsSync(limits) ? readFileSync(limits, "utf8") : null;
+  mkdirSync(dirname(limits), { recursive: true });
+  writeFileSync(limits, `${JSON.stringify({ scale: 2 })}\n`);
+  assert.equal(await closeoutStandingFor(f.subject), undefined);
+  const limitedBriefing = briefed();
+  assert.equal(
+    limitedBriefing.status,
+    0,
+    limitedBriefing.stdout + limitedBriefing.stderr,
+  );
+  assert.match(
+    limitedBriefing.stdout,
+    /npm test -- --review\n\s*npm run test:docs\nThe complete launchpad run is owed because this is a launchpad order/u,
+  );
+  assert.doesNotMatch(limitedBriefing.stdout, /launchpad run is satisfied/u);
+  writeFileSync(
+    limits,
+    `${JSON.stringify({ note: "the kit's figures", limits: { "suite.default": { set: "kit" } } })}\n`,
+  );
+  assert.equal((await closeoutStandingFor(f.subject))?.recordedAt, recordedAt);
+  if (seeded === null) rmSync(limits);
+  else writeFileSync(limits, seeded);
+
+  // The briefing prints the same selection: the same two forms.
+  const briefing = (standing) =>
+    closeoutText(f.subject, closeoutScope(f.subject, "WO-998", { standing }), {
+      heading: closeoutHeadings.briefing,
+      qualified: true,
+    });
+  assert.ok(
+    briefing(await closeoutStandingFor(f.subject)).endsWith(
+      `):\n  npm run test:docs\nThe complete launchpad run is satisfied: a passing complete review row stands at the current code identity, recorded ${recordedAt} (it took 0 h 47 min), and completion consumes it. Only the document gate is owed; an edit to documents alone owes no complete run. The run was owed because this is a launchpad order, and the complete run is its own repository's gate.`,
+    ),
+  );
+  assert.ok(
+    briefing(undefined).endsWith(
+      "):\n  npm test -- --review\n  npm run test:docs\nThe complete launchpad run is owed because this is a launchpad order, and the complete run is its own repository's gate.",
+    ),
+  );
+
+  // A later failed run of a task displaces the row: nothing stands, and the
+  // complete run is listed again.
+  const failedAt = new Date().toISOString();
+  recordGateChecks(f.subject, [
+    {
+      ...passing,
+      exitCode: 1,
+      recordedAt: failedAt,
+      evidenceRef: `${passing.evidenceRef}:failed`,
+      cases: names.map((name) => ({
+        ...task(name),
+        startedAt: failedAt,
+        finishedAt: failedAt,
+        ...(name === "worktree-integration" ? { exitCode: 1 } : {}),
+      })),
+      taskTimeline: names.map((name) => ({
+        ...task(name),
+        startedAt: failedAt,
+        finishedAt: failedAt,
+        ...(name === "worktree-integration" ? { exitCode: 1 } : {}),
+      })),
+    },
+  ]);
+  assert.equal(await closeoutStandingFor(f.subject), undefined);
+  const third = f.invokeStages([], []);
+  assert.equal(third.status, 0, third.stdout + third.stderr);
+  assert.match(third.stdout, owed);
+  // The briefing command lists the complete run again as well.
+  const displacedBriefing = briefed();
+  assert.equal(
+    displacedBriefing.status,
+    0,
+    displacedBriefing.stdout + displacedBriefing.stderr,
+  );
+  assert.match(
+    displacedBriefing.stdout,
+    /npm test -- --review\n\s*npm run test:docs\nThe complete launchpad run is owed because this is a launchpad order/u,
+  );
+  assert.doesNotMatch(displacedBriefing.stdout, /launchpad run is satisfied/u);
+  // For a target order the satisfied sentence says what remains of the
+  // launchpad's own checks and does not say a completion consumes the row:
+  // the target's claim rests on its own gate, which stays listed.
+  const { closeoutSatisfiedBy } = await import("./lib/closeout-scope.mjs");
+  const targetScope = closeoutSatisfiedBy(
+    {
+      workOrder: "WO-998",
+      repositoryId: "fixture-target",
+      target: { selection: "plain" },
+      launchpad: "complete",
+      satisfied: null,
+      reasons: ["the order changed a launchpad path"],
+    },
+    { recordedAt, durationMs: 2_820_000, evidenceRef: passing.evidenceRef },
+  );
+  const targetText = closeoutText(f.subject, targetScope, {
+    heading: closeoutHeadings.briefing,
+  });
+  assert.ok(
+    targetText.includes(
+      `recorded ${recordedAt} (it took 0 h 47 min). Of the launchpad's checks only the document gate is owed, beside the target's own gate; an edit to documents alone owes no complete run.`,
+    ),
+    targetText,
+  );
+  assert.doesNotMatch(targetText, /completion consumes it/u);
+  assert.match(targetText, /node scripts\/target-gate\.mjs WO-998\n/u);
+
+  // A gate index that cannot be read answers nothing: the run is listed as
+  // before and the command exits as before.
+  writeFileSync(checksPath(f.subject), "{ not json");
+  assert.equal(await closeoutStandingFor(f.subject), undefined);
+  const fourth = f.invokeStages([], []);
+  assert.equal(fourth.status, 0, fourth.stdout + fourth.stderr);
+  assert.match(fourth.stdout, owed);
+});

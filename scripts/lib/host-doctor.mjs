@@ -35,7 +35,7 @@ import {
 import {
   judgeRunningGit,
   judgeRunningNode,
-  readGitVersion,
+  readGitVersionOutcome,
 } from "./node-engines.mjs";
 import { createScratchRoot, removeTemporaryPath } from "./temporary-roots.mjs";
 
@@ -91,7 +91,11 @@ export function hostFacts(root = TOOL_ROOT) {
   return {
     root,
     nodeVersion: process.version,
-    gitVersion: readGitVersion(),
+    // One read of Git's version, with what ended it where a time limit did.
+    ...(({ version, miss }) => ({
+      gitVersion: version,
+      ...(miss ? { gitVersionMiss: miss } : {}),
+    }))(readGitVersionOutcome()),
     platform: process.platform,
     // WSL reports Linux and names its kernel's maker; the second
     // generation's kernel carries its own tag, and the first's does not.
@@ -245,12 +249,17 @@ export function hostReport(root = TOOL_ROOT, facts = hostFacts(root)) {
     "every script of the kit, the gate and the hooks",
     node.admitted ? "none" : node.message,
   );
-  const git = judgeRunningGit(root, facts.gitVersion);
+  const git = judgeRunningGit(root, {
+    version: facts.gitVersion,
+    miss: facts.gitVersionMiss,
+  });
   row(
     "git",
     "Git is at or above the floor package.json engines.git declares",
     facts.gitVersion === null
-      ? "Git did not run"
+      ? facts.gitVersionMiss
+        ? "git --version was ended at its time limit"
+        : "Git did not run"
       : `Git ${version(facts.gitVersion) ?? "of an unread version"}`,
     judged(git.admitted),
     "worktrees, updates and every Git read the scripts make",

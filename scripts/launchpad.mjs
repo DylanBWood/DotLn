@@ -62,6 +62,8 @@ import { requireOperatorCapture } from "./lib/off-ramps.mjs";
 import {
   DOCS_MAP_SEED,
   DOCS_MAP_TEMPLATE,
+  TIME_LIMITS_SEED,
+  TIME_LIMITS_TEMPLATE,
   docsMapUnlinked,
   exportConfiguration,
   exportSeedPaths,
@@ -245,6 +247,9 @@ export const BUILD_FREE_MODULES = Object.freeze([
   "packages/skeleton/src/duration.mjs",
   "packages/skeleton/src/dispatch-journal.mjs",
   "packages/skeleton/src/test-selection.mjs",
+  // The table of the gate path's time limits and its resolver, which the
+  // runner, the structural checks and the host modules read with no build.
+  "packages/skeleton/src/time-limits.mjs",
   "packages/compiler/src/attribution.mjs",
   "packages/compiler/src/codex-continuation.mjs",
   "packages/compiler/src/operator-control.mjs",
@@ -337,6 +342,7 @@ export const KIT_TEMPLATE_FILES = Object.freeze([
   "gitignore.template",
   "pending-license.template.md",
   "repository-profile.template.md",
+  TIME_LIMITS_TEMPLATE,
   "workstream.template.md",
 ]);
 
@@ -345,7 +351,7 @@ export const KIT_TEMPLATE_FILES = Object.freeze([
 // words what each root holds: change a convention here and its row there.
 const SEEDED_ROOTS = Object.freeze({
   control:
-    "Control records of this instance: one JSONL segment per order under orders/, the generated current.md projection, and local/ (ignored) for harness observations, usage and the private local-terms list. Written by the lifecycle commands; never edited by hand.",
+    "Control records of this instance: one JSONL segment per order under orders/, the generated current.md projection, and local/ (ignored) for harness observations, usage and the private local-terms list. Written by the lifecycle commands; never edited by hand. Two files here are this instance's own settings, which its owner edits: budgets.json, the bounds of a dispatch and the kit's other budgets, and time-limits.json, the time limits of the gate, which npm run limits lists.",
   evidence:
     "Per-order directories: decisions.md (structured decisions with evidence, rejected options and reopening conditions), handoff.md (one line per acceptance criterion at implementation-ready) and fixture transcripts. current.json selects evidence editions once this instance records any.",
   verifications:
@@ -1262,6 +1268,9 @@ export async function prepareKit({
     defaultDocRelative("control", "budgets.json"),
     template("budgets.template.json"),
   );
+  // Every time limit of the instance's gate at the kit's figure: the file is
+  // the instance's from here on.
+  addSeed(TIME_LIMITS_SEED, template(TIME_LIMITS_TEMPLATE));
   const initialLedger =
     "# Idea ledger\n\nStatuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`, `deferred`, `candidate`, `open`, `specified`.\n\nInsert this instance's dated sessions below, newest first.\n";
   addSeed(defaultDocRelative("lineage", "idea-ledger.md"), initialLedger);

@@ -6,16 +6,21 @@ import {
   recordedHostLaneCapacity,
 } from "./host-resources.mjs";
 import { ensureHostGuard } from "./host-guard-state.mjs";
+import { formatDuration } from "./duration.mjs";
+import {
+  reportTimeLimitAdvisories,
+  timeLimit,
+} from "../../packages/skeleton/src/time-limits.mjs";
 
 import {
   completeTestSelection,
   diagnosticTestSelection,
 } from "../../packages/skeleton/src/test-selection.mjs";
 export { completeTestSelection };
-// A complete selection outlives the 900-second probe deadline; its own task
-// deadlines bound the work, and this outer bound keeps a wait that never
-// ends, such as a host-lane wait, from outliving the session.
-const COMPLETE_SELECTION_DEADLINE_MS = 6 * 60 * 60 * 1000;
+// A complete selection outlives an ordinary probe's limit; its own task
+// limits bound the work, and its outer limit keeps a wait that never ends,
+// such as a host-lane wait, from outliving the session. Both figures are
+// rows of the time-limit table, which the root's file sets.
 
 export async function boundedCommand(
   args,
@@ -68,12 +73,23 @@ export async function boundedCommand(
   for (const [signal, handler] of Object.entries(handlers))
     process.on(signal, handler);
   const complete = completeTestSelection(args.slice(index));
+  // An unusable value in the root's time-limits file is named once, here.
+  reportTimeLimitAdvisories(repo);
+  // A caller's figure and --timeout-seconds are the probe's own; otherwise
+  // the table's key for the probe applies, and null is a limit turned off.
+  // Every test selection, complete or by name, has the selection's limit:
+  // its tasks keep their own limits inside it, and the shorter figure of an
+  // ordinary command would end a suite before its own limit could.
+  const limitKey =
+    timeoutMs !== undefined || requestedDeadline !== undefined
+      ? undefined
+      : complete || diagnosticTestSelection(args.slice(index))
+        ? "probe.test-selection"
+        : "probe.command";
   const deadlineMs =
-    timeoutMs ??
-    requestedDeadline ??
-    (complete ? COMPLETE_SELECTION_DEADLINE_MS : 900_000);
+    timeoutMs ?? requestedDeadline ?? timeLimit(repo, limitKey);
   report(
-    `bounded-start ${JSON.stringify({ budgetBytes: limits.taskBytes, physicalBytes: limits.physicalBytes, deadlineMs, ...(complete ? { completeTestSelection: true, probeDeadline: requestedDeadline === undefined ? "6 h 0 min for a complete selection; the runner's task deadlines bound the work within it" : "explicit outer deadline; the runner's task deadlines still bound the work within it" } : {}) })}`,
+    `bounded-start ${JSON.stringify({ budgetBytes: limits.taskBytes, physicalBytes: limits.physicalBytes, deadlineMs, ...(limitKey ? { timeLimitKey: limitKey } : {}), ...(complete ? { completeTestSelection: true, probeDeadline: limitKey === undefined ? "explicit outer deadline; the runner's task deadlines still bound the work within it" : deadlineMs === null ? "no outer deadline: this root turned the limit off; the runner's task deadlines bound the work" : `${formatDuration(deadlineMs)} for a complete selection; the runner's task deadlines bound the work within it` } : {}) })}`,
   );
   try {
     const result = await executeSuite(
@@ -83,6 +99,9 @@ export async function boundedCommand(
         command: args.slice(index),
         memoryLimits: limits,
         hostDirectory: directory,
+        // The launchpad's file sets the limits wherever the command runs.
+        limitsRoot: repo,
+        ...(limitKey ? { timeLimitKey: limitKey } : {}),
       },
       cwd,
       deadlineMs,

@@ -20,6 +20,7 @@ import {
   readHostSnapshot,
   readRecords,
   recordedHostLaneCapacity,
+  underHostLimit,
   withHostLock,
 } from "./host-resources.mjs";
 
@@ -176,6 +177,16 @@ function holderObservation(row, table, holders, worktree, now) {
   };
 }
 
+/** What a failed read of the process table says. A read ended at its time
+ * limit names that limit: nothing needs preparing, and the reader is not
+ * missing. Any other failure says the reader is unavailable. */
+export const laneReaderFailure = (error) =>
+  new Error(
+    error?.timeLimitMiss
+      ? `Host process reader was ended for time before it answered. ${error.timeLimitMiss}`
+      : `Host process reader unavailable; an ordinary gate prepares it (${error?.code ?? error?.status ?? "no cause"})`,
+  );
+
 function readProcessTable(directory) {
   if (process.platform !== "darwin")
     return readHostSnapshot({ footprint: false, directory }).processes;
@@ -188,16 +199,16 @@ function readProcessTable(directory) {
   const binary = join(directory, `host-footprint-${digest}`);
   try {
     return parseNativeSnapshot(
-      execFileSync(binary, ["--light"], {
-        encoding: "utf8",
-        timeout: 2000,
-        maxBuffer: 4 * 1024 * 1024,
-      }),
+      underHostLimit("host.lane-reader", (timeout) =>
+        execFileSync(binary, ["--light"], {
+          encoding: "utf8",
+          timeout,
+          maxBuffer: 4 * 1024 * 1024,
+        }),
+      ),
     ).processes;
   } catch (error) {
-    throw new Error(
-      `Host process reader unavailable; an ordinary gate prepares it (${error.code ?? error.status ?? "no cause"})`,
-    );
+    throw laneReaderFailure(error);
   }
 }
 

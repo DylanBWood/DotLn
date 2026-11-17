@@ -16,6 +16,11 @@ import {
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
+
+// A case that runs its selection again at an identity its own earlier run
+// made green says why, as the runner asks of any forced complete selection:
+// without a reason the runner answers with the standing row and runs nothing.
+const WHY = ["--reason", "this case runs its selection again on purpose"];
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import { gateLoad } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { createHash } from "node:crypto";
@@ -31,6 +36,7 @@ import {
   writeFileSync,
   realpathSync,
   symlinkSync,
+  utimesSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import {
@@ -62,6 +68,7 @@ import {
   validateSuites,
   expand,
   executeSuite,
+  suiteTimeLimit,
   scheduleSuites,
   runGate,
   expandSuiteTasks,
@@ -106,6 +113,10 @@ import {
   machineryCoverageScope,
 } from "./lib/machinery-coverage.mjs";
 import { sampleFileEventDaemon } from "./lib/host-resources.mjs";
+// The table of time limits and the artifact inventory, by module: cases
+// throughout this file read the kit's figures from them.
+import * as timeLimitsModule from "../packages/skeleton/src/time-limits.mjs";
+import * as generatedArtifactsModule from "./lib/generated-artifacts.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
@@ -1999,7 +2010,7 @@ test("npm test composes plain and review task rows; explicit fresh, changed code
     first.evidenceRef,
   );
   // --again runs the selection.
-  const again = await gate(["--again"]);
+  const again = await gate(["--again", ...WHY]);
   assert.equal(again.exitCode, 0);
   assert.equal(again.reused, undefined);
   assert.equal(again.executionMode, "forced-fresh");
@@ -2007,7 +2018,7 @@ test("npm test composes plain and review task rows; explicit fresh, changed code
   assert.deepEqual(observed(), ["build", "alpha", "build", "alpha"]);
   assert.equal(rows().length, 3);
   // --fresh keeps its meaning and runs the selection too.
-  const fresh = await gate(["--fresh"]);
+  const fresh = await gate(["--fresh", ...WHY]);
   assert.equal(fresh.reused, undefined);
   assert.equal(observed().length, 6);
   assert.equal(rows().length, 4);
@@ -3058,8 +3069,15 @@ test("only and document CLI selection execute their declared checks with the pro
       .trim()
       .split("\n")
       .map(JSON.parse);
+    // An instance's configuration row is a structural row of the other
+    // root: core's document selection does not hold it.
     const documentCount =
-      suites.filter((row) => row.document && !row.generated).length +
+      suites.filter(
+        (row) =>
+          row.document &&
+          !row.generated &&
+          !(row.structural && !CORE_STRUCTURAL_TASKS.includes(row.name)),
+      ).length +
       1 +
       suites
         .find((row) => row.name === "local-runner-double")
@@ -4420,7 +4438,7 @@ test("WO-140 an inherited marker whose denied-write probe succeeds does not refu
   // No marker at all is today's behavior: no probe and no sandbox field.
   // The first run's row would be reused at this code identity (WO-173), so
   // the second run says --again to run the selection.
-  const plain = await runGate(["--serial", "--again"], fixture.repo, {
+  const plain = await runGate(["--serial", "--again", ...WHY], fixture.repo, {
     ...fixture.options(0o555),
     sandbox: { env: {}, markers: fixture.options(0o555).sandbox.markers },
   });
@@ -5970,7 +5988,9 @@ test("WO-198 a sibling merge and tag during a worktree's gates change no result 
   for (const [index, args] of selections.entries()) {
     // Force execution to prove the tasks still pass, beyond merely carrying
     // their old passes; the plain composed run is checked separately below.
-    const second = await captureGate([...args, "--again"], worktree, { table });
+    const second = await captureGate([...args, "--again", ...WHY], worktree, {
+      table,
+    });
     const before = first[index].row;
     assert.equal(before.exitCode, 0);
     assert.equal(second.row.exitCode, 0);
@@ -6045,7 +6065,7 @@ test("WO-198 a failed row names movement since its own check's previous row exac
   // A more recent row for another check must not hide the movement.
   await captureGate(["--document", "--serial"], worktree, { table });
   writeFileSync(join(worktree, "fail-beta"), "fail\n");
-  const failed = await captureGate(["--serial", "--again"], worktree, {
+  const failed = await captureGate(["--serial", "--again", ...WHY], worktree, {
     table,
   });
   assert.equal(failed.row.exitCode, 1);
@@ -6064,9 +6084,13 @@ test("WO-198 a failed row names movement since its own check's previous row exac
     assert.ok(delta[0].includes(field), delta[0]);
   assert.ok(delta[0].includes(before.row.sharedRefs.end.originMain));
   t.diagnostic("PROOF WO-198 forced failure " + delta[0]);
-  const unchanged = await captureGate(["--serial", "--again"], worktree, {
-    table,
-  });
+  const unchanged = await captureGate(
+    ["--serial", "--again", ...WHY],
+    worktree,
+    {
+      table,
+    },
+  );
   assert.equal(unchanged.row.exitCode, 1);
   assert.ok(
     unchanged.lines.every((line) => !line.startsWith("shared refs moved:")),
@@ -6453,14 +6477,20 @@ test("measurement mode records successful task deadlines with the gate row", asy
     else process.env.DOTLN_GATE_MEASURE_DEADLINES = saved;
   });
   delete process.env.DOTLN_GATE_MEASURE_DEADLINES;
-  const ordinary = await runGate(["--serial", "--again"], repo, { table });
+  const ordinary = await runGate(["--serial", "--again", ...WHY], repo, {
+    table,
+  });
   assert.equal(ordinary.exitCode, 0);
   assert.deepEqual(ordinary.deadlineDiagnostics, []);
   process.env.DOTLN_GATE_MEASURE_DEADLINES = "1";
   const startedAt = new Date().toISOString();
-  const measured = await runGate(["--serial", "--review", "--fresh"], repo, {
-    table,
-  });
+  const measured = await runGate(
+    ["--serial", "--review", "--fresh", ...WHY],
+    repo,
+    {
+      table,
+    },
+  );
   const finishedAt = new Date().toISOString();
   assert.equal(measured.exitCode, 0);
   const checks = readGateChecks(repo);
@@ -6547,7 +6577,7 @@ test("reused task evidence never carries historical host-wait observations", asy
 test("WO-186 one failed task reruns alone in another shell and session, composes a claimable row and carries it into review", async (t) => {
   const { repo, table, observed } = taskReuseFixture(t);
   writeFileSync(join(repo, "fail-beta"), "fail\n");
-  const first = await runGate(["--serial", "--again"], repo, { table });
+  const first = await runGate(["--serial", "--again", ...WHY], repo, { table });
   assert.equal(first.exitCode, 1);
   assert.equal(first.identityUnchanged, true);
   assert.deepEqual(observed(), ["build", "alpha", "beta"]);
@@ -6612,7 +6642,7 @@ test("WO-186 one failed task reruns alone in another shell and session, composes
         claimAccepted: true,
       }),
   );
-  for (const args of [["--again"], ["--review"]]) {
+  for (const args of [["--again", ...WHY], ["--review"]]) {
     const before = observed().length;
     const fresh = await runGate(["--serial", ...args], repo, { table });
     assert.equal(fresh.exitCode, 0);
@@ -6798,7 +6828,9 @@ test("WO-186 VER-001 a task's latest executed result decides: a forced-fresh fai
   const green = await runGate(["--serial"], repo, { table });
   assert.equal(green.exitCode, 0);
   writeFileSync(join(repo, "fail-beta"), "fail\n");
-  const forced = await runGate(["--serial", "--again"], repo, { table });
+  const forced = await runGate(["--serial", "--again", ...WHY], repo, {
+    table,
+  });
   assert.equal(forced.exitCode, 1);
   assert.equal(forced.codeIdentity, green.codeIdentity);
   assert.equal(forced.identityUnchanged, true);
@@ -6915,7 +6947,7 @@ test("WO-186 VER-001 an output changed or removed outside its attested build is 
   // A removed output is not attested either.
   writeFileSync(failBeta, "fail\n");
   assert.equal(
-    (await runGate(["--serial", "--again"], repo, { table })).exitCode,
+    (await runGate(["--serial", "--again", ...WHY], repo, { table })).exitCode,
     1,
   );
   rmSync(failBeta);
@@ -6930,7 +6962,7 @@ test("WO-186 VER-001 an output changed or removed outside its attested build is 
     row.build ? row : { ...row, ...(outputs ? { outputs } : {}) },
   );
   writeFileSync(failBeta, "fail\n");
-  const unattested = await runGate(["--serial", "--again"], repo, {
+  const unattested = await runGate(["--serial", "--again", ...WHY], repo, {
     table: undeclared,
   });
   assert.equal(unattested.exitCode, 1);
@@ -7118,7 +7150,7 @@ test("WO-186 VER-001 a later failed gate displaces older passes, and a carried r
 
 test("WO-186 VER-001 a pass carried from main is re-validated against main's latest execution", async (t) => {
   const { repo, table, observed } = taskReuseFixture(t);
-  const first = await runGate(["--serial", "--again"], repo, { table });
+  const first = await runGate(["--serial", "--again", ...WHY], repo, { table });
   const worktree = join(dirname(repo), `${repo.split("/").at(-1)}-revalidate`);
   t.after(() => rmSync(worktree, { recursive: true, force: true }));
   runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
@@ -7127,7 +7159,9 @@ test("WO-186 VER-001 a pass carried from main is re-validated against main's lat
   assert.deepEqual(observed(worktree), []);
   // Main then fails beta at the same identity in a forced-fresh run.
   writeFileSync(join(repo, "fail-beta"), "fail\n");
-  const mainFailed = await runGate(["--serial", "--again"], repo, { table });
+  const mainFailed = await runGate(["--serial", "--again", ...WHY], repo, {
+    table,
+  });
   assert.equal(mainFailed.exitCode, 1);
   assert.equal(mainFailed.codeIdentity, first.codeIdentity);
   const index = join(repo, "docs/control/local/harness/checks.json");
@@ -7304,7 +7338,7 @@ test("WO-186 VER-001 a wildcard output beside a plain file is attested, a failed
   const dangling = base.map((row) =>
     row.build ? { ...row, outputs: ["pk/*/absent"] } : row,
   );
-  const unattested = await runGate(["--serial", "--again"], repo, {
+  const unattested = await runGate(["--serial", "--again", ...WHY], repo, {
     table: dangling,
   });
   assert.equal(unattested.exitCode, 0);
@@ -9270,8 +9304,24 @@ test("review composition retains source rows and reruns a task whose latest sing
     assert.equal(task.sourceRow.recordedAt, plain.recordedAt);
   }
   assert.deepEqual(observed(), ["build", "alpha", "beta", "machine"]);
-  const onlyFormat = await gate(["--review"]);
+  const second = await captureGate(["--serial", "--review"], repo, {
+    table: inventory,
+  });
+  const onlyFormat = second.row;
   assert.equal(onlyFormat.exitCode, 0);
+  // The machine suite changed on this branch and its row is reused whole at
+  // the unchanged identity: the schedule line names it as reused, since it
+  // does not run, and not as scheduled first (WO-284).
+  assert.ok(
+    second.lines.includes(
+      "scheduled in declared order; reused at the code identity, not run again: machine",
+    ),
+    second.lines.join("\n"),
+  );
+  assert.ok(
+    !second.lines.some((line) => line.startsWith("scheduled first:")),
+    second.lines.join("\n"),
+  );
   assert.equal(onlyFormat.executionMode, "composed");
   assert.equal(onlyFormat.gateSelection, "review");
   assert.equal(onlyFormat.freshReason, "always-fresh-preflight");
@@ -9279,7 +9329,7 @@ test("review composition retains source rows and reruns a task whose latest sing
   assert.equal(onlyFormat.reusedSuites, 4);
   assert.deepEqual(onlyFormat.requiredSuites, review.requiredSuites);
   assert.deepEqual(observed(), ["build", "alpha", "beta", "machine"]);
-  const fresh = await gate(["--review", "--again"]);
+  const fresh = await gate(["--review", "--again", ...WHY]);
   assert.equal(fresh.executionMode, "forced-fresh");
   assert.equal(fresh.reusedSuites, 0);
   writeFileSync(join(repo, "fail-beta"), "fail\n");
@@ -9333,8 +9383,12 @@ test("structural tasks lead every selection exactly once before a suite or build
       ])
         assert.ok(!names.includes(name), name);
   }
+  // The table holds a structural row for each root's phase; this is core's,
+  // without the configuration row an instance runs in its place.
   const selected = suites.filter(
-    (row) => row.structural || ["build", "kernel"].includes(row.name),
+    (row) =>
+      (row.structural && STRUCTURAL_TASKS.includes(row.name)) ||
+      ["build", "kernel"].includes(row.name),
   );
   for (const failure of STRUCTURAL_TASKS) {
     const started = [];
@@ -10386,7 +10440,13 @@ test("launchpad files run as at most two independent deadline tasks", async () =
     ],
   );
   for (const task of tasks) {
-    assert.equal(task.timeoutMs, 900_000);
+    // A file task keeps no figure of its own: its limit is the table's
+    // default row, read when it runs.
+    assert.equal(task.timeoutMs, undefined);
+    assert.deepEqual(suiteTimeLimit(task, root), {
+      ms: timeLimitsModule.TIME_LIMITS["suite.default"].ms,
+      key: "suite.default",
+    });
     assert.equal(task.loadSlots, 2);
   }
   let active = 0,
@@ -15187,7 +15247,20 @@ test("WO-276 (the attack on Part H): the report sizes a lane by the host's own r
       "lane-memory",
     );
   assert.equal(sized(4, 8).verdict, "unmet", sized(4, 8).observed);
-  assert.match(sized(4, 8).observed, /, 8 lanes of 1\.0 GiB each$/u);
+  // A lane's size follows the root's own gate share, the owner's line in
+  // docs/control/budgets.json (the kit's half where the file sets none): on
+  // a 16 GiB host of eight lanes each lane has an eighth of that share. The
+  // case pinned 1.0 GiB while the share was a half, and went red when the
+  // owner raised it.
+  const gateShare =
+    JSON.parse(readFileSync(join(root, "docs/control/budgets.json"), "utf8"))
+      .memory?.gateShare ?? 0.5;
+  assert.ok(
+    sized(4, 8).observed.endsWith(
+      `, 8 lanes of ${((16 * gateShare) / 8).toFixed(1)} GiB each`,
+    ),
+    sized(4, 8).observed,
+  );
   assert.equal(sized(16, 2).verdict, "met", sized(16, 2).observed);
   assert.match(sized(16, 2).observed, /, 2 lanes of /u);
   assert.equal(hostFacts(root).laneCapacity(), recordedHostLaneCapacity());
@@ -15741,7 +15814,11 @@ test("target-worktree file tasks run under two independent deadlines at eight la
     parallelism: 16,
     execute: async (row) => {
       if (!row.build) {
-        assert.equal(row.timeoutMs, 900_000);
+        // Each file runs under the table's default row, with its own clock.
+        assert.deepEqual(suiteTimeLimit(row, root), {
+          ms: timeLimitsModule.TIME_LIMITS["suite.default"].ms,
+          key: "suite.default",
+        });
         peak = Math.max(peak, ++active);
         await new Promise((done) => setTimeout(done, 10));
         active--;
@@ -15845,10 +15922,36 @@ test("Preflight keeps a complete structural pass after a passing partial and ref
   );
   const { preflightRows, structuralSuites } =
     await import("./lib/gate-reuse.mjs");
-  // Core's structural row holds the recorded Git surface check before host,
-  // as the runner's own structural phase runs it.
+  // Core's structural row holds the kit's tests of its configuration loader
+  // and the recorded Git surface check before host, as the runner's own
+  // structural phase runs them.
   const STRUCTURAL_SUITES = structuralSuites(repo);
   assert.deepEqual(STRUCTURAL_SUITES, CORE_STRUCTURAL_TASKS);
+  // An instance's holds its own configuration row in their place, and the
+  // handoff's list is the runner's there too: a root with a kit manifest and
+  // no package source is an instance.
+  const instance = createFixtureRoot(join(tmpdir(), "dotln-kit-structural-"));
+  t.after(() => rmSync(instance, { recursive: true, force: true }));
+  writeFileSync(join(instance, "KIT-MANIFEST.json"), "{}\n");
+  assert.equal(isKitRoot(instance), true);
+  assert.deepEqual(structuralSuites(instance), STRUCTURAL_TASKS);
+  assert.deepEqual(STRUCTURAL_TASKS, [
+    "format",
+    "configuration",
+    "registrations",
+    "declarations",
+    "generated",
+    "host",
+  ]);
+  assert.ok(!STRUCTURAL_TASKS.includes("configuration-root"));
+  assert.ok(!CORE_STRUCTURAL_TASKS.includes("configuration"));
+  // Both lists name rows the runner declares, each structural by its name.
+  for (const name of new Set([...STRUCTURAL_TASKS, ...CORE_STRUCTURAL_TASKS]))
+    assert.equal(
+      suites.find((row) => row.name === name)?.structural,
+      true,
+      name,
+    );
   const codeIdentity = gateCodeIdentity(repo),
     treeHash = gateTreeHash(repo);
   const time = Date.now();
@@ -16129,5 +16232,1061 @@ test("WO-276: no test file a sharded row loads registers its cases through node:
         /\bfrom\s+["']node:test["']/u,
         `${row.name}: ${file} registers through node:test`,
       );
+  }
+});
+
+// The time limits a root's owner sets in one file of its control root.
+const writeLimits = (repo, body) => {
+  mkdirSync(join(repo, "docs/control"), { recursive: true });
+  writeFileSync(
+    join(repo, "docs/control/time-limits.json"),
+    `${JSON.stringify(body, null, 2)}\n`,
+  );
+};
+
+test("WO-284 criteria 1 and 2: a structural row that outlives its time limit is reported as time with its key, figure, file and command; a raised key, a scale, a null and enforce false let it finish", async (t) => {
+  const { TIME_LIMITS } = timeLimitsModule;
+  const { repo, table: base } = taskReuseFixture(t);
+  // A structural row that takes a second, among rows that take none.
+  const table = [
+    {
+      name: "registrations",
+      structural: true,
+      document: true,
+      command: [process.execPath, "-e", "setTimeout(() => {}, 1000)"],
+    },
+    ...base,
+  ];
+  const structural = (row) =>
+    row.taskTimeline.find((task) => task.name === "registrations");
+  const miss =
+    "Time limit suite.registrations reached: 200 ms. docs/control/time-limits.json raises it, scales every limit or turns them off; npm run limits lists every key.";
+
+  // With no file the row runs under the kit's figure and its record says so.
+  const kit = await captureGate([], repo, { table });
+  assert.equal(kit.row.exitCode, 0, kit.row.output);
+  assert.equal(
+    structural(kit.row).timeoutMs,
+    TIME_LIMITS["suite.registrations"].ms,
+  );
+  assert.equal(structural(kit.row).timeLimitKey, "suite.registrations");
+  assert.equal(
+    kit.row.taskTimeline.find((task) => task.name === "alpha").timeoutMs,
+    TIME_LIMITS["suite.default"].ms,
+  );
+  assert.equal(
+    kit.row.taskTimeline.find((task) => task.name === "alpha").timeLimitKey,
+    "suite.default",
+  );
+
+  // A figure the row outlives ends it: time, named, and no failed check.
+  writeLimits(repo, { limits: { "suite.registrations": { set: 200 } } });
+  const missed = await captureGate([], repo, { table });
+  assert.equal(missed.row.exitCode, 1);
+  assert.equal(missed.row.failedFirst, "registrations");
+  assert.deepEqual(
+    [
+      structural(missed.row).failureKind,
+      structural(missed.row).timeoutMs,
+      structural(missed.row).timeLimitKey,
+    ],
+    ["timeout", 200, "suite.registrations"],
+  );
+  assert.ok(
+    missed.row.output.includes("registrations: timeout\n"),
+    missed.row.output,
+  );
+  assert.ok(
+    missed.row.output.includes(
+      `Suite registrations timed out after 0 h 0 min. ${miss}`,
+    ),
+    missed.row.output,
+  );
+  const skipped = missed.lines.filter((line) => line.startsWith("  [alpha] "));
+  assert.equal(
+    skipped[0],
+    `  [alpha] Required registrations structural preflight was ended for time before it finished: nothing was judged, and this is its time limit, not a failed check. ${miss}`,
+  );
+  assert.ok(
+    !missed.lines.some((line) => line.includes("structural preflight failed")),
+    missed.lines.join("\n"),
+  );
+  // The row's own line says time, where a failed check says FAIL.
+  assert.ok(missed.lines.includes("TIME registrations 0 h 0 min"));
+  assert.ok(!missed.lines.some((line) => line.startsWith("FAIL ")));
+  assert.deepEqual(missed.row.unrunSuites, ["build", "alpha", "beta"]);
+
+  // The same row finishes and passes once its key is raised, and its record
+  // names the figure that applied; a scale reaches the same figure.
+  for (const [body, applied] of [
+    [{ limits: { "suite.registrations": { set: 60_000 } } }, 60_000],
+    [{ scale: 300, limits: { "suite.registrations": { set: 200 } } }, 60_000],
+    [{ limits: { "suite.registrations": { set: null } } }, null],
+    [{ enforce: false, limits: { "suite.registrations": { set: 200 } } }, null],
+  ]) {
+    writeLimits(repo, body);
+    const passed = await captureGate([], repo, { table });
+    assert.equal(
+      passed.row.exitCode,
+      0,
+      `${JSON.stringify(body)}: ${passed.row.output}`,
+    );
+    assert.equal(
+      structural(passed.row).timeoutMs,
+      applied,
+      JSON.stringify(body),
+    );
+    assert.equal(structural(passed.row).timeLimitKey, "suite.registrations");
+    assert.ok(structural(passed.row).durationMs >= 900, JSON.stringify(body));
+  }
+});
+
+test("WO-284 criterion 2: an ordinary row ended for time names its key, and a fixture row's own figure names none", async (t) => {
+  const { repo } = taskReuseFixture(t);
+  const row = {
+    name: "alpha",
+    command: [process.execPath, "-e", "setTimeout(() => {}, 5000)"],
+  };
+  writeLimits(repo, { limits: { "suite.default": { set: 250 } } });
+  const missed = await executeSuite(row, repo);
+  assert.deepEqual(
+    [
+      missed.exitCode,
+      missed.failureKind,
+      missed.timeoutMs,
+      missed.timeLimitKey,
+    ],
+    [1, "timeout", 250, "suite.default"],
+  );
+  assert.ok(
+    missed.output.endsWith(
+      "Suite alpha timed out after 0 h 0 min. Time limit suite.default reached: 250 ms. docs/control/time-limits.json raises it, scales every limit or turns them off; npm run limits lists every key.",
+    ),
+    missed.output,
+  );
+  // A file task of an expanded suite follows its suite's key.
+  assert.equal(
+    (await executeSuite({ ...row, name: "launchpad:file:fixture.mjs" }, repo))
+      .timeLimitKey,
+    "suite.default",
+  );
+  // A fixture row's own figure, and a caller's, are no key of the table.
+  for (const own of [
+    await executeSuite({ ...row, timeoutMs: 200 }, repo),
+    await executeSuite(row, repo, 200),
+  ]) {
+    assert.deepEqual(
+      [own.failureKind, own.timeoutMs, own.timeLimitKey],
+      ["timeout", 200, undefined],
+    );
+    assert.ok(
+      own.output.endsWith("Suite alpha timed out after 0 h 0 min"),
+      own.output,
+    );
+  }
+  // The pause between telling a task to stop and killing it is the table's:
+  // a task that ignores the stop is killed after it, however limits are set.
+  writeLimits(repo, {
+    enforce: false,
+    limits: { "suite.stop-grace": { set: 300 } },
+  });
+  const stubborn = {
+    name: "alpha",
+    timeoutMs: 200,
+    command: [
+      process.execPath,
+      "-e",
+      "process.on('SIGTERM', () => {}); setInterval(() => {}, 1000)",
+    ],
+  };
+  const killed = await executeSuite(stubborn, repo);
+  assert.equal(killed.failureKind, "timeout");
+  assert.ok(
+    killed.durationMs >= 500 && killed.durationMs < 4000,
+    String(killed.durationMs),
+  );
+});
+
+test("WO-284 criterion 7: at an identity that holds a passing complete row, --again without a reason prints that row, runs no task and exits 0; with a reason it runs and the row keeps it; and a reused suite whose changed sources are documents is named as reused, not as changed", async (t) => {
+  const { repo, table: base, observed } = taskReuseFixture(t);
+  // The alpha suite also reads a document, which lies outside the identity.
+  const table = base.map((row) =>
+    row.name === "alpha" ? { ...row, sources: ["docs/guide.md"] } : row,
+  );
+  mkdirSync(join(repo, "docs"), { recursive: true });
+  writeFileSync(join(repo, "docs/guide.md"), "# Guide\n");
+  const rows = () =>
+    readGateChecks(repo).filter((row) => row.checkId === "npm test");
+
+  // With no passing row at the identity a forced selection runs as it did.
+  const first = await captureGate(["--review", "--again"], repo, { table });
+  assert.equal(first.row.exitCode, 0, first.row.output);
+  assert.equal(first.row.executionMode, "forced-fresh");
+  assert.equal(first.row.forcedReason, undefined);
+  assert.equal(rows().length, 1);
+  const ran = observed().length;
+  assert.ok(ran > 0);
+
+  // Forced again there with no reason: the standing row, no task, exit 0.
+  const answered = await captureGate(["--review", "--again"], repo, { table });
+  assert.deepEqual(answered.row, {
+    exitCode: 0,
+    executed: false,
+    satisfiedBy: first.row.evidenceRef,
+  });
+  assert.ok(
+    answered.lines.includes(
+      `npm test: a passing complete row already stands at this code identity: recorded ${rows()[0].recordedAt}, 0 h 0 min, ${rows()[0].requiredSuites.length} suites, ${first.row.evidenceRef}.`,
+    ),
+    answered.lines.join("\n"),
+  );
+  assert.ok(
+    answered.lines.some(
+      (line) =>
+        line.startsWith("Nothing was run. ") &&
+        line.includes(
+          "an edit to documents alone owes npm run test:docs and no complete run",
+        ) &&
+        line.endsWith('npm test -- --review --again --reason "<why>".'),
+    ),
+    answered.lines.join("\n"),
+  );
+  assert.equal(observed().length, ran, "no task ran");
+  assert.equal(rows().length, 1, "no row was recorded");
+  assert.ok(
+    !answered.lines.some((line) => /^(?:PASS|FAIL|REUSE) /u.test(line)),
+  );
+  // --fresh is the same request, and a plain selection is answered too.
+  for (const args of [["--review", "--fresh"], ["--again"]])
+    assert.equal(
+      (await captureGate(args, repo, { table })).row.executed,
+      false,
+      args.join(" "),
+    );
+  assert.equal(observed().length, ran);
+
+  // With a reason it runs every task again and its row keeps the words.
+  const forced = await captureGate(
+    ["--review", "--again", "--reason", "comparing two hosts"],
+    repo,
+    { table },
+  );
+  assert.equal(forced.row.exitCode, 0, forced.row.output);
+  assert.equal(forced.row.forcedReason, "comparing two hosts");
+  assert.equal(forced.row.executionMode, "forced-fresh");
+  assert.equal(forced.row.reusedSuites, 0);
+  assert.equal(rows().length, 2);
+  assert.equal(rows()[1].forcedReason, "comparing two hosts");
+  assert.ok(observed().length > ran);
+  // A reason states why a selection is run again and means nothing alone.
+  await assert.rejects(
+    runGate(["--review", "--reason", "no --again"], repo, { table }),
+    /--reason states why --again runs a selection again/u,
+  );
+  await assert.rejects(
+    runGate(["--review", "--again", "--reason"], repo, { table }),
+    /^Error: usage: test-runner /u,
+  );
+
+  // A document the alpha suite declares changes after the row. The plain
+  // review selection reuses alpha's row at the unchanged identity, and its
+  // schedule line says so instead of calling the suite changed.
+  const identity = gateCodeIdentity(repo);
+  const future = new Date(Date.now() + 60_000);
+  writeFileSync(join(repo, "docs/guide.md"), "# Guide\n\nA new paragraph.\n");
+  utimesSync(join(repo, "docs/guide.md"), future, future);
+  assert.equal(gateCodeIdentity(repo), identity);
+  assert.deepEqual(changedSinceLastGate(repo, table).suites, ["alpha"]);
+  const composed = await captureGate(["--review"], repo, { table });
+  assert.equal(composed.row.exitCode, 0, composed.row.output);
+  assert.ok(composed.lines.some((line) => line.startsWith("REUSE alpha ")));
+  assert.ok(
+    composed.lines.includes(
+      "scheduled in declared order; reused at the code identity, not run again: alpha (its sources changed since the last gate row are documents outside that identity)",
+    ),
+    composed.lines.join("\n"),
+  );
+  assert.ok(
+    !composed.lines.some((line) =>
+      line.includes("changed since the last gate row)"),
+    ),
+    composed.lines.join("\n"),
+  );
+  // A changed source inside the identity is still named changed and runs.
+  const later = new Date(Date.now() + 120_000);
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    `${readFileSync(join(repo, "scripts/alpha.mjs"), "utf8")}// changed\n`,
+  );
+  utimesSync(join(repo, "scripts/alpha.mjs"), later, later);
+  const changed = await captureGate(["--review"], repo, { table });
+  assert.equal(changed.row.exitCode, 0, changed.row.output);
+  assert.ok(
+    changed.lines.includes(
+      "scheduled first: alpha (changed since the last gate row)",
+    ),
+    changed.lines.join("\n"),
+  );
+  assert.ok(changed.lines.some((line) => line.startsWith("PASS alpha ")));
+  // A plain row does not answer a review selection. The closeout's satisfied
+  // form and the final review's claim consume a review row in which every
+  // named suite ran and passed, so at an identity that holds only a plain
+  // row the forced review selection runs; once its own row stands it is
+  // answered, with the selection repeated as it was typed.
+  const further = new Date(Date.now() + 180_000);
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    `${readFileSync(join(repo, "scripts/alpha.mjs"), "utf8")}// changed again\n`,
+  );
+  utimesSync(join(repo, "scripts/alpha.mjs"), further, further);
+  const plain = await captureGate(["--again"], repo, { table });
+  assert.equal(plain.row.exitCode, 0, plain.row.output);
+  assert.equal(rows().at(-1).gateSelection, "plain");
+  const before = observed().length;
+  const review = await captureGate(["--full", "--again"], repo, { table });
+  assert.equal(review.row.exitCode, 0, review.row.output);
+  assert.equal(review.row.executionMode, "forced-fresh");
+  assert.equal(rows().at(-1).gateSelection, "review");
+  assert.ok(observed().length > before, "the review selection ran");
+  const repeated = await captureGate(["--full", "--again"], repo, { table });
+  assert.deepEqual(repeated.row, {
+    exitCode: 0,
+    executed: false,
+    satisfiedBy: review.row.evidenceRef,
+  });
+  assert.ok(
+    repeated.lines.some((line) =>
+      line.endsWith('npm test -- --full --again --reason "<why>".'),
+    ),
+    repeated.lines.join("\n"),
+  );
+});
+
+test("WO-284 criterion 1, after a pass: a changed time limit is applied by a fresh run whose record names it; a pass recorded under other limits is neither reused nor standing for the closeout, a forced run, a claim or the evidence command; an edit that changes no figure changes nothing", async (t) => {
+  const { TIME_LIMITS, timeLimitsDigest } = timeLimitsModule;
+  const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
+  const { closeoutStandingFor } = await import("./lib/closeout-scope.mjs");
+  const { repo, table: base, observed } = taskReuseFixture(t);
+  // A suite that runs for as long as an ignored file says, so a lowered
+  // figure can end a run that an earlier pass would otherwise answer for;
+  // and the review selection as the closeout lists it.
+  writeFileSync(
+    join(repo, "scripts/slow.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "slow\\n"); const ms = fs.existsSync("slow-ms") ? Number(fs.readFileSync("slow-ms", "utf8")) : 0; setTimeout(() => {}, ms);\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/test-runner.mjs"),
+    ["alpha", "beta", "slow"]
+      .map(
+        (name) =>
+          `console.log(${JSON.stringify(`${name} — protects: the ${name} fixture`)});`,
+      )
+      .join("\n") + "\n",
+  );
+  writeFileSync(
+    join(repo, ".gitignore"),
+    `${readFileSync(join(repo, ".gitignore"), "utf8")}slow-ms\n`,
+  );
+  runGit(repo, ["add", "."]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "a slow suite and the review listing",
+  ]);
+  const table = [
+    ...base,
+    {
+      name: "slow",
+      product: true,
+      command: [process.execPath, "scripts/slow.mjs"],
+    },
+  ];
+  const names = ["alpha", "beta", "slow"];
+  const task = (row, name) =>
+    row.taskTimeline.find((entry) => entry.name === name);
+  // Rows at one identity share an evidence reference; the closeout's row is
+  // told apart by when it was recorded.
+  const standing = async () => (await closeoutStandingFor(repo))?.recordedAt;
+  const evidence = () => findGateCheck(repo, "npm test", gateTreeHash(repo));
+  const limitsFile = join(repo, "docs/control/time-limits.json");
+
+  // Under the kit's figures the pass stands, and its row names no limits.
+  const first = await captureGate(["--review"], repo, { table });
+  assert.equal(first.row.exitCode, 0, first.row.output);
+  assert.equal(first.row.timeLimitsDigest, undefined);
+  assert.equal(
+    task(first.row, "slow").timeoutMs,
+    TIME_LIMITS["suite.default"].ms,
+  );
+  assert.equal(await standing(), first.row.recordedAt);
+
+  // An edit that changes no figure changes nothing: a note, a key set to
+  // the kit's own figure, an explicit "kit" and a stale record of the kit's
+  // figure. The forced selection is answered and the plain one reuses.
+  writeLimits(repo, {
+    note: "the owner's own words",
+    scale: 1,
+    enforce: true,
+    limits: {
+      "suite.default": { set: "kit", kit: 1 },
+      "suite.host": { set: TIME_LIMITS["suite.host"].ms },
+    },
+  });
+  assert.equal(timeLimitsDigest(repo), undefined);
+  assert.equal(await standing(), first.row.recordedAt);
+  assert.equal(
+    (await captureGate(["--review", "--again"], repo, { table })).row.executed,
+    false,
+  );
+  const before = observed().length;
+  const composed = await captureGate(["--review"], repo, { table });
+  assert.equal(composed.row.exitCode, 0, composed.row.output);
+  for (const name of names)
+    assert.ok(
+      composed.lines.some((line) => line.startsWith(`REUSE ${name} `)),
+      composed.lines.join("\n"),
+    );
+  assert.equal(observed().length, before, "no task ran");
+
+  // A raised key: no earlier pass ran under it, so none is carried or
+  // stands; every task runs under the raised figure and its record names
+  // it, and that row then answers a forced selection.
+  writeLimits(repo, { limits: { "suite.default": { set: 5_400_000 } } });
+  const raisedDigest = timeLimitsDigest(repo);
+  assert.equal(typeof raisedDigest, "string");
+  assert.equal(await standing(), undefined);
+  const lookup = await coveringGateCheck(repo, "npm test", names);
+  assert.equal(lookup.row, undefined);
+  assert.equal(lookup.otherLimits?.recordedAt, composed.row.recordedAt);
+  assert.equal(evidence(), undefined);
+  const raised = await captureGate(["--review"], repo, { table });
+  assert.equal(raised.row.exitCode, 0, raised.row.output);
+  assert.equal(raised.row.timeLimitsDigest, raisedDigest);
+  assert.equal(raised.row.reusedSuites, 0);
+  assert.equal(raised.row.freshReason, "time-limits-changed");
+  assert.ok(!raised.lines.some((line) => line.startsWith("REUSE ")));
+  assert.ok(
+    raised.lines.some((line) =>
+      /^npm test: \d+ passing tasks at this code identity ran under time limits other than those docs\/control\/time-limits\.json sets now, and run again under the figures that apply$/u.test(
+        line,
+      ),
+    ),
+    raised.lines.join("\n"),
+  );
+  for (const name of names)
+    assert.equal(task(raised.row, name).timeoutMs, 5_400_000, name);
+  assert.equal(await standing(), raised.row.recordedAt);
+  assert.equal(evidence()?.recordedAt, raised.row.recordedAt);
+  assert.equal(
+    (await captureGate(["--review", "--again"], repo, { table })).row.executed,
+    false,
+  );
+
+  // A scale either way, one limit turned off and every limit turned off
+  // each leave that row standing nowhere.
+  for (const body of [
+    { scale: 2 },
+    { scale: 0.5 },
+    { limits: { "suite.default": { set: null } } },
+    { enforce: false },
+  ]) {
+    writeLimits(repo, body);
+    const label = JSON.stringify(body);
+    assert.equal(await standing(), undefined, label);
+    const found = await coveringGateCheck(repo, "npm test", names);
+    assert.equal(found.row, undefined, label);
+    assert.equal(found.otherLimits?.recordedAt, raised.row.recordedAt, label);
+    assert.equal(evidence(), undefined, label);
+  }
+  // With every limit off, a forced selection with no reason runs, since no
+  // row stands under the limits in force, and its record names no figure.
+  const forced = await captureGate(["--review", "--again"], repo, { table });
+  assert.equal(forced.row.executed, true);
+  assert.equal(forced.row.exitCode, 0, forced.row.output);
+  assert.equal(forced.row.forcedReason, undefined);
+  assert.equal(task(forced.row, "slow").timeoutMs, null);
+
+  // Back at the kit's figures the earlier kit rows do not stand again: a
+  // later run of each task, under other limits, decides it.
+  rmSync(limitsFile);
+  assert.equal(await standing(), undefined);
+
+  // Limits changed while a selection ran: the row records its results and
+  // says so, and no pass of it is carried or stands, even under the limits
+  // it started with.
+  const editor = {
+    name: "editor",
+    product: true,
+    command: [
+      process.execPath,
+      "-e",
+      `require("node:fs").writeFileSync(${JSON.stringify(limitsFile)}, JSON.stringify({ scale: 3 }))`,
+    ],
+  };
+  const during = await captureGate(["--review"], repo, {
+    table: [...table, editor],
+  });
+  assert.equal(during.row.exitCode, 0, during.row.output);
+  assert.equal(during.row.timeLimitsDigest, undefined);
+  assert.equal(during.row.timeLimitsUnchanged, false);
+  assert.ok(
+    during.lines.some((line) =>
+      line.includes(
+        "; the time limits docs/control/time-limits.json sets changed during the gate, so no pass of this row is carried or stands: run it again under the limits now in force",
+      ),
+    ),
+    during.lines.join("\n"),
+  );
+  rmSync(limitsFile);
+  const afterwards = await coveringGateCheck(repo, "npm test", names);
+  assert.equal(afterwards.row, undefined);
+  assert.equal(afterwards.otherLimits?.recordedAt, during.row.recordedAt);
+
+  // A lowered figure ends what an earlier pass would have answered for: the
+  // slow suite passes in four seconds under the kit's figures, and with its
+  // figure lowered to two the selection that would have reused that pass
+  // runs it, and it is ended for time.
+  writeFileSync(join(repo, "slow-ms"), "4000");
+  const kit = await captureGate(["--review"], repo, { table });
+  assert.equal(kit.row.exitCode, 0, kit.row.output);
+  assert.ok(task(kit.row, "slow").durationMs >= 3900);
+  assert.equal(await standing(), kit.row.recordedAt);
+  writeLimits(repo, { limits: { "suite.default": { set: 2000 } } });
+  const ranSlow = observed().filter((line) => line === "slow").length;
+  const lowered = await captureGate(["--review"], repo, { table });
+  assert.equal(lowered.row.exitCode, 1);
+  assert.deepEqual(
+    [
+      task(lowered.row, "slow").failureKind,
+      task(lowered.row, "slow").timeoutMs,
+      task(lowered.row, "slow").timeLimitKey,
+    ],
+    ["timeout", 2000, "suite.default"],
+  );
+  assert.equal(
+    observed().filter((line) => line === "slow").length,
+    ranSlow + 1,
+  );
+  assert.ok(!lowered.lines.some((line) => line.startsWith("REUSE slow ")));
+  assert.equal(await standing(), undefined);
+});
+
+test("WO-284 criterion 1 at an installed instance: a complete row stands for a claim, the closeout and the evidence command only under the time limits it ran under, and a later run under other limits leaves it standing nowhere", async (t) => {
+  const { timeLimitsDigest } = timeLimitsModule;
+  const { coveringGateCheck, standingReviewCandidate } =
+    await import("./lib/gate-reuse.mjs");
+  const { closeoutStandingFor } = await import("./lib/closeout-scope.mjs");
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-instance-limits-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  writeFileSync(join(repo, ".gitignore"), ".runtime/\ndocs/control/local/\n");
+  writeFileSync(join(repo, "scripts/verify.mjs"), "export {};\n");
+  writeFileSync(join(repo, "scripts/harness.mjs"), "export {};\n");
+  // The review selection as the closeout lists it.
+  writeFileSync(
+    join(repo, "scripts/test-runner.mjs"),
+    'console.log("kit-verify — protects: the kit files");\nconsole.log("harness — protects: the installed harness");\n',
+  );
+  execGit(["add", "."], { cwd: repo });
+  execGit(
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "An installed instance",
+    ],
+    { cwd: repo },
+  );
+  assert.equal(isKitRoot(repo), true);
+  const table = [
+    {
+      name: "kit-verify",
+      command: [process.execPath, "scripts/verify.mjs"],
+      build: true,
+      outputs: [],
+    },
+    {
+      name: "harness",
+      command: [process.execPath, "scripts/harness.mjs"],
+      instance: "runtime",
+      document: true,
+      needsBuild: true,
+    },
+  ];
+  const names = ["kit-verify", "harness"];
+  const log = console.log;
+  console.log = () => {};
+  t.after(() => (console.log = log));
+  // What stands at the identity for each reader, by when its row was
+  // recorded, and the newest passing row recorded under other limits.
+  const stands = async () => {
+    const found = await coveringGateCheck(repo, "npm test", names);
+    return {
+      claim: found.row?.recordedAt,
+      review: standingReviewCandidate(found, names)?.recordedAt,
+      evidence: findGateCheck(repo, "npm test", gateTreeHash(repo))?.recordedAt,
+      closeout: (await closeoutStandingFor(repo))?.recordedAt,
+      otherLimits: found.otherLimits?.recordedAt,
+    };
+  };
+  const everywhere = (row, otherLimits) => ({
+    claim: row.recordedAt,
+    review: row.recordedAt,
+    evidence: row.recordedAt,
+    closeout: row.recordedAt,
+    otherLimits: otherLimits?.recordedAt,
+  });
+  const nowhere = (otherLimits) => ({
+    claim: undefined,
+    review: undefined,
+    evidence: undefined,
+    closeout: undefined,
+    otherLimits: otherLimits.recordedAt,
+  });
+
+  const first = await runGate(["--review"], repo, { table });
+  assert.equal(first.exitCode, 0);
+  assert.equal(first.gateSelection, "review");
+  assert.equal(first.timeLimitsDigest, undefined);
+  assert.equal(typeof first.instanceInputDigest, "string");
+  assert.deepEqual(await stands(), everywhere(first));
+  // An edit that changes no figure leaves it standing.
+  writeLimits(repo, {
+    note: "kept",
+    limits: { "suite.default": { set: "kit" } },
+  });
+  assert.deepEqual(await stands(), everywhere(first));
+  // A raised key, a scale up and down, one limit off and every limit off.
+  for (const body of [
+    { limits: { "suite.default": { set: 5_400_000 } } },
+    { scale: 3 },
+    { scale: 1 / 3 },
+    { limits: { "suite.host": { set: null } } },
+    { enforce: false },
+  ]) {
+    writeLimits(repo, body);
+    assert.deepEqual(await stands(), nowhere(first), JSON.stringify(body));
+  }
+  // Back at the kit's figures with no run between, it stands again.
+  rmSync(join(repo, "docs/control/time-limits.json"));
+  assert.deepEqual(await stands(), everywhere(first));
+  // A run under a scale stands under that scale alone, and as the later
+  // execution of each task it leaves the first row standing nowhere.
+  writeLimits(repo, { scale: 3 });
+  const scaled = await runGate(["--review"], repo, { table });
+  assert.equal(scaled.exitCode, 0);
+  assert.equal(scaled.timeLimitsDigest, timeLimitsDigest(repo));
+  assert.deepEqual(await stands(), everywhere(scaled, first));
+  rmSync(join(repo, "docs/control/time-limits.json"));
+  assert.deepEqual(await stands(), nowhere(scaled));
+});
+
+test("WO-284 criterion 2: the Git version read, a helper compile and the lane reader that are ended for time name their limit and send the reader nowhere else", async (t) => {
+  const { judgeGitRuntime, judgeRunningGit, readGitVersionOutcome } =
+    await import("./lib/node-engines.mjs");
+  const { compilerFailure, underHostLimit } =
+    await import("./lib/host-resources.mjs");
+  const { laneReaderFailure } = await import("./lib/host-lanes.mjs");
+  const { describeTimeLimit, timeLimit } = timeLimitsModule;
+  const repo = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-limit-miss-")),
+  );
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  writeFileSync(
+    join(repo, "package.json"),
+    JSON.stringify({ engines: { git: ">=2.0.0" } }),
+  );
+  mkdirSync(join(repo, "docs/control"), { recursive: true });
+  // The owner's file gives the Git version read one millisecond.
+  writeFileSync(
+    join(repo, "docs/control/time-limits.json"),
+    JSON.stringify({ limits: { "host.git-version": { set: 1 } } }),
+  );
+  const said = (key) =>
+    `Time limit ${key} reached: ${describeTimeLimit(timeLimit(repo, key))}. docs/control/time-limits.json raises it, scales every limit or turns them off; npm run limits lists every key.`;
+  const outcome = readGitVersionOutcome(repo);
+  assert.deepEqual(outcome, {
+    version: null,
+    miss: said("host.git-version"),
+  });
+  const judged = judgeRunningGit(repo);
+  assert.equal(judged.admitted, false);
+  assert.ok(judged.message.includes(said("host.git-version")), judged.message);
+  assert.match(judged.message, /was ended for time before it printed/u);
+  assert.doesNotMatch(judged.message, /Git did not run|on PATH/u);
+  // A Git that cannot be run at all still says so, with its remedy.
+  assert.match(
+    judgeGitRuntime(null, ">=2.0.0").message,
+    /Git did not run.*first on PATH/u,
+  );
+  // A host step ended for time keeps the text that names its limit, and the
+  // helper compile's own message leads with it and names no install remedy.
+  const ended = () => {
+    throw Object.assign(new Error("spawnSync clang ETIMEDOUT"), {
+      code: "ETIMEDOUT",
+    });
+  };
+  let thrown;
+  try {
+    underHostLimit("host.helper-compile", ended, repo);
+  } catch (error) {
+    thrown = error;
+  }
+  assert.equal(thrown.timeLimitMiss, said("host.helper-compile"));
+  assert.ok(thrown.message.endsWith(said("host.helper-compile")));
+  const compile = compilerFailure("clang", thrown);
+  assert.ok(
+    compile.message.startsWith(
+      "The native compiler clang was ended for time before it finished; nothing says it cannot run. ",
+    ),
+    compile.message,
+  );
+  assert.ok(compile.message.includes(said("host.helper-compile")));
+  assert.doesNotMatch(compile.message, /could not be run|was not found/u);
+  assert.match(
+    compilerFailure(
+      "clang",
+      Object.assign(new Error("none"), { code: "ENOENT" }),
+    ).message,
+    /^The native compiler clang was not found\./u,
+  );
+  // The lane reader says which limit ended its read; any other failure says
+  // the reader is unavailable, as before.
+  let read;
+  try {
+    underHostLimit("host.lane-reader", ended, repo);
+  } catch (error) {
+    read = error;
+  }
+  assert.equal(
+    laneReaderFailure(read).message,
+    `Host process reader was ended for time before it answered. ${said("host.lane-reader")}`,
+  );
+  assert.equal(
+    laneReaderFailure(Object.assign(new Error("none"), { code: "ENOENT" }))
+      .message,
+    "Host process reader unavailable; an ordinary gate prepares it (ENOENT)",
+  );
+});
+
+// The files on the gate path: what a gate run or a bounded probe executes
+// before and around its suites. Each is read whole unless it names one
+// function, and each time limit in it reads the table, apart from the sites
+// listed with what they are: an interval between polls, a heartbeat, a
+// sampling delay, fixture data, or a limit of a command that is no gate.
+const GATE_PATH_FILES = [
+  [
+    "scripts/test-runner.mjs",
+    [
+      [
+        "GUARD_RECORD_WAIT_MS = 20",
+        "the interval between reads for the guard's record; the wait's length is suite.guard-record",
+      ],
+      [
+        "setTimeout(() => finish(code), GUARD_RECORD_WAIT_MS)",
+        "one read's wait of that interval; the whole wait is suite.guard-record",
+      ],
+      [
+        "Date.now() - lastProgressAt >= 1000",
+        "the least time between two progress lines of one task, which ends nothing",
+      ],
+      [
+        "heartbeatMs = row.heartbeatMs ?? 15_000",
+        "the progress heartbeat of a running task, which ends nothing",
+      ],
+      ["setInterval(stopping, 500)", "the poll for a stop request"],
+      [
+        "}, heartbeatMs / 3)",
+        "how often a running task's progress is read for that heartbeat",
+      ],
+    ],
+  ],
+  ["scripts/lib/generated-artifacts.mjs", []],
+  ["scripts/sync.mjs", []],
+  ["scripts/license-surfaces.mjs", []],
+  ["scripts/lib/bounded-command.mjs", []],
+  [
+    "scripts/work-orders.mjs",
+    [
+      [
+        "timeout: 10_000",
+        "the Git reads of a target's facts, made by explicit index generation alone; the index check opens no target",
+      ],
+    ],
+  ],
+  ["scripts/structural-checks.mjs", []],
+  ["scripts/check-registrations.mjs", []],
+  [
+    "scripts/harness.mjs",
+    [
+      [
+        "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250)",
+        "the poll of evidence --wait, the session's own wait for a gate: it ends nothing and takes --timeout",
+      ],
+      [
+        "Date.now() + timeout * 1000",
+        "the deadline of evidence --wait, its --timeout in seconds: the same wait, which ends no gate",
+      ],
+    ],
+  ],
+  // The harness host also holds the hooks' own limits, which are not on the
+  // gate path; its evidence gate is the function named here.
+  ["packages/skeleton/src/harness-host.ts", [], "runHarnessEvidenceChecks"],
+  ["scripts/lib/host-resources.mjs", []],
+  [
+    "scripts/lib/host-guard-state.mjs",
+    [["delay(50)", "the interval between observations of a starting guard"]],
+  ],
+  [
+    "scripts/lib/host-lanes.mjs",
+    [
+      [
+        "waitHeartbeatMs = 30000",
+        "how often a lane wait says it is still waiting, which ends nothing",
+      ],
+      ["delay(100)", "the interval between reads of the lane holders"],
+    ],
+  ],
+  ["scripts/lib/node-engines.mjs", []],
+  [
+    "scripts/lib/process-monitor.mjs",
+    [
+      [
+        "Math.min(100, limits.signalIntervalMs)",
+        "the delay before a launched task's first sample, a sampling interval the budgets set",
+      ],
+    ],
+  ],
+  [
+    "scripts/host-guard.mjs",
+    [
+      [
+        "Date.now() - emptySince > 3000",
+        "how long the guard stays up with nothing registered before it retires itself: it ends an idle guard and no gate, probe or task",
+      ],
+    ],
+  ],
+  [
+    "packages/skeleton/src/gate-evidence.mjs",
+    [
+      [
+        "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250)",
+        "the interval between reads of the active gate runs while a stop is awaited",
+      ],
+      [
+        "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10)",
+        "the interval between attempts on the gate record's lock",
+      ],
+    ],
+  ],
+  [
+    "scripts/test-configuration-root.mjs",
+    [
+      [
+        'test: { argv: ["node", "test.mjs"], timeoutMs: 5000 }',
+        "fixture data: a target gate command's declared limit, which the loader validates and nothing runs",
+      ],
+      [
+        'lint: { argv: ["node", "lint.mjs"], timeoutMs: 1000 }',
+        "fixture data: a target gate command's declared limit",
+      ],
+      [
+        'test: { argv: ["node", "test.mjs"], timeoutMs: 1000 }',
+        "fixture data: a target gate command's declared limit",
+      ],
+    ],
+  ],
+];
+
+/** Every site in a parsed file that passes a number as a length of time: a
+ * `timeout` or `timeoutMs` property, a timer's delay, a deadline's figure,
+ * a clock reading plus a number, and a name ending in Ms given a number. */
+function timeFigureSites(read, withinFunction) {
+  const { SyntaxKind: K } = sourceSyntax();
+  const text = (node) =>
+    read.file.text
+      .slice(node.pos, node.end)
+      .replace(/^(?:\s|\/\/[^\n]*\n|\/\*[\s\S]*?\*\/)*/u, "")
+      .replace(/\s+/gu, " ");
+  // A figure of its own: a number above one written in the expression.
+  const figure = (node) =>
+    node &&
+    [...sourceNodes(node)].some(
+      (inner) =>
+        inner.kind === K.NumericLiteral &&
+        Number(inner.text.replaceAll("_", "")) > 1,
+    );
+  const named = (node) => (node?.kind === K.Identifier ? node.text : undefined);
+  // A constant of the same file whose value is a figure, used by its name: a
+  // delay or a timeout written as `LIMIT` is the figure `LIMIT` was given.
+  const constants = new Map();
+  for (const node of sourceNodes(read.file))
+    if (
+      node.kind === K.VariableDeclaration &&
+      named(node.name) &&
+      node.initializer &&
+      figure(node.initializer) &&
+      ![...sourceNodes(node.initializer)].some(
+        (inner) => inner.kind === K.CallExpression,
+      )
+    )
+      constants.set(named(node.name), node.initializer);
+  const figured = (node) =>
+    figure(node) || (named(node) !== undefined && constants.has(named(node)));
+  // A reading of the clock, and a number written out with no name in it.
+  const clock = (node) => /\b(?:Date|performance)\.now\(\)/u.test(text(node));
+  const bare = (node) =>
+    figure(node) &&
+    ![...sourceNodes(node)].some((inner) => inner.kind === K.Identifier);
+  const callee = (node) =>
+    node.expression.kind === K.Identifier
+      ? node.expression.text
+      : node.expression.kind === K.PropertyAccessExpression
+        ? `${named(node.expression.expression) ?? "?"}.${node.expression.name.text}`
+        : undefined;
+  let scope = read.file;
+  if (withinFunction) {
+    scope = [...sourceNodes(read.file)].find(
+      (node) =>
+        node.kind === K.FunctionDeclaration &&
+        named(node.name) === withinFunction,
+    );
+    assert.ok(scope, `${read.path} declares ${withinFunction}`);
+  }
+  const sites = [];
+  const add = (node) =>
+    sites.push({ line: read.line(node.pos + 1), text: text(node) });
+  for (const node of sourceNodes(scope)) {
+    if (
+      node.kind === K.PropertyAssignment &&
+      ["timeout", "timeoutMs", "killTimeout"].includes(named(node.name)) &&
+      figured(node.initializer)
+    )
+      // Reported with the object it is written in, which names its use.
+      add(
+        node.parent.parent?.kind === K.PropertyAssignment
+          ? node.parent.parent
+          : node,
+      );
+    else if (node.kind === K.CallExpression) {
+      const name = callee(node);
+      const delay = {
+        setTimeout: 1,
+        setInterval: 1,
+        delay: 0,
+        startDeadline: 1,
+        "Atomics.wait": 3,
+      }[name];
+      if (delay !== undefined && figured(node.arguments[delay])) add(node);
+      else if (name === "deadlineLimit" && node.arguments.some(figure))
+        add(node);
+    } else if (
+      (node.kind === K.Parameter ||
+        node.kind === K.VariableDeclaration ||
+        node.kind === K.BindingElement) &&
+      /(?:Ms|_MS)$/u.test(named(node.name) ?? "") &&
+      figure(node.initializer)
+    )
+      add(node);
+    else if (
+      node.kind === K.BinaryExpression &&
+      node.operatorToken.kind === K.PlusToken &&
+      [node.left, node.right].some((side) =>
+        /^Date\.now\(\)$/u.test(text(side)),
+      ) &&
+      [node.left, node.right].some(figure)
+    )
+      add(node);
+    // Time passed, compared with a figure: `Date.now() - since >= 1000`.
+    else if (
+      node.kind === K.BinaryExpression &&
+      [
+        K.GreaterThanToken,
+        K.GreaterThanEqualsToken,
+        K.LessThanToken,
+        K.LessThanEqualsToken,
+      ].includes(node.operatorToken.kind) &&
+      ((clock(node.left) && bare(node.right)) ||
+        (clock(node.right) && bare(node.left)))
+    )
+      add(node);
+  }
+  return sites;
+}
+
+test("WO-284 criterion 4: no file on the gate path passes a time limit that is not read from the table, and every key of the table is read on that path", () => {
+  const { TIME_LIMITS } = timeLimitsModule;
+  const inputs = GATE_PATH_FILES.map(([path]) => ({
+    path,
+    source: readFileSync(join(root, path), "utf8"),
+  }));
+  const reads = sourceTrees(inputs);
+  const unread = [];
+  const unused = [];
+  GATE_PATH_FILES.forEach(([path, known, withinFunction], index) => {
+    const read = reads[index];
+    assert.ok(read, path);
+    assert.deepEqual(read.errors, [], path);
+    const sites = timeFigureSites(read, withinFunction);
+    const used = new Set();
+    for (const site of sites) {
+      const match = known.find(([snippet]) => site.text.includes(snippet));
+      if (match) used.add(match[0]);
+      else unread.push(`${path}:${site.line}: ${site.text.slice(0, 160)}`);
+    }
+    for (const [snippet, reason] of known) {
+      assert.ok(reason.length > 20, `${path}: ${snippet} says what it is`);
+      if (!used.has(snippet)) unused.push(`${path}: ${snippet}`);
+    }
+  });
+  assert.deepEqual(
+    unread,
+    [],
+    "each of these passes a time limit of its own; read it from packages/skeleton/src/time-limits.mjs",
+  );
+  assert.deepEqual(unused, [], "a listed site that no longer exists");
+  // The scan sees what it is for: the same figure written back is found.
+  const [planted] = sourceTrees([
+    {
+      path: "planted.mjs",
+      source:
+        'spawnSync("x", [], { timeout: 30_000 });\nsetTimeout(stop, 1_000);\nconst deadline = Date.now() + 5000;\nfunction wait(root, { waitMs = 20_000 } = {}) {}\nstartDeadline("site", 5000);\nspawnSync("x", [], { timeout: timeLimit(root, "host.census") ?? undefined });\nsetTimeout(stop, stopGraceMs);\nif (Date.now() - started > 30_000) stop();\nconst STOP_AFTER = 1000;\nsetTimeout(stop, STOP_AFTER);\nconst LIMIT = 30_000;\nspawnSync("x", [], { timeout: LIMIT });\nif (Date.now() - started >= hostTimeLimit("guard.runner-stop")) stop();\n',
+    },
+  ]);
+  // Lines 6, 7 and 13 read their figure from the table or a name that holds
+  // no figure of its own; 8, 10 and 12 are a clock difference compared with
+  // a figure and a constant used as a delay and as a timeout.
+  assert.deepEqual(
+    timeFigureSites(planted).map((site) => site.line),
+    [1, 2, 3, 4, 5, 8, 10, 12],
+  );
+  // No declared suite row and no generated artifact keeps a figure.
+  for (const row of suites) assert.equal(row.timeoutMs, undefined, row.name);
+  assert.ok(
+    generatedArtifactsModule
+      .generatedArtifacts(root)
+      .every((row) => row.timeoutMs === undefined),
+  );
+  // Every key is read on the path: a suite's by the row of its name, the
+  // default by every other row, and each other key by its own spelling.
+  const sources = inputs.map((input) => input.source).join("\n");
+  for (const key of Object.keys(TIME_LIMITS)) {
+    const suite = /^suite\.(.+)$/u.exec(key)?.[1];
+    assert.ok(
+      suite === "default" ||
+        (suite && suites.some((row) => row.name === suite)) ||
+        sources.includes(`"${key}"`),
+      `${key} is read by no file on the gate path`,
+    );
   }
 });

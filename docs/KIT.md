@@ -148,6 +148,75 @@ which cites the decisions on the report and on the preview).
   it. Arguments assembled at run time, and the shell constructs the header
   of `scripts/lib/git-surface.mjs` names, are outside that reading.
 
+#### Time limits, and a slower machine
+
+Every time limit that can end or fail a gate run or a bounded probe is a row
+of one table, and this instance sets them in one file,
+`docs/control/time-limits.json`:
+
+- `npm run limits` prints one line for every key: the kit's figure, the
+  figure that applies here and where it came from, what the limit bounds and
+  what passing it does.
+- In the file, a key's `set` is your own figure in milliseconds, `null` to
+  turn that limit off, or `"kit"` to follow the kit's figure through
+  releases. `scale` multiplies every figure, your own included, and
+  `enforce: false` turns every limit off. An entry's `kit` is the kit's
+  figure when the file was last written; nothing reads it.
+- `npm run limits -- --write` writes the file with every key. It writes
+  back each entry as you wrote it, a field of your own included, and
+  refreshes each `kit`, so it adds a new release's keys without a hand
+  edit. It creates the file where an instance has none; without the file
+  the kit's figures apply. A file it cannot read as its own (one that does
+  not parse, that is no object, or that has another `schemaVersion`) it
+  refuses and leaves as it is, for you to repair or remove.
+- An update brings a release's file to an instance that has none or never
+  changed its own, with the starter's other commits. Where you have changed
+  yours, the update keeps your bytes and `--write` adds the new keys
+  ([Instance files both sides changed](#instance-files-both-sides-changed)).
+- On a slow machine set `scale`: 2 doubles every limit. Raise one key with
+  its `set` where one step alone is slow.
+- A pass holds only under the limits it ran under. A gate's row records
+  them, so after you change a figure (a key raised or lowered, `scale`,
+  `null` or `enforce: false`) no earlier pass at the code identity is
+  reused or stands for a claim: the next run runs every task under the
+  figures in force and its record names them, and the closeout lists the
+  complete run again.
+- An edit that changes no figure, such as a note of your own or a
+  refreshed `kit`, leaves every pass reused and standing as before. A
+  target order's closeout still counts any change to the file as a change
+  to what the gates read, as it counts one to the budgets, so such an order
+  owes the complete run unless a row stands
+  ([The checks an order owes at its closeout](#the-checks-an-order-owes-at-its-closeout)).
+- A limit that is passed names itself: the message holds the key, the figure
+  that applied, this file and `npm run limits`.
+- A value the file holds that cannot be used is named in one advisory and
+  the kit's figure applies in its place; no command stops for it. A key the
+  kit has no limit for is named the same way and changes nothing.
+- Five rows are pauses after a stop, such as the wait between telling a
+  stopped task to end and killing it. They grow with `scale`, and neither
+  `enforce: false`, `null` nor a scale below one turns them off or shortens
+  them, since they end only what was already ended.
+- Three rows also bound a step outside a gate, inside a hook or a dispatch
+  whose own bound is fixed: the read of a gate owner's start time, the read
+  of the temporary directory and the wait for the host guard. Their lines
+  in the listing say so, and a figure raised past that bound changes
+  nothing there.
+- The host guard is one process for every checkout on the machine. Its own
+  steps (its census of every gate's processes, that census's fallback
+  readings and its two pauses) follow the file of the checkout whose
+  command started it, so a `host.` or `guard.` figure raised here does not
+  reach a guard another checkout started. A gate's own host steps follow
+  this checkout's file.
+
+The kit's figures leave room before any of this is needed. A step this
+instance's gate runs has at least ten times its slowest passing time in
+core's own gate record, and no suite row has under five minutes. Core checks
+that room at each release: its gate runs an exported instance's three
+selections at a third of every figure, so a release whose instance gate
+needs more than that on core's host fails before it ships
+([The gates](#the-gates), which cites the decisions on the figures, the
+file and that check).
+
 #### Host access the gate runner needs
 
 The gate runner needs host access beyond the checkout:
@@ -1581,7 +1650,10 @@ Decisions:
 ### The seeds a pass reads
 
 Export writes these instance-owned seeds once; ordinary kit updates leave
-their bytes alone. None is manifest-listed.
+their bytes alone, except that the file of time limits follows the starter
+while this instance has not changed it
+([What an update replaces](#what-an-update-replaces)). None is
+manifest-listed.
 
 | Seed | What the export writes |
 | --- | --- |
@@ -1589,6 +1661,7 @@ their bytes alone. None is manifest-listed.
 | `docs/planning/followups.json` | An empty schema-1 register. |
 | `docs/control/doc-baseline.json` | An empty editorial baseline. |
 | `docs/control/budgets.json` | The kit defaults, with no acceptances. |
+| `docs/control/time-limits.json` | Every time limit of the gate, each at the kit's figure. |
 | `docs/lineage/idea-ledger.md` | The header and status vocabulary only. |
 
 - The initial lineage index is seeded; its command regenerates it after
@@ -1612,6 +1685,9 @@ its kit files:
   that still holds the bytes an export wrote is rewritten to the current
   map, and one its owner changed is kept with its reason. A starter that
   lacks the map has it added with the other absent seeds.
+- The file of time limits, `docs/control/time-limits.json`, follows the
+  map's rule, so the starter lists a release's new keys while nobody has
+  changed its file ([decision](evidence/WO-284/decisions.md#wo-284-d007--the-limits-file-is-added-to-a-starter-that-lacks-it-and-follows-the-template-while-unchanged-as-the-documentation-map-does)).
 - Other changed templates still refuse a customized seed by path before any
   push.
 - Unchanged templates leave customized copies intact.
@@ -2150,7 +2226,12 @@ After the first steps above, `npm test`, `npm run test:docs` and
 Each selection first runs the six structural checks:
 
 1. formatting;
-2. configuration;
+2. configuration: this instance's own configuration loads, with its document
+   roots, registrations and feature elections, and what the loader refuses
+   is named. The kit's own tests of that loader are core's check. No
+   selection of an instance includes them, `npm run test:machinery` among
+   them; run them here by name with
+   `npm test -- --only configuration-root`;
 3. registrations;
 4. declarations;
 5. generated artifacts. The generated check includes the runtime manifest,
@@ -2161,6 +2242,12 @@ Each selection first runs the six structural checks:
    refuses above 1 GiB with the command that restarts it. A Node outside
    `engines.node` or a Git below `engines.git` makes the host check run
    first and nothing else.
+
+A check that is ended for time is reported as time, not as a failed check:
+its message names the key of its time limit, the figure that applied,
+`docs/control/time-limits.json` and `npm run limits`, and the tasks after a
+structural check ended that way say the same
+([Time limits, and a slower machine](#time-limits-and-a-slower-machine)).
 
 Then `kit-verify` runs instead of `build`.
 
@@ -2194,9 +2281,9 @@ observed harness smoke.
 
 The observed selections in a fresh fixture instance are:
 
-- `npm test`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
-- `npm run test:docs`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`, `license-surfaces`, `docs-check`, `terms`, `harness-context`, `plan-refutation-current`, `plan`, `reader-profiles`, `entropy`.
-- `npm test -- --review`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
+- `npm test`: `format`, `configuration`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
+- `npm run test:docs`: `format`, `configuration`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`, `license-surfaces`, `docs-check`, `terms`, `harness-context`, `plan-refutation-current`, `plan`, `reader-profiles`, `entropy`.
+- `npm test -- --review`: `format`, `configuration`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
 
 - These checks run fresh: the active snapshot and coordination records can
   change without changing code identity.
@@ -2215,7 +2302,11 @@ or machinery diagnostics with `npm run test:machinery`.
 Decisions:
 [a gate shows the file-events daemon's size and refuses above 1 GiB](evidence/WO-276/decisions.md#wo-276-d142--a-gate-shows-the-file-events-daemons-size-at-every-start-and-refuses-above-1-gib-after-a-restart-showed-the-daemon-healthy-and-a-measured-comparison-showed-that-where-the-gates-files-are-made-does-not-matter),
 [the Git floor](evidence/WO-260/decisions.md#wo-260-d010--the-git-floor-is-git-2310-and-wo-258-d009-is-superseded),
-[kit verification compares every compiled runtime file before any of the instance's code runs](evidence/WO-276/decisions.md#wo-276-d174--kit-verification-and-an-updates-plan-compare-every-carried-compiled-runtime-file-before-any-of-the-instances-code-runs).
+[kit verification compares every compiled runtime file before any of the instance's code runs](evidence/WO-276/decisions.md#wo-276-d174--kit-verification-and-an-updates-plan-compare-every-carried-compiled-runtime-file-before-any-of-the-instances-code-runs),
+[the configuration check loads the instance's own configuration](evidence/WO-284/decisions.md#wo-284-d008--an-instances-configuration-row-loads-its-own-configuration-and-the-other-roots-structural-row-runs-only-by-name),
+[the time limits' keys and figures, with the times each rests on](evidence/WO-284/decisions.md#wo-284-d003--the-tables-keys-and-the-kits-figures-each-with-the-times-it-rests-on),
+[how the limits file changes them](evidence/WO-284/decisions.md#wo-284-d004--how-a-roots-file-changes-the-figures-null-is-a-limit-turned-off-the-pauses-after-a-stop-stay-on-and-never-shrink-and-one-unusable-value-is-one-advisory-for-a-whole-command),
+[core's check of an instance's gate at a third of every figure](evidence/WO-284/decisions.md#wo-284-d014--core-checks-the-starters-room-by-running-an-exported-instances-three-selections-at-a-third-of-every-figure-with-one-arm-that-shows-the-check-failing).
 
 ### The checks an order owes at its closeout
 
@@ -2240,6 +2331,26 @@ review form) and `npm run test:docs`. It owes the instance's
 - the selection cannot read or classify an input, whose reason it prints.
 
 An integration that only took in a kit update adds no run of its own.
+
+Where the selection owes `npm test -- --review` and a passing complete
+review row already stands at the current code identity, recorded under the
+time limits in force, the briefing and `worktree integrate` say the
+complete run is satisfied by that row, with when it was recorded, and list
+`npm run test:docs` alone. A change to documents alone moves no code
+identity, so it owes the document gate and no complete run. A changed time
+limit is not such a change: a row recorded under other figures stands for
+nothing, and the run is listed again
+([decision](evidence/WO-284/decisions.md#wo-284-d032--a-pass-recorded-under-other-time-limits-is-neither-carried-nor-standing)). Where no such row stands, or the gate record cannot
+be read, the selection lists the complete run as it always did
+([decision](evidence/WO-284/decisions.md#wo-284-d009--the-closeout-selection-says-a-complete-run-is-satisfied-by-the-row-the-final-reviews-claim-would-consume)).
+
+In core, where a complete selection reuses passing tasks,
+`npm test -- --review --again` at such an identity prints the standing row,
+runs nothing and exits 0; `--reason "<why>"` runs it and the row keeps the
+reason. The row that answers a review selection is the one the closeout
+names: a plain run's row does not, so the review selection then runs. An
+instance's selections reuse nothing and always run
+([decision](evidence/WO-284/decisions.md#wo-284-d010--a-complete-selection-forced-at-an-identity-that-is-already-green-needs-a-stated-reason-and-a-reused-suite-is-named-as-reused)).
 
 An order already active when the instance takes this kit release re-runs
 nothing: its next briefing or integration prints the selection from its
@@ -2630,6 +2741,11 @@ Instance files are yours:
   `docs/verifications/`, `docs/final-reviews/`, `docs/workstreams/`,
   `docs/repositories/` and `docs/planning/`.
 - `FOR-CORE.md`, seeded once with no entry and never rewritten by a refresh.
+- `docs/control/time-limits.json`, seeded with every time limit of the gate
+  at the kit's figure. An update brings a release's file where this
+  instance has none or never changed its own, and keeps your bytes where
+  you have; `npm run limits -- --write` then adds the release's new keys
+  ([Time limits, and a slower machine](#time-limits-and-a-slower-machine)).
 - `CLAUDE.md`. Its generated harness block is checked by
   `node scripts/harness.mjs check` through the listed harness manifest, and
   changed by an update only through an explicitly opted-in phrase action.
@@ -2681,8 +2797,8 @@ its Codex counterpart.
   (`docs/control/doc-ceilings.json`) while its bytes are the kit's rendering
   and keeps a customized one, naming why in `keptSeeds`.
 - Its summary names `seeds added:` and `seeds removed:`.
-- The template seeds, the front page and the documentation map keep their
-  own rules
+- The template seeds, the front page, the documentation map and the file of
+  time limits keep their own rules
   ([What a starter refresh does to a seed](#what-a-starter-refresh-does-to-a-seed)).
 
 Decisions:
@@ -3598,6 +3714,12 @@ Decisions:
   starter refresh replaces an unedited map with the current one and keeps a
   customized one, with the reason
   ([What a starter refresh does to a seed](#what-a-starter-refresh-does-to-a-seed)).
+- The file of time limits, `docs/control/time-limits.json`, is an instance
+  seed as well. The starter's copy follows each release's template while
+  nobody has changed it, so this instance's update merge brings the
+  release's file where it has none or never changed its own. A file you
+  have changed stays yours, listed as `both changed`, and
+  `npm run limits -- --write` adds the release's new keys to it.
 - The manifest records the new source commit; refused files can still come
   from an older revision.
 - `UPSTREAM.md` takes the new provenance when it is unmodified.

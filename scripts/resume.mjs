@@ -99,6 +99,8 @@ import {
   closeoutBriefing,
   closeoutCompletionAdvisory,
   closeoutRunnerFor,
+  closeoutScope,
+  closeoutStandingFor,
   executorEntryBriefing,
   requirePlanApproval,
 } from "./lib/executor-readiness.mjs";
@@ -1674,7 +1676,13 @@ const executionBriefing = (state) => {
     );
   return briefingCommands(
     state,
-    `Execute ${state.workOrderPath}.${standingBriefing(state, "implementation-ready")}\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
+    `Execute ${state.workOrderPath}.${standingBriefing(state, "implementation-ready")}\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}${closeoutBriefing(
+      repoRoot,
+      state,
+      closeoutRunner,
+      closeoutStanding,
+      closeoutScoped,
+    )}`,
   );
 };
 // A retraction that returned a closed order to repair is its failure source:
@@ -1691,7 +1699,13 @@ const repairSource = (state) => {
 const repairBriefing = (state) =>
   briefingCommands(
     state,
-    `Repair ${state.workOrderPath} using ${repairSource(state)}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${standingBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
+    `Repair ${state.workOrderPath} using ${repairSource(state)}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${standingBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}${closeoutBriefing(
+      repoRoot,
+      state,
+      closeoutRunner,
+      closeoutStanding,
+      closeoutScoped,
+    )}`,
   );
 const preflightBriefing = (state) => {
   if (state.repositoryId) return "";
@@ -1708,13 +1722,27 @@ const preflightBriefing = (state) => {
 // launchpad order's verifier consumes the executor's complete row, which the
 // handoff evidence line above it already names.
 const verifierCloseout = (state) =>
-  state.repositoryId ? closeoutBriefing(repoRoot, state, closeoutRunner) : "";
+  state.repositoryId
+    ? closeoutBriefing(
+        repoRoot,
+        state,
+        closeoutRunner,
+        closeoutStanding,
+        closeoutScoped,
+      )
+    : "";
 const verificationBriefing = (state, reportPath) =>
   `${briefingCommands(state, `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`)}${preflightBriefing(state)}${verificationKnownIssues(repoRoot, state)}${briefingCommands(state, `${targetBriefing(state)}${verifierCloseout(state)}`)}`;
 const finalReviewBriefing = (state, reportPath) =>
   briefingCommands(
     state,
-    `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}${targetBriefing(state, true)}${closeoutBriefing(repoRoot, state, closeoutRunner)}`,
+    `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}${targetBriefing(state, true)}${closeoutBriefing(
+      repoRoot,
+      state,
+      closeoutRunner,
+      closeoutStanding,
+      closeoutScoped,
+    )}`,
   );
 // A result's own advisories print once and ride on its evidence.
 const recordAdvisories = (evidence, lines) => {
@@ -1747,6 +1775,12 @@ const recordedBriefings = {
 // classify a target order's launchpad paths; loaded once, after the order is
 // selected, by an action that prints that selection.
 let closeoutRunner;
+// The passing complete review row at the current code identity, where one
+// stands: a briefing then says the complete run is satisfied by it.
+let closeoutStanding;
+// The selected order's closeout selection, computed once for the briefing
+// that prints it.
+let closeoutScoped;
 const run = async (argv) => {
   let [action = "status", ...rawArgs] = argv;
   let releaseExecutorWriter;
@@ -1886,6 +1920,18 @@ const run = async (argv) => {
     ].includes(action)
   )
     closeoutRunner = await closeoutRunnerFor(repoRoot, state);
+  // Only a dispatch or a briefing prints the selection that reads the row,
+  // and only a selection that owes the complete run reads it; a completion
+  // records its advisory without it. A launchpad order's verification
+  // briefing prints no selection, so nothing is read for it.
+  if (["next", "fix", "verify", "briefing", "final-review"].includes(action)) {
+    closeoutScoped = closeoutScope(repoRoot, state, { runner: closeoutRunner });
+    if (
+      closeoutScoped.launchpad === "complete" &&
+      (action !== "verify" || state.repositoryId)
+    )
+      closeoutStanding = await closeoutStandingFor(repoRoot);
+  }
 
   switch (action) {
     case "usage": {

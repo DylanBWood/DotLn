@@ -107,10 +107,20 @@ export function summarizeDeadlines(records) {
     );
 }
 
+/** Why a measurement series runs a complete selection again at an identity
+ * that may already hold a passing row; each run's row keeps it. */
+export const MEASUREMENT_REASON =
+  "gate measurement series: three fresh complete runs at one code identity";
+
 export function checkMeasurementSeries(series) {
   assert.ok([1, 2].includes(series.schemaVersion));
   const current = series.schemaVersion === 2;
   assert.equal(series.command, "npm run test:full -- --fresh");
+  // The command is the selection each run forced; `reason` is the text the
+  // tool passed with --reason, which a forced complete selection needs at an
+  // identity already green. A series written before that had none.
+  if (series.reason !== undefined)
+    assert.equal(series.reason, MEASUREMENT_REASON);
   assert.ok(
     ["shared", "isolated", ...(current ? ["overlap"] : [])].includes(
       series.configuration,
@@ -254,6 +264,7 @@ function measure(output) {
   const series = {
     schemaVersion: 2,
     command: "npm run test:full -- --fresh",
+    reason: MEASUREMENT_REASON,
     host: {
       platform: process.platform,
       arch: process.arch,
@@ -290,11 +301,17 @@ function measure(output) {
     const fd = openSync(log, "wx", 0o600);
     let processExitCode;
     try {
-      const run = spawnSync("npm", ["run", "test:full", "--", "--fresh"], {
-        cwd: root,
-        env: { ...process.env, DOTLN_GATE_MEASURE_DEADLINES: "1" },
-        stdio: ["ignore", fd, fd],
-      });
+      // A series runs the selection three times at one identity on purpose,
+      // which the runner asks a reason for once a passing row stands there.
+      const run = spawnSync(
+        "npm",
+        ["run", "test:full", "--", "--fresh", "--reason", MEASUREMENT_REASON],
+        {
+          cwd: root,
+          env: { ...process.env, DOTLN_GATE_MEASURE_DEADLINES: "1" },
+          stdio: ["ignore", fd, fd],
+        },
+      );
       processExitCode = run.status ?? 1;
     } finally {
       closeSync(fd);

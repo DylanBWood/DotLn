@@ -10,6 +10,11 @@ import {
   readPreflightSuites,
 } from "./lib/handoff-ledger.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import {
+  endedForTime,
+  timeLimit,
+  timeLimitMiss,
+} from "../packages/skeleton/src/time-limits.mjs";
 import { isCoreRoot } from "./lib/harness-runtime.mjs";
 import {
   defaultDocRelative,
@@ -1440,6 +1445,7 @@ export function checkPreflightSuites(root, index) {
     );
   if (!requests.length) return;
   const runner = pathToFileURL(join(root, "scripts/test-runner.mjs")).href;
+  const preflightSuitesMs = timeLimit(root, "index.preflight-suites");
   const result = spawnSync(
     process.execPath,
     [
@@ -1450,13 +1456,17 @@ export function checkPreflightSuites(root, index) {
     {
       cwd: root,
       encoding: "utf8",
-      timeout: 30_000,
+      // Null is a limit the root turned off.
+      timeout: preflightSuitesMs ?? undefined,
       maxBuffer: 4 * 1024 * 1024,
     },
   );
   const unreadable = () =>
     new Error(
-      `Preflight suites cannot be read from scripts/test-runner.mjs (${result.error?.code ?? result.status ?? "unreadable"}); restore this checkout's runner and rerun npm run work-orders -- index --check`,
+      endedForTime(result)
+        ? // Ended for time: the runner was not found unreadable.
+          `Preflight suites were not read from scripts/test-runner.mjs: the read was ended for time. ${timeLimitMiss(root, "index.preflight-suites", preflightSuitesMs)}`
+        : `Preflight suites cannot be read from scripts/test-runner.mjs (${result.error?.code ?? result.status ?? "unreadable"}); restore this checkout's runner and rerun npm run work-orders -- index --check`,
     );
   if (result.error || result.status !== 0) throw unreadable();
   let declared;

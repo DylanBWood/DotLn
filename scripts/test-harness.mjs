@@ -6668,11 +6668,13 @@ while (!existsSync("${local}/" + stage + ".go")) {
         }
         const program =
           mode === "runner"
-            ? `const {runGate, STRUCTURAL_TASKS} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)});
+            ? `const {runGate, CORE_STRUCTURAL_TASKS} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)});
 const command = (stage) => [process.execPath, "hold-gate.mjs", stage];
+// This fixture root holds package source, so its structural phase is core's;
+// the recorded Git surface check is left out, as the fixture has no record.
 const table = [
   {name: "build", build: true, command: [process.execPath, "-e", ""]},
-  ...STRUCTURAL_TASKS.map(name => ({name, structural: true, command: name === "format" ? command("checks") : [process.execPath, "-e", ""]})),
+  ...CORE_STRUCTURAL_TASKS.filter(name => name !== "git-surface").map(name => ({name, structural: true, command: name === "format" ? command("checks") : [process.execPath, "-e", ""]})),
   {name: "fixture-product", product: true, command: command("product")},
 ];
 const result = await runGate(["--only", "fixture-product"], process.cwd(), {table});
@@ -23730,4 +23732,43 @@ test("WO-276 criterion Q4: two authorship snapshots with no file changed between
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("WO-284 criterion 8: the emitted reviewer and executor roots say, in the step that names the complete run, that an edit to documents alone owes the document gate and no complete run", () => {
+  const sentence =
+    "An edit to documents alone, an authored document included, owes `npm run test:docs` and no complete run, and a pending follow-up row or an earlier order's choice changes no role's duty.";
+  const roots = harnessInstallation().files;
+  // The reviewer's step 5 and the executor's step 8 name the complete run.
+  for (const [role, step] of [
+    ["reviewer", "5. "],
+    ["executor", "8. "],
+  ])
+    for (const host of [".claude", ".agents"]) {
+      const path = `${host}/skills/dotln-${role}/SKILL.md`;
+      const root = roots.find((file) => file.path === path);
+      assert.ok(root, path);
+      const holding = root.contents
+        .split("\n")
+        .filter((line) => line.includes(sentence));
+      assert.equal(holding.length, 1, path);
+      assert.ok(
+        holding[0].startsWith(step),
+        `${path}: ${holding[0].slice(0, 40)}`,
+      );
+      assert.ok(holding[0].includes("npm test -- --review"), path);
+      // The installed root at this checkout is the emitted one.
+      assert.equal(
+        readFileSync(join(sourceRoot, path), "utf8"),
+        root.contents,
+        path,
+      );
+    }
+  // Neither sentence reaches a role that starts no complete run.
+  for (const role of ["planner", "refuter", "router", "release-close"])
+    assert.ok(
+      !roots
+        .find((file) => file.path === `.claude/skills/dotln-${role}/SKILL.md`)
+        .contents.includes(sentence),
+      role,
+    );
 });

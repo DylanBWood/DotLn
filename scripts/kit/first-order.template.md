@@ -48,7 +48,10 @@ values). Report only limits observed incidentally.
    `DOTLN_LIVE_HARNESS=1 node scripts/harness-live-smoke.mjs executor 001`,
    launches the actual harness in a scratch copy of this launchpad; it is this
    instance's own choice, made outside this order, which invokes no harness.
-4. Local-terms registration: create `docs/control/local/terms.txt` from
+4. Local-terms registration: where `docs/control/local/terms.txt` is
+   present, keep it as it is. It holds the entries the operator registered
+   before this order, and this order never replaces, rewrites or empties
+   it. Only where none is present, create it from
    `scripts/kit/terms.example.txt` (one entry a line, ignored by Git;
    an empty list is `present` with no terms and refuses nothing): the entries
    that must never appear in committed text under `refuse:`, and the entries

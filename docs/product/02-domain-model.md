@@ -757,7 +757,9 @@ scopes and live-state checks execute conservatively. Both boundary observations
 must agree before a success can enter this cache. Each reused row names its
 original tree, time, duration and evidence reference and says it was reused;
 the runner executes the aggregate and still requires complete, unique coverage
-at the exact current handoff tree. `--fresh` bypasses suite reuse. Cold gate
+at the exact current handoff tree. `--fresh` bypasses suite reuse, with a
+stated reason where a passing complete row already stands at the identity.
+Cold gate
 measurements remain distinct from the wall time of a composed gate, with the
 same 120-second fast-gate budget. This is a reviewed repository-test adapter,
 not general dependency inference for arbitrary programs.

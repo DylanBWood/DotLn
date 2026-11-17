@@ -4514,6 +4514,17 @@ and generated evidence, including fixtures, manifests and installed guidance.
   owes `npm run test:docs` on the exact tree, and no role runs the complete
   gate after it, whatever a pending follow-up row proposes or an earlier
   order did ([operator direction, 2026-11-16](../evidence/WO-282/decisions.md#wo-282-d024--critical-errors-a-complete-run-after-a-document-only-edit-and-the-rule-that-none-ever-follows-one)).
+
+  The tools say the same. Where a passing complete review row stands at the
+  current code identity, recorded under the time limits in force, the
+  closeout selection that the briefing and `worktree integrate` print says
+  the complete run is satisfied by that row, with its time, and lists the
+  document gate alone
+  ([decision](../evidence/WO-284/decisions.md#wo-284-d009--the-closeout-selection-says-a-complete-run-is-satisfied-by-the-row-the-final-reviews-claim-would-consume)). At such an identity `npm test -- --review --again`
+  prints the row, runs nothing and exits 0; only `--reason <why>` runs the
+  selection again, and its row keeps the reason
+  ([decision](../evidence/WO-284/decisions.md#wo-284-d010--a-complete-selection-forced-at-an-identity-that-is-already-green-needs-a-stated-reason-and-a-reused-suite-is-named-as-reused)).
+
   The document row binds the exact
   candidate tree, including current reports, decisions and generated indexes.
 - **Scratch repositories (WO-188).** A nested repository outside the intake
@@ -4583,7 +4594,8 @@ and generated evidence, including fixtures, manifests and installed guidance.
   logical size in full (two probe copies filled the host volume on
   2026-10-06; WO-187 D053) [2026-10-11 pass](../planning/passes/standard-pass-2026-10-11.md). The wrapper
   preserves argv, the caller's environment, working directory and ordinary exit
-  status, with the existing 900-second deadline and bounded output tail; a
+  status, with its deadline (900 seconds unless the root's time limits set
+  another, `probe.command`) and bounded output tail; a
   memory-budget stop exits 125. On the measured
   macOS host, original-parent identities and inherited output-socket identities
   retain ownership through detached descendants, including unsampled double
@@ -5386,10 +5398,29 @@ and generated evidence, including fixtures, manifests and installed guidance.
   worktree registration, without writing to main; a pass it carried from
   main is checked against main’s latest execution at each later lookup;
   unresolvable main leaves the worktree’s own rows.
-  `--again` always runs every selected task fresh; review selections may reuse
-  eligible passing tasks. Reuse compares code identity and never the Node that
-  ran a task, so a run that judges one supported line passes `--again` and shows
-  no reused task on its row. Review selection diffs against the
+
+  `--again` runs every selected task fresh; review selections may reuse
+  eligible passing tasks. On a plain selection at an identity whose passing
+  complete row covers it, and on a review selection at one that holds the
+  review row a completion consumes (every named suite ran and passed in
+  it), `--again` needs `--reason <why>`: without one the runner prints that
+  row and what running again costs, runs nothing, not a build either, and
+  exits 0, and with one the row keeps the reason. A plain row never answers
+  a review selection.
+
+  Reuse compares
+  code identity and the time limits in force, and never the Node that ran a
+  task, so a run that judges one supported line passes `--again` with its
+  reason and shows no reused task on its row. A row recorded under other
+  time limits supplies no reused task and answers no forced selection
+  ([decision](../evidence/WO-284/decisions.md#wo-284-d032--a-pass-recorded-under-other-time-limits-is-neither-carried-nor-standing)).
+
+  A suite the selection reuses whole is named in the schedule line as
+  reused at the code identity, never as changed or as scheduled first: it
+  does not run, and whatever changed in its sources since the last gate row
+  lies outside that identity.
+
+  Review selection diffs against the
   merge base, retaining the worktree’s changes when a sibling advances main.
   During a product gate, roles may write only the active order’s evidence,
   verification and final-review directories at the default document roots;
@@ -5455,6 +5486,57 @@ and generated evidence, including fixtures, manifests and installed guidance.
   a Node outside the range and is not a lifecycle prerequisite. Read authored outputs and validate generated
   outputs using their existing commands, without a new receipt ritual.
 
+- **Time limits (WO-284).** Every time limit that can end or fail a gate
+  run or a bounded probe is a row of one build-free table,
+  `packages/skeleton/src/time-limits.mjs`: a key, the kit's figure, what it
+  bounds and what passing it does. A limit stays a limit: none adapts to
+  the host, and none outside the gate path is in the table.
+  - **Who reads it.** The runner's suite rows, the generated checks, the
+    license check's dry runs, the evidence and probe wrappers, the index
+    check's child and the host's monitor, guard, helper-compile and
+    record-lock bounds read their figures there and keep none of their
+    own. A core-only case reads each file on that path and fails on a
+    figure written back ([decision](../evidence/WO-284/decisions.md#wo-284-d005--what-the-gate-path-is-for-criterion-4-and-the-limits-in-its-files-that-are-not-on-it)).
+  - **Who sets it.** A root's owner changes the figures in
+    `time-limits.json` in the control root: `set` on a key (a figure in
+    milliseconds, `null` for that limit off, or `"kit"`), `scale` for all
+    of them and `enforce: false` for none. `npm run limits` lists every
+    key with the figure that applies and its source, and
+    `npm run limits -- --write` writes the file with every key, each
+    entry as its owner left it, and refuses a file it cannot read as its
+    own.
+  - **What an unusable value does.** A value the resolver cannot use is
+    one advisory and the kit's figure applies. Reading a limit prints
+    nothing: the runner, the probe wrapper and the sync print a root's
+    advisories once where they begin.
+    The pauses after a stop are rows too, and stay on
+    ([decision](../evidence/WO-284/decisions.md#wo-284-d004--how-a-roots-file-changes-the-figures-null-is-a-limit-turned-off-the-pauses-after-a-stop-stay-on-and-never-shrink-and-one-unusable-value-is-one-advisory-for-a-whole-command)).
+  - **What a miss says.** A step that is ended for time names its key, the
+    figure, the file and the listing command. A structural task ended that
+    way is reported as time, not as a failed check.
+  - **What a change does.** A gate row records the limits it ran under, as
+    one digest of every figure that applies (none where each is the kit's)
+    and whether they changed before it ended. A pass is reused, and a
+    complete row stands for the runner's answer to a forced selection, the
+    closeout, a completion's claim and the evidence command, only where
+    those are the limits in force; a later run under any limits still
+    displaces an older pass ([decision](../evidence/WO-284/decisions.md#wo-284-d032--a-pass-recorded-under-other-time-limits-is-neither-carried-nor-standing)).
+  - **What changes nothing.** A change to the file that changes no figure
+    leaves every pass reused and standing. The closeout still counts the
+    file among the records the gates read, as it counts the budgets, so a
+    target order that changes it in any way owes the launchpad's complete
+    run unless a row stands.
+  - **How much room.** A step an instance's gate runs has at least ten
+    times its slowest passing time in core's gate record, a suite row at
+    least five minutes, and a row only core's complete run uses at least
+    three times ([decision](../evidence/WO-284/decisions.md#wo-284-d003--the-tables-keys-and-the-kits-figures-each-with-the-times-it-rests-on)). Core's export fixture checks that
+    room: it runs an exported instance's three selections at a third of
+    every figure and judges each task's own result
+    ([decision](../evidence/WO-284/decisions.md#wo-284-d014--core-checks-the-starters-room-by-running-an-exported-instances-three-selections-at-a-third-of-every-figure-with-one-arm-that-shows-the-check-failing)).
+    Three rows also bound a step inside a hook or a dispatch whose own
+    bound is fixed (a gate owner's start read, the temporary directory read
+    and the guard's start), so they keep the figures they had
+    ([decision](../evidence/WO-284/decisions.md#wo-284-d017--paired-review-round-1-27-distinct-findings-from-the-four-reports-each-with-who-found-it-its-class-and-what-becomes-of-it)).
 - **Build publication.** Compile into staging with the existing Node
   toolchain, replace each complete output file atomically, and finish the
   build barrier before dependent application commands run [operator decision,
@@ -5656,9 +5738,20 @@ Saved rejection diagnostics and pending entropy subjects are promoted out of
 temporary ownership. Their existing retention or filing/discard protocol owns
 them across sessions; session cleanup cannot remove them.
 
-Every selection begins with six structural tasks, in order: `format`,
-`configuration-root`, `registrations`, `declarations`, `generated` and
-`host`; core runs a seventh, `git-surface`, between `generated` and `host`,
+Every selection begins with its root's structural tasks, in order. An
+instance runs six: `format`, `configuration`, `registrations`,
+`declarations`, `generated` and `host`. Its `configuration` task loads the
+instance's own configuration, with its document roots, registrations and
+feature elections, and names what the loader refuses. Core runs
+`configuration-root` in that place, the kit's tests of the loader, which an
+instance runs only by name since its kit verification already compares
+their bytes ([decision](../evidence/WO-284/decisions.md#wo-284-d008--an-instances-configuration-row-loads-its-own-configuration-and-the-other-roots-structural-row-runs-only-by-name)).
+No selection of an instance includes it, the machinery selection among
+them; the review listing's inventory still names it there, as a suite
+available by that name.
+
+Core also runs a seventh, `git-surface`,
+between `generated` and `host`,
 which an exported kit does not carry: it fails on a Git form its static
 reading finds in the kit's scripts and tests that
 `scripts/lib/git-surface.json` has not recorded as confirmed against the
@@ -5784,8 +5877,9 @@ one exists, whichever role recorded it: the identity, not the dispatch time,
 says what was tested, so under serial orders an integration that brought no
 change costs no second run. Only when that identity has no passing complete
 row does it start `npm test -- --review` in the background, never under the
-bounded probe wrapper (which applies a six-hour outer bound to a complete
-selection instead of its default 900-second probe deadline; an explicitly
+bounded probe wrapper (which gives a test selection, complete or by name, a
+six-hour outer bound, `probe.test-selection`, in place of an ordinary
+command's 900 seconds, `probe.command`; an explicitly
 bounded live lifecycle probe can set `--timeout-seconds` from 1 to 21600
 without changing memory protection or the command's own deadlines),
 awaiting it with `node scripts/harness.mjs evidence --wait`. The FINAL
@@ -5854,7 +5948,8 @@ with `stopped: true`; a stop before any completion records nothing. A stopped
 row supplies no passing claim. An execution finishing after its row was
 recorded also supplies no pass. Launchpad declares its files in
 update/refresh, export/verify and seeds/staging order, at most two at a time,
-each with its own 900-second deadline and two host slots. Measured light
+each under the default task limit (`suite.default`, 45 minutes at the kit's
+figure) and with two host slots. Measured light
 files can still run first beside an exclusive task. Declaring the longer
 update file first aims to reduce the tail when only one heavy file fits;
 the required tasks, assertions and admission limits are unchanged.
@@ -5876,7 +5971,8 @@ on the latter (WO-229 D001); failed samples remain unavailable.
 
 At the measured eight-slot capacity, structural host requests are `format` 3,
 `configuration-root` 2, `registrations` 2, `declarations` 4, `generated` 2,
-`host` 2, `kit-verify` 2.
+`host` 2, `kit-verify` 2; an instance's `configuration` task, one process
+that loads one configuration, asks for 1 and is not yet measured.
 These requests are capped by the available local reservation on smaller hosts;
 the local serial structural phase keeps every local lane. The
 [measurement and sizing decision](../evidence/WO-229/decisions.md#wo-229-d002)
@@ -5921,7 +6017,7 @@ case registers, so one case still runs by its name under the bounded
 wrapper. A shard's deadline declaration counts the other shards with the
 light peers ([WO-276-D047](../evidence/WO-276/decisions.md#wo-276-d047--part-d-as-built-the-control-and-what-it-can-show-the-convoy-the-shards-the-file-order-the-conditions-reading-and-the-cases-that-follow)). Target-worktree's
 close, start, publication and release files run two at a time, each under
-its own 900-second deadline. No list of case titles is kept for those files
+the default task limit. No list of case titles is kept for those files
 or the launchpad's: a case of the runner's tests reads the top-level
 registrations of every suite file through the source reader and refuses a
 file that declares one title twice, the fault that makes a name pattern

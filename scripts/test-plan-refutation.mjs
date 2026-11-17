@@ -10783,6 +10783,12 @@ test("WO-238 the read census counts each document's sessions over the last N rel
       [4, 3, 1],
     );
     assert.match(census.coverage.codex, /^unobserved: /);
+    // A file a session read through its shell is in no row's paths, and the
+    // line that says what Claude Code's rows cover says so.
+    assert.equal(
+      census.coverage.claude,
+      "observed: the hooks journal Read, Edit, Write and Bash rows; a file read through the shell is not counted, so the counts are a lower bound",
+    );
     assert.deepEqual(
       JSON.parse(read(repo, "docs/control/local/document-census.json"))
         .documents,

@@ -46,7 +46,8 @@
     "features": "node scripts/features.mjs",
     "doctor": "node scripts/doctor.mjs",
     "reader": "node scripts/reader.mjs",
-    "test:machinery": "node scripts/test-runner.mjs --machinery"
+    "test:machinery": "node scripts/test-runner.mjs --machinery",
+    "limits": "node scripts/time-limits.mjs"
   },
   "devDependencies": {
     "@types/node": "26.6.2",

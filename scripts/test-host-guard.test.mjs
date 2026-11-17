@@ -1186,7 +1186,7 @@ test("WO-185 independent worktrees and separate clones share lanes, wait, reclai
       const {runGate}=await import(${JSON.stringify(join(root, "scripts/test-runner.mjs"))});
       const repo=process.argv[2];const script=${JSON.stringify(workload)};
       const table=[{name:'build',build:true,product:true,command:[process.execPath,'-e',script]}];
-      const row=await runGate(['--again'],repo,{table,hostDirectory:${JSON.stringify(f.directory)}});console.log('gate-fixture-result '+JSON.stringify({exitCode:row.exitCode,memory:row.memory}));process.exitCode=row.exitCode;`,
+      const row=await runGate(['--again','--reason','each iteration runs its selection again on purpose'],repo,{table,hostDirectory:${JSON.stringify(f.directory)}});console.log('gate-fixture-result '+JSON.stringify({exitCode:row.exitCode,memory:row.memory}));process.exitCode=row.exitCode;`,
     );
     const one = spawn(process.execPath, [entry, f.repo], {
       stdio: ["ignore", "pipe", "pipe"],
@@ -2070,10 +2070,13 @@ test("WO-185 a docs-shaped gate of concurrent tasks that start nothing records n
   ];
   const runs = [];
   for (let run = 0; run < 2; run++) {
-    const gate = await runGate(["--again"], f.repo, {
-      hostDirectory: f.directory,
-      table,
-    });
+    // The second run repeats a selection the first made green, on purpose:
+    // it says why, or the runner would answer with the standing row.
+    const gate = await runGate(
+      ["--again", "--reason", "the case runs the selection twice"],
+      f.repo,
+      { hostDirectory: f.directory, table },
+    );
     const failed = gate.taskTimeline.filter(
       (row) => row.exitCode || row.failureKind || row.survivingProcesses,
     );
@@ -3249,3 +3252,50 @@ for (const stopped of [false, true])
       assert.deepEqual(result.hostLaneWait, row.hostLaneWait);
     }
   });
+
+test("the wait for the guard's start is the table's guard.startup as a root's file sets it: a figure the start outlives fails naming its key, and the kit's figure lets the guard start", async (t) => {
+  const f = await fixture(t);
+  const limits = (body) =>
+    writeFileSync(
+      join(f.repo, "docs/control/time-limits.json"),
+      JSON.stringify(body),
+    );
+  // A millisecond is less than any guard takes to start and be observed.
+  limits({ limits: { "guard.startup": { set: 1 } } });
+  await assert.rejects(
+    ensureHostGuard(f.directory, { limitsRoot: f.repo }),
+    new Error(
+      "Host guard startup observation unavailable; inspect its private guard.log. Time limit guard.startup reached: 1 ms. docs/control/time-limits.json raises it, scales every limit or turns them off; npm run limits lists every key.",
+    ),
+  );
+  // The process that start left is stopped before the start returns, so no
+  // live guard holds the directory.
+  const record = existsSync(join(f.directory, "guard.json"))
+    ? JSON.parse(readFileSync(join(f.directory, "guard.json"), "utf8"))
+    : null;
+  assert.ok(
+    !record ||
+      !processAlive(record, readHostSnapshot({ footprint: false }).processes),
+  );
+  // With the root's file silent on the key the kit's figure applies, and
+  // the same start is observed inside it.
+  limits({ limits: {} });
+  const { TIME_LIMITS, timeLimit } =
+    await import("../packages/skeleton/src/time-limits.mjs");
+  // The kit's figure is the one main held: a dispatch waits on the same
+  // start under its hook's own fixed bound, so the row was not raised.
+  assert.equal(TIME_LIMITS["guard.startup"].ms, 5_000);
+  assert.equal(timeLimit(f.repo, "guard.startup"), 5_000);
+  const guard = await ensureHostGuard(f.directory, { limitsRoot: f.repo });
+  assert.equal(guard.reused, false);
+  assert.ok(
+    processAlive(guard, readHostSnapshot({ footprint: false }).processes),
+  );
+  // Turned off, the wait has no end of its own and the start still returns.
+  limits({ enforce: false });
+  assert.equal(timeLimit(f.repo, "guard.startup"), null);
+  assert.equal(
+    (await ensureHostGuard(f.directory, { limitsRoot: f.repo })).pid,
+    guard.pid,
+  );
+});

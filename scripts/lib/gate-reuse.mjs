@@ -130,12 +130,17 @@ const DOCUMENT_GATE = "npm run test:docs";
  * supply a pass, and those of the other runs recorded there (a single suite,
  * the machinery inventory, a confined partial), whose results still say how
  * a task last ran. Main's index is read at most once, and only when a caller
- * asks; reads never modify main or copy its index here. */
+ * asks; reads never modify main or copy its index here. Rows recorded under
+ * time limits other than those in force here stay among them, since a later
+ * run still displaces an older pass whatever limits it ran under, and
+ * `ranUnderLimits` tells which of them may supply one. */
 async function identityRows(root, checkId, codeIdentity) {
   const {
     gateCodeIdentity,
     readGateChecks,
     gateInstanceInputDigest,
+    gateTimeLimitsDigest,
+    ranUnderTimeLimits,
     latestGateExecution,
     intactGateExecutionRow,
     passingGateResult,
@@ -143,6 +148,10 @@ async function identityRows(root, checkId, codeIdentity) {
   } = await import("./gate-evidence.mjs");
   const identity = codeIdentity ?? gateCodeIdentity(root);
   const instanceInputDigest = gateInstanceInputDigest(root);
+  // The limits this root's next run would start under. Main's rows are
+  // judged against them too: a pass main recorded under its own figures is
+  // carried here only where this root applies the same ones.
+  const limits = gateTimeLimitsDigest(root);
   const at = (path) => {
     const rows = readGateChecks(path).filter(
       (row) =>
@@ -162,6 +171,8 @@ async function identityRows(root, checkId, codeIdentity) {
   let main;
   return {
     identity,
+    limits,
+    ranUnderLimits: (row) => ranUnderTimeLimits(row, limits),
     latestExecution: latestGateExecution,
     intactExecutionRow: intactGateExecutionRow,
     passingResult: passingGateResult,
@@ -210,14 +221,9 @@ function decidingExecution(index, name) {
   return { ...latest, location };
 }
 
-/** A deciding execution may be carried only when it finished at a known
- * time in a carriable row. */
-function decidingPass(
-  index,
-  name,
-  latest = decidingExecution(index, name),
-  legacyOwn = false,
-) {
+/** A deciding execution that passed and finished at a known time in a
+ * carriable row, whatever time limits that row ran under. */
+function executedPass(index, latest, legacyOwn = false) {
   if (!latest) return undefined;
   const { row, result } = latest;
   return row &&
@@ -233,17 +239,34 @@ function decidingPass(
     : undefined;
 }
 
+/** A deciding execution may be carried only when it passed in a carriable
+ * row that ran under the time limits in force: under other figures its pass
+ * says nothing of what these would do. */
+function decidingPass(
+  index,
+  name,
+  latest = decidingExecution(index, name),
+  legacyOwn = false,
+) {
+  const pass = executedPass(index, latest, legacyOwn);
+  return pass && index.ranUnderLimits(pass.row) ? pass : undefined;
+}
+
 /**
  * Each task's latest executed result at the identity decides whether it is
  * carried: a pass in a carriable row is, and a later failed, stopped or
  * timed-out run, or a later failed gate, is never masked by an older pass.
- * Every carried result names the row that executed it.
+ * A pass recorded under time limits other than those in force is not
+ * carried, and `otherLimits` names its task, so the task runs under the
+ * figures that apply now and its record names them. Every carried result
+ * names the row that executed it.
  */
 export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
   const index = await identityRows(root, checkId, codeIdentity);
   const results = new Map();
+  const otherLimits = [];
   for (const task of tasks) {
-    const pass = decidingPass(index, task.name);
+    const pass = executedPass(index, decidingExecution(index, task.name));
     if (
       !pass ||
       !pass.row.requiredSuites.some(
@@ -251,6 +274,10 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
       )
     )
       continue;
+    if (!index.ranUnderLimits(pass.row)) {
+      otherLimits.push(task.name);
+      continue;
+    }
     const {
       output,
       outputRef,
@@ -297,6 +324,7 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
     rows: main?.rows ?? index.local,
     location: main ? "main" : "worktree",
     results,
+    otherLimits,
   };
 }
 
@@ -308,7 +336,10 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
  * as its latest execution at the identity, that row's own result or a pass
  * that may be carried; `displaced` names the tasks of the latest complete
  * row that no longer do: a later run of the task did not pass, a later gate
- * that ran it failed, or the row that executed it cannot be read. Reading
+ * that ran it failed, or the row that executed it cannot be read. Only a row
+ * recorded under the time limits in force can stand; `otherLimits` is the
+ * newest passing complete row at the identity recorded under other limits,
+ * or while they changed, so a refusal can say why it does not count. Reading
  * the gate index may throw; the caller decides whether that is an advisory.
  */
 export async function coveringGateCheck(
@@ -346,7 +377,11 @@ export async function coveringGateCheck(
       });
     return [...new Set([...index.missingSuites(row), ...invalid])];
   };
-  const complete = rows.filter(completePassingRow);
+  const passing = rows.filter(completePassingRow);
+  // A complete row recorded under other time limits neither stands nor is
+  // displaced: its tasks ran under figures that do not apply now.
+  const complete = passing.filter(index.ranUnderLimits);
+  const otherLimits = passing.filter((row) => !index.ranUnderLimits(row));
   const candidates = complete.filter((row) => !displacedTasks(row).length);
   // A row without the field covers only an empty requirement: publication
   // accepts such a row, so a plain claim does too, while a selection's names
@@ -361,6 +396,7 @@ export async function coveringGateCheck(
   const newest = complete.at(-1);
   return {
     codeIdentity: index.identity,
+    timeLimitsDigest: index.limits,
     location: main ? "main" : "worktree",
     row: candidates.findLast(covers),
     candidates,
@@ -372,25 +408,83 @@ export async function coveringGateCheck(
     ...(newest && newest !== latest
       ? { displaced: { row: newest, tasks: displacedTasks(newest) } }
       : {}),
+    ...(otherLimits.length ? { otherLimits: otherLimits.at(-1) } : {}),
   };
 }
 
-/** The six structural tasks every selection runs first, in order. */
+/** The newest standing complete review row among a lookup's candidates: a
+ * review row that names every suite of `names` and in which each of them ran
+ * and passed. The closeout's satisfied form, the final review's claim and
+ * the runner's answer to a forced review selection all read this one
+ * predicate, so none of them takes a row another refuses.
+ * @param {{candidates: any[]}} found @param {readonly string[]} names */
+export function standingReviewCandidate(found, names) {
+  // A suite's tasks carry its name alone or as a `name:` prefix (release
+  // preparation and cases, launchpad and vertical files); every one of them
+  // must have passed in the row. The claim stands on each required suite's
+  // executed passing task, not on the row's declared list alone.
+  const tasksOf = (observed, name) =>
+    observed.filter(
+      (entry) =>
+        typeof entry?.name === "string" &&
+        (entry.name === name || entry.name.startsWith(`${name}:`)),
+    );
+  const executedPass = (candidate) => {
+    const observed = candidate.taskTimeline ?? candidate.cases;
+    return (
+      Array.isArray(observed) &&
+      names.every((name) => {
+        const tasks = tasksOf(observed, name);
+        return tasks.length > 0 && tasks.every((entry) => entry.exitCode === 0);
+      })
+    );
+  };
+  return found.candidates.findLast(
+    (candidate) =>
+      candidate.gateSelection === "review" &&
+      names.every((name) =>
+        (Array.isArray(candidate.requiredSuites)
+          ? candidate.requiredSuites
+          : []
+        ).includes(name),
+      ) &&
+      executedPass(candidate),
+  );
+}
+
+/** An instance's structural phase: the six tasks every selection of an
+ * exported kit runs first, in order. Its configuration row loads the
+ * instance's own configuration and reports what the loader refuses. This
+ * module holds the one copy of each phase; the generated-artifacts module,
+ * which loads this one, names the same lists as tasks. */
 export const STRUCTURAL_SUITES = Object.freeze([
   "format",
-  "configuration-root",
+  "configuration",
   "registrations",
   "declarations",
   "generated",
   "host",
 ]);
-/** The structural tasks the checkout at `root` runs first, in order: core
- * also runs the recorded Git surface check before host, which an exported
- * kit does not carry, so core's structural row must hold it. */
+/** Core's structural phase, in order. The kit's tests of its configuration
+ * loader stand where an instance's configuration row does: they test the
+ * kit's own code, whose bytes an instance's kit verification already
+ * compares, so an instance runs them only by name. The recorded Git surface
+ * check, which an exported kit does not carry, runs before the host task,
+ * which stays last so the dispatch bound counts a selection only after every
+ * other structural check has passed. */
+export const CORE_STRUCTURAL_SUITES = Object.freeze([
+  "format",
+  "configuration-root",
+  "registrations",
+  "declarations",
+  "generated",
+  "git-surface",
+  "host",
+]);
+/** The structural tasks the checkout at `root` runs first, in order, which
+ * its structural row must hold. */
 export const structuralSuites = (root) =>
-  isKitRoot(root)
-    ? STRUCTURAL_SUITES
-    : Object.freeze([...STRUCTURAL_SUITES.slice(0, -1), "git-surface", "host"]);
+  isKitRoot(root) ? STRUCTURAL_SUITES : CORE_STRUCTURAL_SUITES;
 
 /** Handoffs consume focused runs only at the current identity. A later failed
  * execution still displaces a pass through the same lookup used by review;
@@ -410,6 +504,7 @@ export async function preflightRows(root, codeIdentity, suites) {
       .filter((candidate) => !partialRow(candidate) || candidate.exitCode !== 0)
       .at(-1);
     const row = found.row;
+    const { ranUnderTimeLimits } = await import("./gate-evidence.mjs");
     if (
       !row ||
       row.recordedAt !== latest?.recordedAt ||
@@ -419,9 +514,12 @@ export async function preflightRows(root, codeIdentity, suites) {
       missing.push({
         suite: name,
         checkId,
-        reason: latest
-          ? "latest row failed or no longer stands"
-          : "no row at the current code identity",
+        reason: !latest
+          ? "no row at the current code identity"
+          : latest.exitCode === 0 &&
+              !ranUnderTimeLimits(latest, found.timeLimitsDigest)
+            ? "latest row ran under time limits that have changed since"
+            : "latest row failed or no longer stands",
         displaced: found.displaced?.tasks ?? [],
       });
     else rows.push(row);

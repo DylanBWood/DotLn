@@ -398,6 +398,17 @@ function reviewSelection(root, runner) {
     : { error: "npm test -- --review --list --selected named no suite" };
 }
 
+/** The clause a refusal adds where the newest passing complete row at the
+ * identity was recorded under time limits other than those in force: such a
+ * row does not stand, and the reader is told why and which file moved. */
+async function otherLimitsClause(root, found) {
+  if (!found?.otherLimits) return "";
+  const { describeGateRow } = await import("./gate-reuse.mjs");
+  const { timeLimitsPath } =
+    await import("../../packages/skeleton/src/time-limits.mjs");
+  return ` under the time limits in force: the newest passing one (${describeGateRow(found.otherLimits)}) ran under limits other than those ${timeLimitsPath(root)} sets now`;
+}
+
 export const gateFields = (row) => ({
   evidenceRefs: [row.evidenceRef],
   ...Object.fromEntries(
@@ -582,9 +593,12 @@ export async function requireGateClaims(
           plain.codeIdentity,
           preflightSuites(root, state),
         );
+        const limitsClause = plain.displaced
+          ? ""
+          : await otherLimitsClause(root, plain);
         if (focused.missing.length)
           throw new Error(
-            `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row ${plain.displaced ? `stands at the current code identity ${plain.codeIdentity}: the latest complete row (${describeGateRow(plain.displaced.row)}) names ${plain.displaced.tasks.join(", ")}, whose latest execution there can no longer be carried` : `exists at the current code identity ${plain.codeIdentity}`}. Handoff rows missing or failed: ${focused.missing.map(({ suite, reason, displaced }) => `${suite} (${reason}${displaced.length ? `: ${displaced.join(", ")} displaced` : ""}); run ${displaced.some((name) => structuralSuites(root).includes(name)) ? "npm run sync, then " : ""}npm test -- --only ${suite === "structural" ? "format" : suite}`).join("; ")}${complete.missing?.length ? `; current review selection lacks ${complete.missing.join(", ")}` : ""}${structuralRemedy(plain.displaced?.tasks ?? [])}. Run the named Preflight suites, or ${instead}.`,
+            `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row ${plain.displaced ? `stands at the current code identity ${plain.codeIdentity}: the latest complete row (${describeGateRow(plain.displaced.row)}) names ${plain.displaced.tasks.join(", ")}, whose latest execution there can no longer be carried` : limitsClause ? `stands at the current code identity ${plain.codeIdentity}${limitsClause}` : `exists at the current code identity ${plain.codeIdentity}`}. Handoff rows missing or failed: ${focused.missing.map(({ suite, reason, displaced }) => `${suite} (${reason}${displaced.length ? `: ${displaced.join(", ")} displaced` : ""}); run ${displaced.some((name) => structuralSuites(root).includes(name)) ? "npm run sync, then " : ""}npm test -- --only ${suite === "structural" ? "format" : suite}`).join("; ")}${complete.missing?.length ? `; current review selection lacks ${complete.missing.join(", ")}` : ""}${structuralRemedy(plain.displaced?.tasks ?? [])}. Run the named Preflight suites, or ${instead}.`,
           );
         result.productGate = {
           codeIdentity: plain.codeIdentity,
@@ -665,60 +679,45 @@ export async function requireFinalReviewGate(
     !(ledger.claims.plain.length || ledger.claims.review.length)
   )
     return undefined;
-  const { coveringGateCheck, structuralSuites } =
-    await import("./gate-reuse.mjs");
-  const selection = reviewSelection(root, runner);
+  const { structuralSuites } = await import("./gate-reuse.mjs");
   const refuse = (reason) => {
     throw new Error(
       `Final review requires a passing complete review row at the integrated code identity; when none exists, start npm test -- --review in the background and await it: ${reason}.`,
     );
   };
-  if (selection.error) refuse(selection.error);
+  const { row, found, error } = await standingReviewRow(root, { runner });
+  if (error) refuse(error);
+  if (!row) {
+    const displaced = found.displaced?.tasks ?? [];
+    refuse(
+      `no passing complete review row at the current code identity ${found.codeIdentity}${displaced.length ? ` (the latest complete row names ${displaced.join(", ")}, whose latest execution there can no longer be carried${displaced.some((name) => structuralSuites(root).includes(name)) ? "; a later structural run failed: run npm run sync, then a passing structural phase before the complete run" : ""})` : await otherLimitsClause(root, found)}`,
+    );
+  }
+  return gateFields(row);
+}
+
+/** The newest standing complete review row at the current code identity,
+ * recorded under the time limits in force, as the final review's claim reads
+ * it: `{ row, found }`, with no `row` where none stands, or `{ error }`
+ * where the review selection cannot be listed.
+ * The closeout selection reads the same row, so it says a complete run is
+ * satisfied exactly where a completion would consume one. Reading the gate
+ * index may throw; the caller decides what that means. */
+export async function standingReviewRow(
+  root,
+  { runner = join(root, "scripts/test-runner.mjs") } = {},
+) {
+  const { coveringGateCheck, standingReviewCandidate } =
+    await import("./gate-reuse.mjs");
+  const selection = reviewSelection(root, runner);
+  if (selection.error) return { error: selection.error };
   const found = await coveringGateCheck(root, "npm test", selection.names);
   // The newest standing complete review row at this identity supplies the
   // claim, whether the executor, the verifier or the reviewer recorded it and
   // whether or not the runner reused passing suites at the same identity. A
   // later failed run displaces it through the shared lookup and leaves no
   // candidate.
-  // The claim stands on each required suite's executed passing task in the
-  // row, not on the row's declared list alone.
-  // A suite's tasks carry its name alone or as a `name:` prefix (release
-  // preparation and cases, launchpad and vertical files); every one of them
-  // must have passed in the row.
-  const tasksOf = (observed, name) =>
-    observed.filter(
-      (entry) =>
-        typeof entry?.name === "string" &&
-        (entry.name === name || entry.name.startsWith(`${name}:`)),
-    );
-  const executedPass = (candidate) => {
-    const observed = candidate.taskTimeline ?? candidate.cases;
-    return (
-      Array.isArray(observed) &&
-      selection.names.every((name) => {
-        const tasks = tasksOf(observed, name);
-        return tasks.length > 0 && tasks.every((entry) => entry.exitCode === 0);
-      })
-    );
-  };
-  const row = found.candidates.findLast(
-    (candidate) =>
-      candidate.gateSelection === "review" &&
-      selection.names.every((name) =>
-        (Array.isArray(candidate.requiredSuites)
-          ? candidate.requiredSuites
-          : []
-        ).includes(name),
-      ) &&
-      executedPass(candidate),
-  );
-  if (!row) {
-    const displaced = found.displaced?.tasks ?? [];
-    refuse(
-      `no passing complete review row at the current code identity ${found.codeIdentity}${displaced.length ? ` (the latest complete row names ${displaced.join(", ")}, whose latest execution there can no longer be carried${displaced.some((name) => structuralSuites(root).includes(name)) ? "; a later structural run failed: run npm run sync, then a passing structural phase before the complete run" : ""})` : ""}`,
-    );
-  }
-  return gateFields(row);
+  return { row: standingReviewCandidate(found, selection.names), found };
 }
 
 /** One line for the completion's own message. */

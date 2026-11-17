@@ -10,6 +10,7 @@ import {
   delay,
   ensureHostRoot,
   hostStateRoot,
+  hostTimeLimit,
   killOwned,
   ownedProcesses,
   observeSwapGrowth,
@@ -328,7 +329,10 @@ export async function runHostGuard(directory = hostStateRoot()) {
               runnerStops.delete(pid);
               continue;
             }
-            if (Date.now() - stop.requestedAt >= 1000) {
+            if (
+              Date.now() - stop.requestedAt >=
+              hostTimeLimit("guard.runner-stop")
+            ) {
               killOwned([stop], {
                 protectedPids: protectedPids.filter((value) => value !== pid),
                 directory,
