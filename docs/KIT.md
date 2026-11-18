@@ -390,7 +390,7 @@ when one fails.
 1. From clean `main`, start the order in a worktree of its own, a sibling
    folder named `<name>-woNNN`:
 
-   <!-- operator-commands run-order: From clean `main`, the first block starts an order in its own worktree, a sibling folder named `<name>-woNNN`, and prepares it; the first order is `WO-001` at `docs/work-orders/WO-001-environment-truth.md`. Open a Claude Code session in that folder and type the three phrases one at a time, each as a message of its own in a fresh session once the phase before it has finished: `resume: next` does the work, `resume: verify` checks it independently, and `resume: final review` reviews it and opens its pull request. Or type `drive: WO-NNN` in a session in `main`, which runs the phases in fresh sessions and stops for your merge. Look for `Carried the local-terms list into` in the start's output, which says the order's worktree holds your list; if it prints `No local-terms list` instead, register the list as step 1 says, in `main` and in the new folder, before the order publishes. Each phase ends by saying what it recorded. If a verification or a final review fails, type `resume: fix` in the worktree, then `resume: verify` and `resume: final review` again. `resume: status` says where an order stands at any time (product 07's phrase table names each phrase). -->
+   <!-- operator-commands run-order: From clean `main`, the first block starts an order in its own worktree, a sibling folder named `<name>-woNNN`, and prepares it; the first order is `WO-001` at `docs/work-orders/WO-001-environment-truth.md`. Open a Claude Code session in that folder and type the three phrases one at a time, each as a message of its own in a fresh session once the phase before it has finished: `resume: next` does the work, `resume: verify` checks it independently, and `resume: final review` reviews it and opens its pull request. Or type `drive: WO-NNN` in a session in `main`, which runs the phases in fresh sessions and stops for your merge; when it stops for anything else, the last block, run in `main`, says why and what to do next. Look for `Carried the local-terms list into` in the start's output, which says the order's worktree holds your list; if it prints `No local-terms list` instead, register the list as step 1 says, in `main` and in the new folder, before the order publishes. Each phase ends by saying what it recorded. If a verification or a final review fails, type `resume: fix` in the worktree, then `resume: verify` and `resume: final review` again. `resume: status` says where an order stands at any time (product 07's phrase table names each phrase). -->
    ```sh
    npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md
    ```
@@ -412,7 +412,9 @@ when one fails.
      worktree, then `resume: verify` and `resume: final review` again.
    - `resume: status` says where an order stands at any time.
    - Or type `drive: WO-NNN` in a session in `main`, which runs the phases in
-     fresh sessions and stops for your merge.
+     fresh sessions and stops for your merge. When it stops for anything
+     else, ask it why
+     ([When a routed run stops](#when-a-routed-run-stops)).
 
 3. Merge the pull request. The operator merges each pull request of the
    instance's own repository with a merge commit: release close requires the
@@ -653,6 +655,97 @@ either host:
 
 Elect `off` only where this instance's environments are unsandboxed. Each
 receipt records the election and, apart from it, what the host applied.
+
+#### When a routed run stops
+
+A routed run stops for your merge, for a release, and for anything it
+cannot go past. Ask it why it stopped:
+
+<!-- operator-commands run-order -->
+```sh
+node scripts/drive.mjs why WO-NNN
+```
+
+It prints, from the drive's own record:
+
+- the stop and its next step;
+- the last attempt's phrase, how long it ran against its limit and how its
+  process ended;
+- what ended it;
+- for a Claude phase, how long the host waits for background work after the
+  worker's last turn, and whether the drive or your environment set that;
+- how many calls of helper agents the host denied, and how many denied
+  calls the host's own result counted;
+- what the kit's own guard refused and which stop each refusal belongs to;
+- how many of the worker's commands failed, with the shapes that failed
+  most often;
+- whether the phase had recorded its completion when the attempt ended,
+  and whether the order has moved since;
+- how many uncommitted paths the order's worktree holds and where that
+  worktree is;
+- where the worker's raw output is kept.
+
+The driver's own result carries the same lines under `why`, and the router
+gives them to you after a stop and answers a question about the stop from
+them.
+
+The account prints counts, words of a fixed vocabulary and the shape of a
+shell command. It never prints what a command was given, a reason the host
+printed or what a worker's command printed. A Codex host's reason stays in
+the drive's record, masked; of a Claude host's denial the record keeps no
+reason at all. The worker's commands and their output are in the raw output
+kept beside the record, where the drive kept one; an `analysis:` session in
+the order's worktree reads both.
+
+A command's shape is the command with what it was given taken out. It
+keeps the program, a kit script the program runs, a subcommand and an
+option the kit knows, each only in its own place. `<operand>` stands for
+an argument and `<assignment>` for a variable set before a command. An
+option the kit does not know appears as `<flag>` and masks the rest of
+that command, because the next word could be its value.
+
+A shell line whose command boundaries are uncertain has no shape and still
+counts toward the failure total. An attempt that an earlier kit recorded
+kept too little to tell a script's name from an argument spelled the same,
+so its shapes show `<word>` and `<flag>` placeholders, and its failure
+counts are still given.
+
+Four things about a phase a drive runs:
+
+- **A denied call.** A phase runs with the host's permission prompts off,
+  so a call the host would have asked you about is denied. Where the phase
+  worker made the call, the drive ends the phase: nothing goes around the
+  denial and no fresh worker repeats it. The account names the tool, or the
+  shape of a shell command, and what decided. Either run the phase
+  attended, by typing its phrase in the order's worktree, where the host
+  asks; or type the drive phrase again, after admitting the call in the
+  host's own settings where a rule or the permission mode decided it. The
+  host's automatic review gives no rule to change: a fresh worker may not
+  make the same call. Where a helper agent made the call, the helper
+  reports the denial to its worker and the phase goes on; the account
+  counts it.
+- **Reviewers a worker waits for.** A Claude phase is a print-mode run, in
+  which the host by default stops background agents ten minutes after the
+  last turn; a background command the worker itself started holds the run
+  open. The drive starts each Claude phase with that wait uncapped
+  (`CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0`), so the phase's own time limit
+  bounds it; a value your own environment sets is kept.
+- **A release close.** A host in its automatic-review mode reviews every
+  shell command of a phase itself, one the kit's own hook has admitted
+  among them, and can decline the close's one publishing command. The
+  drive therefore starts a Claude release-close phase with a narrow rule
+  that allows that one helper command, in its two exact spellings
+  (`--publish` and `--dry-run`) and for the order being closed. No other
+  phase is given a rule, and no other command. A close that names material
+  paths or a merged commit is spelled otherwise and is still the host's to
+  judge: where it declines, the drive stops and says to type `resume:
+  release close` yourself. So does a host you have set to send every shell
+  command to its review.
+- **A worker that ends without recording its phase.** The drive starts the
+  phase once more with a fresh worker, from what the worktree holds; a
+  second such ending stops it until you run the phrase yourself, and typing
+  the drive phrase before then meets the same stop. The raw output of an
+  attempt that ended this way is kept beside the drive's record.
 
 ### Register another repository
 
@@ -1065,17 +1158,23 @@ An absent section keeps the existing defaults.
 | `private-destination` | Off | Private-destination changes only the exported instance's known §Secrets paragraph: it admits the owner's ordinary project links and identifiers inside that instance. |
 | `desktop-control` | Off | Desktop-control admits desktop control and the operator's own browser sessions ([What runs here, and what does not](#what-runs-here-and-what-does-not)). It still requires the operator's explicit request in the session after the instance elects it. |
 | `auto-update-upstream` | Off | This instance's standing opt-out of the rule that no planning or entropy pass takes a newer starter release unasked ([Taking upstream updates](#taking-upstream-updates)). |
-| `verbatim-operator-words` | Off | Its opt-out of the rule that committed text paraphrases the operator ([Document quality](#document-quality)). |
+| `verbatim-operator-words` | Off | The switch the paraphrase rule had before its stop had a level. Where you write no `stops` line for `verbatim-operator-words`, electing it makes the stop advise and declining it (`false`) makes it refuse ([The operator's words are paraphrased](#the-operators-words-are-paraphrased)). |
 | `host-codex`, `host-copilot` | Off unless this instance's control log attests the host | Emit that host's surfaces ([Host support](#host-support)). |
 
-- A misspelled name refuses with the valid names and
-  `npm run features -- list`.
+- A name under `features` that the kit does not know is named in one
+  advisory, with `npm run features -- list`, and ignored, so a mistyped
+  line stops no command.
 - Existing keys such as `kit.applyInstanceActions`, `release.*`, `build.*`,
   `drive.sandbox` and the budget keys stay where they are; putting their
   inventory ids in `features` refuses and names the key to edit.
-- The generated harness contract's refusal classes, the single-writer
-  reservation and the clean-room floor are not electable. They are the
-  floor.
+- A stop is not a feature: what a hook denies and what fails a gate each
+  have a level of their own in the `stops` section ([Stops](#stops)).
+- A rule is not a feature either: the kit's and the author's rules are
+  listed with their layers, and the author's are removed in the build
+  overlay
+  ([What is the kit's and what is the author's](#what-is-the-kits-and-what-is-the-authors)).
+- The Clean Room and Secrets sections of your `CLAUDE.md` are your own
+  text: no stop and no line of the build overlay names them.
 
 Two features have conditions of their own:
 
@@ -1129,7 +1228,9 @@ Decisions:
 
 | Command | What it does |
 | --- | --- |
-| `npm run features -- list` | Prints the table; add `--json` for structured values. |
+| `npm run features -- list` | Prints the table and, under it, every rule with its layer and every stop with its level here; add `--json` for the features' structured values. |
+| `npm run features -- rules` | Prints the rules alone, each with its layer and whether this instance equips it; add `--json` for their rows. |
+| `npm run features -- stops` | Prints the stops alone; add `--json` for their rows. |
 | `npm run features -- render` | Writes `docs/control/FEATURES.md` (under your configured control root). |
 | `npm run features -- check` | Refuses a stale page. |
 
@@ -1146,9 +1247,204 @@ election key and consumer.
   advisory, not a refusal of another order's gate.
 - Saved `build.loadout` and `build.profile` selections are unread; the
   harness CLI options remain separate.
-- The subagent cap still reads the default `docs/control/budgets.json` if
-  you relocate your control root; the table names that actual source, while
-  process bounds and retention follow the relocation.
+- If you relocate your control root, the subagent cap, process bounds,
+  driven limits and retention all read `budgets.json` there; the table
+  names that file.
+
+### Stops
+
+A stop is a place where the kit denies a tool call, fails a gate task for a
+reason other than the code under test, or declines its own job in a
+lifecycle command. Every stop has an id, a class and a level, and
+`npm run features -- list` prints them all.
+
+The class is what the stop protects, and decides the level this instance
+starts with:
+
+| Class | What it protects | Level here until you set it |
+| --- | --- | --- |
+| `work` | Your work or private material, from loss or exposure that cannot be undone: another session's uncommitted work, a write outside the project, credentials, a push to a remote nobody approved, a private path in a committed file. | `refuse` |
+| `record` | The kit's own records, order or form: a planning branch that stays document-only, the bytes a running gate judges, a generated page kept current, a link that resolves. | `advise` |
+| `host` | A property of the machine: its Node and Git, its memory, a guard that cannot reach its runtime. | `advise` |
+| `bound` | A budget: a dispatch's wall clock and complete runs, the worker cap. | `advise` |
+
+The level is what the stop does when it is met:
+
+| Level | What happens |
+| --- | --- |
+| `refuse` | A hook denies the call, a gate task fails, a command stops. The message names the stop and the line that lowers it. |
+| `advise` | The stop says what it found, names itself and what it protects, and the work goes on. A gate task that failed is recorded as advised, with its output, and the tasks after it run. |
+| `off` | A hook says nothing. A gate task that is one stop is not run, and the selection names it as off. |
+
+Set a level with one line of the `stops` section:
+
+```json
+{
+  "version": 1,
+  "stops": {
+    "planning-branch": "refuse",
+    "gate-format": "off"
+  }
+}
+```
+
+Then run `node scripts/harness.mjs emit`, since a hook carries its levels
+from the emit, and `npm run meta` for the features page. The emit names
+each registered target worktree whose guards still hold the earlier levels
+and the command that brings it current
+([What a hook does in this instance](#what-a-hook-does-in-this-instance)).
+The gate, and a command that holds a stop itself (the bounded probe
+wrapper, a re-dispatch, the review helper's launch, the driver before a
+phase), read the file when they run.
+
+- A level is yours to change. A session changes one only when you ask for
+  it in that session, and no refusal names `operator override:` as its
+  route.
+- The features page prints one row for each stop: its id, class, what it
+  protects, where it is enforced, its level here, who set it and the line
+  that changes it. A level is set by the kit, by this file, by its
+  election for the paraphrase rule's stop, or by your build overlay for the
+  stop of a unit that overlay leaves out
+  ([What is the kit's and what is the author's](#what-is-the-kits-and-what-is-the-authors)).
+- A line that names no stop or no level is named in one advisory and
+  ignored.
+- A stop with a switch of its own keeps it. Desktop control, plan-first,
+  the starter update's request and instance actions are set by their keys
+  ([What each feature does](#what-each-feature-does)), and a `stops` line
+  for one sets nothing and says so.
+- The paraphrase rule's stop, `verbatim-operator-words`, had a switch
+  before it had a level. It is a `record` stop, so it advises here until
+  you set it, and its election still sets it where you write no line for it
+  ([The operator's words are paraphrased](#the-operators-words-are-paraphrased)).
+  Where the election alone makes it advise, the document check gives its
+  advisories in the election's words, and the gate records the check as
+  passed and not as advised.
+- Two stops are set in files of their own. An entry in the `refuse` class
+  of your private terms list refuses at any level
+  ([The local-terms list](#the-local-terms-list)), and a time limit is a row
+  of `docs/control/time-limits.json`
+  ([Time limits, and a slower machine](#time-limits-and-a-slower-machine)).
+- One stop is one row however many places enforce it. The dispatch bound
+  is answered at one level by the hook, the bounded wrapper, a re-dispatch
+  and the gate's host check; the worker cap by the hook and the review
+  helper's own launch; a drive's budget by a driven session's hook, by the
+  review helper's own launch and by the driver, before a phase and as it
+  reads the helpers a Codex worker reports.
+- The ssh and package-publish stops are answered by the host's deny rules,
+  which the emit leaves out where you lower the stop, and by a target
+  worktree's guard. Lowered to `advise` or `off`, either stop denies
+  nothing, but the launchpad's own hook still prints one line, that its
+  compiled authority does not permit the effect. That line is the
+  authority's record of the effect, not the stop's answer, and it stops
+  nothing: the host's permissions decide the call.
+- A lifecycle command that declines its own job is not a stop with a
+  level: a completion without its gate row, a publish of an unreviewed
+  change, a close of an unmerged order. The features page lists each with
+  its way forward.
+- Core, which builds the kit, refuses on every stop. That is core's own
+  choice, and its page shows it.
+
+Decisions:
+[the table of stops, its classes and what each row covers](evidence/WO-287/decisions.md#wo-287-d005--part-a-the-table-of-stops-as-built-its-rows-their-classes-and-what-has-no-line),
+[what a hook answers at each level](evidence/WO-287/decisions.md#wo-287-d006--part-a-what-a-hook-answers-at-each-level-in-the-launchpad-and-in-a-target-worktree),
+[the paraphrase rule's stop has a level](evidence/WO-287/decisions.md#wo-287-d021--part-c-the-paraphrase-rules-stop-has-a-level-an-instance-is-told-once-a-file-and-the-election-that-was-its-switch-still-sets-it).
+
+### What is the kit's and what is the author's
+
+The kit brings two layers, and one of them is yours to keep or remove.
+
+- **The platform** is mechanism: the lifecycle and its commands, the records
+  they write and read, the gate, the hooks, the bounds and the worker table.
+  A platform rule says how one of those works, and a session needs it to run
+  an order here. Every build carries it.
+- **The author's layer** is how the kit's author wants work conducted: how a
+  session speaks to you, decides, presents its work and checks itself. No kit
+  mechanism needs any of it. It arrives switched on, because nobody has yet
+  said which of it another owner wants, and removing it unasked would be as
+  much a guess as imposing it.
+
+`npm run features -- list` prints every rule under **Rules**: the ten
+feedback units, which are all the author's, and the shared role rules, each
+with its layer. A row says how the rule is enforced (a sentence in a role's
+text, an advisory when a session stops, a hook), whether this instance
+equips it, who set that, and the overlay line that changes it.
+
+That line is written for your overlay as it stands: applied, it changes
+that rule and no other. Where you have no overlay yet, the line goes into
+a new one ([The build overlay](#the-build-overlay)). Where it sets a list
+it prints the whole list, with the ids
+the list already holds. `npm run features -- rules` prints that table alone; add
+`--json` for its rows, which carry the two lists as that change would
+leave them.
+
+What you change, and where:
+
+| What | Whose it is | How you change it |
+| --- | --- | --- |
+| A feedback unit or an author rule | The author's | `unequip` in the build overlay, by id, or all of them with `author` ([The build overlay](#the-build-overlay)) |
+| A stop: what a hook denies and what fails a gate | The kit's mechanism, at a level that is yours | One line of `stops` ([Stops](#stops)) |
+| A feature or a host | The kit's mechanism, elected by you | `features` ([What each feature does](#what-each-feature-does)) |
+| A support: process cost, goal alignment, the executor's supports | Starter content | `equip` and `unequip` in the build overlay |
+| What effects a session may have | The kit's envelope, narrowed or granted by you | `narrow` and `grants` in the build overlay |
+| The Clean Room and Secrets sections of `CLAUDE.md` | Yours | Edit the file. The kit seeds them once and an update changes the file only through an action you opt in to. No stop and no overlay line names them; `features.private-destination`, where you elect it, changes one paragraph of Secrets. The one line the kit's own block in that file carries about the Clean Room section says it is your text. |
+| A platform rule | The kit's | It is in every build. An `unequip` line that names one is named in one advisory, and the rule stays. |
+| A role's numbered steps, the review ladder and its three reviewers | The author's workflow, fixed in this release | No setting changes them; say what you need in `FOR-CORE.md` ([What core should hear](#what-core-should-hear)). |
+
+Removing the author's layer is one line of the overlay, and `equip` keeps a
+rule beside it:
+
+```json
+{
+  "version": 1,
+  "unequip": ["author"],
+  "equip": ["claims-evidence"]
+}
+```
+
+Then run `node scripts/harness.mjs emit`, `node scripts/harness.mjs check`
+and `npm run meta`.
+
+- **What removal takes out.** The rule's sentence leaves every role's text.
+  A unit's hook is no longer registered, its advisory when a session stops
+  is no longer given, and its id leaves each role root's Origin comment. A
+  registered target worktree's bundle follows the same selection at its next
+  emit.
+- **A unit that also refuses takes its refusal with it.** The writer
+  reservation (`concurrent-work-requires-worktrees`) and the attribution
+  rule (`no-attribution`) are each a sentence and a stop. With the unit
+  removed its stop reads `off` on the features page, and a `stops` line
+  that asks a level of it is named in one advisory as having no effect.
+  The attribution setting in the host's settings is written only where the
+  attribution unit is equipped. Where the writer reservation's unit is
+  removed, the harness block of your `CLAUDE.md`, which lists the kit's
+  refusals, adds that no hook here reserves a writer. Under Codex, whose
+  tool calls no hook sees, the lifecycle dispatch still holds the writer
+  reservation: that is a command's own refusal, not the unit's.
+- **What removal leaves.** A check that enforces the same thing elsewhere
+  stays, because it is a stop with its own level or switch: the document
+  gate's screen of the operator's words, the terms screen and the
+  lifecycle's completion checks ([Stops](#stops)).
+- **The check judges you against your own choice.** `harness check`
+  compares the installed bundle with what your overlay emits, so a removed
+  rule is no drift, and an update never restores one: the overlay is your
+  file.
+- **A unit's own hook files go with it, and the kit knows.** The emit
+  removes them and names each path in `.claude/harness-manifest.json` under
+  `leftOut`. The kit's manifest lists those files for every instance, so
+  `node scripts/launchpad.mjs verify` counts each as left out by your
+  build, where your harness check passes, and an update neither writes nor
+  lists it and says `left out by this instance's build`. Restore the unit
+  and your emit writes its files again; the next update plans them as it
+  plans any surface your emit wrote.
+- **A mistyped id stops nothing.** An id the kit does not know is named in
+  one advisory for each list that holds it, and ignored.
+- **Nothing changes until you choose.** An instance that names no unit or
+  rule in its overlay emits the rules it emitted before this table existed.
+
+Decisions:
+[each rule's layer and its reason](evidence/WO-287/decisions.md#wo-287-d015--part-b-the-layer-of-each-shared-rule-and-of-the-ten-units-with-its-reason),
+[what an overlay's lists select, and what a removed unit takes with it](evidence/WO-287/decisions.md#wo-287-d016--part-b-what-an-overlays-lists-select-and-what-a-removed-unit-takes-with-it),
+[a removed unit's hook files, the verification and an update](evidence/WO-287/decisions.md#wo-287-d019--part-bs-end-a-removed-units-hook-files-and-the-kits-verification-and-update-a-helper-never-called-a-case-that-counted-on-the-pages-order-and-the-three-suites).
 
 ### The build overlay
 
@@ -1174,6 +1470,16 @@ support:
 }
 ```
 
+And this one removes the author's layer of rules, all of it
+([What is the kit's and what is the author's](#what-is-the-kits-and-what-is-the-authors)):
+
+```json
+{
+  "version": 1,
+  "unequip": ["author"]
+}
+```
+
 Run `node scripts/harness.mjs emit`, then `node scripts/harness.mjs check`.
 Re-emitting the same overlay and runtime produces the same bytes; `check`
 detects drift against both.
@@ -1185,20 +1491,38 @@ Overlay version 1 has only these keys:
   - `{"version":1,"build":"none"}` removes the owned generated surfaces,
     preserves the hand-written floor and keeps an empty harness manifest for
     `check`. It accepts no other overlay keys.
+  - It names no unit and no rule. The features page lists every rule as not
+    equipped, with the line that restores the build, and prints each stop at
+    the level a registered target worktree's guards answer at, since those
+    guards are emitted all the same.
   - Re-enable the build by removing `build: none` or the configuration's
     overlay selection, then emit again.
 - `identity`: a complete replacement with `identityId`, positive integer
   `version`, `name`, and string arrays `dispositions`, `invariants`,
   `updateLaws` and `lineage`. Its text reaches the bundle; it cannot rewrite
   the hand-written Clean Room floor or the active Clean Room mechanism.
-- `equip` and `unequip`: distinct arrays of existing support switch IDs:
-  `adjacent-repair`, `decision-receipts`, `follow-up-queue`,
-  `operator-check-in`, `communication-observation`,
-  `communication-recommendation`, `communication-intent`, `process-cost`,
-  `goal-alignment`.
+- `equip` and `unequip`: distinct arrays of ids. An id is one of three
+  things:
+  - a support switch: `adjacent-repair`, `decision-receipts`,
+    `follow-up-queue`, `operator-check-in`, `communication-observation`,
+    `communication-recommendation`, `communication-intent`, `process-cost`,
+    `goal-alignment`;
+  - a feedback unit or an author-layer rule, by the id the features page
+    prints for it;
+  - `author`, which stands for every author-layer unit and rule.
+
+  These rules hold for the two lists:
   - An ID cannot appear in both arrays; competing communication supports
     still refuse.
-  - These switches do not define new units or remove the locked floor.
+  - A single id is the more specific word: `"unequip": ["author"]` beside
+    `"equip": ["claims-evidence"]` removes the layer and keeps that rule.
+  - A platform rule's id in `unequip` is named in one advisory and the rule
+    stays. An id the kit does not know is named in one advisory for each
+    list that holds it and ignored, so a mistyped or retired id stops no
+    emit.
+  - The lists remove and restore. They define no new unit and replace no
+    rule's text, and nothing in them names the Clean Room or Secrets
+    sections of your `CLAUDE.md`, which are your own text.
   - Tinkerer economy is not an overlay switch: elect it in
     `features.tinkerer-economy`, never in an overlay. An overlay that names
     `tinkerer-economy` refuses.
@@ -2189,15 +2513,18 @@ Decisions:
 ### What a worker may run
 
 - **A worker hands back with nothing of its own running.** A worker whose
-  stop arrives while a background task it started is live is refused once,
-  naming each task and the tool that stops it. The tasks are written to the
-  parent session's journal, and the facts the parent's next prompt prints
-  name a worker that stopped with one still running.
+  stop arrives while a background task it started is live meets the
+  `worker-tasks` stop, once, naming each task and the tool that stops it:
+  it is advised here, and held where you set that stop to `refuse`. The
+  tasks are written to the parent session's journal, and the facts the
+  parent's next prompt prints name a worker that stopped with one still
+  running.
 - **A background task is awaited through the host's completion signal.**
   `node scripts/harness.mjs evidence --wait` awaits a gate run and nothing
   else.
 - **A worker starts no gate.** A spawned `dotln-worker` that starts a
-  test-runner gate is refused with `DOTLN_WORKER_GATE_REFUSED`. A review
+  test-runner gate meets the `worker-gate` stop, whose message is
+  `DOTLN_WORKER_GATE_REFUSED`. A review
   worker probes one test with
   `node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>`.
 - **Every worker use counts** against `subagentCap` in
@@ -2238,10 +2565,10 @@ Each selection first runs the six structural checks:
    active pinned snapshot and harness bundle; `npm run sync` repairs stale
    derived artifacts;
 6. the host: its Node and Git runtime, its memory pressure and, on macOS,
-   the size of its file-events daemon, which the host check prints and
-   refuses above 1 GiB with the command that restarts it. A Node outside
+   the size of its file-events daemon, which the host check prints and,
+   above 1 GiB, reports with the command that restarts it. A Node outside
    `engines.node` or a Git below `engines.git` makes the host check run
-   first and nothing else.
+   first, and where that stop refuses nothing else runs.
 
 A check that is ended for time is reported as time, not as a failed check:
 its message names the key of its time limit, the figure that applied,
@@ -2249,15 +2576,45 @@ its message names the key of its time limit, the figure that applied,
 structural check ended that way say the same
 ([Time limits, and a slower machine](#time-limits-and-a-slower-machine)).
 
+A check that fails for a reason that is a stop answers at that stop's level
+here ([Stops](#stops)):
+
+- Where the stop advises, which is how an instance starts for every check
+  of the kit's own records, the task is reported as `ADVISED` with what it
+  said and the line that would make it refuse. The tasks after it run, a
+  structural check's included, and the selection can pass.
+- The row the gate records names the advised tasks, and no later selection
+  carries an advised task as a pass.
+- The document check and the host check hold checks of more than one stop,
+  and judge each failure on its own. A document with a broken link and a
+  private path fails the check naming the path, and prints the link as
+  advised. The paraphrase rule's stop is one of the document check's, and
+  where it advises it names a file once however many passages it holds
+  ([The operator's words are paraphrased](#the-operators-words-are-paraphrased)).
+- A check that could not run, or was ended for time, judged nothing and
+  fails at any level, whether the gate's limit ended the task or a limit of
+  the task's own ended a step inside it: a generated check, the license
+  check's dry run, the index check's read of the suites or a read of Git's
+  version. So does the terms task on an entry of your list's `refuse`
+  class.
+
 Then `kit-verify` runs instead of `build`.
 
-- It hashes every manifest-listed compiled runtime and test file, and
-  refuses a changed, missing or nonregular compiled file by path before the
-  selected suites. Other kit-file changes produce one advisory line.
+- It hashes every manifest-listed compiled runtime and test file and names
+  a changed, missing or nonregular compiled file by path. Such a file meets
+  two stops that guard the kit's own records, `gate-generated` (the carried
+  runtime kept current) and `gate-kit-verify` (the kit as its manifest
+  records it). Where they refuse, as in core or where you set them to, the
+  selection fails there, before the selected suites. At an instance's
+  default they advise: each task is recorded as advised with that output,
+  and the suites run. Other kit-file changes produce one advisory line.
 - Run `node scripts/launchpad.mjs verify` directly for the manifest check.
   It compares every listed file, and refuses a changed compiled runtime
   file, before it asks the instance's own harness check about a generated
-  surface that differs, since that check loads the runtime.
+  surface that differs, since that check loads the runtime. A surface your
+  build leaves out, which that check accepts, is counted as left out and
+  not as differing
+  ([What is the kit's and what is the author's](#what-is-the-kits-and-what-is-the-authors)).
 
 A long gate wall time with short task durations can be host-lane waiting:
 the summary attributes its wait by checkout relation, and
@@ -2290,9 +2647,11 @@ The observed selections in a fresh fixture instance are:
 - A missing upstream comparison ref or an upstream kit update does not
   expand the selection into platform regression.
 - Each of these selections is a document-kind gate run, because the harness
-  check reads the harness surfaces. While it runs, writes to the active
-  order's own evidence, verification and final-review directories are
-  refused. Write that evidence before the gate or after it passes.
+  check reads the harness surfaces. While it runs, a write to the active
+  order's own evidence, verification and final-review directories meets the
+  `live-gate` stop, which advises here until you set it to `refuse`. Such a
+  write can change what the gate is judging, so write that evidence before
+  the gate or after it passes.
 
 Core development still runs its product and changed-machinery suites. An
 instance that intentionally changes carried machinery needs order-specific
@@ -2304,6 +2663,7 @@ Decisions:
 [the Git floor](evidence/WO-260/decisions.md#wo-260-d010--the-git-floor-is-git-2310-and-wo-258-d009-is-superseded),
 [kit verification compares every compiled runtime file before any of the instance's code runs](evidence/WO-276/decisions.md#wo-276-d174--kit-verification-and-an-updates-plan-compare-every-carried-compiled-runtime-file-before-any-of-the-instances-code-runs),
 [the configuration check loads the instance's own configuration](evidence/WO-284/decisions.md#wo-284-d008--an-instances-configuration-row-loads-its-own-configuration-and-the-other-roots-structural-row-runs-only-by-name),
+[a gate task's failure at the level of the stop it is](evidence/WO-287/decisions.md#wo-287-d007--part-a-a-gate-tasks-failure-at-the-level-of-the-stop-it-is),
 [the time limits' keys and figures, with the times each rests on](evidence/WO-284/decisions.md#wo-284-d003--the-tables-keys-and-the-kits-figures-each-with-the-times-it-rests-on),
 [how the limits file changes them](evidence/WO-284/decisions.md#wo-284-d004--how-a-roots-file-changes-the-figures-null-is-a-limit-turned-off-the-pauses-after-a-stop-stay-on-and-never-shrink-and-one-unusable-value-is-one-advisory-for-a-whole-command),
 [core's check of an instance's gate at a third of every figure](evidence/WO-284/decisions.md#wo-284-d014--core-checks-the-starters-room-by-running-an-exported-instances-three-selections-at-a-third-of-every-figure-with-one-arm-that-shows-the-check-failing).
@@ -2467,12 +2827,96 @@ What does not run here:
 
 ### Hooks
 
-The generated hooks enforce the harness contract's refusals where they can
+The generated hooks answer the harness contract's stops where they can
 observe a call and journal what they see in the ignored
 `docs/control/local/harness/` lane. Codex tool calls are unhooked, so under
 Codex the lifecycle commands and the role text carry the same rules. What a
 refusal names, the session can run or say; nothing below asks the operator
 to run a kit command for a state the kit can judge.
+
+#### What a hook does in this instance
+
+Each thing a hook can deny is a stop, answered at the level this instance
+gives it ([Stops](#stops)). Until you set one:
+
+| A hook | For |
+| --- | --- |
+| Denies the call | What would lose or expose your work: a write while another session holds the worktree's writer reservation, a write to a place outside the project that no grant covers, a `gh pr` or `gh issue` command that would reach the wrong repository, and desktop control without its election. |
+| Advises, and the call goes on | What guards the kit's own records, a host property or a bound: a write outside `docs/` on a `planning/` branch, a write while a gate runs in the worktree, a launch past the dispatch bound or the worker cap, a router's or a driven helper's write, a review worker's gate, a worker that stops with a task of its own running, and an input the hook cannot decode. |
+
+- An advisory names the stop, what it protects and the line that makes it
+  refuse. It is shown once a session for each distinct message, which
+  holds the line of every stop that advised on the call, and every one is
+  journaled.
+- A refusal names its stop and the line that lowers it. Where the refusal
+  covers `dotln.config.json` itself, as a planning branch's does, it says
+  where the line is written: on `main`.
+- A stop that advises does not end the hook's judgment, so a lowered stop
+  never hides one that still refuses.
+- The attribution rule's refusal belongs to its unit. While the
+  `no-attribution` unit is equipped, the commit-message hook and a target
+  worktree's guard refuse a commit that carries AI attribution; remove the
+  unit and the refusal goes with it
+  ([What is the kit's and what is the author's](#what-is-the-kits-and-what-is-the-authors)).
+  A target worktree's guard judges a message it can read: one given on the
+  line, or in a file inside the worktree. A commit whose message it cannot
+  read (a file outside the worktree, no message on the line, a message
+  built by a substitution) is a line the classifier cannot read, which
+  advises here, and its message is not judged. Set `target-classification`
+  to `refuse` to have such a commit denied.
+
+A registered target worktree's guards answer at the same levels, which
+their bundle takes from this launchpad at
+`node scripts/harness.mjs emit --target <worktree>`:
+
+| A target worktree's guard | For |
+| --- | --- |
+| Denies the call | An effect the compiled authority names as denied, each a stop of its own (credentials, ssh, your own settings, disabling the sandbox, an unapproved remote, publishing a package); a write to the worktree's Git metadata, settings or installed hook files; another session's writer reservation; an unreviewed publication; and desktop control or your own browser sessions, which a target worktree's guard admits at no level and under no election. |
+| Advises, and the call goes on | What only the kit's scoping holds: a shell line the classifier cannot read, a session or a command that runs from a directory other than the worktree's root, an effect the authority does not list, and an agent launch or interaction tool. |
+
+- The three shell forms the launchpad's hook leaves to host permissions are
+  journaled and not shown there either
+  ([Quiet advisories](#quiet-advisories)). Of a line it cannot read, a guard
+  still judges the directory the line runs in and the destinations its
+  redirects name; a line whose redirects cannot be named either is the
+  host's to decide.
+- Every effect the guard names in a call is judged, each as its own stop: in
+  `ssh host; cat .env`, lowering `ssh` leaves the credentials read refused.
+  A line of `ssh`, `scp` or `sftp` that names a credential file is both
+  effects, wherever the name stands: in its own words, in a file redirected
+  into it, in the batch or the commands that feed its standard input, in the
+  remote command. A key or a configuration the transport is given as its own
+  is passed over: the word after a lone `-i` or `-F`, or after a lone `-o`
+  that sets one of its own files, among the options the line opens with.
+  Any other spelling of it is refused, as is one written after the line's
+  first operand. The screen is of names. It does not see a file reached
+  without its name: a directory or a pattern that holds one, a name the
+  shell expands, or a file's contents.
+- A session that stands in a directory under the worktree's root, or has
+  left the worktree, is told so once, and its calls are still judged, a
+  relative destination from the directory the command runs in.
+- A judgment that fails is answered as the stop it was judging. A writer
+  reservation that cannot be read is not a writer admitted, and a
+  destination the guard cannot resolve (one under the worktree's Git
+  metadata, or one that leaves the worktree by a link) is outside the
+  writable surface. The one exception is a commit message the attribution
+  guard cannot read, which is answered as a line the classifier cannot
+  read (above).
+- A guard that cannot reach this launchpad's runtime allows the call and
+  says that nothing there is being judged, and that the emit above, run
+  from the launchpad, installs it again. Set `target-runtime` to `refuse`
+  to have every call denied instead.
+- The guards carry the levels of their own last emit. After you change a
+  line of the `stops` section, `node scripts/harness.mjs emit` and
+  `check`, run in the launchpad, name each registered target worktree
+  whose guards still answer at the earlier levels, with the stops that
+  differ and the emit that brings it current; so does
+  `node scripts/harness.mjs check --target <worktree>`. A worktree
+  installed by an earlier kit recorded no levels and is named by neither
+  until its next emit.
+- `analysis:` and `operator override:` typed in a target worktree's session
+  reach its guards: the bundle's one prompt hook records them, and each
+  guard reads them before it judges.
 
 #### Which hooks run for a call
 
@@ -2484,8 +2928,8 @@ to run a kit command for a state the kit can judge.
 | After a call | The read observer | Every tool. |
 | After a call | The lint-directive hook | The tools the table maps to a write. |
 
-A read or a search therefore starts three hook processes and a shell
-command, an edit or a write five.
+A read or a search therefore starts three hook processes. A shell command
+starts five, and so does an edit or a write.
 
 How a narrowed hook's matcher is written depends on the hosts that read the
 settings file:
@@ -2499,14 +2943,18 @@ settings file:
   tool the table does not name starts only the three hooks registered for
   every tool.
 - `.claude/harness-manifest.json` records which form was emitted and why.
-- A target worktree's settings hold the permission hook for every tool, and
-  the writer reservation's and the attribution hook narrowed as for Claude
-  Code.
+- A target worktree's settings hold the permission hook for every tool
+  and, where the build equips each one's unit, the writer reservation's hook
+  and the attribution hook, both narrowed as for Claude Code, and one prompt
+  hook, which records the operator's `analysis:` and `operator override:`
+  for those hooks.
 
 Decisions:
 [the excluding form](evidence/WO-276/decisions.md#wo-276-d105--a-units-matcher-is-an-anchored-exclusion-of-the-names-its-kinds-do-not-cover-observed-on-claude-code-documented-and-not-observed-on-copilot-where-the-host-refused-the-run-and-the-units-own-name-tests-stay-as-they-are),
 [as built, with what a call costs in hooks before and after](evidence/WO-276/decisions.md#wo-276-d106--part-q-as-built-with-both-readings-of-what-a-call-costs-in-hooks),
-[what a call costs, as corrected](evidence/WO-276/decisions.md#wo-276-d108--part-qs-gates-and-what-changed-after-d106-two-edits-to-a-parser-a-pinned-digest-the-part-had-not-run-and-one-statistic-joined-to-the-wrong-sample).
+[what a call costs, as corrected](evidence/WO-276/decisions.md#wo-276-d108--part-qs-gates-and-what-changed-after-d106-two-edits-to-a-parser-a-pinned-digest-the-part-had-not-run-and-one-statistic-joined-to-the-wrong-sample),
+[what a hook answers at each level, and the recovery controls in a target worktree](evidence/WO-287/decisions.md#wo-287-d006--part-a-what-a-hook-answers-at-each-level-in-the-launchpad-and-in-a-target-worktree),
+[a target worktree's guard after its readers: every effect, the session's directory, desktop control and the levels of its last emit](evidence/WO-287/decisions.md#wo-287-d018--part-as-two-readers-twenty-three-findings-five-of-them-blocking-each-judged-what-was-closed-with-a-case-and-what-is-not-taken).
 
 #### The presence heartbeat
 
@@ -3761,7 +4209,8 @@ root; an order naming a destination alone does not grant it.
 #### The plan
 
 The preview and update share one plan. Each kit path is listed as
-`replace`, `add`, `remove`, `refused` or `re-emitted`.
+`replace`, `add`, `remove`, `refused`, `re-emitted` or
+`left out by this instance's build`.
 
 - A refusal names the local edit or instance-owned collision and the prior
   manifest hash retained (none for a collision).
@@ -3795,7 +4244,8 @@ The destination must already contain a valid `KIT-MANIFEST.json`.
 | A dropped file, unchanged | Removes it. An absent dropped file can stay absent. |
 | A locally edited file, dropped files included | Refuses it and keeps its prior manifest hash, so a repeat update refuses it again. |
 | A new kit path occupied by an instance file | Refuses it; the path stays outside the manifest. |
-| A still-carried kit file that is missing, unreadable or nonregular | Refuses the operation by path. |
+| A generated harness surface your build leaves out, such as the hook files of a unit your overlay removes | Does not write it and no longer lists it for this instance. The row reads `left out by this instance's build: <path>`. |
+| Any other still-carried kit file that is missing, unreadable or nonregular | Refuses the operation by path. |
 
 Resolve refused files by hand and review the update before committing it.
 
@@ -3816,6 +4266,20 @@ harness manifest). Where such a file holds neither manifest's bytes:
 3. Where the check fails, nothing is installed there to run it or a compiled
    runtime file differs, so that it was not run, the file is refused as
    locally modified and the row says which.
+
+The same check vouches for two more cases of a surface your overlay's
+selection decides ([The build overlay](#the-build-overlay)):
+
+- **A surface your build leaves out.** Your emit names each such path in
+  `.claude/harness-manifest.json` under `leftOut`. Where the check passes,
+  the absent file is your choice and the row reads
+  `left out by this instance's build`. Where it does not, the absence is the
+  input failure it would be for any kit file.
+- **A surface you have restored.** Once an update has stopped listing a
+  left-out file, restoring the unit makes your emit write it again at a path
+  the prior manifest does not hold. Where the check passes the row reads
+  `re-emitted`, and where it does not the file is refused as an
+  instance-owned collision.
 
 #### After a from-core update
 
@@ -4176,9 +4640,12 @@ time.
 
 What holds a bound, and what stays available:
 
-- The gate host task, bounded wrapper and lifecycle redispatch refuse
-  exhausted bounds. Claude's tool hook also refuses costly starts and worker
-  launches, and its Stop hook prints standing.
+- The gate host task, bounded wrapper and lifecycle redispatch answer an
+  exhausted bound at the level of its stop, `dispatch-bound`, and so does
+  Claude's tool hook for costly starts and worker launches: here each says
+  what was passed and the work goes on, and where you set that stop to
+  `refuse` each withholds the start ([Stops](#stops)). Claude's Stop hook
+  prints standing.
 - `node scripts/harness.mjs usage <session>` returns the same standing on
   all hosts. If standing cannot be read, usage still prints its observation
   and host session readback with
@@ -4195,8 +4662,9 @@ Decisions:
 
 ### Accept an overrun
 
-Without operator authorization the bound holds. When the operator
-authorizes proceeding in ordinary language, the session:
+Where a bound's stop refuses, the bound holds without the operator's
+authorization. When the operator authorizes proceeding in ordinary
+language, the session:
 
 1. interprets the conversation context;
 2. captures the actual words and context in ignored intake;
@@ -4384,27 +4852,47 @@ Decisions:
 
 ### The operator's words are paraphrased
 
-No operator message is saved verbatim in a committed artifact.
+The kit's author keeps the operator's own messages out of committed text:
+no operator message is saved verbatim in a committed artifact. It is the
+author's rule, and in your instance it is yours to keep, lower or remove.
+It has two halves, a sentence every role carries and a stop of the
+document gate.
 
-- A session paraphrases the operator in committed text and cites the ignored
-  intake capture by its SHA-256.
-- A quotation is written only where the operator asks for that message to be
-  saved, as a typed `operatorQuote` naming the capture's digest and the
-  request's, or where this instance turns the rule off in its
-  configuration.
-- Every role and worker carries the rule, and `npm run test:docs` holds a
-  branch to it against its merge base with `main`, so a record written
-  before keeps its bytes.
+- **The sentence.** A session paraphrases the operator in committed text
+  and cites the ignored intake capture by its SHA-256. It writes a
+  quotation only where the operator asks for that message to be saved, as a
+  typed `operatorQuote` naming the capture's digest and the request's, or
+  where this instance elects `features.verbatim-operator-words`. The
+  sentence is the author rule `operator-words`, which
+  `"unequip": ["operator-words"]` in the build overlay removes
+  ([What is the kit's and what is the author's](#what-is-the-kits-and-what-is-the-authors)).
+- **The stop.** `npm run test:docs` holds a branch to the rule against its
+  merge base with `main`, so a record written before keeps its bytes. The
+  stop is `verbatim-operator-words`, a `record` stop ([Stops](#stops)).
+
+What the stop does at each level:
+
+| Level | What happens |
+| --- | --- |
+| `advise`, which is this instance's until you set one | The check passes. A file that carries such text is named in one line however many runs it holds, at the line of the first, and the stop names itself once. |
+| `refuse`, which is core's | Each run fails by file, line and the capture's digest. |
+| `off` | The screen is not run. The check's one line for it says that it is off, and nothing is said of any run. |
+
+Text you put under the intake root to be used, a specification or a draft
+you pasted, is read as the operator's words like any other capture, so a
+document that carries it meets this stop. At `advise` you are told once a
+file and nothing fails; set the stop to `off` if you do not want to be
+told.
 
 The gate's verbatim screen:
 
 - **What it compares.** Each line the branch adds, or joins by a deletion,
   to Markdown or to source under `scripts/` and `packages/*/src/`, with
   every text capture under this checkout's ignored intake root.
-- **What fails.** A run of twelve consecutive words both hold fails by file,
-  line and the capture's digest, never the words. A run the repository
-  already held is its own text. A checkout with no capture prints
-  `verbatim screen: no captures`.
+- **What it finds.** A run of twelve consecutive words both hold, named by
+  file, line and the capture's digest, never the words. A run the
+  repository already held is its own text. A checkout with no capture
+  prints `verbatim screen: no captures`.
 - **Words, not addresses.** A link target, a code span, a URL and a path
   each count as one word that no capture holds, so a line that links a
   document a capture also names is no finding. In an instance, a changed
@@ -4416,17 +4904,21 @@ The gate's verbatim screen:
   drafts and a tool's output go under the ignored `docs/control/local/` lane
   or the session's scratch directory.
 - **Attributed words.** A record the branch adds that attributes words to
-  the operator without a capture citation fails too, while one written
-  before stays an advisory.
+  the operator without a capture citation is a finding of the same stop,
+  one line a record, while one written before stays an advisory at every
+  level.
 - **A quotation.** An `operatorQuote` the branch adds carries
   `captureSha256` and `requestedIn` (the digest of the capture of the
   operator's request to save it), and the screen admits that capture's words
   inside it.
 
-Electing `features.verbatim-operator-words` turns the rule off: both checks
-then advise instead of failing.
+The election `features.verbatim-operator-words` was the rule's switch
+before its stop had a level, and still sets it where you write no `stops`
+line for it: elected, both checks advise; declined in so many words
+(`false`), both refuse. A `stops` line wins over it.
 
 Decisions:
+[the stop's level, and one line a file](evidence/WO-287/decisions.md#wo-287-d021--part-c-the-paraphrase-rules-stop-has-a-level-an-instance-is-told-once-a-file-and-the-election-that-was-its-switch-still-sets-it),
 [the verbatim screen compares words](evidence/WO-276/decisions.md#wo-276-d019--the-verbatim-screen-compares-words-and-reads-the-base-tree-once-step-a14),
 [the pass that recorded what the intake root holds](planning/passes/whole-plan-and-codebase-review-2026-11-09.md),
 [the rule and its election](evidence/WO-259/decisions.md#wo-259-d006).

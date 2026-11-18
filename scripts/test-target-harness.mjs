@@ -141,8 +141,15 @@ const denied = (response) =>
 test("WO-049 target capabilities distinguish observed omissions from unavailable hooks", () => {
   for (const profile of targetWorkerProfiles) {
     assert.equal(profile.codexContinuation, undefined);
+    // The Claude bundle holds one prompt hook, which records the operator's
+    // recovery controls for its guards; the event was observed in a target
+    // worktree, and no other lifecycle event is used.
+    const prompt = profile.events.UserPromptSubmit;
+    assert.equal(prompt.available, profile.harness === "claude-code");
+    if (prompt.available) assert.match(prompt.evidence, /#C-W10$/);
     for (const event of ["PostToolUse", "Stop", "UserPromptSubmit"]) {
       const capability = profile.events[event];
+      if (capability.available) continue;
       assert.equal(capability.available, false);
       if (profile.harness === "claude-code") {
         assert.match(capability.evidence, /#C-W4$/);
@@ -193,8 +200,14 @@ for (const unrelated of [false, true])
       const installed = JSON.parse(
         readFileSync(join(f.target, manifestPath), "utf8"),
       ).installed;
-      // The bundle holds no presence hook (WO-276 criterion Q1).
-      assert.equal(installed.length, 6);
+      // The bundle holds no presence hook (WO-276 criterion Q1); its seventh
+      // file is the prompt hook that records the recovery controls.
+      assert.equal(installed.length, 7);
+      assert.ok(
+        installed.some(
+          (file) => file.path === ".claude/hooks/operator-control.mjs",
+        ),
+      );
       assert.ok(installed.every((file) => !file.path.includes("/presence-")));
       assert.deepEqual(
         Object.keys(tree(f.target)).sort(),
@@ -220,7 +233,7 @@ for (const unrelated of [false, true])
         ),
         "",
       );
-      assert.equal(checkTargetHarness(f.target, f.options).files, 6);
+      assert.equal(checkTargetHarness(f.target, f.options).files, 7);
       const post = tree(f.target);
       emitTargetHarness(f.target, f.options);
       assert.deepEqual(tree(f.target), post);
@@ -305,7 +318,7 @@ test("WO-049 removal preserves appended user rules and refuses duplicate exclude
         .filter((line) => line === "/CLAUDE.local.md").length,
       1,
     );
-    assert.equal(checkTargetHarness(f.target, f.options).files, 6);
+    assert.equal(checkTargetHarness(f.target, f.options).files, 7);
     removeTargetHarness(f.target, f.options);
     assert.equal(readFileSync(exclude, "utf8"), revised);
 
@@ -384,17 +397,17 @@ test("WO-276 criterion Q1: a target installed while its bundle held a presence h
     emitTargetHarness(f.target, f.options);
     const current = tree(f.target);
     installedWithPresenceHook(f);
-    assert.equal(checkTargetHarness(f.target, f.options).files, 7);
+    assert.equal(checkTargetHarness(f.target, f.options).files, 8);
     // The next emission owns the earlier installation's files, and removes
     // the one its bundle no longer holds.
     emitTargetHarness(f.target, f.options);
     assert.deepEqual(tree(f.target), current);
-    assert.equal(checkTargetHarness(f.target, f.options).files, 6);
+    assert.equal(checkTargetHarness(f.target, f.options).files, 7);
     assert.ok(!readFileSync(exclude, "utf8").includes(earlierPresenceHook));
     // Removed without an emission between, the earlier installation leaves
     // nothing behind, the presence hook included.
     installedWithPresenceHook(f);
-    assert.equal(removeTargetHarness(f.target, f.options).files, 7);
+    assert.equal(removeTargetHarness(f.target, f.options).files, 8);
     assert.deepEqual(tree(f.target), before);
     assert.equal(readFileSync(exclude, "utf8"), original);
   } finally {
@@ -833,6 +846,82 @@ test("WO-276 criterion K3: a target worktree's emitted settings hold the launchp
     checkTargetHarness(f.target, f.options);
     assert.equal(readFileSync(settingsFile, "utf8"), bare);
     removeTargetHarness(f.target, f.options);
+  } finally {
+    rmSync(f.base, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion A11: a target worktree's bundle carries its launchpad's levels in every guard's configuration and leaves out the host deny rules of a lowered ssh or package-publish stop", async () => {
+  const { loweredStops, resolveStopLevels } =
+    await import("../packages/skeleton/src/stops.mjs");
+  const f = fixture();
+  try {
+    const guards = [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "no-attribution",
+    ];
+    const carried = (name) => {
+      const found = /"stops": (\{[^}]*\})/u.exec(
+        readFileSync(join(f.target, `.claude/hooks/${name}.mjs`), "utf8"),
+      );
+      return found ? JSON.parse(found[1]) : undefined;
+    };
+    const settings = () =>
+      JSON.parse(readFileSync(join(f.target, ".claude/settings.json"), "utf8"));
+    const launchpadStops = (stops) => {
+      write(f.launchpad, "dotln.config.json", json({ version: 1, stops }));
+      emitTargetHarness(f.target, f.options);
+      checkTargetHarness(f.target, f.options);
+    };
+    // Core's launchpad: no guard carries a level and every rule is emitted.
+    emitTargetHarness(f.target, f.options);
+    for (const name of guards) assert.equal(carried(name), undefined, name);
+    assert.deepEqual(settings().permissions.deny, [
+      "Bash(npm publish *)",
+      "Bash(scp *)",
+      "Bash(sftp *)",
+      "Bash(ssh *)",
+    ]);
+    // The bundle's one prompt hook records the recovery controls; its guards
+    // read them ahead of the runtime.
+    assert.deepEqual(Object.keys(settings().hooks), [
+      "PreToolUse",
+      "UserPromptSubmit",
+    ]);
+    assert.deepEqual(
+      settings().hooks.UserPromptSubmit[0].hooks.map((hook) => hook.command),
+      ['node "$CLAUDE_PROJECT_DIR/.claude/hooks/operator-control.mjs"'],
+    );
+    assert.doesNotMatch(
+      readFileSync(
+        join(f.target, ".claude/hooks/operator-control.mjs"),
+        "utf8",
+      ),
+      /import\(new URL|runTargetHarnessHook/u,
+    );
+    // An exported instance that sets nothing: the record, host and bound
+    // rows advise in the worktree as in its launchpad, and the two rules
+    // are emitted as before.
+    write(f.launchpad, "KIT-MANIFEST.json", "{}\n");
+    emitTargetHarness(f.target, f.options);
+    const lowered = loweredStops(resolveStopLevels({ instance: true }));
+    for (const name of guards) assert.deepEqual(carried(name), lowered, name);
+    assert.equal(settings().permissions.deny.length, 4);
+    // The owner lowers one, then the other.
+    launchpadStops({ ssh: "off" });
+    assert.deepEqual(settings().permissions.deny, ["Bash(npm publish *)"]);
+    for (const name of guards) assert.equal(carried(name).ssh, "off", name);
+    launchpadStops({ "package-publish": "advise", "target-cwd": "refuse" });
+    assert.deepEqual(settings().permissions.deny, [
+      "Bash(scp *)",
+      "Bash(sftp *)",
+      "Bash(ssh *)",
+    ]);
+    for (const name of guards) {
+      assert.equal(carried(name)["package-publish"], "advise", name);
+      assert.equal(carried(name)["target-cwd"], undefined, name);
+    }
   } finally {
     rmSync(f.base, { recursive: true, force: true });
   }

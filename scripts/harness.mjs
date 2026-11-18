@@ -21,10 +21,14 @@ import {
   checkHarness,
   emitTargetHarness,
   checkTargetHarness,
+  targetLevelDriftLines,
+  adviseUnitStopLines,
+  instanceRoot,
   removeTargetHarness,
   readBuildOverlay,
   readSettingsFragment,
   harnessInstallation,
+  rootStopLevels,
 } from "./lib/harness.mjs";
 import { docPath, findLaunchpad, loadConfig } from "./lib/config.mjs";
 import { localTermContextLines } from "./lib/terms.mjs";
@@ -77,7 +81,7 @@ async function optionalCurrentSession(root, sessionId) {
 }
 
 const usage =
-  "usage: harness bounded [--budget-bytes <reduced-byte-budget>] [--timeout-seconds <1..21600>] -- <command> [args...] | harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail|--wait [--timeout <seconds>]] | harness lanes | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness prune [--apply] | harness writer --show | harness writer --release [--force]";
+  "usage: harness bounded [--budget-bytes <reduced-byte-budget>] [--timeout-seconds <1..21600>] -- <command> [args...] | harness emit|check [--loadout contributor] [--profile id] [--out dir] [--root-kind instance] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail|--wait [--timeout <seconds>]] | harness lanes | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness prune [--apply] | harness writer --show | harness writer --release [--force]";
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
@@ -405,6 +409,7 @@ try {
             "--out",
             "--target",
             "--runtime-root",
+            "--root-kind",
           ].includes(args[index]) ||
           !args[index + 1] ||
           options[args[index].slice(2)]
@@ -412,9 +417,17 @@ try {
           throw new Error(usage);
         options[args[index].slice(2)] = args[index + 1];
       }
+      // An export's own emit and check run in a destination that does not
+      // hold the kit's manifest yet: the flag says it is an instance.
+      const rootKind = options["root-kind"];
+      delete options["root-kind"];
+      if (rootKind !== undefined && rootKind !== "instance")
+        throw new Error(usage);
       if (options.target) {
-        if (options.out || options.loadout)
-          throw new Error("target does not accept --out or --loadout");
+        if (options.out || options.loadout || rootKind)
+          throw new Error(
+            "target does not accept --out, --loadout or --root-kind",
+          );
         const operation = {
           emit: emitTargetHarness,
           check: checkTargetHarness,
@@ -425,13 +438,28 @@ try {
           runtimeRoot: resolve(root, options["runtime-root"] ?? "."),
         });
         console.log(`harness ${action}: ${result.files} target surfaces`);
+        if (result.levelsBehind?.length)
+          console.log(
+            `harness ${action}: this worktree's guards answer at the levels of their last emit, which have since changed in the launchpad for ${result.levelsBehind.join(", ")}; node scripts/harness.mjs emit --target <this worktree>, run from the launchpad, brings them current`,
+          );
       } else {
         if (action === "remove" || options["runtime-root"])
           throw new Error("remove and --runtime-root require --target");
         const out = resolve(root, options.out ?? ".");
         options.termsRoot = root;
-        options.overlay = readBuildOverlay(findLaunchpad());
+        // One answer to what kind of root this is, for the overlay's ids,
+        // the stops' levels and the block's own line.
+        options.instance = instanceRoot(findLaunchpad(), rootKind);
+        options.overlay = readBuildOverlay(findLaunchpad(), {
+          instance: options.instance,
+        });
+        // A line of the stops section that names a stop whose unit the
+        // overlay leaves out sets nothing, and is named once.
+        adviseUnitStopLines(findLaunchpad(), options.overlay);
         options.features = readFeatures(findLaunchpad());
+        options.stops = rootStopLevels(findLaunchpad(), {
+          instance: options.instance,
+        });
         options.workers = loadConfig(findLaunchpad()).workers;
         // The launchpad's fragment, or none: never the output root's own.
         options.settingsFragment =
@@ -455,6 +483,28 @@ try {
         // to read beside the entry it matched.
         for (const line of localTermContextLines(result.localTerms))
           console.log(line);
+        // A registered target worktree's guards carry the levels of their
+        // own last emit. After a line of the `stops` section changes, the
+        // launchpad's emit and check name each worktree still behind and
+        // the command that brings it current. An export's own emit, which
+        // names its root's kind, has no worktree registered yet. Loaded on
+        // demand, as below.
+        if (!rootKind && realpathSync(out) === realpathSync(findLaunchpad())) {
+          const { registeredTargetWorktrees } =
+            await import("./lib/target-worktrees.mjs");
+          let registered = [];
+          try {
+            registered = registeredTargetWorktrees(findLaunchpad());
+          } catch {
+            /* A registry that cannot be read names no worktree. */
+          }
+          for (const line of targetLevelDriftLines(
+            findLaunchpad(),
+            registered,
+            action,
+          ))
+            console.log(line);
+        }
         // The literal-rule fallback's sidecars live in the main checkout and
         // name an order's rules; one whose order no longer has a registered
         // target worktree is drift the operator sees here, with the remedy.

@@ -3571,3 +3571,365 @@ test("npm run limits lists every key, and --write keeps what the owner set while
     },
   );
 });
+
+// The stops a root's owner sets in the `stops` section of its configuration.
+// An exported instance is a root that holds the kit's manifest and no
+// package sources; any other root answers as core does.
+const instanceRoot = (root) => {
+  write(root, "KIT-MANIFEST.json", "{}\n");
+  return root;
+};
+const stopsConfig = (root, value = {}) =>
+  write(root, CONFIG_FILENAME, prettyJson({ version: 1, ...value }));
+// What the configuration reader printed as advisories while `run` ran.
+const advisoriesOf = (run) => {
+  const messages = [];
+  const warn = console.warn;
+  console.warn = (message) => messages.push(String(message));
+  try {
+    run();
+  } finally {
+    console.warn = warn;
+  }
+  return messages;
+};
+
+test("a stop's level comes from its class and the root's kind until the root sets it", async (t) => {
+  const {
+    STOPS,
+    STOP_CLASSES,
+    STOP_LEVELS,
+    failuresByLevel,
+    loweredStops,
+    resolveStop,
+    resolveStopLevels,
+    stopLevelIn,
+    stopRow,
+    stopSettable,
+  } = await import("../packages/skeleton/src/stops.mjs");
+  const settable = STOPS.filter(stopSettable);
+
+  await t.test("the table's rows are well formed and its ids distinct", () => {
+    assert.equal(new Set(STOPS.map((row) => row.id)).size, STOPS.length);
+    for (const row of STOPS) {
+      assert.match(row.id, /^[a-z][a-z0-9-]*$/u, row.id);
+      assert.ok(STOP_CLASSES.includes(row.class), row.id);
+      assert.ok(row.protects && row.where, row.id);
+      // A row is settable, keeps a switch, is set in a file or is a
+      // command's refusal with its way forward: one of the four.
+      assert.equal(
+        [row.setBy, row.file, row.forward].filter(Boolean).length,
+        stopSettable(row) ? 0 : 1,
+        row.id,
+      );
+    }
+    assert.deepEqual([...STOP_LEVELS], ["refuse", "advise", "off"]);
+  });
+
+  await t.test(
+    "an instance advises on a record, host or bound row and refuses on a work row; core refuses on all",
+    () => {
+      temporary("stops-instance", (root) => {
+        instanceRoot(root);
+        assert.equal(isKitRoot(root), true);
+        const instance = { instance: true, stops: loadConfig(root).stops };
+        assert.deepEqual(resolveStop("planning-branch", instance), {
+          level: "advise",
+          source: "kit",
+        });
+        assert.deepEqual(resolveStop("writer-reservation", instance), {
+          level: "refuse",
+          source: "kit",
+        });
+        const levels = resolveStopLevels(instance);
+        for (const row of settable)
+          assert.equal(
+            levels[row.id],
+            row.class === "work" ? "refuse" : "advise",
+            row.id,
+          );
+        assert.deepEqual(
+          Object.keys(levels),
+          settable.map((row) => row.id),
+        );
+        // What a hook carries is the stops that do not refuse; one the map
+        // leaves out refuses.
+        const lowered = loweredStops(levels);
+        assert.deepEqual(
+          Object.keys(lowered),
+          settable
+            .filter((row) => row.class !== "work")
+            .map((row) => row.id)
+            .sort(),
+        );
+        assert.equal(stopLevelIn(lowered, "planning-branch"), "advise");
+        assert.equal(stopLevelIn(lowered, "writer-reservation"), "refuse");
+        assert.equal(stopLevelIn(undefined, "planning-branch"), "refuse");
+      });
+      temporary("stops-core", (root) => {
+        assert.equal(isKitRoot(root), false);
+        const core = { instance: false, stops: loadConfig(root).stops };
+        for (const row of settable)
+          assert.deepEqual(
+            resolveStop(row.id, core),
+            { level: "refuse", source: "kit" },
+            row.id,
+          );
+        assert.deepEqual(loweredStops(resolveStopLevels(core)), {});
+      });
+    },
+  );
+
+  await t.test("a root's own line gives a stop any of the three levels", () => {
+    temporary("stops-set", (root) => {
+      instanceRoot(root);
+      stopsConfig(root, {
+        stops: {
+          "planning-branch": "refuse",
+          "writer-reservation": "advise",
+          "live-gate": "off",
+        },
+      });
+      const stops = loadConfig(root).stops;
+      assert.deepEqual(stops, {
+        "planning-branch": "refuse",
+        "writer-reservation": "advise",
+        "live-gate": "off",
+      });
+      for (const [id, level] of Object.entries(stops))
+        assert.deepEqual(resolveStop(id, { instance: true, stops }), {
+          level,
+          source: "dotln.config.json",
+        });
+      // A row the section leaves out keeps the kit's level.
+      assert.deepEqual(resolveStop("worker-cap", { instance: true, stops }), {
+        level: "advise",
+        source: "kit",
+      });
+      // The same lines set the same levels in core's root.
+      assert.equal(
+        resolveStop("writer-reservation", { instance: false, stops }).level,
+        "advise",
+      );
+    });
+  });
+
+  await t.test("a row with its own switch or file has no level here", () => {
+    for (const id of ["desktop-control", "private-terms", "command-phase"]) {
+      assert.equal(stopSettable(stopRow(id)), false, id);
+      assert.throws(
+        () => resolveStop(id, { instance: true }),
+        /no settable stop/u,
+      );
+    }
+    // A failure that is such a row refuses whatever level its task's other
+    // failures answer at: a check ended for time is the time limits' row.
+    const timed = { stop: "time-limits" };
+    const toolchain = { stop: "host-toolchain" };
+    for (const level of STOP_LEVELS)
+      assert.deepEqual(
+        failuresByLevel([timed, toolchain], () => level),
+        {
+          refused: level === "refuse" ? [timed, toolchain] : [timed],
+          advised: level === "advise" ? [toolchain] : [],
+          off: level === "off" ? [toolchain] : [],
+        },
+        level,
+      );
+  });
+
+  await t.test(
+    "WO-287 criterion C1: a stop that had a switch before it had a level takes its level from the election a root makes of that feature, where the root writes no line for it",
+    async () => {
+      const { declaredElections, stopLevel } = await import("./lib/config.mjs");
+      const stop = "verbatim-operator-words";
+      const row = stopRow(stop);
+      assert.equal(stopSettable(row), true);
+      assert.deepEqual([row.class, row.election], ["record", stop]);
+      // No election and no line: the kit's level for the row's class.
+      assert.deepEqual(resolveStop(stop, { instance: true }), {
+        level: "advise",
+        source: "kit",
+      });
+      assert.deepEqual(resolveStop(stop, { instance: false }), {
+        level: "refuse",
+        source: "kit",
+      });
+      for (const instance of [true, false]) {
+        // An election made either way sets it, in either kind of root.
+        assert.deepEqual(
+          resolveStop(stop, { instance, elections: { [stop]: true } }),
+          { level: "advise", source: `features.${stop}` },
+        );
+        assert.deepEqual(
+          resolveStop(stop, { instance, elections: { [stop]: false } }),
+          { level: "refuse", source: `features.${stop}` },
+        );
+        // A line of the stops section wins over the election.
+        assert.deepEqual(
+          resolveStop(stop, {
+            instance,
+            stops: { [stop]: "off" },
+            elections: { [stop]: true },
+          }),
+          { level: "off", source: "dotln.config.json" },
+        );
+      }
+      // Another feature's election sets nothing, and a stop that never had
+      // a switch reads no election.
+      assert.deepEqual(
+        resolveStop(stop, {
+          instance: true,
+          elections: { "plan-first": true },
+        }),
+        { level: "advise", source: "kit" },
+      );
+      assert.deepEqual(
+        resolveStop("planning-branch", {
+          instance: true,
+          elections: { "planning-branch": false, [stop]: false },
+        }),
+        { level: "advise", source: "kit" },
+      );
+      assert.equal(
+        resolveStopLevels({ instance: true, elections: { [stop]: false } })[
+          stop
+        ],
+        "refuse",
+      );
+      // Read from a root's own file.
+      temporary("stops-election", (root) => {
+        instanceRoot(root);
+        stopsConfig(root, { features: { [stop]: false } });
+        assert.deepEqual(declaredElections(loadConfig(root)), {
+          [stop]: false,
+        });
+        assert.equal(stopLevel(root, stop), "refuse");
+        stopsConfig(root, { features: { [stop]: true } });
+        assert.equal(stopLevel(root, stop), "advise");
+        stopsConfig(root, {
+          features: { [stop]: true },
+          stops: { [stop]: "refuse" },
+        });
+        assert.equal(stopLevel(root, stop), "refuse");
+        stopsConfig(root);
+        assert.deepEqual(declaredElections(loadConfig(root)), {});
+        assert.equal(stopLevel(root, stop), "advise");
+      });
+    },
+  );
+});
+
+test("a line that names no stop, no level or, in an instance, no feature is named once and ignored", async (t) => {
+  await t.test(
+    "in an instance each is one advisory and the command goes on",
+    () => {
+      temporary("stops-mistyped", (root) => {
+        instanceRoot(root);
+        const declare = (extra = {}) =>
+          stopsConfig(root, {
+            stops: {
+              "planning-branch": "refuse",
+              "plannig-branhc": "advise",
+              "live-gate": "loud",
+              "desktop-control": "off",
+              "time-limits": "off",
+              "command-phase": "advise",
+            },
+            features: { "tinkerer-econmy": true, "plan-first": true },
+            ...extra,
+          });
+        declare();
+        let config;
+        const first = advisoriesOf(() => (config = loadConfig(root)));
+        // The lines that name a stop and a level, and the feature the registry
+        // holds, are read; every other line sets nothing.
+        assert.deepEqual(config.stops, { "planning-branch": "refuse" });
+        assert.deepEqual(config.features, { "plan-first": true });
+        assert.equal(readFeatures(root)["plan-first"], true);
+        assert.equal(first.length, 6, first.join("\n"));
+        const named = (pattern) =>
+          first.filter((message) => pattern.test(message)).length;
+        assert.equal(
+          named(
+            /^Advisory: stops\.plannig-branhc in dotln\.config\.json names no stop and sets nothing; npm run features -- list prints the stops$/u,
+          ),
+          1,
+        );
+        assert.equal(
+          named(
+            /^Advisory: stops\.live-gate in dotln\.config\.json is "loud", which is no level, and sets nothing; a level is refuse, advise, off$/u,
+          ),
+          1,
+        );
+        assert.equal(
+          named(
+            /^Advisory: stops\.desktop-control .*keeps its own switch, features\.desktop-control$/u,
+          ),
+          1,
+        );
+        assert.equal(
+          named(
+            /^Advisory: stops\.time-limits .*is set in docs\/control\/time-limits\.json$/u,
+          ),
+          1,
+        );
+        assert.equal(
+          named(
+            /^Advisory: stops\.command-phase .*a lifecycle command's refusal \(run one of the legal actions/u,
+          ),
+          1,
+        );
+        assert.equal(
+          named(
+            /^Advisory: features\.tinkerer-econmy in dotln\.config\.json names no feature and sets nothing; npm run features -- list prints the known ids$/u,
+          ),
+          1,
+        );
+        // A second load of the changed file names nothing twice.
+        declare({ release: { displayName: "Changed" } });
+        assert.deepEqual(
+          advisoriesOf(() => loadConfig(root)),
+          [],
+        );
+      });
+    },
+  );
+
+  await t.test(
+    "a stops section that is no object sets nothing and stops nothing",
+    () => {
+      temporary("stops-shape", (root) => {
+        instanceRoot(root);
+        stopsConfig(root, { stops: ["planning-branch"] });
+        let config;
+        const messages = advisoriesOf(() => (config = loadConfig(root)));
+        assert.deepEqual(config.stops, {});
+        assert.equal(messages.length, 1);
+        assert.match(
+          messages[0],
+          /stops in dotln\.config\.json is not an object/u,
+        );
+      });
+    },
+  );
+
+  await t.test(
+    "core advises on a mistyped stop and still refuses a mistyped feature",
+    () => {
+      temporary("stops-core-mistyped", (root) => {
+        stopsConfig(root, { stops: { "plannig-brnach": "advise" } });
+        let config;
+        const messages = advisoriesOf(() => (config = loadConfig(root)));
+        assert.deepEqual(config.stops, {});
+        assert.equal(messages.length, 1);
+        assert.match(messages[0], /stops\.plannig-brnach .*names no stop/u);
+        stopsConfig(root, { features: { "tinkerer-econmy": true } });
+        assert.throws(
+          () => loadConfig(root),
+          /unknown features key "tinkerer-econmy"; known ids:/u,
+        );
+      });
+    },
+  );
+});

@@ -4,10 +4,12 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  realpathSync,
 } from "node:fs";
 import { delimiter, dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { DRIVE_SANDBOX_ELECTIONS } from "./config.mjs";
+import { releaseCloseCommand } from "./git.mjs";
 import { hostStateRoot } from "./host-resources.mjs";
 import { directoryIdentity } from "./target-worktrees.mjs";
 import { phaseRoots, resolveOrderWorktrees } from "./order-worktrees.mjs";
@@ -198,9 +200,34 @@ export function codexObservedPolicy(home, sessionId) {
   return unobserved("codex-session-turn-context-absent");
 }
 
+/** The rules a Claude release-close phase is started with: the one helper
+ * command the close publishes by, in the two exact spellings the kit's own
+ * hook admits, for this order and no other. A host in its automatic-review
+ * mode suspends the blanket shell rule this launch carries and reviews each
+ * command itself, the helper's request to run outside the sandbox among
+ * them, and a hook's approval does not stand in for that review; a narrow
+ * rule for an exact command is resolved before it, as the host documents.
+ * The launchpad is named both as given and as the file system resolves it,
+ * since the helper is spelled with the path the main checkout reports. */
+export const releaseCloseAllowRules = (launchpad, order) => {
+  if (!/^WO-\d{3}$/.test(order ?? "")) return [];
+  const mains = [launchpad];
+  try {
+    mains.push(realpathSync(launchpad));
+  } catch {
+    // A launchpad that cannot be resolved is named as given.
+  }
+  return [...new Set(mains)].flatMap((main) =>
+    ["--publish", "--dry-run"].map(
+      (mode) => `Bash(${releaseCloseCommand(main, order, mode)})`,
+    ),
+  );
+};
+
 // The Claude print session's argv, with the sandbox form the election maps
 // to inside its one-session settings; exported so the form is testable
-// without launching a host.
+// without launching a host. `allow` is the narrow rules this one session
+// adds to the host's own.
 export function claudeLaunchArgs({
   worker,
   definitions,
@@ -211,6 +238,7 @@ export function claudeLaunchArgs({
   form,
   dollarLimit,
   phrase,
+  allow = [],
 }) {
   return [
     "--print",
@@ -235,6 +263,7 @@ export function claudeLaunchArgs({
     JSON.stringify({
       autoMemoryEnabled: false,
       attribution: { commit: "", pr: "" },
+      ...(allow.length ? { permissions: { allow } } : {}),
       sandbox: {
         ...form.settings,
         network: {
@@ -281,6 +310,7 @@ export async function launchRole({
   signal,
   capture,
   sandbox,
+  order,
 }) {
   if (!DRIVE_SANDBOX_ELECTIONS.includes(sandbox))
     throw new Error(
@@ -289,6 +319,12 @@ export async function launchRole({
   let episode;
   let result;
   let args;
+  // A release close is the one phase whose own command a host's automatic
+  // review has been seen to decline after the kit's hook admitted it.
+  const allow =
+    host === "claude" && role === "release-close"
+      ? releaseCloseAllowRules(launchpad, order)
+      : [];
   try {
     const directories = nativeLaunchDirectories(launchpad, role, phrase);
     const form = sandboxLaunchForm(host, sandbox);
@@ -349,6 +385,7 @@ export async function launchRole({
         form,
         dollarLimit,
         phrase,
+        allow,
       });
     // Imports and isolation setup consume the absolute drive deadline too.
     if (phaseTimeLimit(null, timeoutMs, deadlineAt) === 0) {
@@ -392,6 +429,9 @@ export async function launchRole({
             },
           }
         : { webTools: !profile.router, sessionPersistence: "disabled" }),
+      // How many exact helper rules the launch added; the rules themselves
+      // hold paths and stay out of the record.
+      ...(allow.length ? { exactHelperRules: allow.length } : {}),
       source: "launch-arguments",
     };
     // What the host itself applied, kept apart from the selection: Codex

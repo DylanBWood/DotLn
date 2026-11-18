@@ -37,6 +37,7 @@ import {
 
 import { compilePlanRefuter } from "../src/loadouts/plan-refuter.js";
 import { compileMissionCheck } from "../src/loadouts/mission-check.js";
+import { KIT_MODELS, KIT_WORKERS } from "../src/worker-models.mjs";
 
 // Reproduced from entry source by WO-165/sibling-identities.mjs. The serial
 // review correction must not version these independently dispatched judges.
@@ -303,11 +304,14 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
   assert.equal(recompiled.semanticHash, compiled.semanticHash);
   assert.deepEqual(recompiled.compiledProgram, compiled.compiledProgram);
   assert.equal(compiled.compiledProgram.compilerVersion, "1");
+  // The compiled reviewer is the default Claude worker of the kit's one
+  // model table.
+  const reviewer = KIT_MODELS[KIT_WORKERS.default.claude];
   assert.deepEqual(compiled.reviewerRequirement, {
     harness: "claude-code",
-    model: "claude-opus-5-5",
-    displayModel: "Claude Opus 5.5",
-    effort: "xhigh",
+    model: reviewer.id,
+    displayModel: reviewer.description,
+    effort: reviewer.effort,
     substitutionPolicy: "different-reviewer-and-must-be-attested",
   });
   assert.deepEqual(compiled.executionBoundary, {

@@ -420,6 +420,10 @@ function overlayImplementation(root) {
     // The emit the integration leaves pending runs this entry point against
     // the working-tree libraries, so it travels with them (WO-257).
     "scripts/harness.mjs",
+    // The meta step renders the features page through this entry point,
+    // which imports by name from the working-tree features library; where a
+    // change drops or adds one of those names the two travel together.
+    "scripts/features.mjs",
   ])
     cpSync(join(source, path), join(root, path));
   // The fixture's front page holds only what the integration reads: the one

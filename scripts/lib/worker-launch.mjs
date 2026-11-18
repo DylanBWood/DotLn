@@ -18,6 +18,7 @@ import {
   workerPin,
   workerTable,
 } from "../../packages/skeleton/src/worker-catalog.mjs";
+import { installedUnequippedRules } from "./build-overlay.mjs";
 
 export {
   PROVIDERS,
@@ -91,14 +92,13 @@ export function resolveLaunch(root, name, choice = {}) {
 /** The standing rules a worker carries, as the one generated worker
  * definition states them. A provider whose spawn reads no definition is
  * given them at the head of its brief. */
-async function workerPreamble() {
+async function workerPreamble(root) {
   const { workerSpecification } =
     await import("../../packages/compiler/dist/src/harness.js");
-  return workerSpecification({
-    name: "dotln-worker",
-    model: "unread",
-    effort: "max",
-  }).prompt;
+  return workerSpecification(
+    { name: "dotln-worker", model: "unread", effort: "max" },
+    { unequippedRules: installedUnequippedRules(root) },
+  ).prompt;
 }
 
 /** The provider a name runs on where none is given: a worker bound to
@@ -132,7 +132,7 @@ export async function showWorker(root, name = "default", choice = {}) {
   const provider = PROVIDERS[resolved.provider];
   const own = session === null || session === resolved.provider;
   const launch = own
-    ? sessionLaunch(table, resolved, { preamble: await workerPreamble() })
+    ? sessionLaunch(table, resolved, { preamble: await workerPreamble(root) })
     : null;
   // Both commands are the one launch that was asked for: the name, and
   // the effort where one was given for it.

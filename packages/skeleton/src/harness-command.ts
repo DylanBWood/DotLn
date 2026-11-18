@@ -132,8 +132,10 @@ const literal = (value: string): ShellWord => ({
 /** A command's words with their expansion provenance, as the shell module's
  * word reader splits them; the program behind a wrapper is this module's to
  * say. */
-const shellWords = (source: string): ShellInvocation[] =>
-  readShellWords(source, invocationProgram);
+export const shellWords = (
+  source: string,
+  options?: { simpleLists?: boolean },
+): ShellInvocation[] => readShellWords(source, invocationProgram, options);
 
 /** Public token view for diagnostics; classification uses the provenance above. */
 export function shellInvocations(source: string): string[][] {
@@ -1848,7 +1850,13 @@ function executableInvocations(
   source: string,
   depth = 0,
   inheritedInput: readonly ShellWord[] = [],
-  options: { readonly screenEffects?: boolean } = {},
+  options: {
+    readonly screenEffects?: boolean;
+    /** Filled, for each returned invocation, with what feeds its standard
+     * input: the here-documents it reads, the words of the commands piped
+     * into it, and what a wrapping shell passes down to it. */
+    readonly inputOf?: Map<readonly ShellWord[], readonly string[]>;
+  } = {},
 ): ShellWord[][] {
   const screenEffects = options.screenEffects !== false;
   if (depth > 16)
@@ -1909,6 +1917,11 @@ function executableInvocations(
       !deniedInvocation(words)
     )
       refuseDeniedProgram([...input, ...floorOperands(words)]);
+    if (words.length)
+      options.inputOf?.set(
+        words,
+        input.map((word) => word.value),
+      );
     return words.length ? [words] : [];
   });
 }
@@ -2185,14 +2198,85 @@ const dataPrograms = new Set([
   "command",
 ]);
 
+// A credential file named anywhere in a text: a word by itself, a component
+// of a path, against a redirect's operator, inside quotes.
+const ENVIRONMENT_FILE = /(?<![A-Za-z0-9_.-])\.env(?![A-Za-z0-9_-])/;
+const NAMES_CREDENTIAL_FILE =
+  /(?<![A-Za-z0-9_.-])(?:\.env(?![A-Za-z0-9_-])|\.ssh(?![A-Za-z0-9_.-]))/;
+// The settings of a transport whose value is a file of its own.
+const TRANSPORT_OWN_SETTING =
+  /^(?:IdentityFile|CertificateFile|UserKnownHostsFile|GlobalKnownHostsFile|ControlPath)=/i;
+// The options that take a value, by program, as each one's manual page
+// lists them. They are read only to tell where the options a line opens
+// with end. An option listed here that a program took as a flag would let
+// that run go on past the first operand, so the list holds only letters
+// that take a value in all three, and the port's letter of each.
+const TRANSPORT_VALUE_OPTIONS: Readonly<Record<string, string>> = {
+  ssh: "ciFJloSp",
+  scp: "ciFJloSP",
+  sftp: "ciFJloSP",
+};
+/** Whether a transport's line names a credential file: anywhere in its own
+ * words, or in what feeds its standard input (the here-documents it reads,
+ * the commands piped into it, what a wrapping shell passes down). A file a
+ * copy names, a file redirected in however the redirect is written, a path
+ * in the batch or in the remote command are all names in those texts.
+ *
+ * One thing is passed over, and it is the one place the rule reads a
+ * position: a key or a configuration the transport is given as its own, the
+ * word after a lone `-i` or `-F`, or after a lone `-o` that sets one of its
+ * own files, among the options the line opens with and unless that word
+ * names an environment file. Those options end at `--` or at the first word
+ * that is no option and no listed option's value, because after that a
+ * program may read `-i` and the word after it as files to copy. Any other
+ * spelling of the transport's own key fails closed: in a cluster of flags,
+ * written against its option, or after an operand.
+ *
+ * What this does not see: a file reached without its name (a directory or
+ * a pattern that holds one, a name the shell expands) and the contents of
+ * a file the line names. */
+function transportNamesCredentials(
+  words: readonly ShellWord[],
+  input: readonly string[],
+): boolean {
+  const program = basename(words[0]?.value ?? "").toLowerCase();
+  const valued = TRANSPORT_VALUE_OPTIONS[program];
+  if (valued === undefined) return false;
+  if (input.some((text) => NAMES_CREDENTIAL_FILE.test(text))) return true;
+  let opening = true;
+  for (let index = 1; index < words.length; index++) {
+    const value = words[index]!.value;
+    if (opening && /^-[A-Za-z]$/.test(value) && valued.includes(value[1]!)) {
+      const next = words[index + 1]?.value ?? "";
+      const own =
+        /^-[iF]$/.test(value) ||
+        (value === "-o" && TRANSPORT_OWN_SETTING.test(next));
+      if ((own ? ENVIRONMENT_FILE : NAMES_CREDENTIAL_FILE).test(next))
+        return true;
+      index++;
+      continue;
+    }
+    if (value === "--" || !value.startsWith("-")) opening = false;
+    if (NAMES_CREDENTIAL_FILE.test(value)) return true;
+  }
+  return false;
+}
+
 export function invocationEffects(source: string): string[] {
-  return executableInvocations(source).flatMap((words) => {
+  const inputOf = new Map<readonly ShellWord[], readonly string[]>();
+  return executableInvocations(source, 0, [], { inputOf }).flatMap((words) => {
     const [program, ...args] = words.map((word) => word.value);
     if (!program) return [];
     if (program === "cd")
       throw new HarnessCommandRefused(SHELL_WORKING_DIRECTORY);
     const denied = deniedInvocation(words);
-    if (denied) return [denied];
+    if (denied)
+      // A transport's line that names a credential file is both effects,
+      // the credentials one first, so that a root which lowers the
+      // transport's stop still meets the other.
+      return transportNamesCredentials(words, inputOf.get(words) ?? [])
+        ? ["credentials.access", denied]
+        : [denied];
     if (
       ["claude", "codex"].includes(program) &&
       args.some((arg) =>

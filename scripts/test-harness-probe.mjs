@@ -39,8 +39,20 @@ import {
   identityRows,
 } from "./lib/agent-identity-probe.mjs";
 import { observe as observeIdentity } from "./fixtures/agent-identity-probe-hook.mjs";
+import {
+  KIT_MODELS,
+  KIT_WORKERS,
+} from "../packages/skeleton/src/worker-models.mjs";
 
 const repository = resolve(import.meta.dirname, "..");
+// What the kit's one model table launches for a worker on a provider: the
+// bound model's exact id, at the binding's effort or else the model's own.
+// Each probe launches the default worker.
+const kitLaunch = (worker, provider) => {
+  const binding = KIT_WORKERS[worker][provider];
+  const model = KIT_MODELS[binding.model ?? binding];
+  return { model: model.id, effort: binding.effort ?? model.effort };
+};
 
 test("agent identity probe refuses unrequested live work and does not infer unobserved capabilities", async (t) => {
   const before = process.env.DOTLN_LIVE_HARNESS;
@@ -991,14 +1003,12 @@ else {
     const launch = JSON.parse(readFileSync(launchPath, "utf8"));
     t.after(() => rmSync(launch.cwd, { recursive: true, force: true }));
     const record = JSON.parse(readFileSync(target, "utf8"));
-    assert.equal(
-      launch.args[launch.args.indexOf("--model") + 1],
-      "claude-opus-5-5",
-    );
-    assert.equal(launch.args[launch.args.indexOf("--effort") + 1], "xhigh");
+    const { model, effort } = kitLaunch("default", "claude");
+    assert.equal(launch.args[launch.args.indexOf("--model") + 1], model);
+    assert.equal(launch.args[launch.args.indexOf("--effort") + 1], effort);
     assert.deepEqual(record.actor, {
-      model: "claude-opus-5-5",
-      effort: "xhigh",
+      model,
+      effort,
       source: "launch-selector",
     });
     assert.equal(record.exitCode, 0);
@@ -1269,8 +1279,8 @@ else {
     const launch = JSON.parse(readFileSync(launchPath, "utf8"));
     t.after(() => rmSync(launch.cwd, { recursive: true, force: true }));
     const flag = (name) => launch.args[launch.args.indexOf(name) + 1];
-    assert.equal(flag("--model"), "claude-opus-5-5");
-    assert.equal(flag("--effort"), "xhigh");
+    assert.equal(flag("--model"), kitLaunch("default", "claude").model);
+    assert.equal(flag("--effort"), kitLaunch("default", "claude").effort);
     assert.equal(flag("--tools"), "Bash,Agent,TaskStop,TaskOutput");
     assert.equal(flag("--setting-sources"), "project");
     const settings = JSON.parse(
@@ -1575,9 +1585,9 @@ test("WO-044 the probe drives every Claude and Codex launch through stub harness
     timing: { idleSampleMs: 50, settleMs: 50 },
   });
   assert.equal(codex.length, 8);
-  for (const [records, model, effort, launch] of [
-    [claude, "claude-opus-5-5", "xhigh", "allowed-tools"],
-    [codex, "gpt-6.1-sol", "max", "workspace-write"],
+  for (const [records, { model, effort }, launch] of [
+    [claude, kitLaunch("default", "claude"), "allowed-tools"],
+    [codex, kitLaunch("default", "codex"), "workspace-write"],
   ]) {
     const record = JSON.parse(
       readFileSync(

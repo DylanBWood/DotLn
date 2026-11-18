@@ -1,6 +1,11 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { docPath, docRelative, loadConfig } from "./config.mjs";
+import {
+  declaredElections,
+  docPath,
+  docRelative,
+  loadConfig,
+} from "./config.mjs";
 import { readBuildOverlayFile } from "./build-overlay.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { markdownSection } from "./markdown-links.mjs";
@@ -9,6 +14,13 @@ import {
   featureRegistry,
   resolveFeatureId,
 } from "./feature-registry.mjs";
+import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  STOPS,
+  resolveStop,
+  stopLine,
+  stopSettable,
+} from "../../packages/skeleton/src/stops.mjs";
 
 export { featureAliases, featureRegistry, resolveFeatureId };
 
@@ -104,7 +116,15 @@ export const RETIRED_OVERLAY_TINKERER =
   "the build overlay's tinkerer-economy choice is retired: it was accepted with an advisory through kit release v0.118.0; elect features.tinkerer-economy in dotln.config.json and remove the overlay entry (npm run features -- list)";
 function refuseRetiredOverlay(root, config) {
   if (!config.build.overlay) return;
-  const { value: overlay } = readBuildOverlayFile(root, config.build.overlay);
+  // Read for the one retired id, without the kit's ids, which need a
+  // build: the root's kind is passed so that an instance's overlay is
+  // judged here as its other readers judge it.
+  const { value: overlay } = readBuildOverlayFile(
+    root,
+    config.build.overlay,
+    undefined,
+    { instance: isKitRoot(root) },
+  );
   if (
     [...(overlay.equip ?? []), ...(overlay.unequip ?? [])].includes(
       "tinkerer-economy",
@@ -228,11 +248,56 @@ export function readFeatureInventory(root) {
   });
 }
 
-export const notElectable = Object.freeze([
-  "The refusal classes in the generated harness contract",
-  "The single-writer reservation",
-  "The clean-room floor",
-]);
+/** Every stop of the table as this root answers it. A row is one of four
+ * kinds. A `stop` has a level here, set by the kit for the root's kind or by
+ * a line of the root's `stops` section, and names the line that changes it.
+ * A `switch` keeps a switch of its own and a `file` is set in a file of its
+ * own, each named in place of a line. A `command` is a lifecycle command's
+ * refusal, which no level changes, listed with its way forward.
+ * `unequipped` names the feedback units the root's build overlay leaves
+ * out, each with the overlay line that restores it: a unit that also
+ * refuses takes its refusal with it, so its stop reads `off`, set by the
+ * overlay, and a line of the stops section that asks a level of it is
+ * marked as having no effect. The caller reads the overlay, since the units
+ * are the compiled loadout's and this module loads without a build. */
+export function readStopInventory(root, { unequipped = {} } = {}) {
+  const config = loadConfig(root);
+  const stops = config.stops;
+  const elections = declaredElections(config);
+  const instance = isKitRoot(root);
+  return STOPS.map((row) => {
+    if (row.forward !== undefined) return { ...row, kind: "command" };
+    if (row.unit !== undefined && Object.hasOwn(unequipped, row.unit))
+      return {
+        ...row,
+        kind: "stop",
+        level: "off",
+        source: `the build overlay, which leaves out the unit ${row.unit}${Object.hasOwn(stops, row.id) ? "; this root's stops line for it has no effect" : ""}`,
+        line: unequipped[row.unit],
+      };
+    if (row.setBy !== undefined)
+      return { ...row, kind: "switch", source: row.setBy, line: row.setBy };
+    if (row.file !== undefined) {
+      // The file a stop is set in follows the root's own control root.
+      const file = docRelative(root, "control", row.control);
+      return { ...row, kind: "file", file, source: file, line: file };
+    }
+    const { level, source } = resolveStop(row.id, {
+      instance,
+      stops,
+      elections,
+    });
+    return {
+      ...row,
+      kind: "stop",
+      level,
+      source: source === "kit" ? "the kit" : source,
+      line: stopLine(row.id, level === "refuse" ? "advise" : "refuse"),
+    };
+  });
+}
+/** The settable stops of the table, for a caller that counts them. */
+export const settableStops = () => STOPS.filter(stopSettable);
 
 /** Only the template's known Secrets paragraph is generated. Custom floors are
  * not rewritten, and the caller admits this only for an exported instance. */

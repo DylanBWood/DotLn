@@ -18,7 +18,7 @@ no skill carries phase state or grants authority.
 | Reviewer (`final review`)                            | `@skills/dotln-reviewer/SKILL.md`      | §Goal-aligned decisions; selected order and cited sections; complete subject and numbered verification sequence; `package.json`; 08 §PRs and commits; current review/PR/release-note outputs                                                   |
 | Release close                                        | `@skills/dotln-release-close/SKILL.md` | §Goal-aligned decisions; selected order and cited sections; canonical final review, PR body and release notes                                                                                                                                  |
 | Planner                                              | `@skills/dotln-planner/SKILL.md`       | §Goal-aligned decisions; sequence file; this guide's planning section, and its ideation section for an `ideation:` entry; addressed candidates and source lookups                                                                                                                   |
-| Router (`drive: WO-NNN`)                             | `@skills/dotln-router/SKILL.md`        | Canonical status through `node scripts/drive.mjs status WO-NNN` and nothing else: no order, diff, report or worker transcript |
+| Router (`drive: WO-NNN`)                             | `@skills/dotln-router/SKILL.md`        | Canonical status through `node scripts/drive.mjs status WO-NNN` and, after a stop, the drive's own account through `node scripts/drive.mjs why WO-NNN`: no order, diff, report or worker transcript |
 | Refuter                                              | `@skills/dotln-refuter/SKILL.md`       | §Goal-aligned decisions supplies purpose; the canonical prompt from `npm run plan -- refute --direct` is the sole subject evidence. No map, ledger or prior receipt is a subject preread.                                                      |
 
 The generated `Read:` and `Read[role]:` directives are binding throughout the
@@ -181,9 +181,22 @@ records approval, then may resume in a fresh phase session. See the
 `drive: WO-NNN` selects the router in main and carries the authority of the
 lifecycle phrases it dispatches, including final-review publication and release
 close after the operator merges. It grants no merge authority. The router reads
-canonical status only, launches a fresh pinned phase worker in the recorded order
+canonical status, launches a fresh pinned phase worker in the recorded order
 worktree with exactly its lifecycle phrase, and reads status again when the worker
-ends. It reads no order, diff, report or worker narrative and holds no writer.
+ends. When a drive stops for anything but the merge or a release, the router
+also reads the drive's own account, `node scripts/drive.mjs why WO-NNN`, and
+answers the operator from it: what ended the last attempt, which call the host
+denied and who made it, what the kit's guard refused, whether the phase
+recorded its completion, what the worktree holds and the next step. The
+account is made of counts, fixed words and command shapes from the drive's
+record ([decision](../evidence/WO-287/decisions.md#wo-287-d031--parts-d-and-e-as-built-what-a-denial-keeps-a-helpers-denial-apart-from-the-workers-the-lifted-wait-the-account-and-its-command-the-routers-reading-of-it-and-the-one-case-for-a-driven-workers-helper)).
+
+The drive retains operation names only while it can determine their argument
+positions. A new attempt records which shape format it used. The public account
+shows placeholders for words from older formats that discarded the information
+needed to identify an operation. [Repair decision](../evidence/WO-287/decisions.md#wo-287-d074--mask-arguments-once-their-positions-are-uncertain)
+
+The router reads no order, diff, report or worker narrative and holds no writer.
 The measured Claude host uses separate print sessions because in-process workers
 did not load the target worktree's hooks. Its target workers explicitly dispatch
 through the qualified launchpad command; target tool hooks do not supply a
@@ -201,7 +214,17 @@ inside nested tool shells. Receipts report the launcher-selected version.
 Claude driven attempts also use fresh print sessions without persistence: the
 nested host comparison did not retain a resumable session after a successful
 exit. An interrupted phase receives the same phrase and canonical briefing in
-a fresh session. Codex
+a fresh session. A Claude phase starts with the host's wait for background
+work uncapped, since the host otherwise stops a print-mode run's background
+agents ten minutes after its last turn and a worker awaits reviewers longer
+than that; the phase's own time limit bounds the wait. A host's denial of a
+call the phase worker made ends the phase and stops the drive; a denial of a
+helper agent's call is recorded and the phase goes on. A Claude release-close
+phase starts with a narrow rule allowing the close's one helper command in
+its two exact spellings for the order being closed, since a host in its
+automatic-review mode reviews each shell command itself and declined that
+command after the kit's hook admitted it
+([decision](../evidence/WO-287/decisions.md#wo-287-d048--the-drive-could-not-finish-a-release-close-on-a-host-in-automatic-review-the-hosts-review-declined-the-one-helper-command-the-kits-hook-had-admitted-a-claude-release-close-phase-now-starts-with-a-narrow-rule-for-that-command-and-a-live-run-before-and-after-shows-the-stop-and-the-close)). Codex
 role and writer entry are explicit, while tool boundaries and per-spawner
 budgets remain role text where hooks are absent. Its native collaboration
 stream contributes only the observed minimum. A configured dollar limit
@@ -1287,6 +1310,29 @@ Neither command performs a lifecycle dispatch or claims a check passed.
 The agent still acts within the actual operator request and the host's tool
 permissions. These controls must be present in Claude's generated entry code
 and Codex's shared instructions, with a dependency-free local adapter.
+
+The override is the operator's last resort for pushing something through
+whatever state the repository is in, and no refusal names it as its route.
+Every stop is a row of the table of stops
+(`packages/skeleton/src/stops.mjs`), with an id and a class. A stop that a
+hook, a gate task or a bound's own admission holds has a level, which one
+line of the root's `stops` section sets
+([docs/KIT.md §Stops](../KIT.md#stops)), unless it keeps a switch of its
+own or is set in a file of its own. Four keep a switch: desktop control and
+plan-first, which a hook holds, and the starter update's request and the
+kit update's instance actions, which their commands hold. Two are set in a
+file: the refuse class of the private terms list, and the time limits.
+What a lifecycle command declines is a row too, with no level and with its
+way forward. A refusal that remains names its
+stop and that line, and where the line is written when the refusal covers
+the configuration file itself, as a planning branch's does. A stop's level
+is its owner's to change, and a session changes one only when its owner
+asks for it in that session. Both controls reach a registered target
+worktree's guards: its bundle holds one prompt hook, which records them for
+the session and imports nothing of the runtime, and each guard reads them
+ahead of every runtime import, as the launchpad's hooks do
+([the table](../evidence/WO-287/decisions.md#wo-287-d005--part-a-the-table-of-stops-as-built-its-rows-their-classes-and-what-has-no-line),
+[the hooks](../evidence/WO-287/decisions.md#wo-287-d006--part-a-what-a-hook-answers-at-each-level-in-the-launchpad-and-in-a-target-worktree)).
 
 **Candidate — immediate working-state recovery.** Operator override must be
 able to restore a usable working repository despite DotLn holds, locks,
@@ -3715,10 +3761,16 @@ historical baseline keeps its note.
 The exception is typed: `operatorQuote` carries `captureSha256` and
 `requestedIn`, the digest of the capture holding the operator's request to save
 that message, which a record the branch adds must name and the screen exempts
-for that capture alone; an instance that elects
-`features.verbatim-operator-words` turns the rule off, and both checks then
-advise instead of failing
+for that capture alone
 ([WO-259-D006](../evidence/WO-259/decisions.md#wo-259-d006)).
+
+Both checks are one stop, `verbatim-operator-words`, with a level as any
+record stop has: core refuses, and an exported instance advises until its
+owner sets it, naming a file once however many runs it holds. The election
+`features.verbatim-operator-words`, which was the rule's switch, still sets
+the level where a root makes it and writes no line for the stop: elected
+both checks advise, declined both refuse
+([decision](../evidence/WO-287/decisions.md#wo-287-d021--part-c-the-paraphrase-rules-stop-has-a-level-an-instance-is-told-once-a-file-and-the-election-that-was-its-switch-still-sets-it)).
 
 A document that moves keeps its bytes, and
 [`docs/control/document-moves.json`](../control/document-moves.json) names
@@ -5188,7 +5240,8 @@ and generated evidence, including fixtures, manifests and installed guidance.
   browser pane) without the instance's `features.desktop-control` election.
   That election is off by default. `true`, `false` and `{ "on": boolean,
   "note": "the operator's reason" }` are accepted in `dotln.config.json`;
-  unknown feature ids refuse by name. An election makes these tools
+  an unknown feature id refuses by name in core and is named in one
+  advisory and ignored in an exported instance. An election makes these tools
   admissible, but the operator must still explicitly request their use in
   the session. The permission hook reads the election at judgment time;
   `harness emit` writes the matching server, enable-tool and Skill deny
@@ -5196,7 +5249,14 @@ and generated evidence, including fixtures, manifests and installed guidance.
   settings. Re-emit after changing the election. Codex tool calls are
   unhooked and follow the same rule through the role text. The generated
   refusal count follows its list of classes
-  ([WO-251 decision](../evidence/WO-251/decisions.md#wo-251-d001)).
+  ([WO-251 decision](../evidence/WO-251/decisions.md#wo-251-d001)). Each of
+  the nine is a row of the table of stops and is answered at the level its
+  root gives it: core refuses on each, as this list says, and an exported
+  instance advises on those that guard the kit's own records, a host
+  property or a bound until its owner sets them; desktop control alone
+  keeps its own election and has no level
+  (§Operator recovery controls;
+  [decision](../evidence/WO-287/decisions.md#wo-287-d006--part-a-what-a-hook-answers-at-each-level-in-the-launchpad-and-in-a-target-worktree)).
 
   Verify a web surface through a browser the session launches or the
   project's browser tests. Follow product 03's perception hierarchy:
@@ -5384,9 +5444,14 @@ and generated evidence, including fixtures, manifests and installed guidance.
   records the completed tasks as a stopped row, which supplies no pass; a
   stop before any completion and errors in final identity, deadline parsing
   or index locking leave no row and displace nothing. Both lookups choose worktree executions first, across
-  checks. A row stands while each task's latest run supplies its result or
-  a pass that may be carried; integrity failures displace their executed
-  tasks. Identity errors (including symbolic aliases) and unreadable consulted
+  checks. A complete row stands while each task it names has, as its latest
+  run at the identity, that row's own result or a later one that a selection
+  accepted: a pass, a failure whose stop advised, or a task whose stop was
+  off. An advised or off result keeps its row
+  standing for the completion that consumes it and is never carried into a
+  later selection, which runs the task again
+  ([decision](../evidence/WO-287/decisions.md#wo-287-d061--repair-of-f1-a-selection-that-succeeded-with-advised-or-off-tasks-stands-for-the-completion-that-consumes-it-and-a-later-selection-still-runs-those-tasks-again));
+  integrity failures displace their executed tasks. Identity errors (including symbolic aliases) and unreadable consulted
   main indexes retain the storage-unavailable contract: `Gate index unavailable`
   names the error, leaving an actor-stated unproved claim with no product gate.
   Passing tasks may compose after an unchanged-code failure; partial results

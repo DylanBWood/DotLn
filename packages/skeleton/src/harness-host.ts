@@ -27,6 +27,13 @@ import {
   timeLimitsDigest,
 } from "./time-limits.mjs";
 import {
+  deniedEffectStop,
+  stopAdvisory,
+  stopLevelIn,
+  stopRefusal,
+  stopRow,
+} from "./stops.mjs";
+import {
   withWriterRegistration,
   zombieProcessState,
 } from "./writer-teardown.mjs";
@@ -103,7 +110,7 @@ import {
   type AuthorityGrant,
 } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
-import { personalFeedback } from "./loadouts/feedback.js";
+import { personalFeedbackUnits } from "./loadouts/feedback.js";
 import { qualityPassGuidance } from "./document-quality.js";
 import {
   HarnessCommandRefused,
@@ -748,6 +755,9 @@ interface HarnessByteRead {
 interface HookConfig {
   /** The instance's worker and model names, on the session hook. */
   readonly workerNames?: readonly string[];
+  /** The author's shared rules the build leaves out, on the session hook,
+   * where it leaves any out. */
+  readonly unequippedRules?: readonly string[];
   readonly outsideWriteGrants?: readonly RoleOutsideWriteGrants[];
   readonly grants?: readonly AuthorityGrant[];
   readonly compilerPackageVersion: string;
@@ -761,6 +771,10 @@ interface HookConfig {
       readonly hash: string;
     }[];
   };
+  /** The stops this root does not refuse, by id, as the emit resolved them
+   * from the root's kind and its `stops` section. A stop the map leaves out
+   * refuses, so a hook that carries no map denies as it always did. */
+  readonly stops?: Readonly<Record<string, string>>;
   readonly event: HostHookEvent;
   readonly kind:
     | "feedback"
@@ -1107,16 +1121,27 @@ const dispatchInvocation = (
 /**
  * The dispatch is judged by the writer unit the installed writer hook
  * carries. The host compiles that unit from the loadout inventory it ships
- * with and refuses when the inventory's compiled policy is not the one the
- * emitted bundle's manifest recorded, so an inventory that drifted from the
- * bundle cannot admit a dispatch. A bundle without the unit has no writer
+ * with, less the units the bundle's manifest records as left out, and
+ * refuses when that compiled policy is not the one the manifest recorded,
+ * so an inventory that drifted from the bundle cannot admit a dispatch. A
+ * bundle without the unit (a build whose owner left it out) has no writer
  * boundary on the tool path either, so the dispatch takes none.
  */
 export function dispatchAdmissionPolicy(root: string): CompiledFeedback | null {
-  const program = personalFeedback();
   const manifest = readJson<{
-    profiles?: readonly { feedbackPolicyHash?: string }[];
+    profiles?: readonly {
+      feedbackPolicyHash?: string;
+      unequipped?: { units?: readonly string[] };
+    }[];
   } | null>(contained(root, ".claude/harness-manifest.json"), null);
+  const leftOut = new Set(
+    (manifest?.profiles ?? []).flatMap((profile) =>
+      Array.isArray(profile.unequipped?.units) ? profile.unequipped.units : [],
+    ),
+  );
+  const program = compileFeedbackUnits(
+    personalFeedbackUnits.filter((unit) => !leftOut.has(unit.unitId)),
+  );
   const recorded = manifest?.profiles?.map(
     (profile) => profile.feedbackPolicyHash,
   );
@@ -1407,6 +1432,10 @@ function recordDispatch(
   tools: HookConfig["tools"],
   session: HarnessSession,
   boundary: typeof feedbackBoundary,
+  // The two stops a dispatch can meet answer at this root's levels; what
+  // the lifecycle command itself declines is reported as it always was.
+  config: StopConfig = { event: "UserPromptSubmit" },
+  advised: AdvisedStops = [],
 ):
   | { context: string; receipt: string; control: ControlView }
   | { refusal: string }
@@ -1419,14 +1448,18 @@ function recordDispatch(
     const invocation = dispatchInvocation(input, dispatch.action);
     const gate = activeGateWriteRefusal(invocation, root, tools, session);
     if (gate) {
-      record(root, input, {
-        dispatch: {
-          action: dispatch.action,
-          recorded: false,
-          refused: "active-gate",
-        },
-      });
-      return { refusal: gate };
+      const level = stopLevelIn(config.stops, "live-gate");
+      if (level === "refuse") {
+        record(root, input, {
+          dispatch: {
+            action: dispatch.action,
+            recorded: false,
+            refused: "active-gate",
+          },
+        });
+        return { refusal: stopRefusal("live-gate", gate, { hook: true }) };
+      }
+      if (level === "advise") advised.push(stopAdvisory("live-gate", gate));
     }
     const policy = dispatchAdmissionPolicy(root);
     const facts = policy
@@ -1448,16 +1481,24 @@ function recordDispatch(
       run = policy && facts ? boundary(policy, facts, lifecycle) : lifecycle();
     } catch (error) {
       if (!(error instanceof FeedbackRefused) || !facts) throw error;
-      record(root, input, {
-        dispatch: {
-          action: dispatch.action,
-          recorded: false,
-          refused: "writer-isolation",
-        },
-      });
-      return {
-        refusal: `DOTLN_HARNESS_REFUSED: ${feedbackRefusalReason(error, [facts], root)}`,
-      };
+      const reason = `DOTLN_HARNESS_REFUSED: ${feedbackRefusalReason(error, [facts], root)}`;
+      const level = stopLevelIn(config.stops, "writer-reservation");
+      if (level === "refuse") {
+        record(root, input, {
+          dispatch: {
+            action: dispatch.action,
+            recorded: false,
+            refused: "writer-isolation",
+          },
+        });
+        return {
+          refusal: stopRefusal("writer-reservation", reason, { hook: true }),
+        };
+      }
+      // The boundary refused before the command ran, so it runs once here.
+      if (level === "advise")
+        advised.push(stopAdvisory("writer-reservation", reason));
+      run = lifecycle();
     }
     const output = `${run.stdout ?? ""}${run.stderr ?? ""}`.trim();
     record(root, input, {
@@ -2486,9 +2527,8 @@ function ghForkRefusal(
   const named = ({ qualified, selector }: RemoteRepository) =>
     `-R ${selector}${selector === qualified ? "" : " (on gh's default host; if this alias is another server, name that server instead)"}`;
   const opening = `DOTLN_HARNESS_REFUSED: ${command} names no repository in a clone`;
-  const closing = "Use operator override: for authorized recovery.";
   if (!origin || !ghCanAddress(origin))
-    return `${opening} whose origin${origin ? ` (${origin.qualified})` : ""} is no repository gh can address and whose gh default is unset, so gh would reach upstream (${upstream.qualified}) without saying so (WO-246). If upstream is what you mean, name it with ${named(upstream)}. ${closing}`;
+    return `${opening} whose origin${origin ? ` (${origin.qualified})` : ""} is no repository gh can address and whose gh default is unset, so gh would reach upstream (${upstream.qualified}) without saying so (WO-246). If upstream is what you mean, name it with ${named(upstream)}.`;
   const parent =
     upstream.selector.toLowerCase() === origin.selector.toLowerCase()
       ? ""
@@ -2497,7 +2537,7 @@ function ghForkRefusal(
     upstream.host === origin.host
       ? ", or set this clone's default once with gh repo set-default origin"
       : "";
-  return `${opening} whose origin (${origin.qualified}) and upstream (${upstream.qualified}) differ and whose gh default is unset, so gh would reach upstream without saying so (WO-246). Name the repository with ${named(origin)}${parent}${setDefault}. ${closing}`;
+  return `${opening} whose origin (${origin.qualified}) and upstream (${upstream.qualified}) differ and whose gh default is unset, so gh would reach upstream without saying so (WO-246). Name the repository with ${named(origin)}${parent}${setDefault}.`;
 }
 /** A pull-request or issue command a fork's clone would send to its parent
  * without saying so. A session's other gh forms and a program that calls gh
@@ -5137,7 +5177,8 @@ function routerDriverCommand(
   )
     return false;
   const args = words.slice(2);
-  if (args[0] === "status") {
+  // Status and the account of the last drive read; neither launches.
+  if (args[0] === "status" || args[0] === "why") {
     if (launchOnly) return false;
     args.shift();
   }
@@ -5806,6 +5847,59 @@ export function permissionEffect(
     ) ?? (effects.includes("lifecycle.run") ? "lifecycle.run" : "shell.run")
   );
 }
+/** Every effect of a call that an authority judges. A shell line may hold
+ * several (`ssh host; cat .env` is a transport and a credentials read), and
+ * a patch one for each target; `permissionEffect` returns the first, which
+ * is enough where the first denial ends the judgment and not where a root
+ * lowers one stop and keeps another. */
+export function permissionEffects(
+  input: HarnessInput,
+  root: string,
+  tools: HookConfig["tools"] = harnessToolEffects,
+  outsideEffect?: string,
+): readonly string[] {
+  const first = permissionEffect(input, root, tools, outsideEffect);
+  const args = input.tool_input ?? {};
+  const tool = tools?.[input.tool_name ?? ""];
+  if (
+    tool === "write" &&
+    input.tool_name === "apply_patch" &&
+    typeof args.patch === "string" &&
+    typeof args.file_path !== "string" &&
+    typeof args.notebook_path !== "string"
+  ) {
+    const each = (patchWriteTargets(args.patch) ?? []).map((target) =>
+      permissionEffect(
+        { ...input, tool_input: { file_path: target.path } },
+        root,
+        tools,
+        outsideEffect,
+      ),
+    );
+    const named = [
+      ...new Set(each.filter((effect) => effect !== "repo.write")),
+    ];
+    return named.length ? named : [first];
+  }
+  const command = typeof args.command === "string" ? args.command : null;
+  if (
+    tool !== "shell" ||
+    command === null ||
+    first === "desktop.control" ||
+    outputReadCommand(command) ||
+    metadataCommand(command)
+  )
+    return [first];
+  const named = [
+    ...new Set(
+      invocationEffects(command).filter(
+        (effect) =>
+          !["shell.run", "lifecycle.run", "repo.read"].includes(effect),
+      ),
+    ),
+  ];
+  return named.length ? named : [first];
+}
 /**
  * A refused Stop is reported once. Claude then re-enters Stop with
  * `stop_hook_active`; refusing again would loop until the operator interrupts,
@@ -5847,6 +5941,69 @@ const protocolRefusal = (event: HostHookEvent, reason: string) =>
           ? {}
           : protocolAdvisory(reason);
 
+/** The stops a hook met and did not refuse, each in the words it advises
+ * with. A stop at `advise` adds its line and the judgment goes on, so a
+ * lowered stop never hides one that still refuses; the lines join the
+ * response the call goes on with. */
+type AdvisedStops = string[];
+type StopConfig = Pick<HookConfig, "event" | "stops">;
+/** One stop's answer where a hook's judgment goes on after it: the host's
+ * denial at `refuse`, naming the stop and the line that lowers it; no answer
+ * at `advise`, where the stop's line is kept for the response; none at
+ * `off`. */
+function answerStop(
+  config: StopConfig,
+  advised: AdvisedStops,
+  stop: string,
+  reason: string,
+  options: { covered?: string } = {},
+): Record<string, unknown> | null {
+  const level = stopLevelIn(config.stops, stop);
+  if (level === "refuse")
+    return protocolRefusal(
+      config.event,
+      stopRefusal(stop, reason, { hook: true, ...options }),
+    );
+  if (level === "advise") advised.push(stopAdvisory(stop, reason));
+  return null;
+}
+/** One stop's whole answer where it is the hook's only judgment. */
+const stopResponse = (
+  config: StopConfig,
+  stop: string,
+  reason: string,
+): Record<string, unknown> => {
+  const advised: AdvisedStops = [];
+  return (
+    answerStop(config, advised, stop, reason) ??
+    (advised[0] === undefined ? {} : protocolAdvisory(advised[0]))
+  );
+};
+const hookRefused = (response: Record<string, unknown>): boolean =>
+  (response.hookSpecificOutput as { permissionDecision?: string } | undefined)
+    ?.permissionDecision === "deny" || response.decision === "block";
+/** The response a call goes on with, carrying the lines of the stops that
+ * advised. A denial stands as it is. */
+function withAdvisedStops(
+  response: Record<string, unknown>,
+  advised: AdvisedStops,
+): Record<string, unknown> {
+  if (!advised.length || hookRefused(response)) return response;
+  return {
+    ...response,
+    systemMessage: [
+      ...advised.map((line) => protocolAdvisory(line).systemMessage),
+      ...(typeof response.systemMessage === "string" && response.systemMessage
+        ? [response.systemMessage]
+        : []),
+    ].join("\n"),
+  };
+}
+/** Where a planning branch's refusal sends the line that lowers it: the
+ * refusal covers the configuration file itself on that branch. */
+const PLANNING_COVERED =
+  "written on main: on a planning branch this stop covers that file too";
+
 /**
  * A worker hands back with nothing of its own running. Its stop is refused
  * once while a background task it started is live, naming each task and the
@@ -5864,6 +6021,7 @@ function workerStopJudgment(
   root: string,
   input: HarnessInput,
   context: { workOrder: string | null; phase: string },
+  config: StopConfig,
 ): Record<string, unknown> {
   if (input.hook_event_name !== "SubagentStop" || !input.agent_id) return {};
   const live = (input.background_tasks ?? []).filter(
@@ -5909,7 +6067,9 @@ function workerStopJudgment(
     };
   });
   const own = tasks.filter((task) => task.owner === "worker");
-  const refused = own.length > 0 && !reentry;
+  const met = own.length > 0 && !reentry;
+  const level = stopLevelIn(config.stops, "worker-tasks");
+  const refused = met && level === "refuse";
   // The parent's journal, also for a lifecycle worker that keeps its own.
   const journal = join(
     harnessStateDirectory(root),
@@ -5939,11 +6099,14 @@ function workerStopJudgment(
     })}\n`,
     { mode: 0o600 },
   );
-  if (!refused) return {};
-  return {
-    decision: "block",
-    reason: `DOTLN_WORKER_TASKS_RUNNING: this worker started ${own.length === 1 ? "a background task that is" : `${own.length} background tasks that are`} still running: ${own.map((task) => `${task.type} ${task.id}`).join(", ")}. Stop ${own.length === 1 ? "it" : "each"} with the host's task-stop tool (TaskStop with that task id), then hand back; a worker hands back with nothing of its own running.`,
-  };
+  if (!met || level === "off") return {};
+  const reason = `DOTLN_WORKER_TASKS_RUNNING: this worker started ${own.length === 1 ? "a background task that is" : `${own.length} background tasks that are`} still running: ${own.map((task) => `${task.type} ${task.id}`).join(", ")}. Stop ${own.length === 1 ? "it" : "each"} with the host's task-stop tool (TaskStop with that task id), then hand back; a worker hands back with nothing of its own running.`;
+  return refused
+    ? {
+        decision: "block",
+        reason: stopRefusal("worker-tasks", reason, { hook: true }),
+      }
+    : protocolAdvisory(stopAdvisory("worker-tasks", reason));
 }
 
 /** Recovery is advisory: the host retains its own sandbox and approval. */
@@ -6072,7 +6235,7 @@ function planningWriteRefusal(
       /^[^/\\]+\.md$/i.test(local)
     )
       continue;
-    return `DOTLN_HARNESS_REFUSED: planning branch write to ${path} (repository path ${local || "."}) is outside docs/ and root Markdown (WO-135). Use operator override: for authorized recovery.`;
+    return `DOTLN_HARNESS_REFUSED: planning branch write to ${path} (repository path ${local || "."}) is outside docs/ and root Markdown (WO-135).`;
   }
   return null;
 }
@@ -6331,10 +6494,23 @@ function planFirstWriteResponse(
     elected = planFirstElected(root);
   } catch (error) {
     // The lifecycle's reader refused the election: say why, in its words,
-    // rather than read a malformed value as off.
+    // rather than read a malformed value as off. What no election governs
+    // is still admitted: a read, and a call whose destinations cannot be
+    // named, need no approval state, and refusing them would leave the
+    // session unable to read or repair the file at fault.
+    let governed = false;
+    try {
+      const known = knownWriteDestinations(input, root, config.tools, {
+        directory: input.cwd,
+      });
+      governed = known !== null && [...known.destinations].length > 0;
+    } catch {
+      // Nothing of the call can be named.
+    }
+    if (!governed) return null;
     return protocolRefusal(
       config.event,
-      `DOTLN_PLAN_FIRST_REFUSED: the plan-first election cannot be read: ${(error instanceof Error ? error.message : String(error)).replace(/[\u0000-\u001f\u007f]+/g, " ")}`,
+      `DOTLN_PLAN_FIRST_REFUSED: the plan-first election cannot be read: ${(error instanceof Error ? error.message : String(error)).replace(/[\u0000-\u001f\u007f]+/g, " ")}. Reads, and commands whose destinations this guard cannot name, stay admitted, so the file at fault can be read and repaired.`,
     );
   }
   if (!elected) return null;
@@ -6375,6 +6551,7 @@ function outsideWriteResponse(
   input: HarnessInput,
   root: string,
   moved = false,
+  advised: AdvisedStops = [],
 ): { response?: Record<string, unknown>; effect?: string } {
   if (input.hook_event_name !== "PreToolUse") return {};
   // Every boundary still judges, but only the permission hook owns the row.
@@ -6536,7 +6713,12 @@ function outsideWriteResponse(
     observe({
       role: session.role ?? "unknown",
       destination: destination.physical,
-      status: grant ? "granted" : "refused",
+      // Without a grant the write meets its stop, at the stop's level.
+      status: grant
+        ? "granted"
+        : { refuse: "refused", advise: "advised", off: "off" }[
+            stopLevelIn(config.stops, "outside-write")
+          ],
       ...(grant
         ? {
             kind: grant.kind,
@@ -6546,13 +6728,16 @@ function outsideWriteResponse(
           }
         : {}),
     });
-    if (!grant)
-      return {
-        response: protocolRefusal(
-          config.event,
-          `DOTLN_HARNESS_REFUSED: outside-project write to ${destination.path} (physical destination ${destination.physical}) lacks an equipped outside-write grant for role ${session.role ?? "unknown"} (WO-144).${withheld ? ` Granted root ${withheld.path} grants nothing: ${withheld.cause} (WO-168).` : ""}${orderRootsCause ? ` Granted root order-worktree grants nothing: ${orderRootsCause}.` : ""} Use operator override: for authorized recovery.`,
-        ),
-      };
+    if (!grant) {
+      const response = answerStop(
+        config,
+        advised,
+        "outside-write",
+        `DOTLN_HARNESS_REFUSED: outside-project write to ${destination.path} (physical destination ${destination.physical}) lacks an equipped outside-write grant for role ${session.role ?? "unknown"} (WO-144).${withheld ? ` Granted root ${withheld.path} grants nothing: ${withheld.cause} (WO-168).` : ""}${orderRootsCause ? ` Granted root order-worktree grants nothing: ${orderRootsCause}.` : ""}`,
+      );
+      if (response) return { response };
+      continue;
+    }
     const tools: HookConfig["tools"] = config.tools ?? harnessToolEffects;
     if (tools[input.tool_name ?? ""] === "write")
       effect = outsideWriteEffect(grant);
@@ -6768,6 +6953,10 @@ function assertHarnessRuntime(
       throw new Error("pins-differ: pinned runtime bytes differ");
   }
 }
+/** A hook's whole judgment. Each stop it meets answers at the level this
+ * root gives it; the lines of those that advised are collected in `advised`
+ * and joined to the response the call goes on with. A caller that passes
+ * its own list also holds those lines when the judgment throws. */
 export async function evaluateHarnessHook(
   config: HookConfig,
   input: HarnessInput,
@@ -6775,6 +6964,20 @@ export async function evaluateHarnessHook(
   boundary: typeof feedbackBoundary,
   // WO-144: why the session's directory is not this worktree's root, if so.
   moved?: unknown,
+  advised: AdvisedStops = [],
+): Promise<Record<string, unknown>> {
+  return withAdvisedStops(
+    await judgeHarnessHook(config, input, root, boundary, moved, advised),
+    advised,
+  );
+}
+async function judgeHarnessHook(
+  config: HookConfig,
+  input: HarnessInput,
+  root: string,
+  boundary: typeof feedbackBoundary,
+  moved: unknown,
+  advised: AdvisedStops,
 ): Promise<Record<string, unknown>> {
   if (config.event === "SessionStart") {
     const { snapshot, ...built } = config.runtime;
@@ -6799,12 +7002,20 @@ export async function evaluateHarnessHook(
       ? ghRepositoryJudgment(input, config.tools)
       : null;
   if (ghRepository?.refusal) {
-    try {
-      record(root, input, { ghRepositoryRefused: ghRepository.command });
-    } catch {
-      /* Observation cannot change the refusal. */
+    const denied = answerStop(
+      config,
+      advised,
+      "gh-repository",
+      ghRepository.refusal,
+    );
+    if (denied) {
+      try {
+        record(root, input, { ghRepositoryRefused: ghRepository.command });
+      } catch {
+        /* Observation cannot change the refusal. */
+      }
+      return denied;
     }
-    return protocolRefusal(config.event, ghRepository.refusal);
   }
   const planFirst =
     config.kind === "permission"
@@ -6819,6 +7030,7 @@ export async function evaluateHarnessHook(
       input,
       root,
       moved !== undefined,
+      advised,
     );
     outside = judgment.response ?? null;
     outsideEffect = judgment.effect;
@@ -6847,6 +7059,9 @@ export async function evaluateHarnessHook(
   if (moved !== undefined) {
     if (outsideDenied) return outside!;
     if (desktop) return desktop;
+    // A stop that advised here has said what it found; the moved directory
+    // is then no failure to report in its place.
+    if (advised.length) return {};
     throw moved;
   }
   // Grant failure must not skip any existing refusal. Conversely an observer
@@ -6861,6 +7076,7 @@ export async function evaluateHarnessHook(
       outsideEffect,
       desktop,
       ghRepository?.advisory,
+      advised,
     );
   } catch (error) {
     if (outsideDenied) return outside!;
@@ -6882,6 +7098,7 @@ async function evaluateExistingHarnessHook(
   outsideEffect?: string,
   desktop: Record<string, unknown> | null = null,
   ghAdvisory?: string,
+  advised: AdvisedStops = [],
 ): Promise<Record<string, unknown>> {
   if (
     config.event === "SessionStart" &&
@@ -6933,6 +7150,7 @@ async function evaluateExistingHarnessHook(
       root,
       input,
       observationContext(parent),
+      config,
     );
     // A helper's actor is its spawner's, whose reservation is not its to
     // release. A lifecycle worker's reservation ends with the stop the host
@@ -6976,9 +7194,21 @@ async function evaluateExistingHarnessHook(
     config.tools,
     session,
   );
-  if (gateRefusal) return protocolRefusal(config.event, gateRefusal);
+  if (gateRefusal) {
+    const denied = answerStop(config, advised, "live-gate", gateRefusal);
+    if (denied) return denied;
+  }
   const planningRefusal = planningWriteRefusal(input, root, config.tools);
-  if (planningRefusal) return protocolRefusal(config.event, planningRefusal);
+  if (planningRefusal) {
+    const denied = answerStop(
+      config,
+      advised,
+      "planning-branch",
+      planningRefusal,
+      { covered: PLANNING_COVERED },
+    );
+    if (denied) return denied;
+  }
   const correctionPath = join(
     harnessStateDirectory(root),
     `${sessionKey(input)}.correction.json`,
@@ -7063,6 +7293,8 @@ async function evaluateExistingHarnessHook(
             config.tools,
             session,
             boundary,
+            config,
+            advised,
           );
       if (dispatched && "refusal" in dispatched)
         return protocolRefusal(config.event, dispatched.refusal);
@@ -7208,7 +7440,10 @@ async function evaluateExistingHarnessHook(
         : undefined,
       // An unprefixed message that ends in a question mark is answered and
       // changes nothing by itself; a request inside it is still a request.
+      // The context is the question rule's own; a build that leaves the
+      // rule out of its roots gives none.
       input.hook_event_name === "UserPromptSubmit" &&
+      !config.unequippedRules?.includes("question-pathways") &&
       unprefixedQuestion(input.prompt)
         ? OPERATOR_QUESTION_CONTEXT
         : undefined,
@@ -7444,11 +7679,15 @@ async function evaluateExistingHarnessHook(
   }
   if (config.kind === "permission") {
     if (!config.envelope) throw new Error("Missing compiled authority");
-    if (session.role === "router" && session.routerLaunchRefused)
-      return protocolRefusal(
-        config.event,
+    if (session.role === "router" && session.routerLaunchRefused) {
+      const denied = answerStop(
+        config,
+        advised,
+        "router",
         "DOTLN_ROUTER_LAUNCH_REFUSED: the host denied this router's launcher; stop until a new operator drive phrase.",
       );
+      if (denied) return denied;
+    }
     const spawn = config.tools?.[input.tool_name ?? ""] === "spawn";
     const phraseAgent = routerPhrases[String(input.tool_input?.prompt ?? "")];
     if (
@@ -7456,11 +7695,15 @@ async function evaluateExistingHarnessHook(
       !input.agent_id &&
       session.role === "router" &&
       (!phraseAgent || phraseAgent !== input.tool_input?.subagent_type)
-    )
-      return protocolRefusal(
-        config.event,
+    ) {
+      const denied = answerStop(
+        config,
+        advised,
+        "router",
         "DOTLN_ROUTER_SPAWN_REFUSED: a router worker receives exactly one lifecycle phrase and the agent type that phrase names; select the order by its recorded working directory.",
       );
+      if (denied) return denied;
+    }
     if (session.role === "router" && !input.agent_id) {
       const tool = config.tools?.[input.tool_name ?? ""];
       const command = String(
@@ -7472,19 +7715,31 @@ async function evaluateExistingHarnessHook(
           !listedRead(root, command) &&
           !routerDriverCommand(root, command) &&
           !managedUsageCommand(input, session))
-      )
-        return protocolRefusal(
-          config.event,
+      ) {
+        const denied = answerStop(
+          config,
+          advised,
+          "router",
           "DOTLN_ROUTER_WRITE_REFUSED: a router edits nothing and runs only reads, its driver and its usage command; its phase workers make every change.",
         );
+        if (denied) return denied;
+      }
     }
     // A review or refutation worker probes with single tests: a gate it
     // started would hold the worktree's live-gate refusal against the session
     // that launched it for the gate's whole run.
     const workerGate = reviewWorkerGate(input, config.tools);
     if (workerGate) {
-      record(root, input, { workerGateRefused: workerGate });
-      return protocolRefusal(config.event, workerGateRefusal(workerGate));
+      const denied = answerStop(
+        config,
+        advised,
+        "worker-gate",
+        workerGateRefusal(workerGate),
+      );
+      if (denied) {
+        record(root, input, { workerGateRefused: workerGate });
+        return denied;
+      }
     }
     if (ghAdvisory) record(root, input, { advisory: ghAdvisory });
     // A driven worker's helper reviews beside it; only the worker changes the
@@ -7503,11 +7758,15 @@ async function evaluateExistingHarnessHook(
               )
             )
           : tool === "shell" && !helperShellRead(input, root, drivenLane)
-      )
-        return protocolRefusal(
-          config.event,
+      ) {
+        const denied = answerStop(
+          config,
+          advised,
+          "driven-helper",
           `DOTLN_HARNESS_REFUSED: ${drivenHelperWrites}`,
         );
+        if (denied) return denied;
+      }
     }
     // Every use counts: a launch, a re-task of an agent and each worker a
     // kit command launches.
@@ -7520,36 +7779,50 @@ async function evaluateExistingHarnessHook(
           await dispatchBounds(root);
         const standing = dispatchStanding(root, { session: input.session_id });
         if (standing.state === "exceeded") {
+          // The stop is recorded where the bound stopped the work: a bound
+          // that advises stops nothing.
           let recording = "";
-          try {
-            recordBoundStop(root, standing, "hook");
-          } catch (error) {
-            recording = ` Stop record unavailable: ${error instanceof Error ? error.message : String(error)}.`;
-          }
-          return protocolRefusal(
-            config.event,
+          if (stopLevelIn(config.stops, "dispatch-bound") === "refuse")
+            try {
+              recordBoundStop(root, standing, "hook");
+            } catch (error) {
+              recording = ` Stop record unavailable: ${error instanceof Error ? error.message : String(error)}.`;
+            }
+          const denied = answerStop(
+            config,
+            advised,
+            "dispatch-bound",
             dispatchBoundMessage(standing) + recording,
           );
+          if (denied) return denied;
         }
       } catch (error) {
         boundAdvisory = `DotLn advisory: dispatch standing unavailable: ${error instanceof Error ? error.message : String(error)}; existing judgments remain active.`;
       }
     }
+    // A cap whose stop advises still counts the use it lets through.
     const admission =
       startsWorker || input.agent_id
-        ? admitSubagentTool(
-            root,
-            harnessStateDirectory(root),
-            input,
-            spawn,
-            use,
-          )
+        ? admitSubagentTool(root, harnessStateDirectory(root), input, spawn, {
+            ...use,
+            enforce: stopLevelIn(config.stops, "worker-cap") === "refuse",
+          })
         : undefined;
-    if (admission?.refusal)
-      return protocolRefusal(config.event, admission.refusal);
+    const overCap = admission?.refusal ?? admission?.exceeded;
+    if (overCap) {
+      const denied = answerStop(config, advised, "worker-cap", overCap);
+      if (denied) return denied;
+    }
     // Charged last, so a use refused above costs the drive nothing.
-    const driven = admitDrivenTool(input, spawn, use);
-    if (driven?.refusal) return protocolRefusal(config.event, driven.refusal);
+    const driven = admitDrivenTool(input, spawn, {
+      ...use,
+      enforce: stopLevelIn(config.stops, "driven-budget") === "refuse",
+    });
+    const overBudget = driven?.refusal ?? driven?.exceeded;
+    if (overBudget) {
+      const denied = answerStop(config, advised, "driven-budget", overBudget);
+      if (denied) return denied;
+    }
     const liveGates = startsWorker ? activeGateRuns(root) : [];
     const gateAdvisory = liveGates.length
       ? `DotLn advisory: ${spawn ? "spawn" : use.retask ? "re-task" : "kit launch"} admitted during live gate ${liveGates.map((run) => `${run.runId} (${run.kind ?? "unknown"})`).join(", ")}; probes under node, npm and harness bounded will be refused until it ends.`
@@ -7712,7 +7985,12 @@ async function evaluateExistingHarnessHook(
     );
     const reason = feedbackRefusalReason(error, facts, root);
     return foreignWriter
-      ? protocolRefusal(config.event, `DOTLN_HARNESS_REFUSED: ${reason}`)
+      ? (answerStop(
+          config,
+          advised,
+          "writer-reservation",
+          `DOTLN_HARNESS_REFUSED: ${reason}`,
+        ) ?? {})
       : protocolAdvisory(reason);
   }
 }
@@ -7996,7 +8274,10 @@ export async function runHarnessHook(
   const inputRefusal = (reason: string) =>
     overrideExit
       ? overrideAdvisory(overrideExit, reason)
-      : protocolRefusal(config.event, reason);
+      : stopResponse(config, "hook-input", reason);
+  // The stops this judgment met and did not refuse, kept here so that their
+  // lines are shown also where the judgment fails after one advised.
+  const advised: AdvisedStops = [];
   try {
     // Hook input arrives on a pipe. Drain it through the event loop: a traced
     // synchronous fd-0 read stalled before evaluation under Node 22 on macOS.
@@ -8064,7 +8345,14 @@ export async function runHarnessHook(
             "the session's directory is not this hook's worktree",
           )
         : recordOperatorOverride(config, input, root, boundary, overrideExit)
-      : await evaluateHarnessHook(config, input, root, boundary, moved);
+      : await evaluateHarnessHook(
+          config,
+          input,
+          root,
+          boundary,
+          moved,
+          advised,
+        );
   } catch (error) {
     reasonClass =
       error instanceof HarnessObserverInput
@@ -8102,9 +8390,7 @@ export async function runHarnessHook(
       quietAdvisory = protocolAdvisory(reason).systemMessage;
     response = overrideExit
       ? overrideAdvisory(overrideExit, reason)
-      : hostDecided
-        ? {}
-        : protocolAdvisory(reason);
+      : withAdvisedStops(hostDecided ? {} : protocolAdvisory(reason), advised);
   } finally {
     if (observed) {
       if (config.kind === "session") {
@@ -8224,7 +8510,7 @@ export async function runHarnessHook(
   process.stdout.write(JSON.stringify(response));
 }
 export async function runCommitMessageHook(
-  config: Pick<HookConfig, "compilerPackageVersion" | "runtime"> & {
+  config: Pick<HookConfig, "compilerPackageVersion" | "runtime" | "stops"> & {
     readonly policy: CompiledFeedback;
   },
   boundary: typeof feedbackBoundary,
@@ -8239,8 +8525,17 @@ export async function runCommitMessageHook(
       () => {},
     );
   } catch {
-    process.stderr.write("DOTLN_HARNESS_REFUSED: commit-message boundary\n");
-    process.exitCode = 1;
+    const reason = "DOTLN_HARNESS_REFUSED: commit-message boundary";
+    const level = stopLevelIn(config.stops, "attribution");
+    if (level === "refuse") {
+      process.stderr.write(
+        `${stopRefusal("attribution", `${reason}.`, { hook: true })}\n`,
+      );
+      process.exitCode = 1;
+    } else if (level === "advise")
+      process.stderr.write(
+        `DotLn advisory: ${stopAdvisory("attribution", reason)}.\n`,
+      );
   }
 }
 /** Release only this session's reservation, after the host has observed completion. */
@@ -8527,22 +8822,35 @@ function targetReviewerGit(
   };
 }
 
-/** Refuse a target-lane write the pair's live gate or the bundle protects. */
+/** Judge a target-lane write against the pair's live gate and the bundle's
+ * own files. Each judgment is one stop, handed to `meet`, which throws where
+ * that stop refuses and returns where it advises or is off. */
 function protectTargetWrite(
   input: HarnessInput,
   root: string,
   orderRoots: readonly string[],
   candidate: string,
+  meet: (stop: string, reason: string) => void,
 ): void {
   const resolved = resolve(root, candidate);
   const writeRoot =
     orderRoots.find((directory) =>
       withinRoot(directory, prospectiveRealpath(resolved)),
     ) ?? root;
-  const path = contained(
-    writeRoot,
-    join(prospectiveRealpath(dirname(resolved)), basename(resolved)),
-  );
+  let path: string;
+  try {
+    path = contained(
+      writeRoot,
+      join(prospectiveRealpath(dirname(resolved)), basename(resolved)),
+    );
+  } catch (error) {
+    // A destination outside the worktree, or under its Git metadata.
+    meet(
+      "target-bundle",
+      error instanceof Error ? error.message : "Path outside the worktree",
+    );
+    return;
+  }
   // The pair's launchpad runs its own gates; a live one protects
   // its inputs from this hook exactly as it does from its own.
   const gate =
@@ -8558,7 +8866,7 @@ function protectTargetWrite(
           undefined,
           initialSession(),
         );
-  if (gate) throw new Error(gate);
+  if (gate) meet("live-gate", gate);
   const local = relative(writeRoot, path).toLowerCase();
   const protectedPaths = [
     ".git",
@@ -8567,6 +8875,7 @@ function protectTargetWrite(
     ".claude/settings.json",
     ".claude/target-worker-manifest.json",
     ".claude/hooks/permissions.mjs",
+    ".claude/hooks/operator-control.mjs",
     ".claude/hooks/concurrent-work-requires-worktrees.mjs",
     ".claude/hooks/no-attribution.mjs",
   ];
@@ -8577,10 +8886,13 @@ function protectTargetWrite(
         local.startsWith(`${entry}/`) ||
         entry.startsWith(`${local}/`),
     )
-  )
-    throw new Error(
+  ) {
+    meet(
+      "target-bundle",
       "target bundle or host scratch is outside the writable surface",
     );
+    return;
+  }
   let destination = writeRoot;
   for (const part of relative(writeRoot, path).split(sep)) {
     destination = join(destination, part);
@@ -8589,15 +8901,64 @@ function protectTargetWrite(
       info &&
       (info.isSymbolicLink() ||
         (!info.isDirectory() && (!info.isFile() || info.nlink !== 1)))
-    )
-      throw new Error("target write requires ordinary unlinked file paths");
+    ) {
+      meet(
+        "target-bundle",
+        "target write requires ordinary unlinked file paths",
+      );
+      return;
+    }
   }
 }
 
-/** The target's runtime is in the launchpad snapshot; only Git facts use target cwd. */
+/** A judgment a target worktree's guard made against one stop of the table,
+ * thrown where that stop refuses. */
+class TargetStop extends Error {
+  constructor(
+    readonly stop: string,
+    message: string,
+    /** A stop no level of the table sets here: it is denied as it was. */
+    readonly fixed = false,
+  ) {
+    super(message);
+  }
+}
+/** The registered worktree a target bundle guards: the Git top level of the
+ * directory the session stands in or, where one persisted `cd` left the
+ * worktree, of the directory the hook file itself stands in, whichever the
+ * bundle's own id names. */
+function targetWorktreeRoot(
+  standing: string,
+  targetId: string | undefined,
+): string | null {
+  const hook = process.argv[1];
+  for (const directory of [standing, ...(hook ? [dirname(hook)] : [])])
+    try {
+      const top = realpathSync(
+        git(realpathSync(directory), ["rev-parse", "--show-toplevel"]).trim(),
+      );
+      if (digest(top) === targetId) return top;
+    } catch {
+      // No repository there, or one that cannot be read: try the next.
+    }
+  return null;
+}
+/** Where a target worktree's refusal sends the line that lowers it: the
+ * levels are the launchpad's, and its emit carries them into this bundle. */
+const TARGET_COVERED =
+  "the launchpad's file; node scripts/harness.mjs emit --target <this worktree>, run from the launchpad, then carries the level here";
+
+/** The target's runtime is in the launchpad snapshot; only Git facts use target cwd.
+ * Every judgment is one stop of the table and answers at the level the
+ * launchpad gave it at the emit: a denial at `refuse`, the call allowed
+ * with the stop's line at `advise`, nothing at `off`. A stop that advises
+ * does not end the judgment, so one that still refuses is still met. */
 export async function runTargetHarnessHook(
   config: HookConfig,
   boundary: typeof feedbackBoundary,
+  // The hook file reads its input to ask the recovery controls first, and
+  // hands the text on; without it the input is read here.
+  inputText?: string,
 ): Promise<void> {
   const deny = (reason: string) => protocolRefusal("PreToolUse", reason);
   let response: Record<string, unknown>;
@@ -8607,14 +8968,18 @@ export async function runTargetHarnessHook(
   // hook did. An input this hook refuses to decode still names its session.
   let given: unknown;
   try {
-    given = JSON.parse(await streamText(process.stdin));
+    given = JSON.parse(inputText ?? (await streamText(process.stdin)));
     const decoded = decodeHarnessInput(given, "PreToolUse");
     if (!decoded.ok) throw new Error("target hook input unavailable");
     const input = decoded.value;
     runtimeStage = "worktree-binding";
-    const root = harnessRoot(input.cwd);
-    if (digest(root) !== config.runtime.targetId)
-      throw new Error("target worktree binding differs");
+    // The session may stand in a directory under the worktree's root, or
+    // have left it: the worktree is found all the same, so that standing
+    // elsewhere is judged as the stop it is and everything else of the call
+    // is still judged.
+    const standing = realpathSync(input.cwd);
+    const root = targetWorktreeRoot(standing, config.runtime.targetId);
+    if (!root) throw new Error("target worktree binding differs");
     runtimeStage = "runtime-binding";
     const snapshot = realpathSync(
       fileURLToPath(new URL("../../../../", import.meta.url)),
@@ -8645,177 +9010,363 @@ export async function runTargetHarnessHook(
     response = await targetState.run(
       { root, directory, launchpad },
       async () => {
-        let result: Record<string, unknown>;
-        try {
-          const pairedGit = targetReviewerGit(root, input, config.tools);
-          if (config.kind === "permission") {
-            if (!config.envelope)
-              throw new Error("compiled target authority missing");
-            const workerGate = reviewWorkerGate(input, config.tools);
-            if (workerGate) throw new Error(workerGateRefusal(workerGate));
-            const driven = drivenWorkerContext();
-            const use = workerUse(input, config.tools);
-            if (driven) {
-              initializeSubagentCounter(
-                harnessStateDirectory(root),
-                input.session_id,
-              );
-              admitSubagentTool(
-                driven.root,
-                harnessStateDirectory(root),
-                input,
-                config.tools?.[input.tool_name ?? ""] === "spawn",
-                { cap: null, ...use },
-              );
-            }
-            const drivenAdmission = admitDrivenTool(
-              input,
-              config.tools?.[input.tool_name ?? ""] === "spawn",
-              use,
+        const advised: AdvisedStops = [];
+        // The session's directory is judged once, whichever judgment
+        // meets it first.
+        let cwdJudged = false;
+        const elsewhere = (what: "session" | "shell"): void => {
+          if (cwdJudged) return;
+          cwdJudged = true;
+          meet("target-cwd", `target ${what} requires worktree-root cwd`);
+        };
+        // A line the launchpad's hook journals without showing it.
+        let quiet: string | undefined;
+        /** One stop met: thrown where it refuses, its line kept where it
+         * advises, nothing where it is off. */
+        const meet = (stop: string, reason: string): void => {
+          const level = stopLevelIn(config.stops, stop);
+          if (level === "refuse") throw new TargetStop(stop, reason);
+          if (level === "advise") advised.push(stopAdvisory(stop, reason));
+        };
+        /** A shell line the classifier cannot read. The launchpad's hook
+         * leaves its three commonest forms to host permissions and journals
+         * them unshown; so does this one. */
+        const unread = (error: HarnessCommandRefused): void => {
+          const level = stopLevelIn(config.stops, "target-classification");
+          if (level === "refuse")
+            throw new TargetStop(
+              "target-classification",
+              "target effect classification unavailable",
             );
-            if (drivenAdmission?.refusal)
-              throw new Error(drivenAdmission.refusal);
-            const orderGrant = driven
-              ? config.outsideWriteGrants
-                  ?.find((row) => row.role === driven.role)
-                  ?.grants.find((grant) => grant.kind === "order-worktree")
-              : undefined;
-            if (driven && !orderGrant)
-              throw new Error(
-                "driven role has no admitted order-worktree grant",
-              );
-            const orderRoots = driven
-              ? recordedOrderRoots(root, driven.workOrder)
-              : [];
-            if (
-              driven &&
-              (!orderRoots.includes(root) || !orderRoots.includes(driven.root))
-            )
-              throw new Error(
-                "driven target worktree differs from its recorded roots",
-              );
-            if (driven && orderGrant) {
-              const session = readJson(
-                statePath(root, input),
+          if (level === "off") return;
+          const line = stopAdvisory(
+            "target-classification",
+            `command classification: ${error.message}`,
+          );
+          if (HOST_DECIDED_CLASSIFICATIONS.has(error.message))
+            quiet = protocolAdvisory(line).systemMessage;
+          else advised.push(line);
+        };
+        /** Where the session stands and where a shell call runs, read from
+         * the call's own fields. Neither needs the command to be read, so a
+         * line the classifier cannot read is still judged for its
+         * directory, and a root that keeps that stop keeps it there too. */
+        const judgeDirectories = (): void => {
+          if (config.kind !== "permission") return;
+          if (standing !== root) elsewhere("session");
+          if (config.tools?.[input.tool_name ?? ""] !== "shell") return;
+          const args = input.tool_input ?? {};
+          const cwd = args.workdir ?? args.cwd ?? standing;
+          let shellRoot: string | undefined;
+          try {
+            if (typeof cwd === "string")
+              shellRoot = realpathSync(resolve(root, cwd));
+          } catch {
+            // A directory that cannot be resolved is not the root.
+          }
+          if (shellRoot !== root) elsewhere("shell");
+        };
+        const judge = (): Record<string, unknown> | undefined => {
+          let pairedGit: ReturnType<typeof targetReviewerGit> = undefined;
+          try {
+            pairedGit = targetReviewerGit(root, input, config.tools);
+          } catch (error) {
+            if (error instanceof HarnessCommandRefused) throw error;
+            meet(
+              "driven-roots",
+              error instanceof Error
+                ? error.message
+                : "paired Git destination unavailable",
+            );
+          }
+          if (config.kind === "feedback" && config.policy) {
+            try {
+              const facts = harnessFeedbackFacts(
+                config.policy,
+                pairedGit?.input ?? input,
+                pairedGit?.root ?? root,
                 initialSession(),
-                true,
               );
-              writeJson(statePath(root, input), {
-                ...session,
-                role: driven.role,
-                workOrder: driven.workOrder,
-                outsideWriteGrants: [orderGrant],
-              });
+              for (const fact of facts) boundary(config.policy, fact, () => {});
+            } catch (error) {
+              if (error instanceof HarnessCommandRefused) throw error;
+              // The bundle holds two units, each the twin of a stop. A
+              // judgment that could not be made is that stop's too: a
+              // reservation that cannot be read is not a writer admitted.
+              meet(
+                config.policy.units.some(
+                  (unit) => unit.trigger === "attribution",
+                )
+                  ? "attribution"
+                  : "writer-reservation",
+                error instanceof FeedbackRefused
+                  ? "compiled feedback refused target effect"
+                  : `compiled feedback could not judge target effect${error instanceof Error ? `: ${error.message}` : ""}`,
+              );
             }
-            const planActor =
-              driven ??
-              readJson(statePath(root, input), initialSession(), true);
-            const planLaunchpad = driven?.root ?? launchpad;
-            const planRefusal = planFirstWriteResponse(
-              config,
-              input,
-              planLaunchpad,
-              planActor,
+            return;
+          }
+          if (config.kind !== "permission")
+            throw new Error("target guard configuration unavailable");
+          if (!config.envelope)
+            throw new Error("compiled target authority missing");
+          const envelope = config.envelope;
+          if (standing !== root) elsewhere("session");
+          const workerGate = reviewWorkerGate(input, config.tools);
+          if (workerGate) meet("worker-gate", workerGateRefusal(workerGate));
+          const driven = drivenWorkerContext();
+          const use = workerUse(input, config.tools);
+          const spawns = config.tools?.[input.tool_name ?? ""] === "spawn";
+          if (driven) {
+            initializeSubagentCounter(
+              harnessStateDirectory(root),
+              input.session_id,
             );
-            if (planRefusal) return planRefusal;
-            const planCandidate =
-              planActor.role === "executor"
-                ? planFirstBoundary(planLaunchpad, planActor.workOrder)
-                    .candidate
-                : undefined;
-            const filePath = input.tool_input?.file_path;
-            // A target phase's one outside write beyond its pair is its own
-            // session scratch; a helper may use that and nothing else.
-            const scratchWrite =
-              Boolean(driven) &&
-              typeof filePath === "string" &&
-              (withinRoot(
-                prospectiveRealpath(harnessSessionScratch(input.session_id)),
-                prospectiveRealpath(resolve(root, filePath)),
-              ) ||
-                Boolean(
-                  planCandidate &&
+            admitSubagentTool(
+              driven.root,
+              harnessStateDirectory(root),
+              input,
+              spawns,
+              { cap: null, ...use },
+            );
+          }
+          // A budget whose stop advises still counts the use it lets through.
+          const drivenAdmission = admitDrivenTool(input, spawns, {
+            ...use,
+            enforce: stopLevelIn(config.stops, "driven-budget") === "refuse",
+          });
+          const overBudget =
+            drivenAdmission?.refusal ?? drivenAdmission?.exceeded;
+          if (overBudget) meet("driven-budget", overBudget);
+          const orderGrant = driven
+            ? config.outsideWriteGrants
+                ?.find((row) => row.role === driven.role)
+                ?.grants.find((grant) => grant.kind === "order-worktree")
+            : undefined;
+          if (driven && !orderGrant)
+            meet(
+              "driven-roots",
+              "driven role has no admitted order-worktree grant",
+            );
+          let orderRoots: string[] = [];
+          let rootsRead = !driven;
+          if (driven)
+            try {
+              orderRoots = recordedOrderRoots(root, driven.workOrder);
+              rootsRead = true;
+            } catch (error) {
+              meet(
+                "driven-roots",
+                error instanceof Error
+                  ? error.message
+                  : "recorded order worktree roots unavailable",
+              );
+            }
+          if (
+            driven &&
+            rootsRead &&
+            (!orderRoots.includes(root) || !orderRoots.includes(driven.root))
+          )
+            meet(
+              "driven-roots",
+              "driven target worktree differs from its recorded roots",
+            );
+          if (driven && orderGrant) {
+            const session = readJson(
+              statePath(root, input),
+              initialSession(),
+              true,
+            );
+            writeJson(statePath(root, input), {
+              ...session,
+              role: driven.role,
+              workOrder: driven.workOrder,
+              outsideWriteGrants: [orderGrant],
+            });
+          }
+          const planActor =
+            driven ?? readJson(statePath(root, input), initialSession(), true);
+          const planLaunchpad = driven?.root ?? launchpad;
+          const planRefusal = planFirstWriteResponse(
+            config,
+            input,
+            planLaunchpad,
+            planActor,
+          );
+          if (planRefusal) return planRefusal;
+          const planCandidate =
+            planActor.role === "executor"
+              ? planFirstBoundary(planLaunchpad, planActor.workOrder).candidate
+              : undefined;
+          const filePath = input.tool_input?.file_path;
+          // A target phase's one outside write beyond its pair is its own
+          // session scratch; a helper may use that and nothing else.
+          const scratchWrite =
+            Boolean(driven) &&
+            typeof filePath === "string" &&
+            (withinRoot(
+              prospectiveRealpath(harnessSessionScratch(input.session_id)),
+              prospectiveRealpath(resolve(root, filePath)),
+            ) ||
+              Boolean(
+                planCandidate &&
+                withinRoot(
+                  prospectiveRealpath(planCandidate),
+                  prospectiveRealpath(resolve(root, filePath)),
+                ),
+              ));
+          const outsideEffect = scratchWrite
+            ? "outside.write:session-scratch"
+            : typeof filePath === "string" &&
+                orderRoots.some((directory) =>
                   withinRoot(
-                    prospectiveRealpath(planCandidate),
+                    directory,
                     prospectiveRealpath(resolve(root, filePath)),
                   ),
-                ));
-            const outsideEffect = scratchWrite
-              ? "outside.write:session-scratch"
-              : typeof filePath === "string" &&
-                  orderRoots.some((directory) =>
-                    withinRoot(
-                      directory,
-                      prospectiveRealpath(resolve(root, filePath)),
-                    ),
-                  )
-                ? "outside.write:order-worktree"
-                : undefined;
-            const tool = config.tools?.[input.tool_name ?? ""];
-            const args = input.tool_input ?? {};
-            const command = args.command ?? args.cmd;
-            const orderLaunchpad = driven?.root ?? launchpad;
-            const words =
-              typeof command === "string"
-                ? drivenCommandWords(command, orderLaunchpad)
-                : null;
-            const effect = permissionEffect(
-              pairedGit
-                ? pairedGit.input
-                : typeof filePath === "string"
-                  ? {
-                      ...input,
-                      tool_input: {
-                        ...input.tool_input,
-                        file_path: prospectiveRealpath(resolve(root, filePath)),
-                      },
-                    }
-                  : input,
-              pairedGit?.root ?? root,
-              config.tools,
-              outsideEffect,
+                )
+              ? "outside.write:order-worktree"
+              : undefined;
+          const tool = config.tools?.[input.tool_name ?? ""];
+          const args = input.tool_input ?? {};
+          const command = args.command ?? args.cmd;
+          const orderLaunchpad = driven?.root ?? launchpad;
+          /** An effect the compiled authority does not permit. One it names
+           * as denied guards the owner and is that effect's own stop; one it
+           * merely does not list is the kit's scoping. */
+          const permit = (effect: string): void => {
+            // Desktop control keeps a switch of its own and is no level of
+            // the table: a target worktree's guard admits none, as before.
+            if (effect === "desktop.control")
+              throw new TargetStop(
+                "desktop-control",
+                `compiled authority does not permit ${effect}`,
+                true,
+              );
+            if (harnessAuthorization(envelope, effect, Date.now()).authorized)
+              return;
+            const named = envelope.deniedEffects.some((pattern) =>
+              pattern.endsWith("*")
+                ? effect.startsWith(pattern.slice(0, -1))
+                : pattern === effect,
             );
-            if (
-              !harnessAuthorization(config.envelope, effect, Date.now())
-                .authorized
-            )
-              throw new Error(`compiled authority does not permit ${effect}`);
-            const reservePairedWriter = () => {
-              if (!driven) return;
-              if (drivenHelper(input))
-                throw new Error(
-                  `${drivenHelperWrites} From a target worktree, name a launchpad script by its full path.`,
-                );
-              const writers = reserveHarnessWriter(
+            meet(
+              named ? deniedEffectStop(effect) : "target-unlisted-effect",
+              `compiled authority does not permit ${effect}`,
+            );
+          };
+          const reservePairedWriter = () => {
+            if (!driven) return;
+            if (drivenHelper(input)) {
+              meet(
+                "driven-helper",
+                `${drivenHelperWrites} From a target worktree, name a launchpad script by its full path.`,
+              );
+              return;
+            }
+            // A reservation that cannot be read is not a writer admitted:
+            // the failure is the reservation's own stop.
+            let writers: ReturnType<typeof reserveHarnessWriter>;
+            try {
+              writers = reserveHarnessWriter(
                 driven.root,
                 input,
                 sessionKey(input),
               );
-              const foreign = writers.find(
-                (writer) => writer.actorId !== sessionKey(input),
+            } catch (error) {
+              meet(
+                "writer-reservation",
+                error instanceof Error
+                  ? error.message
+                  : "writer reservation unavailable",
               );
-              if (foreign) throw new Error(writerRefusal(foreign));
-            };
-            if (tool === "write" && !scratchWrite) reservePairedWriter();
-            const protect = (candidate: string) =>
+              return;
+            }
+            const foreign = writers.find(
+              (writer) => writer.actorId !== sessionKey(input),
+            );
+            if (foreign) meet("writer-reservation", writerRefusal(foreign));
+          };
+          // A destination that cannot be judged is outside the writable
+          // surface, which is the bundle's own stop.
+          const protect = (candidate: string) => {
+            try {
               protectTargetWrite(
                 input,
                 root,
                 [...orderRoots, ...(planCandidate ? [planCandidate] : [])],
                 candidate,
+                meet,
               );
+            } catch (error) {
+              if (error instanceof TargetStop) throw error;
+              meet(
+                "target-bundle",
+                error instanceof Error
+                  ? error.message
+                  : "target destination unavailable",
+              );
+            }
+          };
+          try {
+            const words =
+              typeof command === "string"
+                ? drivenCommandWords(command, orderLaunchpad)
+                : null;
+            const writePath =
+              tool === "write"
+                ? (args.file_path ?? args.notebook_path)
+                : undefined;
+            // Every effect of the call is judged, each as its own stop: a
+            // stop the root lowers does not carry one it keeps.
+            let effects: readonly string[] = [];
+            try {
+              effects = permissionEffects(
+                pairedGit
+                  ? pairedGit.input
+                  : typeof filePath === "string"
+                    ? {
+                        ...input,
+                        tool_input: {
+                          ...input.tool_input,
+                          file_path: prospectiveRealpath(
+                            resolve(root, filePath),
+                          ),
+                        },
+                      }
+                    : input,
+                pairedGit?.root ?? root,
+                config.tools,
+                outsideEffect,
+              );
+            } catch (error) {
+              if (error instanceof HarnessCommandRefused) throw error;
+              // A path the classifier will not resolve (one under the
+              // worktree's Git metadata, or that leaves it by a link) is a
+              // destination outside the writable surface.
+              meet(
+                "target-bundle",
+                error instanceof Error
+                  ? error.message
+                  : "target destination unavailable",
+              );
+            }
+            for (const effect of effects) permit(effect);
+            if (tool === "write" && !scratchWrite) reservePairedWriter();
             if (tool === "write") {
-              const path = args.file_path ?? args.notebook_path;
-              if (typeof path !== "string")
-                throw new Error("target write path unavailable");
-              if (!scratchWrite) protect(path);
+              if (typeof writePath !== "string")
+                meet("target-destinations", "target write path unavailable");
+              else if (!scratchWrite) protect(writePath);
             } else if (tool === "shell") {
-              const cwd = args.workdir ?? args.cwd ?? root;
-              if (
-                typeof cwd !== "string" ||
-                realpathSync(resolve(root, cwd)) !== root
-              )
-                throw new Error("target shell requires worktree-root cwd");
+              const cwd = args.workdir ?? args.cwd ?? standing;
+              // The directory the command runs in, where it can be named.
+              let shellRoot: string | undefined;
+              try {
+                if (typeof cwd === "string")
+                  shellRoot = realpathSync(resolve(root, cwd));
+              } catch {
+                // A directory that cannot be resolved is not the root.
+              }
+              if (shellRoot !== root) elsewhere("shell");
               const script =
                 words && ["node", process.execPath].includes(words[0] ?? "")
                   ? words[1]
@@ -8848,7 +9399,8 @@ export async function runTargetHarnessHook(
                   },
                 );
                 if (!admission?.response)
-                  throw new Error(
+                  meet(
+                    "target-publication",
                     admission?.advisory ??
                       "registered target publication admission unavailable",
                   );
@@ -8875,21 +9427,15 @@ export async function runTargetHarnessHook(
                     ? "shell.run"
                     : typeof command === "string" &&
                       sourceChangeCommandEffect(launchpad, root, command);
-              if (
-                hostCommand &&
-                !harnessAuthorization(config.envelope, hostCommand, Date.now())
-                  .authorized
-              )
-                throw new Error(
-                  `compiled authority does not permit ${hostCommand}`,
-                );
+              if (hostCommand) permit(hostCommand);
               const paths = hostCommand
                 ? []
                 : typeof command === "string"
                   ? shellWritePaths(command)
                   : null;
               if (paths === null)
-                throw new Error(
+                meet(
+                  "target-destinations",
                   "target shell destinations unavailable; host must run opaque commands",
                 );
               // The launchpad's live gate protects its inputs from this lane
@@ -8905,45 +9451,130 @@ export async function runTargetHarnessHook(
                   config.tools,
                   initialSession(),
                 );
-                if (gate) throw new Error(gate);
+                if (gate) meet("live-gate", gate);
               }
               if (hostCommand !== "repo.read" && !researchCommand)
                 reservePairedWriter();
-              for (const path of paths) protect(path);
+              // A relative destination is the command's own directory's.
+              for (const path of paths ?? [])
+                protect(
+                  shellRoot && !isAbsolute(path) ? join(shellRoot, path) : path,
+                );
             } else if (
               ((tool === "spawn" || tool === "retask") && !driven) ||
               tool === "interaction"
             ) {
-              throw new Error(
+              meet(
+                "target-delegation",
                 "target delegation or interaction has no bounded worker adapter",
               );
             }
-            result = {};
-          } else if (config.kind === "feedback" && config.policy) {
-            const facts = harnessFeedbackFacts(
-              config.policy,
-              pairedGit?.input ?? input,
-              pairedGit?.root ?? root,
-              initialSession(),
-            );
-            for (const fact of facts) boundary(config.policy, fact, () => {});
-            result = {};
-          } else throw new Error("target guard configuration unavailable");
-        } catch (error) {
-          const reason =
-            error instanceof FeedbackRefused
-              ? "compiled feedback refused target effect"
-              : error instanceof HarnessCommandRefused
-                ? "target effect classification unavailable"
-                : error instanceof Error
+          } catch (error) {
+            if (!(error instanceof HarnessCommandRefused)) throw error;
+            unread(error);
+            // What can still be judged of a line the classifier cannot
+            // read: the directory it runs in, and the destinations its
+            // redirects name.
+            judgeDirectories();
+            let known: ReturnType<typeof knownWriteDestinations> = null;
+            try {
+              known = knownWriteDestinations(input, root, config.tools, {
+                directory: input.cwd,
+              });
+            } catch {
+              // Nothing of the line can be named.
+            }
+            const destinations = [...(known?.destinations ?? [])];
+            if (destinations.length) reservePairedWriter();
+            for (const destination of destinations)
+              protect(destination.physical);
+          }
+          return;
+        };
+        let result: Record<string, unknown>;
+        try {
+          try {
+            result = judge() ?? {};
+          } catch (error) {
+            if (error instanceof TargetStop) throw error;
+            if (error instanceof HarnessCommandRefused) {
+              // A line refused before any judgment began is still judged
+              // for the directory it runs in.
+              unread(error);
+              judgeDirectories();
+            }
+            // The guard itself failed and judged nothing, which is the
+            // case of the stop for a guard that cannot run.
+            else
+              meet(
+                "target-runtime",
+                error instanceof Error
                   ? error.message
-                  : "target guard unavailable";
-          result = deny(`DOTLN_TARGET_REFUSED: ${reason}`);
+                  : "target guard unavailable",
+              );
+            result = {};
+          }
+        } catch (error) {
+          result = deny(
+            error instanceof TargetStop
+              ? error.fixed
+                ? `DOTLN_TARGET_REFUSED: ${error.message}. This is stop ${error.stop}, which protects ${stopRow(error.stop)?.protects ?? "what its row names"}. A target worktree's guard admits it at no level and under no election, as before a stop had a level.`
+                : stopRefusal(
+                    error.stop,
+                    `DOTLN_TARGET_REFUSED: ${error.message}`,
+                    { covered: TARGET_COVERED },
+                  )
+              : "DOTLN_TARGET_REFUSED: target guard unavailable",
+          );
         }
+        result = withAdvisedStops(result, advised);
+        const shown = !hookRefused(result) && advised.length > 0;
         record(root, input, {
           kind: config.kind,
           allowed: !result.hookSpecificOutput,
+          ...(shown
+            ? { advisory: result.systemMessage, delegated: true }
+            : quiet
+              ? { advisory: quiet, delegated: true, shown: false }
+              : {}),
         });
+        // An advisory is shown once a session for each distinct line, as
+        // the launchpad's are; the journal row above keeps every one.
+        if (
+          shown &&
+          typeof result.systemMessage === "string" &&
+          !showHarnessAdvisory(
+            input.session_id,
+            "PreToolUse",
+            `advisory:${digest(result.systemMessage)}`,
+            (key) => {
+              mkdirSync(directory, { recursive: true, mode: 0o700 });
+              const marker = join(
+                directory,
+                createHash("sha256").update(key).digest("hex") + ".advisory",
+              );
+              try {
+                writeFileSync(
+                  marker,
+                  JSON.stringify({ sessionKey: digest(input.session_id) }) +
+                    "\n",
+                  { flag: "wx", mode: 0o600 },
+                );
+              } catch (error) {
+                if (
+                  error &&
+                  typeof error === "object" &&
+                  "code" in error &&
+                  error.code === "EEXIST"
+                )
+                  return !lstatSync(marker).isFile();
+                throw error;
+              }
+              return true;
+            },
+          )
+        )
+          delete result.systemMessage;
         return result;
       },
     );
@@ -8957,9 +9588,28 @@ export async function runTargetHarnessHook(
       )
         ? ` (${String(error.code)})`
         : "";
-    response = deny(
-      `DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime or target facts unavailable at ${runtimeStage}${code}`,
-    );
+    // A guard that cannot reach its runtime or its own facts judges nothing.
+    // Where its stop refuses, every call is denied, as before; where it
+    // advises, the call goes on and the guard says that nothing here is
+    // being judged and which command installs it again.
+    const level = stopLevelIn(config.stops, "target-runtime");
+    response =
+      level === "refuse"
+        ? deny(
+            stopRefusal(
+              "target-runtime",
+              `DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime or target facts unavailable at ${runtimeStage}${code}`,
+              { covered: TARGET_COVERED },
+            ),
+          )
+        : level === "advise"
+          ? protocolAdvisory(
+              stopAdvisory(
+                "target-runtime",
+                `this worktree's guard cannot reach its launchpad's runtime or its own facts (${runtimeStage}${code}), so nothing here is being judged; node scripts/harness.mjs emit --target <this worktree>, run from the launchpad, installs the guard again`,
+              ),
+            )
+          : {};
   }
   process.stdout.write(JSON.stringify(response));
   // The decision is written: the heartbeat follows it and decides nothing.

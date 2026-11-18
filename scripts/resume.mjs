@@ -10,6 +10,7 @@ import {
 } from "./lib/dispatch-bound.mjs";
 import { closeLeftoverCodexServers } from "./lib/codex-background.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { PHASE_LEGAL_ACTIONS } from "./lib/lifecycle-actions.mjs";
 import {
   fetchMergedBases,
   orderMerged,
@@ -336,30 +337,20 @@ const legalActions = (state) => {
         : []),
       ...(plan.approvedAt ? ["implementation-ready"] : []),
     ];
+  // Whether a target's records are still owed is read for every phase, as
+  // it always was: an unreadable registration says so at once.
+  const recordsOwed =
+    state.repositoryId &&
+    state.targetSubject &&
+    !state.targetRecords &&
+    !recordsInInstance(state);
   const actions =
-    {
-      none: ["activate"],
-      active: ["next", "implementation-ready"],
-      "ready-to-verify": ["verify"],
-      verifying: ["verification-result"],
-      "needs-fix": ["fix"],
-      repairing: ["repair-complete"],
-      verified: ["final-review"],
-      "final-review": ["final-review-result"],
-      closed: [
-        ...(state.repositoryId &&
-        state.targetSubject &&
-        !state.targetRecords &&
-        !recordsInInstance(state)
-          ? ["target-records"]
-          : []),
-        "release-close",
-        "next",
-        "activate",
-      ],
-      // Terminal: only a reactivation of a changed revision leaves it.
-      withdrawn: ["activate"],
-    }[state.phase] ?? [];
+    state.phase === "closed"
+      ? [
+          ...(recordsOwed ? ["target-records"] : []),
+          ...PHASE_LEGAL_ACTIONS.closed,
+        ]
+      : [...(PHASE_LEGAL_ACTIONS[state.phase] ?? [])];
   return state.phase === "ready-to-verify" &&
     state.failureSourceId &&
     state.failureSourcePath

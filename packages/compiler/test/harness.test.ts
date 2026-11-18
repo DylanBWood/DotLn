@@ -1346,7 +1346,13 @@ test("WO-049 target lowering is explicit, omits importRoot from metadata and emi
       /new URL\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
     );
     assert.match(file.contents, /permissionDecision: "deny"/);
-    assert.ok(!file.contents.includes("operatorControl"));
+    // Each guard asks the recovery controls ahead of every runtime import,
+    // as the launchpad's hooks do.
+    assert.ok(file.contents.includes("async function operatorControl("));
+    assert.ok(
+      file.contents.indexOf("async function operatorControl(") <
+        file.contents.indexOf("import(new URL("),
+    );
     assert.ok(!file.contents.includes('"importRoot"'));
   }
   for (const importRoot of [

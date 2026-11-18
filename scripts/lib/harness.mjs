@@ -24,6 +24,8 @@ import {
 } from "./helpers.mjs";
 import {
   TOOL_ROOT,
+  adviseOnce,
+  declaredElections,
   docRelative,
   findLaunchpad,
   loadConfig,
@@ -58,15 +60,25 @@ import {
   mergeHarnessFragments,
 } from "../../packages/compiler/dist/src/index.js";
 import {
+  AUTHOR_LAYER,
   contributorConfiguredProgram,
+  contributorFeedback,
+  contributorRules,
+  contributorRuleSelection,
   contributorSupportIds,
   contributorProfiles,
   targetWorkerProfiles,
+  withoutRules,
 } from "../../packages/skeleton/dist/src/loadouts/contributor.js";
-import { personalFeedback } from "../../packages/skeleton/dist/src/loadouts/feedback.js";
 import { checkLocalTerms } from "./terms.mjs";
 import { renderInstanceSecrets } from "./features.mjs";
 import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
+import { OVERLAY_IDS } from "./rule-inventory.mjs";
+import {
+  STOPS,
+  loweredStops,
+  resolveStopLevels,
+} from "../../packages/skeleton/src/stops.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import {
   decodeBuildOverlay as decodeOverlay,
@@ -117,17 +129,104 @@ const withSettingsFragment = (files, fragment) =>
           : file,
       )
     : files;
-export function decodeBuildOverlay(path, text) {
-  return decodeOverlay(path, text, contributorSupportIds);
+/** Whether a root is an exported instance: it holds the kit's manifest, or
+ * the caller says so of a destination that does not hold it yet. */
+export const instanceRoot = (root, kind) =>
+  kind === "instance" || isKitRoot(root);
+/** The stops a root does not refuse, as its hooks carry them: the table's
+ * levels for the root's kind (core or an exported instance) with the lines
+ * of its own `stops` section. A hook has its levels from the emit, so this
+ * is read where a bundle is written, checked or predicted. `instance` names
+ * the kind where the root cannot yet show it: an export emits into its
+ * destination before the kit's manifest, which marks an instance, is
+ * written there. */
+export const rootStopLevels = (root, { instance = isKitRoot(root) } = {}) => {
+  const config = loadConfig(root);
+  return loweredStops(
+    resolveStopLevels({
+      instance,
+      stops: config.stops,
+      elections: declaredElections(config),
+    }),
+  );
+};
+/** A program for a root that lowers some stops. Every hook's configuration
+ * carries the lowered levels, and the settings leave out the host deny rules
+ * of an effect whose stop is lowered, since a host rule denies before any
+ * hook can answer. A root that lowers none gets its program back unchanged. */
+const withStopLevels = (program, declared = {}) => {
+  // A unit that also refuses takes its refusal with it: where the build
+  // leaves the unit out, its stop reads off whatever the stops section asks,
+  // since the hook that answered it is not installed.
+  const lowered = {
+    ...declared,
+    ...Object.fromEntries(
+      unequippedUnitStops(program.unequipped?.units).map((row) => [
+        row.id,
+        "off",
+      ]),
+    ),
+  };
+  if (!Object.keys(lowered).length) return program;
+  const lifted = STOPS.flatMap((row) =>
+    row.effect !== undefined && Object.hasOwn(lowered, row.id)
+      ? [row.effect]
+      : [],
+  );
+  return {
+    ...program,
+    stops: lowered,
+    ...(lifted.length ? { liftedDenyEffects: lifted } : {}),
+  };
+};
+/** The stops that go with a feedback unit the build leaves out: the unit's
+ * sentence and its refusal are one choice. */
+export const unequippedUnitStops = (units = []) =>
+  STOPS.filter((row) => row.unit !== undefined && units.includes(row.unit));
+export { OVERLAY_IDS };
+export function decodeBuildOverlay(path, text, options) {
+  return decodeOverlay(path, text, OVERLAY_IDS, options);
 }
-export function readBuildOverlay(launchpad) {
+/** A launchpad's overlay as its emit reads it, with the root's kind: an
+ * exported instance is told of an id it does not know and goes on, where
+ * core refuses its own. `instance` names the kind where the root cannot yet
+ * show it, as `rootStopLevels` does. */
+export function readBuildOverlay(
+  launchpad,
+  { instance = isKitRoot(launchpad) } = {},
+) {
   const result = readBuildOverlayFile(
     launchpad,
     loadConfig(launchpad).build.overlay,
-    contributorSupportIds,
+    OVERLAY_IDS,
+    { instance, advise: adviseOnce },
   );
   if (!result) return undefined;
-  return { path: result.path, bytes: result.bytes };
+  return { path: result.path, bytes: result.bytes, instance };
+}
+/** The author's units and rules an overlay leaves out, read from its bytes
+ * as the emit reads them; none where no overlay is selected or it selects
+ * no build. */
+export function overlayRuleSelection(overlay) {
+  const value =
+    overlay &&
+    decodeBuildOverlay(overlay.path, overlay.bytes.toString("utf8"), {
+      instance: overlay.instance === true,
+      advise: adviseOnce,
+    });
+  return value && value.build !== "none"
+    ? contributorRuleSelection(value)
+    : { units: [], rules: [] };
+}
+/** One advisory for each line of a root's stops section that asks a level
+ * of a stop whose unit the build leaves out: the line has no effect. */
+export function adviseUnitStopLines(launchpad, overlay) {
+  const declared = loadConfig(launchpad).stops;
+  for (const row of unequippedUnitStops(overlayRuleSelection(overlay).units))
+    if (Object.hasOwn(declared, row.id))
+      adviseOnce(
+        `dotln.config.json stops: "${row.id}" has no effect while the build overlay leaves out the unit ${row.unit}, whose refusal it is; the stop reads off (npm run features -- list)`,
+      );
 }
 const hash = (text) => `fnv1a64:${fnv1a64(text)}`;
 const allowed = (path) =>
@@ -183,7 +282,11 @@ export function harnessInstallation(options = {}) {
   if (overlay && !Buffer.isBuffer(overlay.bytes))
     throw overlayError(overlay.path, "overlay bytes must be a Buffer");
   const value =
-    overlay && decodeBuildOverlay(overlay.path, overlay.bytes.toString("utf8"));
+    overlay &&
+    decodeBuildOverlay(overlay.path, overlay.bytes.toString("utf8"), {
+      instance: overlay.instance === true,
+      advise: adviseOnce,
+    });
   const overlayManifest = overlay && {
     overlay: { path: overlay.path, sha256: targetDigest(overlay.bytes) },
   };
@@ -208,9 +311,12 @@ export function harnessInstallation(options = {}) {
         ...overlayManifest,
       },
     };
+  // The support switches among the overlay's ids; the author's units and
+  // rules among them are read by the composer, from the lists as written.
   const switches = { ...options.supports };
-  for (const id of value?.unequip ?? []) switches[id] = false;
-  for (const id of value?.equip ?? []) switches[id] = true;
+  const support = (id) => contributorSupportIds.includes(id);
+  for (const id of (value?.unequip ?? []).filter(support)) switches[id] = false;
+  for (const id of (value?.equip ?? []).filter(support)) switches[id] = true;
   // The overlay's tinkerer-economy choice was accepted with an advisory
   // through kit release v0.118.0 and is refused since: the election lives in
   // features.tinkerer-economy, which the kit's own programmatic switches
@@ -234,6 +340,8 @@ export function harnessInstallation(options = {}) {
         ...value,
         desktopControl: options.features?.["desktop-control"] === true,
         planFirst: options.features?.["plan-first"] === true,
+        // The kind of the root the build is for, as the caller resolved it.
+        instance: options.instance === true,
         // The instance's workers section: the worker definitions carry
         // what it resolves to. A caller that passes none (a test, a tool
         // reading the bundle as the kit ships it) gets the compiled table.
@@ -243,7 +351,13 @@ export function harnessInstallation(options = {}) {
     if (overlay) throw overlayError(overlay.path, error.message);
     throw error;
   }
-  const feedback = options.feedback ?? personalFeedback();
+  // The root's stops, as the caller resolved them. A caller that passes none
+  // (a test, a tool reading the bundle as the kit ships it) gets a bundle
+  // that refuses on every stop.
+  program = withStopLevels(program, options.stops);
+  // The feedback program is the units the build equips: every hook, line
+  // and advisory of a unit comes from it.
+  const feedback = options.feedback ?? contributorFeedback(program);
   const sourceRoot = options.runtimeRoot ?? TOOL_ROOT;
   const runtimeFiles = [
     // Admission compares this module's compiler version. A compiler-only
@@ -319,16 +433,18 @@ export function harnessInstallation(options = {}) {
           },
         }
       : profile;
-  const bundles = profiles.map(sharedForm).map((profile) =>
-    lowerToHarness(program, feedback, program.loadout.authorityEnvelope, {
-      ...profile,
-      runtime: {
-        ...profile.runtime,
-        files: runtimeFiles,
-        snapshot: runtimeSnapshot,
-      },
-    }),
-  );
+  const lower = (given, units) =>
+    profiles.map(sharedForm).map((profile) =>
+      lowerToHarness(given, units, given.loadout.authorityEnvelope, {
+        ...profile,
+        runtime: {
+          ...profile.runtime,
+          files: runtimeFiles,
+          snapshot: runtimeSnapshot,
+        },
+      }),
+    );
+  const bundles = lower(program, feedback);
   const shared = new Map();
   for (const bundle of bundles)
     for (const file of bundle.files) {
@@ -358,6 +474,36 @@ export function harnessInstallation(options = {}) {
   };
   files.push({ path: "CLAUDE.md", contents: block, origin, rung: 8 });
   files.sort((a, b) => a.path.localeCompare(b.path, "en"));
+  // The paths the kit's whole bundle holds that this build leaves out: a
+  // unit the overlay removes takes its hook file with it. The kit's own
+  // manifest lists such a file for every instance, so this manifest names
+  // each one, and the kit's verify and update tell a file this build left
+  // out from one that went missing.
+  let leftOut = [];
+  if (!options.program && program.unequipped?.units.length) {
+    const whole = withStopLevels(
+      contributorConfiguredProgram(switches, {
+        ...value,
+        equip: (value?.equip ?? []).filter(support),
+        unequip: (value?.unequip ?? []).filter(support),
+        desktopControl: options.features?.["desktop-control"] === true,
+        planFirst: options.features?.["plan-first"] === true,
+        instance: options.instance === true,
+        workers: options.workers,
+      }),
+      options.stops,
+    );
+    const kept = new Set(files.map((file) => file.path));
+    leftOut = [
+      ...new Set(
+        lower(whole, contributorFeedback(whole)).flatMap((bundle) =>
+          bundle.files.map((file) => file.path),
+        ),
+      ),
+    ]
+      .filter((path) => !kept.has(path))
+      .sort();
+  }
   const manifest = {
     contractVersion: "harness-v1",
     compilerPackageVersion: bundles[0].manifest.compilerPackageVersion,
@@ -379,6 +525,7 @@ export function harnessInstallation(options = {}) {
         ...new Set(bundles.flatMap((bundle) => bundle.manifest.origin.ids)),
       ].sort(),
     },
+    ...(leftOut.length ? { leftOut } : {}),
     ...overlayManifest,
   };
   return {
@@ -428,6 +575,8 @@ export function emitHarness(
     features: options.features ?? readFeatures(root),
     declaredFeatures: loadConfig(root).features,
     workers: options.workers ?? loadConfig(root).workers,
+    stops: options.stops ?? rootStopLevels(root),
+    instance: options.instance ?? isKitRoot(root),
     settingsFragment: fragmentFor(options, root),
   }),
 ) {
@@ -1067,6 +1216,11 @@ export function checkHarness(root, options = {}) {
     // definition emitted from it is no drift; its settings fragment
     // likewise, so the merged settings are none.
     workers: options.workers ?? loadConfig(root).workers,
+    // And with the levels its own stops resolve to, so a hook that carries
+    // a level the root set is none either.
+    stops: options.stops ?? rootStopLevels(root),
+    // And with the kind of root it is, which one line of the block states.
+    instance: options.instance ?? isKitRoot(root),
     settingsFragment: fragmentFor(options, root),
   });
   if (isKitRoot(root)) {
@@ -1192,6 +1346,8 @@ const targetPaths = new Set([
   targetManifest,
   ".claude/settings.json",
   ".claude/hooks/permissions.mjs",
+  // The prompt hook that records the recovery controls for the guards.
+  ".claude/hooks/operator-control.mjs",
   ".claude/hooks/presence-pretooluse.mjs",
   ".claude/hooks/concurrent-work-requires-worktrees.mjs",
   ".claude/hooks/no-attribution.mjs",
@@ -1446,9 +1602,26 @@ function emitTargetUnlocked(context, options) {
     throw new Error(
       "target launchpad runtime differs from the emitting compiler; run its matching emitter",
     );
-  const program =
-    options.program ?? contributorConfiguredProgram(options.supports);
-  const feedback = options.feedback ?? personalFeedback();
+  // A target worktree's guards answer at the levels of the launchpad that
+  // registered it: an owner who lowers a stop there is not met by its twin
+  // in a sibling repository.
+  // It carries the launchpad owner's selection too: a unit the build
+  // overlay leaves out has no guard, sentence or setting in a sibling
+  // repository. The overlay's other keys (its identity, its narrowing and
+  // its grants) are the launchpad build's and do not reach a target's
+  // guards, as before.
+  const overlay =
+    options.overlay === undefined
+      ? readBuildOverlay(context.launchpad)
+      : options.overlay;
+  const program = withStopLevels(
+    withoutRules(
+      options.program ?? contributorConfiguredProgram(options.supports),
+      overlayRuleSelection(overlay),
+    ),
+    options.stops ?? rootStopLevels(context.launchpad),
+  );
+  const feedback = options.feedback ?? contributorFeedback(program);
   const bundle = lowerToHarness(
     program,
     feedback,
@@ -1510,6 +1683,9 @@ function emitTargetUnlocked(context, options) {
     outsideWriteGrants: bundle.manifest.outsideWriteGrants,
     authorityGrantRegistryHash: bundle.manifest.authorityGrantRegistryHash,
     envelope: program.loadout.authorityEnvelope,
+    // The levels the guards were written with, so that a later check can
+    // say which have changed in the launchpad since.
+    stops: program.stops ?? {},
   };
   // Validate all paths/ownership before first mutation. Preserve immutable runtime first.
   preserveHarnessRuntime(context.launchpad, runtime);
@@ -1531,6 +1707,53 @@ function emitTargetUnlocked(context, options) {
   writeFileSync(context.receiptPath, targetJson(receipt), { mode: 0o600 });
   return { files: installed.length, localTerms: { status: "not-applicable" } };
 }
+/** The stops a target worktree's guards answer at a level other than the
+ * one its launchpad would write now. The guards carry the levels of their
+ * last emit, and nothing rewrites them when a line of the launchpad's
+ * `stops` section changes. A receipt written before levels were recorded
+ * names none: what it was written with is unknown. */
+function targetLevelsBehind(context, receipt) {
+  if (
+    !receipt ||
+    !receipt.stops ||
+    typeof receipt.stops !== "object" ||
+    Array.isArray(receipt.stops)
+  )
+    return [];
+  const now =
+    withStopLevels(
+      withoutRules(
+        contributorConfiguredProgram(),
+        overlayRuleSelection(readBuildOverlay(context.launchpad)),
+      ),
+      rootStopLevels(context.launchpad),
+    ).stops ?? {};
+  return [...new Set([...Object.keys(now), ...Object.keys(receipt.stops)])]
+    .filter((id) => (now[id] ?? "refuse") !== (receipt.stops[id] ?? "refuse"))
+    .sort();
+}
+/** Of the given target worktrees, each whose guards answer at earlier
+ * levels than its launchpad's, with the stops that differ. A worktree that
+ * is gone or holds no bundle has no guard to bring current and is left out.
+ */
+export function targetLevelDrift(launchpad, targets) {
+  return targets.flatMap((target) => {
+    try {
+      const context = targetContext(target, { runtimeRoot: launchpad });
+      const stops = targetLevelsBehind(context, readTargetReceipt(context));
+      return stops.length ? [{ target: context.root, stops }] : [];
+    } catch {
+      return [];
+    }
+  });
+}
+/** One line for each of those worktrees, as the launchpad's emit and check
+ * print them: the worktree, the stops and the command. */
+export const targetLevelDriftLines = (launchpad, targets, action) =>
+  targetLevelDrift(launchpad, targets).map(
+    (entry) =>
+      `harness ${action}: target worktree ${entry.target} still answers at the levels of its last emit, which differ here for ${entry.stops.join(", ")}; run node scripts/harness.mjs emit --target ${JSON.stringify(entry.target)}`,
+  );
 export function checkTargetHarness(target, options = {}) {
   const context = targetContext(target, options);
   const receipt = readTargetReceipt(context);
@@ -1564,7 +1787,14 @@ export function checkTargetHarness(target, options = {}) {
     )
       throw new Error("target pinned runtime drift");
   }
-  return { files: files.length, localTerms: { status: "not-applicable" } };
+  // Levels that changed in the launchpad since the emit fail nothing here:
+  // the bundle is intact. They are named for the caller to report.
+  const levelsBehind = targetLevelsBehind(context, receipt);
+  return {
+    files: files.length,
+    localTerms: { status: "not-applicable" },
+    ...(levelsBehind.length ? { levelsBehind } : {}),
+  };
 }
 function removeTargetUnlocked(context) {
   // Runtime availability is irrelevant to removal; owned file bytes must still match.

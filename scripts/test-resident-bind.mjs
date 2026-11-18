@@ -43,6 +43,19 @@ import {
   requireCompiled,
 } from "../packages/compiler/dist/src/index.js";
 import { loadConfig } from "./lib/config.mjs";
+import {
+  KIT_MODELS,
+  KIT_WORKERS,
+} from "../packages/skeleton/src/worker-models.mjs";
+
+// What the kit's one model table binds the resident's judge to on a
+// provider: the model's exact id, at the binding's effort or else the
+// model's own. A value a bind takes by default is read here, never written.
+const kitJudge = (provider) => {
+  const bound = KIT_WORKERS.judge[provider];
+  const pinned = KIT_MODELS[bound.model ?? bound];
+  return { model: pinned.id, effort: bound.effort ?? pinned.effort };
+};
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const sourceRoot = join(scriptRoot, "..");
@@ -1094,9 +1107,11 @@ test("a merge base moved by integrating main is named before any launch line", (
 // The always-on judge's default per transport (WO-157 item 7, WO-100 D007).
 test("WO-157 a bind without --model and --effort records the transport's default judge", () =>
   withFixture({}, (context) => {
-    for (const [transport, model] of [
-      ["codex-cli-exec", "gpt-6-luna"],
-      ["claude-cli-print", "claude-sonnet-5"],
+    // With neither flag each transport binds the judge worker of the kit's
+    // one model table for its provider.
+    for (const [transport, { model, effort }] of [
+      ["codex-cli-exec", kitJudge("codex")],
+      ["claude-cli-print", kitJudge("claude")],
     ]) {
       const result = run(
         context.launchpad,
@@ -1112,7 +1127,7 @@ test("WO-157 a bind without --model and --effort records the transport's default
         readFileSync(join(store, "binding.json"), "utf8"),
       );
       assert.equal(binding.model, model);
-      assert.equal(binding.effort, "xhigh");
+      assert.equal(binding.effort, effort);
       assert.equal(binding.modelSource, "default");
       assert.equal(binding.effortSource, "default");
       const configuration = decodeResidentConfiguration(
@@ -1121,13 +1136,12 @@ test("WO-157 a bind without --model and --effort records the transport's default
       const worker = configuration.actors["mission-check"].worker;
       assert.equal(worker.transport, transport);
       assert.equal(worker.request.model, model);
-      assert.equal(worker.request.effort, "xhigh");
-      assert.match(
-        result.stdout,
-        new RegExp(
-          `judge {6}${transport}; model ${model} \\(default\\); effort xhigh \\(default\\)`,
-          "u",
+      assert.equal(worker.request.effort, effort);
+      assert.ok(
+        result.stdout.includes(
+          `judge      ${transport}; model ${model} (default); effort ${effort} (default)`,
         ),
+        result.stdout,
       );
       assert.equal(run(context.launchpad, "--check", store).status, 0);
     }
@@ -1171,9 +1185,11 @@ test("WO-157 a bind with --model and --effort records the operator's choice", ()
     const chosen = JSON.parse(
       readFileSync(join(storeOf(partial.stdout), "binding.json"), "utf8"),
     );
+    // The effort not given is the Codex judge's, as the table binds it.
+    const { effort } = kitJudge("codex");
     assert.deepEqual(
       [chosen.model, chosen.modelSource, chosen.effort, chosen.effortSource],
-      ["gpt-6.1-sol", "operator", "xhigh", "default"],
+      ["gpt-6.1-sol", "operator", effort, "default"],
     );
     // A stale default-sourced binding is rebound without freezing the default.
     context.close("WO-999");
@@ -1183,7 +1199,7 @@ test("WO-157 a bind with --model and --effort records the operator's choice", ()
       stale.stdout,
       /Rebind with .* --transport codex-cli-exec --model gpt-6\.1-sol$/mu,
     );
-    assert.doesNotMatch(stale.stdout, /--effort xhigh/u);
+    assert.ok(!stale.stdout.includes(`--effort ${effort}`), stale.stdout);
   }));
 
 // A portfolio binding compiled under its repository's registered

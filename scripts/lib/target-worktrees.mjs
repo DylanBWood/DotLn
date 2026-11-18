@@ -401,6 +401,9 @@ export const recordTargetWorktree = (launchpad, entry) => {
   const file = targetRegistryPath(launchpad);
   writeMap(launchpad, file, { ...readMap(file), [entry.target]: entry });
 };
+/** The registered target worktrees of a launchpad, by path. */
+export const registeredTargetWorktrees = (launchpad) =>
+  Object.keys(readMap(targetRegistryPath(launchpad)));
 export const forgetTargetWorktree = (launchpad, target) => {
   const file = targetRegistryPath(launchpad);
   const entries = readMap(file);

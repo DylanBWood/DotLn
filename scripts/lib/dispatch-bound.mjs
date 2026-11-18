@@ -20,6 +20,11 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { readBudgets } from "./process-budget.mjs";
+import { stopLevel } from "./config.mjs";
+import {
+  stopAdvisory,
+  stopRefusal,
+} from "../../packages/skeleton/src/stops.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
 
@@ -485,16 +490,36 @@ export function recordBoundStop(
   );
 }
 
+/** The bound's admission where a command enforces it: the probe wrapper
+ * before it starts its child, and a re-dispatch. It answers at the level of
+ * the bound's stop in this root, as the hook does: past the bound it throws
+ * at `refuse`, says what it found and lets the command go on at `advise`,
+ * and says nothing at `off`. `options.advise` receives the advisory. */
 export function requireDispatchBound(root, options = {}) {
   const standing = dispatchStanding(root, options);
   if (standing.state === "exceeded") {
+    const level = options.level ?? stopLevel(root, "dispatch-bound");
+    if (level !== "refuse") {
+      // Nothing is stopped, so no stop is recorded.
+      if (level === "advise")
+        (options.advise ?? ((line) => console.error(line)))(
+          `DotLn advisory: ${stopAdvisory("dispatch-bound", dispatchBoundMessage(standing))}.`,
+        );
+      return standing;
+    }
     let recording = "";
     try {
       recordBoundStop(root, standing, options.source ?? "probe");
     } catch (error) {
       recording = ` Stop record unavailable: ${error.message}.`;
     }
-    const error = new Error(dispatchBoundMessage(standing) + recording);
+    const error = new Error(
+      stopRefusal(
+        "dispatch-bound",
+        dispatchBoundMessage(standing) + recording,
+        { hook: true },
+      ),
+    );
     error.code = "DOTLN_DISPATCH_BOUND";
     error.standing = standing;
     throw error;

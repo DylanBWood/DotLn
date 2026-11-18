@@ -272,14 +272,26 @@ export async function launchPhase({
     if (buffer) inspect(buffer);
     observation.observeStderrTail(stderrDiagnostic);
     const error = facts.error || result.exitCode !== 0;
-    const retained = captured?.finish(error || Boolean(facts.refused)) ?? null;
+    const failed = error || Boolean(facts.refused);
+    // A phase that ended cleanly may still not have recorded its completion,
+    // which only its driver can tell. Where the driver asks, the capture is
+    // kept until it has settled the attempt, and marked as waiting on that.
+    const retained =
+      captured?.finish(failed || capture?.keepUntilSettled === true) ?? null;
     return {
       ...result,
       exitSignal: nativeSignal,
       error,
       ...(captured ? { retained } : {}),
+      ...(retained && !failed ? { retainedPending: true } : {}),
       ...(facts.cause ? { cause: facts.cause } : {}),
       ...(facts.refused ? { refused: facts.refused } : {}),
+      // The reason is returned only with the refusal it was read from.
+      ...(facts.refused &&
+      facts.refusedReason &&
+      facts.refusedReasonOf === facts.refused
+        ? { refusedReason: facts.refusedReason }
+        : {}),
       timedOut,
       timeoutMs: appliedTimeoutMs,
       workerStarted: Boolean(nativePid),

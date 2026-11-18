@@ -1274,9 +1274,15 @@ test("planning and release-close reads run in a fresh exported instance", async 
       "docs/planning/broken-link.md",
       "# Instance document\n\n[Missing](absent.md)\n",
     );
+    // A link that resolves nowhere is a stop that advises in an exported
+    // instance: the check names the file, the line and the stop, and passes.
     const broken = run(kit, process.execPath, ["scripts/docs-check.mjs"]);
-    assert.notEqual(broken.status, 0);
-    assert.match(broken.stderr, /broken-link.md.*missing file: absent.md/u);
+    assert.equal(broken.status, 0, broken.stdout + broken.stderr);
+    assert.match(
+      broken.stdout,
+      /^ADVISED docs\/planning\/broken-link\.md:\d+: missing file: absent\.md.* \(stop docs-links\)$/mu,
+    );
+    assert.doesNotMatch(broken.stderr, /broken-link/u);
     write(
       kit,
       "docs/publication/everyday-ai-user-toc.md",

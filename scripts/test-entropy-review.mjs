@@ -68,6 +68,10 @@ import {
   FakeEntropyTransport,
   cannedReviewerOutput,
 } from "../packages/skeleton/dist/src/entropy-review-fake.js";
+import {
+  KIT_MODELS,
+  KIT_WORKERS,
+} from "../packages/skeleton/src/worker-models.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -848,9 +852,16 @@ export async function entropyFixtures() {
           };
         });
       }
-      for (const [transport, model, effort, identity] of [
-        ["codex-cli-exec", "gpt-6.1-sol", "max", "substitute reviewer"],
-        ["claude-cli-print", "claude-opus-5-5", "xhigh", "entropy-reducer@1"],
+      // With no --model each transport runs the kit's default worker for its
+      // provider, as the one model table binds it.
+      const kitDefault = (provider) => {
+        const binding = KIT_WORKERS.default[provider];
+        const model = KIT_MODELS[binding.model ?? binding];
+        return { model: model.id, effort: binding.effort ?? model.effort };
+      };
+      for (const [transport, { model, effort }, identity] of [
+        ["codex-cli-exec", kitDefault("codex"), "substitute reviewer"],
+        ["claude-cli-print", kitDefault("claude"), "entropy-reducer@1"],
       ]) {
         const repo = fixtureRepository(parent);
         const begun = await entropy(["review", "--transport", transport], repo);
