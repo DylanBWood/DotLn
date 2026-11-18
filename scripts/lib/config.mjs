@@ -11,9 +11,18 @@ import {
   openSync,
   readFileSync,
 } from "node:fs";
-import { dirname, join, posix, resolve } from "node:path";
+import { dirname, isAbsolute, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { featureAliases, resolveFeatureId } from "./feature-registry.mjs";
+import {
+  featureAliases,
+  knownFeatureId,
+  resolveFeatureId,
+} from "./feature-registry.mjs";
+import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  readStopsSection,
+  resolveStop,
+} from "../../packages/skeleton/src/stops.mjs";
 import {
   validateModels,
   validateNamedWorkers,
@@ -125,6 +134,7 @@ const SECTION_KEYS = [
   "kit",
   "drive",
   "features",
+  "stops",
   "derivedOrders",
   "portfolios",
   "contributions",
@@ -574,42 +584,71 @@ const instanceWorkers = (launchpad, named, file) => {
   return Object.freeze(workers);
 };
 
-const validateFeatures = (path, declared) => {
+// A line that sets nothing is named once in a process, however many
+// commands and readers load the configuration, and stops none of them.
+const advised = new Set();
+export const adviseOnce = (message) => {
+  if (advised.has(message)) return;
+  advised.add(message);
+  console.warn(`Advisory: ${message}`);
+};
+
+const validateFeatures = (path, declared, { instance, advise }) => {
   requireObject(path, declared, "features");
   const seen = new Set();
   return Object.fromEntries(
-    Object.entries(declared).map(([originalId, value]) => {
-      let id;
-      try {
-        id = resolveFeatureId(originalId, {
-          ...(Object.hasOwn(featureAliases, originalId)
-            ? {
-                release: JSON.parse(
-                  readFileSync(
-                    join(TOOL_ROOT, "packages/skeleton/package.json"),
-                    "utf8",
-                  ),
-                ).version,
-              }
-            : {}),
-        });
-      } catch (error) {
-        throw refuse(path, error.message);
+    Object.entries(declared).flatMap(([originalId, value]) => {
+      // An instance's owner who mistypes a key, or keeps one a later kit
+      // dropped, is told and the command goes on; core refuses its own.
+      if (!knownFeatureId(originalId) && instance()) {
+        advise(
+          `features.${originalId} in ${CONFIG_FILENAME} names no feature and sets nothing; npm run features -- list prints the known ids`,
+        );
+        return [];
       }
-      if (seen.has(id))
-        throw refuse(path, `duplicate features.${id} through a renamed id`);
-      seen.add(id);
-      if (typeof value === "boolean") return [id, value];
-      const label = `features.${id}`;
-      requireObject(path, value, label);
-      requireKnownKeys(path, value, ["on", "note"], label);
-      if (typeof value.on !== "boolean")
-        throw refuse(path, `${label}.on must be a boolean`);
-      if (value.note !== undefined && typeof value.note !== "string")
-        throw refuse(path, `${label}.note must be a string`);
-      return [id, { ...value }];
+      return [featureElection(path, originalId, value, seen)];
     }),
   );
+};
+
+const featureElection = (path, originalId, value, seen) => {
+  let id;
+  try {
+    id = resolveFeatureId(originalId, {
+      ...(Object.hasOwn(featureAliases, originalId)
+        ? {
+            release: JSON.parse(
+              readFileSync(
+                join(TOOL_ROOT, "packages/skeleton/package.json"),
+                "utf8",
+              ),
+            ).version,
+          }
+        : {}),
+    });
+  } catch (error) {
+    throw refuse(path, error.message);
+  }
+  if (seen.has(id))
+    throw refuse(path, `duplicate features.${id} through a renamed id`);
+  seen.add(id);
+  if (typeof value === "boolean") return [id, value];
+  const label = `features.${id}`;
+  requireObject(path, value, label);
+  requireKnownKeys(path, value, ["on", "note"], label);
+  if (typeof value.on !== "boolean")
+    throw refuse(path, `${label}.on must be a boolean`);
+  if (value.note !== undefined && typeof value.note !== "string")
+    throw refuse(path, `${label}.note must be a string`);
+  return [id, { ...value }];
+};
+
+// The levels a root's owner gives its stops. A line that names no stop or no
+// level is named in one advisory and sets nothing; nothing here refuses.
+const validateStops = (declared, advise) => {
+  const { levels, advisories } = readStopsSection(declared);
+  for (const message of advisories) advise(message);
+  return Object.freeze(levels);
 };
 
 // Regenerable output a close deletes: relative normalized POSIX paths inside
@@ -1225,7 +1264,21 @@ const validateHistoricalWorkOrders = (path, value = []) => {
   return [...value].sort();
 };
 
-export const validateConfig = (path, source) => {
+/** Validate a configuration's text. `instance` says whether the root it
+ * governs is an exported instance, where a line that names nothing known
+ * advises instead of refusing; without it the root is the one that holds
+ * the file, or the one that holds these scripts for a bare file name.
+ * `advise` receives each such line once. */
+export const validateConfig = (
+  path,
+  source,
+  {
+    instance = () => isKitRoot(isAbsolute(path) ? dirname(path) : TOOL_ROOT),
+    advise = adviseOnce,
+  } = {},
+) => {
+  let known;
+  const inInstance = () => (known ??= instance() === true);
   let parsed;
   try {
     parsed = JSON.parse(source);
@@ -1281,7 +1334,9 @@ export const validateConfig = (path, source) => {
     features: validateFeatures(
       path,
       declared.features === undefined ? {} : declared.features,
+      { instance: inInstance, advise },
     ),
+    stops: validateStops(declared.stops, advise),
     workers: validateWorkers(
       path,
       declared.workers === undefined ? {} : declared.workers,
@@ -1300,7 +1355,11 @@ export const validateConfig = (path, source) => {
  * when there is no text; a reader of another commit's configuration resolves
  * paths as that commit did. A malformed text refuses by path. */
 export const configuredRoots = (source, path = CONFIG_FILENAME) =>
-  source === null ? defaultRoots() : validateConfig(path, source).roots;
+  source === null
+    ? defaultRoots()
+    : // Another commit's text is read for its roots alone: what it advises
+      // of was said when that commit's own configuration was loaded.
+      validateConfig(path, source, { advise: () => {} }).roots;
 
 const absentConfig = () => ({
   version: CONFIG_SCHEMA_VERSION,
@@ -1315,6 +1374,7 @@ const absentConfig = () => ({
   kit: { applyInstanceActions: false },
   drive: validateDrive(CONFIG_FILENAME, {}),
   features: {},
+  stops: Object.freeze({}),
   workers: validateWorkers(CONFIG_FILENAME, {}),
   extensions: {},
 });
@@ -1357,7 +1417,9 @@ export const loadConfig = (root) => {
     const key = `${stat.dev}:${stat.ino}:${stat.mtimeMs}:${stat.size}|${models.key}`;
     const cached = cache.get(launchpad);
     if (cached?.key === key) return cached.config;
-    const declared = validateConfig(path, readFileSync(fd, "utf8"));
+    const declared = validateConfig(path, readFileSync(fd, "utf8"), {
+      instance: () => isKitRoot(launchpad),
+    });
     const config = Object.freeze({
       launchpad,
       path,
@@ -1371,6 +1433,29 @@ export const loadConfig = (root) => {
     closeSync(fd);
   }
 };
+
+/** The level a command answers one stop at: the line of the root's own
+ * `stops` section, or the kit's level for the root's kind, which refuses in
+ * core and advises in an exported instance on every stop that does not guard
+ * its owner's work. A hook has its levels from the emit; a command that
+ * enforces a stop itself reads them here when it runs. */
+export const stopLevel = (root, id) => {
+  const config = loadConfig(root);
+  return resolveStop(id, {
+    instance: isKitRoot(resolve(root)),
+    stops: config.stops,
+    elections: declaredElections(config),
+  }).level;
+};
+/** The elections a root's own configuration makes, by feature id, true or
+ * false as written; a feature it leaves to its default has no entry. */
+export const declaredElections = (config) =>
+  Object.fromEntries(
+    Object.entries(config.features).map(([id, value]) => [
+      id,
+      typeof value === "boolean" ? value : value.on,
+    ]),
+  );
 
 const ascend = (from) => {
   let directory = resolve(from);

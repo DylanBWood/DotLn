@@ -30,10 +30,10 @@ under `build`, the drive sandbox under `drive`, kit instance actions under
 switches and the saved `build.loadout` and `build.profile` keys remain unread; the registry does not pretend that a declared key
 changes output. Budgets and retention remain in `docs/control/budgets.json`,
 where `null` removes a bound or retains a class. Their actual file source
-is shown in the generated page. The spawn-cap runtime still reads the default
-`docs/control/budgets.json` even when the control root is relocated; process
-bounds, driven limits and retention read the configured control root. The
-inventory reflects that distinction. An instance owns these files and its overlay;
+is shown in the generated page. The spawn cap, process bounds, driven limits
+and retention all read `budgets.json` in the configured control root, so a
+relocated root moves every one of them; the inventory names that file. An
+instance owns these files and its overlay;
 `scope: core` marks a core choice, not an instance obligation.
 
 Some configuration is not a feature toggle. `roots` relocates the document
@@ -43,9 +43,25 @@ contract. An instance can gather its own planning inputs with an owned script
 on the operator's word; a source adapter remains WO-207's work. These
 contracts stay in [product 07](07-execution-guide.md#where-the-control-plane-finds-its-documents).
 
-The generated harness contract's refusal classes, the single-writer
-reservation and the clean-room floor are not electable. A feature changes
-behavior under that floor; it cannot turn the floor off.
+What a hook denies and what fails a gate is not a feature either. Each is
+a stop of one table, with a class (what it protects) and a level (`refuse`,
+`advise` or `off`) that one line of the `stops` section of
+`dotln.config.json` sets; the generated page lists every stop under the
+feature table, with its level in that root and the line that changes it,
+and the writer reservation and the nine hook refusals are rows of it
+([docs/KIT.md §Stops](../KIT.md#stops);
+[decision](../evidence/WO-287/decisions.md#wo-287-d005--part-a-the-table-of-stops-as-built-its-rows-their-classes-and-what-has-no-line)).
+The rules the kit puts into a session's instructions are on the same page:
+each feedback unit and shared role rule with its layer, `platform` or
+`author`, and an instance removes any of the author's in its build overlay
+([docs/KIT.md §What is the kit's and what is the author's](../KIT.md#what-is-the-kits-and-what-is-the-authors);
+[decision](../evidence/WO-287/decisions.md#wo-287-d015--part-b-the-layer-of-each-shared-rule-and-of-the-ten-units-with-its-reason)).
+The Clean Room floor is neither a feature, a stop nor a rule of that table.
+In core it is repository governance, hand-written and locked; in an
+exported instance the Clean Room and Secrets sections of `CLAUDE.md` are
+the owner's own text (ADR-0006, decision 6): no stop and no overlay line
+names them, and `private-destination` above changes one paragraph of
+Secrets where the owner elects it.
 
 Source: [the planning pass of 2026-10-30](../planning/passes/node24-features-config-plan-first-no-work-stream-2026-10-30.md)
 and [WO-241's implementation decisions](../evidence/WO-241/decisions.md).

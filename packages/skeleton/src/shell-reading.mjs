@@ -169,8 +169,10 @@ const controlWords = new Set([
  * words.
  * @param {string} source
  * @param {(words: ShellWord[]) => ShellWord[]} programOf
+ * @param {{simpleLists?: boolean}} [options] Require simple command boundaries
+ * for diagnostic output that may expose a word identified as a program.
  * @returns {ShellInvocation[]} */
-export function shellWords(source, programOf) {
+export function shellWords(source, programOf, { simpleLists = false } = {}) {
   const lines = source.split("\n");
   /** @type {ShellInvocation[]} */
   const commands = [];
@@ -193,14 +195,19 @@ export function shellWords(source, programOf) {
   /** @type {{ delimiter: string, words: ShellWord[] }[]} */
   let heredocs = [];
   let needsDelimiter = false;
+  // Whether the word read last is a redirection still waiting for its
+  // target, as `>`, `2>` and `>&` are while no word follows them.
+  let awaiting = false;
   const flush = () => {
     if (!inWord) return;
+    awaiting = redirects && /[<>&]$/u.test(word);
     if (equals >= 0 && word.length > equals + 1) expands = true;
     if (needsDelimiter) {
       heredocs.push({ delimiter: word, words: current });
       needsDelimiter = false;
     } else if (!current.length && !quoted && controlWords.has(word)) {
       // These reserved words introduce a command list, not an executable.
+      if (simpleLists) throw new HarnessCommandRefused(SHELL_CONTROL_SYNTAX);
     } else if (
       !current.length &&
       !quoted &&
@@ -218,6 +225,13 @@ export function shellWords(source, programOf) {
   };
   const finish = (piped = false) => {
     flush();
+    // A command that ends on a redirection with no target is none the shell
+    // runs as it stands: `>|` is one operator to it (it writes over a file),
+    // and a bare `>` before a separator is an error. Read on, the target or
+    // the words after it would stand where the next command's program
+    // stands. A diagnostic reading refuses the line.
+    if (simpleLists && awaiting)
+      throw new HarnessCommandRefused(SHELL_CONTROL_SYNTAX);
     if (!current.length) {
       if (piped && completedGroup) {
         pipeline = completedGroup;
@@ -260,6 +274,10 @@ export function shellWords(source, programOf) {
       if (char === "`" || (char === "$" && line[i + 1] === "("))
         throw new HarnessCommandRefused(DYNAMIC_SHELL_SUBSTITUTION);
       // zsh also expands `$=name`, `$^name`, `$~name` and `$+name`.
+      // The shell reads `$'…'` with escapes of its own, an escaped quote
+      // among them, which the quoting below does not follow.
+      if (simpleLists && !quote && char === "$" && line[i + 1] === "'")
+        throw new HarnessCommandRefused(DYNAMIC_SHELL_SUBSTITUTION);
       if (char === "$" && /[A-Za-z0-9_{$'"@*#?!=^~+-]/.test(line[i + 1] ?? ""))
         dynamic = true;
       if (quote === '"') {
@@ -273,7 +291,22 @@ export function shellWords(source, programOf) {
         quoted = true;
         continue;
       }
+      // The shell opens a comment at a `#` set against a redirection, which
+      // leaves the redirection without its target: the comment's words are
+      // no command's.
+      if (
+        simpleLists &&
+        char === "#" &&
+        inWord &&
+        redirects &&
+        /[<>&]$/u.test(word)
+      )
+        throw new HarnessCommandRefused(SHELL_CONTROL_SYNTAX);
       if (char === "#" && !inWord) break;
+      // In a conditional, pattern or array a list separator can belong to
+      // the enclosing expression. Only the general reader flattens groups.
+      if (simpleLists && (/[()[\]{}]/u.test(char) || line.startsWith("<<", i)))
+        throw new HarnessCommandRefused(SHELL_CONTROL_SYNTAX);
       // A shell's blanks are space and tab; lines are already split. Any other
       // whitespace stays inside its word, where a `#` begins no comment.
       if (char === " " || char === "\t") {

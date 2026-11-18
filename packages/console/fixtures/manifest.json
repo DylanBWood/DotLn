@@ -82,9 +82,9 @@
     },
     "maturity": {
       "path": "packages/console/fixtures/inputs/selfhostMaturity.json",
-      "ref": "docs/evidence/WO-276/feedback-002/feedback.json",
+      "ref": "docs/evidence/WO-287/feedback-001/feedback.json",
       "format": "json",
-      "sha256": "18ffbe810a5d85515495992431bbcc51c19e66b857293c8189a7f8122f4b760a"
+      "sha256": "e1d0083e4409d3cd8c0bae73ee03b59e1eaf96cd3ae81166e46b481eac8287d7"
     },
     "controlLog": {
       "path": "docs/control/orders/WO-031.jsonl",

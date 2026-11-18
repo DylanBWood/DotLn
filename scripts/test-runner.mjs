@@ -2,6 +2,7 @@
 import { formatDuration } from "./lib/duration.mjs";
 import {
   dispatchStanding,
+  dispatchBoundMessage,
   dispatchBoundResult,
   recordBoundStop,
 } from "./lib/dispatch-bound.mjs";
@@ -63,6 +64,7 @@ import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import {
+  namesTimeLimitMiss,
   reportTimeLimitAdvisories,
   suiteTimeLimitKey,
   timeLimit,
@@ -119,7 +121,13 @@ import {
   structuralTasks,
 } from "./lib/generated-artifacts.mjs";
 export { CORE_STRUCTURAL_TASKS, STRUCTURAL_TASKS };
-import { docRelative } from "./lib/config.mjs";
+import { docRelative, stopLevel } from "./lib/config.mjs";
+import {
+  ADVISED_STOPS_LINE,
+  GATE_TASK_STOPS,
+  resolveStop,
+  stopAdvisory,
+} from "../packages/skeleton/src/stops.mjs";
 import {
   GENERATED_SUITES,
   machinerySources,
@@ -580,7 +588,12 @@ export const suites = [
     preflight: true,
     instance: "document",
   },
-  // test-configuration-root imports test-features for the registry/schema cases.
+  // test-configuration-root imports test-features for the registry/schema
+  // cases. The features page prints the rules, which it reads from the built
+  // loadout, and the overlay reader loads the built compiler. The row asks
+  // for no build of its own: it is a structural task, in every selection and
+  // in the document gate, and a selection compiles a stale runtime before it
+  // captures its subject, so the build the suite reads is the checkout's.
   nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
     needsBuild: false,
     protects:
@@ -2627,8 +2640,88 @@ export const failedOutputOnly = ({ output, ...row }) => ({
   ...(Array.isArray(row.cases)
     ? { cases: row.cases.map(failedOutputOnly) }
     : {}),
-  ...(output && (row.exitCode !== 0 || !row.executed) ? { output } : {}),
+  // An advised task keeps what it said, as a failed one does.
+  ...(output &&
+  (row.exitCode !== 0 || !row.executed || row.advisedStops?.length)
+    ? { output }
+    : {}),
 });
+
+/** The task that names the stops it advised on in a line of its output. */
+const MARKED_TASKS = new Set(["docs-check"]);
+/** A task's result at the level its root gives the stop it is. A task that
+ * holds one check is one stop of the table: where that stop advises, its
+ * failure is recorded as advised, with its output, and fails nothing, so the
+ * tasks after it run and the selection can pass. A task that holds several
+ * stops (the document check, the host row) judges each failure itself and
+ * names, on one line of its output, the stops that advised. A task ended
+ * for time, for memory or by a stop request judged nothing and is no stop of
+ * the table: it fails at any level. So does a task one of whose own checks
+ * was ended for time, which its output says in the time limit's own words
+ * (the license check's dry run, the index check's read of the suites, a
+ * generated check, the harness check's read of Git), and the generated row
+ * where one of its checks could not be started. An advised task is never a
+ * pass a later selection carries.
+ * @param {object} result the task's result as it ran
+ * @param {{name: string}} row its row of the suite table
+ * @param {(id: string) => "refuse" | "advise" | "off"} levelOf */
+export function stopOutcome(result, row, levelOf) {
+  if (!result?.executed) return result;
+  // The stops a passing task met and advised on. A structural row's are in
+  // the result it reported, and so is a bound the host row was started
+  // past. The document check, which holds several, names its own in one
+  // line of its output; no other task's output is read for that line, so a
+  // suite that prints a fixture's document check is never taken for
+  // advised.
+  let own = Array.isArray(result.advisedStops)
+    ? result.advisedStops.filter((stop) => typeof stop === "string")
+    : [];
+  if (MARKED_TASKS.has(row.name)) {
+    const lines = (result.output ?? "").split("\n");
+    const marker = lines.find((line) => line.startsWith(ADVISED_STOPS_LINE));
+    if (marker !== undefined) {
+      try {
+        const named = JSON.parse(marker.slice(ADVISED_STOPS_LINE.length));
+        if (Array.isArray(named))
+          own = [
+            ...new Set([
+              ...own,
+              ...named.filter((stop) => typeof stop === "string"),
+            ]),
+          ];
+      } catch {
+        /* A malformed line names nothing. */
+      }
+      result = {
+        ...result,
+        output: lines.filter((line) => line !== marker).join("\n"),
+      };
+    }
+  }
+  if (result.exitCode === 0)
+    return own.length ? { ...result, advisedStops: own } : result;
+  if (
+    result.failureKind ||
+    result.stopped ||
+    result.timedOut ||
+    // The generated row reports each artifact's check as a case of its own:
+    // one ended for time, or one that could not be started, judged nothing.
+    (Array.isArray(result.cases) &&
+      result.cases.some((entry) => entry?.timedOut || entry?.unavailable)) ||
+    // A check the task ran under a time limit of its own was ended for
+    // time: the task says so in that limit's words.
+    namesTimeLimitMiss(result.output)
+  )
+    return result;
+  const stop = GATE_TASK_STOPS[row.name];
+  if (!stop || levelOf(stop) === "refuse") return result;
+  return {
+    ...result,
+    exitCode: 0,
+    advisedStops: [stop],
+    advisedExitCode: result.exitCode,
+  };
+}
 export const withoutOutput = ({ output, ...row }) => ({
   ...row,
   ...(Array.isArray(row.cases) ? { cases: row.cases.map(withoutOutput) } : {}),
@@ -2766,6 +2859,16 @@ async function runGateChecks(
     temporaryGateId = randomUUID(),
   } = {},
 ) {
+  // The level this root gives a stop, read when the gate runs. A root whose
+  // configuration cannot be loaded answers at the kit's level for its kind,
+  // so the configuration row can still say what the loader refused.
+  const levelOf = (id) => {
+    try {
+      return stopLevel(repo, id);
+    } catch {
+      return resolveStop(id, { instance: isKitRoot(repo) }).level;
+    }
+  };
   let document = false,
     machinery = false,
     review = false,
@@ -3070,6 +3173,18 @@ async function runGateChecks(
     if (!selected.length)
       throw new Error(
         `Nothing remains to run while confined: ${excluded.map((row) => row.name).join(", ")} ${excluded.length === 1 ? "needs" : "need"} the outside`,
+      );
+  } else if (
+    sandbox.inForce &&
+    excluded.length &&
+    levelOf("host-confinement") !== "refuse"
+  ) {
+    // The stop advises or is off in this root: the selection runs as it
+    // is, and the suites that need the outside say for themselves what
+    // the sandbox withheld.
+    if (levelOf("host-confinement") === "advise")
+      console.log(
+        `ADVISORY ${stopAdvisory("host-confinement", `this run carries the ${sandbox.marker} marker and is confined by the host, and ${excluded.map((row) => row.name).join(", ")} ${excluded.length === 1 ? "needs" : "need"} the outside`)}.`,
       );
   } else if (sandbox.inForce && excluded.length) {
     const base = document
@@ -3412,113 +3527,23 @@ async function runGateChecks(
         renameSync(`${peerFile}.tmp`, peerFile);
       },
       execute: async (row, cwd) => {
-        // Keep dispatch identity in the runner; fixture children deliberately
-        // receive no invoking harness session metadata.
-        if (row.name === "host" && judgeDispatchBound) {
-          const observedAt = Date.now();
-          try {
-            const standing = dispatchStanding(repo);
-            if (standing.state === "exceeded") {
-              const result = dispatchBoundResult(standing);
-              try {
-                recordBoundStop(repo, standing, "gate");
-              } catch (error) {
-                result.output += ` Stop record unavailable: ${error.message}.`;
-              }
-              return {
-                name: row.name,
-                executed: true,
-                durationMs: Date.now() - observedAt,
-                ...result,
-              };
-            }
-          } catch (error) {
-            return {
-              name: row.name,
-              executed: true,
-              exitCode: 1,
-              durationMs: Date.now() - observedAt,
-              output: `Dispatch standing unavailable: ${error.message}. Use analysis: to diagnose.`,
-            };
-          }
+        // A task that is one stop of the table is not run where that stop
+        // is off: the root asked to hear nothing of it.
+        const taskStop = GATE_TASK_STOPS[row.name];
+        if (taskStop && levelOf(taskStop) === "off") {
+          const at = new Date().toISOString();
+          return {
+            name: row.name,
+            exitCode: 0,
+            executed: true,
+            durationMs: 0,
+            output: "",
+            startedAt: at,
+            finishedAt: at,
+            stopOff: taskStop,
+          };
         }
-        const result =
-          row.name === "document-barrier"
-            ? {
-                name: row.name,
-                exitCode: 0,
-                durationMs: 0,
-                executed: true,
-                output: "",
-              }
-            : await executeSuite(
-                {
-                  ...(row.name === "host"
-                    ? hostTaskUnder(row, inheritedLease)
-                    : row),
-                  temporaryGateId,
-                  resourceMonitor: monitor,
-                  memoryLimits: limits,
-                  hostDirectory,
-                  activeOrder,
-                },
-                cwd,
-                undefined,
-                ({ name, message, elapsedMs }) =>
-                  console.log(
-                    `PROGRESS [${name}] ${formatDuration(elapsedMs)} ${message}`,
-                  ),
-                stop.signal,
-              );
-        // The document barrier is a synthetic row that runs nothing, so it
-        // registers no root of its own.
-        if (row.name !== "document-barrier")
-          finishSuiteRoots(row.name, result, cwd);
-        if (row.structural) {
-          const line = result.output
-            ?.split("\n")
-            .find((line) => line.startsWith("STRUCTURAL_RESULT "));
-          if (line) {
-            try {
-              const detail = JSON.parse(
-                line.slice("STRUCTURAL_RESULT ".length),
-              );
-              for (const key of [
-                "stale",
-                "cases",
-                "sample",
-                "fileEvents",
-                "boundStop",
-                "dispatchBound",
-              ])
-                if (detail[key] !== undefined) result[key] = detail[key];
-              if (Array.isArray(result.cases))
-                result.cases = result.cases.map(failedOutputOnly);
-              result.output = result.output
-                .split("\n")
-                .filter((line) => !line.startsWith("STRUCTURAL_RESULT "))
-                .join("\n");
-            } catch {
-              /* A malformed diagnostic never changes the process verdict. */
-            }
-          }
-        }
-        if (!row.build || result.exitCode !== 0) return result;
-        // A passing build attests the output it published. An output that
-        // cannot be attested leaves the pass without a digest, so it is
-        // never carried beside a task that runs.
-        let outputDigest;
-        try {
-          outputDigest = buildOutputDigest(cwd, row.outputs);
-        } catch {
-          /* Unreadable while this gate holds it: no attestation. */
-        }
-        if (outputDigest) return { ...result, outputDigest };
-        if (Array.isArray(row.outputs))
-          console.log(
-            `${checkId}: the build's declared output could not be attested (absent, unreadable, or holding a link or special file); no pass of this run will be carried`,
-          );
-        return result;
+        return stopOutcome(await executeRow(row, cwd), row, levelOf);
       },
       onResult(row) {
         if (row.name === "document-barrier") return;
@@ -3530,28 +3555,175 @@ async function runGateChecks(
           );
           return;
         }
+        const advised = (row.advisedStops?.length ?? 0) > 0;
         // A task ended for time is reported as time: it judged nothing, so
-        // its line does not say that a check failed.
+        // its line does not say that a check failed. A task one of whose
+        // stops advised is reported as advised, never as passed.
         console.log(
-          `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : row.failureKind === "timeout" ? "TIME" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
+          `${!row.executed ? "SKIP" : row.stopOff ? "OFF" : advised ? "ADVISED" : row.exitCode === 0 ? "PASS" : row.failureKind === "timeout" ? "TIME" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
         );
         // Successful checks still deliver their explicit diagnostics, the
         // criteria screen's advisories among them (WO-249), the lines a
         // passing terms task lists for the stage to read, and the document
         // check's one line on its long-paragraph list: the figure, where it
-        // came from and whether the list is empty or off (WO-281).
+        // came from and whether the list is empty or off (WO-281). A task
+        // that failed and was recorded as advised delivers what it said.
         for (const line of (row.output ?? "").trimEnd().split("\n"))
           if (
             row.exitCode !== 0 ||
-            /^(?:(?:ADVISORY|NEWER)\b|criteria advisory: |long paragraphs: )/u.test(
+            row.advisedExitCode !== undefined ||
+            /^(?:(?:ADVISORY|ADVISED|NEWER)\b|criteria advisory: |long paragraphs: )/u.test(
               line,
             ) ||
             (row.name === "kit-verify" && line.startsWith("kit: ")) ||
             (row.name === "terms" && line.startsWith("CONTEXT "))
           )
             console.log(`  [${row.name}] ${line}`);
+        if (row.advisedExitCode !== undefined)
+          for (const stop of row.advisedStops)
+            console.log(
+              `  [${row.name}] ADVISORY ${stopAdvisory(stop, `this task failed (exit ${row.advisedExitCode}) and is recorded as advised`)}.`,
+            );
+        if (row.stopOff)
+          console.log(
+            `  [${row.name}] stop ${row.stopOff} is off in this root: the task was not run`,
+          );
       },
     });
+    // Declared below the call that uses them: each runs only once a task
+    // does.
+    async function executeRow(row, cwd) {
+      // What the dispatch bound said where the host row was started past it
+      // and its stop advises: kept for the row's own record.
+      let boundAdvisory;
+      // Keep dispatch identity in the runner; fixture children deliberately
+      // receive no invoking harness session metadata.
+      if (row.name === "host" && judgeDispatchBound) {
+        const observedAt = Date.now();
+        try {
+          const standing = dispatchStanding(repo);
+          // The bound answers at the level of its stop, as the hook and
+          // the probe wrapper answer it: past it the gate is withheld at
+          // `refuse`, and at `advise` the host row runs and says so.
+          const boundLevel =
+            standing.state === "exceeded"
+              ? levelOf("dispatch-bound")
+              : "refuse";
+          if (standing.state === "exceeded" && boundLevel === "advise")
+            boundAdvisory = `ADVISORY ${stopAdvisory("dispatch-bound", dispatchBoundMessage(standing))}.`;
+          if (standing.state === "exceeded" && boundLevel === "refuse") {
+            const result = dispatchBoundResult(standing);
+            try {
+              recordBoundStop(repo, standing, "gate");
+            } catch (error) {
+              result.output += ` Stop record unavailable: ${error.message}.`;
+            }
+            return {
+              name: row.name,
+              executed: true,
+              durationMs: Date.now() - observedAt,
+              ...result,
+            };
+          }
+        } catch (error) {
+          return {
+            name: row.name,
+            executed: true,
+            exitCode: 1,
+            durationMs: Date.now() - observedAt,
+            output: `Dispatch standing unavailable: ${error.message}. Use analysis: to diagnose.`,
+          };
+        }
+      }
+      const result =
+        row.name === "document-barrier"
+          ? {
+              name: row.name,
+              exitCode: 0,
+              durationMs: 0,
+              executed: true,
+              output: "",
+            }
+          : await executeSuite(
+              {
+                ...(row.name === "host"
+                  ? hostTaskUnder(row, inheritedLease)
+                  : row),
+                temporaryGateId,
+                resourceMonitor: monitor,
+                memoryLimits: limits,
+                hostDirectory,
+                activeOrder,
+              },
+              cwd,
+              undefined,
+              ({ name, message, elapsedMs }) =>
+                console.log(
+                  `PROGRESS [${name}] ${formatDuration(elapsedMs)} ${message}`,
+                ),
+              stop.signal,
+            );
+      // The document barrier is a synthetic row that runs nothing, so it
+      // registers no root of its own.
+      if (row.name !== "document-barrier")
+        finishSuiteRoots(row.name, result, cwd);
+      if (row.structural) {
+        const line = result.output
+          ?.split("\n")
+          .find((line) => line.startsWith("STRUCTURAL_RESULT "));
+        if (line) {
+          try {
+            const detail = JSON.parse(line.slice("STRUCTURAL_RESULT ".length));
+            for (const key of [
+              "stale",
+              "cases",
+              "sample",
+              "fileEvents",
+              "boundStop",
+              "dispatchBound",
+              "advisedStops",
+            ])
+              if (detail[key] !== undefined) result[key] = detail[key];
+            if (Array.isArray(result.cases))
+              result.cases = result.cases.map(failedOutputOnly);
+            result.output = result.output
+              .split("\n")
+              .filter(
+                (line) =>
+                  !line.startsWith("STRUCTURAL_RESULT ") &&
+                  !line.startsWith(ADVISED_STOPS_LINE),
+              )
+              .join("\n");
+          } catch {
+            /* A malformed diagnostic never changes the process verdict. */
+          }
+        }
+      }
+      // A host row started past the bound, where the bound advises, says so
+      // in its own record: the row names the stop and keeps what it said.
+      if (boundAdvisory) {
+        result.output = `${boundAdvisory}\n${result.output ?? ""}`;
+        result.advisedStops = [
+          ...new Set([...(result.advisedStops ?? []), "dispatch-bound"]),
+        ];
+      }
+      if (!row.build || result.exitCode !== 0) return result;
+      // A passing build attests the output it published. An output that
+      // cannot be attested leaves the pass without a digest, so it is
+      // never carried beside a task that runs.
+      let outputDigest;
+      try {
+        outputDigest = buildOutputDigest(cwd, row.outputs);
+      } catch {
+        /* Unreadable while this gate holds it: no attestation. */
+      }
+      if (outputDigest) return { ...result, outputDigest };
+      if (Array.isArray(row.outputs))
+        console.log(
+          `${checkId}: the build's declared output could not be attested (absent, unreadable, or holding a link or special file); no pass of this run will be carried`,
+        );
+      return result;
+    }
     if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error(
         `Gate stopped by ${interrupted ?? "request"} after ${formatDuration(Date.now() - started)}; ${stoppedCheck ? `stopped row recorded: ${stoppedCheck.evidenceRef}` : `no check recorded for tree ${treeHash}`}`,
@@ -3624,10 +3796,20 @@ async function runGateChecks(
     const outputJudged = typeof built?.outputDigest === "string";
     const outputUnchanged =
       !outputJudged || buildOutputAttested(repo, buildRow, built);
+    // A build row its root's stop accepted without a pass, its own failure
+    // advised or its stop off and the row not run, published nothing to
+    // attest: the selection stands by its own success, as it does with any
+    // other advised or off task.
+    const buildAccepted = Boolean(
+      built?.stopOff || built?.advisedExitCode !== undefined,
+    );
     // A passing build that declares outputs and attested none leaves this
     // row's passes tied to no output: the row may pass and supplies nothing.
     const outputUnattested =
-      built?.exitCode === 0 && Array.isArray(buildRow.outputs) && !outputJudged;
+      built?.exitCode === 0 &&
+      Array.isArray(buildRow.outputs) &&
+      !outputJudged &&
+      !buildAccepted;
     const freshTasks = taskRows.filter((row) => row.executed && !row.reused);
     // Structural tasks and a preflight format run fresh in every selection;
     // a composition whose only fresh tasks are those reused everything else.
@@ -3715,6 +3897,23 @@ async function runGateChecks(
       failedFirst:
         taskRows.find((row) => row.exitCode !== 0 && row.executed)?.name ??
         null,
+      // The tasks whose failure advised, each with the stops it met, and
+      // those not run because their stop is off: neither is a pass, and no
+      // later selection carries one as a pass.
+      ...(taskRows.some((row) => row.advisedStops?.length)
+        ? {
+            advisedTasks: taskRows
+              .filter((row) => row.advisedStops?.length)
+              .map((row) => ({ name: row.name, stops: row.advisedStops })),
+          }
+        : {}),
+      ...(taskRows.some((row) => row.stopOff)
+        ? {
+            offTasks: taskRows
+              .filter((row) => row.stopOff)
+              .map((row) => ({ name: row.name, stop: row.stopOff })),
+          }
+        : {}),
       // A partial row names what it left out; no product-gate consumer reads it.
       ...(confinedPartial
         ? { partial: true, excludedSuites: excluded.map((row) => row.name) }
@@ -3914,7 +4113,7 @@ async function runGateChecks(
       `Gate cleanup: ${check.temporaryCleanup.removed.length} roots removed; ${check.temporaryCleanup.retained.length} retained; ${check.temporaryCleanup.blockers.length} blockers. Churn: ${JSON.stringify(check.churn)}. fseventsd: ${JSON.stringify(check.fileEvents)}`,
     );
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${formatDuration(check.durationMs)}; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${limitsUnchanged ? "" : `; the time limits ${timeLimitsPath(repo)} sets changed during the gate, so no pass of this row is carried or stands: run it again under the limits now in force`}${check.abandonedRoots?.length ? `; abandoned fixture roots: ${check.abandonedRoots.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed${check.advisedTasks ? ` (${check.advisedTasks.length} of them advised: ${check.advisedTasks.map((row) => row.name).join(", ")})` : ""}${check.offTasks ? ` (${check.offTasks.length} not run, their stops off: ${check.offTasks.map((row) => row.name).join(", ")})` : ""}; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${formatDuration(check.durationMs)}; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${limitsUnchanged ? "" : `; the time limits ${timeLimitsPath(repo)} sets changed during the gate, so no pass of this row is carried or stands: run it again under the limits now in force`}${check.abandonedRoots?.length ? `; abandoned fixture roots: ${check.abandonedRoots.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {

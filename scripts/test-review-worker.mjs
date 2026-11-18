@@ -25,6 +25,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  capAnswer,
   itemsTable,
   recordAgentReview,
   reviewsLane,
@@ -197,12 +198,26 @@ async function review(repo, args, env, now) {
   }
 }
 
+// What the kit's one model table launches for a worker on a provider: the
+// bound model's exact id, at the binding's effort or else the model's own.
+// A case that checks a launch reads it here, so that a change of model is
+// made in the table alone.
+const kitLaunch = async (worker, provider) => {
+  const { KIT_MODELS, KIT_WORKERS } =
+    await import("../packages/skeleton/src/worker-models.mjs");
+  const binding = KIT_WORKERS[worker][provider];
+  const model = KIT_MODELS[binding.model ?? binding];
+  return { model: model.id, effort: binding.effort ?? model.effort };
+};
+
 export async function reviewWorkerFixtures() {
   const parent = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-review-worker-fixtures-")),
   );
   try {
     await test("a criteria review on Codex writes its report pair, prints its counts, journals the launch and counts one use", async () => {
+      // A launch that names no worker runs the default worker.
+      const codexDefault = await kitLaunch("default", "codex");
       const repo = orderRepository(parent);
       const lane = join(repo, "docs/control/local/reviews/WO-901");
       const session = "fixture-codex-thread";
@@ -231,8 +246,8 @@ export async function reviewWorkerFixtures() {
       assert.equal(record.kind, "change-review-report");
       assert.deepEqual(record.review, { kind: "criteria", round: 1 });
       assert.equal(record.host, "codex");
-      assert.equal(record.model.value, "gpt-6.1-sol");
-      assert.equal(record.effort.value, "max");
+      assert.equal(record.model.value, codexDefault.model);
+      assert.equal(record.effort.value, codexDefault.effort);
       assert.equal(record.model.source, "command-line");
       assert.equal(record.since, git(repo, ["merge-base", "HEAD", "main"]));
       assert.equal(record.sinceSource, "the merge base with main");
@@ -277,7 +292,7 @@ export async function reviewWorkerFixtures() {
       assert.equal(launched[0].harnessVersion, "fixture-v1");
       assert.equal(launched[0].outcome, "report");
       assert.deepEqual(launched[0].model, {
-        value: "gpt-6.1-sol",
+        value: codexDefault.model,
         source: "command-line",
       });
       for (const key of ["startedAt", "endedAt", "durationMs", "tokens"])
@@ -1261,6 +1276,86 @@ export async function reviewWorkerFixtures() {
       );
     });
 
+    await test("WO-287 criterion A4: in an instance the review helper's launch past the cap starts its worker, counts the use and prints the cap's advisory; set to refuse it is withheld as in core", async () => {
+      const repo = orderRepository(parent);
+      // An exported instance: the kit's manifest and no package sources.
+      write(repo, "KIT-MANIFEST.json", "{}\n");
+      write(repo, "docs/control/budgets.json", prettyJson({ subagentCap: 1 }));
+      const session = "fixture-advised-thread";
+      const harness = join(repo, "docs/control/local/harness");
+      initializeSubagentCounter(harness, session);
+      const env = {
+        DOTLN_WORKER_FIXTURE: canned(parent, "advised", roundOne),
+        CODEX_THREAD_ID: session,
+      };
+      assert.ok(
+        (await review(repo, ["--kind", "criteria", "--host", "codex"], env))
+          .result.report,
+      );
+      // The second launch is past the cap: the worker runs all the same.
+      const advised = await review(
+        repo,
+        ["--kind", "design", "--host", "codex"],
+        env,
+      );
+      assert.equal(
+        advised.result.report,
+        "docs/control/local/reviews/WO-901/round-1-design.md",
+      );
+      assert.match(
+        advised.printed,
+        /^DotLn advisory: count 1, cap 1; docs\/control\/budgets\.json subagentCap, or the cap accepted for this dispatch, would be exceeded\..* Stop worker-cap advises in this root and the work goes on; it protects the worker uses one spawning session may make\. "stops": \{ "worker-cap": "refuse" \} in dotln\.config\.json makes it refuse and "off" silences it\.\n/u,
+      );
+      assert.equal(subagentUsage(repo, harness, session).count, 2);
+      // The cap's line joins what an admission already said: a count that
+      // is a minimum says so in a line of its own, and both are printed.
+      const minimum = "DotLn advisory: Subagents: at least 2/1";
+      const passed = {
+        exceeded:
+          "DOTLN_SUBAGENT_CAP_REFUSED: count at least 2, cap 1 would be exceeded.",
+        usage: {},
+      };
+      const both = capAnswer(repo, "worker-cap", {
+        ...passed,
+        advisory: minimum,
+      }).advisory.split("\n");
+      assert.equal(both.length, 2, both.join("\n"));
+      assert.equal(both[0], minimum);
+      assert.match(
+        both[1],
+        /^DotLn advisory: count at least 2, cap 1 would be exceeded\. Stop worker-cap advises in this root and the work goes on; /u,
+      );
+      assert.equal(
+        capAnswer(repo, "worker-cap", passed).advisory,
+        both[1],
+        "an admission that said nothing prints the cap's line alone",
+      );
+      // The owner's line makes the cap refuse again, as it does in core.
+      write(
+        repo,
+        "dotln.config.json",
+        prettyJson({ version: 1, stops: { "worker-cap": "refuse" } }),
+      );
+      const refused = await review(
+        repo,
+        ["--kind", "consistency", "--host", "codex"],
+        { ...env, DOTLN_WORKER_FIXTURE: join(parent, "absent.json") },
+      );
+      assert.match(
+        refused.printed,
+        /^DOTLN_SUBAGENT_CAP_REFUSED: count 2, cap 1; .* This is stop worker-cap, which protects the worker uses one spawning session may make\. Its level is this root's owner's to set: "stops": \{ "worker-cap": "advise" \} in dotln\.config\.json, then node scripts\/harness\.mjs emit; a session changes it only when its owner asks\./u,
+      );
+      assert.ok(
+        !existsSync(
+          join(
+            repo,
+            "docs/control/local/reviews/WO-901/round-1-consistency.md",
+          ),
+        ),
+      );
+      assert.equal(subagentUsage(repo, harness, session).count, 2);
+    });
+
     await test("a round needs what its brief states, a repair writes its own lane and no report is overwritten", async () => {
       const repo = orderRepository(parent);
       const env = { DOTLN_WORKER_FIXTURE: canned(parent, "rules", roundOne) };
@@ -2028,7 +2123,7 @@ export async function reviewWorkerFixtures() {
         /--model sol: "sol" is a codex model, and this launch is on claude/u,
       );
       assert.throws(
-        () => transportLaunch(undefined, "claude-cli-print", "gpt-6.1-sol"),
+        () => transportLaunch(undefined, "claude-cli-print", KIT_MODELS.sol.id),
         /"sol" is a codex model, and this launch is on claude/u,
       );
       assert.deepEqual(transportLaunch(undefined, "fake"), {
@@ -2355,6 +2450,9 @@ export async function reviewWorkerFixtures() {
     });
 
     await test("a dry run prints the Codex argv with its tool features on and the Claude argv with its read tools", async () => {
+      // Each host's launch runs that host's default worker.
+      const codexDefault = await kitLaunch("default", "codex");
+      const claudeDefault = await kitLaunch("default", "claude");
       const repo = orderRepository(parent);
       const codex = await review(
         repo,
@@ -2370,7 +2468,10 @@ export async function reviewWorkerFixtures() {
       assert.ok(disabled.length > 0);
       for (const feature of ["code_mode_host", "shell_tool", "unified_exec"])
         assert.ok(!disabled.includes(feature), feature);
-      assert.equal(codexArgv[codexArgv.indexOf("--model") + 1], "gpt-6.1-sol");
+      assert.equal(
+        codexArgv[codexArgv.indexOf("--model") + 1],
+        codexDefault.model,
+      );
       const claude = await review(
         repo,
         ["--kind", "criteria", "--host", "claude", "--dry-run"],
@@ -2386,9 +2487,12 @@ export async function reviewWorkerFixtures() {
         assert.ok(allowedTools.split(",").includes(tool), tool);
       assert.equal(
         claudeArgv[claudeArgv.indexOf("--model") + 1],
-        "claude-opus-5-5",
+        claudeDefault.model,
       );
-      assert.equal(claudeArgv[claudeArgv.indexOf("--effort") + 1], "xhigh");
+      assert.equal(
+        claudeArgv[claudeArgv.indexOf("--effort") + 1],
+        claudeDefault.effort,
+      );
       assert.ok(
         !existsSync(join(repo, "docs/control/local/reviews")),
         "a dry run writes nothing",
@@ -2494,6 +2598,9 @@ export async function reviewWorkerFixtures() {
     });
 
     await test("a consistency report is recorded only with its Traced consumers table, on the helper route and the record route", async () => {
+      const { KIT_MODELS } =
+        await import("../packages/skeleton/src/worker-models.mjs");
+      const astra = KIT_MODELS.astra.id;
       const repo = orderRepository(parent);
       const session = "fixture-traced-session";
       const refused = await review(
@@ -2652,7 +2759,7 @@ export async function reviewWorkerFixtures() {
       const recorded = await record(
         "traced.txt",
         `# Consistency review\n\n${TRACED}`,
-        ["--host", "codex", "--model", "gpt-6-astra", "--effort", "max"],
+        ["--host", "codex", "--model", astra, "--effort", "max"],
       );
       const json = JSON.parse(
         readFileSync(join(other, recorded.record), "utf8"),
@@ -2660,7 +2767,7 @@ export async function reviewWorkerFixtures() {
       assert.equal(json.host, "codex");
       assert.equal(json.transport, "codex-spawn-agent");
       assert.deepEqual(json.model, {
-        value: "gpt-6-astra",
+        value: astra,
         source: "recorder-attested",
       });
       assert.deepEqual(json.effort, {
@@ -2671,9 +2778,10 @@ export async function reviewWorkerFixtures() {
         name: "astra",
         selection: "recorder-attested",
       });
-      assert.match(
-        readFileSync(join(other, recorded.report), "utf8"),
-        /model `gpt-6-astra` at effort `max`, as the recorder attests; name `astra`, named with --model on record/u,
+      assert.ok(
+        readFileSync(join(other, recorded.report), "utf8").includes(
+          `model \`${astra}\` at effort \`max\`, as the recorder attests; name \`astra\`, named with --model on record`,
+        ),
       );
       await assert.rejects(
         recordAgentReview(

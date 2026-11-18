@@ -2286,6 +2286,13 @@
           "title": "Candidate — owner-sovereign implementation profile",
           "summary": "### Candidate — owner-sovereign implementation profile “Owner-sovereign” is the working label, not a selected public name. An implementation may offer an owner-controlled profile with deliberately permissive DotLn policy. The owner can classify a rule as hard, advisory, or absent; select a strict envelope, standing grant, or owner-direct authority regime; remove repeat confirmations; accept unverified outcomes; and disable or reduce retention, audit, and replay. The profile is not required to ship preconfigured or active, and the author's personal implementation does not adopt it merely because the platform can express it. Three concerns stay separate in its eventual design. **Instance doctr",
           "missing": false
+        },
+        {
+          "hash": "48de36fe0a8e5e112fb34873e4ec6579b4e91d6d801da8690676911c9f0dbf05",
+          "ref": "docs/product/03-architecture.md#candidate--owner-sovereign-implementation-profile",
+          "title": "Candidate — owner-sovereign implementation profile",
+          "summary": "### Candidate — owner-sovereign implementation profile “Owner-sovereign” is the working label, not a selected public name. An implementation may offer an owner-controlled profile with deliberately permissive DotLn policy. The owner can classify a rule as hard, advisory, or absent; select a strict envelope, standing grant, or owner-direct authority regime; remove repeat confirmations; accept unverified outcomes; and disable or reduce retention, audit, and replay. The profile is not required to ship preconfigured or active, and the author's personal implementation does not adopt it merely because the platform can express it. Three concerns stay separate in its eventual design. **Instance doctr",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -61677,6 +61684,518 @@
           "ref": "docs/evidence/WO-284/decisions.md#wo-284-d040--the-default-task-limits-reopening-condition-is-met-in-the-orders-own-passing-run-a-core-file-task-took-9209-s-the-figure-stays-and-the-finding-is-boarded",
           "title": "WO-284-D040: Core's slowest test file and the default task limit: bring scripts/test-target-worktree-close.mjs back to a time the default covers three times over, by dividing or lightening the file,…",
           "summary": "{ \"id\": \"WO-284-D040\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: final review; a reopening condition of the figures decision, met in the gate row this review consumes\", \"decision\": \"In the passing complete review row that stands at the reviewed code identity, the target-worktree close file took 920,870 ms under suite.default at 2,700,000 ms. WO-284-D003 names a core row passing 900 s as the first reason to reopen that figure, so it is reopened here. Its rule for a row only core runs is three times the slowest passing time: three times this run is 2,762,610 ms, 62,610 ms above the figure, which leaves 2.93 times. The order's Design states the rule over core's gate record of the thirty days b",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f18563c6740a6f6b",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "50d7ac374637ff14b3ec95084139cd5c2b8837e4d1c7b8e0f33b813b1e140a95",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d025--part-cs-two-readers-ten-findings-one-of-them-blocking-each-judged-what-was-closed-with-a-case-and-what-is-filed",
+          "title": "WO-287-D025: WO-287 Part C design notes left: (1) let the paraphrase rule's election ride the level the resolver already returns, so an elected root and a root with a written advise level report the…",
+          "summary": "{ \"id\": \"WO-287-D025\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; Part C's two readers returned at 19:59 and 20:05 UTC, frame rule 3\", \"decision\": \"Part C's two readers found ten things between them, one blocking and one to fix; each is judged here by the round-one standard. The combined reader on astra (round 1 over Part C's change, 0 h 10 min) found two. Its blocking finding: with the paraphrase rule's stop set to off the document check still ran the screen and printed how many runs it had found, where criterion 21 says nothing is said of them. Fixed: at off the screen is not run, the check prints one line saying the stop is off, and the criterion's case asserts that no count is prin",
+          "missing": false
+        },
+        {
+          "hash": "2c8a932cf9d0e127b215e7899f03e09847c823b5c0394f4bc38444cdcdad82ce",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d025--part-cs-two-readers-eleven-findings-one-of-them-blocking-each-judged-what-was-closed-with-a-case-and-what-is-filed",
+          "title": "WO-287-D025: WO-287 Part C design notes left: (1) let the paraphrase rule's election ride the level the resolver already returns, so an elected root and a root with a written advise level report the…",
+          "summary": "{ \"id\": \"WO-287-D025\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; Part C's two readers returned at 19:59 and 20:05 UTC, frame rule 3\", \"decision\": \"Part C's two readers reported eleven findings between them (two from the combined reader; one criteria, six design and two consistency findings from the reader on the default worker), one blocking and one to fix; each is judged here by the round-one standard. Three of the eleven are the same count printed at off. The combined reader on astra (round 1 over Part C's change, 0 h 10 min) found two. Its blocking finding: with the paraphrase rule's stop set to off the document check still ran the screen and printed how many runs it had found, whe",
+          "missing": false
+        },
+        {
+          "hash": "081e96f2d427fddf40ca6a6e41fe5a869f366d09902ab0790b5e29b631d26184",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d025--part-cs-two-readers-eleven-findings-one-of-them-blocking-each-judged-what-was-closed-with-a-case-and-what-is-filed",
+          "title": "WO-287-D025: WO-287 Part C design notes left: (1) let the paraphrase rule's election ride the level the resolver already returns, so an elected root and a root with a written advise level report the…",
+          "summary": "{ \"id\": \"WO-287-D025\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; Part C's two readers returned at 19:59 and 20:05 UTC, frame rule 3\", \"decision\": \"Part C's two readers reported eleven findings between them (two from the combined reader; one criteria, six design and two consistency findings from the reader on the default worker), one blocking and one to fix; each is judged here by the round-one standard. Three of the eleven are the same count printed at off. The combined reader on astra (round 1 over Part C's change, 0 h 10 min) found two. Its blocking finding: with the paraphrase rule's stop set to off the document check still ran the screen and printed how many runs it had found, whe",
+          "missing": false
+        },
+        {
+          "hash": "6daef8588d7e3f4e5ee7569f52cd5c45027ea591b51ceae578509c23d5419984",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d025--part-cs-two-readers-eleven-findings-one-of-them-blocking-each-judged-what-was-closed-with-a-case-and-what-is-filed",
+          "title": "WO-287-D025: WO-287 Part C design notes left: (1) let the paraphrase rule's election ride the level the resolver already returns, so an elected root and a root with a written advise level report the…",
+          "summary": "{ \"id\": \"WO-287-D025\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; Part C's two readers returned at 19:59 and 20:05 UTC, frame rule 3\", \"decision\": \"Part C's two readers reported eleven findings between them (two from the combined reader; one criteria, six design and two consistency findings from the reader on the default worker), one blocking and one to fix; each is judged here by the round-one standard. Three of the eleven are the same count printed at off. The combined reader on astra (round 1 over Part C's change, 0 h 10 min) found two. Its blocking finding: with the paraphrase rule's stop set to off the document check still ran the screen and printed how many runs it had found, whe",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fab6c96ffe7d5f46",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ab1eb08f8500e01c965472e907c406513b89a56ceb6fd964b1d872b478ad7bc5",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d027--from-the-list-four-places-where-a-roles-text-says-what-a-check-or-the-host-contradicts-filed-for-planning",
+          "title": "WO-287-D027: Role text against what a check or the host does, from an instance's list: (1) say what effort a worker's shell carries on each host, or drop the claim that it carries the root's; (2)…",
+          "summary": "{ \"id\": \"WO-287-D027\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; the operator's second scope message: entries of the list that are about role text, filed and not taken\", \"decision\": \"Three entries of the list say that a role's text tells a session something a check or the host contradicts, and one more of that kind came out of reading the drive. None is a stop an instance meets, so none is taken into this order (WO-287-D026). One: the executor's role says a worker's shell carries the root session's effort, and on the instance's host a worker read its own definition's effort. This session saw the same from the other side: two readers on the default worker said they could not read their",
+          "missing": false
+        },
+        {
+          "hash": "5309c35f415188dee8d94134d31c279bcce42b449bbed3d49ec3e2c715e432e8",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d027--from-the-list-four-places-where-a-roles-text-says-what-a-check-or-the-host-contradicts-filed-for-planning",
+          "title": "WO-287-D027: Role text against what a check or the host does, from an instance's list: (1) say what effort a worker's shell carries on each host, or drop the claim that it carries the root's; (2)…",
+          "summary": "{ \"id\": \"WO-287-D027\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; the operator's second scope message: entries of the list that are about role text, filed and not taken\", \"decision\": \"Three entries of the list say that a role's text tells a session something a check or the host contradicts, and one more of that kind came out of reading the drive. None is a stop an instance meets, so none is taken into this order (WO-287-D026). One: the executor's role says a worker's shell carries the root session's effort, and on the instance's host a worker read its own definition's effort. This session saw the same from the other side: two readers on the default worker said they could not read their",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a3866623326095c5",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "45e7958b0ecde985c1becb8b4b87cd386e10be972b029d93dd2ec06a107347d6",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d028--from-the-list-three-things-a-command-leaves-unprinted-filed-for-planning-beside-wo-288",
+          "title": "WO-287-D028: What a command prints, from an instance's list: (1) the review helper's dry run prints the same output and budget sections the helper appends to a prompt it sends, so a worker launched…",
+          "summary": "{ \"id\": \"WO-287-D028\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; the operator's second scope message: entries of the list that are about a command's output, filed and not taken\", \"decision\": \"Three entries of the list are about what a command prints or leaves unprinted. None is a stop, so none is taken into this order (WO-287-D026). One: the brief the review helper's dry run prints for a worker launched through the Agent route does not name every field the recorder requires, the schema version among them, so each such worker's first report is refused for its shape. WO-288's criterion 8 already asks that the helper's output section name every required field. This session met the nearer",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9ef88450f897ca37",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a1d307673fd0072c5948c9111bbe7846655212d282f4962b044600c5ca962681",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d029--from-the-list-two-seeded-texts-and-a-workers-leftovers-filed-for-planning-the-refused-removal-names-its-stop-and-line",
+          "title": "WO-287-D029: What an instance is seeded with and where a worker writes, from an instance's list: (1) the private-destination election reaches the seeded profile convention's sentence, or that…",
+          "summary": "{ \"id\": \"WO-287-D029\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; the operator's second scope message: entries of the list about seeded text and a worker's leftovers, filed and not taken\", \"decision\": \"Three entries of the list are about what an exported instance is seeded with, or about where a worker writes. One: the seeded convention for repository profiles forbids naming a hostname or an internal service, and electing the private-destination feature rewrites only the instruction file's Secrets paragraph, so an instance that admits its own identifiers keeps a convention that forbids what its profiles exist to describe. Two: an instance's instruction file carries no shell rules, and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-94c72cd916987081",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d038",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5ae7d86e331806a97488bcff2a29276a5cfb0a5d317c4d6b7ebf4e8cb1293215",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d038--round-2-of-the-paired-ladder-two-fixes-of-the-first-round-rechecked-as-not-held-or-incomplete-and-closed-at-their-cause-a-credential-file-after-a-flag-and-a-stop-hooks-refusal-the-drive-did-not-count-six-design-notes-two-fixed-against-the-rounds-rule-and-kept-four-recorded",
+          "title": "WO-287-D038: WO-287 round 2 design notes left: (1) one exported predicate for a credential path in packages/skeleton/src/harness-command.ts, with a remote-operand option, in place of the three…",
+          "summary": "{ \"id\": \"WO-287-D038\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; round 2 of the paired ladder, the rechecks, returned at 23:13 and 23:22 UTC, the plan's step 7\", \"decision\": \"Round 2 rechecked the paired round's fixes on the tree of checkpoint 9 and read the whole change again: the combined reviewer on astra over its three findings, and one default worker under the design brief over that brief's seven. The criteria and consistency reviews' rechecks were not launched with those two, against the round's rule, which asks every reviewer whose findings were fixed to confirm them: of their five findings four were fixed, one of those in part, and one is recorded (WO-287-D037). The gap was se",
+          "missing": false
+        },
+        {
+          "hash": "bfafb38ec839a8d34b53ec9ff4e27bb2b24fab6ba8997c942ad844c85e41d52e",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d038--round-2-of-the-paired-ladder-two-fixes-of-the-first-round-rechecked-as-not-held-or-incomplete-and-closed-at-their-cause-a-credential-file-after-a-flag-and-a-stop-hooks-refusal-the-drive-did-not-count-six-design-notes-two-fixed-against-the-rounds-rule-and-kept-four-recorded",
+          "title": "WO-287-D038: WO-287 round 2 design notes left: (1) one exported predicate for a credential path in packages/skeleton/src/harness-command.ts, with a remote-operand option, in place of the three…",
+          "summary": "{ \"id\": \"WO-287-D038\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; round 2 of the paired ladder, the rechecks, returned at 23:13 and 23:22 UTC, the plan's step 7\", \"decision\": \"Round 2 rechecked the paired round's fixes on the tree of checkpoint 9 and was asked to read the whole change again (corrected by WO-287-D042 from 'read the whole change again': the combined reviewer could run no test and confirmed by reading, and the design worker reported that within its budget it did not reach the Part B overlay readers beyond the stop rows, the configuration's stops validator, the subagent budget's source, the host source outside the paths that answer a stop, the suites other than the drive's",
+          "missing": false
+        },
+        {
+          "hash": "91b516f16dc8cb9718807139f17aaeac27f7d608ff9d23fba71a7292a87e34c3",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d038--round-2-of-the-paired-ladder-two-fixes-of-the-first-round-rechecked-as-not-held-or-incomplete-and-closed-at-their-cause-a-credential-file-after-a-flag-and-a-stop-hooks-refusal-the-drive-did-not-count-six-design-notes-two-fixed-against-the-rounds-rule-and-kept-four-recorded",
+          "title": "WO-287-D038: WO-287 round 2 design notes left: (1) one exported predicate for a credential path in packages/skeleton/src/harness-command.ts, with a remote-operand option, in place of the three…",
+          "summary": "{ \"id\": \"WO-287-D038\", \"date\": \"2026-11-17\", \"dispatch\": \"resume: next; round 2 of the paired ladder, the rechecks, returned at 23:13 and 23:22 UTC, the plan's step 7\", \"decision\": \"Round 2 rechecked the paired round's fixes on the tree of checkpoint 9 and was asked to read the whole change again (corrected by WO-287-D042 from 'read the whole change again': the combined reviewer could run no test and confirmed by reading, and the design worker reported that within its budget it did not reach the Part B overlay readers beyond the stop rows, the configuration's stops validator, the subagent budget's source, the host source outside the paths that answer a stop, the suites other than the drive's",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2d03d3d375fb7dae",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ba8b903822981ff8de5541bc54b69157e0f2c0f6a1acf7c1273f8bed2e56112a",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d040--round-2s-late-rechecks-the-criteria-and-consistency-fixes-hold-one-more-form-of-a-credential-file-passed-by-a-lowered-transport-a-redirect-and-a-batch-on-standard-input-closed-with-the-screens-reach-stated-two-remainders-filed",
+          "title": "WO-287-D040: WO-287 round 2 remainders: (1) the reach of the credential screen in every root: a credential file redirected into a program outside the classifier's list of readers, and one named as an…",
+          "summary": "{ \"id\": \"WO-287-D040\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: next; round 2's late rechecks, criteria and consistency, returned at 23:56 UTC on 17 November, the plan's step 7\", \"decision\": \"One default worker rechecked the criteria and the consistency reviews of the paired round on the tree of checkpoint 10, which held round 2's fixes, and read the whole change again under each brief (WO-287-D038 says why these two came late). Rechecks. Criteria: the first and second held; the third is recorded and not taken, as WO-287-D037 left it. Consistency: both held. New, one defect from two sides, each marked blocking on criterion 2: the screen of what a transport copies read only the operands of ",
+          "missing": false
+        },
+        {
+          "hash": "454d2bb243b20f66a3bf358b1e463f7a8766eba8e35e93b8eb14967f95cd7d8e",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d040--round-2s-late-rechecks-the-criteria-and-consistency-fixes-hold-one-more-form-of-a-credential-file-passed-by-a-lowered-transport-a-redirect-and-a-batch-on-standard-input-closed-with-the-screens-reach-stated-two-remainders-filed",
+          "title": "WO-287-D040: WO-287 round 2 remainders: (1) the reach of the credential screen in every root: a credential file redirected into a program outside the classifier's list of readers, and one named as an…",
+          "summary": "{ \"id\": \"WO-287-D040\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: next; round 2's late rechecks, criteria and consistency, returned at 23:56 UTC on 17 November, the plan's step 7\", \"decision\": \"One default worker rechecked the criteria and the consistency reviews of the paired round on the tree of checkpoint 10, which held round 2's fixes, and was asked to read the whole change again under each brief (WO-287-D038 says why these two came late). (Corrected by WO-287-D042 from 'read the whole change again': the worker confirmed the five rechecks and spot-checked criteria against the code. It reported that it did not read Part B's code against B1 to B8, the emitted target hook's runtime paths fo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bf4058e153a18281",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d045",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5a450a0da0378c92b30f83587065182e05ae5d9e439a5aa2a1e3ecafd5ea5d52",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d045--the-operators-point-that-a-finding-called-accepted-is-not-acted-on-true-of-the-findings-about-conduct-four-of-which-recurred-in-this-dispatch-the-handoffs-judgments-are-held-to-cases-run-alone-by-a-script-and-five-checks-are-filed-for-the-kit",
+          "title": "WO-287-D045: WO-287 conduct findings as checks: (1) a review record carries what its reviewer did not reach as a field, and a round's decision that cites the review must carry it too, held by the…",
+          "summary": "{ \"id\": \"WO-287-D045\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: next; the operator's point at 01:22 UTC on 18 November that a critic's finding called accepted is not thereby acted on\", \"decision\": \"The operator asked why the critics' findings were not being acted on, and said that calling one accepted means nothing. Read against the eight reports, the point holds for one kind of finding and not for the other. A finding that a record, a message or the code was wrong was repaired each time it was made: the records the critics named are corrected where they stand, the message to the operator was retracted, and the eighth critic's point about a rule described as a guarantee led to the rule's o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-747cfe30de394892",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d047",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cdffa22e55220def102c125394d9919e450d1dd20c2eaec00e2d6ca59e4f8e74",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d047--the-ninth-critics-three-points-each-answered-by-an-act-the-guard-case-reads-no-module-of-the-drive-the-live-tests-short-form-was-run-once-under-the-hosts-own-policy-and-showed-a-real-phase-start-be-declined-one-command-and-stop-with-its-reason-and-the-standing-file-says-what-was-decided",
+          "title": "WO-287-D047: WO-287 live test under the host's own policy: (1) an unattended phase's own lifecycle command was declined by the host's automatic review with no reason, here the release close's publish…",
+          "summary": "{ \"id\": \"WO-287-D047\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: next; the ninth critic's report, 02:43 UTC on 18 November, frame rule 4, and the live test it led to\", \"decision\": \"The ninth critic (astra, on a copy with the pasted list's lines and both names withheld, an independent count over the copy's bytes showing none) made three points. Its report went to the operator whole at 02:44 UTC before any was answered. Each is answered here by what was done, since WO-287-D045 records that a finding called accepted is not thereby acted on. One: search matches and a circular check taken as evidence, in the repair WO-287-D043 already corrected. What was still open of it: the case that holds the",
+          "missing": false
+        },
+        {
+          "hash": "415e4eefebc01e395fb7ff590a6bcf2a9a7d45e6643342644b1a8f4557912033",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d047--the-ninth-critics-three-points-each-answered-by-an-act-the-guard-case-reads-no-module-of-the-drive-the-live-tests-short-form-was-run-once-under-the-hosts-own-policy-and-showed-a-real-phase-start-be-declined-one-command-and-stop-with-its-reason-and-the-standing-file-says-what-was-decided",
+          "title": "WO-287-D047: WO-287 live test under the host's own policy: (1) in the phases a drive runs before the operator's merge (executor, verifier, final review), a command of the phase worker can be declined…",
+          "summary": "{ \"id\": \"WO-287-D047\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: next; the ninth critic's report, 02:43 UTC on 18 November, frame rule 4, and the live test it led to\", \"decision\": \"The ninth critic (astra, on a copy with the pasted list's lines and both names withheld, an independent count over the copy's bytes showing none) made three points. Its report went to the operator whole at 02:44 UTC before any was answered. Each is answered here by what was done, since WO-287-D045 records that a finding called accepted is not thereby acted on. One: search matches and a circular check taken as evidence, in the repair WO-287-D043 already corrected. What was still open of it: the case that holds the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6b0cd8cd103dedeb",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d048",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2161e2f0c6bc123f322224447c5568f95f85dde87403619dd65f0c73cf404e74",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d048--the-drive-could-not-finish-a-release-close-on-a-host-in-automatic-review-the-hosts-review-declined-the-one-helper-command-the-kits-hook-had-admitted-a-claude-release-close-phase-now-starts-with-a-narrow-rule-for-that-command-and-a-live-run-before-and-after-shows-the-stop-and-the-close",
+          "title": "WO-287-D048: WO-287 release close under a drive, what is left: a close that names material paths or is retried with a merged commit named is not covered by the exact rules a Claude release-close…",
+          "summary": "{ \"id\": \"WO-287-D048\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: next; the operator's direction at 03:07 UTC on 18 November that the drive's release close be fixed in this order\", \"decision\": \"The operator said that the drive has never been able to do a release close, and, when the executor answered that a real fix existed but would wait for another order because this order's review rounds were over, that this was no reason. The operator is right: the drive's workflow is what the first scope message asked to have fixed, the cause had just been found, and a closed review ladder is a reason to say what was not reviewed, not a reason to leave a known cause in place. It is fixed here, on the op",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c7472d153428490b",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d055",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "48c6ab4b0f6827c2d59b127a35338cd8e5818f1d65974aa3612f200c226ae2e0",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d055--two-guide-passages-need-the-effective-instance-configuration",
+          "title": "WO-287-D055: Align the kit guide's compiled-file drift description with gate-kit-verify levels and the two feature guides' spawn-cap paths with configured control-root relocation. Check both passages…",
+          "summary": "{ \"id\": \"WO-287-D055\", \"date\": \"2026-11-18\", \"dispatch\": \"WO-287 independent verification, shared documentation read\", \"decision\": \"File the two remaining guide inconsistencies for the in-scope documentation repair. One concerns kit-verify inside a gate. The other concerns the source of the spawn cap after a control-root relocation.\", \"evidence\": [ \"docs/KIT.md under The gates says compiled-file drift refuses the gate before selected suites run. scripts/test-launchpad-export.mjs exercises the default instance and records gate-kit-verify as advised on drift. The standalone verify command retains its own failure.\", \"docs/KIT.md under Features and docs/product/feature-configuration.md give the ",
+          "missing": false
+        },
+        {
+          "hash": "89225a915f9d863a64e26fb064edad3d8745440e7e868dcd74498303316f914f",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d055--two-guide-passages-need-the-effective-instance-configuration",
+          "title": "WO-287-D055: Align the kit guide's compiled-file drift description with gate-kit-verify levels and the two feature guides' spawn-cap paths with configured control-root relocation. Check both passages…",
+          "summary": "{ \"id\": \"WO-287-D055\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: verify, shared documentation read\", \"decision\": \"File the two remaining guide inconsistencies for the in-scope documentation repair. One concerns kit-verify inside a gate. The other concerns the source of the spawn cap after a control-root relocation.\", \"evidence\": [ \"docs/KIT.md under The gates says compiled-file drift refuses the gate before selected suites run. scripts/test-launchpad-export.mjs exercises the default instance and records gate-kit-verify as advised on drift. The standalone verify command retains its own failure.\", \"docs/KIT.md under Features and docs/product/feature-configuration.md give the fixed default bud",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Fixed in WO-287's first repair (WO-287-D064): docs/KIT.md's gate section now says a changed compiled file meets gate-generated and gate-kit-verify, which fail the selection where they refuse and advise with the suites run at an instance's default; docs/KIT.md's features notes and docs/product/feature-configuration.md now say the spawn cap reads budgets.json in the configured control root, as the other readers do.",
+          "reopenWhen": "The gate's kit verification or the spawn cap's budget path changes.",
+          "targets": [],
+          "at": "2026-11-18T08:05:16.000Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e2998a4ee551059c",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d056",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "40bfb57cb5f0e0928a497ad75d7ada9809338c2d805df5200830a77a6a6f5fd2",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d056--the-launchpads-compiled-authority-advisory-can-still-appear-with-a-transport-stop-off",
+          "title": "WO-287-D056: Clarify what an owner still sees from the launchpad's compiled authority when a host transport stop is off, or route that advisory through the level if the owner adopts uniform silence.…",
+          "summary": "{ \"id\": \"WO-287-D056\", \"date\": \"2026-11-18\", \"dispatch\": \"WO-287 independent verification, Part A\", \"decision\": \"Record the user-visible distinction between a lowered host deny rule and the launchpad's ordinary authority advisory. A fixture's emitted settings followed A11. The launchpad hook still described its compiled authority for the same classified effect. The table assigns the stop to host settings and the target guard, and WO-285 records the launchpad advisory as pre-existing.\", \"evidence\": [ \"The Part A reader passed an ordinary simulated transport call to the emitted launchpad permission hook at the off level. The response still reported the compiled authority. No transport ran.\", \"",
+          "missing": false
+        },
+        {
+          "hash": "c618206b1edf6e8879be4248d04fa4a958379330a2974eeb7b210fbccfc5de05",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d056--the-launchpads-compiled-authority-advisory-can-still-appear-with-a-transport-stop-off",
+          "title": "WO-287-D056: Clarify what an owner still sees from the launchpad's compiled authority when a host transport stop is off, or route that advisory through the level if the owner adopts uniform silence.…",
+          "summary": "{ \"id\": \"WO-287-D056\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: verify, Part A\", \"decision\": \"Record the user-visible distinction between a lowered host deny rule and the launchpad's ordinary authority advisory. A fixture's emitted settings followed A11. The launchpad hook still described its compiled authority for the same classified effect. The table assigns the stop to host settings and the target guard, and WO-285 records the launchpad advisory as pre-existing.\", \"evidence\": [ \"The Part A reader passed an ordinary simulated transport call to the emitted launchpad permission hook at the off level. The response still reported the compiled authority. No transport ran.\", \"packages/skeleton",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Fixed in WO-287's first repair (WO-287-D064): the kit guide's Stops section says that, with the ssh or package-publish stop lowered, the launchpad's hook still prints that its compiled authority does not permit the effect, a line that stops nothing while the host's permissions decide the call. Routing that line through the stop's level was rejected there, since it is the authority's own record of the effect.",
+          "reopenWhen": "The launchpad hook's authority answer changes, or the operator asks that a lowered transport stop silence the authority's line.",
+          "targets": [],
+          "at": "2026-11-18T08:05:16.160Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b50b1716a853de27",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d057",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c31edaf83fe5a56c7224b5783e5e269ae441a0d347a0ab00481347d82273c858",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d057--the-desktop-control-fixture-and-the-last-standing-record",
+          "title": "WO-287-D057: Complete the evidence gate's standing-file archive in the repair decision record. The complete pre-handoff form is recoverable at checkpoint 5285a2ff3311ab207bfd02e0c521a35186e374e5.…",
+          "summary": "{ \"id\": \"WO-287-D057\", \"date\": \"2026-11-18\", \"kind\": \"correction\", \"dispatch\": \"WO-287 independent verification, evidence read\", \"misread\": \"One sentence in D018 reverses the target guard's desktop-control result.\", \"meant\": \"The registered target guard refuses desktop control under each tested level and election.\", \"changed\": \"The independent A2 fixture confirms the refusal at each setting. This dated clarification preserves the earlier record and supplies its disposition.\", \"decision\": \"Use the target fixture as the evidence for the desktop result. Preserve the final executor standing file by its checkpoint and state what followed it. At 05:02 UTC all five parts and the review ladder were ",
+          "missing": false
+        },
+        {
+          "hash": "4612a66ef8b491cc936492a0105f10ac48cf56e2e1c5f0f587ea6e1e8a569ca8",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d057--the-desktop-control-fixture-and-the-last-standing-record",
+          "title": "WO-287-D057: Complete the evidence gate's standing-file archive in the repair decision record. The complete pre-handoff form is recoverable at checkpoint 5285a2ff3311ab207bfd02e0c521a35186e374e5.…",
+          "summary": "{ \"id\": \"WO-287-D057\", \"date\": \"2026-11-18\", \"kind\": \"correction\", \"dispatch\": \"resume: verify, evidence read\", \"misread\": \"One sentence in D018 reverses the target guard's desktop-control result.\", \"meant\": \"The registered target guard refuses desktop control under each tested level and election.\", \"changed\": \"The independent A2 fixture confirms the refusal at each setting. This dated clarification preserves the earlier record and supplies its disposition.\", \"decision\": \"Use the target fixture as the evidence for the desktop result. Preserve the final executor standing file by its checkpoint and state what followed it. At 05:02 UTC all five parts and the review ladder were complete, the doc",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Fixed in WO-287's first repair (WO-287-D065): the standing file's last form is archived in the order's decisions as it stood at checkpoint 5285a2ff3311ab207bfd02e0c521a35186e374e5, with each pending step reconciled against WO-287-D052, the claims check and the ImplementationReady event.",
+          "reopenWhen": "The control record names a different last executor checkpoint.",
+          "targets": [],
+          "at": "2026-11-18T08:05:16.317Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d25da1859d3141aa",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d066",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "72d3cb5a03ce7fce9d4048a1021be7a20ab90cd1254f53aa705a75c52cf319a8",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d066--the-repairs-combined-review-on-gpt-62-astra-four-blocking-findings-fixed-an-undeclared-import-two-searches-kept-by-the-drives-shapes-and-a-cap-passed-by-mixing-launch-routes-three-notes-recorded",
+          "title": "WO-287-D066: Name, in the driven-budget stop's row and in the kit guide's Stops section, the driver's observer of a Codex phase's reported helpers as a place that stop is answered, at refuse by…",
+          "summary": "{ \"id\": \"WO-287-D066\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: fix; the repair's one combined review, run on astra (gpt-6.2-astra at max) as the operator asked, over the change since 5285a2ff\", \"decision\": \"Of the review's seven findings, the four it rated blocking were judged open and fixed, each with a case run alone that fails on the reviewed tree and passes on the fix; the three notes are recorded and not fixed, under the last round's rule. F1: this repair's new imports of the model table in the harness-probe suite's cases were undeclared, which core's structural phase refuses; the table is now declared and the declarations check exits 0. F2: an unknown program's first argument was re",
+          "missing": false
+        },
+        {
+          "hash": "cb2a230a70892c688b1330338b46887c14ead28eaea96fcdda78a5eabaff9efa",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d066--the-repairs-combined-review-on-gpt-62-astra-four-blocking-findings-fixed-an-undeclared-import-two-searches-kept-by-the-drives-shapes-and-a-cap-passed-by-mixing-launch-routes-three-notes-recorded",
+          "title": "WO-287-D066: Name, in the driven-budget stop's row and in the kit guide's Stops section, the driver's observer of a Codex phase's reported helpers as a place that stop is answered, at refuse by…",
+          "summary": "{ \"id\": \"WO-287-D066\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: fix; the repair's one combined review, run on astra (gpt-6.2-astra at max) as the operator asked, over the change since 5285a2ff\", \"decision\": \"Of the review's seven findings, the four it rated blocking were judged open and fixed, each with a case run alone that fails on the reviewed tree and passes on the fix; two of the three notes are recorded and not fixed, under the last round's rule; the third, a literal effort in the resident bind's case, was fixed at 08:57 UTC under the operator's direction that WO-287-D060 records, when the twelfth critic held that record to its word (WO-287-D068). F1: this repair's new imports of the",
+          "missing": false
+        },
+        {
+          "hash": "263432b5580131c565f3c1bf90b6d0ce3e3801c6be16c64b530f854a2944c55b",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d066--the-repairs-combined-review-on-gpt-62-astra-four-blocking-findings-fixed-an-undeclared-import-two-searches-kept-by-the-drives-shapes-and-a-cap-passed-by-mixing-launch-routes-three-notes-recorded",
+          "title": "WO-287-D066: Name, in the driven-budget stop's row and in the kit guide's Stops section, the driver's observer of a Codex phase's reported helpers as a place that stop is answered, at refuse by…",
+          "summary": "{ \"id\": \"WO-287-D066\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: fix; the repair's one combined review, launched on astra as the operator asked, requesting gpt-6.2-astra at max, which no host readback confirmed, over the change since 5285a2ff\", \"decision\": \"Of the review's seven findings, the four it rated blocking were judged open and fixed, each with a case run alone that fails on the reviewed tree and passes on the fix; two of the three notes are recorded and not fixed, under the last round's rule; the third, a literal effort in the resident bind's case, was fixed at 08:57 UTC under the operator's direction that WO-287-D060 records, when the twelfth critic held that record to its word (W",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded, not fixed, in WO-287's first repair under the last review round's rule, which records a finding that breaks no criterion and no behavior main had (WO-287-D066). The stop's row and the kit guide's Stops section omit one place the drive's budget is answered, and two cases read the model table in only the form it now uses.",
+          "reopenWhen": "WO-287's final review, or the first planning pass after WO-287 closes; sooner if an owner asks where the drive's budget advisory during a phase comes from.",
+          "targets": [],
+          "at": "2026-11-18T08:46:16.809Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Recorded, not fixed, in WO-287's first repair under the last review round's rule, which records a finding that breaks no criterion and no behavior main had (WO-287-D066, as corrected by WO-287-D069): the drive's budget row and the kit guide's Stops section omit one place that stop is answered, and the entropy reducer's case reads the default binding in only the form the table now uses. The resident bind's literal effort this row also named was fixed in the repair (WO-287-D068).",
+          "reopenWhen": "WO-287's final review, or the first planning pass after WO-287 closes; sooner if an owner asks where the drive's budget advisory during a phase comes from.",
+          "targets": [],
+          "at": "2026-11-18T08:59:07.086Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Recorded, not fixed, in WO-287's first repair under the last review round's rule, which records a finding that breaks no criterion and no behavior main had (WO-287-D066, as corrected by WO-287-D069 and D071): the drive's budget row and the kit guide's Stops section omit one place that stop is answered, and the entropy reducer's case reads the default binding in only the form the table now uses. The resident bind's literal effort this row also named was fixed in the repair (WO-287-D068).",
+          "reopenWhen": "WO-287's final review, or the first planning pass after WO-287 closes; sooner if an owner asks where the drive's budget advisory during a phase comes from.",
+          "targets": [],
+          "at": "2026-11-18T10:55:45.792Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5b99725950ecb60f",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d071",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5a90d8c4f1739bc78279b18e78ea193ca79ad48efef4734b0158882431bea000",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d071--the-thirteenth-critics-six-points-each-checked-and-accepted-a-contradiction-counted-as-met-a-screened-copy-whose-rows-did-not-all-parse-a-run-spent-on-a-case-the-orders-record-held-corrections-not-carried-to-every-field-a-comparison-not-made-and-one-record-read-as-six",
+          "title": "WO-287-D071: The kit's own launch of the critic of conduct makes the transcripts' screened copy itself, replacing the account's and organization's identifier fields, every address, the operator's…",
+          "summary": "{ \"id\": \"WO-287-D071\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: fix; the thirteenth critic of conduct, launched at 09:58 UTC on 18 November on astra, on the screened copy\", \"decision\": \"The thirteenth critic (launch 13, 09:58 to 10:17 UTC, asked for as gpt-6.2-astra at max, which the launcher printed and no host readback confirmed; read-only, on the screened copy) made six points, kept three things and named one change to make first. Its report went to the operator whole before any answer, and each point was checked against what it cites. All six are accepted. One (class: a criterion judged met over a clause known to fail; the implementation's dispatch): the contradiction between criteria ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Filed by WO-287's first repair (WO-287-D071): every screened copy a critic of conduct read was made by a script in the executor's session scratch, which a later session cannot find, and the thirteenth critic showed one such script breaking rows it screened. The kit's own launch of the critic, which WO-288 plans, is the place to make and check the copy; that order's scope is the planner's to change.",
+          "reopenWhen": "The next planning pass, or WO-288's activation, whichever comes first.",
+          "targets": [],
+          "at": "2026-11-18T10:55:45.949Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a5847f1ee6247b36",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d078",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ca84c9713adf63c74da2e3eecf0862e8a716a587af1b39338a2df4e31a186d4d",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d078--criterion-18s-planning-known-issue-has-occurred-the-rule-that-a-claim-names-its-evidence-is-in-the-authors-layer",
+          "title": "WO-287-D078: Decide claims-evidence's layer against criterion 18's reopening condition. Either move it to the platform layer, or record the operator's decision to keep it the author's and the reason.…",
+          "summary": "{ \"id\": \"WO-287-D078\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: verify, VER-003 reading of criterion 18 against the known issues the verify briefing printed\", \"decision\": \"Criterion 18 is met as written. D015 gives each of the 33 shared rules a layer and a reason. The one rule that names the ignored local lane or the private terms list, worker-no-print, is a platform rule. The planning receipt the verify briefing printed carries a known issue for this criterion. It reopens when B7's decisions place in the author's layer a rule that guards secrets, the private terms screen or evidence before claims. D015 places claims-evidence there. That rule requires a claim of cause, a blocker, an unreac",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-54b3c0389e21ee0d",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d079",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3383db057b10d320fc9585c1ca0a754130bc0e60922af650f632fd86010151c7",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d079--the-kit-guides-drive-passage-no-longer-says-that-the-account-withholds-a-hosts-reason-and-a-workers-output",
+          "title": "WO-287-D079: In docs/KIT.md, 'When a routed run stops', restore the statement that the account never prints a command's operands, a reason a host printed or a worker's output, beside the placeholder…",
+          "summary": "{ \"id\": \"WO-287-D079\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: verify, VER-003 review of the second repair's kit guide edit\", \"decision\": \"The second repair replaced one kit guide sentence with a paragraph on a shape's placeholders. The sentence said the account prints counts, fixed words and a command's shape, never its operands, a reason a host printed or a worker's output. The new paragraph matches the code, but no passage of the guide now says the account withholds a host's printed reason or a worker's output. The code still withholds both. This breaks no criterion and is filed for the guide's next edit.\", \"evidence\": [ \"git diff 9ef2bc4a8 a2b0964f8 -- docs/KIT.md removes the sentence",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-558ef58d7a128b96",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d084",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d675ced3c48e48d49a7f1d971ed1f099e9ea87e57a5a2525189aed1e0a37f86d",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d084--boarded-at-final-review-what-the-hooks-guards-still-leave-in-a-target-worktree-and-from-a-directory-under-the-root",
+          "title": "WO-287-D084: In a target worktree's guard: meet the attribution stop where the attribution unit cannot read a commit's message while the line itself parses, and state on the attribution row what an…",
+          "summary": "{ \"id\": \"WO-287-D084\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: final review, FINAL-001's reading of the hooks' guards with the Part A and Part E readers and the two rechecks\", \"decision\": \"Ten things the readers found in the hooks' guards are boarded and not repaired here. None fails a criterion as written and none breaks a behavior main had beyond what criterion 1 itself asks for. (1) In an instance, a commit whose message the attribution guard cannot read is answered as a line the classifier cannot read, which advises: a message file outside the worktree and a commit with no message go on with that advisory, and a message built by a substitution goes on unshown. Criterion 1 asks that an",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-07163a4828afc157",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d085",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3a104a2cf04e73abc1f2924c072715e5cd459ce5b55d47cd5c2895bd4710446e",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d085--boarded-at-final-review-the-gate-runner-its-reuse-and-a-check-that-judged-nothing",
+          "title": "WO-287-D085: In the gate's runner: give a failure precedence over an advisory in a task's line and keep a failed task out of the advised list; refuse to carry a pass where the task's latest execution…",
+          "summary": "{ \"id\": \"WO-287-D085\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: final review, FINAL-001's reading of the gate runner with the Part A readers and the two rechecks\", \"decision\": \"Six things in the gate's runner and the commands beside it are boarded. (1) Where one check of the host row refuses and another advises, the row fails and the selection fails, but its line reads ADVISED and the summary lists it among the advised tasks. (2) An advised failure recorded under another check, a single suite or the machinery selection, does not stop an older pass of the same task being carried into core's plain selection; it needs a core root that lowers a stop, which core's own does not. (3) The table of",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9c62f95113543599",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d086",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "683ec944a219eeeb0aa78f01c9c33f19407348f3579e3c60d5dc55f3ec03769d",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d086--boarded-at-final-review-the-drives-record-and-account",
+          "title": "WO-287-D086: In the drive: print the masked line and the account when a drive stops on a thrown failure; read the lifecycle command's refusal through one fixed form it shares with the command; read…",
+          "summary": "{ \"id\": \"WO-287-D086\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: final review, FINAL-001's reading of the drive with the Part D readers\", \"decision\": \"What the two readers of Part D found beyond the two repairs made here is boarded as one follow-up. A drive that stops on a thrown failure saves its stop and prints the raw error and no account, as main did, though the command for the account then prints it. The lifecycle command's own wording for an illegal phase is not read as a refused dispatch, so a Codex worker's refused command keeps no reason. The account cannot be read while a registered target stands on another branch, since the worktrees are resolved before the record is read. The dr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-15b1c75bd7e5bc04",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d087",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f70d68bfbae1fda11d713b99704ef68fe8cfccb753445aeb939ea0300c562781",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d087--boarded-at-final-review-a-kit-update-and-the-build-overlay",
+          "title": "WO-287-D087: Predict an update's bundle from the destination's overlay as well, and assert the role text and registrations straight after the update; keep an overlay's omission apart from a file an…",
+          "summary": "{ \"id\": \"WO-287-D087\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: final review, FINAL-001's reading of the update and the overlay with the Part B and shared readers\", \"decision\": \"Five things about an update and the overlay are boarded. (1) An update predicts the destination's bundle from its hosts, workers, settings fragment and stops and not from its overlay, so between the update and the emit the guide tells the owner to run next, the role roots and settings are the whole build's. (2) A retry of an update interrupted after its pending manifest is written plans an omitted hook as an addition. (3) The harness manifest's leftOut names AGENTS.md wherever a second host is elected and the overl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f069f9a8b2399ee6",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d088",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "96edcb7c3656170cd01a1ce70a9fd1205d74a0e8a47e046a5ed23f77eccad305",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d088--boarded-at-final-review-the-paraphrase-stop-under-its-election-and-where-an-advisory-is-delivered",
+          "title": "WO-287-D088: Derive the paraphrase stop's level in one place, so an elected root's advisories carry the advised-stops line; print the capture digests a folded line asks to be cited, and count…",
+          "summary": "{ \"id\": \"WO-287-D088\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: final review, FINAL-001's reading of Part C and of the advisory's channel with the Part C and Part E readers\", \"decision\": \"Criterion 21 is met on a reading the reviewer states: the stop names itself once means its advisory, with what it protects and the line that changes it, is printed once; the short tag on each file's line is the document check's own-stop label, which criterion 6 asks of every failure. Four things are boarded. (1) Under the election alone the document check derives the advising level a second time and prints its advisories without the line that tells the gate a stop advised, so the check is recorded as pass",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-566816571d690236",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d089",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4579b4f48628eb801e38ce2273537ff2ed5c9fe9a8fbd2a5e49512f9e90c3c0d",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d089--boarded-at-final-review-cases-narrower-than-the-clauses-they-hold",
+          "title": "WO-287-D089: Widen the eight cases this decision names so each asserts every clause of its criterion on the surface a user meets: every prescribed read at refuse, the capture's words at every level,…",
+          "summary": "{ \"id\": \"WO-287-D089\", \"date\": \"2026-11-18\", \"dispatch\": \"resume: final review, FINAL-001's reading of the order's cases with every reader\", \"decision\": \"Each criterion's case was read against its clauses by a reader of its part. Every clause is asserted somewhere, or holds by construction, and eight cases assert less than a later change could break without failing them. They are boarded together, with one repair of this review that has a probe and no case: the features command in a checkout with no build. Criterion 27's case sets the instance to refuse and retries only the probe, not the two Git reads and the gh request. Criterion 21's case checks that no word of the capture is printed at o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-64e6bd4cfc576948",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d090",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94a8e66e4275d53c552a01ef4430be7575a7f3178775d1317c2f7b09b6bc8989",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d090--critical-error-the-final-reviewer-stopped-work-and-waited-for-the-operators-choice-when-the-operator-had-not-said-to-stop",
+          "title": "WO-287-D090: In every role's text and the session's shared rules: a session that puts a choice of route to the operator states its recommendation, takes it in the same turn and goes on; it ends a…",
+          "summary": "{ \"id\": \"WO-287-D090\", \"date\": \"2026-11-18\", \"kind\": \"correction\", \"dispatch\": \"resume: final review; the operator's messages of 20:00 to 20:01 UTC on the reviewer's stop, recorded at the operator's direction as a critical error\", \"decision\": \"Recorded at the operator's direction as a critical error. At 19:58 UTC the operator asked what the session was doing and objected that it had spent the operator's Fable budget on a final review instead of handing the defects back to a fix dispatch. The reviewer answered at 20:00:07 UTC with an account, two routes and its recommendation, and then ended its turn to wait for the operator's choice, saying it had stopped so as not to spend more without the ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-67b1b6cf60bba81f",
+      "key": "decision:docs/evidence/WO-287/decisions.md#wo-287-d091",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0fc5263ba9fbe9b0102a23573364a41785195f29132e94c78914d1e2c8937657",
+          "ref": "docs/evidence/WO-287/decisions.md#wo-287-d091--correction-the-final-review-repaired-the-defects-its-readers-found-instead-of-failing-back-to-a-fix-dispatch-and-spent-the-operators-fable-budget-on-a-third-repair-cycle",
+          "title": "WO-287-D091: In the reviewer's role: a final review whose own reading finds a blocking defect fails on it and hands it to a repair dispatch, unless the fix is one bounded edit with its case; it…",
+          "summary": "{ \"id\": \"WO-287-D091\", \"date\": \"2026-11-18\", \"kind\": \"correction\", \"dispatch\": \"resume: final review; the operator's objection at about 19:58 UTC that the final review spent the Fable budget instead of handing the defects back to a fix dispatch\", \"decision\": \"The final review reproduced none of the verification sequence's blocking claims, so the candidate was not known to be failing. Its own readers then found defects, eight of which the reviewer reproduced, several blocking under the order's own standard: a drive record that could keep a file name it is meant to mask, and gate checks that main fails left advised in an instance when a step inside them was ended for time. The reviewer took th",
           "missing": false
         }
       ],

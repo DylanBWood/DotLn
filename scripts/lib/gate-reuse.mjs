@@ -222,7 +222,12 @@ function decidingExecution(index, name) {
 }
 
 /** A deciding execution that passed and finished at a known time in a
- * carriable row, whatever time limits that row ran under. */
+ * carriable row, whatever time limits that row ran under. A result its
+ * selection accepted without the task passing counts here, since the
+ * selection that recorded it succeeded: it keeps that row standing and, as
+ * a later execution, displaces no older row. Whether a result may be carried
+ * into another selection is a stricter question, which
+ * `coveringTaskResults` asks with `acceptedWithoutPassing`. */
 function executedPass(index, latest, legacyOwn = false) {
   if (!latest) return undefined;
   const { row, result } = latest;
@@ -238,6 +243,13 @@ function executedPass(index, latest, legacyOwn = false) {
     ? { row, result, location: latest.location }
     : undefined;
 }
+
+/** A result its selection accepted without the task passing: the task's
+ * failure advised, or its stop was off and it was not run. It satisfied that
+ * selection and nothing else, so a later selection never carries it as a
+ * pass and runs the task again. */
+const acceptedWithoutPassing = (result) =>
+  Boolean(result.advisedStops?.length) || Boolean(result.stopOff);
 
 /** A deciding execution may be carried only when it passed in a carriable
  * row that ran under the time limits in force: under other figures its pass
@@ -256,6 +268,8 @@ function decidingPass(
  * Each task's latest executed result at the identity decides whether it is
  * carried: a pass in a carriable row is, and a later failed, stopped or
  * timed-out run, or a later failed gate, is never masked by an older pass.
+ * A result its selection accepted without the task passing (an advised
+ * failure, a task whose stop was off) is never carried: the task runs again.
  * A pass recorded under time limits other than those in force is not
  * carried, and `otherLimits` names its task, so the task runs under the
  * figures that apply now and its record names them. Every carried result
@@ -269,6 +283,7 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
     const pass = executedPass(index, decidingExecution(index, task.name));
     if (
       !pass ||
+      acceptedWithoutPassing(pass.result) ||
       !pass.row.requiredSuites.some(
         (name) => task.name === name || task.name.startsWith(`${name}:`),
       )
@@ -333,8 +348,12 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
  * stands and whose required suites include every name in `requiredSuites`,
  * beside every standing candidate and the suites the latest one lacks, so a
  * refusal can name them. A complete row stands while each task it names has,
- * as its latest execution at the identity, that row's own result or a pass
- * that may be carried; `displaced` names the tasks of the latest complete
+ * as its latest execution at the identity, that row's own result or a later
+ * one a selection accepted: a pass, a failure whose stop advised, or a task
+ * whose stop was off. The row's own advised or off results are the
+ * selection's success, which the completion consuming the row judges by; a
+ * later selection still runs those tasks again (`coveringTaskResults`).
+ * `displaced` names the tasks of the latest complete
  * row that no longer do: a later run of the task did not pass, a later gate
  * that ran it failed, or the row that executed it cannot be read. Only a row
  * recorded under the time limits in force can stand; `otherLimits` is the

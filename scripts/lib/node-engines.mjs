@@ -166,6 +166,8 @@ export function judgeGitRuntime(version, floor, { miss } = {}) {
   if (!running && version === null && miss)
     return {
       admitted: false,
+      // The read judged nothing: this is no finding about the toolchain.
+      timedOut: true,
       message: `Git's version could not be read: git --version was ended for time before it printed anything, so Git cannot be judged against package.json engines.git ${floor}. ${miss} ${unaffected}`,
     };
   if (!running)

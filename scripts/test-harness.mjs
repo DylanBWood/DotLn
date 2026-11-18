@@ -7,6 +7,10 @@ import {
   createFixtureRoot,
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
+import { lifecycleRefusalReason } from "./lib/drive-diagnostics.mjs";
+import { driveAccount } from "./lib/drive-account.mjs";
+import { streamObservation } from "./lib/drive-stream.mjs";
+import { PHASE_LEGAL_ACTIONS } from "./lib/lifecycle-actions.mjs";
 import * as gitCommands from "./lib/git.mjs";
 import { docPath } from "./lib/config.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
@@ -85,8 +89,12 @@ import {
   desktopControlDenyRules,
 } from "../packages/compiler/dist/src/index.js";
 import {
+  contributorConfiguredProgram,
+  contributorFeedback,
   contributorProgram,
   contributorProfiles,
+  contributorRules,
+  contributorRuleSelection,
   targetWorkerProfiles,
   defaultContributorSupportIds,
   contributorWithSupports,
@@ -97,6 +105,12 @@ import {
   KIT_MODELS,
   KIT_WORKERS,
 } from "../packages/skeleton/src/worker-models.mjs";
+import {
+  STOPS,
+  loweredStops,
+  resolveStopLevels,
+  stopRefusal,
+} from "../packages/skeleton/src/stops.mjs";
 import { readHostFeatures } from "./lib/features.mjs";
 import {
   feedbackUnitToolKinds,
@@ -147,6 +161,7 @@ import {
   harnessInstallation,
   harnessInstructionBlock,
   composeHarnessInstruction,
+  OVERLAY_IDS,
   PRE_RECORD_RUNTIME_FILE_LISTS,
   preserveHarnessRuntime,
   provenRuntimeSnapshot,
@@ -158,6 +173,7 @@ import {
   runtimeSnapshotPath,
 } from "./lib/harness.mjs";
 import { termsCheck } from "./terms.mjs";
+import { installedUnequippedRules } from "./lib/build-overlay.mjs";
 import {
   executorWriterRelease,
   reserveCodexRoleCommandBeforeLoad,
@@ -2198,7 +2214,21 @@ test("private-destination changes only the instance Secrets paragraph and preser
       json({ version: 1, features: { "private-destination": true } }),
     );
     emitHarness(root);
-    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), before);
+    // The root now reads as core's, so its generated block says core's own
+    // line for the floor where an instance's said the owner's. What is
+    // hand-written, the Secrets paragraph among it, is as it was.
+    const core = readFileSync(join(root, "CLAUDE.md"), "utf8");
+    const floor = (text) => text.replace(harnessInstructionBlock(text), "");
+    assert.equal(floor(core), floor(before));
+    assert.equal(secrets(core), secrets(before));
+    assert.match(
+      harnessInstructionBlock(before),
+      /the Clean Room section of this file is the owner's own text/u,
+    );
+    assert.match(
+      harnessInstructionBlock(core),
+      /the hand-written Clean Room floor stays locked/u,
+    );
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
@@ -4458,11 +4488,33 @@ test("WO-146 three contributors share unique outputs while workers remain explic
       profile.harness,
     );
     delete profile.matcherExclusion;
+    // The one prompt hook a Claude worker's bundle holds records the
+    // operator's recovery controls for its guards to read, on the record's
+    // observation that the event fires in a worker; Codex fired none. It is
+    // asserted here and put back to the row the worker's other lifecycle
+    // events hold.
+    assert.deepEqual(
+      profile.events.UserPromptSubmit,
+      profile.harness === "claude-code"
+        ? {
+            available: true,
+            evidence: "docs/discovery/writing-worker-smoke-2026-09-14.md#C-W10",
+          }
+        : {
+            available: false,
+            evidence: "docs/discovery/writing-worker-smoke-2026-09-14.md#X-W10",
+            reason:
+              "No Codex hook event was observed in the bounded exec probe",
+          },
+      profile.harness,
+    );
+    if (profile.harness === "claude-code")
+      profile.events.UserPromptSubmit = profile.events.Stop;
   }
   assert.equal(
     createHash("sha256").update(JSON.stringify(workers)).digest("hex"),
-    "9f41bb7cb0176f0b8e73bd9fe760ef628259e69b4ebdbb28fa0a621bd4dba6fb",
-    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return, re-task and desktop tools, units' tool kinds and matcher observation",
+    "92687ded4dbe10f44590c619ecc50a9538b986dacc48aba7296067f752292783",
+    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return, re-task and desktop tools, units' tool kinds, matcher observation and prompt event",
   );
   const installation = harnessInstallation();
   assert.equal(
@@ -5019,6 +5071,49 @@ test("WO-276 a worker's stop is refused once while a background task it started 
       /^DOTLN_WORKER_TASKS_RUNNING: this worker started a background task that is still running: shell shell-worker\. Stop it with the host's task-stop tool \(TaskStop with that task id\), then hand back/u,
     );
     assert.doesNotMatch(refused.reason, /shell-parent|subagent|worker-1/u);
+    // The same answer as a drive's stream carries a stop hook's response,
+    // which no tool result follows: the drive's reader counts it once by its
+    // code and by the stop it names, and the account names both and nothing
+    // of the reason or the task.
+    const reader = streamObservation({ protocol: "claude", launchpad: root });
+    reader.inspect(
+      JSON.stringify({
+        type: "system",
+        subtype: "hook_response",
+        hook_event: "SubagentStop",
+        exit_code: 0,
+        stdout: JSON.stringify(refused),
+        // The same answer again in the row's other field, with a line more.
+        output: `${JSON.stringify(refused)}\n`,
+      }),
+    );
+    const observed = reader.observed();
+    assert.deepEqual(observed.refusalCounts, {
+      DOTLN_WORKER_TASKS_RUNNING: 1,
+    });
+    assert.deepEqual(observed.refusalStops, { "worker-tasks": 1 });
+    assert.equal(JSON.stringify(observed).includes("shell-worker"), false);
+    const account = driveAccount({
+      order: "WO-999",
+      record: {
+        host: "claude",
+        stop: { reason: "incomplete-bound", next: "x" },
+        attempts: [
+          {
+            action: "next",
+            host: "claude",
+            completed: false,
+            phaseAfter: "active",
+            ...observed,
+          },
+        ],
+      },
+    }).join("\n");
+    assert.match(
+      account,
+      /refused calls in the attempt: DOTLN_WORKER_TASKS_RUNNING ×1; by stop: worker-tasks ×1\./u,
+    );
+    assert.equal(account.includes("shell-worker"), false);
     const recorded = stops().at(-1);
     assert.equal(recorded.agent, sha256("worker-1"));
     assert.equal(recorded.agentType, "dotln-worker");
@@ -12246,7 +12341,16 @@ test("WO-135 generated planning hooks refuse repository code paths and preserve 
           "deny",
           JSON.stringify(request),
         );
-        assert.match(result.permissionDecisionReason, /operator override:/);
+        // The refusal names its stop and the line that lowers it, and no
+        // recovery control as its route.
+        assert.match(
+          result.permissionDecisionReason,
+          /This is stop planning-branch, which protects /,
+        );
+        assert.doesNotMatch(
+          result.permissionDecisionReason,
+          /operator override/,
+        );
         const path =
           request.tool_input.file_path ?? request.tool_input.notebook_path;
         if (path) assert.ok(result.permissionDecisionReason.includes(path));
@@ -12719,7 +12823,7 @@ test("WO-168 a granted session root is a real directory: a linked root grants no
     const reason = reply.hookSpecificOutput.permissionDecisionReason;
     assert.match(
       reason,
-      /physical destination .* lacks an equipped outside-write grant for role executor.*operator override:/,
+      /physical destination .* lacks an equipped outside-write grant for role executor.*This is stop outside-write, /,
     );
     assert.ok(
       reason.includes(
@@ -12959,7 +13063,7 @@ test("WO-144 generated hooks apply active-role grants to physical writes and rem
         );
         assert.match(
           response.hookSpecificOutput.permissionDecisionReason,
-          /physical destination .* lacks an equipped outside-write grant.*operator override:/,
+          /physical destination .* lacks an equipped outside-write grant.*This is stop outside-write, /,
         );
       }
       for (const command of [
@@ -13749,7 +13853,7 @@ test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals
           );
           assert.match(
             response.hookSpecificOutput.permissionDecisionReason,
-            /physical destination .* lacks an equipped outside-write grant for role executor.*operator override:/,
+            /physical destination .* lacks an equipped outside-write grant for role executor.*This is stop outside-write, /,
           );
         }
         for (const call of [
@@ -13985,7 +14089,16 @@ test("WO-246 a fork's clone refuses a gh pull-request or issue command that name
           /gh repo set-default origin/u,
         );
       else assert.doesNotMatch(result.permissionDecisionReason, /set-default/u);
-      assert.match(result.permissionDecisionReason, /operator override:/u);
+      // The refusal names its stop; how to say which repository is meant
+      // is its route, and no recovery control is.
+      assert.match(
+        result.permissionDecisionReason,
+        /This is stop gh-repository, which protects /u,
+      );
+      assert.doesNotMatch(
+        result.permissionDecisionReason,
+        /operator override/u,
+      );
     };
     const admitted = (command, extra) => {
       const result = judged(command, extra);
@@ -14367,7 +14480,8 @@ test("WO-246 a fork's clone refuses a gh pull-request or issue command that name
         reason,
       );
       assert.ok(reason.includes(`name it with -R ${upstreamName}.`), reason);
-      assert.match(reason, /operator override:/u);
+      assert.match(reason, /This is stop gh-repository, which protects /u);
+      assert.doesNotMatch(reason, /operator override/u);
       assert.doesNotMatch(reason, /set-default|x-access-token|abc@/u);
       admitted(`gh pr list -R ${upstreamName}`);
     }
@@ -19619,8 +19733,10 @@ test("disabled harness keeps core and kit floors while removing built navigation
         disabled,
         /@skills|\.(?:claude|agents)\/skills|select their skill|Expand skill read\/review|\.runtime\/harness|snapshot-missing|Contributor harness bundle|harness block by/u,
       );
+      // Core's floor heads the section as locked; the kit's seed heads it
+      // plainly, since an instance's section is its owner's own text.
       const cleanRoom = floor.match(
-        /## Clean Room — locked floor\n[\s\S]*?(?=\n## )/u,
+        /## Clean Room(?: — locked floor)?\n[\s\S]*?(?=\n## )/u,
       )?.[0];
       assert.ok(
         cleanRoom && disabled.includes(cleanRoom),
@@ -21245,6 +21361,110 @@ test("a driven worker's helper stays read-only in the launchpad's own worktree",
         }),
       ),
       true,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion D1: the drive's reader keeps the reason of a refused dispatch as the kit's own prompt hook writes it, for each phase's legal actions", () => {
+  const root = fixture();
+  try {
+    for (const [phase, actions] of Object.entries(PHASE_LEGAL_ACTIONS)) {
+      write(
+        root,
+        "docs/control/fixture-status.json",
+        json({ ...control, phase, legalNextActions: actions }),
+      );
+      // A phrase whose action this phase neither offers nor has already
+      // recorded, which the hook continues instead of refusing.
+      const phrase = ["needs-fix", "repairing"].includes(phase)
+        ? "resume: verify"
+        : "resume: fix";
+      const answered = invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", {
+          session_id: `refused-in-${phase}`,
+          prompt: phrase,
+        }),
+      );
+      const said = JSON.stringify(answered);
+      assert.match(said, /DOTLN_HARNESS_REFUSED/u, phase);
+      const expected = `${phrase} is not a legal dispatch in phase ${phase}; legal actions: ${actions.join(", ")}`;
+      assert.equal(said.includes(expected), true, `${phase}: ${said}`);
+      assert.equal(
+        lifecycleRefusalReason(answered.systemMessage ?? said),
+        `${expected}.`,
+        phase,
+      );
+    }
+  } finally {
+    write(root, "docs/control/fixture-status.json", json(control));
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion D5: the router's guard admits the account of a stopped drive, and its role has it run that after a stop and answer from it while it reads no order, report or transcript", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "drive: WO-999" }),
+    );
+    const shell = (command, hook = "permissions") =>
+      invoke(
+        root,
+        hook,
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+    for (const command of [
+      "node scripts/drive.mjs why WO-999",
+      `node '${root}/scripts/drive.mjs' why WO-999`,
+    ]) {
+      assert.equal(allowed(shell(command)), true, command);
+      // Asking why reserves no writer, as reading status reserves none.
+      assert.equal(
+        allowed(shell(command, "concurrent-work-requires-worktrees")),
+        true,
+        command,
+      );
+      assert.equal(harnessWriterView(root).reserved, false);
+    }
+    for (const command of [
+      "node scripts/drive.mjs why",
+      "node scripts/drive.mjs why WO-999 WO-998",
+      "node scripts/drive.mjs why WO-999 > account.txt",
+      "node scripts/other.mjs why WO-999",
+    ])
+      assert.match(
+        JSON.stringify(shell(command)),
+        /DOTLN_ROUTER_WRITE_REFUSED/u,
+        command,
+      );
+    const role = readFileSync(
+      join(root, ".claude/skills/dotln-router/SKILL.md"),
+      "utf8",
+    );
+    assert.match(
+      role,
+      /after a stop, the drive's own account through `node scripts\/drive\.mjs why WO-NNN`/u,
+    );
+    assert.match(
+      role,
+      /for any stop but awaiting-merge and a release give the operator the account's lines/u,
+    );
+    assert.match(
+      role,
+      /Answer a question about why a drive stopped from that account and from status, never with only that a router reads nothing/u,
+    );
+    assert.match(
+      role,
+      /Read no order, diff, report or worker transcript and edit no project file/u,
     );
   } finally {
     removeFixture(root, { recursive: true, force: true });
@@ -23575,7 +23795,17 @@ test("WO-276 criterion Q3: on a planning branch a read asks Git for no branch, a
     for (const { hook, answer } of refused.answers)
       assert.equal(
         answer.hookSpecificOutput?.permissionDecisionReason,
-        "DOTLN_HARNESS_REFUSED: planning branch write to scripts/new.mjs (repository path scripts/new.mjs) is outside docs/ and root Markdown (WO-135). Use operator override: for authorized recovery.",
+        // The words the refusal had, then its stop and the line that lowers
+        // it in place of the recovery control it used to name.
+        stopRefusal(
+          "planning-branch",
+          "DOTLN_HARNESS_REFUSED: planning branch write to scripts/new.mjs (repository path scripts/new.mjs) is outside docs/ and root Markdown (WO-135).",
+          {
+            hook: true,
+            covered:
+              "written on main: on a planning branch this stop covers that file too",
+          },
+        ),
         hook,
       );
     // An admitted write is asked the branch too, and allowed.
@@ -23771,4 +24001,1133 @@ test("WO-284 criterion 8: the emitted reviewer and executor roots say, in the st
         .contents.includes(sentence),
       role,
     );
+});
+
+// ---- the stops of the table, at the level a root gives them (WO-287)
+
+// The fixture as an exported instance: a root that holds the kit's manifest
+// and no package sources, emitted again so that its hooks carry the levels
+// an instance starts with. `stopsFixture` gives a root a `stops` section and
+// emits, as its owner would after setting one.
+const asInstance = (root) => {
+  write(root, "KIT-MANIFEST.json", json({ files: [] }));
+  emitHarness(root);
+  return root;
+};
+const stopsFixture = (root, stops, extra = {}) => {
+  write(root, "dotln.config.json", json({ version: 1, stops, ...extra }));
+  emitHarness(root);
+};
+const reasonOf = (result) =>
+  result.hookSpecificOutput?.permissionDecisionReason ?? "";
+// What a refusal that remains says after its reason, and an advisory after
+// what it found: the stop's id, what it protects and the line that sets it.
+const namesStop = (text, stop, level) => {
+  const row = STOPS.find((entry) => entry.id === stop);
+  assert.ok(row, stop);
+  if (level === "refuse") {
+    assert.ok(
+      text.includes(`This is stop ${stop}, which protects ${row.protects}.`),
+      text,
+    );
+    assert.ok(
+      text.includes(`"stops": { "${stop}": "advise" } in dotln.config.json`),
+      text,
+    );
+    assert.ok(text.includes("then node scripts/harness.mjs emit"), text);
+    assert.ok(
+      text.includes("a session changes it only when its owner asks"),
+      text,
+    );
+    assert.doesNotMatch(text, /operator override/u);
+  } else {
+    assert.match(text, /^DotLn advisory: /u);
+    assert.ok(
+      text.includes(
+        `Stop ${stop} advises in this root and the work goes on; it protects ${row.protects}.`,
+      ),
+      text,
+    );
+    assert.ok(
+      text.includes(`"stops": { "${stop}": "refuse" } in dotln.config.json`),
+      text,
+    );
+  }
+};
+// A dispatch whose wall-clock bound is spent, for one session.
+const spentDispatch = (root, session) => {
+  const budgets = JSON.parse(
+    readFileSync(join(sourceRoot, "scripts/kit/budgets.template.json"), "utf8"),
+  );
+  budgets.dispatches.executor.wallClockMs = 0;
+  write(root, "docs/control/budgets.json", json(budgets));
+  write(
+    root,
+    `docs/control/local/harness/${sha256(session)}.json`,
+    json({
+      role: "executor",
+      intent: "resume: next",
+      startedAt: new Date().toISOString(),
+      workOrder: "WO-999",
+      startingEventCount: 1,
+      reads: [],
+    }),
+  );
+};
+
+test("WO-287 criterion A4: in an instance a planning-branch write, a write under a live gate, a launch past the dispatch bound and a worker past the cap go on with an advisory naming the stop and what it protects; in core each is denied as before", () => {
+  const root = fixture();
+  let active;
+  try {
+    // Each of the four in one root: core's first, then the same root as an
+    // exported instance. `session` keeps each phase's counters apart.
+    const judge = (session, level) => {
+      beginHarnessSession(root, session, "executor");
+      const call = (tool, args, extra = {}) =>
+        input(root, "PreToolUse", {
+          session_id: session,
+          tool_name: tool,
+          tool_input: args,
+          ...extra,
+        });
+      const answer = (stop, request, found) => {
+        const result = invoke(root, "permissions", request);
+        assert.equal(allowed(result), level !== "refuse", `${level}: ${stop}`);
+        const text =
+          level === "refuse" ? reasonOf(result) : result.systemMessage;
+        assert.match(text, found, `${level}: ${stop}`);
+        namesStop(text, stop, level);
+        return text;
+      };
+      // A write outside docs/ on a planning branch.
+      runGit(
+        root,
+        ["switch", "-c", `planning/2030-01-02-${session}`],
+        fixtureGitOptions,
+      );
+      const planning = answer(
+        "planning-branch",
+        call("Write", { file_path: "scripts/new.mjs" }),
+        /planning branch write to scripts\/new\.mjs \(repository path scripts\/new\.mjs\) is outside docs\/ and root Markdown \(WO-135\)/u,
+      );
+      // Where the refusal covers the configuration file itself, it says
+      // where the line that lowers it is written.
+      if (level === "refuse")
+        assert.ok(
+          planning.includes(
+            "in dotln.config.json (written on main: on a planning branch this stop covers that file too), then node scripts/harness.mjs emit",
+          ),
+          planning,
+        );
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            call("Write", { file_path: "docs/new.md" }),
+          ),
+        ),
+        true,
+      );
+      runGit(root, ["switch", "wo-999"], fixtureGitOptions);
+      // A write while a gate runs in the worktree.
+      active = beginGateRun(root, "npm test");
+      answer(
+        "live-gate",
+        call("Write", { file_path: "fixture.ts" }),
+        /write may change gate inputs during active gate npm test/u,
+      );
+      active.release();
+      active = undefined;
+      // A worker launch past the cap: the first fits, the second does not.
+      write(root, "docs/control/budgets.json", json({ subagentCap: 1 }));
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            call("Agent", {}, { tool_use_id: `${session}-one` }),
+          ),
+        ),
+        true,
+      );
+      answer(
+        "worker-cap",
+        call("Agent", {}, { tool_use_id: `${session}-two` }),
+        /count 1, cap 1; .*subagentCap/u,
+      );
+      // A cap that advises still counts the use it lets through.
+      assert.equal(
+        measureHarnessUsage(root, session).subagents.count,
+        level === "refuse" ? 1 : 2,
+      );
+      // A launch past the dispatch bound.
+      spentDispatch(root, session);
+      answer(
+        "dispatch-bound",
+        call("Agent", {}, { tool_use_id: `${session}-three` }),
+        /DOTLN_DISPATCH_BOUND|dispatch bound|wall clock/iu,
+      );
+      rmSync(join(root, "docs/control/budgets.json"));
+    };
+    judge("core-session", "refuse");
+    // The hooks of core's root carry no level: a stop refuses.
+    assert.doesNotMatch(
+      readFileSync(join(root, ".claude/hooks/permissions.mjs"), "utf8"),
+      /"stops":/u,
+    );
+    asInstance(root);
+    judge("instance-session", "advise");
+    // The owner's line turns one back into a refusal and leaves the rest.
+    stopsFixture(root, { "live-gate": "refuse", "planning-branch": "off" });
+    beginHarnessSession(root, "owner-session", "executor");
+    active = beginGateRun(root, "npm test");
+    const refused = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        session_id: "owner-session",
+        tool_name: "Write",
+        tool_input: { file_path: "fixture.ts" },
+      }),
+    );
+    assert.equal(allowed(refused), false);
+    namesStop(reasonOf(refused), "live-gate", "refuse");
+    active.release();
+    active = undefined;
+    // A stop that is off says nothing and stops nothing.
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-02-owner"],
+      fixtureGitOptions,
+    );
+    assert.deepEqual(
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          session_id: "owner-session",
+          tool_name: "Write",
+          tool_input: { file_path: "scripts/new.mjs" },
+        }),
+      ),
+      {},
+    );
+  } finally {
+    active?.release();
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion A5: in an instance another session's writer reservation and a write outside the project are refused as before, naming the stop and its line, and go on with the advisory where the owner sets advise", () => {
+  const root = asInstance(fixture());
+  try {
+    const write_ = (session, path = "fixture.ts") =>
+      input(root, "PreToolUse", {
+        session_id: session,
+        tool_name: "Write",
+        tool_input: { file_path: path },
+      });
+    beginHarnessSession(root, "holder", "executor");
+    beginHarnessSession(root, "second", "executor");
+    const writer = "concurrent-work-requires-worktrees";
+    assert.equal(allowed(invoke(root, writer, write_("holder"))), true);
+    const held = invoke(root, writer, write_("second"));
+    assert.equal(allowed(held), false);
+    assert.match(reasonOf(held), /^DOTLN_HARNESS_REFUSED: /u);
+    namesStop(reasonOf(held), "writer-reservation", "refuse");
+    const outside = invoke(
+      root,
+      "permissions",
+      write_("holder", "/dotln-ungranted-fixture/outside.txt"),
+    );
+    assert.equal(allowed(outside), false);
+    assert.match(
+      reasonOf(outside),
+      /outside-project write to \/dotln-ungranted-fixture\/outside\.txt .*lacks an equipped outside-write grant for role executor \(WO-144\)\./u,
+    );
+    namesStop(reasonOf(outside), "outside-write", "refuse");
+    // The hooks carry no lowered level for either: both are work rows.
+    const carried = readFileSync(
+      join(root, ".claude/hooks/permissions.mjs"),
+      "utf8",
+    );
+    assert.match(carried, /"planning-branch": "advise"/u);
+    assert.doesNotMatch(carried, /"writer-reservation"|"outside-write"/u);
+
+    stopsFixture(root, {
+      "writer-reservation": "advise",
+      "outside-write": "advise",
+    });
+    const advisedWriter = invoke(root, writer, write_("second"));
+    assert.equal(allowed(advisedWriter), true);
+    namesStop(advisedWriter.systemMessage, "writer-reservation", "advise");
+    const advisedOutside = invoke(
+      root,
+      "permissions",
+      write_("holder", "/dotln-ungranted-fixture/outside.txt"),
+    );
+    assert.equal(allowed(advisedOutside), true);
+    assert.match(
+      advisedOutside.systemMessage,
+      /outside-project write to \/dotln-ungranted-fixture\/outside\.txt/u,
+    );
+    namesStop(advisedOutside.systemMessage, "outside-write", "advise");
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion E1: in an instance a driven worker's helper is told once and goes on with the probe its role prescribes, its Git reads and a read-only gh request, core refuses each naming the stop, and the removal of a helper's leftovers outside the project names its stop and line", () => {
+  const prescribed = [
+    'node scripts/harness.mjs bounded -- node --test --test-name-pattern "a case" scripts/test-features.mjs',
+    "git log --format='%h %s' -5",
+    "git show --format= --stat HEAD",
+    "gh api repos/owner/repo/contents/README.md",
+  ];
+  const driven = (root) => {
+    const directory = join(root, "docs/control/local/drives/WO-999");
+    initializeSubagentCounter(directory, "drive-test");
+    const context = join(directory, "context.json");
+    writeFileSync(
+      context,
+      json({
+        schemaVersion: 1,
+        root,
+        directory,
+        session: "drive-test",
+        worker: "phase-test",
+        role: "executor",
+        workOrder: "WO-999",
+        cap: 20,
+        ceiling: 80,
+      }),
+    );
+    return (command, agent) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          ...agent,
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+        false,
+        { DOTLN_DRIVEN_WORKER: context },
+      );
+  };
+  const helper = { agent_id: "reviewer-1", agent_type: "dotln-worker" };
+  const core = fixture();
+  const root = asInstance(fixture());
+  try {
+    // Core: each is refused, and the refusal names the stop and the reads
+    // that do work.
+    const refuse = driven(core);
+    for (const command of prescribed) {
+      const refused = refuse(command, helper);
+      assert.equal(allowed(refused), false, command);
+      assert.match(reasonOf(refused), /helper agent writes/u, command);
+      namesStop(reasonOf(refused), "driven-helper", "refuse");
+    }
+    // An instance: the first is told what the stop protects and goes on, and
+    // so does each of the rest.
+    const advise = driven(root);
+    const told = [];
+    for (const command of prescribed) {
+      const result = advise(command, helper);
+      assert.equal(allowed(result), true, command);
+      if (result.systemMessage) told.push(result.systemMessage);
+    }
+    // Told once: the calls after the first go on without being told again.
+    assert.equal(told.length, 1);
+    namesStop(told[0], "driven-helper", "advise");
+    assert.match(told[0], /helper agent writes/u);
+    // The owner who wants the refusal back sets it, and it refuses again.
+    stopsFixture(root, { "driven-helper": "refuse" });
+    const again = driven(root)(prescribed[0], helper);
+    assert.equal(allowed(again), false);
+    namesStop(reasonOf(again), "driven-helper", "refuse");
+    // What a helper left outside the project is a work row: removing it is
+    // refused in an instance as in core, and the refusal names the stop and
+    // the line that changes it.
+    stopsFixture(root, {});
+    beginHarnessSession(root, "holder", "executor");
+    const removal = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        session_id: "holder",
+        tool_name: "Bash",
+        tool_input: { command: "rm -rf /dotln-ungranted-fixture/review-copy" },
+      }),
+    );
+    assert.equal(allowed(removal), false);
+    assert.match(
+      reasonOf(removal),
+      /outside-project write to \/dotln-ungranted-fixture\/review-copy/u,
+    );
+    namesStop(reasonOf(removal), "outside-write", "refuse");
+    stopsFixture(root, { "outside-write": "advise" });
+    const admitted = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        session_id: "holder",
+        tool_name: "Bash",
+        tool_input: { command: "rm -rf /dotln-ungranted-fixture/review-copy" },
+      }),
+    );
+    assert.equal(allowed(admitted), true);
+    namesStop(admitted.systemMessage, "outside-write", "advise");
+  } finally {
+    removeFixture(core, { recursive: true, force: true });
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion A9: a stop with its own switch keeps that switch: with desktop-control and plan-first unset their refusals answer in an instance as in core, and a stops line sets neither", () => {
+  const root = fixture();
+  try {
+    const judge = (session) => {
+      beginHarnessSession(root, session, "executor");
+      const desktop = invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          session_id: session,
+          tool_name: "mcp__claude-in-chrome__navigate",
+          tool_input: {},
+        }),
+      );
+      assert.equal(allowed(desktop), false, session);
+      assert.match(
+        reasonOf(desktop),
+        /^DOTLN_DESKTOP_CONTROL_REFUSED: desktop control and the operator's own browser sessions require features\.desktop-control in dotln\.config\.json \(off by default\)/u,
+      );
+      // Plan-first is not elected: an executor's write needs no plan.
+      assert.deepEqual(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            session_id: session,
+            tool_name: "Edit",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+        {},
+        session,
+      );
+      // The host's own deny rules for the desktop tools are emitted.
+      assert.ok(
+        JSON.parse(
+          readFileSync(join(root, ".claude/settings.json"), "utf8"),
+        ).permissions.deny.includes("mcp__claude-in-chrome__*"),
+        session,
+      );
+    };
+    judge("core-session");
+    asInstance(root);
+    judge("instance-session");
+    // A line of the stops section sets neither; each keeps its switch.
+    stopsFixture(root, { "desktop-control": "off", "plan-first": "refuse" });
+    judge("line-session");
+    // The switches themselves answer as before in an instance.
+    stopsFixture(root, {}, { features: { "plan-first": true } });
+    beginHarnessSession(root, "elected-session", "executor");
+    assert.match(
+      reasonOf(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            session_id: "elected-session",
+            tool_name: "Edit",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
+      /^DOTLN_PLAN_FIRST_REFUSED: /u,
+    );
+    stopsFixture(root, {}, { features: { "desktop-control": true } });
+    const elected = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        session_id: "elected-session",
+        tool_name: "mcp__claude-in-chrome__navigate",
+        tool_input: {},
+      }),
+    );
+    assert.equal(allowed(elected), true);
+    assert.match(elected.systemMessage, /features\.desktop-control is on/u);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion A10: the emitted instruction block, the role roots and each hook refusal name no operator override: route past a refusal, and the block says a stop's level is its owner's to change", () => {
+  const { files } = harnessInstallation();
+  const block = files.find((file) => file.path === "CLAUDE.md").contents;
+  // The recovery control is named as what it is and as no stop's route.
+  const route =
+    /[Uu]se `?operator override:`? |operator override:`? for authorized recovery/u;
+  assert.doesNotMatch(block, route);
+  assert.ok(
+    block.includes(
+      "A stop's level is its owner's to change, and a session changes one only when its owner asks for it in that session; operator override: is the operator's last resort and no stop's route.",
+    ),
+    block,
+  );
+  assert.ok(
+    block.includes(
+      "Each is a stop of the table npm run features -- list prints, answered at the level its root sets in the stops section of dotln.config.json (refuse, advise or off): core refuses on each, and an exported instance advises on those that guard the kit's own records, a host property or a bound; desktop control alone keeps its own election and has no level there.",
+    ),
+    block,
+  );
+  // Every row of the block's count names its stop of the table.
+  for (const row of HARNESS_REFUSALS)
+    assert.ok(
+      STOPS.some((entry) => entry.id === row.stop),
+      row.id,
+    );
+  const roots = files.filter((file) => file.path.endsWith("/SKILL.md"));
+  assert.ok(roots.length > 0);
+  for (const file of roots)
+    assert.doesNotMatch(file.contents, route, file.path);
+  // The texts that named the override as a route name the stop instead.
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const request = (tool, args) =>
+      input(root, "PreToolUse", { tool_name: tool, tool_input: args });
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-02-text"],
+      fixtureGitOptions,
+    );
+    const planning = reasonOf(
+      invoke(
+        root,
+        "permissions",
+        request("Write", { file_path: "scripts/x.mjs" }),
+      ),
+    );
+    runGit(root, ["switch", "wo-999"], fixtureGitOptions);
+    const outside = reasonOf(
+      invoke(
+        root,
+        "permissions",
+        request("Write", { file_path: "/dotln-ungranted-fixture/outside.txt" }),
+      ),
+    );
+    for (const [stop, text] of [
+      ["planning-branch", planning],
+      ["outside-write", outside],
+    ]) {
+      assert.match(text, /^DOTLN_HARNESS_REFUSED: /u, stop);
+      namesStop(text, stop, "refuse");
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion A11 and its step: an emit writes the levels a root lowers into every hook's configuration, and leaves out the host deny rules of the ssh and package-publish stops where the owner lowers them", () => {
+  const root = fixture();
+  try {
+    const hooks = () =>
+      readdirSync(join(root, ".claude/hooks"))
+        .filter((name) => name.endsWith(".mjs"))
+        .map((name) => [
+          name,
+          readFileSync(join(root, ".claude/hooks", name), "utf8"),
+        ]);
+    // The levels a hook's configuration carries, read from its source.
+    const carried = (source) => {
+      const found = /"stops": (\{[^}]*\})/u.exec(source);
+      return found ? JSON.parse(found[1]) : undefined;
+    };
+    const deny = () =>
+      JSON.parse(readFileSync(join(root, ".claude/settings.json"), "utf8"))
+        .permissions.deny;
+    const ssh = ["Bash(scp *)", "Bash(sftp *)", "Bash(ssh *)"];
+    const publish = ["Bash(npm publish *)"];
+    const rules = (present) =>
+      [...ssh, ...publish].map((rule) => [rule, present.includes(rule)]);
+    // Core: no hook carries a level, and both stops' rules are emitted.
+    for (const [name, source] of hooks())
+      assert.equal(carried(source), undefined, name);
+    assert.deepEqual(rules(deny()), rules([...ssh, ...publish]));
+    // An instance that sets nothing: every hook carries the levels of the
+    // record, host and bound rows, and the rules are emitted as before.
+    asInstance(root);
+    const lowered = loweredStops(resolveStopLevels({ instance: true }));
+    assert.ok(Object.keys(lowered).length > 20);
+    assert.equal(lowered.ssh, undefined);
+    for (const [name, source] of hooks())
+      assert.deepEqual(carried(source), lowered, name);
+    assert.deepEqual(rules(deny()), rules([...ssh, ...publish]));
+    assert.equal(checkHarness(root).files > 0, true);
+    // The ssh stop lowered: its three rules go, the publish rule stays.
+    stopsFixture(root, { ssh: "advise" });
+    assert.deepEqual(rules(deny()), rules(publish));
+    for (const [name, source] of hooks())
+      assert.equal(carried(source).ssh, "advise", name);
+    // The package-publish stop off: its rule goes, the ssh rules return.
+    stopsFixture(root, { "package-publish": "off" });
+    assert.deepEqual(rules(deny()), rules(ssh));
+    for (const [name, source] of hooks()) {
+      assert.equal(carried(source)["package-publish"], "off", name);
+      assert.equal(carried(source).ssh, undefined, name);
+    }
+    checkHarness(root);
+    // A level the owner set and has not emitted is drift the check names.
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, stops: { "package-publish": "refuse" } }),
+    );
+    assert.throws(() => checkHarness(root), /harness drift/u);
+    emitHarness(root);
+    assert.deepEqual(rules(deny()), rules([...ssh, ...publish]));
+    checkHarness(root);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 adjacent: an election the lifecycle cannot read refuses an executor's write and admits its reads and the commands whose destinations cannot be named, so the file at fault can be repaired", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "unreadable-election", "executor");
+    const call = (tool, args) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          session_id: "unreadable-election",
+          tool_name: tool,
+          tool_input: args,
+        }),
+      );
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, features: { "plan-first": "on" } }),
+    );
+    const edit = call("Edit", { file_path: join(root, "dotln.config.json") });
+    assert.equal(allowed(edit), false);
+    assert.match(
+      reasonOf(edit),
+      /^DOTLN_PLAN_FIRST_REFUSED: the plan-first election cannot be read: .*features\.plan-first.*\. Reads, and commands whose destinations this guard cannot name, stay admitted, so the file at fault can be read and repaired\.$/u,
+    );
+    assert.equal(
+      allowed(call("Bash", { command: "printf x > dotln.config.json" })),
+      false,
+    );
+    // What no election governs is admitted while the file is at fault.
+    for (const [tool, args] of [
+      ["Read", { file_path: join(root, "dotln.config.json") }],
+      ["Bash", { command: "git --no-pager status --short" }],
+      ["Bash", { command: "node repair-the-configuration.mjs" }],
+    ])
+      assert.doesNotMatch(
+        JSON.stringify(call(tool, args)),
+        /PLAN_FIRST/u,
+        `${tool} ${JSON.stringify(args)}`,
+      );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+// ---- WO-287, Part B: the author's rules are a loadout an instance chooses
+
+// Each emitted role root, by its skill's name.
+const roleRoots = (root) =>
+  readdirSync(join(root, ".claude/skills"))
+    .sort()
+    .map((name) => ({
+      name,
+      role: name.slice("dotln-".length),
+      text: readFileSync(
+        join(root, ".claude/skills", name, "SKILL.md"),
+        "utf8",
+      ),
+    }));
+const rootOrigin = (text) =>
+  JSON.parse(/^<!-- Origin: (.*) -->$/mu.exec(text)[1]).ids;
+const hookOrigin = (root, name) =>
+  JSON.parse(
+    /^\/\/ Origin: (.*)$/mu.exec(
+      readFileSync(join(root, ".claude/hooks", name), "utf8"),
+    )[1],
+  ).ids;
+const hookFiles = (root) => readdirSync(join(root, ".claude/hooks")).sort();
+// A role's numbered steps, as its root holds them.
+const numberedSteps = (text) =>
+  text.split("\n").filter((line) => /^\d+\. /u.test(line));
+const unitIds = personalFeedbackUnits.map((unit) => unit.unitId);
+const authorRules = sharedRules.filter((rule) => rule.layer === "author");
+const platformRules = sharedRules.filter((rule) => rule.layer === "platform");
+const settingsOf = (root) =>
+  JSON.parse(readFileSync(join(root, ".claude/settings.json"), "utf8"));
+
+test("WO-287 Part B step 1: the configured program for an overlay that names one unit and one rule carries neither, and names what it leaves out", () => {
+  const whole = contributorConfiguredProgram();
+  const program = contributorConfiguredProgram(
+    {},
+    { unequip: ["no-attribution", "durations"] },
+  );
+  const unit = personalFeedbackUnits.find(
+    (entry) => entry.unitId === "no-attribution",
+  );
+  const rule = sharedRules.find((entry) => entry.id === "durations");
+  assert.equal(rule.layer, "author");
+  assert.equal(whole.unequipped, undefined);
+  assert.deepEqual(program.unequipped, {
+    units: ["no-attribution"],
+    rules: ["durations"],
+  });
+  for (const role of whole.roles) {
+    const selected = program.roles.find((entry) => entry.name === role.name);
+    assert.ok(role.feedbackHandlers.includes(unit.trigger), role.name);
+    // The role loses that handler and that sentence, and nothing else.
+    assert.deepEqual(
+      selected.feedbackHandlers,
+      role.feedbackHandlers.filter((handler) => handler !== unit.trigger),
+      role.name,
+    );
+    assert.deepEqual(
+      selected.procedure,
+      role.procedure.filter((line) => line !== rule.text),
+      role.name,
+    );
+  }
+  assert.equal(
+    whole.roles.filter((role) => role.procedure.includes(rule.text)).length,
+    rule.roles.length,
+  );
+  // The feedback program an emit compiles holds the nine units left, and
+  // the whole build's is the ten it always was.
+  assert.deepEqual(
+    contributorFeedback(program).units.map((entry) => entry.unitId),
+    unitIds.filter((id) => id !== "no-attribution").sort(),
+  );
+  assert.equal(
+    contributorFeedback(whole).policyHash,
+    compileFeedbackUnits(personalFeedbackUnits).policyHash,
+  );
+  // A support switch, a platform rule and an id the build does not hold
+  // select nothing; the name author selects the layer, and a single id
+  // beside it is the more specific word.
+  assert.deepEqual(
+    contributorRuleSelection({
+      unequip: ["process-cost", "worker-launch", "no-such-rule"],
+    }),
+    { units: [], rules: [] },
+  );
+  const layer = contributorRuleSelection({ unequip: ["author"] });
+  assert.deepEqual(layer.units, unitIds);
+  assert.deepEqual(
+    layer.rules,
+    authorRules.map((entry) => entry.id),
+  );
+  assert.deepEqual(
+    contributorRuleSelection({
+      unequip: ["author"],
+      equip: ["durations", "no-attribution"],
+    }),
+    {
+      units: unitIds.filter((id) => id !== "no-attribution"),
+      rules: authorRules
+        .map((entry) => entry.id)
+        .filter((id) => id !== "durations"),
+    },
+  );
+});
+
+test("WO-287 criterion B2: with unequip author in an instance's overlay the role roots carry no author-layer unit's line and no author-layer rule's sentence, the settings register no hook of an author-layer unit, and every role's numbered steps and every platform-layer rule remain", () => {
+  const root = fixture();
+  try {
+    asInstance(root);
+    const before = roleRoots(root);
+    const hooksBefore = hookFiles(root);
+    const workerBefore = readFileSync(
+      join(root, ".claude/agents/dotln-worker.md"),
+      "utf8",
+    );
+    assert.deepEqual(installedUnequippedRules(root), []);
+    assert.deepEqual(settingsOf(root).attribution, {
+      commit: "",
+      pr: "",
+      sessionUrl: false,
+    });
+    // The block states the nine refusals as the build holds them: with the
+    // writer reservation's unit it says nothing more, and without it one
+    // sentence says that no hook here reserves a writer.
+    const writerLeftOut =
+      "This root's build leaves out the unit concurrent-work-requires-worktrees: no hook here reserves a writer, and that stop reads off (npm run features -- list).";
+    const block = () => readFileSync(join(root, "CLAUDE.md"), "utf8");
+    assert.ok(!block().includes(writerLeftOut));
+    emitHarness(
+      root,
+      overlayFixture(root, { version: 1, unequip: ["no-attribution"] }),
+    );
+    assert.ok(!block().includes(writerLeftOut));
+    emitHarness(
+      root,
+      overlayFixture(root, { version: 1, unequip: ["author"] }),
+    );
+    assert.ok(
+      block().includes(
+        `a session changes one only when its owner asks for it in that session; operator override: is the operator's last resort and no stop's route.`,
+      ),
+    );
+    assert.ok(block().includes(` ${writerLeftOut}\n`), block());
+    const after = roleRoots(root);
+    assert.deepEqual(
+      after.map((entry) => entry.name),
+      before.map((entry) => entry.name),
+    );
+    // Every unit is the author's, by the scope it declares.
+    assert.deepEqual(
+      contributorRules
+        .filter((rule) => rule.kind === "unit" && rule.layer === "author")
+        .map((rule) => rule.id),
+      unitIds,
+    );
+    for (const { name, text } of after) {
+      const was = before.find((entry) => entry.name === name).text;
+      for (const unit of unitIds) {
+        assert.ok(was.includes(`\n${unit}: `), `${name} held ${unit}`);
+        assert.ok(!text.includes(`\n${unit}: `), `${name} ${unit}`);
+        assert.ok(!rootOrigin(text).includes(unit), `${name} ${unit}`);
+      }
+      for (const rule of authorRules)
+        assert.ok(!text.includes(rule.text), `${name} ${rule.id}`);
+      // The numbered steps are the role's own and stay as they were, and a
+      // platform rule stays in every root that held it.
+      assert.deepEqual(numberedSteps(text), numberedSteps(was), name);
+      for (const rule of platformRules)
+        assert.equal(
+          text.includes(rule.text),
+          was.includes(rule.text),
+          `${name} ${rule.id}`,
+        );
+    }
+    for (const rule of authorRules)
+      assert.ok(
+        before.some(({ text }) => text.includes(rule.text)),
+        `${rule.id} was in a root`,
+      );
+    for (const rule of platformRules)
+      assert.ok(
+        after.some(({ text }) => text.includes(rule.text)),
+        `${rule.id} is still in a root`,
+      );
+    // No hook of a unit is installed or registered: the three units' own
+    // hooks and the commit-message hook are gone, and no hook that stays
+    // names a unit in its Origin.
+    const unitHooks = [
+      "commit-msg.mjs",
+      "concurrent-work-requires-worktrees.mjs",
+      "no-attribution.mjs",
+      "no-lint-type-disables-as-fixes.mjs",
+    ];
+    const hooks = hookFiles(root);
+    assert.deepEqual(
+      hooks,
+      hooksBefore.filter((name) => !unitHooks.includes(name)),
+    );
+    assert.deepEqual(
+      hooksBefore.filter((name) => unitHooks.includes(name)),
+      unitHooks,
+    );
+    const settings = settingsOf(root);
+    for (const unit of unitIds) {
+      assert.ok(!JSON.stringify(settings.hooks).includes(unit), unit);
+      for (const name of hooks)
+        assert.ok(!hookOrigin(root, name).includes(unit), `${name} ${unit}`);
+    }
+    // The host's own attribution is no longer turned off: that setting is
+    // the attribution unit's.
+    assert.equal(settings.attribution, undefined);
+    // A worker is told the paraphrase rule only where the roles are: the
+    // generated worker definition loses that sentence with the rule, and
+    // keeps what guards the local lane.
+    const words = sharedRules.find((rule) => rule.id === "operator-words");
+    assert.equal(words.layer, "author");
+    const worker = () =>
+      readFileSync(join(root, ".claude/agents/dotln-worker.md"), "utf8");
+    assert.ok(workerBefore.includes(words.text));
+    assert.ok(!worker().includes(words.text));
+    assert.ok(!worker().includes("paraphrases the operator"));
+    assert.ok(
+      worker().includes(
+        sharedRules.find((rule) => rule.id === "worker-no-print").text,
+      ),
+    );
+    assert.ok(installedUnequippedRules(root).includes("operator-words"));
+    // The finish hook advises on no unit, and the manifest records what the
+    // build leaves out.
+    assert.deepEqual(configFor(root, "finish").policy.units, []);
+    for (const profile of JSON.parse(
+      readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+    ).profiles)
+      assert.deepEqual(profile.unequipped, {
+        units: unitIds,
+        rules: authorRules.map((rule) => rule.id),
+      });
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion B4: with no unit or rule id in its overlay an instance's role roots name in their Origin comments the unit ids they named at the order's base and carry every shared rule's sentence", () => {
+  // The unit ids every role root named at the order's base, as an Origin
+  // comment lists them.
+  const atBase = [
+    "anti-oscillation",
+    "bounded-boy-scout-cleanup",
+    "concurrent-work-requires-worktrees",
+    "correctness-over-sycophancy",
+    "fail-conservative-correction",
+    "no-attribution",
+    "no-lint-type-disables-as-fixes",
+    "no-partial-completion",
+    "read-your-own-output",
+    "verify-app-before-done",
+  ];
+  const core = fixture();
+  const root = fixture();
+  try {
+    emitHarness(core);
+    asInstance(root);
+    const holdsEveryRule = (label) => {
+      for (const { name, role, text } of roleRoots(root)) {
+        assert.deepEqual(
+          rootOrigin(text).filter((id) => atBase.includes(id)),
+          atBase,
+          `${label} ${name}`,
+        );
+        for (const id of atBase)
+          assert.ok(text.includes(`\n${id}: `), `${label} ${name} ${id}`);
+        for (const rule of sharedRules.filter((entry) =>
+          entry.roles.includes(role),
+        ))
+          assert.ok(text.includes(rule.text), `${label} ${name} ${rule.id}`);
+      }
+    };
+    holdsEveryRule("no overlay");
+    // An instance that sets nothing emits the role roots core emits.
+    assert.deepEqual(roleRoots(root), roleRoots(core));
+    assert.equal(
+      JSON.parse(
+        readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+      ).profiles[0].unequipped,
+      undefined,
+    );
+    // An overlay that names a support switch alone leaves every unit and
+    // rule in, as it did before a rule could be named.
+    emitHarness(
+      root,
+      overlayFixture(root, { version: 1, unequip: ["process-cost"] }),
+    );
+    holdsEveryRule("an overlay that names a support");
+  } finally {
+    removeFixture(core, { recursive: true, force: true });
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion B5: harness check passes in an instance whose overlay unequips author-layer rules, a later emit leaves them absent, and the session hook gives no context of a rule left out", () => {
+  const root = fixture();
+  try {
+    asInstance(root);
+    const question = () =>
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", {
+          prompt: "is the gate still running?",
+        }),
+      );
+    assert.ok(JSON.stringify(question()).includes(OPERATOR_QUESTION_CONTEXT));
+    const value = {
+      version: 1,
+      unequip: ["question-pathways", "durations", "read-your-own-output"],
+    };
+    const options = { runtimeRoot: root, ...overlayFixture(root, value) };
+    // The emit an owner runs, which reads the overlay from the root.
+    const emitted = overlayCommand(root, "emit");
+    assert.equal(emitted.status, 0, emitted.stdout + emitted.stderr);
+    // The check judges the instance against its own overlay's emit: the
+    // library's with the overlay, and the command's, which reads it.
+    assert.doesNotThrow(() => checkHarness(root, options));
+    const checked = overlayCommand(root, "check");
+    assert.equal(checked.status, 0, checked.stdout + checked.stderr);
+    // Judged against the whole build, the same bytes are drift.
+    assert.throws(
+      () => checkHarness(root, { runtimeRoot: root }),
+      /harness drift/u,
+    );
+    const first = installedOverlayBytes(root);
+    const absent = () => {
+      for (const { name, text } of roleRoots(root)) {
+        for (const id of ["question-pathways", "durations"])
+          assert.ok(
+            !text.includes(sharedRules.find((rule) => rule.id === id).text),
+            `${name} ${id}`,
+          );
+        assert.ok(!text.includes("\nread-your-own-output: "), name);
+        assert.ok(text.includes("\nno-attribution: "), name);
+      }
+    };
+    absent();
+    // A later emit, by the command an owner runs, writes the same bytes.
+    const again = overlayCommand(root, "emit");
+    assert.equal(again.status, 0, again.stdout + again.stderr);
+    assert.deepEqual(installedOverlayBytes(root), first);
+    absent();
+    assert.deepEqual(configFor(root, "session").unequippedRules, [
+      "durations",
+      "question-pathways",
+    ]);
+    assert.ok(!JSON.stringify(question()).includes(OPERATOR_QUESTION_CONTEXT));
+    // The write observer is named for the roles where the unit whose
+    // receipts it records is left out, and still runs.
+    assert.ok(
+      !hookOrigin(root, "write-observer.mjs").includes("read-your-own-output"),
+    );
+    assert.ok(hookFiles(root).includes("write-observer.mjs"));
+    assert.equal(
+      JSON.parse(
+        readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+      ).leftOut,
+      undefined,
+      "no file of the kit's bundle is left out by a rule or a unit without one",
+    );
+
+    // A unit with a hook file of its own takes the file with it: the
+    // manifest names the path its build leaves out, and a line of the
+    // stops section for that unit's stop sets nothing and is named once.
+    write(
+      root,
+      "dotln.config.json",
+      json({
+        version: 1,
+        build: { overlay: "build/overlay.json" },
+        stops: { attribution: "refuse" },
+      }),
+    );
+    write(
+      root,
+      "build/overlay.json",
+      json({ version: 1, unequip: ["no-attribution"] }),
+    );
+    const without = overlayCommand(root, "emit");
+    assert.equal(without.status, 0, without.stdout + without.stderr);
+    const named = without.stderr
+      .split("\n")
+      .filter((line) => line.includes('stops: "attribution" has no effect'));
+    assert.equal(named.length, 1, without.stderr);
+    assert.ok(
+      named[0].includes(
+        "while the build overlay leaves out the unit no-attribution, whose refusal it is; the stop reads off",
+      ),
+      named[0],
+    );
+    assert.ok(!hookFiles(root).includes("no-attribution.mjs"));
+    assert.deepEqual(
+      JSON.parse(
+        readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+      ).leftOut,
+      // The unit's two files: its guard and the commit-message hook.
+      [".claude/hooks/commit-msg.mjs", ".claude/hooks/no-attribution.mjs"],
+    );
+    assert.ok(!hookFiles(root).includes("commit-msg.mjs"));
+    const rechecked = overlayCommand(root, "check");
+    assert.equal(rechecked.status, 0, rechecked.stdout + rechecked.stderr);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion B6: core's root emits its Clean Room section and its residue line as before, and no overlay id, stop or rule names the floor", () => {
+  const root = fixture();
+  try {
+    const floor = readFileSync(join(sourceRoot, "CLAUDE.md"), "utf8");
+    const section = /## Clean Room — locked floor\n[\s\S]*?(?=\n## )/u.exec(
+      floor,
+    )[0];
+    write(root, "CLAUDE.md", floor);
+    emitHarness(root);
+    const emitted = readFileSync(join(root, "CLAUDE.md"), "utf8");
+    assert.ok(emitted.includes(section));
+    assert.ok(
+      emitted.includes(
+        "clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.",
+      ),
+    );
+    // Nothing a root can set names the floor: no rule of the table, no id an
+    // overlay's lists accept, and no stop.
+    const names = (id) => /clean.?room/iu.test(id);
+    assert.deepEqual(
+      contributorRules.filter((rule) => names(rule.id)),
+      [],
+    );
+    assert.deepEqual(
+      [
+        ...OVERLAY_IDS.supports,
+        ...OVERLAY_IDS.selectable,
+        ...OVERLAY_IDS.fixed,
+      ].filter(names),
+      [],
+    );
+    assert.deepEqual(
+      STOPS.filter((row) => names(row.id)),
+      [],
+    );
+    // An overlay that names it is refused in core as any unknown id is, and
+    // in an instance is told so once and goes on with the line emitted.
+    assert.throws(
+      () =>
+        emitHarness(
+          root,
+          overlayFixture(root, { version: 1, unequip: ["clean-room"] }),
+        ),
+      /unequip names unknown support, unit or rule clean-room/u,
+    );
+    write(root, "KIT-MANIFEST.json", json({ files: [] }));
+    const warnings = [];
+    const warn = console.warn;
+    console.warn = (line) => warnings.push(String(line));
+    try {
+      emitHarness(
+        root,
+        overlayFixture(root, { version: 1, unequip: ["clean-room"] }),
+      );
+    } finally {
+      console.warn = warn;
+    }
+    assert.equal(
+      warnings.filter((line) => line.includes("clean-room")).length,
+      1,
+      warnings.join("\n"),
+    );
+    // In an instance the block's line says whose the section is, where
+    // core's says the floor is locked: the seed there says the same.
+    const instanceBlock = readFileSync(join(root, "CLAUDE.md"), "utf8");
+    assert.ok(
+      instanceBlock.includes(
+        "clean-room: Source provenance needs the owner's judgment; the Clean Room section of this file is the owner's own text.",
+      ),
+      instanceBlock,
+    );
+    assert.ok(!instanceBlock.includes("Clean Room floor stays locked"));
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
 });

@@ -30,9 +30,21 @@ import {
 } from "./lib/authority-probe.mjs";
 import { sourceChangeCommandEffect } from "../packages/skeleton/dist/src/source-change-command.js";
 import {
+  KIT_MODELS,
+  KIT_WORKERS,
+} from "../packages/skeleton/src/worker-models.mjs";
+import {
   confinedTestCommand,
   writerSandboxProfilePath,
 } from "../packages/skeleton/dist/src/discovery-sandbox.js";
+
+// What the kit's one model table launches for a worker on a provider: the
+// bound model's exact id, at the binding's effort or else the model's own.
+const kitLaunch = (worker, provider) => {
+  const binding = KIT_WORKERS[worker][provider];
+  const model = KIT_MODELS[binding.model ?? binding];
+  return { model: model.id, effort: binding.effort ?? model.effort };
+};
 
 const cell = (row, harness = "claude", mode = "off") =>
   cells().find(
@@ -519,8 +531,8 @@ test("sandbox launch selectors change only the scratch configuration and carry n
   for (const harness of ["claude", "codex"])
     for (const mode of ["on", "off"]) {
       const launch = authorityLaunch(cell(10, harness, mode), f);
-      const model = harness === "claude" ? "claude-opus-5-5" : "gpt-6.1-sol";
-      const effort = harness === "claude" ? "xhigh" : "max";
+      // The probe launches the default worker on each host.
+      const { model, effort } = kitLaunch("default", harness);
       assert.equal(launch.actor.model, model);
       assert.equal(launch.actor.effort, effort);
       assert.equal(launch.args[launch.args.indexOf("--model") + 1], model);

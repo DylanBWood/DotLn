@@ -1,10 +1,15 @@
-import { drivenLifecycleDispatch } from "../../packages/skeleton/dist/src/harness-command.js";
 import {
+  drivenLifecycleDispatch,
+  harnessToolEffects,
+} from "../../packages/skeleton/dist/src/harness-command.js";
+import {
+  COMMAND_SHAPE_VERSION,
   commandFailed,
   commandKind,
   commandShape,
   diagnosticSignals,
   lifecycleRefusal,
+  lifecycleRefusalReason,
   nativeBoundary,
   nativeFailureCause,
   refusalFindings,
@@ -74,6 +79,37 @@ export function redactReason(text) {
     reason = reason.replace(pattern, mask);
   return reason;
 }
+// What a denial keeps of the tool: its name when it is one of the host's own,
+// and otherwise only that it was an MCP tool or some other. The host's own
+// are the plainly named tools of the table the harness classifies every call
+// by, so a tool added there is named here.
+const DENIED_TOOLS = new Set(
+  Object.keys(harnessToolEffects).filter((name) =>
+    /^[A-Z][A-Za-z]+$/u.test(name),
+  ),
+);
+export const deniedTool = (name) =>
+  typeof name !== "string" || !name
+    ? null
+    : DENIED_TOOLS.has(name)
+      ? name
+      : name.startsWith("mcp__")
+        ? "mcp-tool"
+        : "other";
+// The components the host names as having decided a denial.
+const DECISION_SOURCES = ["rule", "mode", "classifier", "asyncAgent"];
+// A phase's helpers can be denied many calls; the record counts every one
+// and keeps the first of them.
+const HELPER_DENIAL_ITEMS = 12;
+const contentText = (content) =>
+  typeof content === "string"
+    ? content
+    : Array.isArray(content)
+      ? content
+          .map((part) => (typeof part?.text === "string" ? part.text : ""))
+          .join("\n")
+      : "";
+
 export function declinedItem({
   kind,
   command,
@@ -81,6 +117,10 @@ export function declinedItem({
   reasonSource = "none-printed",
   diagnosticSignals = [],
   sequence,
+  tool,
+  actor,
+  decisionSource,
+  atMs,
 }) {
   const printed =
     typeof reason === "string" && reason.trim()
@@ -89,6 +129,12 @@ export function declinedItem({
   return {
     kind: kind ?? null,
     command: command ?? null,
+    // The tool's name from a fixed list, who made the call, the component
+    // that decided and how far into the attempt it came, where the host said.
+    ...(tool ? { tool } : {}),
+    ...(actor ? { actor } : {}),
+    ...(decisionSource ? { decisionSource } : {}),
+    ...(Number.isSafeInteger(atMs) && atMs >= 0 ? { atMs } : {}),
     status: "declined",
     exitCode: null,
     reason: printed,
@@ -128,6 +174,7 @@ export function streamObservation({
   onSubagent,
   onCommand,
   stop = () => {},
+  now = Date.now,
 }) {
   const facts = {
     costUsd: null,
@@ -138,10 +185,15 @@ export function streamObservation({
     sessionId: null,
     error: false,
     refused: undefined,
+    refusedReason: undefined,
+    refusedReasonOf: undefined,
     cause: undefined,
   };
+  const openedAt = now();
   const hookEvents = new Set(),
     refusalCodes = new Set(),
+    refusalCounts = new Map(),
+    refusalStops = new Map(),
     dispatches = new Set(),
     commands = new Map(),
     shapes = new Map(),
@@ -154,6 +206,8 @@ export function streamObservation({
   const eventTail = [];
   let rowCount = 0;
   let declined = null;
+  let hostDenials = null;
+  const helperDenials = { count: 0, items: [] };
   const observeRow = (row) => {
     rowCount++;
     eventTail.push(row);
@@ -190,9 +244,30 @@ export function streamObservation({
     facts.error = true;
     facts.cause = "native-permission-refused";
     facts.refused =
-      "The native host denied a phase command; stop without another attempt until the host admission condition is resolved.";
+      "The host denied a call the phase worker made, and the drive ended the phase there: no worker goes around a denial or repeats it. The drive's account names the call and the next step.";
     declined ??= declinedItem({ ...item, sequence: rowCount });
     stop();
+  };
+  // A helper agent's denied call is the helper's to report to its worker.
+  // The phase goes on; the record keeps that it happened and what it was.
+  const observeHelperDenial = (item) => {
+    helperDenials.count++;
+    if (helperDenials.items.length < HELPER_DENIAL_ITEMS)
+      helperDenials.items.push(declinedItem({ ...item, sequence: rowCount }));
+  };
+  // A reason belongs to the refusal it was read from, so it is kept with
+  // that refusal's sentence: a later stop of another kind does not carry it.
+  const reasonFor = (reason) => {
+    facts.refusedReason = reason ?? undefined;
+    facts.refusedReasonOf = reason ? facts.refused : undefined;
+  };
+  // A refused lifecycle dispatch keeps why in the kit's own fixed words,
+  // where the refusal is one of the forms those words cover.
+  const refuseDispatch = (diagnostic, text) => {
+    const refusal = lifecycleRefusal(diagnostic);
+    if (!refusal) return;
+    facts.refused = refusal;
+    reasonFor(lifecycleRefusalReason(text));
   };
   const observeCommand = (observation) => {
     commandResults.push(observation);
@@ -204,9 +279,17 @@ export function streamObservation({
       stop();
     }
   };
-  const observeRefusal = (value) => {
-    const { codes, boundaries } = refusalFindings(value);
-    for (const code of codes) refusalCodes.add(code);
+  // A refused call is counted once, where its result comes back; a hook's
+  // own row for the same call names its code and is not counted again.
+  const observeRefusal = (value, counted = false) => {
+    const { codes, boundaries, stops } = refusalFindings(value);
+    for (const code of codes) {
+      refusalCodes.add(code);
+      if (counted) refusalCounts.set(code, (refusalCounts.get(code) ?? 0) + 1);
+    }
+    if (counted)
+      for (const id of stops)
+        refusalStops.set(id, (refusalStops.get(id) ?? 0) + 1);
     boundaryResults.push(...boundaries);
     return codes;
   };
@@ -253,7 +336,7 @@ export function streamObservation({
     });
     const signals = failed ? diagnosticSignals(item.aggregated_output) : [];
     if (kind && failed) {
-      observeRefusal(item.aggregated_output);
+      observeRefusal(item.aggregated_output, true);
       observeNativeBoundary(item.aggregated_output ?? "");
     }
     if (kind)
@@ -275,6 +358,8 @@ export function streamObservation({
         reason: item.aggregated_output,
         reasonSource: "command_execution.aggregated_output",
         diagnosticSignals: signals,
+        tool: "shell",
+        atMs: now() - openedAt,
       });
     if (
       [
@@ -291,8 +376,10 @@ export function streamObservation({
       item.exit_code !== 0 &&
       drivenLifecycleDispatch(item.command ?? "", launchpad)
     )
-      facts.refused =
-        lifecycleRefusal(item.aggregated_output ?? "") ?? facts.refused;
+      refuseDispatch(
+        item.aggregated_output ?? "",
+        item.aggregated_output ?? "",
+      );
     if (item.type === "collab_tool_call" && item.tool === "spawn_agent")
       codexSubagent(item);
   };
@@ -343,6 +430,14 @@ export function streamObservation({
   };
 
   const claudeHookResponse = (row) => {
+    // The host can print one answer in two fields of the row that differ
+    // (its output beside what else the hook wrote): one row counts once.
+    let counted = false;
+    const once = () => {
+      const first = !counted;
+      counted = true;
+      return first;
+    };
     for (const output of new Set([row.stdout, row.output])) {
       if (typeof output !== "string") continue;
       let hook;
@@ -353,25 +448,36 @@ export function streamObservation({
       }
       if (hook?.hookSpecificOutput?.permissionDecision === "deny")
         observeRefusal(hook.hookSpecificOutput.permissionDecisionReason);
+      // A hook that blocks a stop answers with a decision and a reason, and
+      // no tool result follows it: its refusal is counted here, once.
+      if (hook?.decision === "block") observeRefusal(hook.reason, once());
       if (
         row.hook_event === "UserPromptSubmit" &&
         /^DotLn: prompt accepted; DOTLN_HARNESS_REFUSED:/.test(
           hook?.systemMessage ?? "",
         )
       ) {
-        observeRefusal(hook.systemMessage);
+        // A prompt's dispatch has no tool result to be counted at, so its
+        // refusal is counted here, once.
+        observeRefusal(hook.systemMessage, once());
         facts.refused =
           "The worker's automatic lifecycle dispatch was refused.";
+        reasonFor(lifecycleRefusalReason(hook.systemMessage));
       }
     }
     if (row.exit_code === 2) {
-      const codes = observeRefusal(row.stderr);
+      const codes = observeRefusal(
+        row.stderr,
+        row.hook_event === "UserPromptSubmit" && once(),
+      );
       if (
         row.hook_event === "UserPromptSubmit" &&
         codes.has("DOTLN_HARNESS_REFUSED")
-      )
+      ) {
         facts.refused =
           "The worker's automatic lifecycle dispatch was refused.";
+        reasonFor(lifecycleRefusalReason(row.stderr));
+      }
     }
   };
   const claudeToolUse = (block) => {
@@ -406,12 +512,18 @@ export function streamObservation({
     }
     if (!block.is_error) return;
     const diagnostic = JSON.stringify(block.content);
-    observeRefusal(diagnostic);
+    observeRefusal(diagnostic, true);
     observeNativeBoundary(diagnostic);
     if (dispatches.has(block.tool_use_id))
-      facts.refused = lifecycleRefusal(diagnostic) ?? facts.refused;
+      refuseDispatch(diagnostic, contentText(block.content));
   };
   const claudeResult = (row) => {
+    // The host's result row is its own count of the calls it denied; a
+    // denial's event is best effort. A run has a result row for each of its
+    // turns, a turn that handles a background agent's result among them, and
+    // each counts its own turn's denials.
+    if (Array.isArray(row.permission_denials))
+      hostDenials = (hostDenials ?? 0) + row.permission_denials.length;
     facts.costUsd = row.total_cost_usd ?? null;
     facts.usage = row.usage ?? null;
     facts.error ||= row.is_error === true;
@@ -442,21 +554,35 @@ export function streamObservation({
     if (row.type === "system" && row.subtype?.startsWith("hook"))
       hookEvents.add(row.subtype);
     if (row.type === "system" && row.subtype === "permission_denied") {
+      const decisionSource = DECISION_SOURCES.includes(row.decision_reason_type)
+        ? row.decision_reason_type
+        : "unknown";
+      // The host names a subagent's call by its agent's id; that it has one
+      // is all that is kept of it.
+      const actor =
+        typeof row.agent_id === "string" && row.agent_id ? "helper" : "worker";
       boundaryResults.push({
         kind: "native-permission",
         commandKind: commands.get(row.tool_use_id) ?? null,
-        decisionSource: ["rule", "mode", "classifier", "asyncAgent"].includes(
-          row.decision_reason_type,
-        )
-          ? row.decision_reason_type
-          : "unknown",
+        decisionSource,
+        actor,
       });
       // Claude's denial row carries the host's reason prose, which its
-      // decision source already classifies; only the command shape is kept.
-      failPermission({
+      // decision source already classifies. Kept: the tool's name from a
+      // fixed list, the command shape, who called, what decided and when.
+      const item = {
         kind: commands.get(row.tool_use_id) ?? null,
         command: shapes.get(row.tool_use_id) ?? null,
-      });
+        tool: deniedTool(row.tool_name),
+        actor,
+        decisionSource,
+        atMs: now() - openedAt,
+      };
+      // The phase worker's own denied call ends the phase, so that no worker
+      // goes around it or repeats it (WO-192-D048). A helper's does not: the
+      // helper reports it and the worker judges what it means.
+      if (actor === "helper") observeHelperDenial(item);
+      else failPermission(item);
     }
     if (row.type === "system" && row.subtype === "hook_response")
       claudeHookResponse(row);
@@ -526,7 +652,14 @@ export function streamObservation({
     observed: () => ({
       hookEvents: [...hookEvents],
       refusalCodes: [...refusalCodes],
+      ...(refusalCounts.size
+        ? { refusalCounts: Object.fromEntries(refusalCounts) }
+        : {}),
+      ...(refusalStops.size
+        ? { refusalStops: Object.fromEntries(refusalStops) }
+        : {}),
       toolCalls,
+      commandShapeVersion: COMMAND_SHAPE_VERSION,
       commandResults,
       boundaryResults,
       nativeDiagnostics: [...nativeDiagnostics].map(([source, entry]) => ({
@@ -540,6 +673,15 @@ export function streamObservation({
       ...(declined
         ? { declined, eventTail: eventTail.slice(), eventRows: rowCount }
         : {}),
+      ...(helperDenials.count
+        ? {
+            helperDenials: {
+              count: helperDenials.count,
+              items: helperDenials.items.slice(),
+            },
+          }
+        : {}),
+      ...(hostDenials === null ? {} : { hostDenialsReported: hostDenials }),
     }),
   };
 }

@@ -14,7 +14,7 @@ Scope describes ownership: core rows describe core's release surfaces; instance 
 | host-codex | instance | false | true | inferred: docs/control/resume.jsonl attestations; docs/control/orders/ attestations | Emits the Codex host's surfaces and puts its profile in the bundle. Undeclared, it is on when the committed control log attests a session on the host; the discovery record turns no host on. | features.host-codex | scripts/lib/harness.mjs |  |
 | host-copilot | instance | false | true | elected | Emits the Copilot host's surfaces and puts its profile in the bundle. Undeclared, it is on when the committed control log attests a session on the host; the discovery record turns no host on. | features.host-copilot | scripts/lib/harness.mjs | Copilot sessions run here; only the discovery record showed it, and since WO-276 that record turns no host on (docs/evidence/WO-276/decisions.md, WO-276-D057). |
 | auto-update-upstream | instance | false | false | default | Lets a planning or entropy pass's session take a newer starter release without recording the operator's in-session request. | features.auto-update-upstream | scripts/launchpad.mjs |  |
-| verbatim-operator-words | instance | false | false | default | Turns off the rule that committed text paraphrases the operator: the document gate's verbatim screen and its attributed-speech check advise instead of failing. | features.verbatim-operator-words | scripts/docs-check.mjs |  |
+| verbatim-operator-words | instance | false | false | default | The switch the rule that committed text paraphrases the operator had before its stop had a level. Where a root writes no stops line for verbatim-operator-words, elected the document gate's verbatim screen and its attributed-speech check advise, and declined (false) they refuse. | features.verbatim-operator-words | scripts/docs-check.mjs |  |
 | release-readme-block | core | true | true | default | Declares an election for the README release block; no consumer implements this switch yet. | release.readmeBlock | unread |  |
 | release-component-versions | core | true | true | default | Declares an election for component version surfaces; no consumer implements this switch yet. | release.componentVersions | unread |  |
 | release-corpus | core | true | true | default | Declares an election for release corpus surfaces; no consumer implements this switch yet. | release.corpus | unread |  |
@@ -30,10 +30,161 @@ Scope describes ownership: core rows describe core's release surfaces; instance 
 | retention | both | gate-fixture-passed: 0 h 0 min; gate-fixture-failed: 24 h 0 min; session-scratch: 24 h 0 min; worker-capture: 1 h 0 min; warm-fixture: 0 h 0 min; legacy-backfill: 48 h 0 min; coordination: keep; closed-journal: 720 h 0 min | gate-fixture-passed: 0 h 0 min; gate-fixture-failed: 24 h 0 min; session-scratch: 24 h 0 min; worker-capture: 1 h 0 min; warm-fixture: 0 h 0 min; legacy-backfill: 48 h 0 min; coordination: keep; closed-journal: 720 h 0 min | docs/control/budgets.json | Sets temporary-root retention by class; null keeps a class and an absent contract uses runtime defaults. | budgets.retention | packages/skeleton/src/temporary-root-records.mjs |  |
 | prune-start-budget | both | 0 h 30 min | 0 h 30 min | docs/control/budgets.json | Bounds the routine prune at plan start and release close; the prune stops there, says what remains and how to resume, and the command goes on. null removes the bound. | budgets.prune.startBudgetMs | scripts/lib/temporary-prune-summary.mjs |  |
 
-Not electable:
+## Rules
 
-- The refusal classes in the generated harness contract (9 in the installed contract).
-- The single-writer reservation.
-- The clean-room floor.
+A rule is a sentence the kit puts into a session's instructions beyond a role's own numbered steps: one of the feedback units or one of the shared role rules. Its layer says whose it is. A `platform` rule says how a kit command, phrase, record, file, bound or hook works; a session needs it to operate the lifecycle, and every build carries it. An `author` rule says how the kit's author wants work conducted: no kit mechanism needs the sentence, and it is this root's owner's to keep or remove.
 
-These are the floor; this file cannot turn them off. Desktop-control elects tool access under that floor and still needs the operator's explicit session request.
+An author rule is removed by its id in the `unequip` list of the build overlay (the file `build.overlay` names in `dotln.config.json`), and all of them by the name `author`; `equip` restores one beside that name. `node scripts/harness.mjs emit` then writes the role text, the hooks and the settings without it, and `npm run meta` this page. A unit that also refuses takes its refusal with it: its stop reads `off` below. A role's numbered steps are not rules of this table and stay as they are.
+
+| Rule | Kind | Layer | How it is enforced | Equipped here | Set by | The overlay line that changes it |
+| --- | --- | --- | --- | --- | --- | --- |
+| anti-oscillation | feedback unit | author | a sentence in the role's text | yes | the kit | "unequip": ["anti-oscillation"] |
+| correctness-over-sycophancy | feedback unit | author | a sentence in the role's text | yes | the kit | "unequip": ["correctness-over-sycophancy"] |
+| fail-conservative-correction | feedback unit | author | a sentence in the role's text | yes | the kit | "unequip": ["fail-conservative-correction"] |
+| verify-app-before-done | feedback unit | author | a sentence in the role's text and an advisory when a session stops | yes | the kit | "unequip": ["verify-app-before-done"] |
+| no-attribution | feedback unit | author | a sentence in the role's text, a hook on shell commands, the commit-message hook and the host's attribution setting; its refusal is the stop attribution | yes | the kit | "unequip": ["no-attribution"] |
+| concurrent-work-requires-worktrees | feedback unit | author | a sentence in the role's text and a hook on shell commands and writes; its refusal is the stop writer-reservation | yes | the kit | "unequip": ["concurrent-work-requires-worktrees"] |
+| no-lint-type-disables-as-fixes | feedback unit | author | a sentence in the role's text and a hook on writes | yes | the kit | "unequip": ["no-lint-type-disables-as-fixes"] |
+| read-your-own-output | feedback unit | author | a sentence in the role's text and an advisory when a session stops | yes | the kit | "unequip": ["read-your-own-output"] |
+| no-partial-completion | feedback unit | author | a sentence in the role's text and an advisory when a session stops | yes | the kit | "unequip": ["no-partial-completion"] |
+| bounded-boy-scout-cleanup | feedback unit | author | a sentence in the role's text | yes | the kit | "unequip": ["bounded-boy-scout-cleanup"] |
+| operator-controls | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| browser-verification | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["browser-verification"] |
+| session-commands | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| quality-pass | shared rule | platform | a sentence in the role's text; the session hook's context on a &#96;quality pass:&#96; prompt | yes | the kit | none: every build carries it |
+| artifact-shape | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["artifact-shape"] |
+| document-kinds | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| expected-data | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["expected-data"] |
+| durations | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["durations"] |
+| dispatch-bounds | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| off-ramps | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| amend-order | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| fan-out | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| session-readback | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| publication-check | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["publication-check"] |
+| area-notes | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| initiative-layout | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| standing-file | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| session-boundaries | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| worker-launch | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| worker-no-print | shared rule | platform | a sentence in the role's text; a worker's own prompt | yes | the kit | none: every build carries it |
+| bounded-probes | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| own-decisions | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["own-decisions"] |
+| operator-aim | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["operator-aim"] |
+| operator-words | shared rule | author | a sentence in the role's text; a worker's own prompt; the document gate's screen of committed text is the stop verbatim-operator-words | yes | the kit | "unequip": ["operator-words"] |
+| question-pathways | shared rule | author | a sentence in the role's text; the session hook's context on an operator's question | yes | the kit | "unequip": ["question-pathways"] |
+| claims-evidence | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["claims-evidence"] |
+| request-authority | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["request-authority"] |
+| blocked-turn | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["blocked-turn"] |
+| prune-own | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| runnable-commands | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["runnable-commands"] |
+| stale-gate-rows | shared rule | platform | a sentence in the role's text | yes | the kit | none: every build carries it |
+| stop-monitors | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["stop-monitors"] |
+| safeguard-refusals | shared rule | author | a sentence in the role's text | yes | the kit | "unequip": ["safeguard-refusals"] |
+
+## Stops
+
+A stop is a place where a hook denies a tool call, a gate task fails a run for a reason other than the code under test, or a lifecycle command declines its own job. A row's class is what it protects: `work` is the owner's work or private material, `record` the kit's own records, order or form, `host` a property of the machine and `bound` a budget. A level is `refuse`, `advise` (the stop says what it found and the work goes on) or `off`.
+
+This root is core, which builds the kit: where no line of its own says otherwise, every stop refuses. A level is its owner's to change, with one line of the `stops` section of `dotln.config.json`; `node scripts/harness.mjs emit` then carries it into the hooks and `npm run meta` into this page. A session changes one only when its owner asks for it in that session.
+
+| Stop | Class | What it protects | Where it is enforced | Level here | Set by | The line or file that changes it |
+| --- | --- | --- | --- | --- | --- | --- |
+| writer-reservation | work | another session's uncommitted work in the same worktree | the launchpad's hook and a target worktree's, and a prompt's dispatch; under Codex, whose tool calls no hook sees, the lifecycle dispatch holds it and refuses at any level | refuse | the kit | "stops": { "writer-reservation": "advise" } |
+| outside-write | work | files outside the project, the owner's own settings among them | the launchpad's hook | refuse | the kit | "stops": { "outside-write": "advise" } |
+| gh-repository | work | a pull request or an issue opened on the wrong repository | the launchpad's hook | refuse | the kit | "stops": { "gh-repository": "advise" } |
+| ssh | work | files sent to another host over ssh, scp or sftp | the host's deny rules the emit writes, and a target worktree's hook | refuse | the kit | "stops": { "ssh": "advise" } |
+| package-publish | work | a package published without review | the host's deny rule the emit writes, and a target worktree's hook | refuse | the kit | "stops": { "package-publish": "advise" } |
+| credentials-access | work | credentials and environment files read into a session | a target worktree's hook | refuse | the kit | "stops": { "credentials-access": "advise" } |
+| user-settings | work | the owner's own settings and instructions outside the worktree | a target worktree's hook | refuse | the kit | "stops": { "user-settings": "advise" } |
+| sandbox-disable | work | the host's sandbox around a session's commands | a target worktree's hook | refuse | the kit | "stops": { "sandbox-disable": "advise" } |
+| unapproved-remote | work | work pushed to a remote nobody approved | a target worktree's hook | refuse | the kit | "stops": { "unapproved-remote": "advise" } |
+| denied-effect | work | whatever a registered repository's authority profile names as denied beyond the kit's six effects | a target worktree's hook | refuse | the kit | "stops": { "denied-effect": "advise" } |
+| target-bundle | work | a target worktree's Git metadata, settings and installed hook files | a target worktree's hook | refuse | the kit | "stops": { "target-bundle": "advise" } |
+| target-publication | work | unreviewed work pushed or proposed from a target worktree | a target worktree's hook | refuse | the kit | "stops": { "target-publication": "advise" } |
+| attribution | work | the author's rule that no commit or pull request carries AI attribution | the commit-message hook, and a target worktree's hook | refuse | the kit | "stops": { "attribution": "advise" } |
+| docs-private-path | work | a home directory or private temporary path written into a committed file | the gate's document check | refuse | the kit | "stops": { "docs-private-path": "advise" } |
+| live-gate | record | the bytes a running gate is judging | the launchpad's hook and a target worktree's, and a prompt's dispatch | refuse | the kit | "stops": { "live-gate": "advise" } |
+| planning-branch | record | a planning pass that stays document-only | the launchpad's hook | refuse | the kit | "stops": { "planning-branch": "advise" } |
+| router | record | a drive's order: its router routes and edits nothing | the launchpad's hook | refuse | the kit | "stops": { "router": "advise" } |
+| worker-gate | record | the launching session's writes, which a worker's gate would lock out | the launchpad's hook and a target worktree's | refuse | the kit | "stops": { "worker-gate": "advise" } |
+| driven-helper | record | one writer for an order's worktrees: a driven worker's helper only reads | the launchpad's hook and a target worktree's | refuse | the kit | "stops": { "driven-helper": "advise" } |
+| worker-tasks | record | a worker's background tasks, which would outlive its hand-back | the launchpad's hook | refuse | the kit | "stops": { "worker-tasks": "advise" } |
+| target-classification | record | the kit's scoping of a target worktree: a shell line its classifier cannot read | a target worktree's hook | refuse | the kit | "stops": { "target-classification": "advise" } |
+| target-unlisted-effect | record | the kit's scoping of a target worktree: an effect its compiled authority does not list | a target worktree's hook | refuse | the kit | "stops": { "target-unlisted-effect": "advise" } |
+| target-cwd | record | the kit's scoping of a target worktree: a session or a command that runs from a directory other than its root | a target worktree's hook | refuse | the kit | "stops": { "target-cwd": "advise" } |
+| target-destinations | record | the kit's scoping of a target worktree: a command whose write destinations it cannot name | a target worktree's hook | refuse | the kit | "stops": { "target-destinations": "advise" } |
+| target-delegation | record | the kit's worker accounting in a target worktree: an agent launch or an interaction tool | a target worktree's hook | refuse | the kit | "stops": { "target-delegation": "advise" } |
+| driven-roots | record | a driven phase's binding to its order's recorded worktrees | a target worktree's hook | refuse | the kit | "stops": { "driven-roots": "advise" } |
+| hook-input | host | the hook protocol: an input the hook cannot decode | the launchpad's hook | refuse | the kit | "stops": { "hook-input": "advise" } |
+| target-runtime | host | a target worktree's guard: the launchpad's runtime it cannot reach judges nothing | a target worktree's hook | refuse | the kit | "stops": { "target-runtime": "advise" } |
+| dispatch-bound | bound | a dispatch's wall clock and its number of complete runs | the launchpad's hook, the bounded probe wrapper, a re-dispatch and the gate's host row | refuse | the kit | "stops": { "dispatch-bound": "advise" } |
+| worker-cap | bound | the worker uses one spawning session may make | the launchpad's hook and the review helper's own launch | refuse | the kit | "stops": { "worker-cap": "advise" } |
+| driven-budget | bound | the worker uses a whole drive may make | the launchpad's hook and a target worktree's, the review helper's own launch, and the driver before a phase and as it reads the helpers a Codex worker reports | refuse | the kit | "stops": { "driven-budget": "advise" } |
+| gate-format | record | the form of documents and code: what the formatter would rewrite | the gate's format row | refuse | the kit | "stops": { "gate-format": "advise" } |
+| gate-configuration | record | the form of this root's configuration, roots and registrations | the gate's configuration row | refuse | the kit | "stops": { "gate-configuration": "advise" } |
+| gate-registrations | record | the kit's registration records | the gate's registrations row | refuse | the kit | "stops": { "gate-registrations": "advise" } |
+| gate-declarations | record | the gate's own bookkeeping: declared suite and fixture inputs | the gate's declarations row | refuse | the kit | "stops": { "gate-declarations": "advise" } |
+| gate-generated | record | generated pages and projections kept current | the gate's generated row | refuse | the kit | "stops": { "gate-generated": "advise" } |
+| host-toolchain | host | a Node and a Git at least as new as the kit declares | the gate's host row | refuse | the kit | "stops": { "host-toolchain": "advise" } |
+| host-memory | host | the machine's memory under a gate: pressure and the lane budget | the gate's host row | refuse | the kit | "stops": { "host-memory": "advise" } |
+| host-file-events | host | the machine under a gate: a file-events daemon grown past its limit | the gate's host row | refuse | the kit | "stops": { "host-file-events": "advise" } |
+| gate-kit-verify | record | the carried runtime as its kit manifest records it | the gate's kit verification | refuse | the kit | "stops": { "gate-kit-verify": "advise" } |
+| gate-harness | record | the installed hooks, skills and instruction block as the emit would write them | the gate's harness row | refuse | the kit | "stops": { "gate-harness": "advise" } |
+| host-confinement | host | a gate's own reach: suites that need what a sandbox withholds | the gate, before a selection starts | refuse | the kit | "stops": { "host-confinement": "advise" } |
+| gate-release-surfaces | record | version surfaces that agree with the order's declared version | the gate's release-surfaces row | refuse | the kit | "stops": { "gate-release-surfaces": "advise" } |
+| gate-license-surfaces | record | license files and markers that agree | the gate's license-surfaces row | refuse | the kit | "stops": { "gate-license-surfaces": "advise" } |
+| gate-publication | record | the form of the publication index and its outlines | the gate's publication row | refuse | the kit | "stops": { "gate-publication": "advise" } |
+| docs-product-shape | record | the form of product documents: no new receipt or candidate paragraph | the gate's document check | refuse | the kit | "stops": { "docs-product-shape": "advise" } |
+| docs-entry-point | record | reader entry points that name standing documents only | the gate's document check | refuse | the kit | "stops": { "docs-entry-point": "advise" } |
+| docs-moved-path | record | the document move map: no file at a path it lists as moved | the gate's document check | refuse | the kit | "stops": { "docs-moved-path": "advise" } |
+| docs-red-tag | record | the document lifecycle: a red tag takes a disposition within one pass | the gate's document check | refuse | the kit | "stops": { "docs-red-tag": "advise" } |
+| docs-decision-form | record | the form of decision records: dispatch lines, operator quotations and round findings | the gate's document check | refuse | the kit | "stops": { "docs-decision-form": "advise" } |
+| docs-instance-records | record | the form of an instance's notes for core and of its area notes | the gate's document check | refuse | the kit | "stops": { "docs-instance-records": "advise" } |
+| docs-pattern-reader | record | one reader for each format: no source reads Markdown or JSON with its own pattern | the gate's document check | refuse | the kit | "stops": { "docs-pattern-reader": "advise" } |
+| docs-links | record | links and anchors that resolve | the gate's document check | refuse | the kit | "stops": { "docs-links": "advise" } |
+| docs-front-page | record | the front page's amendment rules | the gate's document check | refuse | the kit | "stops": { "docs-front-page": "advise" } |
+| docs-form | record | every other form rule the document check holds over the kit's records | the gate's document check | refuse | the kit | "stops": { "docs-form": "advise" } |
+| gate-index | record | the work-order index and its sequence kept current | the gate's index row | refuse | the kit | "stops": { "gate-index": "advise" } |
+| gate-siblings | record | the sibling register kept current | the gate's siblings row | refuse | the kit | "stops": { "gate-siblings": "advise" } |
+| gate-lineage | record | the lineage index kept current | the gate's lineage row | refuse | the kit | "stops": { "gate-lineage": "advise" } |
+| gate-harness-context | record | role instructions whose Read lines resolve | the gate's harness-context row | refuse | the kit | "stops": { "gate-harness-context": "advise" } |
+| gate-plan-refutation-current | record | current planning receipts that pass their own check | the gate's plan-refutation-current row | refuse | the kit | "stops": { "gate-plan-refutation-current": "advise" } |
+| gate-meta | record | the decisions index, the follow-up register and the features page kept current | the gate's meta row | refuse | the kit | "stops": { "gate-meta": "advise" } |
+| gate-plan | record | the planning record: a pass with its receipt, bound to the current subject | the gate's plan row | refuse | the kit | "stops": { "gate-plan": "advise" } |
+| gate-reader-profiles | record | reader profiles whose choices, anchors and hashes agree | the gate's reader-profiles row | refuse | the kit | "stops": { "gate-reader-profiles": "advise" } |
+| gate-entropy | record | entropy receipts that are valid | the gate's entropy row | refuse | the kit | "stops": { "gate-entropy": "advise" } |
+| verbatim-operator-words | record | the author's rule that committed text paraphrases the operator | the gate's document check | refuse | the kit | "stops": { "verbatim-operator-words": "advise" } |
+| desktop-control | work | the operator's own signed-in desktop and browser sessions | the launchpad's hook and the host's deny rules the emit writes; a target worktree's hook admits none, whatever the election | by its own switch | features.desktop-control | features.desktop-control |
+| plan-first | record | the plan-first order of work: a reviewed plan before implementation | the launchpad's hook and a target worktree's, and the executor's completion | by its own switch | features.plan-first | features.plan-first |
+| starter-update-request | record | who decides an update: a newer starter release is taken on the operator's request | the starter update | by its own switch | features.auto-update-upstream | features.auto-update-upstream |
+| kit-instance-actions | record | an instance's own files, which a kit update's actions would change | the kit update's apply step | by its own switch | kit.applyInstanceActions | kit.applyInstanceActions |
+| private-terms | work | the owner's private terms: an entry in the list's refuse class refuses at any level | the gate's terms row and every publish | in its own file | docs/control/local/terms.txt | docs/control/local/terms.txt |
+| time-limits | bound | the time a gate task, a check a task runs or a probe may take | the gate and the bounded probe wrapper | in its own file | docs/control/time-limits.json | docs/control/time-limits.json |
+
+### What a lifecycle command declines
+
+A command that declines its own job is no stop with a level: nothing here changes it, and each is listed with its way forward.
+
+| Refusal | Class | What it protects | Where | Way forward |
+| --- | --- | --- | --- | --- |
+| command-phase | record | the lifecycle's order: an action that is not legal in the order's phase | npm run resume, and the prompt hook that reports its answer | run one of the legal actions the message lists; npm run resume -- status prints them |
+| command-attestation | record | the record's accuracy: a completion states the model, effort and version that ran | npm run resume | state the flags the message names |
+| command-headers | record | the form of an order's Model and Effort lines and of a report's actor header | npm run resume | write the line or the header the message prints |
+| command-reactivation | record | an order's history: a withdrawn order is reactivated with a new dated note | npm run resume | add the dated note to the order, then activate it |
+| command-own-off-ramp | record | a review's independence: an order's executor records no waiver, defect or retraction of its own | npm run resume | the verifier, the final reviewer or the operator records it from its own session |
+| command-activation | record | the sequence: an umbrella record, a blocked order or an unregistered repository is not activated | npm run resume and worktree start | activate the successor the message names, finish the order it waits on, or register the repository |
+| command-completion | record | the completion record: every criterion judged, with a passing gate row at the current identity | npm run resume, at each phase's completion | judge each criterion in handoff.md and run the gate the message names; it consumes the row and runs none itself |
+| command-stored-body | record | a pull request's stored text, which matches the record's criterion lines | npm run resume and worktree publish | prepare the stored body again from the current record |
+| command-record-rules | record | records that are not rewritten: a correction changes no verdict and moves no report | npm run resume (target records, correct, waive, defect, retract, reopen-handoff, accept-overrun) | each refusal names the form or the worktree that admits it |
+| command-main-worktree | record | the control plane: commands that read it need one checkout on the main branch | the lifecycle commands that locate the main checkout | check out the main branch in one worktree of the repository |
+| command-planning | record | a planning pass's base, register and review: a clean main, a current register, a committed subject | npm run plan | commit or set aside the changes on main, run npm run meta for a stale register, and refute a committed subject once |
+| command-publish | work | what leaves the machine through a planning or update publish: private terms, unreviewed lines, the wrong origin | the planning and update publish | reword the line the message names by file and line, or register the private terms list (an empty one refuses nothing) |
+| command-update | work | an instance's own edits, which an update's merge must not drop | the starter update | each refusal names the step that takes the update further |
+| command-worktree | work | work a worktree command would lose or publish unreviewed: stashed changes, intake, an unmerged order | npm run worktree (start, integrate, publish, finish, settle) | each refusal names what to finish first: the final review, the merge, the named backup or the running gate |
+| command-release | work | a release of reviewed, merged work alone, from a synced main | npm run release (prepare, close) | close the order, merge it and sync main; sign in to gh where the message says so |
+| command-target-publish | work | what is published to a sibling repository: a reviewed change without the launchpad's records | the target publish and target draft | pass the final review and the target's gate; an owner who wants to push without them uses Git |
+| command-configuration | record | the form of dotln.config.json, the budgets file and the build overlay | every command that loads them | correct the key the message names; npm run features -- list prints the known ones |
+| command-toolchain | host | a harness check or an evidence run under a Node or a Git older than the kit declares | node scripts/harness.mjs check and evidence | install the Node and the Git package.json engines names |
+| command-drive-override | record | recovery before routing: a drive does not start while an override is open | the drive router | leave the override with operator override: off |
+| command-package-publish | work | a package of the kit published to a registry | each package's own prepublish script | the kit's packages are not published; an instance takes them through the starter |

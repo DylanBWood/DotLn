@@ -437,6 +437,11 @@ test("configured lifecycle roots share the installed journal lane and preserve t
     // worker table, so a copied reader needs the table's two modules.
     "packages/skeleton/src/worker-catalog.mjs",
     "packages/skeleton/src/worker-models.mjs",
+    // It reads a `stops` section against the table of stops, and the bound's
+    // admission reads its own stop's level there; whether the root is an
+    // exported instance is the runtime inputs' question.
+    "packages/skeleton/src/stops.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
   ])
     write(root, file, readFileSync(join(source, file)));
   write(root, "records/state/budgets.json", JSON.stringify(budgets));
@@ -1816,4 +1821,98 @@ test("WO-276 criterion P7: a planner session starts at its own dispatch beside a
   const driveSecond = session("router");
   bindDispatchBound(root, driveSecond, "router", "drive: WO-999", null, later);
   assert.equal(driveSecond.boundDispatch.startedAt, earlier);
+});
+
+test("WO-287 criterion A4: with the dispatch bound spent, the probe wrapper and a re-dispatch start their work in an instance root and print the bound's advisory; at refuse, and in core, each is withheld as before", async (t) => {
+  const { root } = fixture(t);
+  const envName = "CODEX_THREAD_ID",
+    previous = process.env[envName];
+  process.env[envName] = id;
+  t.after(() =>
+    previous === undefined
+      ? delete process.env[envName]
+      : (process.env[envName] = previous),
+  );
+  write(
+    root,
+    `docs/control/local/harness/${key}.json`,
+    JSON.stringify({ ...journal, startedAt: "2000-01-01T00:00:00.000Z" }),
+  );
+  // What the wrapper wrote to standard error while it ran.
+  const run = async (command) => {
+    const lines = [];
+    const error = console.error;
+    console.error = (line) => lines.push(String(line));
+    try {
+      return {
+        result: await boundedCommand(["--", ...command], root, {
+          report: () => {},
+          output: () => {},
+        }),
+        lines,
+      };
+    } finally {
+      console.error = error;
+    }
+  };
+  const exits = [process.execPath, "-e", "process.exit(7)"];
+  const refusal =
+    /DOTLN_DISPATCH_BOUND: wall clock=.*analysis:.*accept-overrun.* This is stop dispatch-bound, which protects a dispatch's wall clock and its number of complete runs\. Its level is this root's owner's to set: "stops": \{ "dispatch-bound": "advise" \} in dotln\.config\.json, then node scripts\/harness\.mjs emit; a session changes it only when its owner asks\.$/u;
+  // Core: the child is never started.
+  await assert.rejects(run(exits), refusal);
+  assert.throws(
+    () =>
+      requireRedispatchBound(root, {
+        workOrder: "WO-999",
+        intent: journal.intent,
+      }),
+    refusal,
+  );
+  // The same root as an exported instance: the child starts and keeps its
+  // exit, and the advisory names the stop and what it protects.
+  write(root, "KIT-MANIFEST.json", "{}\n");
+  const advised = await run(exits);
+  assert.equal(advised.result.exitCode, 7);
+  const advisory = advised.lines.filter((line) =>
+    line.startsWith("DotLn advisory: "),
+  );
+  assert.equal(advisory.length, 1, advised.lines.join("\n"));
+  assert.match(
+    advisory[0],
+    /^DotLn advisory: wall clock=.*\. Stop dispatch-bound advises in this root and the work goes on; it protects a dispatch's wall clock and its number of complete runs\. "stops": \{ "dispatch-bound": "refuse" \} in dotln\.config\.json makes it refuse and "off" silences it\.$/u,
+  );
+  // Nothing was stopped, so the journal holds no stop for the advised run.
+  const stops = () =>
+    readFileSync(join(root, `docs/control/local/harness/${key}.jsonl`), "utf8")
+      .split("\n")
+      .filter(Boolean).length;
+  const before = stops();
+  await run(exits);
+  assert.equal(stops(), before);
+  assert.equal(
+    requireRedispatchBound(root, {
+      workOrder: "WO-999",
+      intent: journal.intent,
+      advise: () => {},
+    })?.state ?? "exceeded",
+    "exceeded",
+  );
+  // The owner's line: refused again, or silent.
+  write(
+    root,
+    "dotln.config.json",
+    JSON.stringify({ version: 1, stops: { "dispatch-bound": "refuse" } }),
+  );
+  await assert.rejects(run(exits), refusal);
+  write(
+    root,
+    "dotln.config.json",
+    JSON.stringify({ version: 1, stops: { "dispatch-bound": "off" } }),
+  );
+  const silent = await run(exits);
+  assert.equal(silent.result.exitCode, 7);
+  assert.deepEqual(
+    silent.lines.filter((line) => line.startsWith("DotLn advisory: ")),
+    [],
+  );
 });

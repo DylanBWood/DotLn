@@ -16,6 +16,7 @@ import {
   EXTENSIONS_ROOT,
   ROOT_KEYS,
   spellsExtensionRoot,
+  declaredElections,
   loadConfig,
   validateConfig,
   defaultDocRelative,
@@ -78,6 +79,10 @@ import {
   hasPackageSources,
   runtimeEntryName,
 } from "../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  loweredStops,
+  resolveStopLevels,
+} from "../packages/skeleton/src/stops.mjs";
 import { checkLocalTerms, localTermContextLines } from "./lib/terms.mjs";
 import { VENDORED_RECORD, vendoredProof } from "./lib/vendored-parser.mjs";
 import {
@@ -212,6 +217,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/process-budget.mjs",
   "scripts/lib/release-tags.mjs",
   "scripts/lib/retained-session.mjs",
+  "scripts/lib/rule-inventory.mjs",
   "scripts/lib/temporary-roots.mjs",
   "scripts/lib/terms.mjs",
   "scripts/lib/validation.mjs",
@@ -262,6 +268,9 @@ export const BUILD_FREE_MODULES = Object.freeze([
   // source, which the scripts' checks import with no build (WO-276).
   "packages/skeleton/src/shell-reading.mjs",
   "packages/skeleton/src/source-reading.mjs",
+  // The table of stops and its resolver, which the configuration reader,
+  // the emit, the gate and the commands that hold a bound read with no build.
+  "packages/skeleton/src/stops.mjs",
   "packages/skeleton/src/usage-observation.mjs",
   // The reading of usage rows by token class and by day, which the meter
   // and the usage report import with no build (WO-276).
@@ -1007,6 +1016,7 @@ async function expectedHarnessBundle(
   hosts,
   workers,
   settingsFragment,
+  stops,
 ) {
   // Imported after the build: a checkout that has never built has no dist for
   // scripts/lib/harness.mjs to load.
@@ -1016,13 +1026,17 @@ async function expectedHarnessBundle(
   // a host it has not elected or shown has no surface to predict (WO-258).
   // Its workers section is taken the same way: the definitions its emit
   // will write from its own configuration are the ones predicted. So is
-  // its settings fragment, which that emit merges into the settings.
+  // its settings fragment, which that emit merges into the settings, and so
+  // are the levels of its stops, which that emit writes into every hook.
   const installation = harnessInstallation({
     runtimeRoot: root,
     runtimePackageFiles,
     features: hosts,
     workers,
     settingsFragment,
+    stops,
+    // The destination is an exported instance, as its own emit will find.
+    instance: true,
   });
   const surfaces = new Map();
   for (const file of installation.files)
@@ -1040,12 +1054,19 @@ async function expectedHarnessBundle(
  * export as its launchpad. It needs the export to be a Git top level and the
  * workspace links npm ci will recreate. */
 const harnessInExport = (target, action) => {
-  const result = spawnSync(process.execPath, ["scripts/harness.mjs", action], {
-    cwd: target,
-    env: exportEnvironment(),
-    encoding: "utf8",
-    maxBuffer: 16 * 1024 * 1024,
-  });
+  // The destination is an exported instance, which its emit cannot yet
+  // read from the tree: the kit's manifest is written only once this emit
+  // and check have passed.
+  const result = spawnSync(
+    process.execPath,
+    ["scripts/harness.mjs", action, "--root-kind", "instance"],
+    {
+      cwd: target,
+      env: exportEnvironment(),
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+    },
+  );
   if (result.status !== 0)
     throw new Error(
       `the export's own harness ${action} failed (${result.status ?? result.error?.message}):\n${result.stdout ?? ""}${result.stderr ?? ""}`,
@@ -1083,6 +1104,9 @@ export async function prepareKit({
   hosts = freshHostFeatures(),
   workers,
   settingsFragment,
+  // The destination is an exported instance: with no line of its own it
+  // advises on every stop that does not guard its owner's work.
+  stops = loweredStops(resolveStopLevels({ instance: true })),
 } = {}) {
   const root = TOOL_ROOT;
   if (!["default", "none"].includes(license))
@@ -1173,6 +1197,7 @@ export async function prepareKit({
     hosts,
     workers,
     settingsFragment,
+    stops,
   );
   // The harness bundle is written by the export's own emit after the kit
   // lands; every surface but the operating contract is a kit file, listed at
@@ -1625,7 +1650,18 @@ export function verifyKit(root = process.cwd()) {
   // passes, which compares every surface with a fresh emit. The check runs
   // as a child process and only when such a surface differs.
   const surfaces = harnessSurfaces(root);
+  const leftOut = harnessLeftOut(root);
+  let left = 0;
   const harnessCheck = instanceHarnessCheck(root);
+  // Whether nothing stands at a listed path. What cannot be inspected, a
+  // link or another thing that is no regular file among them, stands there.
+  const absent = (path) => {
+    try {
+      return !destinationStat(root, path);
+    } catch {
+      return false;
+    }
+  };
   // Every listed file is compared first. The instance's harness check loads
   // the carried compiled runtime, so a runtime file that differs is refused
   // before any of the instance's code runs, whatever the order of the paths.
@@ -1645,11 +1681,27 @@ export function verifyKit(root = process.cwd()) {
       emitted++;
       continue;
     }
+    // A surface this instance's build leaves out is absent by its owner's
+    // choice, where its harness manifest names it and its check passes.
+    // Only such a path is looked at again: any other listed file that
+    // differs, one that is no regular file among them, is a difference.
+    if (
+      leftOut().has(entry.path) &&
+      absent(entry.path) &&
+      harnessCheck() === "passes"
+    ) {
+      left++;
+      continue;
+    }
     differing++;
   }
   if (emitted)
     console.log(
       `kit: ${emitted} harness ${emitted === 1 ? "surface" : "surfaces"} written by this instance's own emit, which its harness check accepts`,
+    );
+  if (left)
+    console.log(
+      `kit: ${left} harness ${left === 1 ? "surface" : "surfaces"} this instance's build leaves out, which its harness check accepts`,
     );
   if (differing)
     console.log(`kit: ${differing} kit files differ from the manifest`);
@@ -1725,6 +1777,28 @@ const harnessSurfaces = (directory) => {
       }
     }
     return listed;
+  };
+};
+
+// The generated surfaces an instance's own build leaves out, as its harness
+// manifest names them: a unit its build overlay removes takes its hook file
+// with it, and the kit's manifest lists that file for every instance.
+const harnessLeftOut = (directory) => {
+  let named;
+  return () => {
+    if (!named) {
+      named = new Set();
+      try {
+        const { leftOut } = JSON.parse(
+          readDestination(directory, HARNESS_MANIFEST).toString("utf8"),
+        );
+        for (const path of Array.isArray(leftOut) ? leftOut : [])
+          if (typeof path === "string") named.add(path);
+      } catch {
+        /* An unreadable harness manifest names nothing. */
+      }
+    }
+    return named;
   };
 };
 
@@ -1815,6 +1889,7 @@ export function planUpdate(
   );
   const plan = [];
   const surfaces = harnessSurfaces(directory);
+  const leftOut = harnessLeftOut(directory);
   // The instance's harness check loads the carried compiled runtime, so it
   // is asked only where every present compiled runtime file any kit listed
   // holds bytes a kit wrote (the prior kit's, the incoming kit's or an
@@ -1849,9 +1924,19 @@ export function planUpdate(
     const old = previous.get(path);
     const incoming = following.get(path);
     const stat = destinationStat(directory, path);
-    // Absence is expected only where the interrupted update removed the file.
+    // Absence is expected only where the interrupted update removed the
+    // file, or where the instance's own build leaves a generated surface
+    // out: its harness manifest names the path and its check passes.
     const dropped = pending !== null && !planned.has(path);
-    if (!stat && old && incoming && !dropped)
+    const left =
+      !stat &&
+      !!incoming &&
+      !dropped &&
+      generated.has(path) &&
+      leftOut().has(path) &&
+      runtimeVerified &&
+      harnessCheck() === "passes";
+    if (!stat && old && incoming && !dropped && !left)
       throw new Error(`cannot read regular file: ${join(directory, path)}`);
     const current = stat ? sha256Hex(readDestination(directory, path)) : null;
     const kept =
@@ -1860,12 +1945,33 @@ export function planUpdate(
         current === old?.sha256 ||
         current === planned.get(path));
     let entry;
-    if (!old)
+    if (left)
+      // Not written, and not listed for this instance until its build
+      // carries the surface again: at the update that first meets it, and
+      // at every one after, where the prior kit no longer lists it.
+      entry = { path, kind: "remove", absent: true, leftOut: true };
+    else if (!old) {
+      // A generated surface the prior kit did not list for this instance
+      // (its build left it out then) and its own emit has since written:
+      // the instance's check vouches for it as for any surface it lists.
+      const check =
+        stat && !kept && generated.has(path) && emitted().has(path)
+          ? runtimeVerified
+            ? harnessCheck()
+            : "runtime-differs"
+          : null;
       entry =
         stat && !kept
-          ? { path, kind: "refuse", reason: "instance-owned collision" }
+          ? check === "passes"
+            ? { path, kind: "replace", reEmitted: true }
+            : {
+                path,
+                kind: "refuse",
+                reason: "instance-owned collision",
+                ...(check ? { harnessCheck: check } : {}),
+              }
           : { path, kind: "add" };
-    else if (!stat)
+    } else if (!stat)
       entry = incoming
         ? { path, kind: "add" }
         : { path, kind: "remove", absent: true };
@@ -2196,6 +2302,15 @@ export async function planKitUpdate(
     hosts: readHostFeatures(target),
     workers: loadConfig(target).workers,
     settingsFragment: readSettingsFragment(target),
+    // The destination's own lines, and the election it makes of a stop
+    // that had a switch before it had a level.
+    stops: loweredStops(
+      resolveStopLevels({
+        instance: true,
+        stops: loadConfig(target).stops,
+        elections: declaredElections(loadConfig(target)),
+      }),
+    ),
     preflight(sources) {
       const carried = new Set([
         ...[...sources.values()]
@@ -3423,9 +3538,11 @@ export function finishUpdate(
  * whether these judgments are proposed or have been applied. */
 export function renderUpdatePlan(planned, { preview = false } = {}) {
   const rowKind = (entry) =>
-    planned.revision && entry.kind !== "refuse" && entry.unchanged
-      ? "unchanged"
-      : entry.kind;
+    entry.leftOut
+      ? "left out"
+      : planned.revision && entry.kind !== "refuse" && entry.unchanged
+        ? "unchanged"
+        : entry.kind;
   const counts = Object.fromEntries(
     ["replace", "add", "remove", "refuse", "unchanged"].map((kind) => [
       kind,
@@ -3481,9 +3598,11 @@ export function renderUpdatePlan(planned, { preview = false } = {}) {
     lines.push(
       entry.reEmitted
         ? `re-emitted: ${entry.path}`
-        : entry.kind === "refuse"
-          ? `refused: ${entry.path} (${entry.reason}; ${HARNESS_CHECK_REASONS[entry.harnessCheck] ?? ""}${entry.retained ? `prior hash retained: ${entry.retained.sha256}` : "remains instance-owned; retained hash: none"}${planned.revision && entry.upstreamUnchanged ? "; unchanged upstream; no merge conflict expected" : ""})`
-          : `${rowKind(entry)}: ${entry.path}`,
+        : entry.leftOut
+          ? `left out by this instance's build: ${entry.path}`
+          : entry.kind === "refuse"
+            ? `refused: ${entry.path} (${entry.reason}; ${HARNESS_CHECK_REASONS[entry.harnessCheck] ?? ""}${entry.retained ? `prior hash retained: ${entry.retained.sha256}` : "remains instance-owned; retained hash: none"}${planned.revision && entry.upstreamUnchanged ? "; unchanged upstream; no merge conflict expected" : ""})`
+            : `${rowKind(entry)}: ${entry.path}`,
     );
   lines.push(
     `Instance-actions note (${new Date().toISOString().slice(0, 10)}): ${planned.manualActions ? "manual after merge" : planned.optedIn ? "opted-in update" : "update without opt-in"}.`,

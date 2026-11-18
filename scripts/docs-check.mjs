@@ -25,7 +25,13 @@ import {
   extensionPath,
   findLaunchpad,
   loadConfig,
+  stopLevel,
 } from "./lib/config.mjs";
+import {
+  ADVISED_STOPS_LINE,
+  failuresByLevel,
+  stopAdvisory,
+} from "../packages/skeleton/src/stops.mjs";
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import {
   amendedFrontPageScope,
@@ -729,6 +735,24 @@ export function operatorWordFindings(root, files) {
   }
   return findings;
 }
+
+/** The verbatim screen's findings as one line for each file, in the order
+ * the files first appear: `line(file, runs)` writes a file's line from its
+ * runs, lowest line first. */
+export function foldVerbatimRuns(findings, line) {
+  const byFile = new Map();
+  for (const finding of findings) {
+    if (!byFile.has(finding.file)) byFile.set(finding.file, []);
+    byFile.get(finding.file).push(finding);
+  }
+  return [...byFile].map(([file, runs]) =>
+    line(
+      file,
+      [...runs].sort((a, b) => a.line - b.line),
+    ),
+  );
+}
+const plural = (count, noun) => `${count} ${noun}${count === 1 ? "" : "s"}`;
 
 /** A typed operator quotation must carry the capture digest of the words it
  * quotes; one that lacks it is a failure, never an advisory. A quotation a
@@ -2061,6 +2085,14 @@ export function checkDocs(
   records ??= recordFiles(root);
   const failures = [],
     rows = [];
+  // Each failure is one stop of the table, kept beside it in the same
+  // order: a root's own level for that stop decides whether the failure
+  // fails the check there or is reported and passed over.
+  const failureStops = [];
+  const fail = (stop, ...found) => {
+    failures.push(...found);
+    for (const _ of found) failureStops.push(stop);
+  };
   const products = readDocumentDirectory(root, docRelative(root, "product"), {
     recursive: true,
   })
@@ -2077,11 +2109,14 @@ export function checkDocs(
     const file = docRelative(root, "product", name);
     const source = readListed(root, file);
     const measured = productContent(name, source);
-    failures.push(...measured.failures.map((failure) => `${file}: ${failure}`));
+    fail(
+      "docs-product-shape",
+      ...measured.failures.map((failure) => `${file}: ${failure}`),
+    );
     if (name === RELEASE_HISTORY.product) {
       // The exemption stands on this comparison: the index's rule for tags.
       const history = checkReleaseHistory(root, source, file);
-      failures.push(...history.failures);
+      fail("docs-form", ...history.failures);
       if (history.newer.length)
         notices.push(
           `NEWER local release tags not in ${file}: ${history.newer.join(", ")}; the table stays valid for its recorded tags; run ${historyCommand} to add them`,
@@ -2102,7 +2137,8 @@ export function checkDocs(
         count = available.get(key) ?? 0;
       if (count) available.set(key, count - 1);
       else
-        failures.push(
+        fail(
+          "docs-product-shape",
           `${file}#${shape.heading}: new ${shape.kind}; ${shape.kind === "receipt" ? "edit the sentence the change amends; a receipt belongs in the order's evidence README" : "candidates go to the planning map"}`,
         );
     }
@@ -2112,13 +2148,15 @@ export function checkDocs(
   // and a red tag lives one planning pass before a disposition.
   const documents = documentReport(root);
   for (const row of documents.recordsNamed)
-    failures.push(
+    fail(
+      "docs-entry-point",
       `${row.file}: entry point ${row.entryPoint} names the record ${row.path}; an entry point names standing documents only, so cite the record from a standing section a reader reaches by link`,
     );
   // A moved path is never reused: a file there would give every record link
   // to the old path and every session read of it two documents.
   for (const { from, to } of reusedPaths(root, moveIndex(root)))
-    failures.push(
+    fail(
+      "docs-moved-path",
       `${from}: the move map lists this path as moved to ${to}; a moved path is never reused, so give the new document another path`,
     );
   const documentNotices = [];
@@ -2131,7 +2169,8 @@ export function checkDocs(
       `UNBOUND ${file}: no entry point names it, no standing page a reader reaches links to it and no program reads it; a planning pass red-tags it when no session reads it either`,
     );
   for (const row of documents.staleRedTags)
-    failures.push(
+    fail(
+      "docs-red-tag",
       `${row.pass}: red tag ${row.path}, tagged by ${row.since}, has no disposition${row.reason ? ` (${row.reason})` : ""}; a red tag lives one planning pass, and the next pass removes or folds the document and records why`,
     );
   const decisions = readDecisions(root);
@@ -2139,26 +2178,34 @@ export function checkDocs(
     if (baseline.dispatches[dispatchKey(row)] === dispatchFingerprint(row))
       continue;
     if (!validDispatch(row.dispatch))
-      failures.push(
+      fail(
+        "docs-decision-form",
         `${dispatchKey(row)}: dispatch needs a control prefix and at most 240 characters of paraphrase on one line`,
       );
   }
   // An instance's file for core: each entry's typed fields, wherever the
   // root holds the file (core holds none).
   if (documentEntry(root, FOR_CORE))
-    failures.push(...forCoreFailures(readDocumentInput(root, FOR_CORE)));
+    fail(
+      "docs-instance-records",
+      ...forCoreFailures(readDocumentInput(root, FOR_CORE)),
+    );
   // An area note beside a registered repository's profile: its block names
   // the target paths it covers and the commit it was written at. The block's
   // shape is judged and nothing of the prose, which the verifier of the
   // order that wrote the note judges. A profile with no directory beside it
   // has no note.
   for (const repository of Object.values(loadConfig(root).repositories))
-    failures.push(...areaNoteFailures(root, repository.profile));
+    fail(
+      "docs-instance-records",
+      ...areaNoteFailures(root, repository.profile),
+    );
   // Each format has one reader: a source that reads Markdown syntax or JSON
   // text with its own pattern is refused by file and line.
   if (screen)
     for (const finding of markdownScreen(root))
-      failures.push(
+      fail(
+        "docs-pattern-reader",
         `${finding.file}:${finding.line}: ${screenRemedy(finding.form)}`,
       );
   // What the branch adds or changes against its merge base with main: the
@@ -2178,7 +2225,12 @@ export function checkDocs(
     }),
   };
   features ??= readFeatures(root);
-  const verbatimElected = features["verbatim-operator-words"] === true;
+  // The election that turned the paraphrase rule off before its stop had a
+  // level still advises, in its own words, where the root makes it and sets
+  // no level for the stop; a line of the stops section is the newer word.
+  const verbatimElected =
+    features["verbatim-operator-words"] === true &&
+    !Object.hasOwn(loadConfig(root).stops, "verbatim-operator-words");
   const spans = decisionSections(root, decisions);
   const changedRecord = (row) => {
     const { lines } = decisionSection(spans, row);
@@ -2186,10 +2238,13 @@ export function checkDocs(
       lines && addsLine(changes, row.path, lines.line, lines.endLine),
     );
   };
-  failures.push(...operatorQuoteFailures(decisions, changedRecord));
+  fail(
+    "docs-decision-form",
+    ...operatorQuoteFailures(decisions, changedRecord),
+  );
   // A round's recorded findings, where a current decision holds them: the
   // shape only, by decision and field.
-  failures.push(...roundFindingFailures(decisions, changedRecord));
+  fail("docs-decision-form", ...roundFindingFailures(decisions, changedRecord));
   const exceptions = new Map();
   for (const entry of baseline.links)
     exceptions.set(
@@ -2208,7 +2263,8 @@ export function checkDocs(
       exceptions.set(key, count - 1);
       historicalLinks++;
     } else
-      failures.push(
+      fail(
+        "docs-links",
         `${failure.file}:${failure.line}: ${failure.reason}: ${privateLinkText(failure.href)}`,
       );
   }
@@ -2229,7 +2285,8 @@ export function checkDocs(
       list.splice(at, 1);
       historicalHomePaths++;
     } else
-      failures.push(
+      fail(
+        "docs-private-path",
         isMarkdownName(row.file)
           ? `${row.file}:${row.line}: absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/`
           : `${row.file}:${row.line}: absolute home path in a ${extensionPath(row.file) ? `committed file under ${EXTENSIONS_ROOT}/` : "record"}; write a repository-relative path or a placeholder such as <home>/ or <worktree>/`,
@@ -2241,7 +2298,7 @@ export function checkDocs(
         `STALE ${docRelative(root, "control", "doc-baseline.json")}: ${file} no longer holds ${list.length} baselined private-path line${list.length === 1 ? "" : "s"}; run node scripts/docs-check.mjs --write-home-path-baseline to shrink it`,
       );
   const frontPage = frontPageFindings(root, frontPageAmendment);
-  failures.push(...frontPage.failures);
+  fail("docs-front-page", ...frontPage.failures);
   notices.push(...frontPage.notices);
   const operatorWords = operatorWordAdvisories(
     root,
@@ -2261,27 +2318,56 @@ export function checkDocs(
     )
       continue;
     judgedRecords.add(`${row.file}#${row.record}`);
-    (verbatimElected ? advisories : failures).push(
-      `${row.file}#${row.record}: operator-attributed words without a capture citation in a record this branch adds or changes; paraphrase the operator and cite the ignored capture by its SHA-256${verbatimElected ? " (features.verbatim-operator-words is elected, so this advises)" : ""}`,
-    );
+    const found = `${row.file}#${row.record}: operator-attributed words without a capture citation in a record this branch adds or changes; paraphrase the operator and cite the ignored capture by its SHA-256${verbatimElected ? " (features.verbatim-operator-words is elected, so this advises)" : ""}`;
+    if (verbatimElected) advisories.push(found);
+    else fail("verbatim-operator-words", found);
   }
-  const verbatim = verbatimScreen(root, {
-    changes,
-    captures,
-    quotes: requestedQuotes(decisions, spans),
-  });
-  for (const finding of verbatim.findings ?? [])
-    (verbatimElected ? advisories : failures).push(
-      `${finding.file}:${finding.line}: ${verbatim.window} or more consecutive words shared with the ignored capture ${finding.capture}; paraphrase the operator and cite the capture by its digest, or record a message the operator asked to save as an operatorQuote with captureSha256 and requestedIn${verbatimElected ? " (features.verbatim-operator-words is elected, so this advises)" : ""}`,
-    );
+  // Off, the stop says nothing: the screen is not run, so no capture is
+  // read for it and no run is counted. The election, where it applies,
+  // advises and so runs it.
+  const verbatimOff =
+    !verbatimElected && stopLevel(root, "verbatim-operator-words") === "off";
+  const verbatim = verbatimOff
+    ? { status: "off", findings: [] }
+    : verbatimScreen(root, {
+        changes,
+        captures,
+        quotes: requestedQuotes(decisions, spans),
+      });
+  const electedNote = verbatimElected
+    ? " (features.verbatim-operator-words is elected, so this advises)"
+    : "";
+  const remedy = (capture) =>
+    `paraphrase the operator and cite ${capture} by its digest, or record a message the operator asked to save as an operatorQuote with captureSha256 and requestedIn${electedNote}`;
+  const runFailure = (finding) =>
+    `${finding.file}:${finding.line}: ${verbatim.window} or more consecutive words shared with the ignored capture ${finding.capture}; ${remedy("the capture")}`;
+  // Where the rule advises, a file's runs are one line however many it
+  // holds: a document that carries what its owner pasted is told of it once.
+  const verbatimRuns = {
+    failures: [],
+    folded: foldVerbatimRuns(verbatim.findings ?? [], (file, runs) =>
+      runs.length === 1
+        ? runFailure(runs[0])
+        : `${file}:${runs[0].line}: ${runs.length} runs of ${verbatim.window} or more consecutive words shared with ${plural(new Set(runs.map((run) => run.capture)).size, "ignored capture")}, the first at this line; ${remedy("each capture")}`,
+    ),
+  };
+  if (verbatimElected) advisories.push(...verbatimRuns.folded);
+  else
+    for (const finding of verbatim.findings ?? []) {
+      const found = runFailure(finding);
+      verbatimRuns.failures.push(found);
+      fail("verbatim-operator-words", found);
+    }
   // Private material its owner closed never fails the check, and is named.
   for (const entry of verbatim.unread ?? []) advisories.push(entry);
   return {
     rows,
     failures,
+    failureStops,
     advisories,
     judgedRecords,
     verbatim,
+    verbatimRuns,
     changes: changes.base
       ? { base: changes.base, files: changes.files.size }
       : { base: null, reason: changes.reason },
@@ -2361,11 +2447,13 @@ if (isMainModule(import.meta.url)) {
       );
       const verbatim = result.verbatim;
       console.log(
-        verbatim.status === "no captures"
-          ? `verbatim screen: no ${verbatim.unread?.length ? "readable " : ""}captures`
-          : verbatim.status === "no merge base"
-            ? `verbatim screen: ${verbatim.reason}; nothing screened`
-            : `verbatim screen: ${verbatim.files} changed files against ${verbatim.captures} captures, a ${verbatim.window}-word window; ${verbatim.findings.length} shared runs`,
+        verbatim.status === "off"
+          ? "verbatim screen: off (stop verbatim-operator-words)"
+          : verbatim.status === "no captures"
+            ? `verbatim screen: no ${verbatim.unread?.length ? "readable " : ""}captures`
+            : verbatim.status === "no merge base"
+              ? `verbatim screen: ${verbatim.reason}; nothing screened`
+              : `verbatim screen: ${verbatim.files} changed files against ${verbatim.captures} captures, a ${verbatim.window}-word window; ${verbatim.findings.length} shared runs`,
       );
       for (const advisory of result.advisories)
         console.log(`ADVISORY ${advisory}`);
@@ -2383,13 +2471,48 @@ if (isMainModule(import.meta.url)) {
         console.log(
           `ADVISORY ${row.file}:${row.line}: a paragraph of ${row.words} words, over ${long.figure}; a long paragraph is a smell: read it, and rewrite it where it is hard to follow`,
         );
-      for (const failure of result.failures) console.error(`FAIL ${failure}`);
-      console.log(
-        `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.historicalHomePaths} declared historical home-path lines; ${result.failures.length} failures`,
+      // Each failure is a stop of the table and answers at this root's
+      // level for it. One at `refuse` fails the check and is named; one at
+      // `advise` is printed as advised and fails nothing; one at `off` is
+      // not printed.
+      const { refused, advised } = failuresByLevel(
+        result.failures.map((failure, index) => ({
+          failure,
+          stop: result.failureStops[index],
+        })),
+        (id) => stopLevel(root, id),
       );
-      process.exitCode = result.failures.length ? 1 : 0;
+      // The verbatim screen's runs that advise stand as one line a file, in
+      // the place of the first of them.
+      const runs = new Set(result.verbatimRuns.failures);
+      const advisedLines = [];
+      let folded = false;
+      for (const entry of advised)
+        if (!runs.has(entry.failure)) advisedLines.push(entry);
+        else if (!folded) {
+          folded = true;
+          for (const failure of result.verbatimRuns.folded)
+            advisedLines.push({ failure, stop: entry.stop });
+        }
+      for (const { failure, stop } of advisedLines)
+        console.log(`ADVISED ${failure} (stop ${stop})`);
+      for (const stop of new Set(advisedLines.map((entry) => entry.stop)))
+        console.log(
+          `ADVISORY ${stopAdvisory(stop, "the lines marked ADVISED for this stop fail nothing here")}.`,
+        );
+      for (const { failure } of refused) console.error(`FAIL ${failure}`);
+      console.log(
+        `${refused.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.historicalHomePaths} declared historical home-path lines; ${refused.length} failures${advisedLines.length ? `; ${advisedLines.length} advised` : ""}`,
+      );
+      if (!refused.length && advisedLines.length)
+        console.log(
+          `${ADVISED_STOPS_LINE}${JSON.stringify([...new Set(advisedLines.map((entry) => entry.stop))])}`,
+        );
+      process.exitCode = refused.length ? 1 : 0;
     }
   } catch (error) {
+    // A check that could not run judged nothing, the private-path screen
+    // included, so it fails at any level, as a task ended for time does.
     console.error(`FAIL docs check: ${error.message}`);
     process.exitCode = 1;
   }

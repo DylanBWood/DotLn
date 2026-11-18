@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 import { dispatchBoundResult } from "./lib/dispatch-bound.mjs";
 import { formatDuration } from "./lib/duration.mjs";
-import { findLaunchpad, loadConfig } from "./lib/config.mjs";
+import { findLaunchpad, loadConfig, stopLevel } from "./lib/config.mjs";
+import {
+  ADVISED_STOPS_LINE,
+  failuresByLevel,
+  stopAdvisory,
+} from "../packages/skeleton/src/stops.mjs";
 import { readFeatures } from "./lib/features.mjs";
 import { judgeRunningGit, judgeRunningNode } from "./lib/node-engines.mjs";
 import { isMainModule } from "./lib/paths.mjs";
@@ -57,16 +62,26 @@ export function checkHost(
     return { ...dispatchBoundResult(standing), sample, fileEvents };
   const standsOnRunningGate = underRunningGate && sample.level === "warning";
   const daemon = judgeFileEventDaemon(fileEvents, { underRunningGate });
+  // The row holds three checks, each a stop of the table: the toolchain's
+  // floor, the machine's memory and the file-events daemon. A read of Git's
+  // version that was ended for time judged nothing of the toolchain: it is
+  // the time limit's stop, which is set in its own file and which no level
+  // lowers, so the row fails on it in any root.
+  const stops = [
+    ...(!runtime.admitted || (!git.admitted && !git.timedOut)
+      ? ["host-toolchain"]
+      : []),
+    ...(git.timedOut ? ["time-limits"] : []),
+    ...(sample.level === "critical" ||
+    (sample.level === "warning" && !underRunningGate) ||
+    underBudget
+      ? ["host-memory"]
+      : []),
+    ...(daemon.refused ? ["host-file-events"] : []),
+  ];
   return {
-    exitCode:
-      !runtime.admitted ||
-      !git.admitted ||
-      sample.level === "critical" ||
-      (sample.level === "warning" && !underRunningGate) ||
-      daemon.refused ||
-      underBudget
-        ? 1
-        : 0,
+    exitCode: stops.length ? 1 : 0,
+    ...(stops.length ? { stops } : {}),
     sample,
     fileEvents,
     taskBudgetBytes: limits.taskBytes,
@@ -231,7 +246,32 @@ if (isMainModule(import.meta.url)) {
             }
           : {},
       );
-    else result = checkHost(undefined, { underRunningGate });
+    else {
+      result = checkHost(undefined, { underRunningGate });
+      // Each failed check of the row answers at this root's level for its
+      // stop: the row fails where one refuses, and where every one advises
+      // it says so and exits zero, naming the stops for the gate to record.
+      if (result.exitCode && result.stops?.length) {
+        const { refused, advised } = failuresByLevel(
+          result.stops.map((stop) => ({ stop })),
+          (id) => stopLevel(root, id),
+        );
+        result = {
+          ...result,
+          exitCode: refused.length ? 1 : 0,
+          output: [
+            result.output,
+            ...advised.map(
+              ({ stop }) =>
+                `ADVISORY ${stopAdvisory(stop, "the reading above is past what this row admits")}.`,
+            ),
+          ].join("\n"),
+          ...(advised.length
+            ? { advisedStops: advised.map(({ stop }) => stop) }
+            : {}),
+        };
+      }
+    }
     if (result.output) console.log(result.output);
     for (const row of result.cases ?? []) {
       console.log(
@@ -244,6 +284,10 @@ if (isMainModule(import.meta.url)) {
         `Run npm run sync; stale artifacts: ${result.stale.join(", ")}`,
       );
     console.log(`STRUCTURAL_RESULT ${JSON.stringify(result)}`);
+    if (!result.exitCode && result.advisedStops?.length)
+      console.log(
+        `${ADVISED_STOPS_LINE}${JSON.stringify(result.advisedStops)}`,
+      );
     process.exitCode = result.exitCode;
   } catch (error) {
     console.error(error.message);

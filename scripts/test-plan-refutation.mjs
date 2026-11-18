@@ -98,6 +98,10 @@ import { installLaunchpadForge } from "./test-target-publication-fixture.mjs";
 import { isCorrection } from "./lib/meta.mjs";
 import { main as plan } from "./refute-plan.mjs";
 import {
+  KIT_MODELS,
+  KIT_WORKERS,
+} from "../packages/skeleton/src/worker-models.mjs";
+import {
   checkRulesRecorded,
   renderRulesRecordedBlock,
   rulesRecordedBlock,
@@ -4405,7 +4409,7 @@ export async function fixtures() {
       },
     );
     await check(
-      "WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim",
+      "WO-125 plan CLI accepts the Codex astra model at max and records only a launch claim",
       async () => {
         const repo = makeRepo(parent, "codex-effort-cli");
         const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
@@ -4450,7 +4454,7 @@ else {
               "--transport",
               "codex-cli-exec",
               "--model",
-              "gpt-6-astra",
+              KIT_MODELS.astra.id,
               "--effort",
               "max",
             ],
@@ -4462,7 +4466,7 @@ else {
           else process.env.PATH = previousPath;
         }
         const args = JSON.parse(readFileSync(argsPath, "utf8"));
-        assert.equal(args[args.indexOf("--model") + 1], "gpt-6-astra");
+        assert.equal(args[args.indexOf("--model") + 1], KIT_MODELS.astra.id);
         assert.deepEqual(args.slice(-3), [
           "-c",
           'model_reasoning_effort="max"',
@@ -4470,7 +4474,7 @@ else {
         ]);
         assert.ok(args.includes("--ignore-user-config"));
         const receipt = (await readReceipts(repo))[0];
-        assert.equal(receipt.episode.model, "gpt-6-astra");
+        assert.equal(receipt.episode.model, KIT_MODELS.astra.id);
         assert.equal(receipt.episode.effort, "max");
         assert.equal(receipt.episode.selectionSource, "host-launch");
         assert.equal(receipt.episode.effectiveEffort, "unknown");
@@ -4525,17 +4529,22 @@ else {
           if (previousPath === undefined) delete process.env.PATH;
           else process.env.PATH = previousPath;
         }
+        // Without flags the launch runs the default worker's Codex binding
+        // in the kit's one model table.
+        const binding = KIT_WORKERS.default.codex;
+        const pinned = KIT_MODELS[binding.model ?? binding];
+        const effort = binding.effort ?? pinned.effort;
         const args = JSON.parse(readFileSync(argsPath, "utf8"));
-        assert.equal(args[args.indexOf("--model") + 1], "gpt-6.1-sol");
+        assert.equal(args[args.indexOf("--model") + 1], pinned.id);
         assert.deepEqual(args.slice(-3), [
           "-c",
-          'model_reasoning_effort="max"',
+          `model_reasoning_effort="${effort}"`,
           "-",
         ]);
         assert.ok(args.includes("--ignore-user-config"));
         const receipt = (await readReceipts(repo))[0];
-        assert.equal(receipt.episode.model, "gpt-6.1-sol");
-        assert.equal(receipt.episode.effort, "max");
+        assert.equal(receipt.episode.model, pinned.id);
+        assert.equal(receipt.episode.effort, effort);
       },
     );
     await check(

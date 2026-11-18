@@ -1211,7 +1211,7 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
     );
     const permission = readFileSync(permissionPath, "utf8");
     const match =
-      /await runTargetHarnessHook\(([\s\S]*?), feedbackBoundary\);/u.exec(
+      /await runTargetHarnessHook\(([\s\S]*?), feedbackBoundary, rawInput\);/u.exec(
         permission,
       )!;
     const config = JSON.parse(match[1]!);

@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-284] — An instance sets every time limit of its gate · **final-reviewed**
-- [ ] [WO-287] — What an instance meets lands as one order · **queued**
+- [x] [WO-287] — What an instance meets lands as one order · **final-reviewed**
 - [ ] [WO-288] — Core's own tooling lands as one order · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
@@ -37,31 +37,14 @@ None.
 
 ## Open
 
-### WO-287
-
-[WO-287 — What an instance meets lands as one order: in an instance a stop that has nothing to do with its owner's work advises, in a sibling repository as in the launchpad, and the author's rules are a loadout an instance chooses, under one activation, one verification, one final review and one release (version assigned at activation)](WO-287-what-an-instance-meets-lands-as-one-order.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-284: satisfied-by-close (met) — the runner's suite table as WO-284 leaves it, which Part A's advised outcome is written against.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-287-what-an-instance-meets-lands-as-one-order.md](WO-287-what-an-instance-meets-lands-as-one-order.md)
-
 ### WO-288
 
 [WO-288 — Core's own tooling lands as one order: the critic the kit launches and what its critics find, the review helper, the discovery timeout and every time limit outside the gate path, under one activation, one verification, one final review and one release (version assigned at activation)](WO-288-cores-own-tooling-lands-as-one-order.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-287.
-- References: WO-284: satisfied-by-close (met) — the table of time limits and the instance's file, which Part D extends to every other limit; WO-287: satisfied-by-close (unmet) — the table of stops, to which Parts A and B add the two stops they introduce.
+- Dependencies: typed; dependency-ready.
+- References: WO-284: satisfied-by-close (met) — the table of time limits and the instance's file, which Part D extends to every other limit; WO-287: satisfied-by-close (met) — the table of stops, to which Parts A and B add the two stops they introduce.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

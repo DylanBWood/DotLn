@@ -478,8 +478,17 @@ export const operatorWordsRule =
  * author's name and address. Every role and every worker carries both. */
 export const workerNoPrintRules =
   "A worker never reads or prints the contents of `docs/control/local/` (journals, ledgers, the terms list, the reviews lane beyond the report it was given) and never prints a commit header or an author line: `git log` takes a format naming only the hash and subject (`--format='%h %s'`), and `git show` takes `--format=` so it prints no header.";
-/** The generated Markdown and print-session transport consume one worker contract. */
-export function workerSpecification(worker: HarnessWorker) {
+/** The generated Markdown and print-session transport consume one worker
+ * contract. `unequippedRules` names the author's shared rules the root's
+ * build leaves out: a worker is told the paraphrase rule only where the
+ * roles are. */
+export function workerSpecification(
+  worker: HarnessWorker,
+  options: { readonly unequippedRules?: readonly string[] | undefined } = {},
+) {
+  const paraphrase = options.unequippedRules?.includes("operator-words")
+    ? ""
+    : ` ${operatorWordsRule} What a worker returns may be filed in a committed record, so it paraphrases the operator too.`;
   return {
     name: worker.name,
     description:
@@ -490,7 +499,7 @@ export function workerSpecification(worker: HarnessWorker) {
     skills: worker.skills ?? [],
     prompt:
       worker.body ??
-      `Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. ${workerNoPrintRules} ${operatorWordsRule} What a worker returns may be filed in a committed record, so it paraphrases the operator too. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence. Probe with single tests under the bounded wrapper, node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>; never start a test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs): a gate run holds the worktree's live-gate refusal against the parent's writes for its whole duration, and the parent owns the gate. Await a background task you start through the host's completion signal, never through a loop over the process table, and stop what you started before you hand back: your stop is refused once while a task of your own is live.`,
+      `Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. ${workerNoPrintRules}${paraphrase} Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence. Probe with single tests under the bounded wrapper, node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>; never start a test-runner gate in any form (npm test with or without --only, test-runner.mjs, target-gate.mjs, test:docs): a gate run holds the worktree's live-gate refusal against the parent's writes for its whole duration, and the parent owns the gate. Await a background task you start through the host's completion signal, never through a loop over the process table, and stop what you started before you hand back: your stop is refused once while a task of your own is live.`,
   };
 }
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
@@ -502,6 +511,23 @@ export interface HarnessProgram {
   readonly correctionToken: string | null;
   /** Instance election, supplied by the emitter; the compiler reads no files. */
   readonly desktopControl?: boolean;
+  /** The stops this root does not refuse, by id, supplied by the emitter.
+   * Every hook's configuration carries the map, and a stop it leaves out
+   * refuses. A root that refuses on every stop supplies none. */
+  readonly stops?: HarnessStopLevels;
+  /** The denied effects whose host deny rules the settings leave out,
+   * because the stop that answers for each is lowered: a host rule denies
+   * before any hook can answer. */
+  readonly liftedDenyEffects?: readonly string[];
+  /** The author-layer feedback units and shared rules this build leaves
+   * out, by id, supplied by the composer where an instance's overlay names
+   * any. The bundle's manifest records them, and the session hook gives no
+   * context of a rule the roots do not carry. A build that keeps every rule
+   * supplies none. */
+  readonly unequipped?: {
+    readonly units: readonly string[];
+    readonly rules: readonly string[];
+  };
   /** Compatibility for programs declaring one default worker. */
   readonly worker?: HarnessWorker;
   readonly workers?: readonly HarnessWorker[];
@@ -510,6 +536,31 @@ export interface HarnessProgram {
    * to tell where the lifecycle phrase ends. */
   readonly workerNames?: readonly string[];
 }
+
+/** The levels below refuse that a root gives its stops, by stop id. */
+export type HarnessStopLevels = Readonly<Record<string, "advise" | "off">>;
+const loweredStops = (
+  program: HarnessProgram,
+): { stops?: HarnessStopLevels } =>
+  program.stops && Object.keys(program.stops).length
+    ? { stops: program.stops }
+    : {};
+/** A permission facet's deny rules for the effects the envelope denies,
+ * without those a lowered stop lifts. */
+const hostDenyRules = (
+  program: HarnessProgram,
+  envelope: AuthorityEnvelope,
+  permissions: readonly Extract<HarnessFacet, { kind: "permission-guard" }>[],
+): string[] =>
+  permissions.flatMap((facet) =>
+    facet.matchers
+      .filter(
+        (matcher) =>
+          envelope.deniedEffects.includes(matcher.effect) &&
+          !program.liftedDenyEffects?.includes(matcher.effect),
+      )
+      .map((matcher) => matcher.deny),
+  );
 
 /** Host tool namespaces that act in the operator's desktop or signed-in browser.
  * The hook and host settings share this inventory; unrelated MCP tools keep
@@ -573,6 +624,10 @@ export interface HarnessBundle {
     readonly contractVersion: "harness-v1";
     readonly compilerPackageVersion: string;
     readonly feedbackPolicyHash: string;
+    /** What the build leaves out of the author's layer, where it leaves
+     * anything out: the units are those `feedbackPolicyHash` was compiled
+     * without. */
+    readonly unequipped?: NonNullable<HarnessProgram["unequipped"]>;
     readonly grants: readonly AuthorityGrant[];
     readonly outsideWriteGrants?: readonly RoleOutsideWriteGrants[];
     readonly authorityGrantRegistryHash: string | null;
@@ -911,12 +966,16 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
         /^[a-f0-9]{64}$/.test(profile.runtime.targetId ?? ""),
       "target runtime binding",
     );
+    // Its guards are PreToolUse hooks. The one other hook it may hold is
+    // the prompt hook that records the operator's recovery controls for
+    // those guards, where the host was observed to fire the prompt event.
     ensure(
       !profile.skills.available &&
         !profile.events.PostToolUse.available &&
         !profile.events.Stop.available &&
-        !profile.events.UserPromptSubmit.available,
-      "target profile has PreToolUse only and no skills",
+        (!profile.events.UserPromptSubmit.available ||
+          profile.harness === "claude-code"),
+      "target profile guards on PreToolUse only and has no skills",
     );
   }
   ensure(
@@ -1217,7 +1276,7 @@ process.stdout.write(JSON.stringify(response)); }`;
 
     emit(
       path,
-      `${header}let input, control;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\ncontrol = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control && !control.overrideExit) { ${name === "session" ? `try { const { recordOperatorMessage } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} ` : ""}process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput, control);\n}\n} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { ${fallback} } }\n${heartbeat}`,
+      `${header}let input, control;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\ncontrol = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control && !control.overrideExit) { ${name === "session" ? `try { const { recordOperatorMessage } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} ` : ""}process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...loweredStops(program), ...(config as object) }).trim()}, feedbackBoundary, input, rawInput, control);\n}\n} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { ${fallback} } }\n${heartbeat}`,
       origins,
       rung,
     );
@@ -1264,7 +1323,7 @@ process.stdout.write(JSON.stringify(response)); }`;
       if (unit.trigger === "attribution") {
         emit(
           `${hookRoot}/commit-msg.mjs`,
-          `// Origin: ${canonicalStringify(origin([unit.unitId]))}\nconst { runCommitMessageHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nawait runCommitMessageHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, policy: compileFeedbackUnits([unit]) }).trim()}, feedbackBoundary);\n`,
+          `// Origin: ${canonicalStringify(origin([unit.unitId]))}\nconst { runCommitMessageHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nawait runCommitMessageHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, ...loweredStops(program), policy: compileFeedbackUnits([unit]) }).trim()}, feedbackBoundary);\n`,
           [unit.unitId],
           1,
         );
@@ -1355,7 +1414,14 @@ process.stdout.write(JSON.stringify(response)); }`;
       "write-observer",
       "PreToolUse",
       { kind: "observe" },
-      ["read-your-own-output"],
+      // Named for the unit whose receipts it records, where the build
+      // equips that unit; for the roles otherwise, whose journal rows it
+      // writes whatever the units are.
+      feedback.units.some((unit) => unit.trigger === "output-review")
+        ? feedback.units
+            .filter((unit) => unit.trigger === "output-review")
+            .map((unit) => unit.unitId)
+        : program.roles.map((role) => role.facetId),
       1,
     );
   if (profile.events.PostToolUse.available)
@@ -1409,6 +1475,11 @@ process.stdout.write(JSON.stringify(response)); }`;
         // any; a program without them emits the bytes it always did.
         ...(program.workerNames?.length
           ? { workerNames: program.workerNames }
+          : {}),
+        // The author's rules this build leaves out, where it leaves any:
+        // the hook gives no context of a rule the roots do not carry.
+        ...(program.unequipped?.rules.length
+          ? { unequippedRules: program.unequipped.rules }
           : {}),
       },
       program.roles.map((role) => role.facetId),
@@ -1474,7 +1545,9 @@ process.stdout.write(JSON.stringify(response)); }`;
   for (const worker of profile.harness === "claude-code"
     ? workers.filter((worker) => (worker.host ?? "claude") === "claude")
     : []) {
-    const specification = workerSpecification(worker);
+    const specification = workerSpecification(worker, {
+      unequippedRules: program.unequipped?.rules,
+    });
     emit(
       `.claude/agents/${worker.name}.md`,
       [
@@ -1500,7 +1573,9 @@ process.stdout.write(JSON.stringify(response)); }`;
   for (const worker of profile.harness === "codex-cli"
     ? workers.filter((worker) => worker.host === "codex")
     : []) {
-    const specification = workerSpecification(worker);
+    const specification = workerSpecification(worker, {
+      unequippedRules: program.unequipped?.rules,
+    });
     // JSON string syntax is valid TOML basic-string syntax for every value
     // these fields carry, so no instruction text can end its string early.
     emit(
@@ -1590,11 +1665,7 @@ process.stdout.write(JSON.stringify(response)); }`;
       });
     }
   if (profile.settings.available) {
-    const deny = permissions.flatMap((facet) =>
-      facet.matchers
-        .filter((matcher) => envelope.deniedEffects.includes(matcher.effect))
-        .map((matcher) => matcher.deny),
-    );
+    const deny = hostDenyRules(program, envelope, permissions);
     if (program.desktopControl !== true) deny.push(...desktopControlDenyRules);
     const settings = {
       $schema: "https://json.schemastore.org/claude-code-settings.json",
@@ -1702,6 +1773,7 @@ process.stdout.write(JSON.stringify(response)); }`;
     contractVersion: "harness-v1" as const,
     compilerPackageVersion: COMPILER_PACKAGE_VERSION,
     feedbackPolicyHash: feedback.policyHash,
+    ...(program.unequipped ? { unequipped: program.unequipped } : {}),
     grants: program.loadout.grants ?? [],
     outsideWriteGrants,
     authorityGrantRegistryHash:
@@ -1758,45 +1830,54 @@ export const PUBLISH_HELPER_ALLOW_RULES = [
   "Bash(node scripts/worktree.mjs publish *)",
 ] as const;
 
-/** Each enforced class owns one row, so the count and provenance follow it. */
+/** Each enforced class owns one row, so the count and provenance follow it.
+ * `stop` is the row's id in the table of stops, where its class and the level
+ * a root gives it are kept. */
 export const HARNESS_REFUSALS = [
   {
     id: "writer",
+    stop: "writer-reservation",
     source: "WO-135",
     clause: "reserves one writer per worktree on any branch, including main",
   },
   {
     id: "gate",
+    stop: "live-gate",
     source: "WO-135",
     clause:
       "refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate",
   },
   {
     id: "planning",
+    stop: "planning-branch",
     source: "WO-135",
     clause:
       "on planning/ branches refuses repository writes outside docs/ and root Markdown",
   },
   {
     id: "subagents",
+    stop: "worker-cap",
     source: "WO-139",
     clause:
       "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables) or the cap the operator's accept-overrun records for the dispatch",
   },
   {
     id: "outside-write",
+    stop: "outside-write",
     source: "WO-144",
     clause:
       "refuses known outside-project write destinations without a containing root granted by the active role or equipped support",
   },
   {
     id: "dispatch-bound",
+    stop: "dispatch-bound",
     source: "WO-234",
     clause:
       "refuses a complete gate, bounded probe or worker launch past the dispatch bound, naming analysis: and the operator's accept-overrun route",
   },
   {
     id: "desktop-control",
+    stop: "desktop-control",
     source: "WO-251",
     clause:
       "refuses desktop control and the operator's own browser sessions unless dotln.config.json elects features.desktop-control; an election still requires the operator's explicit request in the session, and browser verification uses the Playwright MCP in a browser the session launches or the project's browser tests",
@@ -1807,18 +1888,23 @@ export const HARNESS_REFUSALS = [
   // starts, refused naming the bounded single-test probe.
   {
     id: "worker-gate",
+    stop: "worker-gate",
     source: "WO-250",
     clause: "refuses a review worker's test-runner gate",
   },
   {
     id: "gh-repository",
+    stop: "gh-repository",
     source: "WO-246",
     clause:
       "refuses a gh pr or gh issue command naming no repository in a clone whose origin and upstream differ and whose gh default is unset",
   },
 ] as const;
-const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task with the operator's messages since its dispatch and permits one continuation after premature stopping; it never dispatches a role, and it moves only this session's own reservation: a turn that stops releases it and the next prompt of an outstanding dispatch reserves it again.`;
+const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Each is a stop of the table npm run features -- list prints, answered at the level its root sets in the stops section of dotln.config.json (refuse, advise or off): core refuses on each, and an exported instance advises on those that guard the kit's own records, a host property or a bound; desktop control alone keeps its own election and has no level there. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop. A stop's level is its owner's to change, and a session changes one only when its owner asks for it in that session; operator override: is the operator's last resort and no stop's route. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task with the operator's messages since its dispatch and permits one continuation after premature stopping; it never dispatches a role, and it moves only this session's own reservation: a turn that stops releases it and the next prompt of an outstanding dispatch reserves it again.`;
 
+const WRITER_UNIT = "concurrent-work-requires-worktrees";
+/** What the block adds where a root's build leaves that unit out. */
+const WRITER_UNIT_LEFT_OUT = `This root's build leaves out the unit ${WRITER_UNIT}: no hook here reserves a writer, and that stop reads off (npm run features -- list).`;
 /** The shared instruction symlink carries every profile's residue on one line
  * per profile. Rule ids that share a reason are named together before it, so
  * a reason several rules share is printed once; the manifest keeps each item. */
@@ -1826,6 +1912,11 @@ export function mergeHarnessFragments(
   bundles: readonly HarnessBundle[],
 ): string {
   ensure(bundles.length > 0, "profile manifest required");
+  // The block's account of the refusals follows the build: where it leaves
+  // out the writer reservation's unit, no hook reserves a writer here.
+  const writerLeftOut = bundles.some((bundle) =>
+    bundle.manifest.unequipped?.units.includes(WRITER_UNIT),
+  );
   const profiles = new Map<string, Map<string, string[]>>();
   for (const bundle of bundles) {
     const profileId = bundle.manifest.profile.profileId;
@@ -1846,7 +1937,7 @@ export function mergeHarnessFragments(
           .map(([reason, ids]) => `${ids.join(", ")}: ${reason}`)
           .join(" ")}`,
     );
-  return `${HARNESS_START}\nRead[executor]: \`@skills/dotln-executor/SKILL.md\` — next, fix, status, times.\nRead[verifier]: \`@skills/dotln-verifier/SKILL.md\` — verify.\nRead[reviewer]: \`@skills/dotln-reviewer/SKILL.md\` — final review.\nRead[release-close]: \`@skills/dotln-release-close/SKILL.md\` — release close.\nRead[planner]: \`@skills/dotln-planner/SKILL.md\` — planning or ideation.\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter; drive: WO-NNN selects dotln-router.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
+  return `${HARNESS_START}\nRead[executor]: \`@skills/dotln-executor/SKILL.md\` — next, fix, status, times.\nRead[verifier]: \`@skills/dotln-verifier/SKILL.md\` — verify.\nRead[reviewer]: \`@skills/dotln-reviewer/SKILL.md\` — final review.\nRead[release-close]: \`@skills/dotln-release-close/SKILL.md\` — release close.\nRead[planner]: \`@skills/dotln-planner/SKILL.md\` — planning or ideation.\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter; drive: WO-NNN selects dotln-router.\n${HARNESS_BOUNDARIES}${writerLeftOut ? ` ${WRITER_UNIT_LEFT_OUT}` : ""}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
 }
 
 /** Reduced worker projection. Contributor generation above remains independent. */
@@ -1870,12 +1961,22 @@ function lowerTargetWorker(
     (facet): facet is Extract<HarnessFacet, { kind: "permission-guard" }> =>
       facet.kind === "permission-guard",
   );
-  ensure(
-    permissions.length > 0 &&
-      units.some((unit) => unit.trigger === "writer-isolation") &&
-      units.some((unit) => unit.trigger === "attribution"),
-    "target guards required",
-  );
+  // The permission guard is the bundle. The writer and attribution guards
+  // are the two units a target worktree carries, each where the build
+  // equips it: a unit an owner leaves out of the launchpad's bundle is not
+  // met in a sibling repository either.
+  ensure(permissions.length > 0, "target guards required");
+  const writerGuard = units.some((unit) => unit.trigger === "writer-isolation");
+  const attributionGuard = units.some((unit) => unit.trigger === "attribution");
+  const guardNames = [
+    "permission",
+    ...(writerGuard ? ["writer"] : []),
+    ...(attributionGuard ? ["attribution"] : []),
+  ];
+  const guards =
+    guardNames.length === 1
+      ? "a PreToolUse permission guard, which answers a stop at the level the launchpad gives it; analysis: and operator override: reach it"
+      : `PreToolUse ${guardNames.slice(0, -1).join(", ")} and ${guardNames.at(-1)} guards, each answering a stop at the level the launchpad gives it; analysis: and operator override: reach them`;
   const names = [
     ...permissions.map((facet) => facet.facetId),
     ...units.map((unit) => unit.unitId),
@@ -1917,6 +2018,20 @@ function lowerTargetWorker(
           profile.matcherExclusion?.available === true,
         ),
       );
+    // A guard that cannot load the launchpad's runtime judges nothing. It
+    // answers at the level of its own stop, which the emit knows: a denial
+    // of every call, or the call allowed with word that nothing here is
+    // being judged and the command that restores the guard.
+    const runtimeLevel = program.stops?.["target-runtime"] ?? "refuse";
+    const restore =
+      "node scripts/harness.mjs emit --target <this worktree>, run from its launchpad, installs the guard again";
+    // Written as source, so the hook file reads as the answer it gives.
+    const unreachable =
+      runtimeLevel === "refuse"
+        ? `{ hookSpecificOutput: { hookEventName: "PreToolUse", permissionDecision: "deny", permissionDecisionReason: ${JSON.stringify(`DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime unavailable; ${restore}. This is stop target-runtime; its level is the launchpad owner's to set: "stops": { "target-runtime": "advise" } in the launchpad's dotln.config.json, then that emit.`)} } }`
+        : runtimeLevel === "advise"
+          ? `{ systemMessage: ${JSON.stringify(`DotLn advisory: this worktree's guard cannot reach its launchpad's runtime, so nothing here is being judged; ${restore}. Stop target-runtime advises in this root; host permissions decide.`)} }`
+          : "{}";
     for (const { name, ...guard } of configs) {
       const path = `.claude/hooks/${name}.mjs`;
       hooks.push(path);
@@ -1925,40 +2040,76 @@ function lowerTargetWorker(
         runtime,
         event: "PreToolUse",
         tools: profile.tools,
+        ...loweredStops(program),
         ...guard,
       };
+      // The recovery controls are read ahead of every runtime import, as in
+      // the launchpad's hooks: while analysis: or operator override: is on
+      // for the session, the guard says so and judges nothing.
       emit(
         path,
         `// Origin: ${canonicalStringify(origin)}
+let input, control = null;
+const { text } = await import("node:stream/consumers");
+const rawInput = await text(process.stdin);
+try { input = JSON.parse(rawInput); } catch {}
+try {
+if (input !== null && typeof input === "object" && !Array.isArray(input) && typeof input.session_id === "string")
+control = await (${operatorControl.toString()})({ session_id: input.session_id }, "PreToolUse");
+} catch {}
+if (control) { process.stdout.write(JSON.stringify(control)); } else {
 try {
 const { feedbackBoundary } = await import(new URL(${JSON.stringify(importURL("packages/skeleton/dist/src/feedback-boundary.js"))}));
 const { runTargetHarnessHook } = await import(new URL(${JSON.stringify(importURL("packages/skeleton/dist/src/harness-host.js"))}));
-await runTargetHarnessHook(${json(config).trim()}, feedbackBoundary);
+await runTargetHarnessHook(${json(config).trim()}, feedbackBoundary, rawInput);
 } catch {
-process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "PreToolUse", permissionDecision: "deny", permissionDecisionReason: "DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime unavailable" } }));
+process.stdout.write(JSON.stringify(${unreachable}));
+}
 }
 `,
         2,
       );
     }
   }
+  // The prompt hook that records the operator's analysis: and operator
+  // override: for the session, so that the guards above can read them. It
+  // imports nothing of the runtime and dispatches nothing.
+  const controlHook = profile.events.UserPromptSubmit.available
+    ? ".claude/hooks/operator-control.mjs"
+    : null;
+  if (controlHook)
+    emit(
+      controlHook,
+      `// Origin: ${canonicalStringify(origin)}
+let output = {};
+try {
+const { text } = await import("node:stream/consumers");
+const input = JSON.parse(await text(process.stdin));
+if (input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim()))) {
+const control = await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, "UserPromptSubmit");
+if (control) {
+const { overrideExit, ...shown } = control;
+output = overrideExit ? { systemMessage: shown.systemMessage + " " + overrideExit.advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: overrideExit.advisory } } : shown;
+}
+}
+} catch {}
+process.stdout.write(JSON.stringify(output));
+`,
+      2,
+    );
   if (profile.settings.available)
     emit(
       profile.settings.path,
       json({
         autoMemoryEnabled: false,
-        attribution: { commit: "", pr: "", sessionUrl: false },
+        // The host's own attribution is turned off where the attribution
+        // unit is equipped, as in the launchpad's settings.
+        ...(attributionGuard
+          ? { attribution: { commit: "", pr: "", sessionUrl: false } }
+          : {}),
         permissions: {
           deny: [
-            ...new Set(
-              permissions.flatMap((facet) =>
-                facet.matchers
-                  .filter((matcher) =>
-                    envelope.deniedEffects.includes(matcher.effect),
-                  )
-                  .map((matcher) => matcher.deny),
-              ),
-            ),
+            ...new Set(hostDenyRules(program, envelope, permissions)),
           ].sort(),
         },
         hooks: {
@@ -1967,16 +2118,31 @@ process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "PreT
             command: `node "$CLAUDE_PROJECT_DIR/${path}"`,
             timeout: 15,
           })),
+          ...(controlHook
+            ? {
+                UserPromptSubmit: [
+                  {
+                    hooks: [
+                      {
+                        type: "command",
+                        command: `node "$CLAUDE_PROJECT_DIR/${controlHook}"`,
+                        timeout: 15,
+                      },
+                    ],
+                  },
+                ],
+              }
+            : {}),
         },
       }),
       2,
     );
   const instruction = `${HARNESS_START}
-Target worker: perform only the assigned work in this Git worktree. Keep one writer per worktree. Never commit generated local harness files or expose credentials, private identifiers or employer material. Never guess: check evidence before claims and identify unknowns. Do not add AI attribution to commits or pull requests.
+Target worker: perform only the assigned work in this Git worktree.${writerGuard ? " Keep one writer per worktree." : ""} Never commit generated local harness files or expose credentials, private identifiers or employer material. Never guess: check evidence before claims and identify unknowns.${attributionGuard ? " Do not add AI attribution to commits or pull requests." : ""}
 Allowed effects: ${envelope.allowedEffects.join(", ")}.
 Denied effects: ${envelope.deniedEffects.join(", ")}.
 Applied explicit grants: ${(program.loadout.grants ?? []).length}; provenance remains in the launchpad receipt.
-Claude Code uses PreToolUse permission, writer and attribution guards; unavailable runtime refuses the tool. Codex has no observed hook event; its launch profile and host diff checks supply governance. Read this local block explicitly when the harness does not load it automatically. Preserve the local bundle and its exclude entries.
+Claude Code uses ${guards}. Codex has no observed hook event; its launch profile and host diff checks supply governance. Read this local block explicitly when the harness does not load it automatically. Preserve the local bundle and its exclude entries.
 ${HARNESS_END}
 `;
   emit(profile.instruction.path, instruction, 8);
@@ -1988,6 +2154,7 @@ ${HARNESS_END}
       contractVersion: "harness-v1",
       compilerPackageVersion: COMPILER_PACKAGE_VERSION,
       feedbackPolicyHash: feedback.policyHash,
+      ...(program.unequipped ? { unequipped: program.unequipped } : {}),
       grants: program.loadout.grants ?? [],
       outsideWriteGrants,
       authorityGrantRegistryHash:

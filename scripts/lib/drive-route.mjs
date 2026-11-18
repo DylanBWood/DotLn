@@ -14,14 +14,11 @@ import {
 import { parseWorktrees, runGit, spawnGit } from "./git.mjs";
 import { readFindingsBlock } from "./review-findings.mjs";
 import { inHistory, mergedChange, partialClone } from "./merged-change.mjs";
+import { LIFECYCLE_ROUTES as lifecycleRoutes } from "./lifecycle-actions.mjs";
 
-export const lifecycleRoutes = Object.freeze({
-  next: { role: "executor", phrase: "resume: next" },
-  fix: { role: "executor", phrase: "resume: fix" },
-  verify: { role: "verifier", phrase: "resume: verify" },
-  "final-review": { role: "reviewer", phrase: "resume: final review" },
-  "release-close": { role: "release-close", phrase: "resume: release close" },
-});
+// The phrases a drive routes are the lifecycle's own table, kept beside its
+// phases and legal actions.
+export { lifecycleRoutes };
 const phaseAction = {
   active: "next",
   "ready-to-verify": "verify",

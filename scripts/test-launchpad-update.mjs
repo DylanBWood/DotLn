@@ -3860,6 +3860,142 @@ test("export update preserves ownership, validates actions and keeps the exporte
       );
     },
   );
+
+  await t.test(
+    "WO-287 criterion B5: an instance whose build overlay removes a unit with a hook file of its own passes the kit's verification, which counts the file as left out, and takes an update, which neither writes nor lists it; restored, the file is planned as any kit file is",
+    () => {
+      const chosen = instance("left-out");
+      configureRepository(chosen);
+      // The unit's two files: its guard and the commit-message hook.
+      const hook = ".claude/hooks/no-attribution.mjs";
+      const hooks = [".claude/hooks/commit-msg.mjs", hook];
+      for (const path of hooks) {
+        assert.ok(
+          prior.files.some((entry) => entry.path === path),
+          `the kit lists ${path} for every instance`,
+        );
+        assert.ok(existsSync(join(chosen, path)), path);
+      }
+      const config = JSON.parse(
+        readFileSync(join(chosen, "dotln.config.json"), "utf8"),
+      );
+      writeFileSync(
+        join(chosen, "dotln.config.json"),
+        `${JSON.stringify({ ...config, build: { ...config.build, overlay: "instance/build.json" } }, null, 2)}\n`,
+      );
+      mkdirSync(join(chosen, "instance"));
+      const overlay = (value) =>
+        writeFileSync(
+          join(chosen, "instance/build.json"),
+          `${JSON.stringify(value)}\n`,
+        );
+      const emit = (label) => {
+        ok(harness(chosen, "emit"), `${label}: the instance's own emit`);
+        ok(harness(chosen, "check"), `${label}: the instance's own check`);
+      };
+      const verify = (label) =>
+        ok(
+          run(
+            process.execPath,
+            [join(chosen, "scripts/launchpad.mjs"), "verify"],
+            { cwd: chosen },
+          ),
+          `${label}: launchpad verify`,
+        ).stdout;
+      const leftOut = () =>
+        JSON.parse(readFileSync(join(chosen, HARNESS_MANIFEST), "utf8"))
+          .leftOut;
+
+      // The owner removes the unit: its emit takes the hook file away and
+      // its harness manifest names the path its build leaves out.
+      overlay({ version: 1, unequip: ["no-attribution"] });
+      emit("without the unit");
+      for (const path of hooks)
+        assert.equal(existsSync(join(chosen, path)), false, path);
+      assert.deepEqual(leftOut(), hooks);
+      // The kit's manifest still lists the file. Its verification counts
+      // it as left out, and nothing as differing.
+      const verified = verify("without the unit");
+      assert.doesNotMatch(verified, /differ/u);
+      assert.match(
+        verified,
+        /^kit: 2 harness surfaces this instance's build leaves out, which its harness check accepts$/mu,
+      );
+      git(chosen, ["add", "."]);
+      git(chosen, ["commit", "-qm", "the instance without the unit"]);
+      // An update plans the file as left out: not written, not refused,
+      // and the plan is no input failure.
+      const preview = ok(runUpdate(chosen, ["--preview"]), "the update plan");
+      for (const path of hooks)
+        assert.ok(
+          preview.stdout
+            .split("\n")
+            .includes(`left out by this instance's build: ${path}`),
+          path,
+        );
+      assert.doesNotMatch(preview.stdout, /^refused: /mu);
+      ok(runUpdate(chosen), "the update");
+      for (const path of hooks) {
+        assert.equal(existsSync(join(chosen, path)), false, path);
+        assert.ok(
+          !manifestOf(chosen).files.some((entry) => entry.path === path),
+          `the kit's manifest lists ${path} for this instance no longer`,
+        );
+      }
+      // The emit an update ends with, and the verification after it.
+      emit("after the update");
+      assert.equal(existsSync(join(chosen, hook)), false);
+      assert.doesNotMatch(verify("after the update"), /differ/u);
+      assert.deepEqual(leftOut(), hooks);
+      // A second update, the unit still left out: the kit's manifest no
+      // longer lists the files, and they are planned as left out again,
+      // never added back.
+      git(chosen, ["add", "."]);
+      git(chosen, ["commit", "-qm", "the instance after its first update"]);
+      const second = ok(
+        runUpdate(chosen, ["--preview"]),
+        "the second update's plan",
+      );
+      for (const path of hooks) {
+        assert.ok(
+          second.stdout
+            .split("\n")
+            .includes(`left out by this instance's build: ${path}`),
+          path,
+        );
+        assert.ok(!second.stdout.split("\n").includes(`add: ${path}`), path);
+      }
+      assert.doesNotMatch(second.stdout, /^refused: /mu);
+      ok(runUpdate(chosen), "the second update");
+      for (const path of hooks) {
+        assert.equal(existsSync(join(chosen, path)), false, path);
+        assert.ok(
+          !manifestOf(chosen).files.some((entry) => entry.path === path),
+          path,
+        );
+      }
+      emit("after the second update");
+      assert.doesNotMatch(verify("after the second update"), /differ/u);
+
+      // The owner restores the unit: its emit writes the hook again, and
+      // the next update plans it without refusing it.
+      overlay({ version: 1 });
+      emit("with the unit again");
+      for (const path of hooks) assert.ok(existsSync(join(chosen, path)), path);
+      assert.equal(leftOut(), undefined);
+      assert.doesNotMatch(verify("with the unit again"), /differ/u);
+      const restored = ok(
+        runUpdate(chosen, ["--preview"]),
+        "the update plan with the unit again",
+      );
+      assert.doesNotMatch(restored.stdout, /^refused: /mu);
+      assert.doesNotMatch(restored.stdout, /^left out by /mu);
+      assert.match(
+        restored.stdout,
+        /^(?:add|unchanged|replace|re-emitted): \.claude\/hooks\/no-attribution\.mjs$/mu,
+      );
+    },
+  );
 });
 
 test("starter refresh publishes one verified commit and preserves every refusal boundary", async (t) => {
@@ -5900,6 +6036,110 @@ test("WO-282: an update checks incoming and pending runtime additions before the
       missing.find(({ path }) => path === surface).harnessCheck,
       "runtime-differs",
     );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-287 criterion B5: an update plans a generated surface the instance's build leaves out as left out where its harness manifest names it and its check passes, and a surface the prior kit did not list as the instance's own emit's", () => {
+  const root = join(scratch, "left-out-plan");
+  mkdirSync(root, { recursive: true });
+  try {
+    const hook = ".claude/hooks/no-attribution.mjs";
+    const settings = ".claude/settings.json";
+    const put = (path, bytes) => {
+      mkdirSync(dirname(join(root, path)), { recursive: true });
+      writeFileSync(join(root, path), bytes);
+    };
+    const listed = (bytes) => ({
+      files: [
+        { path: hook, sha256: sha256(`${bytes} hook`) },
+        { path: settings, sha256: sha256(bytes) },
+      ],
+    });
+    const prior = listed("prior emit");
+    const next = listed("incoming emit");
+    put(settings, "prior emit");
+    const manifest = (value) => put(HARNESS_MANIFEST, JSON.stringify(value));
+    let answer = "passes";
+    let asked = 0;
+    const options = {
+      generated: new Set([hook, settings]),
+      harnessCheck: () => {
+        asked++;
+        return answer;
+      },
+    };
+    const plan = (before = prior, after = next, given = options) =>
+      planUpdate(before, after, root, null, given);
+    const row = (entries) => entries.find(({ path }) => path === hook);
+
+    // The build leaves the hook out, and its harness manifest says so.
+    manifest({ installed: [{ path: settings }], leftOut: [hook] });
+    const left = row(plan());
+    assert.deepEqual(
+      [left.kind, left.absent, left.leftOut],
+      ["remove", true, true],
+    );
+    assert.equal(asked, 1, "the instance's check vouches for its manifest");
+    // Where the check fails, or the manifest does not name the path, or
+    // the path is no generated surface, the absence is the input failure
+    // it was.
+    answer = "fails";
+    assert.throws(() => plan(), /^Error: cannot read regular file: /u);
+    answer = "passes";
+    manifest({ installed: [{ path: settings }] });
+    assert.throws(() => plan(), /^Error: cannot read regular file: /u);
+    manifest({ installed: [{ path: settings }], leftOut: [hook] });
+    assert.throws(
+      () => plan(prior, next, { ...options, generated: new Set([settings]) }),
+      /^Error: cannot read regular file: /u,
+    );
+
+    // A second update: the first stopped listing the hook for this
+    // instance, the build still leaves it out, and it stays left out,
+    // neither added nor written.
+    const without = { files: prior.files.filter(({ path }) => path !== hook) };
+    const again = row(plan(without));
+    assert.deepEqual(
+      [again.kind, again.absent, again.leftOut],
+      ["remove", true, true],
+    );
+    // Without the manifest's word, or its check, the absent file is the
+    // kit's to add, as any new kit file is.
+    answer = "fails";
+    assert.equal(row(plan(without)).kind, "add");
+    answer = "passes";
+    manifest({ installed: [{ path: settings }] });
+    assert.equal(row(plan(without)).kind, "add");
+
+    // The unit restored: the prior kit did not list the hook for this
+    // instance, its own emit has written it, and its check vouches for it.
+    put(hook, "this instance's emit");
+    manifest({ installed: [{ path: settings }, { path: hook }] });
+    const restored = row(plan(without));
+    assert.deepEqual([restored.kind, restored.reEmitted], ["replace", true]);
+    // Not vouched for, it is the collision it was, and says which answer.
+    answer = "fails";
+    const collided = row(plan(without));
+    assert.deepEqual(
+      [collided.kind, collided.reason, collided.harnessCheck],
+      ["refuse", "instance-owned collision", "fails"],
+    );
+    answer = "passes";
+    // A file the instance's manifest does not list is no surface of its
+    // emit: the collision, with no check asked.
+    manifest({ installed: [{ path: settings }] });
+    const before = asked;
+    const unlisted = row(plan(without));
+    assert.deepEqual(
+      [unlisted.kind, unlisted.reason, unlisted.harnessCheck],
+      ["refuse", "instance-owned collision", undefined],
+    );
+    assert.equal(asked, before);
+    // Holding the incoming bytes already, it is added as before.
+    put(hook, "incoming emit hook");
+    assert.equal(row(plan(without)).kind, "add");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

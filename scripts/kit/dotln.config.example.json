@@ -19,5 +19,8 @@
     "plan-first": { "on": false, "note": "Prepare a plan and complete candidate diff, then await operator approval before implementation." },
     "private-destination": false,
     "desktop-control": false
+  },
+  "stops": {
+    "planning-branch": "advise"
   }
 }

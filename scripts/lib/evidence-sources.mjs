@@ -17,6 +17,9 @@ const commonSources = [
   // read the one table, and the kit's own models are its first rows.
   "packages/skeleton/src/worker-catalog.mjs",
   "packages/skeleton/src/worker-models.mjs",
+  // The table of stops: the configuration reads a `stops` section against
+  // it, and the harness host answers each stop at its level.
+  "packages/skeleton/src/stops.mjs",
   "scripts/lib/config.mjs",
   "scripts/lib/control-actor.mjs",
   "scripts/lib/control-store.mjs",
@@ -437,6 +440,8 @@ export const evidenceImportExclusions = {
       "Resolves the launchpad and its configured document roots; each edition's inputs are registered by the path it resolves, and its repository and portfolio validation is outside every edition's recorded behaviour.",
     "scripts/lib/build-overlay.mjs":
       "Shared instance-overlay schema and file-boundary validation; the editions use the unchanged default Contributor without overlays, while configuration-root and harness fixtures judge this reader.",
+    "scripts/lib/rule-inventory.mjs":
+      "The ids an overlay's lists may name and the reader of the author units and rules a root's overlay leaves out; the editions use the unchanged default Contributor without overlays, while the features, configuration-root and harness fixtures judge both.",
     "scripts/lib/feature-registry.mjs":
       "The feature registry and its alias resolver, which the configuration reader validates a declared section through; the features and configuration-root fixtures judge them, and editions run the unchanged default Contributor without electing optional instance features.",
     "scripts/lib/features.mjs":

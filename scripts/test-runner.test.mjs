@@ -81,6 +81,7 @@ import {
   completeSharedRefs,
   sharedRefChanges,
   isKitRoot,
+  stopOutcome,
 } from "./test-runner.mjs";
 import {
   activeGateRuns,
@@ -1528,12 +1529,29 @@ test("kit checks execute fresh against ignored runtime and document inputs under
     assert.equal(gateCodeIdentity(repo), identity);
     if (!document) {
       const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
-      assert.equal(
-        (await coveringGateCheck(repo, "npm test", names)).row,
-        undefined,
+      // A claim never consumes the earlier pass after ignored runtime drift.
+      // What it may consume is a selection made at this drifted input, an
+      // earlier loop's, which in this instance passed with its harness task
+      // advised: that selection succeeded, so its row stands for the
+      // completion that consumes it, and it says what advised.
+      const claimed = (await coveringGateCheck(repo, "npm test", names)).row;
+      assert.notEqual(
+        claimed?.instanceInputDigest,
+        first.instanceInputDigest,
         "a claim cannot consume the earlier pass after ignored runtime drift",
       );
-      assert.equal(findGateCheck(repo, "npm test", first.treeHash), undefined);
+      if (claimed)
+        assert.deepEqual(claimed.advisedTasks, [
+          { name: "harness", stops: ["gate-harness"] },
+        ]);
+      // No lookup finds the earlier pass either. What one may find is the
+      // row of a run made at this drifted input, which says so.
+      const atDrift = findGateCheck(repo, "npm test", first.treeHash);
+      assert.notEqual(atDrift?.instanceInputDigest, first.instanceInputDigest);
+      if (atDrift)
+        assert.deepEqual(atDrift.advisedTasks, [
+          { name: "harness", stops: ["gate-harness"] },
+        ]);
       if (publication) {
         assert.throws(publication, /reviewed installed runtime differs/u);
         const { reviewedProductGate } =
@@ -1546,7 +1564,20 @@ test("kit checks execute fresh against ignored runtime and document inputs under
       }
     }
     const failed = await gate();
-    assert.equal(failed.exitCode, 1);
+    // The drifted input fails the task that reads it, which ran fresh. The
+    // records row is no stop and fails the run. The harness row is a stop
+    // that guards the kit's own records, and this root is an instance that
+    // sets no level: the run passes and names the task as advised, with the
+    // exit it had.
+    const drifted = failed.cases.find(
+      (row) => row.name === (document ? "records" : "harness"),
+    );
+    assert.equal(failed.exitCode, document ? 1 : 0);
+    assert.deepEqual(
+      failed.advisedTasks ?? [],
+      document ? [] : [{ name: "harness", stops: ["gate-harness"] }],
+    );
+    assert.equal(document ? drifted.exitCode : drifted.advisedExitCode, 1);
     assert.equal(failed.codeIdentity, identity);
     assert.equal(failed.reusedSuites, 0);
     assert.equal(failed.freshReason, "instance-inputs");
@@ -1558,12 +1589,7 @@ test("kit checks execute fresh against ignored runtime and document inputs under
       failed.taskTimeline.map((row) => row.name),
       names,
     );
-    assert.equal(
-      failed.cases.find(
-        (row) => row.name === (document ? "records" : "harness"),
-      ).executed,
-      true,
-    );
+    assert.equal(drifted.executed, true);
     writeFileSync(input, "valid\n");
   }
   const observed = readFileSync(join(repo, "observed.jsonl"), "utf8")
@@ -16198,6 +16224,100 @@ console.log("STRUCTURAL_RESULT "+JSON.stringify(result)); process.exitCode=resul
   });
   assert.equal(admitted.exitCode, 0);
   assert.equal(consumed(), 1, "one admitted review consumes exactly one run");
+  assert.equal(admitted.advisedTasks, undefined);
+
+  // Where the bound's stop advises, a complete selection started past the
+  // bound runs, and the host row that admitted it is recorded as advised
+  // with what the bound said, never as a pass (WO-287 criterion A6).
+  budgets.dispatches.executor.completeRuns = 1;
+  writeFileSync(
+    join(repo, "docs/control/budgets.json"),
+    JSON.stringify(budgets),
+  );
+  writeFileSync(
+    join(repo, "dotln.config.json"),
+    JSON.stringify({ version: 1, stops: { "dispatch-bound": "advise" } }),
+  );
+  const lines = [];
+  const log = console.log;
+  console.log = (...args) => lines.push(args.join(" "));
+  let past;
+  try {
+    past = await runGate(["--review", "--serial", "--again"], repo, { table });
+  } finally {
+    console.log = log;
+  }
+  assert.equal(past.exitCode, 0, lines.join("\n"));
+  assert.equal(past.boundStop, undefined);
+  assert.deepEqual(past.advisedTasks, [
+    { name: "host", stops: ["dispatch-bound"] },
+  ]);
+  const pastHost = past.cases.find((row) => row.name === "host");
+  assert.equal(pastHost.exitCode, 0);
+  assert.deepEqual(pastHost.advisedStops, ["dispatch-bound"]);
+  assert.match(
+    pastHost.output,
+    /^ADVISORY .*Stop dispatch-bound advises in this root and the work goes on; it protects /u,
+  );
+  assert.ok(
+    lines.some((line) => line.startsWith("ADVISED host ")),
+    lines.join("\n"),
+  );
+  assert.ok(
+    !lines.some((line) => line.startsWith("PASS host ")),
+    lines.join("\n"),
+  );
+  assert.ok(
+    lines.some(
+      (line) =>
+        line.startsWith("  [host] ADVISORY ") &&
+        line.includes('"stops": { "dispatch-bound": "refuse" }'),
+    ),
+    lines.join("\n"),
+  );
+  assert.equal(stopLog().length, 2, "an advised bound records no stop");
+  assert.equal(consumed(), 2, "the run the bound advised on is counted");
+  // Set to refuse again, the same selection is withheld as before.
+  writeFileSync(
+    join(repo, "dotln.config.json"),
+    JSON.stringify({ version: 1, stops: { "dispatch-bound": "refuse" } }),
+  );
+  const withheld = await runGate(["--review", "--serial", "--again"], repo, {
+    table,
+  });
+  assert.equal(withheld.exitCode, 1);
+  assert.equal(withheld.boundStop.metric, "completeRuns");
+});
+
+test("WO-287 criterion A6: the line naming advised stops is read from the document check alone, so a suite that prints one is recorded as passed", async () => {
+  const { stopOutcome } = await import("./test-runner.mjs");
+  const marker = 'DOTLN_ADVISED_STOPS ["docs-links"]';
+  const result = (output) => ({ executed: true, exitCode: 0, output });
+  const refuse = () => "refuse";
+  // A suite whose own output holds a fixture's document check.
+  const suite = stopOutcome(
+    result(`ok 1 - a case\n${marker}\nok 2 - another`),
+    { name: "launchpad" },
+    refuse,
+  );
+  assert.equal(suite.advisedStops, undefined);
+  assert.equal(suite.output, `ok 1 - a case\n${marker}\nok 2 - another`);
+  // The document check names the stops it advised on, and the line is
+  // taken out of what it said.
+  const documents = stopOutcome(
+    result(`docs-check: 0 failures\n${marker}`),
+    { name: "docs-check" },
+    refuse,
+  );
+  assert.deepEqual(documents.advisedStops, ["docs-links"]);
+  assert.equal(documents.output, "docs-check: 0 failures");
+  // A row whose result already names its stops keeps them.
+  const host = stopOutcome(
+    { ...result("ADVISORY the bound"), advisedStops: ["dispatch-bound"] },
+    { name: "host" },
+    refuse,
+  );
+  assert.deepEqual(host.advisedStops, ["dispatch-bound"]);
 });
 
 // A sharded row runs one process a shard, and a case runs in one of them
@@ -17289,4 +17409,696 @@ test("WO-284 criterion 4: no file on the gate path passes a time limit that is n
       `${key} is read by no file on the gate path`,
     );
   }
+});
+
+// ---- a gate task's failure at the level of the stop it is (WO-287)
+
+// A small repository whose selection is a few named tasks: `fail.mjs` says
+// what it found and exits 3, `pass.mjs` records that it ran, and `slow.mjs`
+// outlasts any limit the case sets.
+const stopsFixture = (t, { instance }) => {
+  const repo = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-stops-")));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const options = {
+    exec: true,
+    trim: false,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  };
+  runGit(repo, ["init", "-q"], options);
+  excludeFixtureOwnership(repo);
+  runGit(repo, ["config", "maintenance.auto", "false"], options);
+  runGit(repo, ["config", "user.name", "Fixture"], options);
+  runGit(repo, ["config", "user.email", "fixture@example.invalid"], options);
+  writeFileSync(
+    join(repo, ".gitignore"),
+    "docs/control/local/\nobserved.jsonl\n",
+  );
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(
+    join(repo, "scripts/pass.mjs"),
+    'import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", process.argv[2] + "\\n");\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/fail.mjs"),
+    'import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", process.argv[2] + "\\n");\nconsole.log(`${process.argv[2]}: a record of the kit is out of date`);\nprocess.exit(3);\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/slow.mjs"),
+    "await new Promise((resolve) => setTimeout(resolve, 30_000));\n",
+  );
+  if (instance) writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  runGit(repo, ["add", "."], options);
+  runGit(
+    repo,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "Stops fixture"],
+    options,
+  );
+  const row = (name, script = "pass", extra = {}) => ({
+    name,
+    command: [process.execPath, `scripts/${script}.mjs`, name],
+    protects: "a fixture task",
+    ...extra,
+  });
+  return {
+    repo,
+    row,
+    stops: (stops) =>
+      writeFileSync(
+        join(repo, "dotln.config.json"),
+        JSON.stringify({ version: 1, ...(stops ? { stops } : {}) }),
+      ),
+    observed: () =>
+      existsSync(join(repo, "observed.jsonl"))
+        ? readFileSync(join(repo, "observed.jsonl"), "utf8").trim().split("\n")
+        : [],
+    reset: () => rmSync(join(repo, "observed.jsonl"), { force: true }),
+  };
+};
+// The lines a selection printed while it ran.
+const printedBy = async (run) => {
+  const lines = [];
+  const log = console.log;
+  console.log = (line) => lines.push(String(line));
+  try {
+    return { check: await run(), lines };
+  } finally {
+    console.log = log;
+  }
+};
+
+test("WO-287 criterion A6: in an instance a failed task whose stop is a record row is recorded as advised with its output, the tasks after it run and the selection passes naming the advised tasks; at refuse, for a task that is no stop, for a task ended for time, and in core, the selection fails as before", async (t) => {
+  const f = stopsFixture(t, { instance: true });
+  const document = { instance: "document", document: true };
+  const table = (index = "fail", extra = []) => [
+    f.row("kit-verify", "pass", { build: true, outputs: [] }),
+    f.row("format", "fail", { ...document, structural: true }),
+    f.row("index", index, document),
+    ...extra,
+    f.row("after", "pass", document),
+  ];
+  const gate = (rows) =>
+    printedBy(() =>
+      runGate(["--document", "--serial"], f.repo, { table: rows }),
+    );
+
+  // The default levels of an instance: a failed structural row and a failed
+  // document row both advise, and every task after them runs.
+  const advised = await gate(table());
+  assert.equal(advised.check.exitCode, 0, advised.lines.join("\n"));
+  assert.deepEqual(f.observed(), ["format", "kit-verify", "index", "after"]);
+  assert.deepEqual(advised.check.advisedTasks, [
+    { name: "format", stops: ["gate-format"] },
+    { name: "index", stops: ["gate-index"] },
+  ]);
+  for (const name of ["format", "index"]) {
+    // Recorded as advised, with what the task said and its own exit.
+    const recorded = advised.check.cases.find((row) => row.name === name);
+    assert.equal(recorded.exitCode, 0, name);
+    assert.equal(recorded.advisedExitCode, 3, name);
+    assert.match(
+      recorded.output,
+      new RegExp(`^${name}: a record of the kit is out of date`, "u"),
+    );
+    assert.ok(
+      advised.lines.some((line) => line.startsWith(`ADVISED ${name} `)),
+      name,
+    );
+    assert.ok(
+      advised.lines.includes(
+        `  [${name}] ${name}: a record of the kit is out of date`,
+      ),
+      name,
+    );
+    assert.ok(
+      advised.lines.some(
+        (line) =>
+          line.startsWith(`  [${name}] ADVISORY `) &&
+          line.includes(
+            `Stop gate-${name} advises in this root and the work goes on; it protects `,
+          ) &&
+          line.includes(
+            `"stops": { "gate-${name}": "refuse" } in dotln.config.json`,
+          ),
+      ),
+      advised.lines.join("\n"),
+    );
+    assert.ok(
+      !advised.lines.some((line) => line.startsWith(`PASS ${name} `)),
+      name,
+    );
+  }
+  assert.ok(advised.lines.some((line) => line.startsWith("PASS after ")));
+  assert.match(
+    advised.lines.at(-1),
+    /^npm run test:docs: 4 passed \(2 of them advised: format, index\); 0 failed; /u,
+  );
+  // The row the gate recorded names the advised tasks.
+  const recordedRow = readGateChecks(f.repo)
+    .filter((row) => row.checkId === "npm run test:docs")
+    .at(-1);
+  assert.equal(recordedRow.exitCode, 0);
+  assert.deepEqual(recordedRow.advisedTasks, advised.check.advisedTasks);
+
+  // The owner's line makes one stop refuse again: the selection fails on
+  // that task, as it did before, while the other still advises.
+  f.reset();
+  f.stops({ "gate-index": "refuse" });
+  const refused = await gate(table());
+  assert.equal(refused.check.exitCode, 1);
+  assert.equal(refused.check.failedFirst, "index");
+  assert.deepEqual(refused.check.advisedTasks, [
+    { name: "format", stops: ["gate-format"] },
+  ]);
+  assert.ok(refused.lines.some((line) => line.startsWith("FAIL index ")));
+  // A stop that is off: the task is not run, and nothing is said of it but
+  // that.
+  f.reset();
+  f.stops({ "gate-index": "off", "gate-format": "off" });
+  const off = await gate(table());
+  assert.equal(off.check.exitCode, 0);
+  assert.deepEqual(f.observed(), ["kit-verify", "after"]);
+  assert.deepEqual(off.check.offTasks, [
+    { name: "format", stop: "gate-format" },
+    { name: "index", stop: "gate-index" },
+  ]);
+  assert.ok(off.lines.some((line) => line.startsWith("OFF index ")));
+
+  // A task that is no stop of the table fails at any level: the terms row
+  // is the owner's private list, which refuses whatever the levels are.
+  f.reset();
+  f.stops();
+  const terms = await gate(table("pass", [f.row("terms", "fail", document)]));
+  assert.equal(terms.check.exitCode, 1);
+  assert.equal(terms.check.failedFirst, "terms");
+  assert.ok(terms.lines.some((line) => line.startsWith("FAIL terms ")));
+
+  // A task ended for time judged nothing: it fails though its stop advises.
+  f.reset();
+  mkdirSync(join(f.repo, "docs/control"), { recursive: true });
+  writeFileSync(
+    join(f.repo, "docs/control/time-limits.json"),
+    JSON.stringify({
+      schemaVersion: 1,
+      limits: { "suite.default": { set: 1500 } },
+    }),
+  );
+  const timed = await gate(table("slow"));
+  assert.equal(timed.check.exitCode, 1, timed.lines.join("\n"));
+  assert.ok(timed.lines.some((line) => line.startsWith("TIME index ")));
+  assert.equal(
+    timed.check.cases.find((row) => row.name === "index").advisedStops,
+    undefined,
+  );
+  rmSync(join(f.repo, "docs/control/time-limits.json"));
+
+  // Core's root: the first failed structural row fails the selection and
+  // no later task runs, as before.
+  const core = stopsFixture(t, { instance: false });
+  const product = { product: true };
+  const coreTable = [
+    core.row("build", "pass", { build: true, outputs: [] }),
+    core.row("format", "fail", {
+      ...product,
+      structural: true,
+      preflight: true,
+    }),
+    core.row("index", "fail", product),
+    core.row("after", "pass", product),
+  ];
+  const before = await printedBy(() =>
+    runGate(["--serial"], core.repo, { table: coreTable }),
+  );
+  assert.equal(before.check.exitCode, 1);
+  assert.equal(before.check.failedFirst, "format");
+  assert.equal(before.check.advisedTasks, undefined);
+  assert.deepEqual(core.observed(), ["format"]);
+  assert.ok(before.lines.some((line) => line.startsWith("FAIL format ")));
+
+  // Where core's own configuration lowers a stop, an advised task is never
+  // the pass a later selection carries: it runs again while the tasks that
+  // passed are reused.
+  core.reset();
+  core.stops({ "gate-format": "advise", "gate-index": "advise" });
+  const first = await printedBy(() =>
+    runGate(["--serial"], core.repo, { table: coreTable }),
+  );
+  assert.equal(first.check.exitCode, 0, first.lines.join("\n"));
+  assert.deepEqual(
+    first.check.advisedTasks.map((row) => row.name),
+    ["format", "index"],
+  );
+  core.reset();
+  const second = await printedBy(() =>
+    runGate(["--serial"], core.repo, { table: coreTable }),
+  );
+  assert.equal(second.check.exitCode, 0, second.lines.join("\n"));
+  assert.ok(second.lines.some((line) => line.startsWith("REUSE after ")));
+  assert.ok(!second.lines.some((line) => line.startsWith("REUSE index ")));
+  assert.ok(second.lines.some((line) => line.startsWith("ADVISED index ")));
+  assert.ok(core.observed().includes("index"));
+  assert.ok(!core.observed().includes("after"));
+});
+
+test("WO-287 criterion A6: a selection that passed with advised or off tasks stands for the completion that consumes it, the document row at its exact tree and a product claim on its whole row, while a later selection runs those tasks again", async (t) => {
+  const { requireDocumentRow } = await import("./lib/handoff-ledger.mjs");
+  const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
+  // An instance's document selection, as the handoff reads it right after
+  // the gate: whatever the selection made of each task, the row it recorded
+  // at this tree is the one the handoff takes.
+  const f = stopsFixture(t, { instance: true });
+  const document = { instance: "document", document: true };
+  const table = (script) => [
+    f.row("kit-verify", "pass", { build: true, outputs: [] }),
+    f.row("format", script, { ...document, structural: true }),
+    f.row("index", script, document),
+    f.row("after", "pass", document),
+  ];
+  const gate = (script) =>
+    printedBy(() =>
+      runGate(["--document", "--serial"], f.repo, { table: table(script) }),
+    );
+  const handedOff = async (selection) => {
+    assert.equal(selection.check.exitCode, 0, selection.lines.join("\n"));
+    const recorded = readGateChecks(f.repo)
+      .filter((row) => row.checkId === "npm run test:docs")
+      .at(-1);
+    assert.equal(recorded.treeHash, gateTreeHash(f.repo));
+    const found = await requireDocumentRow(f.repo);
+    assert.equal(found.refusal, undefined, found.refusal);
+    assert.equal(found.row.evidenceRef, recorded.evidenceRef);
+  };
+  const advised = await gate("fail");
+  assert.deepEqual(
+    advised.check.advisedTasks.map((row) => row.name),
+    ["format", "index"],
+  );
+  await handedOff(advised);
+  f.reset();
+  f.stops({ "gate-format": "off", "gate-index": "off" });
+  const off = await gate("fail");
+  assert.deepEqual(
+    off.check.offTasks.map((row) => row.name),
+    ["format", "index"],
+  );
+  await handedOff(off);
+  f.reset();
+  f.stops({ "gate-format": "refuse", "gate-index": "refuse" });
+  const passed = await gate("pass");
+  assert.equal(passed.check.advisedTasks, undefined);
+  await handedOff(passed);
+
+  // An instance's build row is its kit verification, which is a stop too.
+  // Where it fails and advises, or is off and not run, it published nothing
+  // to attest, and the selection that passed still stands for its handoff.
+  const kitGate = () =>
+    printedBy(() =>
+      runGate(["--document", "--serial"], f.repo, {
+        table: [
+          f.row("kit-verify", "fail", { build: true, outputs: [] }),
+          f.row("format", "pass", { ...document, structural: true }),
+          f.row("after", "pass", document),
+        ],
+      }),
+    );
+  f.reset();
+  f.stops(null);
+  const kitAdvised = await kitGate();
+  assert.deepEqual(
+    kitAdvised.check.advisedTasks.map((row) => row.name),
+    ["kit-verify"],
+  );
+  assert.equal(kitAdvised.check.buildOutputAttested, undefined);
+  await handedOff(kitAdvised);
+  f.reset();
+  f.stops({ "gate-kit-verify": "off" });
+  const kitOff = await kitGate();
+  assert.deepEqual(
+    kitOff.check.offTasks.map((row) => row.name),
+    ["kit-verify"],
+  );
+  assert.equal(kitOff.check.buildOutputAttested, undefined);
+  await handedOff(kitOff);
+  // Set to refuse, the failed verification fails the selection as before.
+  f.reset();
+  f.stops({ "gate-kit-verify": "refuse" });
+  assert.equal((await kitGate()).check.exitCode, 1);
+
+  // A product claim reads the same rule from the whole row. In core, with
+  // the owner's lines lowering two stops, the row whose tasks advised is the
+  // one a claim consumes; a later selection runs both tasks again, and its
+  // advised results leave the earlier row standing beside its own.
+  const core = stopsFixture(t, { instance: false });
+  const product = { product: true };
+  const coreTable = [
+    core.row("build", "pass", { build: true, outputs: [] }),
+    core.row("format", "fail", {
+      ...product,
+      structural: true,
+      preflight: true,
+    }),
+    core.row("index", "fail", product),
+    core.row("after", "pass", product),
+  ];
+  const plain = () =>
+    printedBy(() => runGate(["--serial"], core.repo, { table: coreTable }));
+  const productRows = () =>
+    readGateChecks(core.repo).filter((row) => row.checkId === "npm test");
+  core.stops({ "gate-format": "advise", "gate-index": "advise" });
+  const first = await plain();
+  assert.equal(first.check.exitCode, 0, first.lines.join("\n"));
+  const firstRow = productRows().at(-1);
+  let found = await coveringGateCheck(core.repo, "npm test", []);
+  assert.equal(found.row?.evidenceRef, firstRow.evidenceRef);
+  assert.equal(found.displaced, undefined);
+  core.reset();
+  const second = await plain();
+  assert.equal(second.check.exitCode, 0, second.lines.join("\n"));
+  assert.ok(second.lines.some((line) => line.startsWith("ADVISED format ")));
+  assert.ok(second.lines.some((line) => line.startsWith("ADVISED index ")));
+  assert.ok(core.observed().includes("format"));
+  assert.ok(core.observed().includes("index"));
+  const secondRow = productRows().at(-1);
+  found = await coveringGateCheck(core.repo, "npm test", []);
+  assert.equal(found.row?.evidenceRef, secondRow.evidenceRef);
+  assert.deepEqual(
+    found.candidates.map((row) => row.evidenceRef),
+    [firstRow.evidenceRef, secondRow.evidenceRef],
+  );
+});
+
+test("WO-287 criterion A6: a check ended for time inside a task fails that task at any level, as a task ended for time does", async (t) => {
+  // The generated row runs each artifact's check under a time limit of its
+  // own and reports them as its cases. A stale artifact is the row's stop,
+  // which advises in an instance; a check that was ended for time judged
+  // nothing, and the row fails with it whatever the stop's level.
+  const row = { name: "generated" };
+  const result = (extra = {}) => ({
+    name: "generated",
+    executed: true,
+    exitCode: 1,
+    durationMs: 5,
+    output: "STALE harness 0 h 0 min",
+    cases: [{ name: "harness", exitCode: 1, executed: true, ...extra }],
+  });
+  assert.deepEqual(stopOutcome(result(), row, () => "advise").advisedStops, [
+    "gate-generated",
+  ]);
+  for (const level of ["advise", "refuse"]) {
+    const timed = stopOutcome(
+      result({ timedOut: true, timeLimitKey: "generated.check" }),
+      row,
+      () => level,
+    );
+    assert.equal(timed.exitCode, 1, level);
+    assert.equal(timed.advisedStops, undefined, level);
+    // So does one that could not be started.
+    const unstarted = stopOutcome(
+      result({ unavailable: true }),
+      row,
+      () => level,
+    );
+    assert.equal(unstarted.exitCode, 1, level);
+    assert.equal(unstarted.advisedStops, undefined, level);
+  }
+  // Through the gate, as the structural row reports it: an instance that
+  // sets nothing fails the selection on the row and names no advised task.
+  const f = stopsFixture(t, { instance: true });
+  writeFileSync(
+    join(f.repo, "scripts/timed.mjs"),
+    `import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", process.argv[2] + "\\n");\nconsole.log("STRUCTURAL_RESULT " + JSON.stringify(${JSON.stringify(
+      {
+        exitCode: 1,
+        stale: ["harness"],
+        cases: [
+          {
+            name: "harness",
+            exitCode: 1,
+            executed: true,
+            durationMs: 200,
+            timedOut: true,
+            timeLimitKey: "generated.check",
+            output: "ended for time",
+          },
+        ],
+      },
+    )}));\nprocess.exit(1);\n`,
+  );
+  const document = { instance: "document", document: true };
+  const selection = await printedBy(() =>
+    runGate(["--document", "--serial"], f.repo, {
+      table: [
+        f.row("kit-verify", "pass", { build: true, outputs: [] }),
+        f.row("generated", "timed", { ...document, structural: true }),
+        f.row("after", "pass", document),
+      ],
+    }),
+  );
+  assert.equal(selection.check.exitCode, 1, selection.lines.join("\n"));
+  assert.equal(selection.check.advisedTasks, undefined);
+  assert.equal(selection.check.failedFirst, "generated");
+  assert.ok(selection.lines.some((line) => line.startsWith("FAIL generated ")));
+  // A task that is one stop and runs a check under a time limit of its own
+  // says, in that limit's words, that the limit ended the check: the
+  // license check's dry run and the index check's read of the suites. It
+  // judged nothing there and fails at any level, where the same task
+  // failing on its own subject is advised. Every limit's miss is read so.
+  const { TIME_LIMITS, namesTimeLimitMiss, timeLimitMiss } = timeLimitsModule;
+  for (const key of Object.keys(TIME_LIMITS))
+    assert.equal(namesTimeLimitMiss(timeLimitMiss(f.repo, key)), true, key);
+  assert.equal(
+    namesTimeLimitMiss(timeLimitMiss(f.repo, "suite.host", null)),
+    true,
+  );
+  assert.equal(namesTimeLimitMiss("The time limit was reached."), false);
+  assert.equal(namesTimeLimitMiss(undefined), false);
+  const said = {
+    "license-surfaces": `FAIL packages/x/package.json npm publish --dry-run: npm was ended for time. ${timeLimitMiss(f.repo, "license.dry-run")}`,
+    index: `Preflight suites were not read from scripts/test-runner.mjs: the read was ended for time. ${timeLimitMiss(f.repo, "index.preflight-suites")}`,
+  };
+  for (const [name, output] of Object.entries(said)) {
+    const failed = (text) => ({
+      name,
+      executed: true,
+      exitCode: 1,
+      durationMs: 5,
+      output: text,
+    });
+    assert.deepEqual(
+      stopOutcome(
+        failed(`${name}: a record of the kit is out of date`),
+        { name },
+        () => "advise",
+      ).advisedStops,
+      [`gate-${name}`],
+    );
+    for (const level of ["advise", "refuse"]) {
+      const missed = stopOutcome(failed(output), { name }, () => level);
+      assert.equal(missed.exitCode, 1, `${name} at ${level}`);
+      assert.equal(missed.advisedStops, undefined, `${name} at ${level}`);
+    }
+    // Through the gate, in an instance that sets nothing.
+    writeFileSync(
+      join(f.repo, `scripts/missed-${name}.mjs`),
+      `import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", process.argv[2] + "\\n");\nconsole.log(${JSON.stringify(output)});\nprocess.exit(1);\n`,
+    );
+    f.reset();
+    const run = await printedBy(() =>
+      runGate(["--document", "--serial"], f.repo, {
+        table: [
+          f.row("kit-verify", "pass", { build: true, outputs: [] }),
+          f.row(name, `missed-${name}`, document),
+          f.row("after", "pass", document),
+        ],
+      }),
+    );
+    assert.equal(run.check.exitCode, 1, run.lines.join("\n"));
+    assert.equal(run.check.advisedTasks, undefined, name);
+    assert.equal(run.check.failedFirst, name);
+    assert.ok(run.lines.some((line) => line.startsWith(`FAIL ${name} `)));
+    assert.deepEqual(f.observed(), ["kit-verify", name]);
+  }
+  // The host row holds a stop for each of its checks. A read of Git's
+  // version that was ended for time is the time limits' row, which no level
+  // lowers; a Git below the floor is the toolchain's, which an instance
+  // advises on.
+  const { checkHost } = await import("./structural-checks.mjs");
+  writeFileSync(
+    join(f.repo, "package.json"),
+    JSON.stringify({ engines: { git: ">=2.31.0" } }),
+  );
+  mkdirSync(join(f.repo, "docs/control"), { recursive: true });
+  writeFileSync(
+    join(f.repo, "docs/control/time-limits.json"),
+    JSON.stringify({ limits: { "host.git-version": { set: 1 } } }),
+  );
+  const host = (gitVersion) =>
+    checkHost(
+      {
+        level: "normal",
+        pressure: 1,
+        swapBytes: 0,
+        physicalBytes: 8192,
+        residentBytes: 1024,
+        source: "fixture",
+        observedAt: "2026-11-18T00:00:00.000Z",
+      },
+      {
+        limits: { taskBytes: 8192, hostLanes: 1, hostShare: 0.5 },
+        requiredPeakBytes: 1,
+        fileEvents: null,
+        packageRoot: f.repo,
+        ...(gitVersion ? { gitVersion } : {}),
+      },
+    );
+  const unread = host();
+  assert.equal(unread.exitCode, 1);
+  assert.deepEqual(unread.stops, ["time-limits"]);
+  assert.ok(
+    namesTimeLimitMiss(unread.output) &&
+      unread.output.includes("Time limit host.git-version reached"),
+    unread.output,
+  );
+  const below = host("git version 2.30.9");
+  assert.equal(below.exitCode, 1);
+  assert.deepEqual(below.stops, ["host-toolchain"]);
+});
+
+test("WO-287 criterion A6: the document check reports each failure with its own stop: in an instance a form defect alone leaves the task advised, a private absolute path alone fails it, and both together fail it naming the path and print the form defect as advised", (t) => {
+  const repo = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-stops-docs-")),
+  );
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const put = (path, text) => {
+    mkdirSync(dirname(join(repo, path)), { recursive: true });
+    writeFileSync(join(repo, path), text);
+  };
+  execGit(["init", "-q", repo]);
+  excludeFixtureOwnership(repo);
+  put("dotln.config.json", JSON.stringify({ version: 1 }));
+  put("docs/product/00-fixture.md", "# Product\n\n## Stable\n\nA fact.\n");
+  put(
+    "docs/control/doc-baseline.json",
+    JSON.stringify({
+      schemaVersion: 1,
+      products: {},
+      dispatches: {},
+      links: [],
+    }),
+  );
+  const check = () =>
+    spawnSync(process.execPath, [join(root, "scripts/docs-check.mjs")], {
+      cwd: repo,
+      env: { ...process.env, DOTLN_LAUNCHPAD: repo },
+      encoding: "utf8",
+    });
+  // A link to a file that does not exist: a form defect of the records.
+  const formDefect = "[an absent page](absent.md)\n";
+  // A home directory path, built here so that this file holds none.
+  const privatePath = `See ${["", "Users", "someone", "notes.txt"].join("/")} for the rest.\n`;
+  const outcome = (run) =>
+    stopOutcome(
+      {
+        name: "docs-check",
+        executed: true,
+        exitCode: run.status,
+        durationMs: 1,
+        output: run.stdout + run.stderr,
+      },
+      { name: "docs-check" },
+      () => "advise",
+    );
+
+  // Core's root: either defect fails the check, as before.
+  put("docs/notes.md", formDefect);
+  const core = check();
+  assert.equal(core.status, 1, core.stdout + core.stderr);
+  assert.match(core.stderr, /^FAIL docs\/notes\.md:1: missing file: /mu);
+  assert.match(core.stdout, /^FAIL docs check: .*; 1 failures$/mu);
+  assert.doesNotMatch(core.stdout, /ADVISED|DOTLN_ADVISED_STOPS/u);
+
+  // An exported instance: the form defect alone advises and the check
+  // passes, naming on one line the stop that advised.
+  put("KIT-MANIFEST.json", JSON.stringify({ files: [] }));
+  const advised = check();
+  assert.equal(advised.status, 0, advised.stdout + advised.stderr);
+  assert.match(
+    advised.stdout,
+    /^ADVISED docs\/notes\.md:1: missing file: .* \(stop docs-links\)$/mu,
+  );
+  assert.match(
+    advised.stdout,
+    /^ADVISORY .*Stop docs-links advises in this root and the work goes on; it protects links and anchors that resolve\. "stops": \{ "docs-links": "refuse" \} in dotln\.config\.json makes it refuse and "off" silences it\.$/mu,
+  );
+  assert.match(
+    advised.stdout,
+    /^PASS docs check: .*; 0 failures; 1 advised$/mu,
+  );
+  assert.match(advised.stdout, /^DOTLN_ADVISED_STOPS \["docs-links"\]$/mu);
+  assert.equal(advised.stderr, "");
+  // The gate records such a task as advised, never as passed, and keeps the
+  // line out of what it prints.
+  const recorded = outcome(advised);
+  assert.equal(recorded.exitCode, 0);
+  assert.deepEqual(recorded.advisedStops, ["docs-links"]);
+  assert.doesNotMatch(recorded.output, /DOTLN_ADVISED_STOPS/u);
+
+  // A private absolute path alone fails the check in an instance too: it
+  // guards the owner's own material.
+  put("docs/notes.md", privatePath);
+  const leaked = check();
+  assert.equal(leaked.status, 1, leaked.stdout + leaked.stderr);
+  assert.match(
+    leaked.stderr,
+    /^FAIL docs\/notes\.md:1: absolute home or private temporary path; /mu,
+  );
+  assert.doesNotMatch(leaked.stdout, /ADVISED|DOTLN_ADVISED_STOPS/u);
+  assert.equal(outcome(leaked).advisedStops, undefined);
+  assert.equal(outcome(leaked).exitCode, 1);
+
+  // Both: the check fails naming the private path, and the form defect is
+  // printed as advised.
+  put("docs/notes.md", formDefect + privatePath);
+  const both = check();
+  assert.equal(both.status, 1, both.stdout + both.stderr);
+  assert.match(
+    both.stderr,
+    /^FAIL docs\/notes\.md:2: absolute home or private temporary path; /mu,
+  );
+  assert.doesNotMatch(both.stderr, /missing file/u);
+  assert.match(
+    both.stdout,
+    /^ADVISED docs\/notes\.md:1: missing file: .* \(stop docs-links\)$/mu,
+  );
+  assert.match(both.stdout, /^FAIL docs check: .*; 1 failures; 1 advised$/mu);
+  assert.doesNotMatch(both.stdout, /DOTLN_ADVISED_STOPS/u);
+
+  // The owner's lines: the form defect refuses again, or is not printed.
+  put("docs/notes.md", formDefect);
+  put(
+    "dotln.config.json",
+    JSON.stringify({ version: 1, stops: { "docs-links": "refuse" } }),
+  );
+  const refused = check();
+  assert.equal(refused.status, 1);
+  assert.match(refused.stderr, /^FAIL docs\/notes\.md:1: missing file: /mu);
+  put(
+    "dotln.config.json",
+    JSON.stringify({ version: 1, stops: { "docs-links": "off" } }),
+  );
+  const off = check();
+  assert.equal(off.status, 0, off.stdout + off.stderr);
+  assert.doesNotMatch(off.stdout + off.stderr, /missing file|ADVISED/u);
+  // The private path's stop is a line like any other, and its owner's.
+  put("docs/notes.md", privatePath);
+  put(
+    "dotln.config.json",
+    JSON.stringify({ version: 1, stops: { "docs-private-path": "advise" } }),
+  );
+  const lowered = check();
+  assert.equal(lowered.status, 0, lowered.stdout + lowered.stderr);
+  assert.match(
+    lowered.stdout,
+    /^DOTLN_ADVISED_STOPS \["docs-private-path"\]$/mu,
+  );
 });

@@ -1193,9 +1193,12 @@ test("copied CLI runs with relocated documents and no default document tree", (t
       `scripts/${path}`,
       readFileSync(new URL(path, import.meta.url), "utf8"),
     );
-  // The copied configuration reader imports the temporary-root records and,
-  // to validate a `workers` section, the worker table's two modules.
+  // The copied configuration reader imports the temporary-root records, the
+  // table of stops and, to validate a `workers` section, the worker table's
+  // two modules. It asks whether a root is an instance of the runtime inputs.
   for (const module of [
+    "runtime-inputs.mjs",
+    "stops.mjs",
     "temporary-root-records.mjs",
     "worker-catalog.mjs",
     "worker-models.mjs",

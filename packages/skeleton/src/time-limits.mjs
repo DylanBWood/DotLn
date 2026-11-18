@@ -530,6 +530,15 @@ export function timeLimitMiss(root, key, ms = timeLimit(root, key)) {
   return `Time limit ${key} reached${ms === null ? "" : `: ${describeTimeLimit(ms)}`}. ${timeLimitsPath(root)} raises it, scales every limit or turns them off; ${TIME_LIMITS_COMMAND} lists every key.`;
 }
 
+/** Whether a text holds what a step ended for time says (timeLimitMiss,
+ * above). The gate reads a failed task's output with it: a task that ran a
+ * check under a limit of its own, and says that limit ended the check,
+ * judged nothing there.
+ * @param {unknown} text */
+export const namesTimeLimitMiss = (text) =>
+  typeof text === "string" &&
+  /\bTime limit [a-z][a-z0-9.-]* reached[:.]/u.test(text);
+
 /** The text of a root's file with every key of the table. What its owner
  * wrote is written back as it stood, even where the resolver cannot use it:
  * `enforce`, `scale`, any field of the owner's own, and each entry, of which

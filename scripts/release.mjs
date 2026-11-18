@@ -1738,6 +1738,7 @@ export const GENERATED_PAGE_RENDERERS = Object.freeze([
       "scripts/features.mjs",
       "scripts/lib/features.mjs",
       "scripts/lib/feature-registry.mjs",
+      "scripts/lib/rule-inventory.mjs",
     ],
     "npm run meta",
   ],

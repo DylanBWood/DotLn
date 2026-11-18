@@ -71,13 +71,15 @@ export const featureRegistry = Object.freeze([
     "features.auto-update-upstream",
     "scripts/launchpad.mjs",
   ),
-  // The operator's words stay out of committed text unless an instance turns
-  // that rule off here; the document gate then advises instead of failing.
+  // The switch the paraphrase rule had before its stop had a level. It
+  // still sets that level where a root makes the election and writes no
+  // line for the stop: elected the document gate advises, declined it
+  // refuses.
   row(
     "verbatim-operator-words",
     "instance",
     false,
-    "Turns off the rule that committed text paraphrases the operator: the document gate's verbatim screen and its attributed-speech check advise instead of failing.",
+    "The switch the rule that committed text paraphrases the operator had before its stop had a level. Where a root writes no stops line for verbatim-operator-words, elected the document gate's verbatim screen and its attributed-speech check advise, and declined (false) they refuse.",
     "features.verbatim-operator-words",
     "scripts/docs-check.mjs",
   ),
@@ -190,6 +192,11 @@ export const featureRegistry = Object.freeze([
 /** A rename ships with { successor, release }; in the following kit release
  * the same tombstone refuses. No existing feature has been renamed yet. */
 export const featureAliases = Object.freeze({});
+/** Whether an id is a row of the registry or a renamed row's old name: the
+ * question a reader asks before it treats a declared key as a mistake. */
+export const knownFeatureId = (id) =>
+  Object.hasOwn(featureAliases, id) ||
+  featureRegistry.some((candidate) => candidate.id === id);
 export function resolveFeatureId(
   id,
   {

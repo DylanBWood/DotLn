@@ -1,7 +1,7 @@
 {
   "contractVersion": "feedback-audit-v1",
-  "policyHash": "fnv1a64:2c17b00b40408719",
-  "subject": "sha256:4d0e20d35168da0f1f8faec62b4d162407048bb0bc93e8f49dad52d98c6813dc",
+  "policyHash": "fnv1a64:a737bd6a71a50ad2",
+  "subject": "sha256:ddb21bdb43b829d9a6fd747b911405b94f2bc7b16bc98fc6728cf32893a8557c",
   "fixtures": [
     {
       "unitId": "anti-oscillation",

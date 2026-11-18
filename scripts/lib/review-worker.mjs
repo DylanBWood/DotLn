@@ -17,7 +17,12 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join, relative, resolve } from "node:path";
-import { docPath, docRelative } from "./config.mjs";
+import { docPath, docRelative, stopLevel } from "./config.mjs";
+import { installedUnequippedRules } from "./build-overlay.mjs";
+import {
+  stopAdvisory,
+  stopRefusal,
+} from "../../packages/skeleton/src/stops.mjs";
 import { runGit } from "./git.mjs";
 import { workingTree } from "./checkpoint.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
@@ -841,7 +846,9 @@ export async function renderReviewBrief(
     "",
     "## Worker",
     "",
-    workerSpecification(worker).prompt,
+    workerSpecification(worker, {
+      unequippedRules: installedUnequippedRules(root),
+    }).prompt,
     "",
     "You are one fresh, independent review worker launched by the kit's change review helper. You read this checkout and change nothing in it: no edits, no commits, no index or ref writes, and no command that writes outside your system temporary directory. Under a read-only sandbox a probe that must write may be refused; then judge by reading and say so in your report.",
     "",
@@ -1598,6 +1605,30 @@ function journalLaunch(root, row) {
   return path;
 }
 
+/** One cap's admission, answered at the level of its stop in this root, as
+ * the hook's is: past the cap the launch is withheld at `refuse`, and at
+ * `advise` the worker starts, the use is counted and the stop's line joins
+ * what the admission already had to say (a count that is a minimum says so
+ * in a line of its own). */
+export const capAnswer = (root, stop, result) => {
+  if (result?.refusal)
+    return {
+      ...result,
+      refusal: stopRefusal(stop, result.refusal, { hook: true }),
+    };
+  if (!result?.exceeded) return result;
+  return stopLevel(root, stop) === "advise"
+    ? {
+        ...result,
+        advisory: [
+          result.advisory,
+          `DotLn advisory: ${stopAdvisory(stop, result.exceeded)}.`,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      }
+    : result;
+};
 /** Under Codex no hook sees the command, so the helper charges its own launch
  * to the session's counter before any process starts, with the hook's refusal
  * past the cap. A hooked session has already counted the command. */
@@ -1618,16 +1649,28 @@ async function admitCodexLaunch(root, host) {
     tool_use_id: `worker-review:${randomUUID()}`,
   };
   const kit = { uses: 1, host };
-  const admission = admitSubagentTool(
-    root,
-    dispatchJournalDirectory(root),
-    input,
-    false,
-    { kit },
+  const answer = (stop, result) => capAnswer(root, stop, result);
+  const admission = answer(
+    "worker-cap",
+    admitSubagentTool(root, dispatchJournalDirectory(root), input, false, {
+      kit,
+      enforce: stopLevel(root, "worker-cap") === "refuse",
+    }),
   );
   if (admission.refusal) return admission;
-  const driven = admitDrivenTool(input, false, { kit });
-  return driven?.refusal ? driven : admission;
+  const driven = answer(
+    "driven-budget",
+    admitDrivenTool(input, false, {
+      kit,
+      enforce: stopLevel(root, "driven-budget") === "refuse",
+    }),
+  );
+  if (driven?.refusal) return driven;
+  // Both advisories, where both caps were passed.
+  const advisories = [admission.advisory, driven?.advisory].filter(Boolean);
+  return advisories.length
+    ? { ...admission, advisory: advisories.join("\n") }
+    : admission;
 }
 
 const SOURCE_TEXT = {

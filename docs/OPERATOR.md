@@ -2,7 +2,7 @@
 
 Generated from `docs/KIT.md` by `node scripts/lib/operator-commands.mjs`; edit the kit guide's marked blocks, never this page.
 
-The lines an operator types through the cycle of the DotLn kit at `v1.3.0`, step by step: each step's sentence, then the command blocks [the kit guide](KIT.md) marks for it, byte for byte, in its order. `node scripts/launchpad.mjs commands` prints this page in an instance before any install. The kit guide's linked section says more about each block, and a release's Read before upgrading says what that release changed for an instance.
+The lines an operator types through the cycle of the DotLn kit at `v1.4.0`, step by step: each step's sentence, then the command blocks [the kit guide](KIT.md) marks for it, byte for byte, in its order. `node scripts/launchpad.mjs commands` prints this page in an instance before any install. The kit guide's linked section says more about each block, and a release's Read before upgrading says what that release changed for an instance.
 
 ## 1. A new instance
 
@@ -41,7 +41,7 @@ planning: first pass
 
 ## 3. Running an order
 
-From clean `main`, the first block starts an order in its own worktree, a sibling folder named `<name>-woNNN`, and prepares it; the first order is `WO-001` at `docs/work-orders/WO-001-environment-truth.md`. Open a Claude Code session in that folder and type the three phrases one at a time, each as a message of its own in a fresh session once the phase before it has finished: `resume: next` does the work, `resume: verify` checks it independently, and `resume: final review` reviews it and opens its pull request. Or type `drive: WO-NNN` in a session in `main`, which runs the phases in fresh sessions and stops for your merge. Look for `Carried the local-terms list into` in the start's output, which says the order's worktree holds your list; if it prints `No local-terms list` instead, register the list as step 1 says, in `main` and in the new folder, before the order publishes. Each phase ends by saying what it recorded. If a verification or a final review fails, type `resume: fix` in the worktree, then `resume: verify` and `resume: final review` again. `resume: status` says where an order stands at any time (product 07's phrase table names each phrase).
+From clean `main`, the first block starts an order in its own worktree, a sibling folder named `<name>-woNNN`, and prepares it; the first order is `WO-001` at `docs/work-orders/WO-001-environment-truth.md`. Open a Claude Code session in that folder and type the three phrases one at a time, each as a message of its own in a fresh session once the phase before it has finished: `resume: next` does the work, `resume: verify` checks it independently, and `resume: final review` reviews it and opens its pull request. Or type `drive: WO-NNN` in a session in `main`, which runs the phases in fresh sessions and stops for your merge; when it stops for anything else, the last block, run in `main`, says why and what to do next. Look for `Carried the local-terms list into` in the start's output, which says the order's worktree holds your list; if it prints `No local-terms list` instead, register the list as step 1 says, in `main` and in the new folder, before the order publishes. Each phase ends by saying what it recorded. If a verification or a final review fails, type `resume: fix` in the worktree, then `resume: verify` and `resume: final review` again. `resume: status` says where an order stands at any time (product 07's phrase table names each phrase).
 
 In the kit guide: [First steps](KIT.md#first-steps).
 
@@ -53,6 +53,10 @@ npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-<slug>.md
 resume: next
 resume: verify
 resume: final review
+```
+
+```sh
+node scripts/drive.mjs why WO-NNN
 ```
 
 ## 4. Closing it

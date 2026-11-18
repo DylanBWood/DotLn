@@ -5,11 +5,16 @@ import {
   mkdirSync,
   readFileSync,
   renameSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { docPath, loadConfig } from "./config.mjs";
+import { docPath, loadConfig, stopLevel } from "./config.mjs";
+import {
+  stopAdvisory,
+  stopRefusal,
+} from "../../packages/skeleton/src/stops.mjs";
 import { latestActivationAt, readControl } from "./control-store.mjs";
 import {
   currentDrivenLimits,
@@ -42,6 +47,10 @@ import {
   phaseTimeLimit,
   processRunning,
 } from "./drive-transport.mjs";
+import {
+  refusalWithReason,
+  withoutAbsolutePaths,
+} from "./drive-diagnostics.mjs";
 import {
   hostStateRoot,
   taskLauncher,
@@ -133,18 +142,22 @@ export function nativePhaseEntry(host, roots, session, role, order) {
       ? host.phaseEntryReadback(checkout, runtime, session)
       : { entered: false, role: null, workOrder: null },
   );
-  const complete =
-    observations.length > 0 &&
-    observations.every(
-      (row) => row.entered && row.role === role && row.workOrder === order,
-    );
+  const entered = (row) =>
+    row.entered && row.role === role && row.workOrder === order;
+  const complete = observations.length > 0 && observations.every(entered);
+  const missing = observations.filter((row) => !entered(row)).length;
   return {
     entry: { source: "native-phase-state", complete, roots: observations },
     ...(complete
       ? {}
       : {
-          refused:
-            "The native worker did not complete its recorded phase entry in every required worktree; inspect entry before re-dispatch.",
+          // The stop says what was seen: how many of the worktrees the phase
+          // needs hold no entry, and where the rest of the account is.
+          refused: `The native worker did not complete its recorded phase entry: ${
+            observations.length
+              ? `${missing} of the ${observations.length} worktree${observations.length === 1 ? "" : "s"} it needs hold${missing === 1 ? "s" : ""} no entry for this role and order`
+              : "no worktree was named for it to enter"
+          }. Its first command records the entry; node scripts/drive.mjs why ${order} says how the attempt ended.`,
         }),
   };
 }
@@ -164,6 +177,9 @@ export async function phaseDefinition(launchpad, role, host = "claude") {
   );
   const { workerSpecification } = await import(
     pathToFileURL(join(launchpad, "packages/compiler/dist/src/harness.js"))
+  );
+  const { installedUnequippedRules } = await import(
+    pathToFileURL(join(launchpad, "scripts/lib/build-overlay.mjs"))
   );
   const workers = contributorConfiguredProgram().workers;
   // What a phase runs on this host, from the launchpad's worker table: the
@@ -191,7 +207,9 @@ export async function phaseDefinition(launchpad, role, host = "claude") {
       name: ignored,
       skills,
       ...definition
-    } = workerSpecification(worker);
+    } = workerSpecification(worker, {
+      unequippedRules: installedUnequippedRules(launchpad),
+    });
     Object.assign(
       definition,
       pin(worker.name === name ? phase : runs("default")),
@@ -214,6 +232,24 @@ export async function phaseDefinition(launchpad, role, host = "claude") {
     // list supplied it; a launch that fails names it.
     modelKey: phase.modelKey,
   };
+}
+
+/** What the drive saw when an attempt ended: whether its phase's completion
+ * was recorded and where the order stood. It is kept on the attempt, so that
+ * a later reader does not judge the attempt by where the order stands then.
+ * An attempt that ended cleanly and completed has no use for its raw stream;
+ * any other keeps it. */
+export function settleAttempt(attempt, action, status) {
+  if (!attempt) return;
+  attempt.completed = attemptFinished(action, status);
+  attempt.phaseAfter = status.phase ?? null;
+  if (!attempt.retainedPending) return;
+  delete attempt.retainedPending;
+  if (!attempt.completed) return;
+  for (const name of ["events", "stderr"])
+    if (typeof attempt.retained?.[name] === "string")
+      rmSync(attempt.retained[name], { force: true });
+  attempt.retained = null;
 }
 
 // Injectable at the transport boundary: fixtures exercise the same route and
@@ -259,13 +295,16 @@ export async function driveLoop({
         },
       };
     const result = await launch(route, before);
-    if (workerRan(result))
-      record.attempts.push({
-        phase: before.phase,
-        action: route.action,
-        ...result,
-      });
-    if (signal?.aborted) continue;
+    const attempt = workerRan(result)
+      ? { phase: before.phase, action: route.action, ...result }
+      : null;
+    if (attempt) record.attempts.push(attempt);
+    // A cancelled drive settles nothing: the attempt keeps its stream and
+    // loses the mark that says the stream waits on a judgment.
+    if (signal?.aborted) {
+      if (attempt) delete attempt.retainedPending;
+      continue;
+    }
     // A close the host declined is not retried: the drive stops naming the
     // attended command and, after a Codex decline, the one admitted host
     // change, and keeps the declined item with the reason the host gave. Any
@@ -279,6 +318,7 @@ export async function driveLoop({
         settled = await status();
       } catch {}
       record.factsAt = settled.route.eventCount ?? record.factsAt;
+      settleAttempt(attempt, route.action, settled);
       let stop;
       if (declinedClose) {
         record.awaitingClose = {
@@ -289,10 +329,16 @@ export async function driveLoop({
         };
         stop = awaitingCloseStop(record.workOrder, record.awaitingClose).stop;
       } else {
-        record.refused = result.refused;
+        // The kit's own reason for a refused dispatch goes with the stop, so
+        // its reader is told why and not only that.
+        record.refused = refusalWithReason(
+          result.refused,
+          result.refusedReason,
+        );
+        if (result.refusedReason) record.refusedReason = result.refusedReason;
         stop = {
           reason: record.exhausted ? "budget-exhausted" : "dispatch-refused",
-          next: result.refused,
+          next: record.refused,
         };
       }
       saveRecord(record);
@@ -300,6 +346,7 @@ export async function driveLoop({
     }
     const after = await status();
     record.factsAt = after.route.eventCount ?? record.factsAt;
+    settleAttempt(attempt, route.action, after);
     // A proposed plan is an intentional completed turn, not a failed attempt.
     if (!attemptFinished(route.action, after))
       record.incomplete[route.action] =
@@ -316,6 +363,55 @@ const harnessHost = (launchpad) =>
 
 const workerRan = (result) =>
   Boolean(result.startedAt) || Object.hasOwn(result, "exitCode");
+
+/**
+ * A Claude phase is a print-mode run. After such a run's last turn the host
+ * waits for background work and, once it has waited ten minutes, stops the
+ * background agents and workflows still running, unless this value of its
+ * environment says otherwise; a background command the main conversation
+ * started holds the run open by itself (the host's documentation: headless,
+ * Background tasks at exit). A worker awaits reviewers it launched as agents
+ * and a review can take longer than that, so the drive lifts the ceiling:
+ * the phase's own time limit bounds the wait. A value the drive's own
+ * environment sets is kept.
+ */
+export const BACKGROUND_WAIT_CEILING = "CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS";
+export function backgroundWait(env = process.env) {
+  const set = env[BACKGROUND_WAIT_CEILING];
+  return set === undefined || set === ""
+    ? {
+        env: { [BACKGROUND_WAIT_CEILING]: "0" },
+        record: { ceilingMs: 0, source: "drive" },
+      }
+    : {
+        env: {},
+        record: {
+          ceilingMs: /^\d+$/.test(set) ? Number(set) : null,
+          source: "environment",
+        },
+      };
+}
+
+/** The environment a phase worker starts with on `host`, and what it says
+ * of the host's wait for background work: null on a host that has none. */
+export function phaseEnvironment({
+  contextEnv,
+  launchpad,
+  context,
+  worker,
+  host,
+}) {
+  const wait = host === "claude" ? backgroundWait(contextEnv) : null;
+  return {
+    env: {
+      ...contextEnv,
+      DOTLN_LAUNCHPAD: launchpad,
+      DOTLN_DRIVEN_WORKER: context,
+      ...(wait ? { CLAUDE_CODE_SESSION_ID: worker, ...wait.env } : {}),
+    },
+    backgroundWait: wait?.record ?? null,
+  };
+}
 
 // A session's own identity must not reach the worker it starts.
 export function workerEnvironment(env = process.env) {
@@ -515,7 +611,10 @@ function dollarAllowance(record, maxWorkerUsd) {
   return { remainingUsd, dollarLimit };
 }
 
-function admitWorker(drive, worker) {
+/** The driver's admission of one phase worker against the drive's budget,
+ * answered at the level of its stop in the launchpad. Returns nothing where
+ * the worker may start, and `{ refused }` where it may not. */
+export function admitWorker(drive, worker) {
   const {
     record,
     saveRecord,
@@ -526,18 +625,33 @@ function admitWorker(drive, worker) {
     cap,
     ceiling,
   } = drive;
+  // The drive's budget answers at the level of its stop in the launchpad:
+  // past it the phase is withheld at `refuse`; at `advise` it starts, the
+  // use is counted and the drive says what it passed.
+  const level = stopLevel(trees.launchpad, "driven-budget");
   const admission = budget.admitSubagentTool(
     trees.launchpad,
     directory,
     { session_id: session, tool_use_id: worker, tool_name: "Agent" },
     true,
-    { cap: ceiling, spawnerCap: cap, spawner: "router" },
+    {
+      cap: ceiling,
+      spawnerCap: cap,
+      spawner: "router",
+      enforce: level === "refuse",
+    },
   );
   if (admission.refusal) {
     record.exhausted = true;
     saveRecord();
-    return { refused: admission.refusal };
+    return {
+      refused: stopRefusal("driven-budget", admission.refusal, { hook: true }),
+    };
   }
+  if (admission.exceeded && level === "advise")
+    console.error(
+      `DotLn advisory: ${stopAdvisory("driven-budget", admission.exceeded)}.`,
+    );
   // An unreadable counter is unknown, which is not the same as spent.
   if (admission.advisory && admission.usage.count === null)
     return { refused: admission.advisory };
@@ -549,7 +663,9 @@ function admitWorker(drive, worker) {
   return undefined;
 }
 
-function workerObservers(drive, { worker, route, context }) {
+/** What the driver records of a running phase worker, and its judgment of
+ * the admissions a worker reports after the fact. */
+export function workerObservers(drive, { worker, route, context }) {
   const { record, saveRecord, budget, trees, directory, session } = drive;
   const observedChildren = new Set();
   const observedSpawners = new Map();
@@ -585,9 +701,25 @@ function workerObservers(drive, { worker, route, context }) {
     },
     onSubagent: ({ id, sender, children }) => {
       // Codex reports completed admissions, not a pre-tool hook. Preserve
-      // every observed child, then stop further work if a bound was crossed.
+      // every observed child, then answer a bound they passed at its stop's
+      // level: further work stops where it refuses, and where it advises
+      // the drive says which limit this report took the count past.
       const spawned = observedSpawners.get(sender) ?? new Set();
       observedSpawners.set(sender, spawned);
+      // The agent the report charges: the phase worker for its own session,
+      // as its hooks and the kit's commands charge it, else the sender.
+      const spawner = sender === record.worker.sessionId ? worker : sender;
+      // A spawner's cap is judged on every use the shared counter charges
+      // it, its launches through the kit's commands among them, and on the
+      // children seen here where that counter cannot be read.
+      const spawnerUses = () =>
+        budget.subagentSpawnerUses(directory, session, spawner) ?? spawned.size;
+      const spawnerBefore = spawnerUses();
+      const totalBefore = budget.subagentUsage(
+        trees.launchpad,
+        directory,
+        session,
+      ).count;
       for (const child of children) {
         const invocation = `${worker}:${id}:${child}`;
         budget.admitSubagentTool(
@@ -599,10 +731,7 @@ function workerObservers(drive, { worker, route, context }) {
             tool_name: "Agent",
           },
           true,
-          {
-            cap: null,
-            spawner: sender === record.worker.sessionId ? worker : sender,
-          },
+          { cap: null, spawner },
         );
         budget.linkSubagentResult(directory, {
           session_id: session,
@@ -612,6 +741,7 @@ function workerObservers(drive, { worker, route, context }) {
         observedChildren.add(child);
         spawned.add(child);
       }
+      const spawnerAfter = spawnerUses();
       const total = budget.subagentUsage(
         trees.launchpad,
         directory,
@@ -619,13 +749,37 @@ function workerObservers(drive, { worker, route, context }) {
       ).count;
       // Read now: an acceptance recorded since this worker began counts.
       const { cap, ceiling } = drive;
+      const level = stopLevel(trees.launchpad, "driven-budget");
       if (
-        (ceiling !== null && total > ceiling) ||
-        (cap !== null && spawned.size > cap)
+        ((ceiling !== null && total > ceiling) ||
+          (cap !== null && spawnerAfter > cap)) &&
+        level === "refuse"
       ) {
         record.exhausted = true;
         saveRecord();
         return "Observed Codex admissions exceeded the declared role-text budget; further work stopped.";
+      }
+      // A budget that advises stops no work it has observed. It says so once
+      // for each limit, on the report that first takes the count past it: a
+      // count already past a limit, at the phase's admission or by an earlier
+      // report or kit launch, was said then.
+      if (level === "advise") {
+        const passed = [
+          cap !== null && spawnerBefore <= cap && spawnerAfter > cap
+            ? `Codex reported a helper agent past the drive's cap of ${cap} uses for each agent that launches helpers: one agent of the phase has made ${spawnerAfter}, its launches through the kit's commands counted`
+            : null,
+          ceiling !== null &&
+          totalBefore !== null &&
+          totalBefore <= ceiling &&
+          total !== null &&
+          total > ceiling
+            ? `Codex reported a helper agent past the drive's ceiling of ${ceiling} uses: ${total} are counted, the phase worker's own among them`
+            : null,
+        ].filter((reason) => reason !== null);
+        for (const reason of passed)
+          console.error(
+            `DotLn advisory: ${stopAdvisory("driven-budget", reason)}.`,
+          );
       }
       return undefined;
     },
@@ -771,29 +925,33 @@ async function launchAttempt(drive, route, before) {
     route,
     context,
   });
+  const started = phaseEnvironment({
+    contextEnv: drive.contextEnv,
+    launchpad: route.launchpad,
+    context,
+    worker,
+    host: workerHost,
+  });
   try {
     const result = await launchRole({
       host: workerHost,
       launchpad: route.launchpad,
       role: route.role,
+      order,
       definition,
       definitions,
       worker,
       dollarLimit,
       phrase: route.phrase,
       cwd: route.cwd,
-      env: {
-        ...drive.contextEnv,
-        DOTLN_LAUNCHPAD: route.launchpad,
-        DOTLN_DRIVEN_WORKER: context,
-        ...(workerHost === "claude" ? { CLAUDE_CODE_SESSION_ID: worker } : {}),
-      },
+      env: started.env,
       timeoutMs,
       deadlineAt,
       beforeLaunch: () => expired() ?? admitWorker(drive, worker),
       signal,
-      // The raw stream of a declined or failed phase stays beside the record.
-      capture: { directory, name: worker },
+      // The raw stream of a phase that was declined, failed or ended without
+      // recording its completion stays beside the record.
+      capture: { directory, name: worker, keepUntilSettled: true },
       sandbox: drive.sandbox,
       ...observers,
     });
@@ -833,6 +991,7 @@ async function launchAttempt(drive, route, before) {
     // The record says where the model came from: the configuration key, or
     // null where the compiled table supplied it.
     result.selectedModelKey = modelKey;
+    if (started.backgroundWait) result.backgroundWait = started.backgroundWait;
     if (
       result.costUsd !== null &&
       remainingUsd !== null &&
@@ -1006,8 +1165,15 @@ async function runDriveUnlocked(
     record.stop = awaitingMergeStop(result.stop, unreachable);
     return record;
   } catch (error) {
-    // A thrown failure still leaves its cause for the next reader of the record.
-    record.stop = { reason: "dispatch-refused", next: error.message };
+    // A thrown failure still leaves its cause for the next reader of the
+    // record. The stop's line is printed, so an absolute path in the message
+    // is replaced there and the message as thrown is kept beside it.
+    const next = withoutAbsolutePaths(error.message);
+    record.stop = {
+      reason: "dispatch-refused",
+      next,
+      ...(next === error.message ? {} : { thrown: error.message }),
+    };
     throw error;
   } finally {
     record.running = false;

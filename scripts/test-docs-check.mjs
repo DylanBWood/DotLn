@@ -30,6 +30,7 @@ import {
 } from "./lib/markdown-screen.mjs";
 import { sourceTrees } from "../packages/skeleton/src/source-reading.mjs";
 import { verbatimScope, verbatimScreen } from "./lib/verbatim-screen.mjs";
+import { readStopInventory } from "./lib/features.mjs";
 import { format } from "prettier";
 import {
   disposeFollowup,
@@ -466,6 +467,156 @@ test("a deletion that joins a capture's words is the branch's, and an unreadable
     /^ADVISORY docs\/intake\/notes\/words\.txt cannot be read \(EACCES\); the verbatim screen did not read it$/mu,
   );
   chmodSync(join(f.root, "docs/intake/notes/words.txt"), 0o644);
+});
+
+// A second run of words the fixture's operator pasted, sharing no run with
+// the first.
+const PASTED =
+  "Ship the smallest change that makes the failing case pass before anything else in the tree is touched";
+
+test("WO-287 criterion C1: in an instance the paraphrase rule's stop advises with one line for each file however many runs it holds and fails nothing; at refuse and in core each run fails as before, off says nothing, and the election advises where the root sets no level", (t) => {
+  const f = branchFixture(t);
+  const capture = `The operator pasted:\n\n${CAPTURED}.\n\n${PASTED}.\n`;
+  f.write("docs/intake/notes/pasted.md", capture);
+  // One file carries two runs on lines that are not neighbours, and another
+  // carries one.
+  f.write(
+    "scripts/fixture-tool.mjs",
+    `// ${CAPTURED}.\nexport const first = 1;\n\n// ${PASTED}.\nexport const second = 2;\n`,
+  );
+  f.write("scripts/fixture-other.mjs", `// ${PASTED}.\nexport {};\n`);
+  const configure = (value = {}) =>
+    f.write(
+      "dotln.config.json",
+      JSON.stringify({ version: 1, roots: {}, ...value }),
+    );
+  const stop = "verbatim-operator-words";
+  const runLine = (file, line) =>
+    `${file}:${line}: 12 or more consecutive words shared with the ignored capture ${digest(capture)}`;
+  const failsEachRun = (label) => {
+    const run = f.cli();
+    assert.equal(run.status, 1, `${label}: ${run.stdout}${run.stderr}`);
+    for (const [file, line] of [
+      ["scripts/fixture-tool.mjs", 1],
+      ["scripts/fixture-tool.mjs", 4],
+      ["scripts/fixture-other.mjs", 1],
+    ])
+      assert.ok(
+        run.stderr.includes(`FAIL ${runLine(file, line)}`),
+        `${label}: ${run.stderr}`,
+      );
+    assert.doesNotMatch(run.stdout, /^ADVISED .*verbatim-operator-words/mu);
+    assert.match(
+      run.stdout,
+      /^verbatim screen: \d+ changed files against 1 captures, a 12-word window; 3 shared runs$/mu,
+    );
+    return run;
+  };
+  const advisedLines = (run) =>
+    run.stdout
+      .split("\n")
+      .filter((line) => line.startsWith("ADVISED ") && line.includes(stop));
+
+  // Core's root refuses, run by run, as before the stop had a level.
+  failsEachRun("core");
+
+  // The same root as an exported instance that sets nothing: the check
+  // passes, each file is one advised line, and the stop names itself once.
+  f.write("KIT-MANIFEST.json", JSON.stringify({ files: [] }));
+  let run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.deepEqual(advisedLines(run), [
+    `ADVISED scripts/fixture-other.mjs:1: 12 or more consecutive words shared with the ignored capture ${digest(capture)}; paraphrase the operator and cite the capture by its digest, or record a message the operator asked to save as an operatorQuote with captureSha256 and requestedIn (stop ${stop})`,
+    `ADVISED scripts/fixture-tool.mjs:1: 2 runs of 12 or more consecutive words shared with 1 ignored capture, the first at this line; paraphrase the operator and cite each capture by its digest, or record a message the operator asked to save as an operatorQuote with captureSha256 and requestedIn (stop ${stop})`,
+  ]);
+  assert.equal(
+    run.stdout
+      .split("\n")
+      .filter(
+        (line) =>
+          line.startsWith("ADVISORY ") &&
+          line.includes(
+            `Stop ${stop} advises in this root and the work goes on; it protects the author's rule that committed text paraphrases the operator.`,
+          ) &&
+          line.includes(
+            `"stops": { "${stop}": "refuse" } in dotln.config.json`,
+          ),
+      ).length,
+    1,
+    run.stdout,
+  );
+  assert.match(run.stdout, /^PASS docs check: .*; 0 failures; \d+ advised$/mu);
+  assert.ok(
+    JSON.parse(/^DOTLN_ADVISED_STOPS (.*)$/mu.exec(run.stdout)[1]).includes(
+      stop,
+    ),
+    run.stdout,
+  );
+  assert.doesNotMatch(run.stderr, /FAIL /u);
+  // The words themselves are never printed.
+  assert.doesNotMatch(
+    run.stdout + run.stderr,
+    /reviewer reads it twice|failing case pass/u,
+  );
+
+  // Set to refuse, the instance fails run by run as core does.
+  configure({ stops: { [stop]: "refuse" } });
+  failsEachRun("an instance at refuse");
+  // Off says nothing of the runs and fails nothing: the screen is not run,
+  // so its one line says that and counts no run.
+  configure({ stops: { [stop]: "off" } });
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.deepEqual(advisedLines(run), []);
+  assert.doesNotMatch(
+    run.stdout + run.stderr,
+    /12 or more consecutive words|shared runs|captures/u,
+  );
+  assert.deepEqual(
+    run.stdout.split("\n").filter((line) => line.startsWith("verbatim screen")),
+    [`verbatim screen: off (stop ${stop})`],
+  );
+  assert.doesNotMatch(run.stdout, /^DOTLN_ADVISED_STOPS /mu);
+
+  // The election that was the rule's switch still advises, in its own
+  // words and a line a file, where the root sets no level.
+  configure({ features: { [stop]: true } });
+  run = f.cli();
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.deepEqual(
+    run.stdout
+      .split("\n")
+      .filter((line) => line.includes("is elected, so this advises")),
+    [
+      `ADVISORY scripts/fixture-other.mjs:1: 12 or more consecutive words shared with the ignored capture ${digest(capture)}; paraphrase the operator and cite the capture by its digest, or record a message the operator asked to save as an operatorQuote with captureSha256 and requestedIn (features.${stop} is elected, so this advises)`,
+      `ADVISORY scripts/fixture-tool.mjs:1: 2 runs of 12 or more consecutive words shared with 1 ignored capture, the first at this line; paraphrase the operator and cite each capture by its digest, or record a message the operator asked to save as an operatorQuote with captureSha256 and requestedIn (features.${stop} is elected, so this advises)`,
+    ],
+  );
+  assert.deepEqual(advisedLines(run), []);
+  // A line of the stops section is the newer word and wins over it.
+  configure({ features: { [stop]: true }, stops: { [stop]: "refuse" } });
+  failsEachRun("a level beside the election");
+  // An election declined in so many words keeps the rule, in an instance too.
+  configure({ features: { [stop]: false } });
+  failsEachRun("an instance that declines the election");
+
+  // The level each root answers at, and who set it.
+  const row = (root) =>
+    readStopInventory(root).find((entry) => entry.id === stop);
+  assert.deepEqual(
+    [row(f.root).level, row(f.root).source],
+    ["refuse", `features.${stop}`],
+  );
+  configure();
+  assert.deepEqual(
+    [row(f.root).level, row(f.root).source],
+    ["advise", "the kit"],
+  );
+  unlinkSync(join(f.root, "KIT-MANIFEST.json"));
+  assert.deepEqual(
+    [row(f.root).level, row(f.root).source],
+    ["refuse", "the kit"],
+  );
 });
 
 test("the verbatim screen reads only what the branch adds: an unchanged file and a run the base already held are not findings (WO-259)", (t) => {

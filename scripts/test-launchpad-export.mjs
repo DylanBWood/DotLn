@@ -208,6 +208,62 @@ test("WO-254 criterion 5: the exported instance's operator record says a standin
   );
 });
 
+test("WO-287 criterion B6: a fresh export's CLAUDE.md says its Clean Room and Secrets sections are the owner's own text, its kit guide has the section that states which layer is whose, and its features list prints the rules and no line saying the floor cannot be chosen", () => {
+  const floor = readFileSync(join(kit, "CLAUDE.md"), "utf8");
+  // The seed heads the section plainly and says whose it is.
+  assert.match(floor, /^## Clean Room$/mu);
+  assert.doesNotMatch(floor, /locked floor/u);
+  assert.ok(
+    floor
+      .replace(/\s+/gu, " ")
+      .includes(
+        "This section and Secrets are the owner's own text; edit them here.",
+      ),
+    floor,
+  );
+  assert.match(floor, /^## Secrets$/mu);
+  // The line the emit writes into the same file about that section agrees
+  // with the seed: it is the owner's own text, and nothing says locked.
+  assert.ok(
+    floor.includes(
+      "clean-room: Source provenance needs the owner's judgment; the Clean Room section of this file is the owner's own text.",
+    ),
+    floor,
+  );
+  assert.doesNotMatch(floor, /floor stays locked/u);
+  const guide = readFileSync(join(kit, "docs/KIT.md"), "utf8");
+  const section = guide
+    .split("### What is the kit's and what is the author's")[1]
+    ?.split("### The build overlay")[0];
+  assert.ok(section, "the kit guide states which layer is whose");
+  for (const said of [
+    "**The platform** is mechanism",
+    "**The author's layer** is how the kit's author wants work conducted",
+    '"unequip": ["author"]',
+    "| The Clean Room and Secrets sections of `CLAUDE.md` | Yours |",
+  ])
+    assert.ok(section.includes(said), said);
+  // The export's own features list: the rules with their layers, and no
+  // line that says the floor cannot be chosen.
+  const listed = ok(
+    run(process.execPath, ["scripts/features.mjs", "list"], { cwd: kit }),
+    "features list",
+  ).stdout;
+  assert.match(listed, /^## Rules$/mu);
+  assert.match(
+    listed,
+    /^\| durations \| shared rule \| author \| a sentence in the role's text \| yes \| the kit \| "unequip": \["durations"\] \|$/mu,
+  );
+  assert.match(
+    listed,
+    /^\| worker-launch \| shared rule \| platform \| a sentence in the role's text \| yes \| the kit \| none: every build carries it \|$/mu,
+  );
+  assert.doesNotMatch(
+    listed,
+    /not electable|cannot be chosen|locked floor|clean.?room/iu,
+  );
+});
+
 test("WO-276 criterion L1: a fresh export's repository profile page states the index, the area-note convention with the block's two fields, the observation-order sentence and the agent-skills section, and its worked note is one the shared reader takes", async () => {
   const profile = readFileSync(
     join(kit, "docs/repositories/README.md"),
@@ -963,6 +1019,19 @@ test("WO-201 criterion 4: verify checks runtime and compiled tests, and reports 
   } finally {
     writeFileSync(script, original);
   }
+  // A listed file that is no regular file, a link here, is one more kit
+  // edit: verification counts it and does not refuse.
+  const guide = join(kit, "docs/KIT.md");
+  const guideBytes = readFileSync(guide);
+  try {
+    rmSync(guide);
+    symlinkSync(script, guide);
+    const linked = ok(verify(), "a kit file replaced by a link");
+    assert.match(linked.stdout, /^kit: 1 kit files differ from the manifest$/m);
+  } finally {
+    rmSync(guide, { force: true });
+    writeFileSync(guide, guideBytes);
+  }
 });
 
 test("the exported instance checks runtime, coordination records and explicit diagnostics separately", (t) => {
@@ -1479,27 +1548,66 @@ test("the exported instance checks runtime, coordination records and explicit di
   assert.deepEqual(runtimeState(), cleanRuntime);
   const record = join(destination, "docs/invalid-instance-record.md");
   const recordIdentity = gateCodeIdentity(destination);
+  // Lines of the instance's own stops section, written for one run and
+  // taken away after it.
+  const withStops = (stops, body) => {
+    const path = join(destination, "dotln.config.json");
+    const before = existsSync(path) ? readFileSync(path) : null;
+    const config = before ? JSON.parse(before) : { version: 1 };
+    writeFileSync(
+      path,
+      `${JSON.stringify({ ...config, stops: { ...config.stops, ...stops } }, null, 2)}\n`,
+    );
+    try {
+      return body();
+    } finally {
+      if (before) writeFileSync(path, before);
+      else rmSync(path, { force: true });
+    }
+  };
+  const documentRow = () =>
+    readGateChecks(destination)
+      .filter((row) => row.checkId === "npm run test:docs")
+      .at(-1);
   try {
     writeFileSync(
       record,
       "# Invalid record\n\n[Missing](missing-coordination-record.md)\n",
     );
     assert.equal(gateCodeIdentity(destination), recordIdentity);
-    const invalid = run(
-      process.execPath,
-      ["scripts/harness.mjs", "bounded", "--", "npm", "run", "test:docs"],
-      { cwd: destination },
+    const documents = () =>
+      run(
+        process.execPath,
+        ["scripts/harness.mjs", "bounded", "--", "npm", "run", "test:docs"],
+        { cwd: destination },
+      );
+    // A link that does not resolve meets a stop that guards the kit's own
+    // records. An instance that sets nothing is told of it, by file and
+    // line, and its selection passes with the task recorded as advised.
+    const advised = documents();
+    assert.equal(advised.status, 0, advised.stdout + advised.stderr);
+    assert.match(
+      advised.stdout,
+      /ADVISED docs\/invalid-instance-record\.md:3: missing file: missing-coordination-record\.md \(stop docs-links\)/u,
     );
-    assert.equal(invalid.status, 1, invalid.stdout + invalid.stderr);
-    const failed = readGateChecks(destination)
-      .filter((row) => row.checkId === "npm run test:docs")
-      .at(-1);
-    assert.equal(failed.codeIdentity, recordIdentity);
-    assert.equal(failed.reusedSuites, 0);
-    assert.equal(
-      failed.cases.find((row) => row.name === "docs-check").exitCode,
-      1,
-    );
+    const advisedRow = documentRow();
+    assert.equal(advisedRow.codeIdentity, recordIdentity);
+    assert.deepEqual(advisedRow.advisedTasks, [
+      { name: "docs-check", stops: ["docs-links"] },
+    ]);
+    // Where the owner sets that stop to refuse, the same record fails the
+    // selection as it did before a stop had a level.
+    withStops({ "docs-links": "refuse" }, () => {
+      const invalid = documents();
+      assert.equal(invalid.status, 1, invalid.stdout + invalid.stderr);
+      const failed = documentRow();
+      assert.equal(failed.codeIdentity, gateCodeIdentity(destination));
+      assert.equal(failed.reusedSuites, 0);
+      assert.equal(
+        failed.cases.find((row) => row.name === "docs-check").exitCode,
+        1,
+      );
+    });
   } finally {
     rmSync(record, { force: true });
   }
@@ -1599,10 +1707,46 @@ test("the exported instance checks runtime, coordination records and explicit di
       identity,
       "the ordinary gate identity includes tracked compiled tests",
     );
-    refused = run(
+    // A carried file that differs from the kit's manifest meets two stops
+    // that guard the kit's own records: the runtime kept current and the
+    // kit as its manifest records it. An instance that sets nothing is told
+    // of both, with the path, and its selection goes on.
+    const advised = run(
       process.execPath,
-      ["scripts/harness.mjs", "bounded", "--", "npm", "test"],
+      [
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "test",
+        "--",
+        "--only",
+        "kit-verify",
+      ],
       { cwd: destination },
+    );
+    assert.equal(advised.status, 0, advised.stdout + advised.stderr);
+    assert.ok(
+      advised.stdout.includes(changedPath),
+      advised.stdout + advised.stderr,
+    );
+    assert.deepEqual(
+      readGateChecks(destination)
+        .at(-1)
+        .advisedTasks.map((task) => task.stops),
+      [["gate-generated"], ["gate-kit-verify"]],
+      advised.stdout + advised.stderr,
+    );
+    // Where the owner sets them to refuse, the complete selection stops at
+    // the first, as it did before a stop had a level.
+    refused = withStops(
+      { "gate-generated": "refuse", "gate-kit-verify": "refuse" },
+      () =>
+        run(
+          process.execPath,
+          ["scripts/harness.mjs", "bounded", "--", "npm", "test"],
+          { cwd: destination },
+        ),
     );
     assert.equal(refused.status, 1);
     assert.ok(
@@ -1969,6 +2113,7 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
       "packages/skeleton/src/runtime-inputs.mjs",
       "packages/skeleton/src/shell-reading.mjs",
       "packages/skeleton/src/source-reading.mjs",
+      "packages/skeleton/src/stops.mjs",
       "packages/skeleton/src/temporary-root-records.mjs",
       "packages/skeleton/src/test-selection.mjs",
       "packages/skeleton/src/time-limits.mjs",
@@ -3414,16 +3559,20 @@ test("WO-226 a fast-forwarded export restores its selected runtime for recovery,
           .map((line) => ({ path, line })),
       );
     assert.deepEqual([...new Set(buildAdvice.map((row) => row.path))].sort(), [
+      "scripts/features.mjs",
       "scripts/lib/harness-runtime.mjs",
       "scripts/release.mjs",
       "scripts/resume.mjs",
     ]);
+    // Each such line chooses a kit's own remedy where the build is core's:
+    // the bootstrap where a runtime is to be prepared, and the kit's
+    // verification where a carried compiled file is missing.
     for (const row of buildAdvice.filter(
       (row) => row.path !== "scripts/lib/harness-runtime.mjs",
     ))
       assert.match(
         row.line,
-        /isKit(?:Root|Worktree).*node scripts\/bootstrap\.mjs.*npm run build/,
+        /isKit(?:Root|Worktree).*(?:node scripts\/bootstrap\.mjs|node scripts\/launchpad\.mjs verify).*npm run build/,
       );
     assert.match(
       readFileSync(join(destination, "docs/KIT.md"), "utf8"),

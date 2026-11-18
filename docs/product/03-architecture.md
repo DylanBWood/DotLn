@@ -318,6 +318,21 @@ projection, when the implementation exposes one, reports the observed boundary
 instead of promising absolute capability. Likewise, disabling history is a
 valid owner choice; an interface cannot offer replay unless history exists.
 
+What the kit delivers of this today is its first concern, instance doctrine,
+for the rules and stops the kit itself ships. An exported instance's owner
+sets each stop to refuse, advise or off with one line of `dotln.config.json`,
+and removes any feedback unit or author-layer rule, or the whole author's
+layer, with one line of the build overlay; the generated features page lists
+every stop with its level and every rule with its layer, and the kit guide
+says which layer is whose
+([docs/KIT.md §Stops](../KIT.md#stops) and
+[§What is the kit's and what is the author's](../KIT.md#what-is-the-kits-and-what-is-the-authors);
+[decisions](../evidence/WO-287/decisions.md#wo-287-d015--part-b-the-layer-of-each-shared-rule-and-of-the-ten-units-with-its-reason)).
+A rule is present or absent there, never replaced, and the lifecycle's own
+commands, a role's numbered steps and the review ladder stay fixed. The
+authority regime, risk acceptance and every open choice below remain a
+candidate.
+
 Open choices: owner identity, authentication, recovery and transfer; single-
 versus multi-owner precedence; the resource domain the owner controls; standing
 and wildcard grants; profile activation, persistence, visibility, export, and

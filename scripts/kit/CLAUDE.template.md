@@ -7,7 +7,9 @@ explicitly opted-in instance actions.
 Export writes the kit block below; `node scripts/harness.mjs emit` writes the
 harness block.
 
-## Clean Room — locked floor
+## Clean Room
+
+This section and Secrets are the owner's own text; edit them here.
 
 Work here belongs to the owner of this repository. Never import code,
 configuration, identifiers, internal services, credentials or secrets that the
@@ -46,6 +48,10 @@ Always admit `analysis:` (pause for diagnosis or direction) and
 harness failures. Preserve work; invent no dispatch or pass. Exit: either prefix
 plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status`.
 Host permissions apply.
+
+A stop's level is the owner's to change: one line of the `stops` section of
+`dotln.config.json` sets it, and `npm run features -- list` prints each stop
+with its level here.
 
 Verify in a session-launched browser: structured state, then DOM and
 accessibility tree via the Playwright MCP snapshot, then network/event data,

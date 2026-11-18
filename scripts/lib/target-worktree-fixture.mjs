@@ -197,6 +197,12 @@ const fixture = (
     git(base, "-c", "maintenance.auto=false", "clone", "-q", origin, root);
     git(root, "config", "user.email", "fixture@example.invalid");
     git(root, "config", "user.name", "Fixture");
+    // Git starts a detached repack after a commit or a received push. A
+    // case that commits here and then removes its fixture would race it,
+    // so neither repository runs maintenance for any command, the case's
+    // own and the code's under test.
+    for (const repo of [origin, root])
+      git(repo, "config", "maintenance.auto", "false");
     return root;
   };
   fixtureEnvironments.set(base, env);

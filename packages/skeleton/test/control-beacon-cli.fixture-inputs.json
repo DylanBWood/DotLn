@@ -16,7 +16,8 @@
     "packages/compiler/src/attribution.mjs",
     "packages/skeleton/src/worker-catalog.mjs",
     "packages/skeleton/src/worker-models.mjs",
-    "packages/skeleton/src/time-limits.mjs"
+    "packages/skeleton/src/time-limits.mjs",
+    "packages/skeleton/src/stops.mjs"
   ],
   "directories": [
     "scripts",

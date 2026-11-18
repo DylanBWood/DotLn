@@ -1,5 +1,5 @@
 import { lstatSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
 
 export const OVERLAY_KEYS = [
@@ -14,8 +14,19 @@ export const OVERLAY_KEYS = [
 export const overlayError = (path, detail) =>
   new Error(`invalid build overlay in ${path}: ${detail}`);
 
-/** Instance-owned data has a closed schema; it cannot replace kit code or the floor. */
-export function decodeBuildOverlay(path, text, supportIds) {
+/** Instance-owned data has a closed schema; it cannot replace kit code or the floor.
+ * `ids` says what `equip` and `unequip` may name: `supports`, the support
+ * switches; `selectable`, the author-layer units and rules and the name that
+ * stands for all of them; `fixed`, the platform's rules, which every build
+ * carries. A list of support ids alone is read as before a rule could be
+ * named. An id of `fixed` in `unequip` is named in one advisory and kept;
+ * an id none of the three holds refuses, and in an exported instance
+ * (`instance`) is named in one advisory and ignored, so that a mistyped or
+ * retired id stops no emit there. A caller that passes no `ids` checks the
+ * lists' form alone. */
+export function decodeBuildOverlay(path, text, ids, options = {}) {
+  const known = Array.isArray(ids) ? { supports: ids } : ids;
+  const { instance = false, advise = () => {} } = options;
   const fail = (detail) => {
     throw overlayError(path, detail);
   };
@@ -84,12 +95,39 @@ export function decodeBuildOverlay(path, text, supportIds) {
   for (const key of ["equip", "unequip"]) {
     if (value[key] === undefined) continue;
     strings(value[key], key);
-    for (const id of value[key])
-      if (supportIds && !supportIds.includes(id))
-        fail(`${key} names unknown support ${id}`);
+    if (!known) continue;
+    for (const id of value[key]) {
+      if (known.supports.includes(id) || (known.selectable ?? []).includes(id))
+        continue;
+      if ((known.fixed ?? []).includes(id)) {
+        if (key === "unequip")
+          advise(
+            `build overlay ${path}: unequip names ${id}, which is the platform's and stays equipped (npm run features -- list shows each rule's layer)`,
+          );
+        continue;
+      }
+      if (!instance) fail(`${key} names unknown support, unit or rule ${id}`);
+      advise(
+        `build overlay ${path}: ${key} names ${id}, which is no support, unit or rule of this kit; it is ignored (npm run features -- list)`,
+      );
+    }
   }
-  if (value.equip?.some((id) => value.unequip?.includes(id)))
-    fail("equip and unequip must not name the same support");
+  // An id an instance's overlay names that the kit does not hold was named
+  // above and is ignored, in both lists as in one. A reader that was given
+  // no ids cannot tell such an id from one the kit holds, so in an instance
+  // it leaves an id in both lists to the readers that can: every emit,
+  // check and features command decodes with the kit's ids.
+  const ignored = (id) =>
+    instance &&
+    (!known ||
+      (!known.supports.includes(id) &&
+        !(known.selectable ?? []).includes(id) &&
+        !(known.fixed ?? []).includes(id)));
+  const both = value.equip?.find(
+    (id) => value.unequip?.includes(id) && !ignored(id),
+  );
+  if (both !== undefined)
+    fail(`equip and unequip must not name the same id: ${both}`);
   if (value.identity !== undefined) {
     object(
       value.identity,
@@ -198,7 +236,31 @@ export function decodeBuildOverlay(path, text, supportIds) {
   return value;
 }
 
-export function readBuildOverlayFile(launchpad, path, supportIds) {
+/** The author's shared rules the installed bundle leaves out, as its
+ * manifest records them, so that a worker launched from a root is told what
+ * the root's roles are told. None where no bundle is installed or it leaves
+ * none out. */
+export function installedUnequippedRules(root) {
+  try {
+    const manifest = JSON.parse(
+      readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+    );
+    return [
+      ...new Set(
+        (Array.isArray(manifest?.profiles) ? manifest.profiles : []).flatMap(
+          (profile) =>
+            Array.isArray(profile?.unequipped?.rules)
+              ? profile.unequipped.rules
+              : [],
+        ),
+      ),
+    ];
+  } catch {
+    return [];
+  }
+}
+
+export function readBuildOverlayFile(launchpad, path, ids, options) {
   if (path === null) return undefined;
   const absolute = resolve(launchpad, path);
   let text;
@@ -211,7 +273,7 @@ export function readBuildOverlayFile(launchpad, path, supportIds) {
       "build.overlay must name a readable regular file inside the launchpad",
     );
   }
-  const value = decodeBuildOverlay(path, text.toString("utf8"), supportIds);
+  const value = decodeBuildOverlay(path, text.toString("utf8"), ids, options);
   return { path, bytes: text, value };
 }
 
