@@ -1,0 +1,43 @@
+# Parts D and E, and the repairs after the review rounds: the cases it added or changed, each run alone
+
+Run 2026-11-18 from 00:26:47 to 00:27:32 UTC by a script in session scratch (`case-runs.mjs`), one invocation a case:
+
+```text
+node scripts/harness.mjs bounded -- node --test --test-name-pattern '^<the case's whole name>$' <its file>
+```
+
+A package's TypeScript case runs from its built file under `dist/test/`. The script keeps each invocation's raw output before it reads it, and counts a case as passed only where the invocation exits 0, reports no failure and prints the named case's own passing result line, so an invocation whose pattern selected nothing is no pass.
+
+**Result:** 17 invocations; 17 passed; 0 failed.
+
+## Which cases the change added or changed
+
+The Kind column is read from the syntax tree and the difference with Part C's checkpoint (refs/dotln/checkpoint/WO-287/6, tree e6244a97f51e) (`case-inventory.mjs`, which parses each changed test file with the parser the repository's formatter uses). A case is a call of `test` whose first argument is a plain string, and its extent is that call's own first to last line. `added` is a case the base does not hold. `changed` is a case the base holds with a line of the difference inside its extent; a subtest made with `t.test` runs only when its parent runs, so a line inside one names its parent, the smallest thing a name pattern can select there.
+
+By that reading the change added 10 cases and changed 7, 17 in all, and every one of them is a row below. Of the cases called changed, 0 hold the base's own bytes.
+
+This ledger was made again after the repairs for the three review rounds over the whole change (WO-287-D037, WO-287-D038, WO-287-D040, WO-287-D041), so it holds the cases as they stand after the last of them; five of its rows were not in the ledger made at 22:26 UTC on 17 November, each a case those repairs added or changed: the Part D case that reads the kit's sources for its refusal codes, the two cases for criterion 12, the case for criterion 2 and the existing case of a worker's stop hook. Six cases whose names are built from a template are not in this inventory, which reads plain-string names from the syntax tree. Four hold lines these parts changed (the two denied-phase-command cases and the two native-readback cases of scripts/test-drive.mjs), and two exercise the refused-dispatch path they changed (the two dispatch-refusal cases, 22 subtests each). Each was run alone under the same wrapper, by its whole name, between 00:27:32 and 00:27:37 UTC on 18 November: exit 0 and its own line ok, with tests 1 and pass 1 for the first four and tests 23 and pass 23 for the last two. Earlier runs, kept as they were made on 17 November: one case of scripts/test-runner.test.mjs that these parts did not change, 'only and document CLI selection execute their declared checks with the projection build', failed in the parts' runner-fixtures suite on a change that was then taken back, and was run alone from 21:31:47 to 21:31:56 UTC: exit 0, its own line ok. Three existing cases that read the status command's legal actions, whose table the repairs moved, were run alone between 22:12:40 and 22:12:49 UTC: each exit 0, its own line ok. One case of scripts/test-runner.test.mjs for criterion 6, beside a declaration the second round's repairs moved, was run alone at 23:14:38 UTC: exit 0, its own line ok. The case for criterion 2 was changed once more after this ledger's run (WO-287-D042) and run alone from 00:42:47 to 00:43:03 UTC on 18 November: exit 0, its own line ok.
+
+| Started (UTC) | Kind | File | Case | Exit | Tests | Pass | Fail | Own result line |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 00:26:47 | changed | `scripts/test-docs-check.mjs` | WO-287 criterion C1: in an instance the paraphrase rule's stop advises with one line for each file however many runs it holds and fails nothing; at refuse and in core each run fails as before, off says nothing, and the election advises where the root sets no level | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:26:50 | added | `scripts/test-drive.mjs` | WO-287 criteria D1 and D2: a host's denial of a helper agent's call is recorded and does not end the phase, the phase worker's own denied call ends it after one launch, and the record keeps the tool, who called, what decided and when | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:26:51 | added | `scripts/test-drive.mjs` | WO-287 criterion D1: a refused dispatch keeps why in the kit's own fixed words and the stop carries it, and no other text of a refusal is kept | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:26:51 | added | `scripts/test-drive.mjs` | WO-287 criterion D3: a Claude phase starts with the host's wait for background work uncapped unless the drive's own environment sets it, and a Codex phase's environment is unchanged | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:26:52 | added | `scripts/test-drive.mjs` | WO-287 criterion D4: the account of a stopped drive says the stop, how the last attempt ended, what ended it, what was refused and denied by count, what is recorded and what to do next, and prints no operand of a command | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:26:52 | added | `scripts/test-drive.mjs` | WO-287 criteria D3 and D4: the real driver starts a Claude phase with the wait uncapped, stops at the worker's own denied call, and says why in its result and in what its command prints | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:00 | added | `scripts/test-drive.mjs` | WO-287 criterion D4: an attempt that ends cleanly keeps its raw stream until the drive knows whether its phase completed, and then only where it did not | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:01 | added | `scripts/test-drive.mjs` | WO-287 criterion D4: every refusal code a source of the kit writes is one the drive's reader keeps, a plan-first refusal of a write among them | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:01 | changed | `scripts/test-features.mjs` | WO-287 criterion B1: the features list prints one row for each feedback unit and each shared role rule with its id, its layer, how it is enforced, whether this root equips it and the overlay line that changes it | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:02 | changed | `scripts/test-features.mjs` | WO-287 criterion B1: applying the overlay line a rule's row prints changes whether that rule is equipped and changes no other, whatever the overlay's two lists hold | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:02 | changed | `scripts/test-features.mjs` | WO-287 criterion B3: an overlay that names single ids removes or restores exactly those, a platform-layer id in unequip is named in one advisory and kept, and in an instance an unknown id is named in one advisory and ignored | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:03 | changed | `scripts/test-harness.mjs` | private-destination changes only the instance Secrets paragraph and preserves outward refusal | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:05 | changed | `scripts/test-harness.mjs` | WO-276 a worker's stop is refused once while a background task it started is live, journaled under the worker's key and named in the parent's next facts; the session's own task and an empty list refuse nothing | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:07 | added | `scripts/test-harness.mjs` | WO-287 criterion D1: the drive's reader keeps the reason of a refused dispatch as the kit's own prompt hook writes it, for each phase's legal actions | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:10 | added | `scripts/test-harness.mjs` | WO-287 criterion D5: the router's guard admits the account of a stopped drive, and its role has it run that after a stop and answer from it while it reads no order, report or transcript | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:12 | added | `scripts/test-harness.mjs` | WO-287 criterion E1: in an instance a driven worker's helper is told once and goes on with the probe its role prescribes, its Git reads and a read-only gh request, core refuses each naming the stop, and the removal of a helper's leftovers outside the project names its stop and line | 0 | 1 | 1 | 0 | ok 1 - |
+| 00:27:17 | changed | `scripts/test-target-worktree-start.mjs` | WO-287 criterion A2: an effect the compiled authority names as denied is refused in an instance's target worktree, naming its stop and the line, and goes on with the advisory where that stop is set to advise | 0 | 1 | 1 | 0 | ok 1 - |
+
+## What is no case
+
+The difference also changes lines outside every case in these files (an import, a helper, a fixture list): `scripts/test-drive.mjs` (51 lines), `scripts/test-harness.mjs` (7 lines), `scripts/test-runner.mjs` (9 lines). Such a line is run by every case of its file that uses it, and by the suites that hold the file.

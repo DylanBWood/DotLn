@@ -1,4 +1,4 @@
-# WO-287 — What an instance meets lands as one order: in an instance a stop that has nothing to do with its owner's work advises, in a sibling repository as in the launchpad, and the author's rules are a loadout an instance chooses, under one activation, one verification, one final review and one release (version assigned at activation)
+# WO-287 — What an instance meets lands as one order: in an instance a stop that has nothing to do with its owner's work advises, in a sibling repository as in the launchpad, and the author's rules are a loadout an instance chooses, under one activation, one verification, one final review and one release (v1.4.0)
 
 <!-- dotln-dependencies:start -->
 [
@@ -23,9 +23,23 @@ registered target worktree as in the launchpad, and a stop that guards the
 owner's work refuses as before; no refusal names the recovery override as
 its route, and the override reaches a target worktree's hooks. Part B:
 every feedback unit and shared role rule carries a layer, and an
-instance's build overlay removes any of the author's. No stop is added.
+instance's build overlay removes any of the author's. Part C, added by
+amendment on the operator's direction of 2026-11-17
+([decision](../evidence/WO-287/decisions.md#wo-287-d014--the-operators-direction-on-the-verbatim-screen-in-an-instance-what-was-asked-what-follows-from-it-and-part-c)):
+the stop of the rule that committed text paraphrases the operator has a
+level as the other record rows have, so that in an instance text carried
+from what its owner pasted is advised of in one line a file and fails
+nothing. Parts D and E, added by amendment on the operator's two scope
+messages of 2026-11-17
+([decision](../evidence/WO-287/decisions.md#wo-287-d026--the-operators-two-scope-messages-on-the-drive-and-on-a-list-of-what-an-instance-met-what-was-asked-what-the-code-shows-and-parts-d-and-e)):
+a drive that stops says why, in one command its router runs; a helper
+agent's refusal by the host no longer ends a phase; a Claude phase's
+reviewers are not stopped ten minutes after its worker's turn; and one
+case holds what Part A changed for a driven worker's helper. No stop is
+added.
 Stops lowered in an instance: the record, host and bound rows of the
-census. Core refuses as before and equips what it equips today. Assigned
+census, and by Part C the paraphrase rule's, which the census left with
+its switch. Core refuses as before and equips what it equips today. Assigned
 at activation under the standing opt-out default.
 **Cost:** Part A adds one build-free table of stops, a `stops` section
 and its validator, the levels carried by the emit into each hook's
@@ -204,6 +218,41 @@ in parts, this text is the order's.
   Features section as Part A leaves them, and a unit that also refuses
   follows its row of Part A's table.
 
+- **Part C**, added by amendment on 2026-11-17 on the operator's direction
+  (WO-287-D014): the stop of the rule that committed text paraphrases the
+  operator (census rows S123 and S124) is a record row with a level, where
+  Part A left it with the switch it had. The document check reads every
+  file under the ignored intake root as the operator's words, so it meets
+  whatever an owner pasted to be used, run by run. Core refuses as before.
+  An exported instance advises until its owner sets a level, and where the
+  stop advises a file's runs are one line however many it holds. The
+  `features.verbatim-operator-words` election still sets it where a root
+  makes one and writes no line for the stop. Part B classes the rule's
+  sentence as the author's.
+
+- **Part D**, added by amendment on 2026-11-17 on the operator's direction
+  (WO-287-D026): a drive that stops says why. Three things ended a drive
+  early or left its stop unexplained. A driven Claude phase is a
+  print-mode run, where the host stops background agents ten minutes after
+  the last turn, and the executor awaits reviewers it launched as agents.
+  The drive ended a phase at any call the host denied, a helper agent's
+  included, and for a tool other than the shell kept nothing of what was
+  denied. And the router's role text told it to read nothing but status,
+  so it could only repeat a stop's line. Part D lifts the host's wait in a
+  Claude phase's environment, lets a helper's denial be recorded without
+  ending the phase, keeps of a denial the tool, who called, what decided
+  and when, keeps the kit's own reason for a refused dispatch, prints the
+  account of the last drive from its record with one command, and has the
+  router run it. A denial of the phase worker's own call ends the phase
+  as before (WO-192-D048).
+- **Part E**, added by the same amendment: of the eleven entries an
+  instance wrote for core, three are about a stop a worker met. One case
+  holds what Part A already changed for them: a driven worker's helper,
+  held in core to a list of reads that leaves out the probe its own role
+  prescribes, is advised in an instance and goes on; and the removal of
+  what a helper left outside the project names its stop and line. The
+  other entries are filed (WO-287-D027 to D029).
+
 Rejected: one order of six parts for the whole queue (axis: what one
 verification can hold; WO-276's whole could not be held by its
 verification or its first final review, and an instance waited four days
@@ -227,7 +276,29 @@ run to make.
 3. (Part B) The steps of WO-286's execution plan, in its order, written
    against the features page, the configuration reader and the emit as
    Part A left them; then the same end of part.
-4. (End) Read every standing section the parts changed, whole; the paired
+4. (Part C) `packages/skeleton/src/stops.mjs` (the row loses its switch
+   and names the election that was it); `scripts/lib/config.mjs`,
+   `scripts/lib/features.mjs`, `scripts/lib/harness.mjs` and
+   `scripts/launchpad.mjs` (an election a root declares as a level's
+   source); `scripts/docs-check.mjs` (a file's runs as one line where the
+   stop advises); the kit guide's section on the rule and its Stops
+   section. Check: a case in `scripts/test-docs-check.mjs`. Then the same
+   end of part.
+5. (Part D) `scripts/lib/drive-stream.mjs` (what is kept of a denial, a
+   helper's apart from the worker's, and of a refused dispatch);
+   `scripts/lib/drive-session.mjs` (the environment a Claude phase starts
+   with; the stop's line with its reason); a new
+   `scripts/lib/drive-account.mjs` and `scripts/drive.mjs` (the account
+   and its command); `packages/skeleton/src/harness-host.ts` (the router's
+   guard admits the command); `packages/skeleton/src/loadouts/contributor.ts`
+   (the router's procedure); the kit guide's and the operator guide's
+   passages on a drive. Check: cases in `scripts/test-drive.mjs` and
+   `scripts/test-harness.mjs`, and the driver's own printed lines for each
+   stop, run as a user runs it in a fixture launchpad with a stand-in
+   host, under `docs/evidence/WO-287/part-d/`. Then the same end of part.
+6. (Part E) One case in `scripts/test-harness.mjs`; the follow-ups'
+   decisions. It ends with Part D.
+7. (End) Read every standing section the parts changed, whole; the paired
    round over the whole change, its fixes and rechecks; then the handoff
    sequence of product 07 §Discipline, whose one complete run is this
    order's.
@@ -348,10 +419,65 @@ critic's points judged; regenerated roots and editions.
     no attribution hook, its check passes, and the writer reservation there
     still answers at its stop's level (`npm test -- --only target-worktree`).
 20. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+21. (C1) In an instance root that sets no level for the paraphrase rule's
+    stop and makes no election of it, a branch whose added lines share runs
+    of twelve words with a file under the intake root passes the document
+    check: each file that holds such runs is named in one advised line
+    however many it holds, the stop names itself once, and no word of the
+    file under intake is printed. With the stop set to `refuse`, with the
+    election declined, or in core's root, each run fails by file, line and
+    digest as before; set to `off` nothing is said of them. The election
+    advises where the root sets no level, and a level the root sets wins
+    over it. The features list prints the stop with its level here and who
+    set it (`npm test -- --only docs-check-fixtures`;
+    `npm test -- --only configuration-root`).
+22. (D1) A drive's record keeps, of a call the host denied, the tool's
+    name from a fixed list, whether the phase worker or a helper agent
+    made the call, the component that decided and how far into the
+    attempt it came; it keeps no reason text, input or identifier of a
+    Claude denial, as before. Of a refused lifecycle dispatch it keeps why
+    in the kit's own fixed words (which dispatch, the phase and the legal
+    actions; a reached bound; a reserved worktree; a failed lifecycle
+    command), each word checked against the kit's vocabulary, and the
+    stop's line carries it; no other text of a refusal is kept
+    (`npm test -- --only harness-fixtures`).
+23. (D2) A host's denial of a helper agent's call does not end the phase:
+    it is recorded and counted and the worker's stream is read on. A
+    denial of the phase worker's own call ends the phase and stops the
+    drive after one launch, as before (`npm test -- --only
+    harness-fixtures`).
+24. (D3) A Claude phase starts with the host's wait for background work
+    uncapped, unless the environment the drive runs in sets that ceiling
+    itself, and the attempt records which; a Codex phase's environment is
+    unchanged (`npm test -- --only harness-fixtures`).
+25. (D4) `node scripts/drive.mjs why WO-NNN` prints from the drive's
+    record: the stop and its next step; the last attempt's phrase and
+    role, its duration against its limit and how its process ended; what
+    ended it; helpers' denied calls and the kit's own refusals, by count;
+    failed commands by count with the most frequent shapes; whether the
+    phase recorded its completion; and where the worker's raw stream is
+    kept. It prints no operand of a command. A drive that stops for
+    anything but the merge or a release prints the same lines in its
+    result, and an order never driven prints one line saying so
+    (`npm test -- --only harness-fixtures`).
+26. (D5) The router's guard admits `node scripts/drive.mjs why WO-NNN`,
+    and the router's role has it run that command after a stop and answer
+    a question about the stop from it; it reads no order, diff, report or
+    worker transcript, as before (`npm test -- --only harness-fixtures`).
+27. (E1) In core a driven worker's helper agent is refused the single-test
+    probe its role prescribes, a Git read in the role's header-free form
+    and a read-only `gh` request, each refusal naming the stop
+    `driven-helper`; in an instance the helper is told once what the stop
+    protects and each goes on; set to `refuse` there it refuses again. The
+    removal of a path a helper left outside the project is refused in an
+    instance naming `outside-write` and its line, and goes on with the
+    advisory once the root sets that stop to `advise`
+    (`npm test -- --only harness-fixtures`).
 
 **Preflight:** `npm test -- --only artifact-evidence`,
 `npm test -- --only authority-evidence`,
 `npm test -- --only configuration-root`,
+`npm test -- --only docs-check-fixtures`,
 `npm test -- --only harness-evidence`,
 `npm test -- --only harness-fixtures`,
 `npm test -- --only harness-probe`,
@@ -402,7 +528,15 @@ host's own permission rules decide, apart from the deny rules the kit's
 emit writes; for Part B, changing which rules core
 equips, rewriting any rule's text, a new instance without the author's
 layer, replacing a rule's text from an instance, the role steps and a
-second loadout; for the order, running the parts side by side, a ladder or
+second loadout; for Part C, changing what the screen compares or how it
+matches, core's level, how a capture is made, an instance's own `CLAUDE.md`,
+and whether an instance carries the rule's sentence by default; for
+Part D, ending a phase on the phase worker's own denied call, what the
+host denies, the router reading an order, a report or a transcript, a
+drive retrying a refused phase by itself, and Codex's launch; for Part E,
+core's level of any stop, the role text of a worker and every entry of
+the list that names no stop; for the
+order, running the parts side by side, a ladder or
 a full suite list for a part on its own, any stop an instance cannot
 lower, and anything of WO-288's.
 
