@@ -2680,10 +2680,12 @@ contract it changes, as a shared reader's rewrite did inside WO-276: that
 order goes alone and first. And the whole would be more than one
 verification can hold: a queue is cut into two or three orders of the
 form, what is needed soonest first, before it is filed as one of many
-parts. The first of these holds while the order runs as well: what an
-instance is stopped on is never added to a running order as a part, since
-it then ships only when every other part's criteria hold. It is filed by
-itself and placed ahead
+parts.
+
+The first of these holds while the order runs as well. What an instance
+is stopped on is never added to a running order as a part, since it then
+ships only when every other part's criteria hold. It is filed by itself
+and placed ahead
 ([the 2026-11-23 pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-a-session-stops-and-asks)).
 
 **How it is filed.** Each absorbed order stays a file, as an umbrella

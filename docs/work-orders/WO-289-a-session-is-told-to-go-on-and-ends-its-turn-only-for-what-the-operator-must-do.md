@@ -125,18 +125,23 @@ none of them says the opposite.
 
 **Design (scope discipline):**
 
-- **One platform rule, `turns`, in every role root.** It says, in the
-  executor's own wording: a dispatch runs to its recorded completion; a
-  choice of route is put as a recommendation that the session takes in the
-  same turn; a question put to the operator is not a block, so the session
-  says what it will do if no answer comes and goes on with the steps that do
-  not depend on it; a turn ends to wait only on the operator's pause, stop
-  or cancel, or on a block that a refusal or the host names as the
-  operator's alone, stated once with the one line that clears it; and where
-  a unit or a support speaks of pausing or asking, this rule decides when
-  the turn ends. It is a platform rule because it says how a kit phrase
-  works: a dispatch is not complete until its command records it. It takes
-  in what `blocked-turn` says, and that id leaves the author's layer.
+- **One platform rule, `turns`, in every role root.** In the executor's
+  own wording it says five things:
+  - a dispatch runs to its recorded completion;
+  - a choice of route is put as a recommendation that the session takes in
+    the same turn;
+  - a question put to the operator is not a block, so the session says
+    what it will do if no answer comes and goes on with the steps that do
+    not depend on it;
+  - a turn ends to wait only on the operator's pause, stop or cancel, or
+    on a block that a refusal or the host names as the operator's alone,
+    stated once with the one line that clears it;
+  - where a unit or a support speaks of pausing or asking, this rule
+    decides when the turn ends.
+
+  It is a platform rule because it says how a kit phrase works: a dispatch
+  is not complete until its command records it. It takes in what
+  `blocked-turn` says, and that id leaves the author's layer.
 - **The two supports announce and go on.** Intent to Act keeps its one
   line at entry and before each queued action, which the adjacent queue
   records. Operator Check-In keeps reading the operator's messages and the
