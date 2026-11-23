@@ -235,6 +235,7 @@ hand.
 
 **Known issues and carry-ins:**
 
+- The drive ends as `guard-refused` when an unfinished attempt's record holds any guard's refusal, one the session then worked around by an admitted form among them, so a retry that could have finished the phase is not made. Reopen: a drive ends so where the session completed the refused step another way, and a second attempt run by hand completes the phase.
 - The other nine items of WO-287-D084's follow-up stay boarded
   (FUP-558ef58d7a128b96); this order takes the seventh.
 - Starting a driven target phase in the launchpad, and a filing-time check

@@ -10,7 +10,7 @@
   {
     "workOrderId": "WO-289",
     "relation": "satisfied-by-close",
-    "reason": "the rule on turns, whose two courses the reason given to the session repeats"
+    "reason": "the author's rule on when a turn ends, as that order rewrites it, whose two courses the reason given to the session repeats"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -30,7 +30,10 @@ back, for one turn, is a session's own stop. Assigned at activation under
 the standing opt-out default.
 **Cost:** adds one decision to the Stop hook, one feature and its default,
 one reason text and about eight cases; adds to a session that stops early
-one continued turn, whose tokens are unknown until run. Removes nothing.
+one continued turn, whose tokens are unknown until run. Removes the
+operator's prompt to a session that stopped with its dispatch unfinished
+and the idle time before it, 43 minutes in the one case the record times
+(WO-288-D168); how often that recurs is not measured.
 `packages/skeleton/src/harness-host.ts` and
 `packages/skeleton/src/observed-facts.ts` are registered evidence sources:
 the editions they stale are re-minted with `npm run sync`. No file of
@@ -100,15 +103,16 @@ its turn, which the kit then lets it do.
   `resume: final review`; the order's control state shows that dispatch's
   phase not yet completed; the host does not report the turn as already
   continuing from a Stop hook; no background task of the session is
-  running; no plan is proposed and unapproved; and neither `analysis:` nor
-  `operator override:` is on. In every other state the turn ends, which is
-  what happens in all of them now.
+  running; no plan is proposed and unapproved; and neither `analysis:` nor `operator override:` is on. In every other
+  state the turn ends, which is what happens in all of them now, and it
+  ends too where the session's journal or the order's control log cannot
+  be read.
 - **Once.** A second stop in a row ends the turn. A session that was told
   to pause, or that only the operator can unblock, therefore spends one
   short turn saying so.
 - **The reason is the rule.** It names the order and the dispatch, says
-  that nothing recorded needs the operator, and gives the two courses of
-  the rule `turns`: take the route you would recommend and go on, or say in
+  that nothing recorded needs the operator, and gives the two courses of the author's rule on when a turn ends: take
+  the route you would recommend and go on, or say in
   one line what only the operator can do and end the turn.
 - **A feature, on unless turned off.** `continue-unfinished-turn` is a row
   of the features page, in core and in an instance, with
@@ -189,7 +193,8 @@ emitted hook; the write-backs.
    | Unfinished, and a background task of the session is running                      | lets it end                         |
    | Unfinished, and a plan is proposed and not approved                              | lets it end                         |
    | Unfinished, and `analysis:` or `operator override:` is on                        | lets it end                         |
-   | The dispatch's completion is recorded, or the session holds no such dispatch     | lets it end                         |
+   | The dispatch's completion is recorded, or the session holds no such dispatch | lets it end |
+   | The session's journal or the order's control log cannot be read | lets it end |
 
 2. The reason the hook gives names the order's id and the dispatch phrase
    and says both courses: go on by the route the session would recommend,
@@ -222,6 +227,8 @@ names the feature and the line that turns it off.
 
 **Known issues and carry-ins:**
 
+- With the feature off, the line that names the unfinished dispatch is the one WO-288's Part F leaves, which is in that order's worktree and not yet on `main`. Reopen: WO-288 merges without a Stop-hook line that names an unfinished dispatch, and this order then writes it.
+- Nothing here measures the prompts the continuation is meant to save. Reopen: the operator's directions and corrections in the first orders closed with the feature on are not below WO-287's 4 and 13 in the cost table's series, which reopens the default.
 - A driven phase of an order against a target runs under the target
   worktree's guards, which journal no dispatch, so the continuation does
   not reach it. An attended session started in the launchpad is reached.

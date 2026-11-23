@@ -450,10 +450,10 @@ Its seven recommendations, each disposed:
 | --- | --- |
 | 1. A criterion returned twice names the ways out | WO-293, criterion 6; product 07's tenth rule of the queue form, in this pass |
 | 2. The critic's charter judges whether each accepted remedy held, and stops re-raising what it has judged | Deferred: the charter is a file WO-288's Part A adds, in that order's worktree and not yet on `main`. Reopen: the first pass after WO-288 closes, which reads Part A as merged |
-| 3. A question put to the operator is not a block | WO-289, the rule `turns` |
+| 3. A question put to the operator is not a block | WO-289, the rewritten rule on a blocked turn |
 | 4. A final review fails on a blocking defect | WO-293, criterion 7 |
 | 5. The part checkpoint prints the suites whose declared sources changed | Declined for now: the orders this pass files are not in parts. Reopen: an order in parts is filed |
-| 6. The hook's question context says what the role says | WO-289, criterion 4 |
+| 6. The hook's question context says what the role says | WO-289, criterion 3 |
 | 7. One register row for an order and class | Deferred with the second: it changes what Part A mints. The register would go from 25 untriaged rows to 249 when WO-288 merges as built |
 
 The seventh is a warning as well as a recommendation: WO-288's merge will
@@ -468,7 +468,7 @@ of it.
 
 | Order | What it answers | Criteria |
 | --- | --- | --- |
-| [WO-289](../../work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md) | Item 3: every text the kit gives a session about a turn says to go on; an advisory asks the operator for nothing; `analysis:` ends at a dispatch | 10 |
+| [WO-289](../../work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md) | Item 3: every text the kit gives a session about a turn says to go on; an advisory asks the operator for nothing; `analysis:` ends at a dispatch | 9 |
 | [WO-291](../../work-orders/WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md) | Items 4 and 6: an order names its repository and starts from the base branch's tip; a target order's heading promises no version; the refusal of changed order bytes names its routes | 10 |
 | [WO-290](../../work-orders/WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md) | Item 3, the mechanism behind the sentences: the Stop hook sends a session back once when its dispatch is unfinished | 6 |
 | [WO-292](../../work-orders/WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md) | Item 2: a target worktree's guards follow the launchpad's levels; a drive a guard stopped says so at once; a session there gets its usage read | 8 |
@@ -688,14 +688,14 @@ all in text this pass wrote. Each was judged and none was declined whole.
 | --- | --- |
 | F1, blocking. This pass's rewording of the queue form's ninth rule, and WO-293's Design, made any defect a re-verification meets outside the repair a follow-up unless it is a regression, so a verifier that saw a carried criterion fail would have recorded it met | Accepted. The rule bounds what a re-verification looks for and not what counts: a defect that breaks no criterion is a follow-up, and one that shows a criterion unmet blocks. Corrected in product 07, in WO-293's Design and its first criterion, and in the wording recommended for WO-288 |
 | F2. WO-290 asked for a row of the table of stops that refuses in an instance, which the table gives only to a row that guards against loss that cannot be undone | Accepted. The continuation is a feature an owner turns off, `continue-unfinished-turn`, and no row of that table; the order says why |
-| F3. WO-289's seventh criterion asked that four kinds of prompt be journaled as dispatches, and the hook journals a dispatch row for one of them | Accepted. The criterion now reads the role context the hook gives the prompt, which exists for all four |
+| F3. WO-289's seventh criterion asked that four kinds of prompt be journaled as dispatches, and the hook journals a dispatch row for one of them | Accepted. The criterion, now the sixth, reads the role context the hook gives the prompt, which exists for all four |
 | F4. WO-289 did not say what a dispatch does to an override left open under an analysis | Accepted. A dispatch ends neither; the override keeps its own `off` and its record, and the criterion carries the fence |
-| F5. Two criteria named a suite that does not run the cases their steps write | Accepted. Both name `configuration-root`, which runs the features cases |
+| F5. Two criteria named a suite that does not run the cases their steps write | Accepted. WO-290's names `configuration-root`, which runs the features cases; WO-289's criterion on the features list went when its rule stayed the author's |
 | F6. WO-292 described `guard-refused` as both a lifecycle refusal and a row an instance sets | Accepted. It is a reason a drive ends with, beside the ones it has, and no row of the table: it occurs only where a stop refuses |
 | F7. The orders' dependence on WO-288 was prose, which the kit does not enforce | Accepted. WO-289, WO-290, WO-292 and WO-293 carry typed dependencies |
 | F8. No role text carries the sixth class or the new screens | Accepted for the class: WO-293's ninth criterion lists the five places that name the classes, the planner's root among them. Declined for the screens: the planner's root already sends a pass to the section that holds them, the template carries them where criteria are written, and that root is over its measured size (WO-288-D221). Reopen: a pass files a criterion one of the five screens names |
 | F9. A criterion said every emitted root where the router's holds no shared rule | Accepted. WO-289 names the six roots that carry the shared rules, and the router keeps its own list of stops |
-| F10. The pause message of a tool hook and of the Stop hook was untested | Accepted. WO-289's eighth criterion names the three hooks |
+| F10. The pause message of a tool hook and of the Stop hook was untested | Accepted. WO-289's seventh criterion names the three hooks |
 | F11. Several criteria held two behaviors, against the pass's own screen | Accepted in part. Split or cut to one behavior: WO-291's third to seventh, WO-292's first to third, WO-293's fifth, WO-294's fourth and fifth. Left as written: a criterion that states one scenario and its observable result, and each order's last, which the contract has name the gates together |
 | F12. WO-290 does not reach a driven phase in a target worktree | Accepted as a known issue of the order |
 | F13. WO-292 did not say what its emit does when a target worktree cannot be written | Accepted. It names the worktree in one advisory and completes; that is its second criterion |

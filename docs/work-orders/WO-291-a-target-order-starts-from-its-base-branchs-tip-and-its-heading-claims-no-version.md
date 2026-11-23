@@ -228,8 +228,8 @@ refusal's words; the cases; the write-backs.
 2. In that fixture the activation event and the registry entry each record
    that tip as the base (`npm test -- --only target-worktree`).
 3. Where the fetch of the clone's `origin` fails, the start of an unpinned
-   order completes at the tip the clone holds
-   (`npm test -- --only target-worktree`).
+   order completes at the tip the clone holds and prints one advisory that
+   names that commit's date (`npm test -- --only target-worktree`).
 4. `npm run work-orders -- index --check` passes with one open unpinned
    order and one activated from the unpinned form
    (`npm test -- --only work-orders-fixtures`).
@@ -267,6 +267,7 @@ is left as it is.
 
 **Known issues and carry-ins:**
 
+- With the unpinned form the default, the state a pass and its refuter judged is no longer the state an order starts on, and what the pin used to show at the start shows only in execution. Reopen: a verification of an unpinned order finds a file or function a criterion names absent at the recorded base.
 - The `instance-history` suite must admit an instance's existing pinned
   orders and their records unchanged; the order widens what is admitted
   and tightens nothing.

@@ -15,8 +15,10 @@ its own configuration as before. Assigned at activation under the standing
 opt-out default.
 **Cost:** adds one reader of a checkout's roots, its use at the lookups
 that cross from one checkout's code into another's files, one branch in the
-order-worktree lookup and about six cases. Removes nothing an order pays
-for today. `scripts/lib/config.mjs`, `scripts/lib/order-worktrees.mjs` and
+order-worktree lookup and about six cases. Removes, for each drive during a planning pass, the operator's switch of
+the primary checkout back to `main` or a run of the phases by hand, and
+for an order that adds a configuration key the drive, the status and the
+integration that refuse. `scripts/lib/config.mjs`, `scripts/lib/order-worktrees.mjs` and
 `scripts/lib/target-worktrees.mjs` are declared sources of the
 `configuration-root` or `harness-fixtures` suite. No registered evidence
 source's judged behavior and no file of `FEEDBACK_SOURCE_PATHS` is edited.
@@ -196,6 +198,7 @@ site moved and the command that showed it; the handoff.
 
 **Known issues and carry-ins:**
 
+- WO-288 adds the key that shows this defect and is first in the sequence, and this order is last. If the integration WO-288's handoff and final review run from main refuses on that key, as the code reads, WO-288 integrates with its own worktree's script on the operator's word and records the route. Reopen: that route fails too, and this order is then placed ahead of WO-288's final review.
 - A drive that stops on a thrown failure prints the failure's message and
   not its account (item 1 of WO-287-D086's follow-up,
   FUP-9c62f95113543599). Named boy-scout item, same files as step 5: print

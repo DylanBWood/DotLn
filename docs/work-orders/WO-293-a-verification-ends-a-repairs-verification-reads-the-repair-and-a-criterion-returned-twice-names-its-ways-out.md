@@ -34,7 +34,12 @@ changed paths, 8 h 22 min and about 336 million tokens in sum by its
 record, and its ten repairs took 48 h 6 min.
 `packages/skeleton/src/loadouts/contributor.ts` is a registered evidence
 source: the editions it stales are re-minted with `npm run sync`. No file
-of `FEEDBACK_SOURCE_PATHS` is edited. One complete review run at handoff.
+of `FEEDBACK_SOURCE_PATHS` is edited. The reviewer's and the planner's roots
+stand 75 and 12 bytes under their accepted cold-start ceilings, so the
+executor records each changed root's bytes before and after and removes
+at least what it adds; a root that still passes its ceiling is named in
+the handoff with its measure, and the standing route for a cold-start
+acceptance applies. One complete review run at handoff.
 Wall-clock, tokens and steps of this order are unknown until run.
 **Nomination provenance:** the operator's planning dispatch of 2026-11-23,
 item 5 and its first message on the order then in progress (ignored
@@ -126,8 +131,8 @@ hands it back at the cost of one report.
 - **The briefing gives the scope as data.** For a verification after a
   repair it prints the latest report's blocking findings, each with its
   basis and its reproduction's path, and the paths that differ between the
-  checkpoint that report judged and the one now handed over. Where a
-  checkpoint cannot be read it says `unavailable` and names the ref.
+  checkpoint that report judged and the one now handed over. Where a checkpoint cannot be read it says `unavailable` and names the ref,
+  and the verification then reads every criterion as a first one does.
 - **A check that did not run is not a pass.** The verifier's rules say so:
   its criterion is unmet, with the refusal as evidence, or defective where
   no candidate could have run it. When a session that records a pass met a
@@ -219,7 +224,8 @@ advisory's phrases; the cases; the write-backs.
 1. The emitted verifier's root tells a verification that follows a repair
    to reproduce the latest report's blocking findings, to re-derive the
    criteria whose surfaces the repair changed, and to carry each other
-   criterion with its evidence unless it observes that criterion unmet
+   criterion with its evidence unless it observes that criterion unmet; and
+   to read every criterion where its briefing gives no changed paths
    (`npm test -- --only harness-fixtures`).
 2. For a fixture order with a failed verification and a completed repair,
    the verify briefing prints that report's blocking findings, each with
@@ -268,6 +274,8 @@ names the sixth class.
 
 **Known issues and carry-ins:**
 
+- A verification after a repair carries a criterion whose surfaces the repair did not touch, so a regression that reaches it through a module several parts share passes on carried evidence, and the complete run is what guards it. Sixteen of WO-288's findings were of that kind. Reopen: a final review or a later verification finds unmet a criterion that the verification before it carried, where the repair's diff did not touch that criterion's named surface.
+- The `open-set` class lets an order close without a property claimed of every site. It is recorded and visible, and it is also the shortest way out of a long loop. Reopen: an order closes with such a record and a later order or review lists the sites and finds the property false at one of them.
 - Named boy-scout item, beside step 6's file:
   `npm run plan -- failures` refuses with "one failure item exceeds the
   planning page budget" at `bc761ad9c`, where its largest item is 242

@@ -99,7 +99,7 @@ None.
 - State: draft.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-288, WO-289.
-- References: WO-288: satisfied-by-close (unmet) — its Part F has the Stop hook's line name a dispatch that has not recorded its completion, which this order's decision reads; WO-289: satisfied-by-close (unmet) — the rule on turns, whose two courses the reason given to the session repeats.
+- References: WO-288: satisfied-by-close (unmet) — its Part F has the Stop hook's line name a dispatch that has not recorded its completion, which this order's decision reads; WO-289: satisfied-by-close (unmet) — the author's rule on when a turn ends, as that order rewrites it, whose two courses the reason given to the session repeats.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
