@@ -4,9 +4,13 @@
 
 ## Proposed order
 
-- [x] [WO-284] — An instance sets every time limit of its gate · **final-reviewed**
-- [x] [WO-287] — What an instance meets lands as one order · **final-reviewed**
 - [ ] [WO-288] — Core's own tooling lands as one order · **queued**
+- [ ] [WO-289] — A session is told to go on, and ends its turn only for what the operator must do · **queued**
+- [ ] [WO-291] — A target order starts from its base branch's tip, and its heading claims no version · **queued**
+- [ ] [WO-290] — A turn that leaves a dispatch unfinished goes on once · **queued**
+- [ ] [WO-292] — A driven target phase can run its order's checks, and a drive a guard stopped says so · **queued**
+- [ ] [WO-293] — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out · **queued**
+- [ ] [WO-294] — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -53,6 +57,108 @@ None.
 - Track: machinery
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-288-cores-own-tooling-lands-as-one-order.md](WO-288-cores-own-tooling-lands-as-one-order.md)
+
+### WO-289
+
+[WO-289 — A session is told to go on, and ends its turn only for what the operator must do (version assigned at activation)](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-288: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
+
+### WO-291
+
+[WO-291 — A target order starts from its base branch's tip, and its heading claims no version (version assigned at activation)](WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md](WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md)
+
+### WO-290
+
+[WO-290 — A turn that leaves a dispatch unfinished goes on once (version assigned at activation)](WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-288: not-control-closed; WO-289: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md](WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md)
+
+### WO-292
+
+[WO-292 — A driven target phase can run its order's checks, and a drive a guard stopped says so (version assigned at activation)](WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-288: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md](WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md)
+
+### WO-293
+
+[WO-293 — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out (version assigned at activation)](WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: WO-288: not-control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md](WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md)
+
+### WO-294
+
+[WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main (version assigned at activation)](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
 
 ### WO-244
 
@@ -210,6 +316,10 @@ None.
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
 [WO-244]: WO-244-paired-planning-passes-and-the-synthesis-pass.md
-[WO-284]: WO-284-an-instance-sets-every-time-limit-of-its-gate.md
-[WO-287]: WO-287-what-an-instance-meets-lands-as-one-order.md
 [WO-288]: WO-288-cores-own-tooling-lands-as-one-order.md
+[WO-289]: WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md
+[WO-290]: WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md
+[WO-291]: WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md
+[WO-292]: WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md
+[WO-293]: WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md
+[WO-294]: WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md

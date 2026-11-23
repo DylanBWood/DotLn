@@ -2313,6 +2313,14 @@
             "WO-287"
           ],
           "at": "2026-11-16T17:35:42.180Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Read on 2026-11-23. Its condition has not occurred: the instance's account of its eighth order and its two entries ask for none of an authority regime, unverified outcomes or reduced retention. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance asks for a part of the profile WO-287 leaves: an authority regime, unverified outcomes, or reduced retention and replay.",
+          "targets": [],
+          "at": "2026-11-23T21:26:27.746Z"
         }
       ]
     },
@@ -61229,6 +61237,16 @@
           "reopenWhen": "A class recurs within a week of its disposition because the role text could not change before an order shipped.",
           "targets": [],
           "at": "2026-11-16T20:17:44.663Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "Its condition occurred. Re-disposed as this pass's twelfth candidate. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The row this one points at is reopened.",
+          "targets": [
+            "FUP-0f09b7dde80e10ff"
+          ],
+          "at": "2026-11-23T21:26:31.427Z"
         }
       ]
     },
@@ -61373,6 +61391,16 @@
           "reopenWhen": "A queue order holds back a part an instance is waiting on.",
           "targets": [],
           "at": "2026-11-16T17:35:45.632Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Its condition occurred: WO-288 held back a part an instance waited on. Re-disposed as this pass's tenth candidate. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The row this one points at is reopened.",
+          "targets": [
+            "FUP-0fa8309653bffe4d"
+          ],
+          "at": "2026-11-23T21:26:31.569Z"
         }
       ]
     },
@@ -61469,6 +61497,16 @@
           "reopenWhen": "The next planning pass, which reads it first.",
           "targets": [],
           "at": "2026-11-16T17:35:45.761Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Read first, as it asked. Re-disposed as this pass's eleventh candidate with the figure of 2026-11-23. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The row this one points at is reopened.",
+          "targets": [
+            "FUP-4e3aa871a4594994"
+          ],
+          "at": "2026-11-23T21:26:31.709Z"
         }
       ]
     },
@@ -61598,7 +61636,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "Re-disposed as this pass's ninth candidate, which carries the deferral, its reason and its condition. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The row this one points at is reopened.",
+          "targets": [
+            "FUP-5b3a4ffeed826572"
+          ],
+          "at": "2026-11-23T21:26:27.889Z"
+        }
+      ]
     },
     {
       "id": "FUP-43dcc85cd5df9fcb",
@@ -61620,7 +61669,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Six limits WO-284's verifier kept as non-blocking. None lies on a path an instance has reported, and WO-288's Part D reads the same table. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A supported setting or slower-host result demonstrates one of these limitations breaking a declared contract, or the named follow-up is selected for implementation.",
+          "targets": [],
+          "at": "2026-11-23T21:26:28.030Z"
+        }
+      ]
     },
     {
       "id": "FUP-65f7511f598b6b16",
@@ -61642,7 +61700,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "A record of what WO-284 built, the closeout selection saying when a complete run is already satisfied; it names no follow-up. By the critics' record no complete run has followed a change to documents alone since. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A briefing calls a run satisfied and the completion then refuses for want of the row, or the lookup's half second is felt in a hook's bound on a slower host.",
+          "targets": [],
+          "at": "2026-11-23T21:26:28.171Z"
+        }
+      ]
     },
     {
       "id": "FUP-d008506721f57cc4",
@@ -61657,7 +61724,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Five notes of WO-284's repair review on how a change to the limits file is judged. No instance has reported a target order sent to the launchpad's complete run by such an edit. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The complete run fails on a case this repair changed; an operator reports a target order sent to the launchpad's complete run by an edit of the limits file that changes no figure, or a refusal that names the wrong row; or the follow-up is selected for an order.",
+          "targets": [],
+          "at": "2026-11-23T21:26:28.314Z"
+        }
+      ]
     },
     {
       "id": "FUP-3a53a5f411295493",
@@ -61672,7 +61748,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "A record of the table's keys and figures as built, naming no action. The part of its condition that occurred, a core row past 900 s, is carried by FUP-c64f814adf5ff191. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance reports a miss at the kit's figure.",
+          "targets": [],
+          "at": "2026-11-23T21:26:28.457Z"
+        }
+      ]
     },
     {
       "id": "FUP-c64f814adf5ff191",
@@ -61687,7 +61772,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read on 2026-11-23: the close file's latest pass took 868.7 s against a thirty-day median of 493.0 s, under the 1,350 s that reopens it. It goes with the complete run's duration (FUP-4e3aa871a4594994) to the first pass after WO-288 closes, whose Part E measures what the kit's own checks cost. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The close file is ended for time at the default, or passes 1,350 s in core; or WO-288 closes.",
+          "targets": [],
+          "at": "2026-11-23T21:26:28.598Z"
+        }
+      ]
     },
     {
       "id": "FUP-f18563c6740a6f6b",
@@ -61723,7 +61817,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Four design notes of WO-287's Part C on the document check and the stop resolver. None is a defect. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A selection of the configuration suite alone judges a build older than its sources, the document check says anything of a run with the stop off, or one of the four notes left becomes the cause of a defect.",
+          "targets": [],
+          "at": "2026-11-23T21:26:28.739Z"
+        }
+      ]
     },
     {
       "id": "FUP-fab6c96ffe7d5f46",
@@ -61745,7 +61848,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Its second item, the form the document check requires of a decision's dispatch field, is a named boy-scout item of WO-289. The other three stay. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A session records an effort its host did not report because a role told it the value, or a driven helper in core is again refused the probe its role prescribes. Or WO-289 closes without its boy-scout item.",
+          "targets": [],
+          "at": "2026-11-23T21:26:28.880Z"
+        }
+      ]
     },
     {
       "id": "FUP-a3866623326095c5",
@@ -61760,7 +61872,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its first and third items are WO-288's criteria 8 and 17. Its second, a command that prints the session's operator-message rows, is a named boy-scout item of WO-293; this pass read the journal by hand for its capture table. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-288 lands without the dry run's brief carrying the sections, or a pass again reads the journal by hand to record a rule.",
+          "targets": [],
+          "at": "2026-11-23T21:26:29.019Z"
+        }
+      ]
     },
     {
       "id": "FUP-9ef88450f897ca37",
@@ -61775,7 +61896,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Three notes on what an instance is seeded with. The second, the shell rules, was met in this pass's own session, where zsh stopped five commands for an unquoted pattern and the hook named the cause each time. No instance reports work lost to it. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance again loses work to an unquoted pattern with no rule in its file, or a handoff again leaves a worker's files for the operator to remove.",
+          "targets": [],
+          "at": "2026-11-23T21:26:29.160Z"
+        }
+      ]
     },
     {
       "id": "FUP-94c72cd916987081",
@@ -61804,7 +61934,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Four design notes of WO-287's second round. None is a defect. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The third round finds one of these fixes does not hold, the complete run fails a case they touch, a transport's option whose value is a file the transport reads is shown missing from the five, or a hook is shown to block a stop with a refusal the reader does not count.",
+          "targets": [],
+          "at": "2026-11-23T21:26:29.299Z"
+        }
+      ]
     },
     {
       "id": "FUP-2d03d3d375fb7dae",
@@ -61826,7 +61965,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Two remainders of WO-287's second round: the reach of the credential screen, and a quoted path in a drive's stop line. Neither has been reported. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The third round finds this fix does not hold, the complete run fails a case it touches, or another form is shown in which a transport's own invocation reads a local credential file and is judged as the transport alone.",
+          "targets": [],
+          "at": "2026-11-23T21:26:29.442Z"
+        }
+      ]
     },
     {
       "id": "FUP-bf4058e153a18281",
@@ -61841,7 +61989,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Five conduct findings proposed as checks. WO-288's Part A builds the critic's record and its Part B changes how a round is recorded, so they are read again with the critic's charter (FUP-68ee52e4acc9cdf6) once WO-288 has closed. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A later dispatch records a conduct change as accepted without a check or a follow-up for one, or one of the five is shown already enforced. Or WO-288 closes.",
+          "targets": [],
+          "at": "2026-11-23T21:26:29.583Z"
+        }
+      ]
     },
     {
       "id": "FUP-747cfe30de394892",
@@ -61863,7 +62020,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "A host's own denial of a driven worker's call, and replies missing from the session log. WO-292 stops a drive on a guard's refusal and leaves a host's denial on today's route. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The operator gives the declared-permissions setting for a live run, a drive on a released kit stops at a host denial without the record this run kept, or a reply that ends a turn is found missing from the session log.",
+          "targets": [],
+          "at": "2026-11-23T21:26:29.724Z"
+        }
+      ]
     },
     {
       "id": "FUP-6b0cd8cd103dedeb",
@@ -61878,7 +62044,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "What is left of a release close under a drive on a host in automatic review. No close of the two kinds it names has been observed since. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A driven release close on a Claude host in automatic review is declined its exact helper again, the host changes how it resolves a narrow rule, or the helper's spelling changes without the rule's.",
+          "targets": [],
+          "at": "2026-11-23T21:26:29.866Z"
+        }
+      ]
     },
     {
       "id": "FUP-c7472d153428490b",
@@ -62064,7 +62239,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The rule that a claim names its evidence stays in the author's layer: by the follow-up's own words the choice is the operator's, and this pass's dispatch does not make it. WO-289 makes the rule on turns a platform rule on a reason of its own. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The operator moves claims-evidence's layer, or an instance whose overlay unequips author records a claim of cause, blocker or completion made without its supporting command or output.",
+          "targets": [],
+          "at": "2026-11-23T21:26:30.009Z"
+        }
+      ]
     },
     {
       "id": "FUP-54b3c0389e21ee0d",
@@ -62079,7 +62263,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-292's write-back to docs/KIT.md, 'When a routed run stops' (its step 9). [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-292 is withdrawn, or closes without the sentence restored.",
+          "targets": [
+            "WO-292"
+          ],
+          "at": "2026-11-23T21:26:30.152Z"
+        }
+      ]
     },
     {
       "id": "FUP-558ef58d7a128b96",
@@ -62094,7 +62289,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-292 takes the seventh of its ten items, a worktree whose guards record no levels, by having the launchpad's emit bring every registered target worktree current. The other nine stay. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance reports attribution in a target repository's commit, a helper's cleanup refused under a stop its owner lowered, or a target guard that allowed a call after computing its denial.",
+          "targets": [],
+          "at": "2026-11-23T21:26:30.293Z"
+        }
+      ]
     },
     {
       "id": "FUP-07163a4828afc157",
@@ -62109,7 +62313,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Six notes on the gate's runner where a task is advised. Core lowers no gate stop, and no owner has reported a failed row read as advised. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A core root lowers a gate stop, a release changes only a stop's or a rule's words, or an owner reads a failed host row as advised.",
+          "targets": [],
+          "at": "2026-11-23T21:26:30.435Z"
+        }
+      ]
     },
     {
       "id": "FUP-9c62f95113543599",
@@ -62124,7 +62337,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its first item, the account printed when a drive stops on a thrown failure, is a named boy-scout item of WO-294. The rest stay. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An operator meets a drive that stopped with no account, a Codex phase refused with no reason kept, or an account whose counts or paths misled. Or WO-294 closes without its boy-scout item.",
+          "targets": [],
+          "at": "2026-11-23T21:26:30.578Z"
+        }
+      ]
     },
     {
       "id": "FUP-15b1c75bd7e5bc04",
@@ -62139,7 +62361,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Five notes on a kit update and the build overlay. They go with WO-207, the order on an instance's kit updates, when a pass reopens it. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance that removed the author's layer finds it back after an update, or a session there meets a registered hook whose file is absent.",
+          "targets": [],
+          "at": "2026-11-23T21:26:30.720Z"
+        }
+      ]
     },
     {
       "id": "FUP-f069f9a8b2399ee6",
@@ -62154,7 +62385,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-289 changes what an advisory says and leaves where it is delivered. The host's reference, read on 2026-11-23, says a hook's systemMessage is shown to the user, so the calling agent is given no advisory today. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance on the election reports a document check carried as a pass over runs it advised on, or a helper agent that was never shown its stop's advisory.",
+          "targets": [],
+          "at": "2026-11-23T21:26:30.861Z"
+        }
+      ]
     },
     {
       "id": "FUP-566816571d690236",
@@ -62169,7 +62409,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Eight cases narrower than the clauses they hold; none hides a present defect by the final review's own reading. The screen this pass adds, one behavior to a criterion, is aimed at how such cases come about. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A change to one of those paths lands with its case still passing and the clause broken.",
+          "targets": [],
+          "at": "2026-11-23T21:26:31.003Z"
+        }
+      ]
     },
     {
       "id": "FUP-64e6bd4cfc576948",
@@ -62184,7 +62433,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-289 as the platform rule on turns in every role root, with WO-290 behind it. Its condition occurred again on 2026-11-22 (WO-288-D168) and in the operator's report of 2026-11-23. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-289 is withdrawn, or closes without the rule in every role root.",
+          "targets": [
+            "WO-289"
+          ],
+          "at": "2026-11-23T21:26:31.146Z"
+        }
+      ]
     },
     {
       "id": "FUP-67b1b6cf60bba81f",
@@ -62199,7 +62459,354 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Carried by WO-293's criterion 7: a final review fails on a blocking defect its own reading reproduces, one bounded edit excepted. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-293 is withdrawn, or closes without it.",
+          "targets": [
+            "WO-293"
+          ],
+          "at": "2026-11-23T21:26:31.286Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0f09b7dde80e10ff",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::1d0f4c2aa25e9f633d90d825a6cfc67d62280e4aca6888d4d756ceab8c189340",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1b0e693d072f7a15e0a4d5656f4c2d010f8346dca4024a6c56ddaa43337cf101",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "A place for a lesson of conduct outside the code identity",
+          "summary": "12. **A place for a lesson of conduct outside the code identity** (the seventh candidate of 2026-11-16, whose condition occurred: the stopped turn came back within a week because its fix could not ship before WO-288 did). Declined again: an instance's own instruction file is that place, its owner writes it without a release, and this pass's answer to the instance uses it. Reopen: a sentence of the kit overrides what an instance's owner wrote there.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "An instance's own instruction file is that place: its owner writes it with no release, and this pass's answer to the instance uses it. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A sentence of the kit overrides what an instance's owner wrote in the instance's own instruction file.",
+          "targets": [],
+          "at": "2026-11-23T21:26:33.388Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-47bb13fe11604394",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::38cb84ac3a78bd77a67ab0a914e3e834dfdcbf315f5c2fba5a42595cc20af835",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2a578dd9a0509fe40d366dde05c7f21888b5a901e80a93f9e035ba3dbd1128fe",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "A command that withdraws a recorded final review, and an override record that names its order.",
+          "summary": "5. **A command that withdraws a recorded final review, and an override record that names its order.** The off-ramps open after a final review change no verdict, and `override-record` run in main without an order lands on whichever order main selects. Deferred: an unusual path, met once by one instance. Reopen: a second review is undone by hand, or an override is again recorded against another order.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "An unusual path, met once by one instance, which marked its entry as not stopping its next order. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A second final review is undone by hand, or an override is again recorded against another order.",
+          "targets": [],
+          "at": "2026-11-23T21:26:32.407Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9cf12b340bf96930",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::7058ed95b6c9fa5ceef4befe4d2e55cd6510637b2a0a2b5afd586760bedb696e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f2c26693b2fee95dc527019bbfc1f1c5cdb0c293494156d6bbff2007c1eff2c0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "The dispatch bound printing its basis, and reading a target session's idle time.",
+          "summary": "4. **The dispatch bound printing its basis, and reading a target session's idle time.** The refusal prints worked and elapsed time and not the start, the idle time taken off or the figure's basis, and a session journaled in a target lane is invisible to the idle reading. Deferred: the bound advises in an instance since v1.4.0. Reopen: an instance reports a bound's figure it cannot reconcile with its own clock.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The bound advises in an instance since v1.4.0, so the figure stops no work there. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance reports a bound's figure it cannot reconcile with its own clock, or core's own refusal names one nobody can reproduce.",
+          "targets": [],
+          "at": "2026-11-23T21:26:32.268Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4e3aa871a4594994",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::72370aa3f7cd7ccb31d84f16308cb68260393ba909aa9628370eecbe4c8e2e06",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "dce087cf14109fc6360311a3f5c74e59349c7928f322d4a0aeb4408ced9f099b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "The complete run's duration",
+          "summary": "11. **The complete run's duration** (the eleventh candidate of 2026-11-16, read first as it asked). Its thirty-day median is 2,386.8 s against a threshold of 360 s, and each of WO-288's ten repairs paid one such run of 46 to 80 minutes. Deferred once more: WO-288's Part E measures what the kit's own checks cost and its Part D moves their limits, and WO-293 removes repair rounds, which is where the runs went. Reopen: the first pass after WO-288 closes, which reads Part E's measurements and files or declines with figures.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its thirty-day median is 2,386.8 s against a threshold of 360 s. WO-288's Part E measures what the kit's own checks cost and its Part D moves their limits, and WO-293 removes repair rounds, which is where WO-288's runs went. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-288 closes: the first pass after it reads Part E's measurements and files or declines with figures.",
+          "targets": [],
+          "at": "2026-11-23T21:26:33.249Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3115702ea6867c8e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::7d4297993810130b6337aff9f68d67e0437fddfc9c9a3a4e5a853eb8a2fd38ba",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3a62bed5aca2a9c02554733dffeb11a9999cbe167860c57c1b86878e0382465b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "A review round's source and tree.",
+          "summary": "6. **A review round's source and tree.** A report recovered from a transcript carries no source, and a round recorded with no tree named takes the working tree at the time of recording. Deferred. Reopen: a final review cannot re-derive a round it cites.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Met once, in an order whose first review was removed by hand. WO-288's Part B removes one cause of a refused report. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A final review cannot re-derive a round it cites.",
+          "targets": [],
+          "at": "2026-11-23T21:26:32.548Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2a6df7449e882ee4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::862f4e5647c426b99286434720b31a755099e9627f54097495d95b9ba3ca64d1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3c8344d6a85e144ff72ad9578ba23f46e5083f4d72253488c097765cd7d10783",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "A driven target phase started in the launchpad",
+          "summary": "2. **A driven target phase started in the launchpad**, as an attended session starts. Declined for now: two host behaviors it rests on are unobserved (whether a print session started with an added directory loads that directory's hooks, and whether the target gate runs from the launchpad), and since v1.4.0 the target's guards advise on what stopped the instance. Reopen: an instance on WO-292's release still cannot run a command its order names in a driven target phase.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Two host behaviors it rests on are unobserved, and since v1.4.0 a target worktree's guards advise on what stopped the instance. WO-292 keeps the drive's route and makes its guards follow the launchpad's levels. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance on WO-292's release still cannot run a command its order names in a driven target phase.",
+          "targets": [],
+          "at": "2026-11-23T21:26:31.988Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-68ee52e4acc9cdf6",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::92287ad772bf01f1d657f54b38696ede1958c2953d02835d091a5b72f8de02b8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2f40f79e4ba338440ad9b7c9ec43080bc51c4c99428d1171bcebbd6f654f08cc",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "The critic's charter judging whether a remedy held, and one register row for an order and class",
+          "summary": "14. **The critic's charter judging whether a remedy held, and one register row for an order and class** (the second and seventh recommendations of this pass's critic of the critics). Deferred: both change what WO-288's Part A builds. Reopen: the first pass after WO-288 closes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Both change what WO-288's Part A builds: the charter in scripts/kit/critic.md and the rows it mints. By this pass's critic of the critics, Part A as built would raise the untriaged rows from 25 to 249. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-288 closes: the first pass after it reads Part A as merged and its rows by class.",
+          "targets": [],
+          "at": "2026-11-23T21:26:33.662Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0fa8309653bffe4d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::97afa681ede845147a70a4e4892b65593c83d187e2c962e4c3fa127d50e9665e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "34e104ba2aea8a41eb25cb599675a3cca24d1e57962314c6e529cd0e2da82e51",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "A part of a queue order released at its boundary",
+          "summary": "10. **A part of a queue order released at its boundary** (the tenth candidate of 2026-11-16, whose condition occurred: WO-288 held back a part an instance waited on). Declined: the rule now keeps what an instance waits on out of an order of the form, at filing and while it runs, and the tenth rule of the form cuts a part. Reopen: an order of the form is filed and one of its parts becomes urgent for an instance after filing.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The rule now keeps what an instance waits on out of an order of the queue form, at filing and while it runs, and the form's tenth rule cuts a part. A release at a part's boundary would have the lifecycle close an order in stages. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An order of the form is filed and one of its parts becomes urgent for an instance after filing.",
+          "targets": [],
+          "at": "2026-11-23T21:26:33.109Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2e0d931d928e3a11",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::b0b99c9df258797126a07ccef78c8bfbb0f43b5ff2081037500e6546620ead8b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "40b27eea80a5e31a15866a4ff5cbcb09e2bda6e584867d5abcdeb811dc7bc822",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "The executor's sentence for a criterion added in execution.",
+          "summary": "13. **The executor's sentence for a criterion added in execution.** Product 07 now has the amending session read the screens first; no role root says so. Deferred. Reopen: a criterion added in execution is recorded defective or returned by two verifications.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Product 07 now has the amending session read the screens first. No role root says so yet, and WO-293 names it among its known issues. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A criterion added in execution is recorded defective, or is returned by two verifications.",
+          "targets": [],
+          "at": "2026-11-23T21:26:33.526Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e03a878d79741e10",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::bc40c345aa0e4970e73af78eb666e88335be94a4d3c139dd8f27fc8deeaadb6a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "21a1a5cb6923423cb68fea0efdf9fc8291e92a674500b9392c0acca72e684066",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "A filing-time check of the commands a target order names",
+          "summary": "3. **A filing-time check of the commands a target order names** against what its lane admits. Deferred: with the guards at the owner's levels the lane refuses little. Reopen: an instance's driven phase stops as `guard-refused` on a command its order named.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "With a target worktree's guards at the owner's levels the lane refuses little, so the check would mostly print nothing. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance's driven phase stops as guard-refused on a command its order named.",
+          "targets": [],
+          "at": "2026-11-23T21:26:32.129Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5b3a4ffeed826572",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::d0266699d736a2487d6307229dfde6eada5ad32812b0456d0f4ac212e0630b11",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2fbfde4a0a5d931816ad87ef67d4c0ed99cf4737866aca4e46b2a56591213a0a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "The drive's in-session phases and the operator's directions to a phase",
+          "summary": "9. **The drive's in-session phases and the operator's directions to a phase** ([the architecture WO-284 kept](../evidence/WO-284/drive-architecture.md)). Deferred again: today's route must first carry an order against a target from its start to its review, which WO-292 and WO-294 are for, and the architecture's first order waits on nothing while no instance waits on it. Reopen: WO-292 has closed and an instance has driven such an order through its final review; or the operator's word, which the cost of separately started sessions on the work machine may give sooner.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Today's route must first carry an order against a target from its start to its review, which WO-292 and WO-294 are for. The architecture's first order waits on nothing, and no instance waits on it. Its seven questions for the operator stand. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-292 has closed and an instance has driven an order against a target through its final review; or the operator's word.",
+          "targets": [],
+          "at": "2026-11-23T21:26:32.969Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ed1c9f4e805c911f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::f56e9ef52d2899860326b10fe11dbfdeb8247d79e15459af0046ca5d7e5351d5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bc0e1141f1eacede720fb417c9826e65df6be5f5fb5ede8111f5b15a8be69ad0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "The attested effort read from what the hook observed.",
+          "summary": "8. **The attested effort read from what the hook observed.** An attestation is bound to the host's variable. Deferred: whether that variable can differ from the effort that ran is unobserved. Reopen: a session's recorded effort is shown to differ from what the host ran.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Whether the host's variable can differ from the effort that ran is unobserved, and the correct command repairs a record today. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A session's recorded effort is shown to differ from what the host ran.",
+          "targets": [],
+          "at": "2026-11-23T21:26:32.827Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-309b78e0eebac4d8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::f78412d9e8530203b62a6d322cc1973217cbaae74a73bc0bd4081addf944a2bc",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5a77309ba50ab9be17d127754dca8f3a7c6ea82770c0858cb0c9b2bcca89a3dc",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "A drive's attempts summed as a report's process cost.",
+          "summary": "7. **A drive's attempts summed as a report's process cost.** Each attempt's cost and duration are in the drive's record and no reader sums them. Deferred: WO-292 has the usage reader find a session in a target lane, which is what leaves the cost unknown today. Reopen: a verification or a final review driven on WO-292's release still records its cost as unknown.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-292 has the usage reader find a session journaled in a target lane, which is what leaves the cost unknown today. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A verification or a final review driven on WO-292's release still records its process cost as unknown.",
+          "targets": [],
+          "at": "2026-11-23T21:26:32.688Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0e15ae6742455b42",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23::fc4d12d5f940e93a5048c291dad490bad8c740ca31412d44c6a4c011d46905c5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "370babc0734f9e7ed38bc7e3229c056c72c3047069c083e1e7683239733c21f3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-pass-on-sessions-that-go-on-target-orders-and-a-verification-that-ends-recorded-2026-11-23",
+          "title": "The two feedback units that speak of asking.",
+          "summary": "1. **The two feedback units that speak of asking.** `anti-oscillation` asks for one focused question and a pause before a file action beyond a correction, and `fail-conservative-correction` asks for diagnosis after a typed correction. Deferred: both are judged feedback sources, so rewording them owes a feedback re-mint and a live episode, and WO-289's rule decides when a turn ends where either speaks of asking. Reopen: a session ends a turn citing one of them after WO-289 ships.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Both units are judged feedback sources, so rewording them owes a feedback re-mint and a live episode. WO-289's rule decides when a turn ends where either speaks of asking. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "A session ends a turn citing one of them after WO-289 ships.",
+          "targets": [],
+          "at": "2026-11-23T21:26:31.850Z"
+        }
+      ]
     }
   ]
 }

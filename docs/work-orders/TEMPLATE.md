@@ -22,7 +22,12 @@ values. Name a dated acceptance when adding cost without a removal.
 **Deliverables:** Bounded changed surfaces.
 **Acceptance criteria (all required)**
 
-1. Observable behavior and executable evidence.
+1. One behavior and the command that shows it on the uncommitted candidate.
+   A second behavior is a second criterion. A claim about every member of
+   a set names the members or the check that fails closed on one it cannot
+   place. A result that a host, a tool or an account decides names its
+   fallback evidence. No existing case is held unchanged: name the
+   behaviors that must still hold.
 2. Write-backs land in affected product docs and
    docs/evidence/WO-NNN/decisions.md; refresh the decisions index.
 3. Required gates green and git diff --check clean.

@@ -40,6 +40,28 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-23 — Planning pass: sessions that go on, orders against a target and a verification that ends (WO-289 to WO-294 filed); registration only; the record is the planning document
+
+Dispatch: `planning:` on the work instance stopping after each line, the
+order in progress going round in circles and criteria the operator is
+asked to waive, journaled at 2026-11-23T20:27:45.530Z (hook time) in
+Claude Code (Fable 5.2 at max, operator-selected), captured in
+`docs/intake/planning-dispatch-2026-11-23-the-kit-keeps-working.md` (the
+journal's digest of the message
+`5d6bd373661f0b7225d59bf50243082a74c5df390ce3110c26c0f4815e63b433`), with
+the two further messages of the pass captured beside it. The pass reads
+why a drive of WO-288 did not start, an instance's account of an order
+against a target, what the kit tells a session about ending a turn, where
+a target order's worktree starts, the criteria that ended unmet and
+WO-288's eleven verifications against the code and the record. It files
+six single orders (WO-289 and WO-290 on turns, WO-291 and WO-292 on orders
+against a target, WO-293 on verification, WO-294 on the drive's start),
+adds five screens for criteria to product 07, corrects the queue form's
+rules on what a re-verification reads and on what may be added to a
+running order, and answers the instance.
+Record:
+[the planning document](../planning/passes/the-kit-keeps-working-2026-11-23.md).
+
 ## 2026-11-16 — Planning pass: stops, time limits and whose rules (WO-284, WO-287 and WO-288 filed; WO-285 and WO-286 filed as WO-287's parts; WO-279 amended); registration only; the record is the planning document
 
 Dispatch: `planning:` on the launchpad stopping the operator's work,
