@@ -24,7 +24,7 @@ and declines one that leaves a criterion unanswered. Nothing changes in an
 order's execution, in core or in an instance, and no stop is added.
 Assigned at activation under the standing opt-out default.
 **Cost:** adds a fifth answer to each refutation, whose tokens are unknown
-until run; one field of the result with its validation; one kind of hold;
+until run; one new version of the result with its validation; one kind of hold;
 one sentence of role text; about eight cases. Removes the criteria review
 a pass runs beside its refutation, which took 0 h 11 min and 18.0 million
 tokens in the pass that filed this order, and the later adjudication of
@@ -105,6 +105,12 @@ not asked about it later.
   `DEFECT_CLASSES` and the criterion's own words that show it. The refuter
   reads the order's file for this, and the code a criterion names where the
   answer turns on it. The subject and its hash are as they are.
+- **A new version of the result.** The answer is a field of a new version
+  of the refuter's result. A receipt filed under the version `main` holds,
+  `plan-goal-review-v1`, is read by that version's own rules and verifies
+  as it does now; the protocol already keeps an older version's reader
+  beside the current one. Every filed receipt is validated again at each
+  plan check, so a field added to the version in use would fail them all.
 - **A defective criterion holds the pass.** The receipt files it as a hold
   on that criterion, which is answered as a hold is now: the planner
   rewrites the criterion and records the disposition, which binds that
@@ -146,16 +152,15 @@ failure that run names.
    the refuter's work order, and the same question wherever the four are
    repeated (`scripts/authority-evidence.mjs` holds them). Check: a case in
    `scripts/test-plan-refutation.mjs` that reads the printed prompt.
-2. `packages/skeleton/src/plan-refutation-protocol.ts`: the result's answer
-   for each criterion, the output instruction that asks for it, and the
-   validation of criterion 2's table. Check: one case for each row, with
+2. `packages/skeleton/src/plan-refutation-protocol.ts`: a new version of the result with an answer for each criterion, read
+   beside the version `main` holds; the output instruction that asks for
+   it; and the validation of criterion 3's table. Check: one case for each row, with
    the fake transport, in `scripts/test-plan-refutation.mjs`.
 3. `scripts/lib/plan-receipts.mjs`, `addressedHolds`: a criterion the
    result calls defective is a hold on that criterion. Check: a case in
    `scripts/test-plan-refutation.mjs` that files such a result and reads
    the receipt's holds.
-4. `packages/skeleton/src/loadouts/contributor.ts`: the planner's sentence
-   of criterion 3. Check: a case in `scripts/test-harness.mjs` that reads
+4. `packages/skeleton/src/loadouts/contributor.ts`: the planner's sentence of criterion 5. Check: a case in `scripts/test-harness.mjs` that reads
    the emitted planner's root.
 5. The feedback re-mint and one live feedback self-host episode, then
    `node scripts/harness.mjs emit`, `npm run sync` and `npm run meta`.
@@ -174,28 +179,32 @@ edition; one real refutation's record; the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. `npm run plan -- refute` prints output instructions that ask, for every
-   judged order, whether a verifier can settle each criterion by the
-   command it names, and a result schema with an answer for each criterion
+1. The prompt that `npm run plan -- refute` prints asks, for every judged
+   order, whether a verifier can settle each criterion by the command it
+   names (`npm test -- --only plan-refutation`).
+2. The result schema in that prompt is of the new version and requires an
+   answer for each criterion of each judged order
    (`npm test -- --only plan-refutation`).
-2. `npm run plan -- receipt` treats a result's answer for a criterion of a
-   judged order as this table says (`npm test -- --only plan-refutation`).
+3. `npm run plan -- receipt` treats a result of the new version as this
+   table says, for each criterion of a judged order
+   (`npm test -- --only plan-refutation`).
 
-   | The result                                                          | The receipt                                         |
-   | ------------------------------------------------------------------- | --------------------------------------------------- |
-   | calls the criterion settleable                                      | is filed with no hold for it                        |
-   | calls it defective and names a class of `DEFECT_CLASSES`            | is filed with a hold on that criterion              |
-   | calls it defective and names no class, or one that is not in the list | is declined, and the message names the criterion  |
-   | holds no answer for it                                              | is declined, and the message names the criterion    |
+   | The result | The receipt |
+   | --- | --- |
+   | calls the criterion settleable | is filed with no hold for it |
+   | calls it defective and names a class of `DEFECT_CLASSES` | is filed with a hold on that criterion |
+   | calls it defective and names no class, or one that is not in the list | is declined with a message that names the criterion |
+   | holds no answer for it | is declined with a message that names the criterion |
 
-3. The emitted planner's root says that the refutation judges whether each
-   criterion can be settled and that a hold on a criterion is repaired and
-   disposed within the pass (`npm test -- --only harness-fixtures`).
-4. `docs/product/07-execution-guide.md` under "Operator-opened planning
-   pass" says that the refuter judges whether each criterion can be
-   settled and that a criterion it calls defective holds the pass
+4. A receipt filed under `plan-goal-review-v1` still verifies:
+   `npm run plan -- check` admits a fixture chain that holds one
+   (`npm test -- --only plan-refutation`).
+5. The emitted planner's root says that the refutation judges whether each
+   criterion can be settled (`npm test -- --only harness-fixtures`).
+6. `docs/product/07-execution-guide.md` under "Operator-opened planning
+   pass" says that the refuter judges whether each criterion can be settled
    (`npm run test:docs`).
-5. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+7. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only plan-refutation`,
 `npm test -- --only harness-fixtures`, `npm test -- --only skeleton`,

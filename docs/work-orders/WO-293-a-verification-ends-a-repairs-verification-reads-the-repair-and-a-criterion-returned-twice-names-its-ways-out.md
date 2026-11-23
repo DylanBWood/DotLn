@@ -239,9 +239,8 @@ advisory's phrases; the cases; the write-backs.
    not run is unmet, or defective where no candidate could have run it
    (`npm test -- --only harness-fixtures`).
 4. `npm run resume -- verification-result pass`, run by a session whose
-   journal holds a guard's refusal, prints one advisory with the count and
-   the stop's id and records the verdict
-   (`npm test -- --only harness-fixtures`).
+   journal holds a guard's refusal, prints one advisory with the count and the
+   stop's id (`npm test -- --only harness-fixtures`).
 5. `npm run resume -- defect <criterion> --class open-set --evidence <text>`
    records the defect, and the order's status shows the criterion as
    defective of that class (`npm test -- --only resume`).
@@ -260,7 +259,8 @@ advisory's phrases; the cases; the write-backs.
    them: the emitted planner's root, the emitted verifier's root, the
    emitted reviewer's root, the usage line of `npm run resume -- defect`,
    and product 07 under "Verification review and attack"
-   (`npm test -- --only harness-fixtures`; `npm run test:docs`).
+   (`npm test -- --only harness-fixtures`; `npm test -- --only resume`;
+   `npm run test:docs`).
 10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`,

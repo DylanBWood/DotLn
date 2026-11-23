@@ -532,8 +532,10 @@ What the pass does with it:
   the operator's, who reads it on the order's status and may withdraw it.
   It is a feature an owner turns off.
 - **From this pass's merge.** The execution guide makes the criteria
-  review a step of every pass until WO-295 lands, and says that a
-  criterion's defect is not put to the operator to adjudicate.
+  review a step of every pass until WO-295 lands. For a running order
+  nothing changes until WO-296 lands: a criterion still changes on the
+  operator's one recorded authorization, and the guide now says that the
+  session writes the amended text and asks for that alone.
 
 What stays the operator's: an order's objective, non-goals and parts; a
 waiver the operator chooses to give; the withdrawal of a re-cut; and the
@@ -602,10 +604,10 @@ of it.
 | [WO-289](../../work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md) | Item 3: every text the kit gives a session about a turn says to go on; an advisory asks the operator for nothing; `analysis:` ends at a dispatch; a message sent while a turn was running says so | 10 |
 | [WO-291](../../work-orders/WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md) | Items 4 and 6: an order names its repository and starts from the base branch's tip; a target order's heading promises no version; the refusal of changed order bytes names its routes | 10 |
 | [WO-290](../../work-orders/WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md) | Item 3, the mechanism behind the sentences: the Stop hook sends a session back once when its dispatch is unfinished | 6 |
-| [WO-292](../../work-orders/WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md) | Item 2: a target worktree's guards follow the launchpad's levels; a drive a guard stopped says so at once; a session there gets its usage read | 8 |
+| [WO-292](../../work-orders/WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md) | Item 2: a target worktree's guards follow the launchpad's levels; a drive a guard stopped says so at once; a session there gets its usage read | 9 |
 | [WO-293](../../work-orders/WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md) | Item 5 and the order in progress: a verification after a repair reads the repair; a sixth defect class; the ways out at the second return; a final review that fails on what it finds | 10 |
-| [WO-295](../../work-orders/WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md) | Items 5, 8 and 9: the refuter's judgment of a pass also says whether each criterion can be settled, and one it calls defective holds the pass until the planner repairs it | 5 |
-| [WO-296](../../work-orders/WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md) | Items 8 and 9: a criterion two verifications have returned is re-cut by a planner worker and judged by a refuter, and no session asks the operator to waive, cut or amend one | 9 |
+| [WO-295](../../work-orders/WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md) | Items 5, 8 and 9: the refuter's judgment of a pass also says whether each criterion can be settled, and one it calls defective holds the pass until the planner repairs it | 7 |
+| [WO-296](../../work-orders/WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md) | Items 8 and 9: a criterion two verifications have returned is re-cut by a planner worker and judged by a refuter, and no session asks the operator to waive, cut or amend one | 10 |
 | [WO-294](../../work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md) | Item 1: main reads the roots alone of an order worktree's configuration; a drive starts from a checkout that is off main | 8 |
 
 Every path each order names was checked against the tree at `bc761ad9c`:
@@ -754,7 +756,10 @@ start in core.
 - The same section, after the screens: whether a criterion can be settled
   is judged by the planner and the refuter and is not put to the operator,
   and until WO-295 lands a pass has every order it files or changes read
-  by the criteria review before its refutation.
+  by the criteria review before its refutation; until WO-296 lands a
+  running order's criterion still changes on the operator's one
+  authorization of a text the session wrote. The queue form's tenth rule
+  has the executor write the amended criterion out in its handoff.
 - `docs/work-orders/TEMPLATE.md`: its first criterion line says the
   screens where a planner writes criteria.
 - `docs/planning/sequence.md` and `docs/planning/work-order-map.md`, as
@@ -816,7 +821,7 @@ in one place and strikes any by removing its entry.
     "captureDigest": "sha256:0c80efbd379f8ab2ec03fe24a966d335faed0e8d35fc2b3cd9eb5770d075a270"
   },
   {
-    "rule": "Whether a criterion can be settled is judged by the planner and the refuter, and one that proves wrong is re-cut by them; neither is put to the operator to adjudicate. Until the refuter's own judgment covers the criteria, a pass has every order it files or changes read by the criteria review before its refutation.",
+    "rule": "Whether a criterion can be settled is judged by the planner and the refuter, and the operator is not asked to work a criterion out. Until the refuter's own judgment covers the criteria (WO-295), a pass has every order it files or changes read by the criteria review before its refutation. Until a criterion returned twice has its re-cut (WO-296), a change to a running order's criterion still needs the operator's one recorded authorization, of a text the session wrote.",
     "document": "docs/planning/sequence.md",
     "section": "Rules in force",
     "message": {
@@ -852,10 +857,92 @@ all in text this pass wrote. Each was judged and none was declined whole.
 | F8. No role text carries the sixth class or the new screens | Accepted for the class: WO-293's ninth criterion lists the five places that name the classes, the planner's root among them. Declined for the screens: the planner's root already sends a pass to the section that holds them, the template carries them where criteria are written, and that root is over its measured size (WO-288-D221). Reopen: a pass files a criterion one of the five screens names |
 | F9. A criterion said every emitted root where the router's holds no shared rule | Accepted. WO-289 names the six roots that carry the shared rules, and the router keeps its own list of stops |
 | F10. The pause message of a tool hook and of the Stop hook was untested | Accepted. WO-289's seventh criterion names the three hooks |
-| F11. Several criteria held two behaviors, against the pass's own screen | Accepted in part. Split or cut to one behavior: WO-291's third to seventh, WO-292's first to third, WO-293's fifth, WO-294's fourth and fifth. Left as written: a criterion that states one scenario and its observable result, and each order's last, which the contract has name the gates together |
+| F11. Several criteria held two behaviors, against the pass's own screen | Accepted. Split or cut to one behavior: WO-291's third to seventh, WO-292's first to third, WO-293's fifth, WO-294's fourth and fifth, and after the second review the criteria it named. Left as written: each order's last, which the contract has name the gates together |
 | F12. WO-290 does not reach a driven phase in a target worktree | Accepted as a known issue of the order |
 | F13. WO-292 did not say what its emit does when a target worktree cannot be written | Accepted. It names the worktree in one advisory and completes; that is its second criterion |
 | F14. This document's last two sections were empty when it was read | They are written at the pass's end, below |
+
+**A second review** ran after the two orders on who judges criteria were
+written and WO-289 had changed: the same helper, with `--round 2`, the
+subject as first reviewed for `--since` and the first report to recheck;
+0 h 9 min. The helper refused the report for its form, because three rows
+of its Items table named a disposition outside the helper's three, so the
+round recorded no report and printed no token count. The refused report
+is kept in the ignored reviews lane, and its findings were acted on as
+they stand.
+
+It held twelve of the first round's fourteen findings as repaired. The two
+it did not hold are F11, where four criteria still held two behaviors and
+this document had excused them by an exception the screen does not have,
+and F14, which is the two sections that end this document. It found eight
+new things, none of them blocking:
+
+| Finding | What was done |
+| --- | --- |
+| F1. WO-289's line for a message sent while a turn was running would be given after an interrupt, when no turn is running, because an interrupt runs no Stop hook | Accepted. Criterion 8 has a row for an interrupt, with no line, and gives no line where the transcript cannot be read |
+| F2. WO-295's new answer, added to the result's version in use, would fail the validation that every filed receipt gets at each plan check | Accepted. The answer is a new version of the result, and a criterion has a receipt of the version in use still verify |
+| F3. Two texts would contradict WO-296's rule that a criterion returned twice goes to a re-cut and not to the operator: the queue form's tenth rule, and the briefing line that says an amendment needs the operator's words | Accepted. Both are in WO-296's steps, with a criterion for each |
+| F4. The rule on who judges criteria could not be obeyed for a running order before WO-296 lands | Accepted. The rule, in the sequence and in the guide, says that until then a running order's criterion changes on the operator's one authorization of a text the session wrote |
+| F5. Two references to criteria by number went stale when the first round renumbered them | Accepted. WO-291's known issue and WO-292's evidence gate name the right ones |
+| F6. The first round's splits dropped three clauses and gave them no criterion | Accepted for two. WO-291's fourth criterion gives the board's base column as a table, and WO-292 names the existing case that guards a read of a credential path. Declined for a withdrawn order's listing: the Design promises the withdrawal and what its event records, which the fifth criterion's case reads, and where the index lists a withdrawn order does not change. Reopen: a withdrawn unpinned order is missing from its repository's list |
+| F7. `resume: status` typed during an analysis would end it | Accepted. The two phrases that observe leave the analysis on, by a row of criterion 6's table |
+| F8. WO-293's ninth criterion named a suite that does not run the case for the usage line of the `defect` command | Accepted. It names the `resume` suite as well |
+| F11 again. Four criteria still held two behaviors | Accepted. WO-291's first and third, WO-292's second, third and fifth, WO-290's third and WO-293's fourth each state one. The exception this document made for a scenario with its result is withdrawn |
+
+The pass then read its two new orders against the same screen: WO-295's
+first criterion became two, and five criteria or table cells of WO-296
+that held two results were cut to one.
+
+
+## The refutation
+
+Each judgment was made by a fresh `dotln-worker`, launched as
+`npm run worker -- show default` prints, from the canonical prompt of
+`npm run plan -- refute`. The receipt this pass's pull request carries is
+the last one's.
+
+**The first** judged the six orders as first filed and found the pass
+misaligned, with one hold: WO-289's first criterion made the rule on when
+a turn ends a platform rule that no owner can remove, against the
+sequence's rule on whose rules these are. Its receipt was filed. A
+disposition binds one criterion and the order's Cost line, and the repair
+changed WO-289's design and three of its criteria, so the pass corrected
+the subject and removed the receipt those corrections outdated, as the
+guide has it for a planning branch that is not yet merged. The receipt is
+kept in the ignored planning lane.
+
+**The second** judged the corrected six and found them aligned, with no
+hold and 22 known issues. It was not filed: while it ran, items 8 and 9 of
+the dispatch added two orders, so it no longer judged what this pass
+files. Its result is kept in the ignored planning lane, and each of its
+findings was acted on before the last judgment:
+
+| Order | Finding | What was done |
+| --- | --- | --- |
+| WO-288 | The Cost line's saving from one cycle is contradicted by eleven verifications | Carried on the catalog row as (6), from the first judgment |
+| WO-288 | Four roots stand over their cold-start ceilings in the order's worktree and the Cost line names no measure | Carried on the catalog row as (10). This pass measured the four roots and found the same figures |
+| WO-288 | Part F is in the worktree and not in the text judged | Carried on the catalog row as (7) |
+| WO-288 | The first-round refusal of a paired launch has no level | Carried on the catalog row as (11) |
+| WO-289 | The router's procedure takes the same constant as the rule, so a rewrite changes the router's root untested | Corrected. The router gets a constant of its own, and criterion 1 reads its root |
+| WO-289 | The rule's reasons to end a turn name no decision that is the operator's | Known issue of the order. Such a decision is recorded with its safe default while the session goes on, as the rule `own-decisions` has it |
+| WO-289 | The instruction file still gives `off` as the only way out of analysis | Corrected. Criterion 9 lists every place that says how analysis ends |
+| WO-289, WO-293 | The Cost lines named an acceptance route for a root over its ceiling that product 07 retired | Corrected in both. A root over its ceiling is boarded and no acceptance is recorded |
+| WO-291 | An unpinned order starts on a state its plan was not judged against | Known issue of the order, from the first judgment |
+| WO-291 | No count of the amendments a stale pin has cost | Known issue of the order |
+| WO-290 | With the feature off, the line is the one WO-288's Part F leaves | Known issue of the order, from the first judgment |
+| WO-290 | Which record shows a plan proposed and not approved | Corrected. Criterion 1's row names the route's stop, `awaiting-plan-approval` |
+| WO-290 | The prompts it saves are unmeasured | Known issue of the order, from the first judgment |
+| WO-292 | A refusal the session worked around still ends the drive | Known issue of the order, from the first judgment |
+| WO-292 | Its new stop joins a list that Part F leaves | Carried on WO-288's catalog row as (7) |
+| WO-292 | No case reads a path the launchpad's own guard refuses | Known issue of the order |
+| WO-293 | A carried criterion can hide a regression the repair caused elsewhere | Known issue of the order, from the first judgment |
+| WO-293 | The sixth class widens what can close unmet | Known issue of the order, from the first judgment |
+| WO-293 | The advisory's phrases flag a measured ratio | Known issue of the order |
+| WO-294 | Reading the roots alone assumes no order changes what a root means | Known issue of the order |
+| WO-294 | Nothing states what happens to a configuration that does not parse | Known issue of the order |
+
+**The third** judges the eight orders as they stand after the second
+criteria review. Its record is written here when it returns.
 
 ## Answers to the instance (paste-ready)
 
@@ -872,7 +959,7 @@ SESSIONS THAT SAY ONE LINE AND END THE TURN. Core cannot see your sessions. Thes
 
 4. Advisories. Since v1.4.0 most stops advise in an instance, and an advisory still carries words written for a refusal, such as "The operator can authorize proceeding". An advisory asks nothing of you: the call went on.
 
-Filed in core: WO-289 (every text says to go on, an advisory asks for nothing, analysis ends at a dispatch) and WO-290 (the Stop hook sends a session back once when its dispatch is unfinished). The day's figure ships with the release that carries WO-288.
+Filed in core: WO-289 (every text says to go on, an advisory asks for nothing, analysis ends at a dispatch, and a message sent while a turn was running arrives marked as such) and WO-290 (the Stop hook sends a session back once when its dispatch is unfinished). The day's figure ships with the release that carries WO-288.
 
 One thing core cannot see: whether what is asked of the operator includes the host's own permission prompts. Say so in your next entry if it does.
 
@@ -889,7 +976,7 @@ AN ORDER AGAINST A TARGET, DRIVEN (the account of your eighth order). Each claim
 - No command undoes a recorded final review, and an override record can land on another order. Confirmed. Not filed: met once. The decision you recorded by hand stands.
 - Review rounds' provenance and the attested effort: confirmed in part, not filed. The update preview's wording is already a row of core's WO-288.
 
-CRITERIA. Core's planning screens gain five in the next release, and your passes can apply them now: one behavior to a criterion, with the command that shows it; a claim about every member of a set names the members or the check that fails closed; no existing case is held unchanged; a criterion added in execution is read against the list first; and a pass counts an order's criteria before it files.
+CRITERIA. Core's planning screens gain five in the next release, and your passes can apply them now: one behavior to a criterion, with the command that shows it; a claim about every member of a set names the members or the check that fails closed; no existing case is held unchanged; a criterion added in execution is read against the list first; and a pass counts an order's criteria before it files. Filed in core: WO-295 (the planning refuter also judges whether each criterion can be settled, and holds the pass on one that cannot) and WO-296 (a criterion that two verifications return is re-cut by a planner worker and judged by a refuter, and no session asks the operator to waive, cut or amend one). Until they ship: where your kit has npm run worker -- review --kind criteria --subject planning, run it on every order a pass files, before its refutation; and a session that finds a criterion wrong writes the amended text itself and asks for one authorization of it, never for the operator to work the criterion out.
 
 WHAT STOPS YOUR NEXT ORDER: a day's figure that is reached, and a session left in analysis. Each has a route above. Nothing else here stops it.
 ```

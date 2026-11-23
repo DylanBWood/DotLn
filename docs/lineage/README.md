@@ -23,7 +23,7 @@ Sections: 200. Idea entries: 1186. Counts are lifecycle-tag memberships in entry
 
 ## Sections lacking a lifecycle tag
 
-- [2026-11-23 — Planning pass: sessions that go on, orders against a target and a verification that ends (WO-289 to WO-294 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) — prose-only section; no idea entries.
+- [2026-11-23 — Planning pass: sessions that go on, orders against a target, a verification that ends and who judges criteria (WO-289 to WO-296 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) — prose-only section; no idea entries.
 - [2026-11-16 — Planning pass: stops, time limits and whose rules (WO-284, WO-287 and WO-288 filed; WO-285 and WO-286 filed as WO-287's parts; WO-279 amended); registration only; the record is the planning document](idea-ledger.md?plain=1#L65) — prose-only section; no idea entries.
 - [2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-282 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L84) — prose-only section; no idea entries.
 - [2026-11-10 — Planning pass: one order for the whole queue (WO-276 filed; WO-261 to WO-275 made umbrella records); registration only; the record is the planning document](idea-ledger.md?plain=1#L104) — prose-only section; no idea entries.
@@ -57,7 +57,7 @@ Sections: 200. Idea entries: 1186. Counts are lifecycle-tag memberships in entry
 
 | Section | Line | Idea entries | Lifecycle tags |
 | --- | ---: | ---: | ---: |
-| [2026-11-23 — Planning pass: sessions that go on, orders against a target and a verification that ends (WO-289 to WO-294 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) | 43 | 0 | 0 |
+| [2026-11-23 — Planning pass: sessions that go on, orders against a target, a verification that ends and who judges criteria (WO-289 to WO-296 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L43) | 43 | 0 | 0 |
 | [2026-11-16 — Planning pass: stops, time limits and whose rules (WO-284, WO-287 and WO-288 filed; WO-285 and WO-286 filed as WO-287's parts; WO-279 amended); registration only; the record is the planning document](idea-ledger.md?plain=1#L65) | 65 | 0 | 0 |
 | [2026-11-14 — Planning pass: an instance's returns on v1.0.0 and the follow-ups WO-276 left (WO-277 to WO-282 filed); registration only; the record is the planning document](idea-ledger.md?plain=1#L84) | 84 | 0 | 0 |
 | [2026-11-10 — Planning pass: one order for the whole queue (WO-276 filed; WO-261 to WO-275 made umbrella records); registration only; the record is the planning document](idea-ledger.md?plain=1#L104) | 104 | 0 | 0 |

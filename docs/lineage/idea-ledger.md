@@ -40,7 +40,7 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
-## 2026-11-23 — Planning pass: sessions that go on, orders against a target and a verification that ends (WO-289 to WO-294 filed); registration only; the record is the planning document
+## 2026-11-23 — Planning pass: sessions that go on, orders against a target, a verification that ends and who judges criteria (WO-289 to WO-296 filed); registration only; the record is the planning document
 
 Dispatch: `planning:` on the work instance stopping after each line, the
 order in progress going round in circles and criteria the operator is

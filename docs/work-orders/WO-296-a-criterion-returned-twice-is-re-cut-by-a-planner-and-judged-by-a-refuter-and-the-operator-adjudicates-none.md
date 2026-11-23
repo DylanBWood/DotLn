@@ -183,17 +183,21 @@ failure that run names.
    declines a second re-cut of a criterion. Check: one case for each
    remaining row of criterion 2's table, and one for criterion 3.
 5. `scripts/resume.mjs` and `scripts/lib/criteria-status.mjs`: the status
-   line for a re-cut criterion with its withdrawal command, and the fix
-   briefing's line at a second return. Check: two cases in
-   `scripts/test-resume.sh`'s fixture.
+   line for a re-cut criterion with its withdrawal command; the fix
+   briefing's line at a second return; and, in the briefing line that gives
+   the routes for a criterion the executor recorded unmet, the sentence on
+   an amendment, which names the re-cut beside the operator's words. Check:
+   three cases in `scripts/test-resume.sh`'s fixture.
 6. `packages/skeleton/src/loadouts/contributor.ts`: the rule
    `own-decisions` as the Design's last bullet says. Check: a case in
    `scripts/test-harness.mjs` that reads the six emitted roots.
 7. `node scripts/harness.mjs emit`, then `npm run sync` and `npm run meta`.
 8. Write-backs: `docs/product/07-execution-guide.md`, "Operator recovery
    controls" (the re-cut beside the waiver and the defect record, and the
-   withdrawal) and "Verification review and attack" (what a second return
-   leads to); `docs/KIT.md`, "A criterion nothing can meet, waivers and
+   withdrawal) "Verification review and attack" (what a second return leads to)
+   and the tenth rule of "The queue form" (a criterion returned twice goes
+   to a re-cut, and the cut of a part is still recommended to the
+   operator); `docs/KIT.md`, "A criterion nothing can meet, waivers and
    retractions", "What each feature does" and "The feature table".
 9. The handoff sequence of §Discipline.
 
@@ -205,21 +209,21 @@ rule's sentence; the cases; the write-backs.
 
 1. For a fixture order whose control log holds two failed verifications
    that each returned criterion 3, the re-cut command's first step prints a
-   brief that holds criterion 3's text and both reports' findings against
-   it (`npm test -- --only plan-refutation`).
+   brief for criterion 3 that holds each of the two reports' findings
+   against it (`npm test -- --only plan-refutation`).
 2. With the feature on, the re-cut command does what this table says, and
    no row needs a decision that records an authorization
    (`npm test -- --only plan-refutation`).
 
-   | What the command is given                                                              | The command                                                     |
-   | -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-   | a planner worker's answer that the criterion stands                                    | changes no byte of the order and says that the criterion stands |
-   | an amended text, and a refuter's receipt that holds nothing for the order              | binds the amendment, and the plan check admits the order        |
-   | an amended text, and a refuter's receipt with a hold for the order                     | binds nothing and names the hold                                |
-   | an order whose criterion differs from the text the refuter's receipt judged            | binds nothing and names the criterion                           |
+   | What the command is given | The command |
+   | --- | --- |
+   | a planner worker's answer that the criterion stands | changes no byte of the order |
+   | an amended text, and a refuter's receipt that holds nothing for the order | binds the amendment, so that `npm run plan -- check` admits the amended order |
+   | an amended text, and a refuter's receipt with a hold for the order | declines with a message that names the hold |
+   | an order whose criterion differs from the text the refuter's receipt judged | declines with a message that names the criterion |
 
 3. A second re-cut of a criterion already re-cut in the same order is
-   declined, and the message names the defect record and the operator's
+   declined with a message that names the defect record and the operator's
    amendment as what is left (`npm test -- --only plan-refutation`).
 4. The order's status lists each re-cut criterion with the command that
    withdraws it (`npm test -- --only resume`).
@@ -230,21 +234,24 @@ rule's sentence; the cases; the write-backs.
    (`npm test -- --only configuration-root`;
    `npm test -- --only plan-refutation`).
 
-   | The root's election                                 | The result                                                                                   |
-   | --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-   | none                                                | `npm run features -- list` shows the feature on, in core and in an exported instance         |
-   | `"features": {"recut-returned-criterion": false}`   | the re-cut command declines and names the feature                                            |
+   | The root's election | The result |
+   | --- | --- |
+   | none | `npm run features -- list` shows the feature on, in core and in an exported instance |
+   | `"features": {"recut-returned-criterion": false}` | the re-cut command declines with a message that names the feature |
 
 7. The rule `own-decisions`, in each of the six emitted roots that carry
    the shared rules (`dotln-executor`, `dotln-verifier`, `dotln-reviewer`,
    `dotln-release-close`, `dotln-planner`, `dotln-refuter`), says that a
-   criterion two verifications have returned goes to a re-cut and that no
-   session asks the operator for a waiver, a cut or an amendment
-   (`npm test -- --only harness-fixtures`).
-8. `docs/product/07-execution-guide.md` under "Operator recovery controls"
-   gives the re-cut beside the waiver and the defect record, with the
-   command that withdraws one (`npm run test:docs`).
-9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+   criterion two verifications have returned goes to a re-cut and not to
+   the operator (`npm test -- --only harness-fixtures`).
+8. The briefing line that gives the routes for a criterion the executor
+   recorded unmet says that an amendment is bound by the operator's words
+   or by a re-cut (`npm test -- --only resume`).
+9. Each of these two places of `docs/product/07-execution-guide.md` names
+   the re-cut as where a criterion two verifications have returned goes:
+   "Operator recovery controls", and the tenth rule of "The queue form"
+   (`npm run test:docs`).
+10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only plan-refutation`,
 `npm test -- --only resume`, `npm test -- --only harness-fixtures`,

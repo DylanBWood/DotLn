@@ -61904,6 +61904,14 @@
           "reopenWhen": "An instance again loses work to an unquoted pattern with no rule in its file, or a handoff again leaves a worker's files for the operator to remove.",
           "targets": [],
           "at": "2026-11-23T21:26:29.160Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Corrects this pass's earlier note, which gave a count the pass did not keep. Three notes on what an instance is seeded with. The second, the shell rules, was met in this pass's own session, where zsh stopped several commands for an unquoted pattern and the hook named the cause each time. No instance reports work lost to it. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "An instance again loses work to an unquoted pattern with no rule in its file, or a handoff again leaves a worker's files for the operator to remove.",
+          "targets": [],
+          "at": "2026-11-23T23:35:16.061Z"
         }
       ]
     },
@@ -62247,6 +62255,14 @@
           "reopenWhen": "The operator moves claims-evidence's layer, or an instance whose overlay unequips author records a claim of cause, blocker or completion made without its supporting command or output.",
           "targets": [],
           "at": "2026-11-23T21:26:30.009Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Corrects this pass's earlier note, written before its first refutation held against making the rule on turns a platform rule. The rule that a claim names its evidence stays in the author's layer: by the follow-up's own words the choice is the operator's, and this pass's dispatch does not make it. WO-289 leaves the rule on when a turn ends in the author's layer as well. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "The operator moves claims-evidence's layer, or an instance whose overlay unequips author records a claim of cause, blocker or completion made without its supporting command or output.",
+          "targets": [],
+          "at": "2026-11-23T23:35:16.204Z"
         }
       ]
     },
@@ -62443,6 +62459,16 @@
             "WO-289"
           ],
           "at": "2026-11-23T21:26:31.146Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Corrects this pass's earlier note. Carried by WO-289 as the author's rule on a blocked turn, rewritten in the six role roots that carry the shared rules and removable as before, with WO-290 behind it. Its condition occurred again on 2026-11-22 (WO-288-D168) and in the operator's report of 2026-11-23. [the 2026-11-23 pass (docs/planning/passes/the-kit-keeps-working-2026-11-23.md)]",
+          "reopenWhen": "WO-289 is withdrawn, or closes without the rewritten rule in those six roots.",
+          "targets": [
+            "WO-289"
+          ],
+          "at": "2026-11-23T23:35:16.343Z"
         }
       ]
     },

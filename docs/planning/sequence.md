@@ -125,15 +125,16 @@ pointers and continuation command. Untouched items persist across passes.
   the operator is asked to waive criteria on each order and lays it to the
   pass that wrote them).
 - **Who judges criteria.** Whether a criterion can be settled is judged by
-  the planner and the refuter, and one that proves wrong is re-cut by them;
-  neither is put to the operator to adjudicate. Until the refuter's own
-  judgment covers the criteria, a pass has every order it files or changes
-  read by the criteria review before its refutation
+  the planner and the refuter, and the operator is not asked to work a
+  criterion out. Until the refuter's own judgment covers the criteria
+  (WO-295), a pass has every order it files or changes read by the criteria
+  review before its refutation. Until a criterion returned twice has its
+  re-cut (WO-296), a change to a running order's criterion still needs the
+  operator's one recorded authorization, of a text the session wrote
   ([product 07's screens](../product/07-execution-guide.md#operator-opened-planning-pass);
   operator direction, 2026-11-23, ignored captures SHA-256
   `1873874c50d48842066af140d3a18d11680c5ebf45b325b63574bd07615eb4f7` and
-  `002461b05862d9020f0b43e0437564256a3d7454b6674e16b9a6ae5598a81631`; WO-295
-  and WO-296).
+  `002461b05862d9020f0b43e0437564256a3d7454b6674e16b9a6ae5598a81631`).
 - **Turns.** A session that is dispatched works until its dispatch records
   its completion. It ends a turn to wait only on the operator's pause,
   stop or cancel, or on what only the operator can do, and no text the kit

@@ -150,10 +150,15 @@ the rule, as any rule of the author's.
   `packages/skeleton/src/harness-host.ts`), and the context it gave said
   nothing of when the message was written. The same journal holds a row for
   each run of the Stop hook, so whether a turn was running could be read
-  from it. The operator named the misreading as one seen before, and this
-  pass found no rule or hook line on it in `contributor.ts`, in
-  `packages/compiler/src/harness.ts` or in the decisions of WO-254, WO-259,
-  WO-277 and WO-287.
+  from it. The kit does hold a reader for this:
+  `promptRoute` names a prompt's route as a turn's prompt, mid-turn or an
+  interrupt from the last row of the host's transcript. In that session it
+  returned `unknown` for all eight messages the operator typed, since the
+  host writes its queue row after the hook has run, and the failures page
+  is the route's one reader. The operator took the misreading to be fixed.
+  WO-235 built a reply checklist and a reminder for the operator's messages
+  and withdrew them under its amendment WO-235-D063, and no text now tells
+  a session when a message was written.
 - The operator's own reading on 2026-11-19, recorded as WO-288-D049, laid
   the work instance's stopped turns to the sentence that ends a turn when a
   day's figure is reached. WO-288 Part F removes that sentence and is not
@@ -198,13 +203,14 @@ the rule, as any rule of the author's.
 - **A message sent while a turn was running says so when it arrives.** The
   prompt hook runs when the operator sends a message, and the session
   journal shows whether the turn that the prompt before it opened has
-  ended. Where it has not, the hook adds one line of fact to that message's
-  context: the time it was sent, that a turn was running then, and that any
+  ended. Where it has not, and the host's transcript shows no interrupt of
+  that turn, the hook adds one line of fact to that message's context: the time it was sent, that a turn was running then, and that any
   reply the session sent after that time was written without it. The line
   states what was observed and says nothing of how a session works, so it
   is the kit's to give, as the observed facts of a prompt are. A message
-  that opens a turn gets no such line, and neither does any message where
-  the journal cannot be read.
+  that opens a turn gets no such line. Neither does one sent after the
+  operator interrupted the turn, which runs no Stop hook, nor any message
+  where the journal or the transcript cannot be read.
 - **An advisory reports and asks for nothing.** At `advise` a message opens
   with what was observed and that the call went on. The sentence that names
   the line which changes the level stays. A sentence that tells the operator
@@ -213,9 +219,12 @@ the rule, as any rule of the author's.
   the session records the operator's authorization before further bounded
   work, which is what it does now. Where it advises, the work goes on and
   the handoff says by how much the bound was passed.
-- **`analysis:` ends when the operator dispatches.** A prompt that opens
-  with `resume:`, `planning:`, `ideation:` or `drive:` ends an analysis the
-  session is in and is dispatched as in any other session. While analysis is
+- **`analysis:` ends when the operator dispatches.** A prompt that
+  dispatches a role ends an analysis the session is in and is dispatched as
+  in any other session: `planning:`, `ideation:`, `drive:` and each
+  `resume:` phrase but `resume: status` and `resume: times`. Those two
+  observe and dispatch nothing, so they leave the analysis on, and reading
+  the status does not end a diagnosis. While analysis is
   on, what every hook says after the entry prompt (a later prompt's context,
   a tool hook's message and the Stop hook's) is that analysis is on, that
   the operator's message is the direction to act on, and the line that ends
@@ -299,16 +308,17 @@ run except to reproduce a failure that run names.
    as the Design says. Check: the case of step 1 reads it.
 8. `packages/compiler/src/operator-control.mjs`: a prompt that opens with a
    dispatch phrase ends an analysis and is passed on to the dispatch
-   reader, unless an override is open under it; the message for every hook
+   reader, unless an override is open under it, and `resume: status` and
+   `resume: times` are no dispatch; the message for every hook
    after the entry prompt as the Design says. In `contributor.ts`, the
    constant `operatorControls`: its sentence names a dispatch beside `off`
    as what ends analysis. Check: cases in the compiler
    package's operator-control tests for a later prompt, a tool hook and the
    Stop hook, and for a dispatch typed with an override open under the
    analysis; and one case in `scripts/test-harness.mjs` for each of
-   `resume: next`, `planning:`, `ideation:` and `drive: WO-NNN` typed after
-   `analysis:` in a fixture session, which reads the role context the hook
-   gives.
+   `resume: next`, `planning:`, `ideation:` and `drive: WO-NNN` typed after `analysis:` in a fixture session, which reads
+   the role context the hook gives, and one each for `resume: status` and
+   `resume: times`, which leave the analysis on.
 9. `node scripts/harness.mjs emit`, then `npm run sync` and `npm run meta`:
    the emitted roots, hooks and the features page.
 10. Write-backs: `docs/KIT.md`, "What is the kit's and what is the
@@ -352,11 +362,14 @@ cases; the emitted bundle and the features page; the write-backs.
    first row, says that where the bound's message is an advisory the work goes on
    (`npm test -- --only harness-fixtures`).
 6. In a session where `analysis:` is on and no `operator override:` is
-   open, a prompt that opens with a dispatch phrase ends the analysis, and
-   the prompt hook gives that prompt the role context it gives the same
-   prompt in a session that never entered analysis, by a case for each of
-   `resume: next`, `planning:`, `ideation:` and `drive: WO-NNN`
+   open, a prompt does to the analysis what this table says
    (`npm test -- --only harness-fixtures`).
+
+   | The prompt | Result |
+   | --- | --- |
+   | `resume: next`, `planning:`, `ideation:` or `drive: WO-NNN`, a case for each | ends the analysis, and the prompt gets the role context it gets in a session that never entered analysis |
+   | `resume: status` or `resume: times`, a case for each | leaves the analysis on |
+
 7. While `analysis:` is on, the message each hook gives after the entry
    prompt (a later prompt's context, a tool hook's message and the Stop
    hook's) says that analysis is on and names `analysis: off`, and does not
@@ -365,11 +378,12 @@ cases; the emitted bundle and the features page; the write-backs.
 8. The context the prompt hook adds to an operator's message is as this
    table says (`npm test -- --only harness-fixtures`).
 
-   | The session journal when the message is sent | The context |
+   | What the hook can read when the message is sent | The context |
    | --- | --- |
-   | holds a prompt of this session and no Stop row after it | holds one line that gives the time the message was sent, says that a turn was running then and says that a reply sent after that time was written without it |
-   | holds a Stop row after the session's last prompt, or no earlier prompt of the session | holds no such line |
-   | cannot be read | holds no such line |
+   | the session journal holds a prompt of this session and no Stop row after it, and the host's transcript holds no interrupt after that prompt | holds one line that gives the time the message was sent, says that a turn was running then and says that a reply sent after that time was written without it |
+   | the same journal, and the host's transcript holds an interrupt after that prompt | holds no such line |
+   | the journal holds a Stop row after the session's last prompt, or no earlier prompt of the session | holds no such line |
+   | the journal or the transcript cannot be read | holds no such line |
 
 9. Each of these says that analysis ends at a dispatch or at
    `analysis: off`: `CLAUDE.md`; `scripts/kit/CLAUDE.template.md`; the
@@ -396,6 +410,7 @@ a blocked turn says more than it did and is removed as before.
 
 **Known issues and carry-ins:**
 
+- Named boy-scout item, same file as step 4: `promptRoute` returns `unknown` for a message the operator types, since the host writes its queue row after the hook has run. Where criterion 8's first row holds, the journal's route for the message is `mid-turn`.
 - The rule's three reasons to end a turn name no decision that is the operator's. Such a decision is recorded with its safe default and put ready to decide in the report while the session goes on, as the shared rule `own-decisions` has it. Reopen: a session under the rewritten rule records a product decision that the operator then corrects as one that should have been put to them first.
 - The line for a message sent while a turn was running rests on the prompt hook running when the message is sent, which this pass observed in one session of Claude Code 2.1.330 and no page of the host states. Reopen: a live session's journal shows the hook's row for such a message after the host has delivered it; the line is then decided from the host's transcript. A turn that WO-290's continuation keeps going has a Stop row behind it, so a message sent during it gets no line.
 - Every criterion reads text or a hook's output, and none observes a

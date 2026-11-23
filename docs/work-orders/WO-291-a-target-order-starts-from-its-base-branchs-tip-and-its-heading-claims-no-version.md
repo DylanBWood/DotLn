@@ -221,18 +221,28 @@ refusal's words; the cases; the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. With a fixture order whose line is `**Repository:** <id>` and a clone
-   whose base branch has gained two commits since the order was filed,
-   `worktree start` creates the target worktree at the base branch's tip
+1. `worktree start` of a fixture order whose line is `**Repository:** <id>`
+   creates the target worktree where this table says
    (`npm test -- --only target-worktree`).
-2. In that fixture the activation event and the registry entry each record
-   that tip as the base (`npm test -- --only target-worktree`).
-3. Where the fetch of the clone's `origin` fails, the start of an unpinned
-   order completes at the tip the clone holds and prints one advisory that
-   names that commit's date (`npm test -- --only target-worktree`).
-4. `npm run work-orders -- index --check` passes with one open unpinned
-   order and one activated from the unpinned form
+
+   | The clone when the order starts | The worktree starts at |
+   | --- | --- |
+   | its `origin` holds two commits on the base branch that the clone lacks | the base branch's tip after the fetch |
+   | the fetch of its `origin` fails | the base branch's tip as the clone holds it |
+
+2. In the fixture of that table's first row, the activation event and the
+   registry entry each record that tip as the base
+   (`npm test -- --only target-worktree`).
+3. Where the fetch fails, the start prints one advisory that names the date
+   of the commit it starts at (`npm test -- --only target-worktree`).
+4. The board's base column gives a member order's base as this table says
    (`npm test -- --only work-orders-fixtures`).
+
+   | The order | Its base on the board |
+   | --- | --- |
+   | open, with the unpinned line | the registered base branch's name |
+   | activated from the unpinned line | the commit its activation recorded |
+
 5. A never-activated order with the unpinned line is withdrawn by
    `npm run resume -- withdraw` (`npm test -- --only resume`).
 6. A fixture order against a target, filed with no version placeholder in
@@ -272,8 +282,7 @@ is left as it is.
 - The `instance-history` suite must admit an instance's existing pinned
   orders and their records unchanged; the order widens what is admitted
   and tightens nothing.
-- A clone whose `origin` needs credentials the session lacks takes the
-  failed-fetch path of criterion 4. Whether to offer the operator the
+- A clone whose `origin` needs credentials the session lacks takes the failed-fetch path of criterion 1's second row. Whether to offer the operator the
   fetch is not decided here.
 - A self order's heading keeps its placeholder, which the activation does
   replace.

@@ -197,27 +197,28 @@ its account; the usage reader's second lane; the cases; the write-backs.
    `node scripts/harness.mjs emit` run in the launchpad that worktree's
    guards answer a call the root advises on with an advisory
    (`npm test -- --only target-worktree`).
-2. Where a registered target worktree cannot be written, that emit names
-   the worktree in one advisory and completes
+2. Where a registered target worktree cannot be written, that emit
+   completes and writes the launchpad's own guards
    (`npm test -- --only target-worktree`).
-3. From a session in a target worktree, the Read tool's read of a file
+3. In that fixture the emit prints one advisory that names the worktree it
+   could not write (`npm test -- --only target-worktree`).
+4. From a session in a target worktree, the Read tool's read of a file
    under the launchpad's main checkout is admitted
    (`npm test -- --only target-worktree`).
-4. A driven attempt that ends without its phase's completion and whose
-   record holds a guard's refusal ends the drive with the reason
-   `guard-refused`, and the drive starts no second attempt of that phase
-   (`npm test -- --only harness-fixtures`).
-5. For a drive that ended so, `node scripts/drive.mjs why WO-NNN` prints
+5. A driven attempt that ends without its phase's completion and whose
+   record holds a guard's refusal ends the drive on that attempt with the
+   reason `guard-refused` (`npm test -- --only harness-fixtures`).
+6. For a drive that ended so, `node scripts/drive.mjs why WO-NNN` prints
    each refusing stop's id and the line of `dotln.config.json` that
    changes its level (`npm test -- --only harness-fixtures`).
-6. `node scripts/harness.mjs usage <session>` for a session whose journal
+7. `node scripts/harness.mjs usage <session>` for a session whose journal
    lies in an order's target lane prints that session's counts and not the
    cause `no-session` (`npm test -- --only harness-fixtures`).
-7. `docs/KIT.md` under "How a session reaches the target" says that a drive
+8. `docs/KIT.md` under "How a session reaches the target" says that a drive
    starts each phase but the close in the target worktree, under its
    guards, and that the launchpad's emit brings those guards to the root's
    levels (`npm run test:docs`).
-8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only target-worktree`,
 `npm test -- --only harness-fixtures`, `npm test -- --only launchpad`,
@@ -225,8 +226,8 @@ its account; the usage reader's second lane; the cases; the write-backs.
 
 **Evidence gate:** under `docs/evidence/WO-292/`: the decisions, with the
 emit's measured time before and after on core's host and on the fixture
-with one and with three registered worktrees; the drive record and the
-`why` output of criterion 3's fixture; the handoff.
+with one and with three registered worktrees; the drive record of criterion 5's fixture and the `why` output of criterion
+6's; the handoff.
 
 **Write-back duty:** as step 9 lists. The release's Read before upgrading
 says that the emit which finishes an update now writes each registered
@@ -235,7 +236,8 @@ hand.
 
 **Known issues and carry-ins:**
 
-- Criterion 3 admits a read by where the file is, and no case reads a path that the launchpad's own guard refuses from its own checkout. Reopen: a read from a target worktree of a launchpad path is admitted where the same read from the launchpad's own checkout is refused.
+- A case that must still hold, named here because this order widens what a target worktree may read: the case of WO-287's criterion A2 in `scripts/test-target-worktree-start.mjs` expects a Read of a credential path in the target worktree refused, and a Read of a path outside the order's roots refused as a user setting. This order admits neither: the first is a credential path, and the second lies outside the launchpad's main checkout. Where the executor finds that fixture path inside the checkout, the path moves and the assertion stays.
+- Criterion 4 admits a read by where the file is, and no case reads a path that the launchpad's own guard refuses from its own checkout. Reopen: a read from a target worktree of a launchpad path is admitted where the same read from the launchpad's own checkout is refused.
 - The drive ends as `guard-refused` when an unfinished attempt's record holds any guard's refusal, one the session then worked around by an admitted form among them, so a retry that could have finished the phase is not made. Reopen: a drive ends so where the session completed the refused step another way, and a second attempt run by hand completes the phase.
 - The other nine items of WO-287-D084's follow-up stay boarded
   (FUP-558ef58d7a128b96); this order takes the seventh.

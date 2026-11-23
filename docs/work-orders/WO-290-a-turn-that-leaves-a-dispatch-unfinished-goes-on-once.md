@@ -202,8 +202,8 @@ emitted hook; the write-backs.
    or say in one line what only the operator can do and end the turn
    (`npm test -- --only harness-fixtures`).
 3. With `"features": {"continue-unfinished-turn": false}` the hook lets the
-   turn of the table's first row end, and its line names the order and the
-   unfinished dispatch (`npm test -- --only harness-fixtures`).
+   turn of the table's first row end
+   (`npm test -- --only harness-fixtures`).
 4. In a root that makes no election, `npm run features -- list` shows
    `continue-unfinished-turn` on, in core and in an exported instance
    (`npm test -- --only configuration-root`).
