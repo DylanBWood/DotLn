@@ -1,6 +1,6 @@
 # The critic of the critics, 2026-11-23
 
-Record of the [2026-11-23 planning pass](the-kit-keeps-working-2026-11-23.md). This is the report of one of its research workers (the `default` worker; the host reported claude-opus-5-5), read-only, at `main` `bc761ad9c` (v1.4.0) on 2026-11-23. It is a worker's reading: what the pass checked itself is said in the pass document, with the file and line. The host refused the worker's own write of this file, so the pass filed the report as returned, with absolute checkout paths replaced by names. Its brief is [the one the 2026-11-16 pass kept](the-kit-stops-no-work-2026-11-16-critic-of-the-critic-brief.md), with its fields filled: the pass of 2026-11-16 as the last pass, every criticisms and decisions file written to since, WO-288's records in its worktree among them, and WO-288's Part A as the open order that builds the critic.
+Record of the [2026-11-23 planning pass](the-kit-keeps-working-2026-11-23.md). This is the report of one of its research workers (the `default` worker; the host reported claude-opus-5-5), read-only, at `main` `bc761ad9c` (v1.4.0) on 2026-11-23. It is a worker's reading: what the pass checked itself is said in the pass document, with the file and line. The host refused the worker's own write of this file, so the pass filed the report as returned, with absolute checkout paths replaced by names and its quotations of kit text set as code on the lines where the document check would read them as the operator's words. Its brief is [the one the 2026-11-16 pass kept](the-kit-stops-no-work-2026-11-16-critic-of-the-critic-brief.md), with its fields filled: the pass of 2026-11-16 as the last pass, every criticisms and decisions file written to since, WO-288's records in its worktree among them, and WO-288's Part A as the open order that builds the critic.
 
 ## Summary
 
@@ -70,14 +70,14 @@ Counts are given as pass / WO-284 / WO-287 / WO-288. In "What changed": (a) answ
 | **N1** – identifiers sent to the outside-model critic | 0/0/3/0 | First two fixes were in-session scripts. The third leak came from the kept launcher's default of reading the original transcripts (WO-287-D068). (c) WO-288's kit copy | **Not seen after the kit change** |
 | **N2** – edits made under a live reader or outside the round's rule | 0/0/2/2 | (a) | **Yes** |
 | **N3** – the critic re-raising judged incidents | 3 points, plus 29 repeat declines | (d): the charter is unchanged | **Yes,** 7 more times |
-| **N4** – decision dispatch field missing its control prefix | 6+ in decisions: WO-284-D031, D039; WO-287-D058; WO-288-D009, D010, D237, D247 | (d). The role says "naming the operator dispatch" (`contributor.ts:295`); the check requires a prefix (`docs-check.mjs:389-398`). FUP-fab6c96ffe7d5f46 is untriaged | **Yes** |
+| **N4** – decision dispatch field missing its control prefix | 6+ in decisions: WO-284-D031, D039; WO-287-D058; WO-288-D009, D010, D237, D247 | (d). The role says `naming the operator dispatch` (`contributor.ts:295`); the check requires a prefix (`docs-check.mjs:389-398`). FUP-fab6c96ffe7d5f46 is untriaged | **Yes** |
 | **N5** – final review turned into a repair cycle | WO-287-D091 (operator correction), D093.1 | (d): reviewer step 4 "Otherwise finish substantive fixes" is unchanged (`contributor.ts:1152` on main / 1162 in WO-288). FUP-67b1b6cf60bba81f is untriaged | **Unknown;** no final review has run since |
 
 ## Why changes did not hold
 
 1. **X1.** The hook text injected at the moment a question arrives contradicts the new role sentence. This was boarded as WO-288-D187 and is untriaged.
 2. **K4.** The host's completion notice reports the exit of the trailing echo. The working form, "exit with the probe's own status", lived in session scratch.
-3. **K16.** `contributor.ts:119` still offers its own exit: "when only the operator can clear a block … end the turn". WO-288-D221 says the wait sentence reads as a third exit. On main, the day's-figure hook and role text order the turn to end; WO-288-D049 traced the instance's stops to that text.
+3. **K16.** `contributor.ts:119` still offers its own exit: `when only the operator can clear a block … end the turn`. WO-288-D221 says the wait sentence reads as a third exit. On main, the day's-figure hook and role text order the turn to end; WO-288-D049 traced the instance's stops to that text.
 4. **K11/K15.** Criteria 23 and 25 claim something for every one of 139 limits at 327 sites, so each verification finds the next site. WO-288 grew from four parts to six (Parts E and F added) without re-applying "cut by what one verification can hold". The off-ramps the kit already has (cutting a part, `waive`, recording a defect) are never named at the moment they apply.
 5. **The repair rule did not travel.** WO-287's handoff-claims script did not reach WO-288. WO-288 accepted follow-up D018 L4P4, and Part D ignored it one part later (D040 L10P4, D042 L11P2).
 

@@ -1,6 +1,6 @@
 # What tells a session to stop, ask, wait or hand over a command
 
-Record of the [2026-11-23 planning pass](the-kit-keeps-working-2026-11-23.md). This is the report of one of its research workers (the `default` worker; the host reported claude-opus-5-5), read-only, at `main` `bc761ad9c` (v1.4.0) on 2026-11-23. It is a worker's reading: what the pass checked itself is said in the pass document, with the file and line. The host refused the worker's own write of this file, so the pass filed the report as returned, with absolute checkout paths replaced by names.
+Record of the [2026-11-23 planning pass](the-kit-keeps-working-2026-11-23.md). This is the report of one of its research workers (the `default` worker; the host reported claude-opus-5-5), read-only, at `main` `bc761ad9c` (v1.4.0) on 2026-11-23. It is a worker's reading: what the pass checked itself is said in the pass document, with the file and line. The host refused the worker's own write of this file, so the pass filed the report as returned, with absolute checkout paths replaced by names and its quotations of kit text set as code on the lines where the document check would read them as the operator's words.
 
 ## 0. Boundary of this read
 
@@ -58,8 +58,8 @@ Inference: with the starter defaults, an instance's skills are byte-identical to
 | R7 | anti-oscillation: "…when the boundary is genuinely unclear, ask one focused question instead of guessing…; and pause to ask before any file action that goes beyond the literal correction." | feedback.ts:179-184; SKILL:98 | all | after a correction | (a) |
 | R8 | fail-conservative-correction: "On a typed correction, freeze destructive effects and scope expansion, preserve evidence, and require diagnosis…" | feedback.ts:86-95; SKILL:102 | all | "typed" is not defined in role text | (a)-leaning |
 | R9 | "…where they fit no entry or several, ask." | contributor.ts:163-164; SKILL:42 | all but release-close | choosing a worker | (a) conditional |
-| R10 | Operator Check-In: "…offer a reasonable opportunity for steering through available asynchronous input or a turn boundary… Do not… wait indefinitely for approval." | executor-supports.ts:36-40; SKILL:62 | executor, on by default | before each queued item | (b) |
-| R11 | Intent to Act: "On entry, tell the operator in chat 'I intend to'… Proceed… after current work and a reasonable steering opportunity unless the operator vetoes…; this is not a routine permission request." | executor-supports.ts:65-69; SKILL:63 | executor, on by default | on entry and before each action | (b) |
+| R10 | Operator Check-In: `…offer a reasonable opportunity for steering through available asynchronous input or a turn boundary… Do not… wait indefinitely for approval.` | executor-supports.ts:36-40; SKILL:62 | executor, on by default | before each queued item | (b) |
+| R11 | Intent to Act: `On entry, tell the operator in chat 'I intend to'… Proceed… after current work and a reasonable steering opportunity unless the operator vetoes…; this is not a routine permission request.` | executor-supports.ts:65-69; SKILL:63 | executor, on by default | on entry and before each action | (b) |
 | R12 | Follow-up Queue: "a scope change requires a fresh announcement" | executor-supports.ts:30-34; SKILL:61 | executor | — | (b), via R11 |
 | R13 | "When a prompt's facts say the day's figure is reached, or you stop with the order unfinished, finish the step in hand, write `docs/evidence/WO-NNN/standing.md` and end the turn" | contributor.ts:908-913; SKILL:40 | executor | figure reached | (a); otherwise (b) |
 | R14 | "Infer authorization to proceed from the operator's ordinary language… continue here… Without authorization… start no further complete gate, bounded probe or worker past an exhausted bound." | :866-870; SKILL:33 | all | bound exhausted | (c), then (a) |
@@ -67,16 +67,16 @@ Inference: with the starter defaults, an instance's skills are byte-identical to
 | R16 | "`conversation only:` answers without pausing work. … only explicit pause/stop interrupts." | :813-814; SKILL:27 | all | — | (c) |
 | R17 | quality pass: "…proceed; ask only when the target or intended reader is materially ambiguous… Continue the original task afterward." | document-quality.ts:3 | all | `quality pass:` | (c) |
 | R18 | evidence wait: "…then do bounded listed work or stay quiet; never poll or narrate the wait." | contributor.ts:112-113; SKILL:41 | all | gate running | (b) |
-| R19 | prune: "…run `prune --apply` yourself…; hand the operator the printed command only after a recorded host denial…" | :226-231; SKILL:52 | all but refuter | — | (c), narrow (b) |
+| R19 | prune: `` …run `prune --apply` yourself…; hand the operator the printed command only after a recorded host denial… `` | :226-231; SKILL:52 | all but refuter | — | (c), narrow (b) |
 | R20 | "After two consecutive provider safeguard refusals, stop retrying… resume in a fresh session." | :250-255; SKILL:56 | all | — | (a) conditional |
 | R21 | "For status/times, report the read-only command and stop"; "If closed… give the exact printed worktree-start handoff." | :1126, :355; SKILL:8, 77 | executor | — | (a) by design |
 | R22 | "Never leave the writer reserved at handoff or ask the operator to release it." | :370 | executor | — | (c) |
-| R23 | Verifier: "…without asking the operator to authorize it… the operator route with its recorded safe default, not an authorization request" | :384; verifier SKILL:69 | verifier | — | (c) |
-| R24 | Reviewer: operator packet with a safe default (:415); "On failure, stop with findings" and "Return the helper's exact post-merge release-close handoff" (:425-426) | reviewer SKILL:75, 86-87 | reviewer | — | (c); (a) by design |
+| R23 | Verifier: `…without asking the operator to authorize it… the operator route with its recorded safe default, not an authorization request` | :384; verifier SKILL:69 | verifier | — | (c) |
+| R24 | Reviewer: operator packet with a safe default (:415); `On failure, stop with findings` and `Return the helper's exact post-merge release-close handoff` (:425-426) | reviewer SKILL:75, 86-87 | reviewer | — | (c); (a) by design |
 | R25 | Release close: "Retry a host denial… once… before handing the operator the printed command for !" (:266); starter refresh "ask one focused question when its checkout is unrecorded or dirty" (:1092) | — | release-close | — | (b); (a) conditional |
-| R26 | Planner and refuter: starter update only on the operator's words (:467); external refutation CLI only on explicit request (:472); "If background workers are unavailable, report that limitation…" (:315) | — | planner, refuter | — | (a) conditional |
-| R27 | Router: "If the host denies the request, stop" (:334); "Stop for awaiting-merge, … analysis…"; since v1.4.0 "give the operator the account's lines… an `analysis:` session… reads further" (:337) | — | router | — | (a) by design |
-| R28 | Plan-first (when elected): "print all three paths and stop the turn… Wait for the operator's ordinary approval" | :1119-1123 | executor | elected | (a) |
+| R26 | Planner and refuter: starter update only on the operator's words (:467); external refutation CLI only on explicit request (:472); `If background workers are unavailable, report that limitation…` (:315) | — | planner, refuter | — | (a) conditional |
+| R27 | Router: `If the host denies the request, stop` (:334); `Stop for awaiting-merge, … analysis…`; since v1.4.0 `` give the operator the account's lines… an `analysis:` session… reads further `` (:337) | — | router | — | (a) by design |
+| R28 | Plan-first (when elected): `print all three paths and stop the turn… Wait for the operator's ordinary approval` | :1119-1123 | executor | elected | (a) |
 | R29 | Decision Receipts: "not… a new approval step"; Adjacent Repair: "neither… omission… is by itself a reason to defer" | executor-supports.ts:10-28 | executor | — | (c) |
 
 ### 2.2 CLAUDE.md
@@ -91,12 +91,12 @@ Inference: with the starter defaults, an instance's skills are byte-identical to
 
 - **Dispatch phrase** (`harness-host.ts:7305-7310`): "DotLn resolved role X. Load the dotln-X skill…" plus the briefing. (c)
 - **Executor entry duties in the briefing** (`executor-readiness.mjs:58-82`):
-  - "Intent to Act is equipped: tell the operator 'I intend to' and the concrete initial action before implementation; announce each next queued action before starting it." (b)
-  - "Operator Check-In is equipped: at a safe boundary, process available steering…" (b)
+  - `Intent to Act is equipped: tell the operator 'I intend to' and the concrete initial action before implementation; announce each next queued action before starting it.` (b)
+  - `Operator Check-In is equipped: at a safe boundary, process available steering…` (b)
   - "Adjacent Repair… do not wait for the operator to name this support." (c)
 - **Plan-first briefing** (`resume.mjs:1658-1667`): "Plan-first is awaiting the operator… Print the three paths and stop this turn." (a)
-- **Illegal dispatch** (`harness-host.ts:5930-5937`): "…Inspect canonical status and continue within the operator's authority…" (c)
-- **Question context** (`harness.ts:181-182`; `harness-host.ts:7441-7449`): "Operator question: read it as a smell… Keep working either way…". (c). Omitted when question-pathways is unequipped.
+- **Illegal dispatch** (`harness-host.ts:5930-5937`): `…Inspect canonical status and continue within the operator's authority…` (c)
+- **Question context** (`harness.ts:181-182`; `harness-host.ts:7441-7449`): `Operator question: read it as a smell… Keep working either way…`. (c). Omitted when question-pathways is unequipped.
 - **Every prompt**: observed facts (`observed-facts.ts:253-281`). Neutral.
 - **Daily figure** (`observed-facts.ts:310-342`; `harness-host.ts:442-475`, 7427-7430): "…The daily figure is reached: finish the step in hand, write the standing and end the turn. This is advisory and refuses nothing." (a), on every prompt in every role, when `spend.daily` is set and reached.
 - **Hedge advisory** (`observed-facts.ts:829`): "State the observed value or unknown in the next message. This advisory holds no turn." Neutral.
@@ -137,7 +137,7 @@ Inference: with the starter defaults, an instance's skills are byte-identical to
 - **Gate ADVISORY lines** (`test-runner.mjs:2652-2667`, 3585). An advised task fails nothing. (c)
 - **Time-limit miss** (`time-limits.mjs:529-531`). Neutral.
 - **Standing line in the briefing** (`resume.mjs:1635-1640`). Neutral.
-- **Drive** "Await operator direction; use analysis: off…" (`drive-route.mjs:61`), and the v1.4.0 account's "Next: … open an analysis: session…" (`drive-account.mjs:235`). (a) by design.
+- **Drive** `Await operator direction; use analysis: off…` (`drive-route.mjs:61`), and the v1.4.0 account's `Next: … open an analysis: session…` (`drive-account.mjs:235`). (a) by design.
 - **Driven phase launch** "If the host denies the request, stop without retrying" (`drive-prompts.mjs:121-122`, 143). (a) conditional.
 
 ## 3. Advisories
@@ -150,10 +150,10 @@ Inference: with the starter defaults, an instance's skills are byte-identical to
 Three advisories as the code builds them:
 1. **live-gate**: "DotLn advisory: write may change gate inputs during active gate npm test -- --review (run <id>, pid <pid>). Stop that gate from this session with node scripts/harness.mjs evidence --stop (…) or the harness's own task-stop tool, or wait for it to finish. Read-only commands stay admitted while it runs: … Stop live-gate advises in this root and the work goes on; it protects the bytes a running gate is judging. "stops": { "live-gate": "refuse" } … ; host permissions decide."
 2. **dispatch-bound**: "DotLn advisory: wall clock=<h m>, bound=<h m>. dispatch standing: …; exceeded. Use analysis: to diagnose. The operator can authorize proceeding in ordinary language in this conversation… the agent records… and continues in the same session. No special phrase, session exit or manual operator command is required. Stop dispatch-bound advises in this root and the work goes on; …"
-3. **worker-cap**: "DotLn advisory: count <n>, cap 20; … subagentCap… would be exceeded. … batch the remaining work into fewer uses. The operator can state a larger cap for this dispatch in ordinary language; record it with npm run resume -- accept-overrun subagentCap … Stop worker-cap advises in this root and the work goes on; …"
+3. **worker-cap**: `DotLn advisory: count <n>, cap 20; … subagentCap… would be exceeded. … batch the remaining work into fewer uses. The operator can state a larger cap for this dispatch in ordinary language; record it with npm run resume -- accept-overrun subagentCap … Stop worker-cap advises in this root and the work goes on; …`
 
 My reading of whether a careful model would stop and ask:
-- The bodies keep refusal wording: "would be exceeded", "or wait for it to finish", "The operator can authorize".
+- The bodies keep refusal wording: `would be exceeded`, `or wait for it to finish`, `The operator can authorize`.
 - R14 says not to start further work past the bound without the operator's authorization.
 - Read together, the conservative resolution is to ask.
 - "Stop <id> advises…" opens with the word "Stop". It parses as a noun but can be misread as an imperative. This is a guess about reading.
@@ -248,14 +248,14 @@ My reading of whether a careful model would stop and ask:
 
 ## 8. My reading: likeliest causes, ranked
 
-1. **Intent to Act and Operator Check-In** (R10, R11), on by default and delivered twice: in the skill and in the briefing's "Executor entry duties". "Tell the operator 'I intend to'…" and proceed only "after… a reasonable steering opportunity" such as "a turn boundary". That yields one statement, then the turn ends. Executor only; present since 2026-09.
+1. **Intent to Act and Operator Check-In** (R10, R11), on by default and delivered twice: in the skill and in the briefing's `Executor entry duties`. `Tell the operator 'I intend to'…` and proceed only `after… a reasonable steering opportunity` such as `a turn boundary`. That yields one statement, then the turn ends. Executor only; present since 2026-09.
    - Confirm: executor turns ending right after "I intend to"; then unequip `communication-intent` and `operator-check-in` and compare.
 2. **R1 plus the v1.4.0 refusal ending plus the PermissionDenied `!` advisory.**
    - Confirm: in the instance journals, a refusal or `HostPermissionDenied` row just before turns that end with a command for the operator.
 3. **A daily figure set in the instance's `docs/control/budgets.json`**. Once reached, every prompt in every role says "end the turn". The starter seeds null.
    - Confirm: a "Day's use (…)" line in prompt context, or `standing.md` files appearing.
 4. **A session left in `analysis:`**. The kit's own text routes operators there.
-   - Confirm: "DotLn: operator-control analysis" printed on every call, or a temp state file with `mode: "analysis"`.
+   - Confirm: `DotLn: operator-control analysis` printed on every call, or a temp state file with `mode: "analysis"`.
 5. **The correction loop (R7, R8)**.
    - Confirm: question-ending turns right after correcting messages.
 6. **The author layer removed in v1.4.0**. That removes R4, R5, R6 and the question hook, while R10, R11, R13 and R14 stay.

@@ -1,6 +1,6 @@
 # Criteria that ended unmet: waivers, defect records and what was written
 
-Record of the [2026-11-23 planning pass](the-kit-keeps-working-2026-11-23.md). This is the report of one of its research workers (the `default` worker; the host reported claude-opus-5-5), read-only, at `main` `bc761ad9c` (v1.4.0) on 2026-11-23. It is a worker's reading: what the pass checked itself is said in the pass document, with the file and line. The host refused the worker's own write of this file, so the pass filed the report as returned, with absolute checkout paths replaced by names.
+Record of the [2026-11-23 planning pass](the-kit-keeps-working-2026-11-23.md). This is the report of one of its research workers (the `default` worker; the host reported claude-opus-5-5), read-only, at `main` `bc761ad9c` (v1.4.0) on 2026-11-23. It is a worker's reading: what the pass checked itself is said in the pass document, with the file and line. The host refused the worker's own write of this file, so the pass filed the report as returned, with absolute checkout paths replaced by names and its quotations of order text set as code on the lines where the document check would read them as the operator's words.
 
 ## Boundary of what was read
 
@@ -32,7 +32,7 @@ Event types: W = waiver; D = defect record; U = criterion listed unmet at a hand
 | WO-197 | 1 | "`docs/evidence/WO-197/task-durations.json` lists … every row since 2026-09-07 with per-case durations, and D001 names the case and the commit range …" | U at IR and RC (l.2, 8); W (l.5) | — | 10-07 21:51, 23:48; W 23:33 | executor; needs-fix, verifier-role session (FINAL-001 l.81) | machinery-reset-2026-10-07 |
 | WO-197 | 2 | "… `target-publish` … at or below 22.254 s …; `worktree-integration` at or below 156.976 s; `harness-fixtures` at or below 326.779 s …" | U (l.2, 8); W (l.6) | — | same; W 23:34 | same | same |
 | WO-221 | 3 | "Codex and Copilot: under `hostRules: "literal"` … `.codex/config.toml` contains no prefix-rule table …" | U at IR (l.2) | — | 10-19 03:19 | executor | fork-observations-2026-10-18 |
-| WO-221 | 4 | "Qualification: … one bounded episode each … under the operator's account …; the order's fallback … is a `blocked` row …" | U at IR (l.2) | — | 10-19 03:19 | executor | same |
+| WO-221 | 4 | `` Qualification: … one bounded episode each … under the operator's account …; the order's fallback … is a `blocked` row … `` | U at IR (l.2) | — | 10-19 03:19 | executor | same |
 | WO-235 | 10 | "Products 05 and 07 … describe the built mechanism … `npm test -- --review` and `npm run test:docs` pass; …" | U at IR (l.4), superseded by IR `[]` (l.6) 14 minutes later | — | 10-29 14:54 | executor | wo192-fixes-and-example-drift-2026-10-26 |
 | WO-238 | 7 | "The twelve filed packets carry `deliveredBy` …; a close of a carrying order writes the release." | U at IR (l.2) | — | 11-03 04:18 | executor | document-contract-and-release-close-2026-10-28 |
 | WO-242 | 4 | "The emitted executor root carries the plan-first steps and the target closeout sentence; `harness check` passes; the … cold-start measurement is recorded against its ceiling …" | U at IR (l.2); D (l.4) | contradiction | 11-07 02:58; 03:19 | executor; verifying (VER-001) | node24-features-config-plan-first-no-work-stream-2026-10-30 |

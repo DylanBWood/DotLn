@@ -263,7 +263,7 @@ session, in an instance as in core.
   That the instance's figure is in tokens is not known here.
 - **The executor is told to announce and then make room.** Intent to Act
   has it proceed "after current work and a reasonable steering
-  opportunity", and Operator Check-In has it offer that opportunity
+  opportunity". The check-in support has it offer that opportunity
   "through available asynchronous input or a turn boundary" before each
   queued item (`packages/skeleton/src/loadouts/executor-supports.ts`, both
   on by default). The dispatch briefing and the hook's dispatch context
@@ -276,12 +276,13 @@ session, in an instance as in core.
   typed then is not dispatched (`packages/compiler/src/operator-control.mjs`).
   Since v1.4.0 the drive's account and the router's root send the operator
   to an `analysis:` session to read further.
-- **An advisory reads as a request to the operator.** In an instance most
-  stops advise since v1.4.0. The advisory is the refusal's body with one
-  sentence appended, so beside "the work goes on" it still says "The
-  operator can authorize proceeding in ordinary language" or "or wait for
-  it to finish". The host's reference says a hook's `systemMessage` is
-  shown to the user, so these lines are written to the operator.
+- **An advisory reads as a request for authorization.** In an instance
+  most stops advise since v1.4.0. The advisory is the refusal's body with
+  one sentence appended, so beside `the work goes on` it still says
+  `The operator can authorize proceeding in ordinary language` or
+  `or wait for it to finish`. The host's reference says a hook's
+  `systemMessage` is shown to the user, so the person at the terminal is
+  the one who reads these lines.
 - **The rule that says to go on reaches the executor alone**, in WO-288's
   uncommitted text. On `main` the shared rule `blocked-turn` tells every
   role to state a block and end its turn. WO-287-D090 recorded the failure
@@ -600,7 +601,8 @@ the drive's start in core.
 
 ## Write-backs
 
-- `docs/product/07-execution-guide.md`, "Operator-opened planning pass",
+- `docs/product/07-execution-guide.md`, in
+  [its section on a planning pass](../../product/07-execution-guide.md#operator-opened-planning-pass),
   the screens before filing: five added. One behavior to a criterion; a
   claim about every member of a set names the members or the check that
   fails closed; no existing case is held unchanged; a criterion added in
