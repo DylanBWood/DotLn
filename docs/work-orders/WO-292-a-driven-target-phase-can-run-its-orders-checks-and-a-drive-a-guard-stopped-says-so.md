@@ -18,9 +18,8 @@ sets. Assigned at activation under the standing opt-out default.
 launchpad's emit, whose measured time is recorded in the decisions before
 and after; one read rule in the target guard; one stop of the drive and its
 account lines; one lane to the usage reader; about nine cases. Removes the
-second driven attempt of a phase a guard refuses (two attempts of the work
-instance's eighth order ran 11 and 5 minutes and ended in the same
-refusal). `packages/skeleton/src/harness-host.ts` and
+second driven attempt of a phase a guard refuses, which ends in the same
+refusal as the first. `packages/skeleton/src/harness-host.ts` and
 `packages/skeleton/src/loadouts/contributor.ts` are registered evidence
 sources: the editions they stale are re-minted with `npm run sync`. No file
 of `FEEDBACK_SOURCE_PATHS` is edited. One complete review run at handoff.
@@ -186,7 +185,7 @@ its account; the usage reader's second lane; the cases; the write-backs.
    with an advisory (`npm test -- --only target-worktree`).
 2. From a session in a target worktree, the Read tool's read of a file
    under the launchpad's main checkout is admitted, and its read of a
-   credential path the work rows name is refused as before
+   credential path the work rows name is refused
    (`npm test -- --only target-worktree`).
 3. A driven attempt that ends without its phase's completion and whose
    record holds a guard's refusal stops the drive as `guard-refused`, and
@@ -196,8 +195,8 @@ its account; the usage reader's second lane; the cases; the write-backs.
    stop's id and the line of `dotln.config.json` that changes its level
    (`npm test -- --only harness-fixtures`).
 5. A driven attempt that ends without its phase's completion and holds no
-   refusal is dispatched once more and then stops as `incomplete-bound`, as
-   today (`npm test -- --only harness-fixtures`).
+   refusal is dispatched once more and then stops as `incomplete-bound`
+   (`npm test -- --only harness-fixtures`).
 6. `node scripts/harness.mjs usage <session>` for a session whose journal
    lies in an order's target lane prints that session's counts and not the
    cause `no-session` (`npm test -- --only harness-fixtures`).

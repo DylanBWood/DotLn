@@ -176,8 +176,8 @@ write-backs.
    fake host launches its next phase
    (`npm test -- --only harness-fixtures`).
 5. `node scripts/harness.mjs check`, run in a checkout whose own
-   configuration holds an unknown section key, refuses and names the key,
-   as before (`npm test -- --only configuration-root`).
+   configuration holds an unknown section key, refuses and names the key
+   (`npm test -- --only configuration-root`).
 6. Product 07 under "Where the control plane finds its documents" says
    that a command reads the roots alone of another checkout's
    configuration (`npm run test:docs`).

@@ -16,7 +16,7 @@ added, in core or in an instance. Assigned at activation under the standing
 opt-out default.
 **Cost:** adds one platform rule to the seven role roots, about four lines
 to each; changes the text of two executor supports, three briefing and
-context lines, four hook messages and one shared rule; adds one branch to
+context lines, three hook messages and one shared rule; adds one branch to
 the operator-control reader and about ten cases. Removes from every
 executor dispatch the instruction to offer a turn boundary before each
 queued action, and from every later prompt of a session in analysis the
@@ -100,9 +100,7 @@ none of them says the opposite.
   "The operator can authorize proceeding in ordinary language"
   (`scripts/lib/dispatch-bound.mjs`), "or wait for it to finish"
   (`GATE_STOP_TEXT` in `harness-host.ts`) and "would be exceeded" (the
-  worker cap). The host-denial message tells the operator to run the call
-  with the `!` prefix (`harness-host.ts`, the PermissionDenied branch). Each
-  is delivered as the hook's message to the session's user
+  worker cap). Each is delivered as the hook's message to the session's user
   (`protocolAdvisory`), so the operator reads a line that asks for an
   authorization nothing needs.
 - The shared rule on dispatch bounds (`contributor.ts`, the rule that opens
@@ -220,10 +218,8 @@ run except to reproduce a failure that run names.
    bound's in `scripts/lib/dispatch-bound.mjs`, the live gate's in
    `harness-host.ts` (`GATE_STOP_TEXT` is the refusal's and stays; the
    advisory takes the observation alone) and the worker cap's in
-   `packages/skeleton/src/subagent-budget.ts`; and the host-denial message
-   in `harness-host.ts`, which says that the session goes on without the
-   call and then names the operator's two ways to allow it. Check: one case
-   for each of the four in `scripts/test-harness.mjs` or
+   `packages/skeleton/src/subagent-budget.ts`. Check: one case for each
+   of the three in `scripts/test-harness.mjs` or
    `scripts/test-dispatch-bound.mjs`, in a fixture root where the stop
    advises.
 7. `contributor.ts`, the shared rule `dispatch-bounds`: its last sentence
@@ -269,17 +265,17 @@ cases; the emitted bundle and the features page; the write-backs.
    an unprefixed question is the emitted role sentence on answering the
    operator, word for word (`npm test -- --only compiler`).
 5. In a root where the stop advises, the messages of `live-gate`,
-   `dispatch-bound` and `worker-cap` and the message after a host denial
-   each open with what was observed and that the call went on, and none
-   tells the operator to authorize, wait or run a command
+   `dispatch-bound` and `worker-cap` each open with what was observed and
+   that the call went on, and none tells the operator to authorize, wait
+   or run a command
    (`npm test -- --only harness-fixtures`).
 6. The rule `dispatch-bounds` in each emitted root says that where the
    bound's message is an advisory the work goes on
    (`npm test -- --only harness-fixtures`).
 7. In a session where `analysis:` is on, a prompt that opens with
-   `resume: next` ends the analysis, and the hook journals the dispatch and
-   gives the executor's briefing as it does in a session that never entered
-   analysis (`npm test -- --only harness-fixtures`).
+   `resume:`, `planning:`, `ideation:` or `drive:` ends the analysis and
+   is journaled as the dispatch it is, by a case for each of the four
+   (`npm test -- --only harness-fixtures`).
 8. While `analysis:` is on, the context of a later prompt that carries no
    prefix says that analysis is on and names `analysis: off`, and does not
    hold the words "Pause the current routine"
@@ -323,8 +319,9 @@ unequipped `blocked-turn` by id has that line named in one advisory.
 weighs the Stop hook); the text of a refusal, which keeps its route and its
 level sentence; the feedback units' texts; `operator override:`; the day's
 line of a prompt's facts and the executor's own sentence on ending a turn,
-which are WO-288's; the delivery channel of an advisory; any change to what
-a stop judges or to its level.
+which are WO-288's; the delivery channel of an advisory; the message after
+a host's denial of a call; any change to what a stop judges or to its
+level.
 
 **Operator-review assumptions:** the rule on turns is a platform rule, so
 an instance cannot remove it with the author's layer; the executor keeps
