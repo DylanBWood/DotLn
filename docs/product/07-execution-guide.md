@@ -2575,6 +2575,14 @@ failures behind each are in the
   eleven and seven. An order of more than ten says in its Recommended
   placement why one verification can hold it
   ([the same pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge)).
+- Whether a criterion can be settled is judged by the planner and the
+  refuter, and a criterion's defect is not put to the operator to
+  adjudicate. Until the refuter's own judgment covers the criteria
+  (WO-295), a pass has every order it files or changes read by the
+  criteria review, `npm run worker -- review --kind criteria --subject
+  planning`, before its refutation; it applies what the review finds and
+  records each finding with what was done in its document
+  ([the same pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#who-judges-a-criterion)).
 - Five defect classes
   ([the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md)):
   a criterion states a behavior observable on the uncommitted candidate by a

@@ -267,6 +267,7 @@ is left as it is.
 
 **Known issues and carry-ins:**
 
+- The Cost line gives no count of the amendments a stale pin has cost, while the fetch runs at every target start. Reopen: a count over an instance's last ten target orders shows fewer than two such amendments.
 - With the unpinned form the default, the state a pass and its refuter judged is no longer the state an order starts on, and what the pin used to show at the start shows only in execution. Reopen: a verification of an unpinned order finds a file or function a criterion names absent at the recorded base.
 - The `instance-history` suite must admit an instance's existing pinned
   orders and their records unchanged; the order widens what is admitted

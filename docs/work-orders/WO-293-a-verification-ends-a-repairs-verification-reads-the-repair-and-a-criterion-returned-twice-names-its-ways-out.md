@@ -34,12 +34,13 @@ changed paths, 8 h 22 min and about 336 million tokens in sum by its
 record, and its ten repairs took 48 h 6 min.
 `packages/skeleton/src/loadouts/contributor.ts` is a registered evidence
 source: the editions it stales are re-minted with `npm run sync`. No file
-of `FEEDBACK_SOURCE_PATHS` is edited. The reviewer's and the planner's roots
-stand 75 and 12 bytes under their accepted cold-start ceilings, so the
-executor records each changed root's bytes before and after and removes
-at least what it adds; a root that still passes its ceiling is named in
-the handoff with its measure, and the standing route for a cold-start
-acceptance applies. One complete review run at handoff.
+of `FEEDBACK_SOURCE_PATHS` is edited. On `main` the reviewer's and the planner's
+roots stand 75 and 12 bytes under their cold-start ceilings; in WO-288's
+worktree, measured on 2026-11-23, the verifier's, the reviewer's and the
+planner's stand 1,766, 2,722 and 263 bytes over. So the executor records each changed root's bytes before and after and removes
+at least what it adds; a root over its ceiling at handoff is named there
+with its measure and boarded as a follow-up, as product 07's Discipline has
+it, and no acceptance is recorded. One complete review run at handoff.
 Wall-clock, tokens and steps of this order are unknown until run.
 **Nomination provenance:** the operator's planning dispatch of 2026-11-23,
 item 5 and its first message on the order then in progress (ignored
@@ -92,8 +93,11 @@ hands it back at the cost of one report.
   in eight at a new state each time, and sixteen findings were regressions
   a repair introduced. Two of its own reports say a judgment of the handoff
   alone would have passed all 41 criteria. No waiver, defect record or
-  amendment was used; a defect record was proposed and declined four times
-  because none of the five classes fits a property claimed of every site.
+  amendment was used. For criterion 23 none was weighed, and none of the
+  five classes describes a property claimed of every site of a set the
+  criterion does not list. A defect record was weighed four times, each
+  time for criterion 27, and rejected because a candidate can meet that
+  criterion (WO-288-D100, D137, D183 and D184).
 - A pass needs no check to have run. `verification-result pass` in
   `scripts/resume.mjs` compares the report with the control log through
   `judgeReport` in `scripts/lib/off-ramps.mjs`, which refuses an unmet
@@ -274,6 +278,7 @@ names the sixth class.
 
 **Known issues and carry-ins:**
 
+- The advisory's seven phrases read words and not meanings, so a measured ratio such as WO-288's criterion 27 draws the line beside a criterion that needs none. It is an advisory a planner reads. Reopen: in the first pass after this order lands, most criteria the advisory names are judged by their verifier without dispute or defect.
 - A verification after a repair carries a criterion whose surfaces the repair did not touch, so a regression that reaches it through a module several parts share passes on carried evidence, and the complete run is what guards it. Sixteen of WO-288's findings were of that kind. Reopen: a final review or a later verification finds unmet a criterion that the verification before it carried, where the repair's diff did not touch that criterion's named surface.
 - The `open-set` class lets an order close without a property claimed of every site. It is recorded and visible, and it is also the shortest way out of a long loop. Reopen: an order closes with such a record and a later order or review lists the sites and finds the property false at one of them.
 - Named boy-scout item, beside step 6's file:

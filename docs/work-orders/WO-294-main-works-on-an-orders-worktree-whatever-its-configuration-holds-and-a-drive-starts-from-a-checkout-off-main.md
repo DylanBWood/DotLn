@@ -198,6 +198,8 @@ site moved and the command that showed it; the handoff.
 
 **Known issues and carry-ins:**
 
+- Reading the roots alone assumes the order has not changed what a root means. An order that renames or reinterprets a root key would be driven and integrated from main on the older reading. Reopen: a drive or an integration run from main acts on a root value that the order's own commands read differently.
+- No criterion reads another checkout's configuration that does not parse. The reader refuses it with the file named, as `loadConfig` in `scripts/lib/config.mjs` refuses a configuration it cannot open. Reopen: status or a drive from main against such a worktree ends without naming the file.
 - WO-288 adds the key that shows this defect and is first in the sequence, and this order is last. If the integration WO-288's handoff and final review run from main refuses on that key, as the code reads, WO-288 integrates with its own worktree's script on the operator's word and records the route. Reopen: that route fails too, and this order is then placed ahead of WO-288's final review.
 - A drive that stops on a thrown failure prints the failure's message and
   not its account (item 1 of WO-287-D086's follow-up,

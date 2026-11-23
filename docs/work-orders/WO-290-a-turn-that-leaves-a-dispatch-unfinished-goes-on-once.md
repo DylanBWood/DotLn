@@ -103,7 +103,8 @@ its turn, which the kit then lets it do.
   `resume: final review`; the order's control state shows that dispatch's
   phase not yet completed; the host does not report the turn as already
   continuing from a Stop hook; no background task of the session is
-  running; no plan is proposed and unapproved; and neither `analysis:` nor `operator override:` is on. In every other
+  running; the order's route does not stop at `awaiting-plan-approval`, where a plan
+  is proposed and not approved; and neither `analysis:` nor `operator override:` is on. In every other
   state the turn ends, which is what happens in all of them now, and it
   ends too where the session's journal or the order's control log cannot
   be read.
@@ -191,7 +192,7 @@ emitted hook; the write-backs.
    | Unfinished, and none of the rows below holds                                     | prevents the end and gives a reason |
    | Unfinished, and the host reports the turn as already continuing from a Stop hook | lets it end                         |
    | Unfinished, and a background task of the session is running                      | lets it end                         |
-   | Unfinished, and a plan is proposed and not approved                              | lets it end                         |
+   | Unfinished, and the order's route stops at `awaiting-plan-approval`                              | lets it end                         |
    | Unfinished, and `analysis:` or `operator override:` is on                        | lets it end                         |
    | The dispatch's completion is recorded, or the session holds no such dispatch | lets it end |
    | The session's journal or the order's control log cannot be read | lets it end |

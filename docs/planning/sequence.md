@@ -124,6 +124,16 @@ pointers and continuation command. Untouched items persist across passes.
   `0c80efbd379f8ab2ec03fe24a966d335faed0e8d35fc2b3cd9eb5770d075a270`:
   the operator is asked to waive criteria on each order and lays it to the
   pass that wrote them).
+- **Who judges criteria.** Whether a criterion can be settled is judged by
+  the planner and the refuter, and one that proves wrong is re-cut by them;
+  neither is put to the operator to adjudicate. Until the refuter's own
+  judgment covers the criteria, a pass has every order it files or changes
+  read by the criteria review before its refutation
+  ([product 07's screens](../product/07-execution-guide.md#operator-opened-planning-pass);
+  operator direction, 2026-11-23, ignored captures SHA-256
+  `1873874c50d48842066af140d3a18d11680c5ebf45b325b63574bd07615eb4f7` and
+  `002461b05862d9020f0b43e0437564256a3d7454b6674e16b9a6ae5598a81631`; WO-295
+  and WO-296).
 - **Turns.** A session that is dispatched works until its dispatch records
   its completion. It ends a turn to wait only on the operator's pause,
   stop or cancel, or on what only the operator can do, and no text the kit
@@ -177,8 +187,9 @@ a target were starting from the wrong commit
   the operator's, are in
   [its document](passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge).
 - WO-289: every text the kit gives a session about a turn says to go on,
-  an advisory asks the operator for nothing, and `analysis:` ends at a
-  dispatch.
+  an advisory asks the operator for nothing, `analysis:` ends at a
+  dispatch, and a message sent while a turn was running says so when it
+  arrives.
 - WO-291: an order against a registered repository starts from that
   repository's base branch as it stands, and its heading promises no
   version.
@@ -190,6 +201,11 @@ a target were starting from the wrong commit
 - WO-293: a verification after a repair reads the repair, a criterion no
   reading can settle has a class, and a final review fails on what it
   finds.
+- WO-295: the refuter's judgment of a planning pass also says whether
+  each criterion can be settled, and one it calls defective holds the pass.
+- WO-296: a criterion two verifications have returned is re-cut by a
+  planner worker and judged by a refuter, and the operator is asked for no
+  waiver, cut or amendment. After WO-293 and WO-295, which it rests on.
 - WO-294: main reads an order's worktree whatever its configuration
   holds, and a drive starts from a checkout that is off main. Last,
   because it stops no instance.
@@ -249,6 +265,8 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 - WO-290 — A turn that leaves a dispatch unfinished goes on once
 - WO-292 — A driven target phase can run its order's checks, and a drive a guard stopped says so
 - WO-293 — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out
+- WO-295 — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds
+- WO-296 — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none
 - WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main
 - WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance

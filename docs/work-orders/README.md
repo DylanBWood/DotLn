@@ -10,6 +10,8 @@
 - [ ] [WO-290] — A turn that leaves a dispatch unfinished goes on once · **queued**
 - [ ] [WO-292] — A driven target phase can run its order's checks, and a drive a guard stopped says so · **queued**
 - [ ] [WO-293] — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out · **queued**
+- [ ] [WO-295] — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds · **queued**
+- [ ] [WO-296] — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none · **queued**
 - [ ] [WO-294] — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
@@ -142,6 +144,40 @@ None.
 - Track: machinery
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md](WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md)
+
+### WO-295
+
+[WO-295 — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds (version assigned at activation)](WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-293.
+- References: WO-293: satisfied-by-close (unmet) — the sixth defect class, &#96;open-set&#96;, which a finding on a criterion may name.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md](WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md)
+
+### WO-296
+
+[WO-296 — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none (version assigned at activation)](WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-293, WO-295.
+- References: WO-293: satisfied-by-close (unmet) — the count of a criterion's returns and the fix briefing's line that names its routes, which this order's trigger and briefing line are written against; WO-295: satisfied-by-close (unmet) — the refuter's answer for one criterion, which is the judgment a re-cut is bound by.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md](WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md)
 
 ### WO-294
 
@@ -323,3 +359,5 @@ None.
 [WO-292]: WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md
 [WO-293]: WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md
 [WO-294]: WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md
+[WO-295]: WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md
+[WO-296]: WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md

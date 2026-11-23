@@ -45,6 +45,32 @@ of the session journal's row for the message (session key
 | Items 1 to 5 | 2026-11-23T20:27:49.232Z | 21,479 | `0c80efbd379f8ab2ec03fe24a966d335faed0e8d35fc2b3cd9eb5770d075a270` |
 | Item 6 | 2026-11-23T20:29:27.216Z | 369 | `a7e16cc14c8cf5800a2a39201e312a69072b09aff9854b2bcef345cff3ed2247` |
 
+Five more messages came while the pass ran, between 22:37Z and 22:47Z.
+Paraphrased:
+
+7. What is the plan for the worktree and the order that exist (WO-288)?
+8. The operator does not understand how the texts of orders are judged and
+   yet the operator has to adjudicate or update criteria by hand.
+9. That is the planner's and the refuter's job.
+10. Is what the session said it had changed a permanent change, and why
+    must so basic a question be asked?
+11. The session again answered a question out of turn, as though the
+    operator had written it in reply to the session's previous reply, and
+    the operator had taken that to be fixed.
+
+| Message | Journal row | Bytes | SHA-256 |
+| --- | --- | --- | --- |
+| Item 7 | 2026-11-23T22:37:49.912Z | 57 | `31133ee0ddac091d7807804725630c8477af4e40dd008314b6b00fb68212b79e` |
+| Item 8 | 2026-11-23T22:44:16.082Z | 109 | `1873874c50d48842066af140d3a18d11680c5ebf45b325b63574bd07615eb4f7` |
+| Item 9 | 2026-11-23T22:44:26.424Z | 59 | `002461b05862d9020f0b43e0437564256a3d7454b6674e16b9a6ae5598a81631` |
+| Item 10 | 2026-11-23T22:46:09.822Z | 91 | `b65a5706a308fb85769322f7dd3f8345dbd16b3d64b84c6f9c914ed20f94c5a6` |
+| Item 11 | 2026-11-23T22:46:31.503Z | 150 | `3ffc5079c83d649f33b881817d99b3bc64acdb4fd4e26d12d52bc116bf9bb07c` |
+
+Items 8 and 9 are read in [Who judges a criterion](#who-judges-a-criterion),
+item 10 in [Write-backs](#write-backs) and item 11 in
+[A message sent while a turn was running](#a-message-sent-while-a-turn-was-running).
+Item 7 is answered by [Why WO-288 did not converge](#why-wo-288-did-not-converge).
+
 The second message's journal digest covers the operator's words together
 with two blocks other sessions wrote. Its capture file holds the words
 alone, with a line naming each block where it stood (1,199 bytes, SHA-256
@@ -193,9 +219,15 @@ frame's rules 9 and 10 itself.
   step 2 says at every dispatch to attack each criterion. This pass
   searched the emitted verifier root for the re-verification rule and
   found nothing.
-- **No way out was used.** A defect record was proposed four times and
-  declined, because none of the five classes fits. The cut of a part,
-  which the frame's tenth rule gives, was not proposed.
+- **No way out was used.** For criterion 23 no route but repair was
+  weighed, and none of the five defect classes describes a property
+  claimed of every site of a set the criterion does not list. A defect
+  record was weighed four times, each time for criterion 27, and rejected
+  because a candidate can meet that criterion (WO-288-D100, D137, D183 and
+  D184). The cut of a part, which the frame's tenth rule gives, was not
+  proposed. This bullet first said that the four were declined because no
+  class fits; the decisions say otherwise, and the pass corrected it
+  before its last refutation.
 - **Size.** 41 criteria in six parts, two of them added after filing.
   Verifications by criteria count, from the control logs of the last eight
   orders filed that ran, read by this pass:
@@ -460,27 +492,128 @@ The seventh is a warning as well as a recommendation: WO-288's merge will
 add 184 rows to a register that already holds 325 pending. The first pass
 after it closes reads them by class and not one at a time.
 
+### Who judges a criterion
+
+Items 8 and 9 of the dispatch say that the operator does not see why texts
+that were judged still leave the adjudication of criteria to the operator,
+and that this is the planner's and the refuter's work. The record agrees
+with the operator on what happens now.
+
+| Step | What it judges | What it does not |
+| --- | --- | --- |
+| The planning refuter | Direction, by four questions: the gate an order unblocks and its NoOp, the system traps, whether its cost removes more than it adds, and how it fails (`packages/skeleton/src/loadouts/plan-refuter.ts`) | Whether a verifier can settle a criterion |
+| The verifier and the final reviewer | The work against each criterion as written | The criterion. Either may record one defective, in the five classes of `DEFECT_CLASSES` |
+| The operator | Any change to a judged order's text: a waiver, a cut or an amendment | |
+
+The last row is a guard that holds for a reason: the session doing the work
+must not lower its own bar. Its cost is that a criterion no reading can
+settle, and that fits no class, has no route but the operator. Criterion 23
+of WO-288 is that case
+([Why WO-288 did not converge](#why-wo-288-did-not-converge)).
+
+This pass's own record shows the gap at planning. The criteria review it
+ran on its six orders found fourteen defects in criteria it had just
+written, one of them blocking, and the two refutations of the same orders
+raised none of the fourteen, because the refuter is not asked. The census
+counts the same thing across core's history: of the 11 criteria that ended
+waived or defective, a screen in force at filing named 4, and no reading
+caught them
+([the census](the-kit-keeps-working-2026-11-23-criteria-census.md)).
+
+What the pass does with it:
+
+- **At planning, WO-295.** The refuter's one judgment answers a fifth
+  question, whether a verifier can settle each criterion by the command it
+  names. A criterion it calls defective names a class and holds the pass
+  until the planner repairs it.
+- **In a running order, WO-296.** A criterion two verifications have
+  returned is re-cut once by a fresh planner worker and judged by a fresh
+  refuter. An amendment they admit binds with no recorded authorization of
+  the operator's, who reads it on the order's status and may withdraw it.
+  It is a feature an owner turns off.
+- **From this pass's merge.** The execution guide makes the criteria
+  review a step of every pass until WO-295 lands, and says that a
+  criterion's defect is not put to the operator to adjudicate.
+
+What stays the operator's: an order's objective, non-goals and parts; a
+waiver the operator chooses to give; the withdrawal of a re-cut; and the
+merge. WO-296 states the change of authority under its Operator-review
+assumptions, since it is one: a criterion of a running order changes
+without the operator's recorded word.
+
+For WO-288 the released kit has none of this, so its two open criteria
+still need the operator's one authorization, with the text this pass
+wrote for it (the one decision that is the operator's, under
+[Why WO-288 did not converge](#why-wo-288-did-not-converge)).
+
+### A message sent while a turn was running
+
+Item 11 of the dispatch says that the session answered a question out of
+turn, as though the operator had written it in reply to the session's
+previous reply. The host's transcript of the session and the session
+journal give this timeline for 2026-11-23, in UTC:
+
+| Time | What happened |
+| --- | --- |
+| 22:37:45 | Item 7 opens a turn |
+| 22:38:16 | The session's reply; the turn ends at 22:38:25 |
+| 22:44:11 | Item 8 opens a turn, 5 min 46 s after the last one ended |
+| 22:44:26 | The host queues item 9, sent while the session was writing its reply to item 8. The prompt hook's journal row for it is 22:44:26.424 and the host's queue row 22:44:26.492 |
+| 22:45:34 | The session's reply to item 8 goes out, written without item 9 |
+| 22:45:38 | The host hands item 9 to the session |
+
+The reply of 22:45:34 read item 8 as a comment on the session's previous
+reply, and ended by naming once more the authorization that reply had
+asked for. Item 9, already sent, said the opposite: adjudicating criteria
+is the planner's and the refuter's work. The session had half of what the
+operator said and answered it against the wrong thing.
+
+Later in the turn the session told the operator that item 8 had probably
+been written before the operator read the previous reply. That was a guess
+given as a fact, and the record above shows it wrong: nearly six minutes
+lay between that reply and item 8. The session said so to the operator in
+the same turn.
+
+The host holds a message sent during a turn until the next tool result or
+the turn's end, and gives the session nothing about when it was written.
+The kit's prompt hook does run when such a message is sent, and its
+journal holds a row for each run of the Stop hook, so it can know that a
+turn was running. Nothing uses that: the hook journals the message with
+its route unknown. The operator took the misreading to be fixed. This pass
+searched the role text's sources on `main` and in WO-288's worktree, the
+compiler's hook contexts and the decisions of WO-254, WO-259, WO-277 and
+WO-287, and found no rule or hook line on it. The nearest are WO-259's
+journal route for a worker's hand-back and the sentence in WO-288's
+worktree on answering the operator in the next message.
+
+WO-289 carries the fix: where the journal shows a turn running when a
+message is sent, the prompt hook adds one line of fact to that message's
+context, with the time it was sent and that any reply sent after that
+time was written without it.
+
 ## Orders filed and amended
 
-Six orders, each single, none of the queue form. An instance is waiting on
+Eight orders, each single, none of the queue form. An instance is waiting on
 the first four, and the form's own rule keeps what something waits on out
 of it.
 
 | Order | What it answers | Criteria |
 | --- | --- | --- |
-| [WO-289](../../work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md) | Item 3: every text the kit gives a session about a turn says to go on; an advisory asks the operator for nothing; `analysis:` ends at a dispatch | 9 |
+| [WO-289](../../work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md) | Item 3: every text the kit gives a session about a turn says to go on; an advisory asks the operator for nothing; `analysis:` ends at a dispatch; a message sent while a turn was running says so | 10 |
 | [WO-291](../../work-orders/WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md) | Items 4 and 6: an order names its repository and starts from the base branch's tip; a target order's heading promises no version; the refusal of changed order bytes names its routes | 10 |
 | [WO-290](../../work-orders/WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md) | Item 3, the mechanism behind the sentences: the Stop hook sends a session back once when its dispatch is unfinished | 6 |
 | [WO-292](../../work-orders/WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md) | Item 2: a target worktree's guards follow the launchpad's levels; a drive a guard stopped says so at once; a session there gets its usage read | 8 |
 | [WO-293](../../work-orders/WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md) | Item 5 and the order in progress: a verification after a repair reads the repair; a sixth defect class; the ways out at the second return; a final review that fails on what it finds | 10 |
+| [WO-295](../../work-orders/WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md) | Items 5, 8 and 9: the refuter's judgment of a pass also says whether each criterion can be settled, and one it calls defective holds the pass until the planner repairs it | 5 |
+| [WO-296](../../work-orders/WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md) | Items 8 and 9: a criterion two verifications have returned is re-cut by a planner worker and judged by a refuter, and no session asks the operator to waive, cut or amend one | 9 |
 | [WO-294](../../work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md) | Item 1: main reads the roots alone of an order worktree's configuration; a drive starts from a checkout that is off main | 8 |
 
 Every path each order names was checked against the tree at `bc761ad9c`:
 all exist but each order's own evidence directory, which the order
-creates. The six execution-plan labels end in a colon inside the bold,
-the form the kit's reader takes; they were first written with a period,
-the mistake the last pass recorded as its thirteenth candidate, and were
-corrected before the subject was committed.
+creates. The execution-plan labels end in a colon inside the bold, the
+form the kit's reader takes; the first six were first written with a
+period, the mistake the last pass recorded as its thirteenth candidate, and
+were corrected before the subject was committed.
 
 No order is amended by this pass. WO-288's text changes only on the
 operator's word, given in that order's session (§Why WO-288 did not
@@ -592,17 +725,18 @@ are not repeated here.
 ## Sequence
 
 `docs/planning/sequence.md` is revised: WO-284 and WO-287 leave the list
-as closed; WO-288 stays first; the six new orders follow in the order
-WO-289, WO-291, WO-290, WO-292, WO-293, WO-294, ahead of the nine orders
-that are not next. WO-088's entry there records that its first condition
-occurred and why it stays. Two rules enter Rules in force (Criteria and
+as closed; WO-288 stays first; the eight new orders follow in the order
+WO-289, WO-291, WO-290, WO-292, WO-293, WO-295, WO-296, WO-294, ahead of
+the nine orders that are not next. WO-088's entry there records that its first condition
+occurred and why it stays. Three rules enter Rules in force (Criteria, Who judges criteria and
 Turns), and the rule on the queue form gains a sentence: what an instance
 is stopped on is never added to a running order.
 
-The order among the six is the planner's: what stops an instance's
+The order among the eight is the planner's: what stops an instance's
 sessions first, then what starts its orders in the wrong place, then the
 mechanism behind the first, then the target lane, then verification, then
-the drive's start in core.
+who judges criteria at planning and in a running order, then the drive's
+start in core.
 
 ## Write-backs
 
@@ -617,6 +751,10 @@ the drive's start in core.
   never added to a running order; the ninth rule says what a verification
   after a repair reads; the tenth has the executor weigh the cut when a
   criterion has come back twice.
+- The same section, after the screens: whether a criterion can be settled
+  is judged by the planner and the refuter and is not put to the operator,
+  and until WO-295 lands a pass has every order it files or changes read
+  by the criteria review before its refutation.
 - `docs/work-orders/TEMPLATE.md`: its first criterion line says the
   screens where a planner writes criteria.
 - `docs/planning/sequence.md` and `docs/planning/work-order-map.md`, as
@@ -624,16 +762,24 @@ the drive's start in core.
 
 Written by the orders and not by this pass, because the code does not yet
 do what the text would say: the two forms of the `Repository:` line and a
-target order's heading (WO-291), the sixth defect class (WO-293), and what
-ends `analysis:` (WO-289).
+target order's heading (WO-291), the sixth defect class (WO-293), what
+ends `analysis:` (WO-289), the refuter's judgment of criteria (WO-295) and
+the re-cut of a criterion returned twice (WO-296).
+
+Item 10 of the dispatch asks which of this is permanent. Nothing is in
+force until the operator merges this pass's pull request. At the merge the
+document changes listed above stand, and they are all this pass changes.
+Every change to code or to a role's text is an order still to be built,
+verified and released. The criteria review this pass ran on its own orders
+was a single act, which the bullet above makes a step of every pass.
 
 ## Rules recorded
 
-Three rules entered the sequence's Rules in force in this pass. None is
-the operator's wording. Each is the pass's answer to an item of the
-dispatch's second message, and is recorded against that message so that the
-operator reads all three in one place and strikes any by removing its
-entry.
+Four rules entered the sequence's Rules in force in this pass. None is the
+operator's wording. The first three are the pass's answers to items of the
+dispatch's second message and are recorded against it; the fourth answers
+items 8 and 9 and is recorded against item 9. The operator reads all four
+in one place and strikes any by removing its entry.
 
 <!-- dotln-rules-recorded:start -->
 
@@ -668,6 +814,16 @@ entry.
       "recordedAt": "2026-11-23T20:27:49.232Z"
     },
     "captureDigest": "sha256:0c80efbd379f8ab2ec03fe24a966d335faed0e8d35fc2b3cd9eb5770d075a270"
+  },
+  {
+    "rule": "Whether a criterion can be settled is judged by the planner and the refuter, and one that proves wrong is re-cut by them; neither is put to the operator to adjudicate. Until the refuter's own judgment covers the criteria, a pass has every order it files or changes read by the criteria review before its refutation.",
+    "document": "docs/planning/sequence.md",
+    "section": "Rules in force",
+    "message": {
+      "sessionKey": "41dc94638b89d77d6c38ff29668f77334656486419c19e7fb95c0d8dfcedd4f4",
+      "recordedAt": "2026-11-23T22:44:26.424Z"
+    },
+    "captureDigest": "sha256:002461b05862d9020f0b43e0437564256a3d7454b6674e16b9a6ae5598a81631"
   }
 ]
 ```

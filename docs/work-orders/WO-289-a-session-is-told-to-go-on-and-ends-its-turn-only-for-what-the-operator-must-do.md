@@ -22,14 +22,16 @@ cancel or on a block that is the operator's alone. The author's rule on a
 blocked turn is rewritten under its own id and stays the author's, so an
 owner who removed it keeps it removed. The executor's two supports announce
 and go on, an advisory says that the call went on and asks the operator for
-nothing, and `analysis:` ends when the operator dispatches. No refusal,
+nothing, `analysis:` ends when the operator dispatches, and a message sent
+while a turn was running arrives with a line that says so. No refusal,
 failing check or fixed figure is added, in core or in an instance. Assigned
 at activation under the standing opt-out default.
 **Cost:** rewrites one rule of the author's layer, `blocked-turn`, in the
 six role roots that carry it, about three lines more in each; changes the
 text of two executor supports, three briefing and context lines, three hook
-messages and one shared rule; adds one branch to the operator-control
-reader and about ten cases. Removes from every executor dispatch the
+messages, one shared rule and the sentence on the operator's controls; adds
+one line to the context of a message sent while a turn was running, one
+branch to the operator-control reader and about twelve cases. Removes from every executor dispatch the
 instruction to offer a turn boundary before each queued action, and from
 every later prompt of a session in analysis the instruction to pause again.
 `packages/skeleton/src/loadouts/contributor.ts`,
@@ -39,13 +41,14 @@ every later prompt of a session in analysis the instruction to pause again.
 `packages/compiler/src/operator-control.mjs` are registered evidence
 sources: the editions they stale are re-minted with `npm run sync`. No file
 of `FEEDBACK_SOURCE_PATHS` is edited, so no feedback re-mint or live
-episode is owed. The executor's, the reviewer's and the planner's roots
-stand 57, 75 and 12 bytes under their accepted cold-start ceilings (the
-cost table's drift series), so the executor records each root's bytes
-before and after and removes at least what it adds, the supports' removed
-words and the old rule's sentence first; a root that still passes its
-ceiling is named in the handoff with its measure, and the standing route
-for a cold-start acceptance applies. One complete review run at handoff; a
+episode is owed. On `main` the executor's, the reviewer's and the planner's
+roots stand 57, 75 and 12 bytes under their cold-start ceilings (the cost
+table's drift series); in WO-288's worktree, measured on 2026-11-23, they
+stand 3,267, 2,722 and 263 bytes over. So the executor records each root's
+bytes before and after and removes at least what it adds, the supports'
+removed words and the old rule's sentence first; a root over its ceiling at
+handoff is named there with its measure and boarded as a follow-up, as
+product 07's Discipline has it, and no acceptance is recorded. One complete review run at handoff; a
 second at final review only if the integrated identity moved. Wall-clock,
 tokens and steps are unknown until run.
 **Nomination provenance:** the operator's planning dispatch of 2026-11-23,
@@ -54,7 +57,12 @@ item 3 (ignored capture SHA-256
 work instance's sessions say one thing and end the turn, each time with a
 question. The same failure is in core's record as WO-287-D090, filed as a
 critical error on 2026-11-18 with the rule this order writes as its
-follow-up, and as WO-288-D168.
+follow-up, and as WO-288-D168. The line for a message sent while a turn was
+running answers a later message of the same day (ignored capture SHA-256
+`3ffc5079c83d649f33b881817d99b3bc64acdb4fd4e26d12d52bc116bf9bb07c`): the
+session had again answered a message as though the operator wrote it in
+reply to the session's own last reply
+([the timeline](../planning/passes/the-kit-keeps-working-2026-11-23.md#a-message-sent-while-a-turn-was-running)).
 [The planning pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-a-session-stops-and-asks)
 holds the reading, and
 [its census](../planning/passes/the-kit-keeps-working-2026-11-23-stop-and-ask-census.md)
@@ -73,7 +81,8 @@ can do, or where it waits on a task of its own with nothing else to do.
 The texts the kit gives a session at the moment of choice (a role's root,
 the dispatch briefing, the context a hook adds to a prompt, an advisory,
 the pause the operator opens with `analysis:`) all say so, and none of them
-says the opposite. An owner who wants sessions to check in more removes
+says the opposite. A message the operator sent while a turn was running
+reaches the session marked as written without the reply that followed it. An owner who wants sessions to check in more removes
 the rule, as any rule of the author's.
 
 **Observed gap (dated 2026-11-23 at `main` `bc761ad9c`, v1.4.0):**
@@ -128,6 +137,23 @@ the rule, as any rule of the author's.
   `resume: next` typed then is not dispatched. Since v1.4.0 the drive's
   account (`scripts/lib/drive-account.mjs`) and the router's root send the
   operator to an `analysis:` session to read further.
+- A message sent while a turn is running reaches the session late and
+  unmarked. The host holds it until the next tool result or the turn's end,
+  so a reply being written when it was sent goes out without it. In the
+  planning pass's own session on 2026-11-23 (Claude Code 2.1.330) the
+  operator sent a second message within fifteen seconds of a first. The
+  reply to the first went out over a minute later, written without the
+  second, and the host handed the second over within four seconds of that
+  reply. The prompt hook had run when that second message was sent: its
+  journal row is under a tenth of a second ahead of the host's own queue
+  row, with the route unknown (`promptRoute` in
+  `packages/skeleton/src/harness-host.ts`), and the context it gave said
+  nothing of when the message was written. The same journal holds a row for
+  each run of the Stop hook, so whether a turn was running could be read
+  from it. The operator named the misreading as one seen before, and this
+  pass found no rule or hook line on it in `contributor.ts`, in
+  `packages/compiler/src/harness.ts` or in the decisions of WO-254, WO-259,
+  WO-277 and WO-287.
 - The operator's own reading on 2026-11-19, recorded as WO-288-D049, laid
   the work instance's stopped turns to the sentence that ends a turn when a
   day's figure is reached. WO-288 Part F removes that sentence and is not
@@ -138,9 +164,12 @@ the rule, as any rule of the author's.
 - **The author's rule `blocked-turn`, rewritten, in each role root that
   carries the shared rules.** Those are six: the executor's, the
   verifier's, the reviewer's, the release close's, the planner's and the
-  refuter's. The router's root is written whole, holds no shared rule and
-  keeps its own list of the stops a drive ends on. In the executor's own
-  wording the rule says four things:
+  refuter's. The router's root is written whole and is no
+  composition of the shared rules, but its procedure takes the same
+  constant for the sentence on a blocked turn. The order gives the router a
+  constant of its own that holds the sentence as it stands, so the rewrite
+  leaves the router's root and its list of the stops a drive ends on as
+  they are. In the executor's own wording the rule says four things:
   - a choice of route is put as a recommendation that the session takes in
     the same turn;
   - a question put to the operator is not a block, so the session says
@@ -166,6 +195,16 @@ the rule, as any rule of the author's.
 - **A hook says what the role says.** The question context is the role's
   own sentence, taken from where the role's sentence is defined, so the two
   cannot drift apart again.
+- **A message sent while a turn was running says so when it arrives.** The
+  prompt hook runs when the operator sends a message, and the session
+  journal shows whether the turn that the prompt before it opened has
+  ended. Where it has not, the hook adds one line of fact to that message's
+  context: the time it was sent, that a turn was running then, and that any
+  reply the session sent after that time was written without it. The line
+  states what was observed and says nothing of how a session works, so it
+  is the kit's to give, as the observed facts of a prompt are. A message
+  that opens a turn gets no such line, and neither does any message where
+  the journal cannot be read.
 - **An advisory reports and asks for nothing.** At `advise` a message opens
   with what was observed and that the call went on. The sentence that names
   the line which changes the level stays. A sentence that tells the operator
@@ -180,7 +219,10 @@ the rule, as any rule of the author's.
   on, what every hook says after the entry prompt (a later prompt's context,
   a tool hook's message and the Stop hook's) is that analysis is on, that
   the operator's message is the direction to act on, and the line that ends
-  it; the instruction to pause is given once, at entry. Where an
+  it; the instruction to pause is given once, at entry. Each place that
+  says how analysis ends names both ways, a dispatch and `analysis: off`:
+  the instruction file and its template, the sentence on the operator's
+  controls in the six roots that carry it, and the execution guide. Where an
   `operator override:` is open under the analysis, a dispatch ends neither:
   the override keeps its own `off`, which records it, and the hook says so
   in one line. `operator override:` is otherwise unchanged.
@@ -218,9 +260,11 @@ run except to reproduce a failure that run names.
 
 1. `packages/skeleton/src/loadouts/contributor.ts`: the shared rule
    `blocked-turn`, rewritten as the Design's first bullet says, under the
-   id and in the layer it has. Check: a new case in
-   `scripts/test-harness.mjs` that emits into a fixture root and reads the
-   rule's four clauses in each of the six role roots.
+   id and in the layer it has, and a constant of the router's own for the
+   sentence its procedure keeps. Check: a new case in
+   `scripts/test-harness.mjs` that emits into a fixture root, reads the
+   rule's four clauses in each of the six role roots and reads the router's
+   root for the sentence it keeps.
 2. `packages/skeleton/src/loadouts/executor-supports.ts`: `intentToAct` and
    `operatorCheckIn` as the Design says. Check: the case of
    `scripts/test-process-debt.mjs` that reads the equipped supports' lines,
@@ -230,10 +274,13 @@ run except to reproduce a failure that run names.
    `communication-intent` and `operator-check-in`, each ending with the
    instruction to go on in the same turn. Check: the same file's case for
    the briefing.
-4. `packages/skeleton/src/harness-host.ts`, the executor's dispatch context:
-   the "I intend to" sentence gains "then go on in the same turn". Check: a
-   case in `scripts/test-harness.mjs` that reads the context of a
-   `resume: next` prompt.
+4. `packages/skeleton/src/harness-host.ts`, two contexts. The executor's
+   dispatch context: the "I intend to" sentence gains "then go on in the
+   same turn". The prompt context: the Design's line for a message sent
+   while a turn was running, decided from the session journal's rows for
+   the prompt before it and for the Stop hook. Check: a case in
+   `scripts/test-harness.mjs` that reads the context of a `resume: next`
+   prompt, and one for each row of criterion 8's table.
 5. `packages/compiler/src/harness.ts`: `OPERATOR_QUESTION_CONTEXT` is built
    from the role's sentence on answering the operator, which moves to one
    exported constant both read. Check: a case in the compiler package's
@@ -253,7 +300,9 @@ run except to reproduce a failure that run names.
 8. `packages/compiler/src/operator-control.mjs`: a prompt that opens with a
    dispatch phrase ends an analysis and is passed on to the dispatch
    reader, unless an override is open under it; the message for every hook
-   after the entry prompt as the Design says. Check: cases in the compiler
+   after the entry prompt as the Design says. In `contributor.ts`, the
+   constant `operatorControls`: its sentence names a dispatch beside `off`
+   as what ends analysis. Check: cases in the compiler
    package's operator-control tests for a later prompt, a tool hook and the
    Stop hook, and for a dispatch typed with an override open under the
    analysis; and one case in `scripts/test-harness.mjs` for each of
@@ -279,15 +328,15 @@ cases; the emitted bundle and the features page; the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. After `node scripts/harness.mjs emit`, the rule `blocked-turn` in each
-   of the six role roots that carry the shared rules (`dotln-executor`,
-   `dotln-verifier`, `dotln-reviewer`, `dotln-release-close`,
-   `dotln-planner`, `dotln-refuter`) tells the session to take the route it
-   recommends in the same turn, and names as the reasons to end a turn and
-   wait these three: the operator's pause, stop or cancel; a block that a
-   refusal or the host names as the operator's alone; and a task of the
-   session's own with no other step left
+1. After `node scripts/harness.mjs emit`, each emitted role root says of
+   ending a turn what this table gives it
    (`npm test -- --only harness-fixtures`).
+
+   | Root | Says |
+   | --- | --- |
+   | `dotln-executor`, `dotln-verifier`, `dotln-reviewer`, `dotln-release-close`, `dotln-planner`, `dotln-refuter` | under the rule `blocked-turn`: take the route you recommend in the same turn, and end a turn to wait for three reasons only, which are the operator's pause, stop or cancel, a block that a refusal or the host names as the operator's alone, and a task of the session's own with no other step left |
+   | `dotln-router` | state once what only the operator can clear, with the one line that clears it, and none of the clauses of the row above |
+
 2. The executor's root and its dispatch briefing tell it to announce its
    intent in one line and go on in the same turn, and neither holds the
    words "steering opportunity" or "turn boundary"
@@ -299,8 +348,8 @@ cases; the emitted bundle and the features page; the write-backs.
    `dispatch-bound` and `worker-cap` each open with what was observed and
    that the call went on, and none tells the operator to authorize, wait
    or run a command (`npm test -- --only harness-fixtures`).
-5. The rule `dispatch-bounds`, in each of the six roots of criterion 1,
-   says that where the bound's message is an advisory the work goes on
+5. The rule `dispatch-bounds`, in each of the six roots of criterion 1's
+   first row, says that where the bound's message is an advisory the work goes on
    (`npm test -- --only harness-fixtures`).
 6. In a session where `analysis:` is on and no `operator override:` is
    open, a prompt that opens with a dispatch phrase ends the analysis, and
@@ -313,12 +362,23 @@ cases; the emitted bundle and the features page; the write-backs.
    hook's) says that analysis is on and names `analysis: off`, and does not
    hold the words "Pause the current routine"
    (`npm test -- --only compiler`).
-8. `docs/KIT.md` under "What is the kit's and what is the author's"
-   describes `blocked-turn` as the author's rule on when a turn ends, and
+8. The context the prompt hook adds to an operator's message is as this
+   table says (`npm test -- --only harness-fixtures`).
+
+   | The session journal when the message is sent | The context |
+   | --- | --- |
+   | holds a prompt of this session and no Stop row after it | holds one line that gives the time the message was sent, says that a turn was running then and says that a reply sent after that time was written without it |
+   | holds a Stop row after the session's last prompt, or no earlier prompt of the session | holds no such line |
+   | cannot be read | holds no such line |
+
+9. Each of these says that analysis ends at a dispatch or at
+   `analysis: off`: `CLAUDE.md`; `scripts/kit/CLAUDE.template.md`; the
+   sentence on the operator's controls in each emitted root that carries it
+   (`dotln-executor`, `dotln-verifier`, `dotln-reviewer`, `dotln-planner`,
+   `dotln-refuter`, `dotln-router`); and
    `docs/product/07-execution-guide.md` under "Operator recovery controls"
-   says that a dispatch ends analysis where no override is open
-   (`npm run test:docs`).
-9. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+   (`npm test -- --only harness-fixtures`; `npm run test:docs`).
+10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`,
 `npm test -- --only configuration-root`, `npm test -- --only process-debt`,
@@ -330,11 +390,14 @@ changed root's bytes before and after; the handoff.
 
 **Write-back duty:** as step 10 lists. The release's Read before upgrading
 says that an instance's executor no longer pauses after its announcement,
-that `analysis:` now ends at a dispatch, and that the author's rule on a
-blocked turn says more than it did and is removed as before.
+that `analysis:` now ends at a dispatch, that a message sent while a turn
+was running arrives with a line that says so, and that the author's rule on
+a blocked turn says more than it did and is removed as before.
 
 **Known issues and carry-ins:**
 
+- The rule's three reasons to end a turn name no decision that is the operator's. Such a decision is recorded with its safe default and put ready to decide in the report while the session goes on, as the shared rule `own-decisions` has it. Reopen: a session under the rewritten rule records a product decision that the operator then corrects as one that should have been put to them first.
+- The line for a message sent while a turn was running rests on the prompt hook running when the message is sent, which this pass observed in one session of Claude Code 2.1.330 and no page of the host states. Reopen: a live session's journal shows the hook's row for such a message after the host has delivered it; the line is then decided from the host's transcript. A turn that WO-290's continuation keeps going has a Stop row behind it, so a message sent during it gets no line.
 - Every criterion reads text or a hook's output, and none observes a
   session going on, so all can hold while sessions still stop. WO-290 is
   the mechanism behind them. Reopen: the operator's directions and
