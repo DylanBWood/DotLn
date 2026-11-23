@@ -1,5 +1,15 @@
 # WO-289 — A session is told to go on, and ends its turn only for what the operator must do (version assigned at activation)
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-288",
+    "relation": "satisfied-by-close",
+    "reason": "its Part F rewrites the executor's sentence on ending a turn and the day's line, and its Part A the sentence on answering the operator, which this order's steps are written against"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
@@ -14,8 +24,8 @@ call went on and asks the operator for nothing, and `analysis:` ends when
 the operator dispatches. No refusal, failing check or fixed figure is
 added, in core or in an instance. Assigned at activation under the standing
 opt-out default.
-**Cost:** adds one platform rule to the seven role roots, about four lines
-to each; changes the text of two executor supports, three briefing and
+**Cost:** adds one platform rule to six role roots, about four lines to
+each; changes the text of two executor supports, three briefing and
 context lines, three hook messages and one shared rule; adds one branch to
 the operator-control reader and about ten cases. Removes from every
 executor dispatch the instruction to offer a turn boundary before each
@@ -123,8 +133,12 @@ none of them says the opposite.
 
 **Design (scope discipline):**
 
-- **One platform rule, `turns`, in every role root.** In the executor's
-  own wording it says five things:
+- **One platform rule, `turns`, in each role root that carries the shared
+  rules.** Those are six: the executor's, the verifier's, the reviewer's,
+  the release close's, the planner's and the refuter's. The router's root
+  is written whole, holds no shared rule and keeps its own list of the
+  stops a drive ends on. In the executor's own wording the rule says five
+  things:
   - a dispatch runs to its recorded completion;
   - a choice of route is put as a recommendation that the session takes in
     the same turn;
@@ -158,10 +172,13 @@ none of them says the opposite.
   how much the bound was passed.
 - **`analysis:` ends when the operator dispatches.** A prompt that opens
   with `resume:`, `planning:`, `ideation:` or `drive:` ends an analysis the
-  session is in and is dispatched as in any other session. While analysis is
-  on, a later prompt's context says that it is on, that the operator's
-  message is the direction to act on, and the line that ends it; the
-  instruction to pause is given once, at entry. `operator override:` is
+  session is in and is dispatched as in any other session. While analysis is on, what every hook says after the entry prompt (a
+  later prompt's context, a tool hook's message and the Stop hook's) is
+  that analysis is on, that the operator's message is the direction to act
+  on, and the line that ends it; the instruction to pause is given once,
+  at entry. Where an `operator override:` is open under the analysis, a
+  dispatch ends neither: the override keeps its own `off`, which records
+  it, and the hook says so in one line. `operator override:` is otherwise
   unchanged.
 
 Rejected:
@@ -189,11 +206,11 @@ one case run under `node scripts/harness.mjs bounded -- node --test
 run except to reproduce a failure that run names.
 
 1. `packages/skeleton/src/loadouts/contributor.ts`: add the shared rule
-   `turns` to the rules every role carries, the router's root included, in
-   the platform layer of the layer table, with the reason beside it; remove
+   `turns` to the shared rules, which six roots carry, in the platform layer
+   of the layer table, with the reason beside it; remove
    `blocked-turn` as a separate id, its sentence being part of the new
    rule. Check: a new case in `scripts/test-harness.mjs` that emits into a
-   fixture root and reads the rule in each of the seven role roots, once
+   fixture root and reads the rule in each of the six role roots, once
    with no overlay and once with an overlay that unequips `author`.
 2. `packages/skeleton/src/loadouts/executor-supports.ts`: `intentToAct` and
    `operatorCheckIn` as the Design says. Check: the case of
@@ -227,10 +244,12 @@ run except to reproduce a failure that run names.
 8. `packages/compiler/src/operator-control.mjs`: a prompt that opens with a
    lifecycle dispatch phrase ends an analysis and is passed on to the
    dispatch reader; the message for a later prompt of a session in analysis
-   as the Design says. Check: two cases in the compiler package's
-   operator-control tests, and one in `scripts/test-harness.mjs` that types
-   `analysis:` and then `resume: next` in one fixture session and reads the
-   journaled dispatch.
+   as the Design says. Check: cases in the compiler package's operator-control tests for a
+   later prompt, a tool hook and the Stop hook, and for a dispatch typed
+   with an override open under the analysis; and one case in
+   `scripts/test-harness.mjs` for each of `resume: next`, `planning:`,
+   `ideation:` and `drive: WO-NNN` typed after `analysis:` in a fixture
+   session, which reads the role context the hook gives.
 9. `node scripts/harness.mjs emit`, then `npm run sync` and `npm run meta`:
    the emitted roots, hooks and the features page.
 10. Write-backs: `docs/KIT.md`, "What is the kit's and what is the
@@ -250,13 +269,13 @@ cases; the emitted bundle and the features page; the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. After `node scripts/harness.mjs emit`, each of the seven role roots
-   (`dotln-executor`, `dotln-verifier`, `dotln-reviewer`,
-   `dotln-release-close`, `dotln-planner`, `dotln-refuter`, `dotln-router`)
-   carries the rule `turns`, with an overlay that unequips `author` as with
-   none (`npm test -- --only harness-fixtures`).
-2. `npm run features -- list` shows `turns` as a platform rule and shows no
-   rule `blocked-turn` (`npm test -- --only harness-fixtures`).
+1. After `node scripts/harness.mjs emit`, each of the six role roots that
+   carry the shared rules (`dotln-executor`, `dotln-verifier`,
+   `dotln-reviewer`, `dotln-release-close`, `dotln-planner`,
+   `dotln-refuter`) carries the rule `turns`, with an overlay that
+   unequips `author` as with none (`npm test -- --only harness-fixtures`).
+2. `npm run features -- list` shows `turns` as a platform rule
+   (`npm test -- --only configuration-root`).
 3. The executor's root and its dispatch briefing tell it to announce its
    intent in one line and go on in the same turn, and neither holds the
    words "steering opportunity" or "turn boundary"
@@ -267,27 +286,30 @@ cases; the emitted bundle and the features page; the write-backs.
 5. In a root where the stop advises, the messages of `live-gate`,
    `dispatch-bound` and `worker-cap` each open with what was observed and
    that the call went on, and none tells the operator to authorize, wait
-   or run a command
+   or run a command (`npm test -- --only harness-fixtures`).
+6. The rule `dispatch-bounds`, in each of the six roots of criterion 1,
+   says that where the bound's message is an advisory the work goes on
    (`npm test -- --only harness-fixtures`).
-6. The rule `dispatch-bounds` in each emitted root says that where the
-   bound's message is an advisory the work goes on
+7. In a session where `analysis:` is on and no `operator override:` is
+   open, a prompt that opens with a dispatch phrase ends the analysis, and
+   the prompt hook gives that prompt the role context it gives the same
+   prompt in a session that never entered analysis, by a case for each of
+   `resume: next`, `planning:`, `ideation:` and `drive: WO-NNN`
    (`npm test -- --only harness-fixtures`).
-7. In a session where `analysis:` is on, a prompt that opens with
-   `resume:`, `planning:`, `ideation:` or `drive:` ends the analysis and
-   is journaled as the dispatch it is, by a case for each of the four
-   (`npm test -- --only harness-fixtures`).
-8. While `analysis:` is on, the context of a later prompt that carries no
-   prefix says that analysis is on and names `analysis: off`, and does not
+8. While `analysis:` is on, the message each hook gives after the entry
+   prompt (a later prompt's context, a tool hook's message and the Stop
+   hook's) says that analysis is on and names `analysis: off`, and does not
    hold the words "Pause the current routine"
    (`npm test -- --only compiler`).
 9. `docs/KIT.md` lists `turns` among the platform rules, and
    `docs/product/07-execution-guide.md` under "Operator recovery controls"
-   says that a lifecycle dispatch ends analysis (`npm run test:docs`).
+   says that a dispatch ends analysis where no override is open
+   (`npm run test:docs`).
 10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`,
-`npm test -- --only process-debt`, `npm test -- --only compiler`,
-`npm test -- --only skeleton`.
+`npm test -- --only configuration-root`, `npm test -- --only process-debt`,
+`npm test -- --only compiler`, `npm test -- --only skeleton`.
 
 **Evidence gate:** under `docs/evidence/WO-289/`: the decisions, with the
 rule's final wording and each changed message before and after; the

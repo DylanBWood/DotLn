@@ -1,5 +1,15 @@
 # WO-293 — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out (version assigned at activation)
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-288",
+    "relation": "satisfied-by-close",
+    "reason": "its Part A and its frame change the verifier's and the reviewer's roots, which this order's steps are written against"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
@@ -108,9 +118,10 @@ hands it back at the cost of one report.
   verification attacks each criterion, as today. A verification after a
   repair reproduces each blocking finding of the latest report, re-derives
   the criteria whose surfaces the repair changed and carries the others
-  with the evidence they had. A defect it meets outside those is a
-  follow-up, unless a probe shows that the change breaks, on a supported
-  input, something `main` did. An order in parts is read with a reader for
+  with the evidence they had. The rule bounds what it looks for and not what counts: a defect it
+  meets outside those that breaks no criterion is a follow-up, and one
+  that shows a criterion unmet, or that the change breaks on a supported
+  input something `main` did, blocks as at a first verification. An order in parts is read with a reader for
   each part at its first verification and at its final review.
 - **The briefing gives the scope as data.** For a verification after a
   repair it prints the latest report's blocking findings, each with its
@@ -168,9 +179,9 @@ run except to reproduce a failure that run names.
 2. `contributor.ts`, the reviewer's step 4: as the Design says. Check: the
    same file's case for the reviewer's root.
 3. `scripts/lib/control.mjs`, `DEFECT_CLASSES`: add `open-set`; the usage
-   line of `defect` in `scripts/resume.mjs` follows it. Then
-   `contributor.ts`, the shared rule that names the classes, for every role
-   that carries it. Check: a case in `scripts/test-resume.sh`'s fixture
+   line of `defect` in `scripts/resume.mjs` follows it. Then `contributor.ts`, the shared rule that names the classes, for every
+   role that carries it, and the planner's procedure line that screens
+   criteria against them. Check: a case in `scripts/test-resume.sh`'s fixture
    that records a defect of the class and reads the projection.
 4. `scripts/resume.mjs`, the verify briefing: for an order whose log holds
    a failed verification and a completed repair after it, print the two
@@ -206,9 +217,10 @@ advisory's phrases; the cases; the write-backs.
 **Acceptance criteria (all required)**
 
 1. The emitted verifier's root tells a verification that follows a repair
-   to reproduce the latest report's blocking findings and to re-derive the
-   criteria whose surfaces the repair changed, and to carry the other
-   criteria with their evidence (`npm test -- --only harness-fixtures`).
+   to reproduce the latest report's blocking findings, to re-derive the
+   criteria whose surfaces the repair changed, and to carry each other
+   criterion with its evidence unless it observes that criterion unmet
+   (`npm test -- --only harness-fixtures`).
 2. For a fixture order with a failed verification and a completed repair,
    the verify briefing prints that report's blocking findings, each with
    its basis and reproduction path, and the paths that differ between the
@@ -221,9 +233,8 @@ advisory's phrases; the cases; the write-backs.
    the stop's id and records the verdict
    (`npm test -- --only harness-fixtures`).
 5. `npm run resume -- defect <criterion> --class open-set --evidence <text>`
-   records the defect, and a pass whose report carries
-   `unmet, defective (open-set) by <ordinal>` for it is recorded
-   (`npm test -- --only resume`).
+   records the defect, and the order's status shows the criterion as
+   defective of that class (`npm test -- --only resume`).
 6. For a fixture order whose log holds two failed verifications that each
    judged criterion 3 unmet, the fix briefing's criteria line shows the
    count for criterion 3 and names the defect record, the cut of a part and
@@ -235,9 +246,11 @@ advisory's phrases; the cases; the write-backs.
    for an open order's criterion that holds any of `pass unchanged`,
    `as before`, `as today`, `half`, `twice`, `double` or `percent`
    (`npm test -- --only work-orders-fixtures`).
-9. Product 07 under "Verification review and attack" names six defect
-   classes, `open-set` among them, with what the verifier does for each
-   (`npm run test:docs`).
+9. Each of these five places lists six defect classes, `open-set` among
+   them: the emitted planner's root, the emitted verifier's root, the
+   emitted reviewer's root, the usage line of `npm run resume -- defect`,
+   and product 07 under "Verification review and attack"
+   (`npm test -- --only harness-fixtures`; `npm run test:docs`).
 10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`,

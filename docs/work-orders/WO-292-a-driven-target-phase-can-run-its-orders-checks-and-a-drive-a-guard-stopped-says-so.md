@@ -1,5 +1,15 @@
 # WO-292 — A driven target phase can run its order's checks, and a drive a guard stopped says so (version assigned at activation)
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-288",
+    "relation": "satisfied-by-close",
+    "reason": "its Part F changes the drive's stops and the router's list of them, to which this order adds one"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
@@ -10,10 +20,11 @@ follow the launchpad's levels after every emit, a session in a target
 worktree may read with the Read tool what the launchpad's own guard lets it
 read, a drive whose worker was refused by a guard stops at once and names
 the stop, and a session whose journal lies in an order's target lane gets
-its usage read back. No refusal is added: one stop of the drive,
-`guard-refused`, replaces a second dispatch into the same refusal, and it
-is a lifecycle command declining its own job, a record row an instance
-sets. Assigned at activation under the standing opt-out default.
+its usage read back. No refusal and no row of the table of stops is added. A drive already
+ends when two attempts of a phase finish nothing; where a guard's refusal
+is the cause it now ends on the first, with the reason `guard-refused`. A
+reason a drive ends with has no level: it occurs only where a stop
+refuses, and that stop's own line is what an owner sets. Assigned at activation under the standing opt-out default.
 **Cost:** adds one emit of each registered target worktree's guards to the
 launchpad's emit, whose measured time is recorded in the decisions before
 and after; one read rule in the target guard; one stop of the drive and its
@@ -93,7 +104,8 @@ A verification or a review run there reports what it cost.
 - **The launchpad's emit brings every registered target worktree's guards
   current.** After it writes the launchpad's own bundle, `emit` writes each
   registered target worktree's guards at the root's levels and prints each
-  worktree it wrote. A worktree that is gone is skipped with its path. The
+  worktree it wrote. A worktree that is gone, or that the session may not write, is named in
+  one advisory and skipped, and the launchpad's own emit completes. The
   kit already runs `emit` when an update is finished, so an update needs no
   further step.
 - **A read is a read.** In the target guard a Read-tool call is judged as
@@ -101,8 +113,9 @@ A verification or a review run there reports what it cost.
   user-settings paths the work rows protect, which stay refused.
 - **A drive stops where the guard stopped it.** When an attempt ends
   without its phase's completion and its record holds a guard's refusal,
-  the drive stops as `guard-refused` on that attempt. The stop and
-  `drive why` name each refusing stop with the line that changes its level.
+  the drive ends on that attempt with the reason `guard-refused`, beside
+  the reasons it already ends with. That reason and `drive why` name each
+  refusing stop with the line that changes its level.
   An attempt that ends unfinished with no refusal keeps today's two
   attempts and `incomplete-bound`.
 - **Usage follows the session.** `harness usage <session>` looks for the
@@ -136,7 +149,8 @@ failure that run names.
 
 1. `scripts/lib/harness.mjs`, the emit: after the launchpad's own bundle,
    call `emitTargetHarness` for each path `registeredTargetWorktrees`
-   returns that exists, at the root's levels, and print each. Check: a case
+   returns that exists, at the root's levels, and print each; name one it
+   cannot write in an advisory and go on. Check: a case
    in `scripts/test-target-worktree-start.mjs` with a target worktree whose
    installed guards record no levels.
 2. `packages/skeleton/src/harness-host.ts`, `runTargetHarnessHook`: a
@@ -179,24 +193,23 @@ its account; the usage reader's second lane; the cases; the write-backs.
 **Acceptance criteria (all required)**
 
 1. With a fixture launchpad at an instance's levels and a registered target
-   worktree whose installed guards record no levels,
-   `node scripts/harness.mjs emit` run in the launchpad prints that
-   worktree's path, and its guards then answer a call the root advises on
-   with an advisory (`npm test -- --only target-worktree`).
-2. From a session in a target worktree, the Read tool's read of a file
-   under the launchpad's main checkout is admitted, and its read of a
-   credential path the work rows name is refused
+   worktree whose installed guards record no levels, after
+   `node scripts/harness.mjs emit` run in the launchpad that worktree's
+   guards answer a call the root advises on with an advisory
    (`npm test -- --only target-worktree`).
-3. A driven attempt that ends without its phase's completion and whose
-   record holds a guard's refusal stops the drive as `guard-refused`, and
-   the drive starts no second attempt of that phase
+2. Where a registered target worktree cannot be written, that emit names
+   the worktree in one advisory and completes
+   (`npm test -- --only target-worktree`).
+3. From a session in a target worktree, the Read tool's read of a file
+   under the launchpad's main checkout is admitted
+   (`npm test -- --only target-worktree`).
+4. A driven attempt that ends without its phase's completion and whose
+   record holds a guard's refusal ends the drive with the reason
+   `guard-refused`, and the drive starts no second attempt of that phase
    (`npm test -- --only harness-fixtures`).
-4. For that stop, `node scripts/drive.mjs why WO-NNN` prints each refusing
-   stop's id and the line of `dotln.config.json` that changes its level
-   (`npm test -- --only harness-fixtures`).
-5. A driven attempt that ends without its phase's completion and holds no
-   refusal is dispatched once more and then stops as `incomplete-bound`
-   (`npm test -- --only harness-fixtures`).
+5. For a drive that ended so, `node scripts/drive.mjs why WO-NNN` prints
+   each refusing stop's id and the line of `dotln.config.json` that
+   changes its level (`npm test -- --only harness-fixtures`).
 6. `node scripts/harness.mjs usage <session>` for a session whose journal
    lies in an order's target lane prints that session's counts and not the
    cause `no-session` (`npm test -- --only harness-fixtures`).

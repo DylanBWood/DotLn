@@ -230,7 +230,7 @@ in WO-288's own session, to this effect:
    publication state a verifier constructs is a follow-up.
 3. The next verification reads this repair: it reproduces the eleventh
    report's seven findings, re-derives the criteria whose surfaces the
-   repair changed and carries the rest.
+   repair changed and carries the rest, unless it sees one of them unmet.
 4. The integration before the handoff runs the worktree's own
    `scripts/worktree.mjs`, since main's refuses the key this order adds.
 
@@ -308,9 +308,12 @@ figure.
 
 **The sequencing error.** Product 07's rule for the queue form, written by
 the pass of 2026-11-16, says that an order an instance is stopped on is
-filed by itself, ahead. On 2026-11-19 the fix for the instance's stopped
-turns was added to WO-288 as a part, while that order was at its end step.
-It has waited there four days. The rule now says that it holds while an
+filed by itself, ahead. On 2026-11-19 the fix for the instance's stopped turns was added to WO-288
+as a part, while that order was at its end step, on the operator's
+direction to act on the instance's notes in that session (WO-288-D049).
+Nothing the kit gave that session said what riding a 33-criterion order
+would cost the fix, and the session did not say it. It has waited there
+four days. The rule now says that it holds while an
 order runs.
 
 ### Where a target order's worktree starts
@@ -422,8 +425,10 @@ The planner's part is plain. The pass of 2026-11-16 wrote WO-288's
 criterion 23, wrote the frame's ninth rule, and filed a third order of a
 form whose first had taken 42 hours and six repairs. Five screens are
 added to product 07 and the template's criteria line now says them where
-a planner writes. The six orders this pass files hold six to ten
-criteria each, one behavior to a criterion.
+a planner writes. The six orders this pass files hold six to ten criteria each. A criteria
+review of them by a fresh worker found fourteen things to correct before
+they were judged, among them criteria of this pass's own that held two
+behaviors; §The criteria review lists each and what was done.
 
 ### The critics' record
 
@@ -444,7 +449,7 @@ Its seven recommendations, each disposed:
 | Recommendation | Disposition |
 | --- | --- |
 | 1. A criterion returned twice names the ways out | WO-293, criterion 6; product 07's tenth rule of the queue form, in this pass |
-| 2. The critic's charter judges whether each accepted remedy held, and stops re-raising what it has judged | Deferred: the charter is `scripts/kit/critic.md`, which WO-288's Part A is changing. Reopen: the first pass after WO-288 closes, which reads Part A as merged |
+| 2. The critic's charter judges whether each accepted remedy held, and stops re-raising what it has judged | Deferred: the charter is a file WO-288's Part A adds, in that order's worktree and not yet on `main`. Reopen: the first pass after WO-288 closes, which reads Part A as merged |
 | 3. A question put to the operator is not a block | WO-289, the rule `turns` |
 | 4. A final review fails on a blocking defect | WO-293, criterion 7 |
 | 5. The part checkpoint prints the suites whose declared sources changed | Declined for now: the orders this pass files are not in parts. Reopen: an order in parts is filed |
@@ -468,7 +473,7 @@ of it.
 | [WO-290](../../work-orders/WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md) | Item 3, the mechanism behind the sentences: the Stop hook sends a session back once when its dispatch is unfinished | 6 |
 | [WO-292](../../work-orders/WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md) | Item 2: a target worktree's guards follow the launchpad's levels; a drive a guard stopped says so at once; a session there gets its usage read | 8 |
 | [WO-293](../../work-orders/WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md) | Item 5 and the order in progress: a verification after a repair reads the repair; a sixth defect class; the ways out at the second return; a final review that fails on what it finds | 10 |
-| [WO-294](../../work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md) | Item 1: main reads the roots alone of an order worktree's configuration; a drive starts from a checkout that is off main | 7 |
+| [WO-294](../../work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md) | Item 1: main reads the roots alone of an order worktree's configuration; a drive starts from a checkout that is off main | 8 |
 
 Every path each order names was checked against the tree at `bc761ad9c`:
 all exist but each order's own evidence directory, which the order
@@ -668,6 +673,33 @@ entry.
 ```
 
 <!-- dotln-rules-recorded:end -->
+
+## The criteria review
+
+Before the refutation, the kit's review helper ran one criteria review of
+the planning subject on a fresh worker (`npm run worker -- review --kind
+criteria --host claude --subject planning`, with the three captures; the
+host reported claude-opus-5-5 at xhigh; 0 h 11 min; 18.0 million tokens).
+Its report is in the ignored reviews lane. It answered each item of the
+dispatch as acted on, and it found fourteen things, one of them blocking,
+all in text this pass wrote. Each was judged and none was declined whole.
+
+| Finding | What was done |
+| --- | --- |
+| F1, blocking. This pass's rewording of the queue form's ninth rule, and WO-293's Design, made any defect a re-verification meets outside the repair a follow-up unless it is a regression, so a verifier that saw a carried criterion fail would have recorded it met | Accepted. The rule bounds what a re-verification looks for and not what counts: a defect that breaks no criterion is a follow-up, and one that shows a criterion unmet blocks. Corrected in product 07, in WO-293's Design and its first criterion, and in the wording recommended for WO-288 |
+| F2. WO-290 asked for a row of the table of stops that refuses in an instance, which the table gives only to a row that guards against loss that cannot be undone | Accepted. The continuation is a feature an owner turns off, `continue-unfinished-turn`, and no row of that table; the order says why |
+| F3. WO-289's seventh criterion asked that four kinds of prompt be journaled as dispatches, and the hook journals a dispatch row for one of them | Accepted. The criterion now reads the role context the hook gives the prompt, which exists for all four |
+| F4. WO-289 did not say what a dispatch does to an override left open under an analysis | Accepted. A dispatch ends neither; the override keeps its own `off` and its record, and the criterion carries the fence |
+| F5. Two criteria named a suite that does not run the cases their steps write | Accepted. Both name `configuration-root`, which runs the features cases |
+| F6. WO-292 described `guard-refused` as both a lifecycle refusal and a row an instance sets | Accepted. It is a reason a drive ends with, beside the ones it has, and no row of the table: it occurs only where a stop refuses |
+| F7. The orders' dependence on WO-288 was prose, which the kit does not enforce | Accepted. WO-289, WO-290, WO-292 and WO-293 carry typed dependencies |
+| F8. No role text carries the sixth class or the new screens | Accepted for the class: WO-293's ninth criterion lists the five places that name the classes, the planner's root among them. Declined for the screens: the planner's root already sends a pass to the section that holds them, the template carries them where criteria are written, and that root is over its measured size (WO-288-D221). Reopen: a pass files a criterion one of the five screens names |
+| F9. A criterion said every emitted root where the router's holds no shared rule | Accepted. WO-289 names the six roots that carry the shared rules, and the router keeps its own list of stops |
+| F10. The pause message of a tool hook and of the Stop hook was untested | Accepted. WO-289's eighth criterion names the three hooks |
+| F11. Several criteria held two behaviors, against the pass's own screen | Accepted in part. Split or cut to one behavior: WO-291's third to seventh, WO-292's first to third, WO-293's fifth, WO-294's fourth and fifth. Left as written: a criterion that states one scenario and its observable result, and each order's last, which the contract has name the gates together |
+| F12. WO-290 does not reach a driven phase in a target worktree | Accepted as a known issue of the order |
+| F13. WO-292 did not say what its emit does when a target worktree cannot be written | Accepted. It names the worktree in one advisory and completes; that is its second criterion |
+| F14. This document's last two sections were empty when it was read | They are written at the pass's end, below |
 
 ## Answers to the instance (paste-ready)
 

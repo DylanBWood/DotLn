@@ -172,16 +172,17 @@ write-backs.
    the main checkout ends as it ends for the same fixture without the two
    unknown names (`npm test -- --only worktree-integration`).
 4. With no worktree on `main`, `node scripts/drive.mjs status WO-NNN` run
-   in the primary checkout prints the order's phase, and a drive with the
-   fake host launches its next phase
+   in the primary checkout prints the order's phase
    (`npm test -- --only harness-fixtures`).
-5. `node scripts/harness.mjs check`, run in a checkout whose own
+5. With no worktree on `main`, a drive with the fake host launches the
+   order's next phase (`npm test -- --only harness-fixtures`).
+6. `node scripts/harness.mjs check`, run in a checkout whose own
    configuration holds an unknown section key, refuses and names the key
    (`npm test -- --only configuration-root`).
-6. Product 07 under "Where the control plane finds its documents" says
+7. Product 07 under "Where the control plane finds its documents" says
    that a command reads the roots alone of another checkout's
    configuration (`npm run test:docs`).
-7. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only configuration-root`,
 `npm test -- --only harness-fixtures`,

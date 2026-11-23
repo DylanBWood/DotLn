@@ -1,5 +1,20 @@
 # WO-290 — A turn that leaves a dispatch unfinished goes on once (version assigned at activation)
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-288",
+    "relation": "satisfied-by-close",
+    "reason": "its Part F has the Stop hook's line name a dispatch that has not recorded its completion, which this order's decision reads"
+  },
+  {
+    "workOrderId": "WO-289",
+    "relation": "satisfied-by-close",
+    "reason": "the rule on turns, whose two courses the reason given to the session repeats"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
@@ -8,20 +23,18 @@
 **Release classification:** minor. Where a session ends its turn while its
 lifecycle dispatch has recorded no completion and nothing the kit can
 observe needs the operator, the Stop hook has the session go on, once, and
-tells it why. This adds one row to the table of stops, `unfinished-turn`,
-which protects the owner's order from standing idle with nothing for the
-owner to do. At `refuse` the row denies only the end of a turn, so no work
-is stopped by it, and that is the level it stands at in core and in an
-instance; one line of `dotln.config.json` sets it to `advise`, where the
-hook names the unfinished dispatch and the turn ends, or to `off`. Assigned
-at activation under the standing opt-out default.
-**Cost:** adds one decision to the Stop hook, one row and its level, one
-reason text and about eight cases; adds to a session that stops early one
-continued turn, whose tokens are unknown until run. Removes nothing.
-`packages/skeleton/src/harness-host.ts`, `packages/skeleton/src/stops.mjs`
-and `packages/skeleton/src/observed-facts.ts` are registered evidence
-sources: the editions they stale are re-minted with `npm run sync`. No file
-of `FEEDBACK_SOURCE_PATHS` is edited. One complete review run at handoff.
+tells it why. This is a feature an owner elects, `continue-unfinished-turn`,
+on unless a root turns it off. It adds no stop: it denies no tool call,
+fails no check and declines no command's job, and the one thing it holds
+back, for one turn, is a session's own stop. Assigned at activation under
+the standing opt-out default.
+**Cost:** adds one decision to the Stop hook, one feature and its default,
+one reason text and about eight cases; adds to a session that stops early
+one continued turn, whose tokens are unknown until run. Removes nothing.
+`packages/skeleton/src/harness-host.ts` and
+`packages/skeleton/src/observed-facts.ts` are registered evidence sources:
+the editions they stale are re-minted with `npm run sync`. No file of
+`FEEDBACK_SOURCE_PATHS` is edited. One complete review run at handoff.
 **Nomination provenance:** the operator's planning dispatch of 2026-11-23,
 item 3 (ignored capture SHA-256
 `0c80efbd379f8ab2ec03fe24a966d335faed0e8d35fc2b3cd9eb5770d075a270`). WO-288's
@@ -33,10 +46,7 @@ gives the reason for a mechanism beside WO-289's sentences: in the record
 of the critics, a sentence held where a command's default or a hook stood
 behind it, and a turn ended with work owed after the rule was already in
 the session's root (WO-288-D168).
-**Depends on:** WO-288 (its Part F has the Stop hook's line name a dispatch
-that has not recorded its completion, which this order's decision reads)
-and WO-289 (the rule `turns`, which the reason given to the session
-repeats).
+**Depends on:** WO-288 and WO-289, as the block above types them.
 **Recommended placement:** after WO-289 and WO-291. It rests on a host
 behavior, so it is filed apart from WO-289's texts and does not hold them.
 
@@ -73,6 +83,14 @@ its turn, which the kit then lets it do.
   background tasks; and that the hook does not run when the user interrupts.
 - WO-287-D090 and WO-288-D168 record turns that ended with work owed and
   nothing asked of the operator, the second for 43 minutes.
+- The kit's table of stops gives a row a level by its class
+  (`stopDefault` in `packages/skeleton/src/stops.mjs`): a row that is not
+  of class `work` advises in an instance, and class `work` means loss or
+  exposure that cannot be undone. A turn that ends early is neither, so a
+  row of that table would stand at `advise` exactly where an instance's
+  sessions need it on. The kit's other hook-held order of work,
+  plan-first, is a feature with a switch of its own
+  (`scripts/lib/feature-registry.mjs`).
 
 **Design (scope discipline):**
 
@@ -83,7 +101,8 @@ its turn, which the kit then lets it do.
   phase not yet completed; the host does not report the turn as already
   continuing from a Stop hook; no background task of the session is
   running; no plan is proposed and unapproved; and neither `analysis:` nor
-  `operator override:` is on. In every other state the turn ends as today.
+  `operator override:` is on. In every other state the turn ends, which is
+  what happens in all of them now.
 - **Once.** A second stop in a row ends the turn. A session that was told
   to pause, or that only the operator can unblock, therefore spends one
   short turn saying so.
@@ -91,97 +110,104 @@ its turn, which the kit then lets it do.
   that nothing recorded needs the operator, and gives the two courses of
   the rule `turns`: take the route you would recommend and go on, or say in
   one line what only the operator can do and end the turn.
-- **A row with a level.** `unfinished-turn` is a row of the table of stops.
-  `refuse` continues the turn, `advise` names the unfinished dispatch in
-  the hook's line and lets the turn end, `off` says nothing. It stands at
-  `refuse` in core and in an instance, since at that level it stops no
-  work, and one line changes it.
+- **A feature, on unless turned off.** `continue-unfinished-turn` is a row
+  of the features page, in core and in an instance, with
+  `"features": {"continue-unfinished-turn": false}` as the line that turns
+  it off. Off, the hook's line names the unfinished dispatch, as WO-288
+  leaves it, and the turn ends.
 - **Hosts.** The form of the hook's output is the executor's, read from the
   host's page at execution. Codex keeps its adapter. A host that ignores
-  the output ends the turn as today.
+  the output ends the turn as it does now.
 
 Rejected:
 
-- *Deciding from the session's last message*, by reading whether it ends in
+- _A row of the table of stops with a level._ It differs on which control
+  the owner turns. By the table's own rule the row would advise in an
+  instance, where it is needed on; and giving it the class that refuses
+  everywhere would call an early stop a loss that cannot be undone, which
+  it is not.
+- _Deciding from the session's last message_, by reading whether it ends in
   a question. It differs on what is read, recorded state or prose: no
   criterion of this kit rests on a deterministic reading of natural
   language, and a question is sometimes the right end of a turn.
-- *Continuing until the dispatch completes.* It differs on how many times
+- _Continuing until the dispatch completes._ It differs on how many times
   the hook insists. A session that must stop would be held in a loop that
   only the operator's interrupt ends, which is the cost this order exists
   to remove.
-- *The planner, the refuter, the router and the release close.* They differ
+- _The planner, the refuter, the router and the release close._ They differ
   on what a turn's end means: a planning session converses, a router stops
   by design at each of its stops, and a close hands the operator a command
   when the host declines its publish.
 
 **Execution plan (the executor follows these steps in order; observed at
-`bc761ad9c`, 2026-11-23):** The plan is to be read against WO-288's and WO-289's merged text. A step's check is one case run under
+`bc761ad9c`, 2026-11-23):** The plan is to be read against WO-288's and
+WO-289's merged text. A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
 failure that run names.
 
-1. `packages/skeleton/src/stops.mjs`: the row `unfinished-turn`, with what
-   it protects and its level in core and in an instance. Check: a case in
+1. `scripts/lib/feature-registry.mjs`: the feature
+   `continue-unfinished-turn`, instance scope, default on, with what it
+   does and the line that turns it off. Check: a case in
    `scripts/test-features.mjs` that reads the row from the features page of
-   a fixture root.
+   a fixture root and of an exported instance.
 2. `packages/skeleton/src/harness-host.ts`, the `finish` path: one function
    that takes the Stop input, the session's journaled dispatch and the
    order's control state and returns continue or end, with the reason, as
    the Design's first bullet lists. Check: one case for each row of
    criterion 1's table in `scripts/test-harness.mjs`.
-3. `harness-host.ts`, the same path: at `refuse` the hook's output prevents
-   the stop in the form the host's page gives and journals the
-   continuation; at `advise` the status line names the unfinished dispatch;
-   at `off` neither. Check: three cases in `scripts/test-harness.mjs`.
+3. `harness-host.ts`, the same path: with the feature on, the hook's output
+   prevents the stop in the form the host's page gives and journals the
+   continuation; with it off, the status line names the unfinished
+   dispatch and the turn ends. Check: two cases in
+   `scripts/test-harness.mjs`.
 4. `packages/skeleton/src/observed-facts.ts`: the comment and the status
    line that say the Stop hook never blocks, corrected to what it now does.
    Check: the case of step 3 reads the line.
 5. `node scripts/harness.mjs emit`, then `npm run sync` and `npm run meta`.
-6. Write-backs: `docs/KIT.md`, "Stops" (the row, its three levels and the
-   line that sets each); `docs/product/07-execution-guide.md`, "Discipline"
-   (what the kit does when a turn ends with a dispatch unfinished);
-   `CLAUDE.md` and `scripts/kit/CLAUDE.template.md`, the count and the list
-   of refusals in the harness paragraph, which the emit writes.
+6. Write-backs: `docs/KIT.md`, "What each feature does" and "The feature
+   table" (the feature, its default and its line);
+   `docs/product/07-execution-guide.md`, "Discipline" (what the kit does
+   when a turn ends with a dispatch unfinished).
 7. The handoff sequence of §Discipline.
 
-**Deliverables:** the row; the decision and its reason; the cases; the
+**Deliverables:** the feature; the decision and its reason; the cases; the
 emitted hook; the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. At the level `refuse`, the Stop hook's output for each state below is as
+1. With the feature on, the Stop hook's output for each state below is as
    the table says (`npm test -- --only harness-fixtures`). "Unfinished"
    means a journaled `resume: next`, `resume: fix`, `resume: verify` or
    `resume: final review` whose completion the order's control log does not
    hold.
 
-   | State when the turn ends | The hook |
-   | --- | --- |
-   | Unfinished, and none of the rows below holds | prevents the end and gives a reason |
-   | Unfinished, and the host reports the turn as already continuing from a Stop hook | lets it end |
-   | Unfinished, and a background task of the session is running | lets it end |
-   | Unfinished, and a plan is proposed and not approved | lets it end |
-   | Unfinished, and `analysis:` or `operator override:` is on | lets it end |
-   | The dispatch's completion is recorded, or the session holds no such dispatch | lets it end |
+   | State when the turn ends                                                         | The hook                            |
+   | -------------------------------------------------------------------------------- | ----------------------------------- |
+   | Unfinished, and none of the rows below holds                                     | prevents the end and gives a reason |
+   | Unfinished, and the host reports the turn as already continuing from a Stop hook | lets it end                         |
+   | Unfinished, and a background task of the session is running                      | lets it end                         |
+   | Unfinished, and a plan is proposed and not approved                              | lets it end                         |
+   | Unfinished, and `analysis:` or `operator override:` is on                        | lets it end                         |
+   | The dispatch's completion is recorded, or the session holds no such dispatch     | lets it end                         |
 
 2. The reason the hook gives names the order's id and the dispatch phrase
    and says both courses: go on by the route the session would recommend,
    or say in one line what only the operator can do and end the turn
    (`npm test -- --only harness-fixtures`).
-3. With `"stops": {"unfinished-turn": "advise"}` the hook lets the turn of
-   the table's first row end and its line names the order and the
-   unfinished dispatch; with `"off"` its output holds neither
-   (`npm test -- --only harness-fixtures`).
-4. In a root that sets no line for it, `npm run features -- list` shows
-   `unfinished-turn` at `refuse`, in core and in an exported instance, with
-   the line that changes it (`npm test -- --only harness-fixtures`).
-5. `docs/KIT.md` under "Stops" states the row's three levels and that at
-   `refuse` it denies only the end of a turn (`npm run test:docs`).
+3. With `"features": {"continue-unfinished-turn": false}` the hook lets the
+   turn of the table's first row end, and its line names the order and the
+   unfinished dispatch (`npm test -- --only harness-fixtures`).
+4. In a root that makes no election, `npm run features -- list` shows
+   `continue-unfinished-turn` on, in core and in an exported instance
+   (`npm test -- --only configuration-root`).
+5. `docs/KIT.md` states the feature, its default and that it holds back
+   only the end of a turn, once (`npm run test:docs`).
 6. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`,
-`npm test -- --only skeleton`, `npm test -- --only launchpad`.
+`npm test -- --only configuration-root`, `npm test -- --only skeleton`,
+`npm test -- --only launchpad`.
 
 **Evidence gate:** under `docs/evidence/WO-290/`: the decisions, with the
 host page's sentences the output form was read from and the date read; the
@@ -192,15 +218,18 @@ the hook's output, and the host's page is the evidence for what the host
 does with it.
 
 **Write-back duty:** as step 6 lists. The release's Read before upgrading
-names the row and the line that lowers it.
+names the feature and the line that turns it off.
 
 **Known issues and carry-ins:**
 
+- A driven phase of an order against a target runs under the target
+  worktree's guards, which journal no dispatch, so the continuation does
+  not reach it. An attended session started in the launchpad is reached.
 - The host ends a turn after eight continuations in a row whatever a hook
   says; this order's hook asks for one.
 - Copilot reuses the Claude registration, and what it does with a Stop
   hook's output is unobserved. Where it ignores the output the turn ends as
-  today.
+  it does now.
 - A session the operator told in plain words to stop is continued once and
   says so; the kit reads no such words.
 - The register row this order settles: the one WO-288's criterion 40 files
@@ -208,9 +237,9 @@ names the row and the line that lowers it.
 
 **Non-goals:** any reading of the session's message; a second
 continuation; the planner's, refuter's, router's or release close's turns;
-Codex's adapter; a refusal of any tool call; a change to what completes a
-dispatch.
+Codex's adapter; a refusal of any tool call; a row of the table of stops; a
+change to what completes a dispatch.
 
-**Operator-review assumptions:** the row stands at `refuse` in an instance
-as in core, on the reading that it stops no work; the four dispatches named
-are the ones it covers; and one continuation is enough.
+**Operator-review assumptions:** the feature is on by default, in an
+instance as in core; the four dispatches named are the ones it covers; and
+one continuation is enough.

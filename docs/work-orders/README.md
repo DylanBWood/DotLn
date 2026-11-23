@@ -64,8 +64,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-288: not-control-closed.
+- Dependencies: typed; blocked on WO-288.
+- References: WO-288: satisfied-by-close (unmet) — its Part F rewrites the executor's sentence on ending a turn and the day's line, and its Part A the sentence on answering the operator, which this order's steps are written against.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -98,8 +98,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-288: not-control-closed; WO-289: not-control-closed.
+- Dependencies: typed; blocked on WO-288, WO-289.
+- References: WO-288: satisfied-by-close (unmet) — its Part F has the Stop hook's line name a dispatch that has not recorded its completion, which this order's decision reads; WO-289: satisfied-by-close (unmet) — the rule on turns, whose two courses the reason given to the session repeats.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -115,8 +115,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-288: not-control-closed.
+- Dependencies: typed; blocked on WO-288.
+- References: WO-288: satisfied-by-close (unmet) — its Part F changes the drive's stops and the router's list of them, to which this order adds one.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -132,8 +132,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: conservative token view; does not block.
-- References: WO-288: not-control-closed.
+- Dependencies: typed; blocked on WO-288.
+- References: WO-288: satisfied-by-close (unmet) — its Part A and its frame change the verifier's and the reviewer's roots, which this order's steps are written against.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

@@ -10,13 +10,13 @@ names the repository alone and starts from the tip of that repository's
 base branch at the moment it starts; a commit in the line stays admitted
 and pins the base. A target order's heading carries no version placeholder,
 and the planning check's refusal of changed order bytes names the line and
-both ways out. No refusal is added: the start gains two advisories, and one
-existing refusal gains words. Assigned at activation under the standing
+both ways out. No refusal is added: the start gains one advisory, and one existing
+refusal gains words. Assigned at activation under the standing
 opt-out default.
 **Cost:** adds one fetch of the target clone's base branch to a target
 order's start, bounded by a row of the table of limits and never a stop;
-one admitted form of the `Repository:` line and its nine readers' handling
-of it; two advisories; about twelve cases. Removes the amendment an
+one admitted form of the `Repository:` line and its readers' handling of
+it; one advisory; about eleven cases. Removes the amendment an
 instance's operator authorizes today each time an order's pinned base has
 gone stale, and the hand edit of a heading that says a version is coming.
 `scripts/resume.mjs`, `scripts/worktree.mjs`, `scripts/work-orders.mjs`,
@@ -125,9 +125,8 @@ right.
   `origin`, under a row of the table of limits. Where the fetch fails or
   the clone has no remote, it uses the tip the clone already holds and
   prints one advisory with that commit's date.
-- **A pin that has fallen behind is said, once.** The start of a pinned
-  order whose commit is behind the base branch's tip prints how many
-  commits behind and goes on.
+- **A pin is taken as written.** A pinned order starts at its commit
+  whatever the base branch has done since, as today.
 - **The index shows what is known.** Before activation an unpinned order's
   base reads as the base branch's name; after it, the recorded commit.
 - **No promise in a target order's heading.** The template and the derived
@@ -150,9 +149,10 @@ Rejected:
   It differs on who keeps the base current, the kit or the operator: each
   refresh is an amendment the operator must authorize, which is the cost
   this order removes.
-- *Refusing a start whose pin is behind.* It differs on whether the kit
-  stops the owner's work for a property of the kit's own record. A pin is
-  sometimes what the planner meant.
+- *Refusing a start whose pin is behind, or warning of it.* It differs on
+  whether the kit judges a line the planner wrote on purpose. A pin is
+  what a planner writes to start from a named commit, and the unpinned
+  form is there for every other order.
 
 **Execution plan (the executor follows these steps in order; observed at
 `bc761ad9c`, 2026-11-23):** A step's check is one case run under
@@ -176,11 +176,9 @@ failure that run names.
    table's own case.
 4. `scripts/worktree.mjs`, the `start` action: before `readStartAuthority`
    resolves a target plan, fetch the base branch from the clone's `origin`
-   under that row; on failure print one advisory naming the commit and its
-   date and go on. For a pinned plan whose commit is an ancestor of the tip
-   and not the tip, print one advisory with the count. Check: three cases
-   in `scripts/test-target-worktree-start.mjs` (tip moved; fetch fails; pin
-   behind).
+   under that row; on failure print one advisory naming the commit and its date and go on.
+   Check: two cases in `scripts/test-target-worktree-start.mjs` (tip moved;
+   fetch fails).
 5. `scripts/resume.mjs`, activation: for an order whose line has no commit,
    record the base of the order's registered target worktree, which the
    start writes before it activates; where no such entry exists, refuse
@@ -218,7 +216,7 @@ failure that run names.
 12. The handoff sequence of §Discipline.
 
 **Deliverables:** the admitted form and its readers; the fetch, its row and
-the two advisories; the heading's two writers and the prepare line; the
+its advisory; the heading's two writers and the prepare line; the
 refusal's words; the cases; the write-backs.
 
 **Acceptance criteria (all required)**
@@ -227,33 +225,29 @@ refusal's words; the cases; the write-backs.
    whose base branch has gained two commits since the order was filed,
    `worktree start` creates the target worktree at the base branch's tip
    (`npm test -- --only target-worktree`).
-2. In that fixture the activation event and the registry entry both record
+2. In that fixture the activation event and the registry entry each record
    that tip as the base (`npm test -- --only target-worktree`).
-3. With the line `**Repository:** <id> @ <commit>` naming the older commit
-   in the same fixture, the start creates the worktree at that commit and
-   prints one advisory that says how many commits it is behind the base
-   branch (`npm test -- --only target-worktree`).
-4. Where the fetch of the clone's `origin` fails, the start of an unpinned
-   order uses the tip the clone holds, prints one advisory that names that
-   commit's date, and completes (`npm test -- --only target-worktree`).
-5. `npm run work-orders -- index --check` passes with one open unpinned
-   order and one activated from the unpinned form, and the generated index
-   shows the first with the base branch's name and the second with its
-   recorded commit (`npm test -- --only work-orders-fixtures`).
-6. A never-activated order with the unpinned line is withdrawn by
-   `npm run resume -- withdraw`, and the index lists it under its
-   repository (`npm test -- --only resume`).
-7. A fixture target order filed with no version placeholder in its heading
-   activates, and `npm run release -- prepare --local` in its worktree
-   prints that the order records no release and that its heading stays as
-   filed (`npm test -- --only release-preparation`).
+3. Where the fetch of the clone's `origin` fails, the start of an unpinned
+   order completes at the tip the clone holds
+   (`npm test -- --only target-worktree`).
+4. `npm run work-orders -- index --check` passes with one open unpinned
+   order and one activated from the unpinned form
+   (`npm test -- --only work-orders-fixtures`).
+5. A never-activated order with the unpinned line is withdrawn by
+   `npm run resume -- withdraw` (`npm test -- --only resume`).
+6. A fixture order against a target, filed with no version placeholder in
+   its heading, activates (`npm test -- --only target-worktree`).
+7. `npm run release -- prepare --local` in a target order's worktree prints
+   that the order's heading stays as filed
+   (`npm test -- --only release-preparation`).
 8. With a fixture order whose judged heading was edited to a label that is
    not a version, `npm run plan -- check` refuses with the order's path,
-   the changed line's number and both routes: restoring the judged line,
-   and `npm run plan -- amend-order` (`npm test -- --only plan-refutation`).
+   the changed line's number and both routes, restoring the judged line
+   and `npm run plan -- amend-order`
+   (`npm test -- --only plan-refutation`).
 9. Product 07 under "Where the control plane finds its documents" states
-   both forms of the line and that the unpinned one is the default, and
-   `docs/work-orders/TEMPLATE.md` shows it (`npm run test:docs`).
+   both forms of the line and that the unpinned one is the default
+   (`npm run test:docs`).
 10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only target-worktree`,

@@ -2738,12 +2738,12 @@ order whose output a part consumes.
 9. The first verification and the final review read with one worker for
    each part and one for what the parts share, and then send workers over
    whatever those left unread. A verification that follows a repair reads
-   as any re-verification does (§Verification review and attack): it
-   reproduces the latest report's blocking findings, re-derives the
+   as any re-verification does (§Verification review and attack): it reproduces the latest report's blocking findings, re-derives the
    criteria whose surfaces the repair changed and carries the others with
-   their evidence, and a defect it meets elsewhere is a follow-up unless a
-   probe shows that the change breaks, on a supported input, something
-   `main` did
+   their evidence. That bounds what it looks for and not what counts: a
+   defect it meets elsewhere that breaks no criterion is a follow-up, and
+   one that shows a criterion unmet, or that the change breaks on a
+   supported input something `main` did, blocks
    ([the 2026-11-23 pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge)).
 10. A part can be cut on the operator's word without rewriting another.
     The cut amends the queue order, makes the part's record an open order
