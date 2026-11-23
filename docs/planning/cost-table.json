@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:2eb59013418c5c911ea054d589c9a5c28a91b23d24b01ffd8fb755da918d90f7",
+  "subjectSourceHash": "sha256:0318a773664f8f3a2a5631943c7c852ef35d8876435b3d847f07feba0108e428",
   "acceptances": [
     {
       "date": "2026-10-28",
@@ -227,87 +227,87 @@
       "reason": "The 2026-11-16 planning pass measured docs/planning/sequence.md at 13,932 bytes against the 12,369 accepted on 2026-09-22, after adding the six rules the operator directed that day (the queue form, stops, the override, time limits, whose rules and criticisms), each with the digest of its capture, and writing the orders paragraph for WO-284, WO-287 and WO-288. Under the standing 2026-09-17 route a breach is raised to the measured bytes plus one 4,096-byte step with the rule named, never trimmed around or left advisory across orders. Reassess when a pass folds the rules whose orders have closed."
     }
   ],
-  "observedAt": "2026-11-23T21:31:52.386Z",
-  "subjectRevision": "cd3cde0d8ace90eef61e9b31c7aa66ed4b91def0",
+  "observedAt": "2026-11-23T22:05:34.949Z",
+  "subjectRevision": "372733fd19c0b5edbb74a5ee3056234c8d10a955",
   "rows": [
     {
       "workOrder": "WO-288",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-289",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-291",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-290",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-292",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-293",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-294",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-244",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-11-23T21:31:52.386Z",
+      "observedAt": "2026-11-23T22:05:34.949Z",
       "metrics": null
     }
   ],
@@ -1398,8 +1398,8 @@
               },
               {
                 "selector": "docs/product/07-execution-guide.md#Verification review and attack",
-                "startLine": 3883,
-                "endLine": 4195,
+                "startLine": 3885,
+                "endLine": 4197,
                 "bytes": 22911
               }
             ],
@@ -1442,8 +1442,8 @@
               },
               {
                 "selector": "docs/product/07-execution-guide.md#Verification review and attack",
-                "startLine": 3883,
-                "endLine": 4195,
+                "startLine": 3885,
+                "endLine": 4197,
                 "bytes": 22911
               }
             ],
@@ -1495,13 +1495,13 @@
             "path": ".claude/skills/dotln-planner/SKILL.md",
             "skillBytes": 26921,
             "bytes": 34864,
-            "fixedReadBytes": 91813,
+            "fixedReadBytes": 91913,
             "fixedReads": [
               {
                 "selector": "docs/product/07-execution-guide.md#Operator-opened planning pass",
                 "startLine": 1822,
-                "endLine": 2868,
-                "bytes": 75711
+                "endLine": 2870,
+                "bytes": 75811
               },
               {
                 "selector": "docs/planning/sequence.md",
@@ -1625,8 +1625,8 @@
               },
               {
                 "selector": "docs/product/07-execution-guide.md#Verification review and attack",
-                "startLine": 3883,
-                "endLine": 4195,
+                "startLine": 3885,
+                "endLine": 4197,
                 "bytes": 22911
               }
             ],
@@ -1669,8 +1669,8 @@
               },
               {
                 "selector": "docs/product/07-execution-guide.md#Verification review and attack",
-                "startLine": 3883,
-                "endLine": 4195,
+                "startLine": 3885,
+                "endLine": 4197,
                 "bytes": 22911
               }
             ],
@@ -1722,13 +1722,13 @@
             "path": ".agents/skills/dotln-planner/SKILL.md",
             "skillBytes": 26921,
             "bytes": 34864,
-            "fixedReadBytes": 91813,
+            "fixedReadBytes": 91913,
             "fixedReads": [
               {
                 "selector": "docs/product/07-execution-guide.md#Operator-opened planning pass",
                 "startLine": 1822,
-                "endLine": 2868,
-                "bytes": 75711
+                "endLine": 2870,
+                "bytes": 75811
               },
               {
                 "selector": "docs/planning/sequence.md",
