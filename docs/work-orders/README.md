@@ -4,9 +4,15 @@
 
 ## Proposed order
 
-- [x] [WO-284] — An instance sets every time limit of its gate · **final-reviewed**
-- [x] [WO-287] — What an instance meets lands as one order · **final-reviewed**
 - [ ] [WO-288] — Core's own tooling lands as one order · **queued**
+- [ ] [WO-289] — A session is told to go on, and ends its turn only for what the operator must do · **queued**
+- [ ] [WO-291] — A target order starts from its base branch's tip, and its heading claims no version · **queued**
+- [ ] [WO-290] — A turn that leaves a dispatch unfinished goes on once · **queued**
+- [ ] [WO-292] — A driven target phase can run its order's checks, and a drive a guard stopped says so · **queued**
+- [ ] [WO-293] — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out · **queued**
+- [ ] [WO-295] — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds · **queued**
+- [ ] [WO-296] — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none · **queued**
+- [ ] [WO-294] — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -53,6 +59,142 @@ None.
 - Track: machinery
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-288-cores-own-tooling-lands-as-one-order.md](WO-288-cores-own-tooling-lands-as-one-order.md)
+
+### WO-289
+
+[WO-289 — A session is told to go on, and ends its turn only for what the operator must do (version assigned at activation)](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-288.
+- References: WO-288: satisfied-by-close (unmet) — its Part F rewrites the executor's sentence on ending a turn and the day's line, and its Part A the sentence on answering the operator, which this order's steps are written against.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
+
+### WO-291
+
+[WO-291 — A target order starts from its base branch's tip, and its heading claims no version (version assigned at activation)](WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md](WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md)
+
+### WO-290
+
+[WO-290 — A turn that leaves a dispatch unfinished goes on once (version assigned at activation)](WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-288, WO-289.
+- References: WO-288: satisfied-by-close (unmet) — its Part F has the Stop hook's line name a dispatch that has not recorded its completion, which this order's decision reads; WO-289: satisfied-by-close (unmet) — the author's rule on when a turn ends, as that order rewrites it, whose two courses the reason given to the session repeats.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md](WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md)
+
+### WO-292
+
+[WO-292 — A driven target phase can run its order's checks, and a drive a guard stopped says so (version assigned at activation)](WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-288.
+- References: WO-288: satisfied-by-close (unmet) — its Part F changes the drive's stops and the router's list of them, to which this order adds one.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md](WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md)
+
+### WO-293
+
+[WO-293 — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out (version assigned at activation)](WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-288.
+- References: WO-288: satisfied-by-close (unmet) — its Part A and its frame change the verifier's and the reviewer's roots, which this order's steps are written against.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md](WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md)
+
+### WO-295
+
+[WO-295 — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds (version assigned at activation)](WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-293.
+- References: WO-293: satisfied-by-close (unmet) — the sixth defect class, &#96;open-set&#96;, which a finding on a criterion may name.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md](WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md)
+
+### WO-296
+
+[WO-296 — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none (version assigned at activation)](WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-293, WO-295.
+- References: WO-293: satisfied-by-close (unmet) — the count of a criterion's returns and the fix briefing's line that names its routes, which this order's trigger and briefing line are written against; WO-295: satisfied-by-close (unmet) — the refuter's answer for one criterion, which is the judgment a re-cut is bound by.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md](WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md)
+
+### WO-294
+
+[WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main (version assigned at activation)](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
 
 ### WO-244
 
@@ -210,6 +352,12 @@ None.
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
 [WO-244]: WO-244-paired-planning-passes-and-the-synthesis-pass.md
-[WO-284]: WO-284-an-instance-sets-every-time-limit-of-its-gate.md
-[WO-287]: WO-287-what-an-instance-meets-lands-as-one-order.md
 [WO-288]: WO-288-cores-own-tooling-lands-as-one-order.md
+[WO-289]: WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md
+[WO-290]: WO-290-a-turn-that-leaves-a-dispatch-unfinished-goes-on-once.md
+[WO-291]: WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md
+[WO-292]: WO-292-a-driven-target-phase-can-run-its-orders-checks-and-a-drive-a-guard-stopped-says-so.md
+[WO-293]: WO-293-a-verification-ends-a-repairs-verification-reads-the-repair-and-a-criterion-returned-twice-names-its-ways-out.md
+[WO-294]: WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md
+[WO-295]: WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md
+[WO-296]: WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md

@@ -52,7 +52,10 @@ pointers and continuation command. Untouched items persist across passes.
   `c1b4fac22420c3dc15f5bb20381de2c34a920129b4c036a93ae2841656a652f8`:
   fifteen cycles were the cost the operator would not pay); WO-287 and
   WO-288 are the second and third. An order that something is waiting on
-  is not a part: one release ships nothing until its last part lands.
+  is not a part: one release ships nothing until its last part lands. That
+  holds while an order runs too: what an instance is stopped on is filed
+  by itself and placed ahead, never added to a running order
+  ([the 2026-11-23 pass](passes/the-kit-keeps-working-2026-11-23.md#why-a-session-stops-and-asks)).
 - **Placement.** The operator places an order by one sequence edit; the
   order of everything the operator did not place is the planner's.
 - **Hosts.** The kit runs on Git 2.31.0, the Git on the operator's work
@@ -112,6 +115,31 @@ pointers and continuation command. Untouched items persist across passes.
   ([product 07](../product/07-execution-guide.md#operator-opened-planning-pass),
   the pass's eighth input; operator direction, 2026-11-16, the same
   capture as the time limits').
+- **Criteria.** A criterion states one behavior and the command that
+  shows it; a claim about every member of a set names the members or the
+  check that fails closed; no existing case is held unchanged; and a pass
+  counts an order's criteria before it files
+  ([product 07's screens](../product/07-execution-guide.md#operator-opened-planning-pass);
+  operator direction, 2026-11-23, ignored capture SHA-256
+  `0c80efbd379f8ab2ec03fe24a966d335faed0e8d35fc2b3cd9eb5770d075a270`:
+  the operator is asked to waive criteria on each order and lays it to the
+  pass that wrote them).
+- **Who judges criteria.** Whether a criterion can be settled is judged by
+  the planner and the refuter, and the operator is not asked to work a
+  criterion out. Until the refuter's own judgment covers the criteria
+  (WO-295), a pass has every order it files or changes read by the criteria
+  review before its refutation. Until a criterion returned twice has its
+  re-cut (WO-296), a change to a running order's criterion still needs the
+  operator's one recorded authorization, of a text the session wrote
+  ([product 07's screens](../product/07-execution-guide.md#operator-opened-planning-pass);
+  operator direction, 2026-11-23, ignored captures SHA-256
+  `1873874c50d48842066af140d3a18d11680c5ebf45b325b63574bd07615eb4f7` and
+  `002461b05862d9020f0b43e0437564256a3d7454b6674e16b9a6ae5598a81631`).
+- **Turns.** A session that is dispatched works until its dispatch records
+  its completion. It ends a turn to wait only on the operator's pause,
+  stop or cancel, or on what only the operator can do, and no text the kit
+  gives a session says otherwise (WO-287-D090; operator direction,
+  2026-11-23, the same capture; WO-289 and WO-290).
 - **Early access.** The period below `v2.0.0`, the roadmap's Teammate-ready
   rung, is early access (operator direction, 2026-09-30; the rung was
   numbered `v1.0.0` until 2026-11-11,
@@ -146,33 +174,46 @@ an instance's path and by what the instance reported (operator direction,
 
 ## The orders, one at a time
 
-WO-277, WO-281 and WO-282 closed as v1.0.1, v1.1.0 and v1.2.0 on
-2026-11-15 and 2026-11-16. What comes next is what the operator directed
-on 2026-11-16, when the work instance was stopped a fifth time before its
-first order ([the 2026-11-16 pass](passes/the-kit-stops-no-work-2026-11-16.md)):
+WO-284 and WO-287 closed as v1.3.0 and v1.4.0 on 2026-11-17 and
+2026-11-18. WO-288 is in repair after eleven verifications. What comes
+next is what the operator directed on 2026-11-23, when the work
+instance's sessions were stopping after each line and its orders against
+a target were starting from the wrong commit
+([the 2026-11-23 pass](passes/the-kit-keeps-working-2026-11-23.md)):
 
-- WO-284: an instance sets every time limit of its gate in one file, the
-  kit's figures leave room for a slower machine, an instance's gate no
-  longer runs the kit's own configuration cases, and a tree that is
-  already green is not run again. First and on its own, because the work
-  instance cannot pass a gate until its release.
-- WO-287: what an instance meets, as one order of the queue form. Part A:
-  in an instance a stop that has nothing to do with its owner's work
-  advises, in a sibling repository as in the launchpad, and the owner
-  sets every stop (WO-285). Part B: the author's rules are a loadout an
-  instance chooses (WO-286).
-- WO-288: core's own tooling, as a second order of the form. Part A: a
-  critic of conduct the kit launches, whose points come back to planning
-  by class (WO-279). Part B: the review helper (WO-278). Part C: the
-  discovery timeout (WO-280). Part D: every time limit outside the gate
-  path, the shipped test files' own among them. It needs WO-287's table
-  of stops as well as WO-284's table of limits.
+- WO-288 first, to its end. It meets 39 of its 41 criteria, and its Part F
+  holds the sentences that stop telling a session to end its turn at a
+  day's figure, which an instance has waited on since 2026-11-19. The
+  pass's reading of its two open criteria, and the one decision that is
+  the operator's, are in
+  [its document](passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge).
+- WO-289: every text the kit gives a session about a turn says to go on,
+  an advisory asks the operator for nothing, `analysis:` ends at a
+  dispatch, and a message sent while a turn was running says so when it
+  arrives.
+- WO-291: an order against a registered repository starts from that
+  repository's base branch as it stands, and its heading promises no
+  version.
+- WO-290: a turn that leaves a dispatch unfinished goes on once. After
+  WO-289, apart from it, because it rests on a host's behavior.
+- WO-292: the guards of a target worktree follow the launchpad's levels
+  after each emit, and a drive a guard stopped says so on its first
+  attempt.
+- WO-293: a verification after a repair reads the repair, a criterion no
+  reading can settle has a class, and a final review fails on what it
+  finds.
+- WO-295: the refuter's judgment of a planning pass also says whether
+  each criterion can be settled, and one it calls defective holds the pass.
+- WO-296: a criterion two verifications have returned is re-cut by a
+  planner worker and judged by a refuter, and the operator is asked for no
+  waiver, cut or amendment. After WO-293 and WO-295, which it rests on.
+- WO-294: main reads an order's worktree whatever its configuration
+  holds, and a drive starts from a checkout that is off main. Last,
+  because it stops no instance.
 
-The queue is two orders of the form and not one because WO-276's record
-shows what one cannot hold: 42 hours and six repairs between its
-`implementation-ready` and its final pass, and nothing released for four
-days. The five orders the two absorb are umbrella records and have no
-entry here.
+Each is a single order, since an instance is waiting on the first four and
+the queue form excludes what something waits on. None holds more than ten
+criteria.
 
 ## Not now
 
@@ -200,9 +241,13 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
 - WO-183 (intent declaration and the stranger test): reopen when the
   operator names a trial by someone who has not read the documents, or
   when intents become a route in use.
-- WO-088 (planning documents as checked contracts): reopen when a
-  recorded failure is traced to an order's form, or when a copy of the
-  resume phrases diverges.
+- WO-088 (planning documents as checked contracts): its first condition
+  occurred on 2026-11-23, when WO-288's loop was traced to what two of
+  its criteria claim and to its size. A check of a document's form reads
+  neither, and the parts a command can read, a count and seven phrases,
+  are in WO-293 and in product 07's screens. Reopen when a recorded
+  failure is traced to a field a check could have read, or when a copy of
+  the resume phrases diverges.
 - WO-091 (the full 5S set on the Repo Gardener): reopen when the operator
   directs the demonstration or a consumer needs a group with several
   active mechanics.
@@ -215,9 +260,15 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
   requests to a hook, or the operator records approval friction.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-284 — An instance sets every time limit of its gate
-- WO-287 — What an instance meets lands as one order
 - WO-288 — Core's own tooling lands as one order
+- WO-289 — A session is told to go on, and ends its turn only for what the operator must do
+- WO-291 — A target order starts from its base branch's tip, and its heading claims no version
+- WO-290 — A turn that leaves a dispatch unfinished goes on once
+- WO-292 — A driven target phase can run its order's checks, and a drive a guard stopped says so
+- WO-293 — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out
+- WO-295 — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds
+- WO-296 — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none
+- WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main
 - WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel

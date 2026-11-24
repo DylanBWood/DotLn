@@ -2540,6 +2540,52 @@ failures behind each are in the
   never precedes the complete run
   ([WO-281-D019](../evidence/WO-281/decisions.md#wo-281-d019--the-operators-word-on-the-time-the-focused-suites-run-one-at-a-time-had-taken-longer-than-a-complete-run-the-rest-go-into-the-one-complete-run);
   [the 2026-11-16 pass](../planning/passes/the-kit-stops-no-work-2026-11-16.md#the-critics-record)).
+- A criterion states one behavior and the command that shows it. A second
+  behavior is a second criterion. Where the behavior is a decision over a
+  closed list of states, the criterion gives the list as a table and
+  nothing else. What the executor may change by decision stays out of it:
+  the name or place of a test, the words a command prints beyond what its
+  reader must be told, the form of a record. Of the eleven criteria that
+  had ended waived or defective by 2026-11-18, eight failed on one clause
+  while their other clauses held
+  ([the 2026-11-23 pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#the-criteria-that-ended-unmet)).
+- A criterion that claims something of every member of a set names the
+  members, in the order or in a list a step writes, or names the check that
+  fails closed on a member it cannot place, and it says that a member found
+  later is a follow-up. WO-288's criterion 23 claimed a property of each
+  time limit the kit ships outside the gate path, and ten of its first
+  eleven verifications each returned it at a site the one before had not
+  named
+  ([the 2026-11-23 pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge)).
+- No criterion holds that existing cases pass unchanged. It names the
+  behaviors that must still hold and the criterion that changes any of
+  them. WO-287's criterion 4 held the nine refusals' cases unchanged while
+  its criterion 10 removed a sentence one of those cases asserts word for
+  word, and the verifier recorded it defective
+  ([the same pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#the-criteria-that-ended-unmet)).
+- A criterion that an operator's direction adds to a running order is read
+  against this list by the session that amends, before `amend-order`
+  records it. The eight criteria of WO-288's Part F were added in
+  execution and passed no screen, and eight of that order's first eleven
+  verifications returned one of them, criterion 34
+  ([the same pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge)).
+- A pass counts an order's criteria before it files. No order of ten or
+  fewer criteria filed since 2026-11-08 took more than three verifications;
+  the three larger ones, of 27, 41 and 133 criteria, took three, at least
+  eleven and seven. An order of more than ten says in its Recommended
+  placement why one verification can hold it
+  ([the same pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge)).
+- Whether a criterion can be settled is judged by the planner and the
+  refuter, and the operator is not asked to work a criterion out. Until
+  the refuter's own judgment covers the criteria (WO-295), a pass has every
+  order it files or changes read by the criteria review,
+  `npm run worker -- review --kind criteria --subject planning`, before its
+  refutation; it applies what the review finds and records each finding
+  with what was done in its document. Until a criterion returned twice has
+  its re-cut (WO-296), a change to a running order's criterion still needs
+  the operator's one recorded authorization: the session writes the amended
+  text and the line that binds it, and asks for nothing else
+  ([the same pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#who-judges-a-criterion)).
 - Five defect classes
   ([the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md)):
   a criterion states a behavior observable on the uncommitted candidate by a
@@ -2647,6 +2693,12 @@ verification can hold: a queue is cut into two or three orders of the
 form, what is needed soonest first, before it is filed as one of many
 parts.
 
+The first of these holds while the order runs as well. What an instance
+is stopped on is never added to a running order as a part, since it then
+ships only when every other part's criteria hold. It is filed by itself
+and placed ahead
+([the 2026-11-23 pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-a-session-stops-and-asks)).
+
 **How it is filed.** Each absorbed order stays a file, as an umbrella
 record, and its design, observed gap, plan and known issues are read from
 there. The queue order holds a frame: the parts in order with the reason
@@ -2694,13 +2746,24 @@ order whose output a part consumes.
    section whole.
 8. The executor states the bound the order needs once, at its start, and
    records the operator's acceptance; it does not ask again part by part.
-9. Verification and final review read with one worker for each part and
-   one for what the parts share, and then send workers over whatever
-   those left unread.
+9. The first verification and the final review read with one worker for
+   each part and one for what the parts share, and then send workers over
+   whatever those left unread. A verification that follows a repair reads
+   as any re-verification does (§Verification review and attack): it reproduces the latest report's blocking findings, re-derives the
+   criteria whose surfaces the repair changed and carries the others with
+   their evidence. That bounds what it looks for and not what counts: a
+   defect it meets elsewhere that breaks no criterion is a follow-up, and
+   one that shows a criterion unmet, or that the change breaks on a
+   supported input something `main` did, blocks
+   ([the 2026-11-23 pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge)).
 10. A part can be cut on the operator's word without rewriting another.
     The cut amends the queue order, makes the part's record an open order
     again by removing its umbrella label and its typed `superseded` entry,
-    gives it an entry in the sequence and regenerates the index.
+    gives it an entry in the sequence and regenerates the index. When two
+    verifications have returned the same criterion, the executor weighs
+    the cut and the amendment of that criterion against a third repair,
+    and says once, in its handoff message, which it recommends and what
+    the order would keep and lose, with an amended criterion written out.
 
 The workers, the critic's interval and any midpoint are the order's to
 state. In this repository the critic on a cadence is on for an order of
