@@ -1019,3 +1019,23 @@ weighed a defect record for which criterion, and a count of findings.
 
 ## Validation
 
+Run on 2026-11-24 at the commit that holds the receipt's four
+dispositions:
+
+- `npm run plan -- check` passes.
+- `npm run test:docs`: 27 of 29 tasks pass in 0 h 3 min, the plan's and
+  the receipt's among them. The console's document task was stopped by the
+  gate's memory limit, at 3.92 GB measured against 3.87 GB, in two runs of
+  two, and the entropy task did not start after it. Each of the two passes
+  when run alone, nine tasks each: `npm test -- --only console-docs` and
+  `npm test -- --only entropy`. The same task passed inside the full run
+  three hours earlier on this branch, and the stop is the one WO-288's
+  Part E is filed to remove. Whether this pass's added documents raised
+  that task's peak is unknown.
+- `node scripts/terms.mjs branch`: 29 changed files screened and no line
+  found in either mode.
+- Every path the eight orders name exists at `bc761ad9c`, but for each
+  order's own evidence directory.
+
+These lines were written after those runs. The planning check and the
+format check were run once more on the commit that holds them.
