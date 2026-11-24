@@ -344,7 +344,7 @@ cases; the emitted bundle and the features page; the write-backs.
 
    | Root | Says |
    | --- | --- |
-   | `dotln-executor`, `dotln-verifier`, `dotln-reviewer`, `dotln-release-close`, `dotln-planner`, `dotln-refuter` | under the rule `blocked-turn`: take the route you recommend in the same turn, and end a turn to wait for three reasons only, which are the operator's pause, stop or cancel, a block that a refusal or the host names as the operator's alone, and a task of the session's own with no other step left |
+   | `dotln-executor`, `dotln-verifier`, `dotln-reviewer`, `dotln-release-close`, `dotln-planner`, `dotln-refuter` | under the rule `blocked-turn`: take the route you recommend in the same turn where it lies within the dispatch's scope and the session's authority, and end a turn to wait for three reasons only, which are the operator's pause, stop or cancel, a block that a refusal or the host names as the operator's alone, and a task of the session's own with no other step left |
    | `dotln-router` | state once what only the operator can clear, with the one line that clears it, and none of the clauses of the row above |
 
 2. The executor's root and its dispatch briefing tell it to announce its

@@ -941,8 +941,28 @@ findings was acted on before the last judgment:
 | WO-294 | Reading the roots alone assumes no order changes what a root means | Known issue of the order |
 | WO-294 | Nothing states what happens to a configuration that does not parse | Known issue of the order |
 
-**The third** judges the eight orders as they stand after the second
-criteria review. Its record is written here when it returns.
+**The third** judged the eight orders and WO-288 as they stand after the
+second criteria review, in 0 h 16 min. It found the pass aligned with
+findings and held nothing.
+[Its receipt](../refutations/2026-11-23-planning-ca2a004526babb93-071.md)
+is filed, and the planning check admits the subject with four
+dispositions, each the repair of what a known issue named:
+
+| Known issue | Repair, bound by its disposition |
+| --- | --- |
+| WO-295: the Cost line counted eleven criteria where the control logs hold ten | The Cost line names the eleventh, WO-111's second, waived in prose before the waiver had an event |
+| WO-289: the route a session takes could lie outside what it may decide | Criterion 1 bounds it to the dispatch's scope and the session's authority |
+| WO-296: nothing asked the refuter of a re-cut whether the bar survives it | Criterion 2 has the refuter's prompt ask whether the amended text still requires what the order's objective names |
+| WO-296 and WO-293: which goes first at a criterion's second return was unstated | Criterion 3 has the re-cut decline a criterion that a verifier recorded defective |
+
+Its other known issues are on the catalog rows of the orders they name,
+each with what reopens it, since the receipt finds the orders frozen. One
+bears on the decision that is the operator's. The refuter reads criterion
+23 of WO-288 as having come back each time with defects at new sites. The
+wording this pass recommends for it therefore gives up the claim at sites
+nobody has listed, and each such site becomes a follow-up row; the other
+course is to repair until a verification finds none, which eleven rounds
+have not reached.
 
 ## Answers to the instance (paste-ready)
 
@@ -982,6 +1002,20 @@ WHAT STOPS YOUR NEXT ORDER: a day's figure that is reached, and a session left i
 ```
 
 ## Process cost
+
+`node scripts/harness.mjs usage` for this session, read at 00:08Z on
+2026-11-24: 192,683,399 tokens (source `claude-transcript-message-usage`,
+scope dispatch), 452 steps and 3 h 41 min since the dispatch.
+Its cost in money is unknown, since that counter is unavailable. The kit
+counts fifteen worker uses of a cap of twenty: fourteen launches and one
+re-task.
+
+Where it went without need. Two of the three refutations judged a subject
+the pass then changed: the first because the pass had made the author's
+rule a platform rule, the second because items 8 and 9 added two orders
+while it ran. And the session stated three things as fact that it had not
+checked, each corrected in this document: when a message was written, who
+weighed a defect record for which criterion, and a count of findings.
 
 ## Validation
 

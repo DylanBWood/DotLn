@@ -29,8 +29,9 @@ one sentence of role text; about eight cases. Removes the criteria review
 a pass runs beside its refutation, which took 0 h 11 min and 18.0 million
 tokens in the pass that filed this order, and the later adjudication of
 criteria that should not have been filed: core's control logs hold 5
-waivers and 5 defect records, and of the 11 criteria that ended waived or
-defective a screen in force at filing named 4 that no reading caught.
+waivers and 5 defect records, and one more criterion, WO-111's second, was
+waived in prose before the waiver had an event. Of those 11 a screen in
+force at filing named 4 that no reading caught.
 `packages/skeleton/src/plan-refutation-protocol.ts` is in
 `FEEDBACK_SOURCE_PATHS`, so the order owes the feedback re-mint and one
 live feedback self-host episode, run after the step that edits it.

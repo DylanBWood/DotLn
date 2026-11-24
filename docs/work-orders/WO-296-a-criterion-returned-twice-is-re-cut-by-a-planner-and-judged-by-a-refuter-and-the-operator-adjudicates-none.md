@@ -218,13 +218,16 @@ rule's sentence; the cases; the write-backs.
    | What the command is given | The command |
    | --- | --- |
    | a planner worker's answer that the criterion stands | changes no byte of the order |
-   | an amended text, and a refuter's receipt that holds nothing for the order | binds the amendment, so that `npm run plan -- check` admits the amended order |
-   | an amended text, and a refuter's receipt with a hold for the order | declines with a message that names the hold |
+   | a planner worker's amended text | prints a refuter's prompt that asks whether the criterion as filed fits a defect class and whether the amended text still requires what the order's objective names |
+   | a refuter's receipt for that text that holds nothing for the order | binds the amendment, so that `npm run plan -- check` admits the amended order |
+   | a refuter's receipt for that text with a hold for the order | declines with a message that names the hold |
    | an order whose criterion differs from the text the refuter's receipt judged | declines with a message that names the criterion |
 
-3. A second re-cut of a criterion already re-cut in the same order is
-   declined with a message that names the defect record and the operator's
-   amendment as what is left (`npm test -- --only plan-refutation`).
+3. The re-cut command declines a criterion already re-cut once in the same
+   order, with a message that names the defect record and the operator's
+   amendment as what is left, and declines a criterion that the order's
+   control log records defective, with a message that names that record
+   (`npm test -- --only plan-refutation`).
 4. The order's status lists each re-cut criterion with the command that
    withdraws it (`npm test -- --only resume`).
 5. For the fixture of criterion 1, with the feature on, the fix briefing's
