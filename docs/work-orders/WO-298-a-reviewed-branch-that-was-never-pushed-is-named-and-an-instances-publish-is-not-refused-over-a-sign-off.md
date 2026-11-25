@@ -117,6 +117,8 @@ refused for a sign-off rule that is core's.
   or a reader finds is recorded as a follow-up with its reopening
   condition. A check that did not run neither passes nor returns. This is
   the room's rule, stated here as a trial.
+- **How the criteria read.** Each criterion is one behavior with its supported input, its command and
+  its scenarios, and its control says what fails at the base.
 
 Rejected:
 
@@ -165,9 +167,6 @@ and the router's list; the row, its judgment and the publish's use of it;
 the cases; the emitted bundle and the features page; the write-backs.
 
 **Acceptance criteria (all required)**
-
-Each criterion is one behavior with its supported input, its command and
-its scenarios, and its control says what fails at the base.
 
 1. A drive of an order whose final review has passed says whether its
    reviewed branches were pushed. Supported input: a fixture order closed

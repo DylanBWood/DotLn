@@ -150,6 +150,10 @@ right.
   finds is recorded as a follow-up with its reopening condition. A check
   that did not run withholds a pass. This is the room's rule, stated here
   as a trial.
+- **How the criteria read.** Each criterion is one behavior with its supported input, its command and
+  its scenarios, and its control says what fails at the base. The unpinned
+  line is `**Repository:** <id>` and the pinned line is
+  `**Repository:** <id> @ <commit>`.
 
 Rejected:
 
@@ -236,11 +240,6 @@ its advisory; the heading's two writers and the prepare line; the
 refusal's words; the cases; the write-backs.
 
 **Acceptance criteria (all required)**
-
-Each criterion is one behavior with its supported input, its command and
-its scenarios, and its control says what fails at the base. The unpinned
-line is `**Repository:** <id>` and the pinned line is
-`**Repository:** <id> @ <commit>`.
 
 1. `worktree start` of a fixture target order starts its worktree at the
    commit this table gives. Supported input: a registered repository's

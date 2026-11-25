@@ -121,6 +121,10 @@ its own configuration when its own commands load it.
   finds is recorded as a follow-up with its reopening condition. A check
   that did not run withholds a pass. This is the room's rule, stated here
   as a trial.
+- **How the criteria read.** Each criterion is one behavior with its supported input, its command and
+  its scenarios, and its control says what fails at the base. The fixture of
+  criteria 1 to 3 is an order worktree whose `dotln.config.json` holds a
+  section key and a feature name that the main checkout's kit does not know.
 
 Rejected:
 
@@ -180,11 +184,6 @@ control-plane branch; the cases; the list of sites in the decisions; the
 write-backs.
 
 **Acceptance criteria (all required)**
-
-Each criterion is one behavior with its supported input, its command and
-its scenarios, and its control says what fails at the base. The fixture of
-criteria 1 to 3 is an order worktree whose `dotln.config.json` holds a
-section key and a feature name that the main checkout's kit does not know.
 
 1. A status read from the main checkout reaches such an order. Command:
    `npm test -- --only harness-fixtures`.
