@@ -10,7 +10,9 @@ Nothing was merged and no rule was put in force while you were away. Four
 seats (Claude Fable 5.2, Claude Opus 5.5, GPT-6.2 Astra and GPT-6.2 Sol)
 read both checkouts, wrote positions blind, cross-examined each other and
 signed [one plan](#the-rooms-plan) in four rounds. The planning session
-chaired and held no vote.
+chaired and held no vote. One caveat: three seats each signed on one
+replacement clause, and the Opus seat, which had signed the draft before
+them, has not read those three clauses ([the room](#the-room)).
 
 **What we understood you to want** is on [one page](../operator-intent.md),
 read from your founding conversations, the idea ledger, every planning
@@ -335,8 +337,12 @@ criterion 25 is the one WO-288-D332 records (Astra); a retained program
 returns the order only on two runs (Fable); and the direction's last item
 says who writes a fresh standing file and which order comes next (Sol).
 The plan below is that text. Opus signed draft 2 and has not read the
-three clauses as they now stand: no use of a Claude worker was left for a
-fifth round under the session's cap.
+three clauses as they now stand. The session's cap of twenty worker uses
+left none for a fifth round: its last two went to the refutation. The
+pass's criteria reads, by fresh Opus workers, read the plan as it stands
+and raised nothing against those clauses, which is not the seat's
+signature. The round-4 record holds each clause with the text it
+replaced.
 
 **Where seats changed their minds.** Sol and Astra moved from withdrawing
 or parking WO-288 to one bounded attempt at it. Opus moved from keeping
@@ -744,11 +750,86 @@ something runs.
 
 ## The refutation
 
-Written after the judgment was made, below.
+One judgment was made, by a fresh `dotln-worker` launched as
+`npm run worker -- show default` prints, from the canonical prompt of
+`npm run plan -- refute` at commit `47373ae99`. The host reported Opus 5.5
+and read back no effort. It took 0 h 11 min and 0.2 million tokens.
+
+It judged seven orders and the sequence and carried thirteen unchanged
+verdicts. It found every judged order aligned with findings and held
+nothing.
+[Its receipt](../refutations/2026-11-25-planning-c942bd00a086d268-072.md)
+is filed, and the planning check admits the subject.
+
+The receipt helper refused the worker's first statement, which named the
+prompt's file by an absolute path. The same worker restated that path with
+the kit's placeholder and changed nothing else; its result file was byte
+for byte the same before and after. It adds, truthfully, that it read its
+own statement once in order to edit it.
+
+Four of its known issues were repaired, each bound to its criterion by a
+disposition:
+
+| Known issue | Repair, bound by its disposition |
+| --- | --- |
+| WO-297: criterion 3 could pass with a rule that still ends a turn at the figure | The absence row forbids `figure is reached` in every emitted role root. The roots of WO-288's worktree hold no such phrase, so that order's text still passes |
+| WO-294: criterion 5 did not say where a drive's record lands when no worktree holds `main` | The row asserts that the record is written in the primary checkout |
+| WO-298: the account of an unpublished branch stated an inference as a fact | The account holds `no record in this clone`, so it says what was read and no more |
+| WO-298: the Cost line counted no bytes | It counts the reviewer's sentence at 196 bytes against the 75 that root stands under its ceiling on `main` |
+
+The other eighteen are on the catalog rows of the orders they name, each
+with what reopens it, since the receipt finds the orders frozen. Three
+bear on what the operator decides:
+
+- **WO-297.** A daily figure never refused anything, and after this order
+  it asks for no stop either. An owner who set one to bound a day's spend
+  has no setting that ends work at it. The refuter reads that as a
+  protection the owner can no longer set. Whether a figure should be able
+  to end work is his to say; the order leaves it out by its non-goals.
+- **WO-291.** With the unpinned line, nothing records the commit a planner
+  and a refuter judged the order against, so a control written at filing
+  can mean something else at the start.
+- **WO-289, WO-295 and WO-296.** Twelve findings, kept as material for the
+  re-cut and the fold that follow WO-288's fate. The first is the one the
+  room reached too: WO-289's criteria assert texts, and none observes a
+  session going on.
 
 ## Process cost
 
-Written at the pass's end, below.
+`node scripts/harness.mjs usage` for this session, read at 18:50Z on
+2026-11-25: 192,798,028 tokens (source `claude-transcript-message-usage`,
+scope dispatch), 499 steps and 3 h 48 min since the dispatch. Its cost in
+money is unknown, since that counter is unavailable.
+
+**Workers.** The kit counts twenty uses of a cap of twenty: thirteen
+launches (six readers for the page of what the operator wants, four
+researchers, the two Claude seats and the refuter) and seven re-tasks
+(three rounds for each Claude seat and the refuter's statement). The
+review helper launched three more workers that this count does not hold,
+at 33.7 million tokens. The two Codex seats ran as eleven direct launches
+that no hook counts: eight seat rounds, a probe and two launches that ran
+without tools. The nine that were kept reported 1.3 million tokens
+between them.
+
+The operator had said the budget was there to be used. No route records
+that acceptance for a planning dispatch, so the pass stayed inside the
+cap, and the cap cost one thing: the Opus seat's read of the three
+clauses adopted after its signature. That is the eighth candidate of this
+pass.
+
+**Where it went without need.**
+
+- The morning's drafts, written before the room and withdrawn whole: six
+  rules put in force, a migration in five phases, a re-cut of WO-289 and
+  a redesign of WO-291.
+- Two Codex launches whose tools the chair's own launcher had turned off.
+- A criterion the planner restated without reading the fixture it named,
+  which the second criteria read caught.
+- Facts stated before they were checked, each corrected to the operator
+  or in this document: how many files import the Markdown reader, the
+  medians of two periods and the size of WO-288's Part F.
+- One run of the document gate on a generated page the pass had left
+  stale.
 
 ## Validation
 
