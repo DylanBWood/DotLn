@@ -261,7 +261,7 @@ write-backs.
 
    | Given | Then |
    | --- | --- |
-   | the fixture of criterion 4, and a drive with the fake host | the fake host receives one launch of the phase the order's status names as next |
+   | the fixture of criterion 4, and a drive with the fake host | the fake host receives one launch of the phase the order's status names as next, and the drive's record for the order (`local/drives/WO-NNN.json` under the control root) is written in the primary checkout |
 
    Control: the row fails at the base.
 

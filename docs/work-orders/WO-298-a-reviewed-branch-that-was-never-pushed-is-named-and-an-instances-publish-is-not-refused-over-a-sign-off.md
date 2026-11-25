@@ -18,7 +18,13 @@ one read of its publication log; one reason a drive ends with, one
 sentence in the reviewer's root, one word in the router's list of stops,
 one row of the table of stops and its judgment in the publish, about ten
 cases, and a push in the fixture of each existing drive case that pinned
-the old answer without one.
+the old answer without one. The reviewer's sentence is 196 bytes with its
+space. With the instruction file, the reviewer's root stands 75 bytes
+under its ceiling on `main` (45,310 of 45,385), so it passes the ceiling
+by about 120 bytes unless the step takes as much out of that root; the
+router's root gains 18. The executor records each root's bytes before and
+after. What the kit does with a root over its ceiling is product 07's to
+say and is not changed here.
 Removes the publish refusal an instance meets on its own commits, and the
 drive's account that tells an operator to merge a branch nobody pushed.
 `scripts/lib/drive-route.mjs`, `scripts/worktree.mjs`,
@@ -254,8 +260,8 @@ the cases; the emitted bundle and the features page; the write-backs.
 
    | Given | Then |
    | --- | --- |
-   | a main checkout with an `origin`, no remote-tracking ref for the order's branch, and the branch's tip not in `origin/main` | the route stops as `awaiting-publish`, and its account holds the branch's name and the Design's first command with the order's id, and does not hold `merge` |
-   | the order's branch was pushed, and the order's log of target publications is absent | the route stops as `awaiting-publish`, and its account holds the name of the registered target worktree's branch and the Design's second command with the order's id, and does not hold `merge` |
+   | a main checkout with an `origin`, no remote-tracking ref for the order's branch, and the branch's tip not in `origin/main` | the route stops as `awaiting-publish`, and its account holds the branch's name, `no record in this clone` and the Design's first command with the order's id, and does not hold `merge` |
+   | the order's branch was pushed, and the order's log of target publications is absent | the route stops as `awaiting-publish`, and its account holds the name of the registered target worktree's branch, `no record in this clone` and the Design's second command with the order's id, and does not hold `merge` |
    | the order's branch was pushed, and the log holds one `PullRequestOpened` event that is no draft | the route stops as `awaiting-merge` |
    | a main checkout with no `origin`, and no remote-tracking ref for the order's branch | the route stops as `awaiting-merge` |
    | no remote-tracking ref for the order's branch, whose tip is an ancestor of `origin/main`, read with no events | the route stops as `awaiting-merge` |

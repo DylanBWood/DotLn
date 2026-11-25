@@ -214,7 +214,7 @@ row; the kit guide's passage and product 07's.
    | Given | Then |
    | --- | --- |
    | the emitted `dotln-executor` root under `.claude/skills` and under `.agents/skills` | each holds `A day's figure` and ``finish the step in hand, write `docs/evidence/WO-NNN/standing.md` and end the turn`` |
-   | every emitted role root | none holds `say the day's figure is reached` |
+   | every emitted role root | none holds `figure is reached` |
 
    Control: the second row fails at the base, and so does the first on its
    first text.
