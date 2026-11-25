@@ -4,15 +4,17 @@
 
 ## Proposed order
 
+- [ ] [WO-297] — A day's figure that is reached ends no turn · **queued**
 - [ ] [WO-288] — Core's own tooling lands as one order · **queued**
-- [ ] [WO-289] — A session is told to go on, and ends its turn only for what the operator must do · **queued**
 - [ ] [WO-291] — A target order starts from its base branch's tip, and its heading claims no version · **queued**
+- [ ] [WO-294] — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main · **queued**
+- [ ] [WO-289] — A session is told to go on, and ends its turn only for what the operator must do · **queued**
 - [ ] [WO-290] — A turn that leaves a dispatch unfinished goes on once · **queued**
 - [ ] [WO-292] — A driven target phase can run its order's checks, and a drive a guard stopped says so · **queued**
 - [ ] [WO-293] — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out · **queued**
 - [ ] [WO-295] — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds · **queued**
 - [ ] [WO-296] — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none · **queued**
-- [ ] [WO-294] — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main · **queued**
+- [ ] [WO-298] — A reviewed branch that was never pushed is named, and an instance's publish is not refused over a sign-off · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -43,6 +45,23 @@ None.
 
 ## Open
 
+### WO-297
+
+[WO-297 — A day's figure that is reached ends no turn (version assigned at activation)](WO-297-a-days-figure-that-is-reached-ends-no-turn.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-297-a-days-figure-that-is-reached-ends-no-turn.md](WO-297-a-days-figure-that-is-reached-ends-no-turn.md)
+
 ### WO-288
 
 [WO-288 — Core's own tooling lands as one order: the critic the kit launches and what its critics find, the review helper, the discovery timeout and every time limit outside the gate path, under one activation, one verification, one final review and one release (version assigned at activation)](WO-288-cores-own-tooling-lands-as-one-order.md)
@@ -60,23 +79,6 @@ None.
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-288-cores-own-tooling-lands-as-one-order.md](WO-288-cores-own-tooling-lands-as-one-order.md)
 
-### WO-289
-
-[WO-289 — A session is told to go on, and ends its turn only for what the operator must do (version assigned at activation)](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; blocked on WO-288.
-- References: WO-288: satisfied-by-close (unmet) — its Part F rewrites the executor's sentence on ending a turn and the day's line, and its Part A the sentence on answering the operator, which this order's steps are written against.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Review ladder: paired
-- Authority: [docs/work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
-
 ### WO-291
 
 [WO-291 — A target order starts from its base branch's tip, and its heading claims no version (version assigned at activation)](WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md)
@@ -93,6 +95,40 @@ None.
 - Track: delivery
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md](WO-291-a-target-order-starts-from-its-base-branchs-tip-and-its-heading-claims-no-version.md)
+
+### WO-294
+
+[WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main (version assigned at activation)](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
+
+### WO-289
+
+[WO-289 — A session is told to go on, and ends its turn only for what the operator must do (version assigned at activation)](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-288.
+- References: WO-288: satisfied-by-close (unmet) — its Part F rewrites the executor's sentence on ending a turn and the day's line, and its Part A the sentence on answering the operator, which this order's steps are written against.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Review ladder: paired
+- Authority: [docs/work-orders/WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md](WO-289-a-session-is-told-to-go-on-and-ends-its-turn-only-for-what-the-operator-must-do.md)
 
 ### WO-290
 
@@ -179,22 +215,22 @@ None.
 - Review ladder: paired
 - Authority: [docs/work-orders/WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md](WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md)
 
-### WO-294
+### WO-298
 
-[WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main (version assigned at activation)](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
+[WO-298 — A reviewed branch that was never pushed is named, and an instance's publish is not refused over a sign-off (version assigned at activation)](WO-298-a-reviewed-branch-that-was-never-pushed-is-named-and-an-instances-publish-is-not-refused-over-a-sign-off.md)
 
 - State: draft.
 - Application target: unassigned.
 - Dependencies: conservative token view; does not block.
-- References: none declared.
+- References: WO-288: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
+- Track: delivery
 - Review ladder: paired
-- Authority: [docs/work-orders/WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md](WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md)
+- Authority: [docs/work-orders/WO-298-a-reviewed-branch-that-was-never-pushed-is-named-and-an-instances-publish-is-not-refused-over-a-sign-off.md](WO-298-a-reviewed-branch-that-was-never-pushed-is-named-and-an-instances-publish-is-not-refused-over-a-sign-off.md)
 
 ### WO-244
 
@@ -361,3 +397,5 @@ None.
 [WO-294]: WO-294-main-works-on-an-orders-worktree-whatever-its-configuration-holds-and-a-drive-starts-from-a-checkout-off-main.md
 [WO-295]: WO-295-the-refuter-judges-whether-each-criterion-can-be-settled-and-a-planning-pass-repairs-what-it-holds.md
 [WO-296]: WO-296-a-criterion-returned-twice-is-re-cut-by-a-planner-and-judged-by-a-refuter-and-the-operator-adjudicates-none.md
+[WO-297]: WO-297-a-days-figure-that-is-reached-ends-no-turn.md
+[WO-298]: WO-298-a-reviewed-branch-that-was-never-pushed-is-named-and-an-instances-publish-is-not-refused-over-a-sign-off.md
