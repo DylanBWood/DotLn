@@ -230,17 +230,21 @@ write-backs.
 
    Control: the row fails at the base.
 
-3. An integration run from the main checkout works on such an order.
-   Supported input: the suite's own fast-forward fixture, which integrates
-   today, with the two names added to its order worktree's configuration
-   and admitted by that worktree's own kit. Command:
+3. Main's integration script works on such an order. `integrate` works on
+   the checkout it is run in, and the roles run main's copy of the script
+   in the order's worktree. Supported input: the suite's fixture with no
+   authored conflict (its option `authored: false`, as the instance cases
+   use), with the two names in the order worktree's configuration and
+   admitted by that worktree's own kit. Command:
    `npm test -- --only worktree-integration`.
 
    | Given | Then |
    | --- | --- |
-   | that configuration in the order worktree of the suite's case whose name opens `real Git fast-forward`, and that case's `node scripts/worktree.mjs integrate WO-NNN` run from the main checkout | it exits 0, and `main`'s tip is an ancestor of the order's branch |
+   | that fixture, and the main checkout's `scripts/worktree.mjs integrate WO-NNN` run with the order's worktree as its working directory | it exits 0, and `main`'s tip is an ancestor of the order's branch |
 
-   Control: the row fails at the base.
+   Control: the row fails at the base, where main's script loads the
+   worktree's whole configuration to build a path (`docRelative`) and
+   refuses the key.
 
 4. A status read finds its control plane when no worktree holds `main`.
    Command: `npm test -- --only harness-fixtures`.

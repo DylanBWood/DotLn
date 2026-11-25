@@ -126,9 +126,15 @@ right.
   nothing downstream can tell the two apart.
 - **The start fetches, and a failed fetch stops nothing.** Before it
   resolves the tip the start fetches the base branch from the clone's
-  `origin`, under a row of the table of limits. Where the fetch fails or
-  the clone has no remote, it uses the tip the clone already holds and
-  prints one advisory with that commit's date.
+  `origin`, under a row of the table of limits. The fetch goes through
+  the host lane that the target close and the target publish use
+  (`fetchIntoCheckout` in `scripts/lib/github-repository.mjs`), so the
+  clone's own transport configuration and hooks run nothing, and it moves
+  no ref of the clone. The launchpad's own `git fetch origin main` is not
+  the model: that is the kit's repository, and this is someone else's.
+  Where the fetch fails, outlasts its limit or the clone has no remote,
+  the start uses the tip the clone already holds and prints one advisory
+  with that commit's date.
 - **A pin is taken as written.** A pinned order starts at its commit
   whatever the base branch has done since, as today.
 - **The index shows what is known.** Before activation an unpinned order's
@@ -219,10 +225,12 @@ its output.
    table's own case.
 4. `scripts/worktree.mjs`, the `start` action: before `readStartAuthority`
    resolves a target plan, fetch the base branch from the clone's `origin`
-   under that row; where the fetch fails or outlasts the row's limit, print
-   one advisory naming the commit and its date and go on. Check: three
-   cases in `scripts/test-target-worktree-start.mjs` (tip moved; fetch
-   fails; fetch outlasts its limit).
+   through `fetchIntoCheckout`, with that row's figure as its limit; where
+   the fetch fails or outlasts the limit, print one advisory naming the
+   commit and its date and go on. Check: four cases in
+   `scripts/test-target-worktree-start.mjs` (tip moved; fetch fails; fetch
+   outlasts its limit; the clone's own upload program and hook run
+   nothing).
 5. `scripts/resume.mjs`, activation: for an order whose line has no commit,
    record the base of the order's registered target worktree, which the
    start writes before it activates; where no such entry exists, refuse
@@ -278,14 +286,17 @@ refusal's words; the cases; the write-backs.
    | --- | --- |
    | the unpinned line, and the clone's `origin` holding two commits on the base branch that the clone lacks | the worktree's `HEAD` is `origin`'s base-branch tip after the fetch |
    | the unpinned line, and a fetch of `origin` that exits non-zero | `HEAD` is the clone's remote-tracking base branch as it stood before the start |
-   | the unpinned line, and a fetch of `origin` that outlasts the limit its row sets | `HEAD` is the clone's remote-tracking base branch as it stood before the start |
+   | the unpinned line, and a fetch of `origin` that outlasts the limit its row sets (the fixture's `time-limits.json` sets that row to one millisecond) | `HEAD` is the clone's remote-tracking base branch as it stood before the start |
    | the unpinned line, and a clone with no `origin` | `HEAD` is the clone's local base branch |
    | the pinned line, and the base branch moved past that commit | `HEAD` is that commit |
+   | the first row's fixture, with the clone's `remote.origin.uploadpack` set to a program that leaves a marker file and a hook under its `core.hooksPath` that leaves one | `HEAD` is `origin`'s base-branch tip, and neither marker file exists |
 
-   Control: the first four rows fail at the base, where the unpinned line
-   is refused as malformed. The fifth passes there and must still pass; it
-   fails under the planted fault that the start resolves the tip whatever
-   the line holds.
+   Control: the first four rows and the sixth fail at the base, where the
+   unpinned line is refused as malformed. The fifth passes there and must
+   still pass; it fails under the planted fault that the start resolves
+   the tip whatever the line holds. After the change the sixth fails
+   under the planted fault that the start runs the clone's own
+   `git fetch`.
 
 2. The start records the commit it resolved, and an activation with no
    start to take a base from says so. Command:
@@ -360,7 +371,7 @@ refusal's words; the cases; the write-backs.
 
    | Given | Then |
    | --- | --- |
-   | a fixture order whose judged heading was edited to a label that is not a version, and `npm run plan -- check` | it refuses, and its message holds the order's path, the changed line's number, the instruction to restore the judged line and `npm run plan -- amend-order` |
+   | a fixture order whose judged heading was edited to a label that is not a version, and `npm run plan -- check` | it refuses, and its message holds the order's path, the changed line's number, `restore the judged line` and `npm run plan -- amend-order` |
 
    Control: the row fails at the base, where the message names neither the
    line nor a route.
@@ -404,6 +415,7 @@ is left as it is.
   fetch is not decided here.
 - A self order's heading keeps its placeholder, which the activation does
   replace.
+- This order adds a second admitted form to a line that a program reads out of an order's Markdown header. The operator's direction of 2026-11-25 is that programs read contracts and not prose, and the room's plan moves an order's fields into one checked JSON block as its third move, which is not filed. Until then this reader stays, and its refusal names both forms. Reopen: that move is filed, and it takes this line with it.
 - An activation that has no started worktree to take a base from fails and names `worktree start`. It is the report of a state that cannot go on, with no setting to lower, and no row of the table of stops. Reopen: an instance meets it on a path where the order could have started.
 - The criteria are written in the form the room of 2026-11-25 agreed, as a trial judged over the next five deliveries. What product 07 says of the two forms of the line is a write-back and no criterion, since no command settles a document's prose. Reopen: this order is returned on a reading of a criterion, or a row whose control says it fails at the base passes there.
 

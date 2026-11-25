@@ -74,6 +74,12 @@ standing file is as it was.
   opens and its size, and the case whose name opens `WO-276 criterion F2`
   rebuilds that page from the built rules and fails on a byte's
   difference.
+- Those are all the readers. A search of the committed files for both
+  texts on 2026-11-25 found, beyond the two sources, the two emitted
+  executor roots, the three cases and the rule table, only records that
+  no case reads: the texts of WO-271 and WO-276 and evidence under
+  `docs/evidence/WO-276/`. The case in `scripts/test-process-debt.mjs`
+  that matches `The daily figure is reached` holds for the new sentence.
 
 **Design (scope discipline):**
 

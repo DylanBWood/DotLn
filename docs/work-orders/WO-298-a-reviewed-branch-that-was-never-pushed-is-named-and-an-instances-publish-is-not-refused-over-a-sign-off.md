@@ -12,11 +12,13 @@ says that a declined publish is not tried again. The contributor sign-off
 becomes a stop an owner sets: core refuses as before, and an instance is
 advised and its publish goes on. No stop is added that an instance cannot
 lower. Assigned at activation under the standing opt-out default.
-**Cost:** adds, at a drive's stop on a closed order, one local read of the
-order branch's remote-tracking ref and, for a target order, one read of
-its publication log; one reason a drive ends with, one sentence in
-the reviewer's root, one word in the router's list of stops, one row of
-the table of stops and its judgment in the publish, and about nine cases.
+**Cost:** adds, where the route is read for a closed order that is not
+merged, two local Git reads of the order's branch and, for a target order,
+one read of its publication log; one reason a drive ends with, one
+sentence in the reviewer's root, one word in the router's list of stops,
+one row of the table of stops and its judgment in the publish, about ten
+cases, and a push in the fixture of each existing drive case that pinned
+the old answer without one.
 Removes the publish refusal an instance meets on its own commits, and the
 drive's account that tells an operator to merge a branch nobody pushed.
 `scripts/lib/drive-route.mjs`, `scripts/worktree.mjs`,
@@ -47,10 +49,18 @@ refused for a sign-off rule that is core's.
 **Observed gap (dated 2026-11-25 at `main` `77b5fc11e`, v1.4.0):**
 
 - A final review records its pass, which closes the order, and publishes
-  after it, and the publish records nothing. The drive's route
-  (`scripts/lib/drive-route.mjs`) reads a closed order that is not merged
-  as `awaiting-merge` and tells the operator to merge the reviewed pull
-  request, whether or not any branch was pushed.
+  after it. The route (`scripts/lib/drive-route.mjs`, read by a drive and
+  by `resume: status`) reads a closed order that is not merged as
+  `awaiting-merge` and tells the operator to merge the reviewed pull
+  request, whether or not any branch was pushed. It reads nothing of what
+  a publish leaves: the launchpad's publish leaves a remote-tracking ref,
+  and a target's leaves a log of its own.
+- Existing cases pin that answer. In `scripts/test-drive.mjs`, the cases
+  that read a closed, unmerged order through `routeFacts` assert
+  `awaiting-merge` on fixtures that push no order branch (at
+  `77b5fc11e`, lines 1619, 2178, 2353 and 2394 to 2400). In
+  `scripts/test-resume.sh`, two status assertions hold `awaiting-merge`
+  for a closed order in a fixture with no `origin`.
 - The reviewer's root has no sentence on a publish that a stop or the host
   declines, and the router's root lists `awaiting-merge`,
   `awaiting-plan-approval` and `awaiting-close` among a drive's stops.
@@ -70,36 +80,51 @@ refused for a sign-off rule that is core's.
 **Design (scope discipline):**
 
 - **Two states, read from what the kit's own publish leaves.** For a
-  closed order that is not merged, the route asks of each reviewed branch
-  whether the kit's publish left anything for it.
+  closed order that is not merged, in a main checkout that has an
+  `origin`, the route asks of each reviewed branch whether the kit's
+  publish left anything for it.
   - The order's own branch was never published when the main checkout
-    holds no remote-tracking ref `refs/remotes/origin/<branch>` for it.
+    holds no remote-tracking ref `refs/remotes/origin/<branch>` for it and
+    the branch's tip is not an ancestor of `origin/main`.
     `npm run worktree -- publish` pushes with `git push -u origin`, which
-    writes that ref. The read is Git's own answer
-    (`git rev-parse --verify --quiet`), bounded by the ten seconds the
-    route's other local reads use.
+    writes that ref, and a branch whose commits `origin/main` already
+    holds was published whatever became of its ref. Both reads are Git's
+    own answers, bounded by the ten seconds the route's other local reads
+    use.
   - A target order's target branch was never published when the order's
     log of target publications holds no `PullRequestOpened` event. That
     log is `docs/control/local/target-publications/WO-NNN` in the main
-    checkout; `npm run worktree -- publish WO-NNN --target-worktree`
-    writes it and reads it back when it answers that a commit is already
-    published. That publish pushes from a lane of its own and writes no
-    ref in the target's clone, so no ref answers for it. The route reads
-    the log as the publish does, through the store's reader and the log
-    decoder, and an absent log holds no event. The question is asked only
-    of a target order whose target worktree is registered.
+    checkout; the target-worktree form of the publish writes it and reads
+    it back when it answers that a commit is already published. That
+    publish pushes from a lane of its own and writes no ref in the
+    target's clone, so no ref answers for it. The route reads the log as
+    the publish does, through the store's reader and the log decoder, and
+    an absent log holds no event. The question is asked only of a target
+    order whose target worktree is registered.
 
-  Where either answer is "never published", the drive stops as
-  `awaiting-publish`: its account names each such branch and the command
-  that publishes it, and does not hold the word `merge`. Otherwise it
+  Where either answer is "never published", the route stops as
+  `awaiting-publish`, in a drive and in `resume: status` alike, since both
+  read this route. Its account names each such branch and holds the
+  command that publishes it, written as below with the order's id in place
+  of `WO-NNN`, and does not hold the word `merge`. The first line is the
+  order's own branch's and the second the target's; the target's branch is
+  named as the registered target worktree's branch. Otherwise the route
   stops as `awaiting-merge`, as today.
-- **What it does not decide stays as it is.** A clone with no `origin`, a
-  ref read that fails or times out, a ref that stands at a commit other
-  than the branch's tip, a log that exists and cannot be decoded, a log
-  whose only pull request is a draft or was opened for an earlier commit,
-  and a target order published with the request-file form
-  (`--target <request.json>`) leave the route at `awaiting-merge`, as
-  today, and are known issues below.
+
+  ```text
+  npm run worktree -- publish WO-NNN --title "<title>" --body-file <contained-reviewed-body-path>
+  npm run worktree -- publish WO-NNN --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>
+  ```
+
+  `awaiting-publish` carries an account, as every stop does but the merge,
+  a release and a fixture's own end (`EXPECTED_STOPS` in
+  `scripts/lib/drive-account.mjs` is unchanged).
+- **What it does not decide stays as it is.** A main checkout with no
+  `origin`, a ref read that fails or times out, a ref that stands at a
+  commit other than the branch's tip, a log that exists and cannot be
+  decoded, and a log whose only pull request is a draft or was opened for
+  an earlier commit leave the route at `awaiting-merge`, as today. The
+  first is criterion 1's fourth row; the others are known issues below.
 - **The reviewer does not try a declined publish again.** The reviewer's
   rule gains the sentence WO-288's worktree holds:
 
@@ -151,8 +176,9 @@ refused for a sign-off rule that is core's.
   run through the host's permission flow; where only the owner can supply
   what it needs, the judge states that block once with the line that
   clears it, and waits.
-- **How the criteria read.** Each criterion is one behavior with its supported input, its command and
-  its scenarios, and its control says what fails at the base.
+- **How the criteria read.** Each criterion is one behavior with its
+  supported input, its command and its scenarios, and its control says
+  what fails at the base.
 
 Rejected:
 
@@ -178,15 +204,19 @@ criteria 1 to 4 and runs each alone: every row whose control says it fails
 at the base fails there, and one that does not goes back to planning with
 its output.
 
-1. `scripts/lib/drive-route.mjs`: the read of the order branch's
-   remote-tracking ref, the read of a target order's publication log
-   through the store's reader and the log decoder that
-   `scripts/lib/target-publish.mjs` reads it with, the stop
-   `awaiting-publish` and its account. Check: the three cases of
-   criterion 1 in `scripts/test-drive.mjs`. The third case's log is
-   written by the store's own writer with the event the publish records,
-   and its ref by a push to the fixture's origin; neither is typed into
-   the file or the ref store by hand.
+1. `scripts/lib/drive-route.mjs`: the two reads of the order's branch, the
+   read of a target order's publication log through the store's reader
+   and the log decoder that `scripts/lib/target-publish.mjs` reads it
+   with, the stop `awaiting-publish` and its account.
+   - Check: the five cases of criterion 1 in `scripts/test-drive.mjs`. A
+     fixture's log is written by the store's own writer with the event the
+     publish records, and its ref by a push to the fixture's origin;
+     neither is typed into the file or the ref store by hand.
+   - The existing cases the Observed gap lists: each one whose fixture has
+     an `origin`, pushes no order branch and does not merge it is given
+     that push, so that it goes on pinning what its comment says. The
+     decisions list each case changed.
+   - The two status assertions of `scripts/test-resume.sh` are not edited.
 2. `packages/skeleton/src/loadouts/contributor.ts`: the reviewer's
    sentence, and `awaiting-publish` in the router's list of stops. Check:
    the case of `scripts/test-harness.mjs` that reads the emitted bundle.
@@ -212,26 +242,30 @@ the cases; the emitted bundle and the features page; the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. A drive of an order whose final review has passed says whether its
+1. The route of an order whose final review has passed says whether its
    reviewed branches were published. Supported input: a fixture order
-   closed by a passing final review and not merged, in a main checkout
-   with an `origin`; in the second and third rows it is a target order
-   whose target worktree is registered. A fixture's log is written by the
-   store's writer with the event the target publish records, and its ref
-   by a push to the fixture's origin. Command:
+   closed by a passing final review and not merged; in the second and
+   third rows it is a target order whose target worktree is registered.
+   A fixture's log is written by the store's writer with the event the
+   target publish records, and its ref by a push to the fixture's origin.
+   Command:
    `npm test -- --only harness-fixtures`, the cases of
    `scripts/test-drive.mjs`.
 
    | Given | Then |
    | --- | --- |
-   | the main checkout holds no remote-tracking ref for the order's branch | the drive stops as `awaiting-publish`, and its account holds the branch's name and `npm run worktree -- publish`, and does not hold `merge` |
-   | the order's branch was pushed, and the order's log of target publications is absent | the drive stops as `awaiting-publish`, and its account holds the target branch's name and `npm run worktree -- publish`, the order's id and `--target-worktree` in that order, and does not hold `merge` |
-   | the order's branch was pushed, and the log holds one `PullRequestOpened` event that is no draft | the drive stops as `awaiting-merge` |
+   | a main checkout with an `origin`, no remote-tracking ref for the order's branch, and the branch's tip not in `origin/main` | the route stops as `awaiting-publish`, and its account holds the branch's name and the Design's first command with the order's id, and does not hold `merge` |
+   | the order's branch was pushed, and the order's log of target publications is absent | the route stops as `awaiting-publish`, and its account holds the name of the registered target worktree's branch and the Design's second command with the order's id, and does not hold `merge` |
+   | the order's branch was pushed, and the log holds one `PullRequestOpened` event that is no draft | the route stops as `awaiting-merge` |
+   | a main checkout with no `origin`, and no remote-tracking ref for the order's branch | the route stops as `awaiting-merge` |
+   | no remote-tracking ref for the order's branch, whose tip is an ancestor of `origin/main`, read with no events | the route stops as `awaiting-merge` |
 
    Control: the first two rows fail at the base, which stops as
-   `awaiting-merge`. The third passes there and must still pass; it fails
-   under the planted fault that the route always stops as
-   `awaiting-publish`.
+   `awaiting-merge`. The other three pass there and must still pass; each
+   fails under the planted fault that the route stops as
+   `awaiting-publish` whenever the order is closed and not merged. The
+   fifth is what the existing case that reads a merged branch with no
+   events asserts, and that case's text is unchanged.
 
 2. The emitted roots carry the reviewer's sentence and the router's stop.
    Command: `npm test -- --only harness-fixtures`, the case of
@@ -262,8 +296,7 @@ the cases; the emitted bundle and the features page; the write-backs.
 
    Control: every row fails at the base. The first fails on the stop's
    name, which the base's refusal does not hold, and the other three
-   because the base refuses whatever the root's level. A row of the first
-   kind that passes before the change goes back to planning.
+   because the base refuses whatever the root's level.
 
 4. The table of stops holds the row. Command:
    `npm test -- --only configuration-root`.
@@ -278,8 +311,9 @@ the cases; the emitted bundle and the features page; the write-backs.
 5. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only harness-fixtures`,
-`npm test -- --only worktree`, `npm test -- --only configuration-root`,
-`npm test -- --only launchpad`, `npm test -- --only process-debt`.
+`npm test -- --only worktree`, `npm test -- --only resume`,
+`npm test -- --only configuration-root`, `npm test -- --only launchpad`,
+`npm test -- --only process-debt`.
 
 **Evidence gate:** under `docs/evidence/WO-298/`: the decisions, with each
 control's failing output at the base and the account the drive prints in
@@ -293,13 +327,15 @@ and how an owner sets that stop to `refuse`.
 **Known issues and carry-ins:**
 
 - This order is a reserve. It starts only if WO-288 is held, and it is withdrawn as superseded once a release close has shipped that order's Part F. If WO-288's close is still in hand when a pass reads this entry, it stays under Not now.
-- The route decides two states and leaves the rest as it finds them: a clone with no `origin`, a failed or slow ref read, a ref that stands at another commit than the branch's tip, a log that cannot be decoded, a log whose only pull request is a draft or was opened for an earlier commit, and a target published with the request-file form. WO-288's worktree holds code for several of those. Reopen: an operator is told to merge a branch that one of those states explains.
+- The route decides two states and leaves the rest as it finds them: a failed or slow ref read, a ref that stands at another commit than the branch's tip, a log that cannot be decoded, and a log whose only pull request is a draft or was opened for an earlier commit. WO-288's worktree holds code for several of those. Reopen: an operator is told to merge a branch that one of those states explains.
+- The request-file form of the target publish (`--target <request.json>`) writes its opened pull request to the request's own store and nothing to the log this route reads. An order with a registered target worktree that was published that way would read as never published. No writer of the kit was found that produces both together. Reopen: an order published with the request-file form is told its target was never published.
 - Both reads are of what the kit's own publish leaves in this clone. A branch pushed from another clone, or by a plain `git push` of a target's branch, reads as never published, and the account then names a publish that answers it is already there or pushes nothing new. Reopen: an operator reports that account for a branch that was published.
 - What refused the work instance's publish was laid to the sign-off from the operator's words and the kit's source; no line of that refusal was read. Reopen: an instance on this release still has its publish refused.
 - The generated account of the kit's stops follows the table, so the count it states changes with this row.
 - The criteria are written in the form the room of 2026-11-25 agreed, as a trial judged over the next five deliveries. Reopen: this order is returned on a reading of a criterion, or a row whose control says it fails at the base passes there.
 
-**Non-goals:** any publication state beyond the two; a fetch; the release
+**Non-goals:** any publication state beyond the two; a fetch; the
+request-file form of the target publish; the release
 preparation's decision title, the update's finish and the follow-ups
 command's usage, which are WO-288's criteria 37 to 39; the day's figure,
 which is WO-297's; the publish command in a driven worker's lane; what the
@@ -307,5 +343,6 @@ sign-off rule requires of a commit.
 
 **Operator-review assumptions:** an instance's level for the sign-off stop
 is `advise`; the order's own branch counts as never published only when
-this clone holds no remote-tracking ref for it, and a target's only when
-the order's log of target publications holds no opened pull request.
+this clone holds no remote-tracking ref for it and `origin/main` does not
+hold its tip, and a target's only when the order's log of target
+publications holds no opened pull request.
