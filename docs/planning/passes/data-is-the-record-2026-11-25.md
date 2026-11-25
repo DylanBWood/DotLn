@@ -833,4 +833,35 @@ pass.
 
 ## Validation
 
-Written at the pass's end, below.
+Run on 2026-11-25 at commit `c6afd81a7`, which holds the receipt, its four
+dispositions and the catalog rows:
+
+- `npm run plan -- check` passes. The receipt binds the judged subject,
+  and the four dispositions admit the four repairs.
+- `npm run test:docs`: 29 of 29 tasks pass in 0 h 3 min. The console's
+  document task, which the gate's memory limit stopped in two runs of two
+  on 2026-11-24, passed inside this full run and inside the one before
+  it. Two earlier runs of this pass failed: the first on a generated page
+  the pass had left stale, the second on the two tasks that wait for a
+  receipt.
+- `node scripts/terms.mjs branch`: 23 changed files screened and no line
+  found in either mode.
+- `npm run format:check` passes. It reads code only, so it says nothing
+  of this pass's documents; `node scripts/docs-check.mjs` passes on them.
+- Every path the four orders name exists at `77b5fc11e`, but for each
+  order's own evidence directory and two paths written with the `WO-NNN`
+  placeholder.
+
+The planning check prints its preflight advisories only once it passes,
+so they were read after the receipt and not before filing. For the four
+orders they name six suites whose declared sources hold a file an order's
+plan touches and that the order's Preflight leaves out: `sync-fixtures`,
+`launchpad-planning`, `plan-refutation`, `runner-fixtures`, `harness-probe`
+and `process-debt`. The pass's own traces of what reads the texts and the
+stop that WO-297 and WO-298 change found no case in those suites, and the
+Preflight fields stand as judged. Each order's handoff makes the complete
+run, which runs every suite.
+
+These lines were written after those runs. The planning check, the format
+check and the document check were run once more on the commit that holds
+them.
