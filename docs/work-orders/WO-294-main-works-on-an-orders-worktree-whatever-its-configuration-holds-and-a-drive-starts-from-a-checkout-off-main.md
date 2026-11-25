@@ -112,19 +112,46 @@ its own configuration when its own commands load it.
   drive's callers admit it, as the grant and the release close already do.
   The drive's record and the order's status are read and written where they
   are today.
-- **What returns this order.** A scenario below that fails by its command,
-  or a required suite that fails at the tree's identity and again when run
-  alone; on input a kit writer produces or a documented command admits, a
-  wrong result accepted, a record lost or misfiled, or a regression
-  against `main`; a breach of the clean-room floor or of an authority or
-  credential boundary. Anything else a verifier, a reviewer or a reader
-  finds is recorded as a follow-up with its reopening condition. A check
-  that did not run withholds a pass. This is the room's rule, stated here
-  as a trial.
-- **How the criteria read.** Each criterion is one behavior with its supported input, its command and
-  its scenarios, and its control says what fails at the base. The fixture of
-  criteria 1 to 3 is an order worktree whose `dotln.config.json` holds a
-  section key and a feature name that the main checkout's kit does not know.
+- **What returns this order.** This is the rule the room of 2026-11-25
+  signed, stated here as a trial
+  ([the room's plan](../planning/passes/data-is-the-record-2026-11-25.md#4-what-returns-an-order-what-is-read-again-and-when-it-stops)).
+  A criterion is met when its named evidence holds at the tree's identity
+  and no ground below applies. The order returns to repair on:
+  - a scenario below or a required suite failing at that identity,
+    reproduced alone where possible and under the recorded concurrency and
+    limits where the failure depends on them;
+  - a retained reproduction of an earlier blocking finding that still
+    shows a violation;
+  - on supported input, in what this order adds or alters, a
+    counterexample to an invariant a criterion states, a wrong result
+    accepted or a record lost or misfiled;
+  - a regression against `main` on supported input;
+  - a breach of the clean-room floor or of an authority or credential
+    boundary.
+
+  Supported input is what a kit writer produces or a documented command's
+  contract admits, and a faithful fixture of either counts whoever typed
+  it. Where a command takes free text, that is text a writer actually
+  produced or a form its contract names. A reproduction is judged by its
+  input and its observed result, whoever found it.
+
+  A refusal that names its remedy returns nothing where the contract
+  permits that refusal. Wording returns the order only where a criterion
+  requires an emitted text. Anything else is recorded as a follow-up with
+  its reopening condition.
+
+  A check that did not run neither passes nor returns. The judge gets it
+  run through the host's permission flow; where only the owner can supply
+  what it needs, the judge states that block once with the line that
+  clears it, and waits.
+- **How the criteria read.** Each criterion is one behavior with its
+  supported input, its command and its scenarios, and its control says
+  what fails at the base. The fixture of criteria 1 to 3 is an order
+  worktree whose `dotln.config.json` holds a section key and a feature
+  name that the main checkout's kit does not know and that the worktree's
+  own kit admits, as WO-288's worktree does: the fixture extends the
+  worktree copy's list of section keys and its feature registry, so that
+  the worktree's own commands load its configuration.
 
 Rejected:
 
@@ -204,11 +231,14 @@ write-backs.
    Control: the row fails at the base.
 
 3. An integration run from the main checkout works on such an order.
-   Command: `npm test -- --only worktree-integration`.
+   Supported input: the suite's own fast-forward fixture, which integrates
+   today, with the two names added to its order worktree's configuration
+   and admitted by that worktree's own kit. Command:
+   `npm test -- --only worktree-integration`.
 
    | Given | Then |
    | --- | --- |
-   | that fixture, and `node scripts/worktree.mjs integrate WO-NNN` run from the main checkout | it exits with the status, and leaves the order's branch at the tree, that the same fixture gives without the two unknown names |
+   | that configuration in the order worktree of the suite's case whose name opens `real Git fast-forward`, and that case's `node scripts/worktree.mjs integrate WO-NNN` run from the main checkout | it exits 0, and `main`'s tip is an ancestor of the order's branch |
 
    Control: the row fails at the base.
 

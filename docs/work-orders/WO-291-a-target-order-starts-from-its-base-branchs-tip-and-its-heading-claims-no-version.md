@@ -141,15 +141,38 @@ right.
 - **The refusal of changed bytes names its routes.** It prints the order's
   path and the first changed line, and says: restore the judged line, or
   record the operator's authorization and run `npm run plan -- amend-order`.
-- **What returns this order.** A scenario below that fails by its command,
-  or a required suite that fails at the tree's identity and again when run
-  alone; on input a kit writer produces or a documented command admits, a
-  wrong result accepted, a record lost or misfiled, or a regression
-  against `main`; a breach of the clean-room floor or of an authority or
-  credential boundary. Anything else a verifier, a reviewer or a reader
-  finds is recorded as a follow-up with its reopening condition. A check
-  that did not run withholds a pass. This is the room's rule, stated here
-  as a trial.
+- **What returns this order.** This is the rule the room of 2026-11-25
+  signed, stated here as a trial
+  ([the room's plan](../planning/passes/data-is-the-record-2026-11-25.md#4-what-returns-an-order-what-is-read-again-and-when-it-stops)).
+  A criterion is met when its named evidence holds at the tree's identity
+  and no ground below applies. The order returns to repair on:
+  - a scenario below or a required suite failing at that identity,
+    reproduced alone where possible and under the recorded concurrency and
+    limits where the failure depends on them;
+  - a retained reproduction of an earlier blocking finding that still
+    shows a violation;
+  - on supported input, in what this order adds or alters, a
+    counterexample to an invariant a criterion states, a wrong result
+    accepted or a record lost or misfiled;
+  - a regression against `main` on supported input;
+  - a breach of the clean-room floor or of an authority or credential
+    boundary.
+
+  Supported input is what a kit writer produces or a documented command's
+  contract admits, and a faithful fixture of either counts whoever typed
+  it. Where a command takes free text, that is text a writer actually
+  produced or a form its contract names. A reproduction is judged by its
+  input and its observed result, whoever found it.
+
+  A refusal that names its remedy returns nothing where the contract
+  permits that refusal. Wording returns the order only where a criterion
+  requires an emitted text. Anything else is recorded as a follow-up with
+  its reopening condition.
+
+  A check that did not run neither passes nor returns. The judge gets it
+  run through the host's permission flow; where only the owner can supply
+  what it needs, the judge states that block once with the line that
+  clears it, and waits.
 - **How the criteria read.** Each criterion is one behavior with its supported input, its command and
   its scenarios, and its control says what fails at the base. The unpinned
   line is `**Repository:** <id>` and the pinned line is
@@ -196,15 +219,16 @@ its output.
    table's own case.
 4. `scripts/worktree.mjs`, the `start` action: before `readStartAuthority`
    resolves a target plan, fetch the base branch from the clone's `origin`
-   under that row; on failure print one advisory naming the commit and its date and go on.
-   Check: two cases in `scripts/test-target-worktree-start.mjs` (tip moved;
-   fetch fails).
+   under that row; where the fetch fails or outlasts the row's limit, print
+   one advisory naming the commit and its date and go on. Check: three
+   cases in `scripts/test-target-worktree-start.mjs` (tip moved; fetch
+   fails; fetch outlasts its limit).
 5. `scripts/resume.mjs`, activation: for an order whose line has no commit,
    record the base of the order's registered target worktree, which the
    start writes before it activates; where no such entry exists, refuse
-   and name `worktree start`. Check: a case in
-   `scripts/test-target-worktree-start.mjs` that reads the activation
-   event.
+   and name `worktree start`. Check: two cases in
+   `scripts/test-target-worktree-start.mjs`, one that reads the activation
+   event and one that activates with no started worktree.
 6. `scripts/resume.mjs`, the withdrawal of an order never activated, and
    `scripts/lib/control.mjs`, the event's validation: a withdrawal of an
    unpinned order records the repository's id alone. Check: a case in
@@ -213,7 +237,11 @@ its output.
    `scripts/lib/work-order-workstream.mjs`, the board: the identity
    comparison reads the id alone for an unpinned header; the base column
    reads the base branch's name before activation and the recorded commit
-   after. Check: a case in `scripts/test-work-orders.sh`'s fixture.
+   after. The workstream's observation record keeps `unknown` as an
+   unpinned order's base before activation, since its reader admits a full
+   commit or `unknown` alone: the branch's name is the board's projection
+   and is not written into the record. Check: a case in
+   `scripts/test-work-orders.sh`'s fixture.
 8. `scripts/lib/derived-contract.mjs`: a derived order with a repository
    gets a heading with no placeholder. Check: the derived-orders case that
    reads the written heading.
@@ -250,22 +278,26 @@ refusal's words; the cases; the write-backs.
    | --- | --- |
    | the unpinned line, and the clone's `origin` holding two commits on the base branch that the clone lacks | the worktree's `HEAD` is `origin`'s base-branch tip after the fetch |
    | the unpinned line, and a fetch of `origin` that exits non-zero | `HEAD` is the clone's remote-tracking base branch as it stood before the start |
+   | the unpinned line, and a fetch of `origin` that outlasts the limit its row sets | `HEAD` is the clone's remote-tracking base branch as it stood before the start |
    | the unpinned line, and a clone with no `origin` | `HEAD` is the clone's local base branch |
    | the pinned line, and the base branch moved past that commit | `HEAD` is that commit |
 
-   Control: the first three rows fail at the base, where the unpinned line
-   is refused as malformed. The fourth passes there and must still pass; it
+   Control: the first four rows fail at the base, where the unpinned line
+   is refused as malformed. The fifth passes there and must still pass; it
    fails under the planted fault that the start resolves the tip whatever
    the line holds.
 
-2. The start records the commit it resolved. Command:
+2. The start records the commit it resolved, and an activation with no
+   start to take a base from says so. Command:
    `npm test -- --only target-worktree`.
 
    | Given | Then |
    | --- | --- |
    | the first row of criterion 1 | the activation event's base commit and the registry entry's base each equal that tip |
+   | an order with the unpinned line and no started target worktree, and `npm run resume -- activate` | it exits non-zero, the control log gains no event, and its message holds `worktree start` |
 
-   Control: the row fails at the base.
+   Control: both rows fail at the base, the second because the base
+   refuses the line itself and its message does not hold `worktree start`.
 
 3. A start that cannot fetch says so once and goes on. Command:
    `npm test -- --only target-worktree`.
@@ -273,7 +305,7 @@ refusal's words; the cases; the write-backs.
    | Given | Then |
    | --- | --- |
    | the second row of criterion 1 | the start exits 0 and prints exactly one advisory line, which holds the start commit's full id and its committer date in ISO 8601 |
-   | the third row of criterion 1 | the same |
+   | the third and the fourth rows of criterion 1 | the same |
    | the first row of criterion 1 | the start prints no such line |
 
    Control: the first two rows fail at the base. The third fails under the
@@ -338,9 +370,11 @@ refusal's words; the cases; the write-backs.
 
    | Given | Then |
    | --- | --- |
-   | an order whose line is `**Repository:** <id> @ abc` | the reader refuses, and its message holds `**Repository:** <id>` and `**Repository:** <id> @ <40-or-64-hex-base-commit>` |
+   | an order whose line is `**Repository:** <id> @ abc` | the reader refuses, and its message holds `expected **Repository:** <id> or **Repository:** <id> @ <40-or-64-hex-base-commit>` |
 
-   Control: the row fails at the base, where the message names one form.
+   Control: the row fails at the base, whose message holds
+   `expected **Repository:** <id> @ <40-or-64-hex-base-commit>` and no
+   `or`.
 
 10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
@@ -370,6 +404,7 @@ is left as it is.
   fetch is not decided here.
 - A self order's heading keeps its placeholder, which the activation does
   replace.
+- An activation that has no started worktree to take a base from fails and names `worktree start`. It is the report of a state that cannot go on, with no setting to lower, and no row of the table of stops. Reopen: an instance meets it on a path where the order could have started.
 - The criteria are written in the form the room of 2026-11-25 agreed, as a trial judged over the next five deliveries. What product 07 says of the two forms of the line is a write-back and no criterion, since no command settles a document's prose. Reopen: this order is returned on a reading of a criterion, or a row whose control says it fails at the base passes there.
 
 **Non-goals:** changing what any later step computes from the recorded

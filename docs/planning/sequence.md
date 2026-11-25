@@ -208,6 +208,11 @@ failed. The order below is the one a room of four models agreed on
   criteria. The same pass folds them into one termination order and one
   change to the refuter's prompt, as the room's plan sets out.
 
+The entries run one at a time, in this order. WO-297 and WO-288 are not a
+lane pair: WO-288's repair runs beside WO-297 only if the operator says
+both run at once, which the rule on pairs leaves to him and
+[the plan lists among his decisions](passes/data-is-the-record-2026-11-25.md#8-how-the-process-changes).
+
 WO-297, WO-291 and WO-294 are written in the form of criterion the room
 agreed and state in their own text what returns them, as a trial judged
 over the next five deliveries.

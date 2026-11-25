@@ -13,9 +13,10 @@ refusal, failing check or fixed figure is added. Assigned at activation
 under the standing opt-out default.
 **Cost:** changes one sentence of the day's line and its comment, the
 opening of one executor rule (four bytes fewer in the executor's root, by
-the texts below), the expected text of three cases and one passage of the
-kit guide. Removes, from every prompt of an instance that declares a daily
-figure and has reached it, the instruction to end the turn.
+the texts below), the expected text of three cases, one row of a generated
+rule table and one passage each of the kit guide and product 07. Removes,
+from every prompt of an instance that declares a daily figure and has
+reached it, the instruction to end the turn.
 `packages/skeleton/src/observed-facts.ts` and
 `packages/skeleton/src/loadouts/contributor.ts` are registered evidence
 sources: the editions they stale are re-minted with `npm run sync`. No file
@@ -65,7 +66,14 @@ standing file is as it was.
   opens `WO-276 criterion P4: the executor's emitted root`.
 - `docs/KIT.md`, in its account of the day's figure, says that the line
   tells the executor to finish the step in hand, write the standing and
-  end the turn.
+  end the turn. `docs/product/07-execution-guide.md`, in its passage on
+  the standing file, says that an executor stopping at the day's figure
+  writes the standing, and that a day's figure only adds the line that
+  asks for the stop.
+- `docs/evidence/WO-276/part-f/rule-table.md` records how each shared rule
+  opens and its size, and the case whose name opens `WO-276 criterion F2`
+  rebuilds that page from the built rules and fails on a byte's
+  difference.
 
 **Design (scope discipline):**
 
@@ -89,15 +97,38 @@ standing file is as it was.
   A day's figure in a prompt's facts ends no turn. When you stop with the order unfinished, finish the step in hand,
   ```
 
-- **What returns this order.** A scenario below that fails by its command,
-  or a required suite that fails at the tree's identity and again when run
-  alone; on input a kit writer produces or a documented command admits, a
-  wrong result accepted, a record lost or misfiled, or a regression
-  against `main`; a breach of the clean-room floor or of an authority or
-  credential boundary. Anything else a verifier, a reviewer or a reader
-  finds is recorded as a follow-up with its reopening condition. A check
-  that did not run withholds a pass. This is the room's rule, stated here
-  as a trial ([the room's plan](../planning/passes/data-is-the-record-2026-11-25.md#the-rooms-plan)).
+- **What returns this order.** This is the rule the room of 2026-11-25
+  signed, stated here as a trial
+  ([the room's plan](../planning/passes/data-is-the-record-2026-11-25.md#4-what-returns-an-order-what-is-read-again-and-when-it-stops)).
+  A criterion is met when its named evidence holds at the tree's identity
+  and no ground below applies. The order returns to repair on:
+  - a scenario below or a required suite failing at that identity,
+    reproduced alone where possible and under the recorded concurrency and
+    limits where the failure depends on them;
+  - a retained reproduction of an earlier blocking finding that still
+    shows a violation;
+  - on supported input, in what this order adds or alters, a
+    counterexample to an invariant a criterion states, a wrong result
+    accepted or a record lost or misfiled;
+  - a regression against `main` on supported input;
+  - a breach of the clean-room floor or of an authority or credential
+    boundary.
+
+  Supported input is what a kit writer produces or a documented command's
+  contract admits, and a faithful fixture of either counts whoever typed
+  it. Where a command takes free text, that is text a writer actually
+  produced or a form its contract names. A reproduction is judged by its
+  input and its observed result, whoever found it.
+
+  A refusal that names its remedy returns nothing where the contract
+  permits that refusal. Wording returns the order only where a criterion
+  requires an emitted text. Anything else is recorded as a follow-up with
+  its reopening condition.
+
+  A check that did not run neither passes nor returns. The judge gets it
+  run through the host's permission flow; where only the owner can supply
+  what it needs, the judge states that block once with the line that
+  clears it, and waits.
 
 Rejected:
 
@@ -125,15 +156,21 @@ failure that run names.
 3. `packages/skeleton/src/loadouts/contributor.ts`, the executor's rule on
    stopping: its opening. Check: the third case alone.
 4. `node scripts/harness.mjs emit`, then `npm run sync` and `npm run meta`:
-   the emitted executor roots and the editions the two sources stale.
-5. Write-back: `docs/KIT.md`, the account of the day's figure (the line
-   states that the figure is reached and ends no turn).
+   the emitted executor roots and the editions the two sources stale. Then
+   `node docs/evidence/WO-276/part-f/rule-table.mjs`, which rewrites the
+   rule table's row for the rule step 3 edits. Check:
+   `node docs/evidence/WO-276/part-f/rule-table.mjs --check`.
+5. Write-backs: `docs/KIT.md`, the account of the day's figure (the line
+   states that the figure is reached and ends no turn);
+   `docs/product/07-execution-guide.md`, the passage on the standing file
+   (an executor that stops writes the standing, and a day's figure asks
+   for no stop).
 6. The handoff sequence of §Discipline: the complete run,
    `npm run test:docs`, `implementation-ready`.
 
 **Deliverables:** the day's line and its comment; the executor rule's
-opening; the three cases; the emitted executor roots; the kit guide's
-passage.
+opening; the three cases; the emitted executor roots; the rule table's
+row; the kit guide's passage and product 07's.
 
 **Acceptance criteria (all required)**
 
@@ -159,7 +196,7 @@ passage.
 
    | Given | Then |
    | --- | --- |
-   | the fixture of that case, with 1,650 tokens used of a figure of 1,650 | the facts the hook returns end with the Design's sentence |
+   | the fixture of that case, with 1,650 tokens used of a figure of 1,650 | the day's line among the facts the hook returns ends with the Design's sentence |
 
    Control: the row fails at the base.
 

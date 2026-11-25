@@ -221,8 +221,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-288.
-- References: WO-288: planning-deferral (unmet) until WO-288 dated 2026-11-25 — a port of WO-288's publication fixes that starts only if that order is held, and is withdrawn once a release close ships them.
+- Dependencies: conservative token view; does not block.
+- References: WO-288: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
