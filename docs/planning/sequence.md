@@ -172,48 +172,45 @@ an instance's path and by what the instance reported (operator direction,
 2026-11-16, ignored capture SHA-256
 `35e0177daa25798a102fa3714519a96cb8bbc28336a255219ff42b22af03f128`).
 
+What the operator is trying to achieve, avoid, implement and experience,
+as the planner reads it, is on [one page](operator-intent.md), which a
+pass reads before it weighs a new directive.
+
 ## The orders, one at a time
 
 WO-284 and WO-287 closed as v1.3.0 and v1.4.0 on 2026-11-17 and
-2026-11-18. WO-288 is in repair after eleven verifications. What comes
-next is what the operator directed on 2026-11-23, when the work
-instance's sessions were stopping after each line and its orders against
-a target were starting from the wrong commit
-([the 2026-11-23 pass](passes/the-kit-keeps-working-2026-11-23.md)):
+2026-11-18. WO-288 has been open since 2026-11-19, with fifteen
+verifications, of which the twelfth passed, and one final review, which
+failed. The order below is the one a room of four models agreed on
+2026-11-25, at the operator's call
+([the room's plan](passes/data-is-the-record-2026-11-25.md#the-rooms-plan)):
 
-- WO-288 first, to its end. It meets 39 of its 41 criteria, and its Part F
-  holds the sentences that stop telling a session to end its turn at a
-  day's figure, which an instance has waited on since 2026-11-19. The
-  pass's reading of its two open criteria, and the one decision that is
-  the operator's, are in
-  [its document](passes/the-kit-keeps-working-2026-11-23.md#why-wo-288-did-not-converge).
-- WO-289: every text the kit gives a session about a turn says to go on,
-  an advisory asks the operator for nothing, `analysis:` ends at a
-  dispatch, and a message sent while a turn was running says so when it
-  arrives.
+- WO-297: a day's figure that is reached ends no turn. First, because it
+  is what the work instance's sessions meet at every prompt, it has waited
+  since 2026-11-19 inside WO-288, and it is separable from that order.
+- WO-288: one bounded attempt, on the direction the room wrote for the
+  operator to give in that order's session. It gets one verification and
+  one final review. If either returns it, or its repair cannot qualify,
+  no repair starts and the order is held under Not now.
 - WO-291: an order against a registered repository starts from that
   repository's base branch as it stands, and its heading promises no
   version.
-- WO-290: a turn that leaves a dispatch unfinished goes on once. After
-  WO-289, apart from it, because it rests on a host's behavior.
-- WO-292: the guards of a target worktree follow the launchpad's levels
-  after each emit, and a drive a guard stopped says so on its first
-  attempt.
-- WO-293: a verification after a repair reads the repair, a criterion no
-  reading can settle has a class, and a final review fails on what it
-  finds.
-- WO-295: the refuter's judgment of a planning pass also says whether
-  each criterion can be settled, and one it calls defective holds the pass.
-- WO-296: a criterion two verifications have returned is re-cut by a
-  planner worker and judged by a refuter, and the operator is asked for no
-  waiver, cut or amendment. After WO-293 and WO-295, which it rests on.
 - WO-294: main reads an order's worktree whatever its configuration
-  holds, and a drive starts from a checkout that is off main. Last,
-  because it stops no instance.
+  holds, and a drive starts from a checkout that is off main. It moved
+  ahead of the machinery orders because each phase of an order waits on
+  the operator's next phrase until a drive can start in core, and it
+  follows WO-288 because both edit the drive's route.
+- WO-289, WO-290 and WO-292: what a session is told about a turn, a turn
+  that goes on once, and a driven target phase. Each is written against
+  WO-288's unmerged text and is re-cut by the pass after that order
+  closes or is held. WO-290 is held for a recurrence after WO-289.
+- WO-293, WO-295 and WO-296: how a verification ends and who judges
+  criteria. The same pass folds them into one termination order and one
+  change to the refuter's prompt, as the room's plan sets out.
 
-Each is a single order, since an instance is waiting on the first four and
-the queue form excludes what something waits on. None holds more than ten
-criteria.
+WO-297, WO-291 and WO-294 are written in the form of criterion the room
+agreed and state in their own text what returns them, as a trial judged
+over the next five deliveries.
 
 ## Not now
 
@@ -221,11 +218,18 @@ These orders stay open and are not next. Each is recorded with what
 reopens it; the 2026-11-09 pass read each against the tree and the focus
 ([its document](passes/whole-plan-and-codebase-review-2026-11-09.md)).
 
+- WO-298 (a reviewed branch that was never pushed, and an instance's
+  publish over the sign-off): a port of WO-288's publication fixes, held
+  in reserve. It becomes the next order if WO-288 is held, unless the
+  console task's memory stop held WO-297's release, in which case that
+  fix is filed alone and goes first. It is withdrawn once a release close
+  has shipped WO-288's own Part F.
 - WO-244 (paired planning passes and the synthesis pass): moved down on
   the operator's word of 2026-11-09. It was activated on 2026-11-08 and
   parked the next day; its work is the commit `ca48dff28`, held by
   `refs/dotln/checkpoint/WO-244/5`. Reopen on the operator's word, or when
-  a paired routine has been run by hand twice more.
+  a paired routine has been run by hand twice more. The room of
+  2026-11-25 was one such run.
 - WO-083 (the real run from the operator's instance): moved down on the
   operator's word of 2026-11-09; the operator makes that run by hand.
   Reopen when the operator asks core to record a measured comparison of
@@ -260,15 +264,17 @@ reopens it; the 2026-11-09 pass read each against the tree and the focus
   requests to a hook, or the operator records approval friction.
 
 <!-- dotln-work-order-sequence:start -->
+- WO-297 — A day's figure that is reached ends no turn
 - WO-288 — Core's own tooling lands as one order
-- WO-289 — A session is told to go on, and ends its turn only for what the operator must do
 - WO-291 — A target order starts from its base branch's tip, and its heading claims no version
+- WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main
+- WO-289 — A session is told to go on, and ends its turn only for what the operator must do
 - WO-290 — A turn that leaves a dispatch unfinished goes on once
 - WO-292 — A driven target phase can run its order's checks, and a drive a guard stopped says so
 - WO-293 — A verification ends: a repair's verification reads the repair, and a criterion returned twice names its ways out
 - WO-295 — The refuter judges whether each criterion can be settled, and a planning pass repairs what it holds
 - WO-296 — A criterion returned twice is re-cut by a planner and judged by a refuter, and the operator adjudicates none
-- WO-294 — Main works on an order's worktree whatever its configuration holds, and a drive starts from a checkout off main
+- WO-298 — A reviewed branch that was never pushed is named, and an instance's publish is not refused over a sign-off
 - WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel

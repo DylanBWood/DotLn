@@ -40,6 +40,28 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-25 — Planning pass: a room of four models on orders that do not end, what programs read and what the operator wants (WO-297 and WO-298 filed, WO-291 and WO-294 re-screened); registration only; the record is the planning document
+
+Dispatch: `planning:` on the order in progress running for more than a
+week and on the planning that produced it, journaled at
+2026-11-25T15:03:05.370Z (hook time) in Claude Code (Fable 5.2 at max,
+operator-selected), captured in
+`docs/intake/planning-dispatch-2026-11-25-data-is-the-record-dispatch.md`
+(the journal's digest of the message
+`9e08448d4f460a8224804617fa9830dbf290ba0cf4c046458bc78e6f2ad1e505`), with
+the thirty-three further messages of the pass captured beside it. The
+operator convened a room of four models (Claude Fable 5.2, Claude Opus
+5.5, GPT-6.2 Astra and GPT-6.2 Sol) to agree the architecture and the way
+forward, and left for four days. The pass reads WO-288's fifteen
+verifications, the line's history from the lifecycle logs and the
+operator's wishes from his whole record; keeps the room's four rounds and
+their signed plan; files WO-297 (a day's figure ends no turn) and WO-298
+(a port of the publication fixes, in reserve); re-screens WO-291 and
+WO-294; writes the direction that gives WO-288 one bounded attempt; and
+puts no rule in force.
+Record:
+[the planning document](../planning/passes/data-is-the-record-2026-11-25.md).
+
 ## 2026-11-23 — Planning pass: sessions that go on, orders against a target, a verification that ends and who judges criteria (WO-289 to WO-296 filed); registration only; the record is the planning document
 
 Dispatch: `planning:` on the work instance stopping after each line, the

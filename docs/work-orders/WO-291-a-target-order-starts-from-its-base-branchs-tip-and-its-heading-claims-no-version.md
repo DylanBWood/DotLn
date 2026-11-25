@@ -10,9 +10,10 @@ names the repository alone and starts from the tip of that repository's
 base branch at the moment it starts; a commit in the line stays admitted
 and pins the base. A target order's heading carries no version placeholder,
 and the planning check's refusal of changed order bytes names the line and
-both ways out. No refusal is added: the start gains one advisory, and one existing
-refusal gains words. Assigned at activation under the standing
-opt-out default.
+both ways out. No stop is added: the start gains one advisory, one existing
+refusal gains words, and an activation of an unpinned order that has no
+started worktree to take its base from fails naming `worktree start`.
+Assigned at activation under the standing opt-out default.
 **Cost:** adds one fetch of the target clone's base branch to a target
 order's start, bounded by a row of the table of limits and never a stop;
 one admitted form of the `Repository:` line and its readers' handling of
@@ -34,10 +35,13 @@ work instance's new worktrees start from its repository's first commit,
 and a session there edited by hand a heading that still said a version
 would be assigned.
 [The planning pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#where-a-target-orders-worktree-starts)
-read both against the code.
+read both against the code. The pass of 2026-11-25 re-screened the criteria
+to the form the room agreed
+([the room's plan](../planning/passes/data-is-the-record-2026-11-25.md#the-rooms-plan)).
 **Depends on:** none.
-**Recommended placement:** second, beside WO-289, whose surfaces it does
-not share. Every target order an instance starts meets the first half.
+**Recommended placement:** after WO-297 and WO-288's one bounded attempt.
+It depends on neither. Every target order an instance starts meets the
+first half.
 
 **Objective:** An instance's planner writes which repository an order
 changes and nothing about commits. When the order starts, its worktree
@@ -137,6 +141,15 @@ right.
 - **The refusal of changed bytes names its routes.** It prints the order's
   path and the first changed line, and says: restore the judged line, or
   record the operator's authorization and run `npm run plan -- amend-order`.
+- **What returns this order.** A scenario below that fails by its command,
+  or a required suite that fails at the tree's identity and again when run
+  alone; on input a kit writer produces or a documented command admits, a
+  wrong result accepted, a record lost or misfiled, or a regression
+  against `main`; a breach of the clean-room floor or of an authority or
+  credential boundary. Anything else a verifier, a reviewer or a reader
+  finds is recorded as a follow-up with its reopening condition. A check
+  that did not run withholds a pass. This is the room's rule, stated here
+  as a trial.
 
 Rejected:
 
@@ -158,7 +171,10 @@ Rejected:
 `bc761ad9c`, 2026-11-23):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
-failure that run names.
+failure that run names. Before step 1 the executor writes the cases of
+criteria 1 to 9 and runs each alone: every row whose control says it fails
+at the base fails there, and one that does not goes back to planning with
+its output.
 
 1. `scripts/lib/work-order-repository.mjs`, `parseRepositoryDeclaration`:
    admit the line with an id alone and return no `baseCommit` for it; the
@@ -188,7 +204,7 @@ failure that run names.
 6. `scripts/resume.mjs`, the withdrawal of an order never activated, and
    `scripts/lib/control.mjs`, the event's validation: a withdrawal of an
    unpinned order records the repository's id alone. Check: a case in
-   `scripts/test-resume.sh`'s fixture or the control reader's tests.
+   `scripts/test-resume.sh`'s fixture.
 7. `scripts/work-orders.mjs`, the index, and
    `scripts/lib/work-order-workstream.mjs`, the board: the identity
    comparison reads the id alone for an unpinned header; the base column
@@ -221,43 +237,112 @@ refusal's words; the cases; the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. `worktree start` of a fixture order whose line is `**Repository:** <id>`
-   creates the target worktree where this table says
-   (`npm test -- --only target-worktree`).
+Each criterion is one behavior with its supported input, its command and
+its scenarios, and its control says what fails at the base. The unpinned
+line is `**Repository:** <id>` and the pinned line is
+`**Repository:** <id> @ <commit>`.
 
-   | The clone when the order starts | The worktree starts at |
+1. `worktree start` of a fixture target order starts its worktree at the
+   commit this table gives. Supported input: a registered repository's
+   clone and an order carrying either line. Command:
+   `npm test -- --only target-worktree`.
+
+   | Given | Then |
    | --- | --- |
-   | its `origin` holds two commits on the base branch that the clone lacks | the base branch's tip after the fetch |
-   | the fetch of its `origin` fails | the base branch's tip as the clone holds it |
+   | the unpinned line, and the clone's `origin` holding two commits on the base branch that the clone lacks | the worktree's `HEAD` is `origin`'s base-branch tip after the fetch |
+   | the unpinned line, and a fetch of `origin` that exits non-zero | `HEAD` is the clone's remote-tracking base branch as it stood before the start |
+   | the unpinned line, and a clone with no `origin` | `HEAD` is the clone's local base branch |
+   | the pinned line, and the base branch moved past that commit | `HEAD` is that commit |
 
-2. In the fixture of that table's first row, the activation event and the
-   registry entry each record that tip as the base
-   (`npm test -- --only target-worktree`).
-3. Where the fetch fails, the start prints one advisory that names the date
-   of the commit it starts at (`npm test -- --only target-worktree`).
-4. The board's base column gives a member order's base as this table says
-   (`npm test -- --only work-orders-fixtures`).
+   Control: the first three rows fail at the base, where the unpinned line
+   is refused as malformed. The fourth passes there and must still pass; it
+   fails under the planted fault that the start resolves the tip whatever
+   the line holds.
 
-   | The order | Its base on the board |
+2. The start records the commit it resolved. Command:
+   `npm test -- --only target-worktree`.
+
+   | Given | Then |
    | --- | --- |
-   | open, with the unpinned line | the registered base branch's name |
-   | activated from the unpinned line | the commit its activation recorded |
+   | the first row of criterion 1 | the activation event's base commit and the registry entry's base each equal that tip |
 
-5. A never-activated order with the unpinned line is withdrawn by
-   `npm run resume -- withdraw` (`npm test -- --only resume`).
-6. A fixture order against a target, filed with no version placeholder in
-   its heading, activates (`npm test -- --only target-worktree`).
-7. `npm run release -- prepare --local` in a target order's worktree prints
-   that the order's heading stays as filed
-   (`npm test -- --only release-preparation`).
-8. With a fixture order whose judged heading was edited to a label that is
-   not a version, `npm run plan -- check` refuses with the order's path,
-   the changed line's number and both routes, restoring the judged line
-   and `npm run plan -- amend-order`
-   (`npm test -- --only plan-refutation`).
-9. Product 07 under "Where the control plane finds its documents" states
-   both forms of the line and that the unpinned one is the default
-   (`npm run test:docs`).
+   Control: the row fails at the base.
+
+3. A start that cannot fetch says so once and goes on. Command:
+   `npm test -- --only target-worktree`.
+
+   | Given | Then |
+   | --- | --- |
+   | the second row of criterion 1 | the start exits 0 and prints exactly one advisory line, which holds the start commit's full id and its committer date in ISO 8601 |
+   | the third row of criterion 1 | the same |
+   | the first row of criterion 1 | the start prints no such line |
+
+   Control: the first two rows fail at the base. The third fails under the
+   planted fault that the advisory prints on every start.
+
+4. The board's base column shows what is known. Command:
+   `npm test -- --only work-orders-fixtures`.
+
+   | Given | Then |
+   | --- | --- |
+   | an open member order with the unpinned line | the column shows the registered base branch's name |
+   | a member order activated from the unpinned line | it shows the commit its activation recorded |
+   | an open member order with the pinned line | it shows the commit the line names |
+   | a member order activated from the pinned line | it shows the commit its activation recorded |
+
+   Control: the first two rows fail at the base. The last two pass there
+   and must still pass.
+
+5. A never-activated order is withdrawn with what its line declared.
+   Command: `npm test -- --only resume`.
+
+   | Given | Then |
+   | --- | --- |
+   | a never-activated order with the unpinned line, and `npm run resume -- withdraw` | it exits 0, and the control log's withdrawal event holds the repository's id and no base commit |
+   | a never-activated order with the pinned line, and the same command | the event holds the id and the commit |
+
+   Control: the first row fails at the base. The second passes there and
+   must still pass.
+
+6. A derived order against a repository is written with no version
+   placeholder. Command: `npm test -- --only derived-orders`.
+
+   | Given | Then |
+   | --- | --- |
+   | a derived contract for a registered repository | the heading the kit writes for its order does not hold `(version assigned at activation)` |
+   | a fixture target order whose heading has no placeholder, and `worktree start` (`npm test -- --only target-worktree`) | the start exits 0 and the control log holds its activation event |
+
+   Control: the first row fails at the base. The second passes there and
+   must still pass.
+
+7. `release prepare` on a target order changes nothing and says so.
+   Command: `npm test -- --only release-preparation`.
+
+   | Given | Then |
+   | --- | --- |
+   | a target order's worktree, and `npm run release -- prepare --local` | it exits 0, `git status --porcelain` prints nothing afterwards, and the output holds `target order records no release; no files changed` and `the order's heading stays as filed` |
+
+   Control: the row fails at the base on the second text.
+
+8. The refusal of changed order bytes names the line and both routes.
+   Command: `npm test -- --only plan-refutation`.
+
+   | Given | Then |
+   | --- | --- |
+   | a fixture order whose judged heading was edited to a label that is not a version, and `npm run plan -- check` | it refuses, and its message holds the order's path, the changed line's number, the instruction to restore the judged line and `npm run plan -- amend-order` |
+
+   Control: the row fails at the base, where the message names neither the
+   line nor a route.
+
+9. A malformed line is refused with both forms named. Command:
+   `npm test -- --only work-orders-fixtures`.
+
+   | Given | Then |
+   | --- | --- |
+   | an order whose line is `**Repository:** <id> @ abc` | the reader refuses, and its message holds `**Repository:** <id>` and `**Repository:** <id> @ <40-or-64-hex-base-commit>` |
+
+   Control: the row fails at the base, where the message names one form.
+
 10. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only target-worktree`,
@@ -286,6 +371,7 @@ is left as it is.
   fetch is not decided here.
 - A self order's heading keeps its placeholder, which the activation does
   replace.
+- The criteria are written in the form the room of 2026-11-25 agreed, as a trial judged over the next five deliveries. What product 07 says of the two forms of the line is a write-back and no criterion, since no command settles a document's prose. Reopen: this order is returned on a reading of a criterion, or a row whose control says it fails at the base passes there.
 
 **Non-goals:** changing what any later step computes from the recorded
 base; rebasing or refreshing a worktree that has already started; a

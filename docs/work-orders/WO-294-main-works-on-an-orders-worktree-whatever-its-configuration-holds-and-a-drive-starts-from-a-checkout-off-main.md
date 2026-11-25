@@ -31,11 +31,17 @@ first drive of WO-288 did not start. Pasted with it, another session's
 diagnosis, kept in the ignored planning lane (SHA-256
 `2b32d7f2aedf1109240d70d3d2e93c1206ecd63d43c007718aab9bebbc858f91`).
 [The planning pass](../planning/passes/the-kit-keeps-working-2026-11-23.md#why-the-drive-did-not-start)
-reproduced it and found the second cause.
+reproduced it and found the second cause. The pass of 2026-11-25 re-screened
+the criteria to the form the room agreed and moved the order ahead of the
+machinery orders
+([the room's plan](../planning/passes/data-is-the-record-2026-11-25.md#the-rooms-plan)).
 **Depends on:** none.
-**Recommended placement:** last. It stops no instance: an instance's
-orders change no kit validator. Until it lands, an order of core's that
-adds a configuration key is run by its phrases in its own worktree.
+**Recommended placement:** after WO-288's one bounded attempt and ahead of
+the machinery orders. Each phase of a small order waits on the operator's
+next phrase until a drive can start in core, so this order frees his
+attention on every order after it. It follows WO-288 because both edit
+`scripts/lib/drive-route.mjs`. Until it lands, an order of core's that adds
+a configuration key is run by its phrases in its own worktree.
 
 **Objective:** The operator types `drive: WO-NNN` and the drive starts,
 whatever keys the order's own configuration has gained and whatever branch
@@ -106,6 +112,15 @@ its own configuration when its own commands load it.
   drive's callers admit it, as the grant and the release close already do.
   The drive's record and the order's status are read and written where they
   are today.
+- **What returns this order.** A scenario below that fails by its command,
+  or a required suite that fails at the tree's identity and again when run
+  alone; on input a kit writer produces or a documented command admits, a
+  wrong result accepted, a record lost or misfiled, or a regression
+  against `main`; a breach of the clean-room floor or of an authority or
+  credential boundary. Anything else a verifier, a reviewer or a reader
+  finds is recorded as a follow-up with its reopening condition. A check
+  that did not run withholds a pass. This is the room's rule, stated here
+  as a trial.
 
 Rejected:
 
@@ -127,7 +142,9 @@ Rejected:
 `bc761ad9c`, 2026-11-23):** A step's check is one case run under
 `node scripts/harness.mjs bounded -- node --test --test-name-pattern`; no
 suite runs alone before the order's one complete run except to reproduce a
-failure that run names.
+failure that run names. Before step 1 the executor builds the two fixtures,
+writes the cases of criteria 1 to 5 and runs each alone: each fails at the
+base, and one that does not goes back to planning with its output.
 
 1. `scripts/lib/config.mjs`: the exported reader of a checkout's roots, and
    a path helper beside `docPath` that uses it. Check: two cases in
@@ -164,27 +181,68 @@ write-backs.
 
 **Acceptance criteria (all required)**
 
-1. With a fixture order worktree whose `dotln.config.json` holds a section
-   key and a feature name that the main checkout's kit does not know,
-   `node scripts/drive.mjs status WO-NNN` run in the main checkout prints
-   the order's phase (`npm test -- --only harness-fixtures`).
-2. In that fixture a drive with the fake host launches the order's next
-   phase in the order's worktree (`npm test -- --only harness-fixtures`).
-3. In that fixture `node scripts/worktree.mjs integrate WO-NNN` run from
-   the main checkout ends as it ends for the same fixture without the two
-   unknown names (`npm test -- --only worktree-integration`).
-4. With no worktree on `main`, `node scripts/drive.mjs status WO-NNN` run
-   in the primary checkout prints the order's phase
-   (`npm test -- --only harness-fixtures`).
-5. With no worktree on `main`, a drive with the fake host launches the
-   order's next phase (`npm test -- --only harness-fixtures`).
-6. `node scripts/harness.mjs check`, run in a checkout whose own
-   configuration holds an unknown section key, refuses and names the key
-   (`npm test -- --only configuration-root`).
-7. Product 07 under "Where the control plane finds its documents" says
-   that a command reads the roots alone of another checkout's
-   configuration (`npm run test:docs`).
-8. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
+Each criterion is one behavior with its supported input, its command and
+its scenarios, and its control says what fails at the base. The fixture of
+criteria 1 to 3 is an order worktree whose `dotln.config.json` holds a
+section key and a feature name that the main checkout's kit does not know.
+
+1. A status read from the main checkout reaches such an order. Command:
+   `npm test -- --only harness-fixtures`.
+
+   | Given | Then |
+   | --- | --- |
+   | that fixture, and `node scripts/drive.mjs status WO-NNN` run in the main checkout | it exits 0 and prints the order's phase |
+
+   Control: the row fails at the base, where the lookup refuses the key.
+
+2. A drive from the main checkout launches such an order's phase. Command:
+   `npm test -- --only harness-fixtures`.
+
+   | Given | Then |
+   | --- | --- |
+   | that fixture, and a drive with the fake host | the fake host receives one launch, in the order's worktree, of the phase the order's status names as next |
+
+   Control: the row fails at the base.
+
+3. An integration run from the main checkout works on such an order.
+   Command: `npm test -- --only worktree-integration`.
+
+   | Given | Then |
+   | --- | --- |
+   | that fixture, and `node scripts/worktree.mjs integrate WO-NNN` run from the main checkout | it exits with the status, and leaves the order's branch at the tree, that the same fixture gives without the two unknown names |
+
+   Control: the row fails at the base.
+
+4. A status read finds its control plane when no worktree holds `main`.
+   Command: `npm test -- --only harness-fixtures`.
+
+   | Given | Then |
+   | --- | --- |
+   | a fixture whose primary checkout is on another branch and in which no worktree holds `main`, and `node scripts/drive.mjs status WO-NNN` run in the primary checkout | it exits 0 and prints the order's phase |
+
+   Control: the row fails at the base, where the command prints that no
+   main-branch control-plane worktree was found.
+
+5. A drive starts when no worktree holds `main`. Command:
+   `npm test -- --only harness-fixtures`.
+
+   | Given | Then |
+   | --- | --- |
+   | the fixture of criterion 4, and a drive with the fake host | the fake host receives one launch of the phase the order's status names as next |
+
+   Control: the row fails at the base.
+
+6. A checkout's own commands still refuse an unknown key in its own
+   configuration. Command: `npm test -- --only configuration-root`.
+
+   | Given | Then |
+   | --- | --- |
+   | a checkout whose own `dotln.config.json` holds an unknown section key, and `node scripts/harness.mjs check` run there | it exits non-zero and names the key |
+
+   Control: the row passes at the base and must still pass. It fails under
+   the planted fault that the strict loader takes the roots reader.
+
+7. `npm test -- --review`, `npm test` and `npm run test:docs` pass.
 
 **Preflight:** `npm test -- --only configuration-root`,
 `npm test -- --only harness-fixtures`,
@@ -200,7 +258,8 @@ site moved and the command that showed it; the handoff.
 
 - Reading the roots alone assumes the order has not changed what a root means. An order that renames or reinterprets a root key would be driven and integrated from main on the older reading. Reopen: a drive or an integration run from main acts on a root value that the order's own commands read differently.
 - No criterion reads another checkout's configuration that does not parse. The reader refuses it with the file named, as `loadConfig` in `scripts/lib/config.mjs` refuses a configuration it cannot open. Reopen: status or a drive from main against such a worktree ends without naming the file.
-- WO-288 adds the key that shows this defect and is first in the sequence, and this order is last. If the integration WO-288's handoff and final review run from main refuses on that key, as the code reads, WO-288 integrates with its own worktree's script on the operator's word and records the route. Reopen: that route fails too, and this order is then placed ahead of WO-288's final review.
+- WO-288 adds the key that shows this defect, and its one bounded attempt runs before this order, by its phrases in its own worktree and with that worktree's own integration script, as its direction says. Reopen: that route fails, and this order is then placed ahead of WO-288's final review.
+- The criteria are written in the form the room of 2026-11-25 agreed, as a trial judged over the next five deliveries. What product 07 says of another checkout's configuration is a write-back and no criterion, since no command settles a document's prose. Reopen: this order is returned on a reading of a criterion.
 - A drive that stops on a thrown failure prints the failure's message and
   not its account (item 1 of WO-287-D086's follow-up,
   FUP-9c62f95113543599). Named boy-scout item, same files as step 5: print

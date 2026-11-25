@@ -62833,6 +62833,342 @@
           "at": "2026-11-23T21:26:31.850Z"
         }
       ]
+    },
+    {
+      "id": "FUP-9531fd358733c4a2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::0779110fb2006f8e9e68ebfba96f2842556f1c7b6a31474968d8e6dc84659093",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e436aa458ea04e20e8612f9b42952dad636712b988671f0d022b6047ff464623",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A train of small orders under one release.",
+          "summary": "14. **A train of small orders under one release.** Declined: the cost it would save is unmeasured while no drive has run in core. Reopen: driven small orders cost the operator more phrases an outcome than WO-276 did.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The cost a train would save is unmeasured while no drive has run in core. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "Driven small orders cost the operator more phrases an outcome than WO-276 did.",
+          "targets": [],
+          "at": "2026-11-25T17:25:04.652Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ca0d2c44b1e6374d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::1f399f8f584bb46e37808bb1378c1f0cf60f6f3b56ba6a40debd67de4eca707b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "13689252c9433d0a013086e88a6ec8a4322e5fd831ac0c6b61f44c804839f1e7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A worker kind for research, or for a room, that a Claude session can launch on a Codex worker through the kit and that the hook counts.",
+          "summary": "7. **A worker kind for research, or for a room, that a Claude session can launch on a Codex worker through the kit and that the hook counts.** This pass launched eight seat rounds and a probe directly, as WO-288's executor once did. Deferred. Reopen: the pass after WO-288's fate, or a second room.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "This pass launched eight seat rounds and a probe on the Codex CLI directly, uncounted by the hook, as WO-288's executor once did. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "The pass after WO-288's fate is known, or a second room.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.769Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-143e36437babf70a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::2d13b8ebcbacd2b86960363f51d930bfe88c75d555513b75963ea8e7c46d107f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d8335f2bc56b2e4d801f832ed9d9a7baf70852ce7ae2a3cd4eac4a4429641c60",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A route to record the operator's acceptance of a worker cap in a planning dispatch.",
+          "summary": "8. **A route to record the operator's acceptance of a worker cap in a planning dispatch.** The command that records one is legal only in an order's phases, so this pass ran inside the default cap with his acceptance in hand. Deferred. Reopen: a planning pass again meets its cap after he has lifted it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The command that records an acceptance is legal only in an order's phases, so this pass ran inside the default cap with the operator's acceptance in hand. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "A planning pass again meets its cap after the operator has lifted it.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.894Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b918d2188749b095",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::3a5b7572f492e55e1391a3b458615422701ac6f1a8d47cf15007cc0f12145dad",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "121ecce0f27d7d4a3d4c8a4ba55530d07d50c18463b1e19d93a31987a90a81ee",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "The console document task's memory stop, fixed alone.",
+          "summary": "5. **The console document task's memory stop, fixed alone.** Part E of WO-288 removes it. Deferred. Reopen: WO-288 is held, or the stop holds a release in two document-gate runs.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Part E of WO-288 removes the stop. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "WO-288 is held, or the stop holds a release in two document-gate runs.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.516Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fe39e0a7b00db2b2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::426528d68b2b202b2267bbaafc87998afcd9b63781abe0b2e679b6c04ea35344",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3c69d78863ab7c06648bd5d3f194d3b7368e6b15ad596665757904b1779424bd",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A standing second lane for orders with disjoint surfaces.",
+          "summary": "10. **A standing second lane for orders with disjoint surfaces.** Deferred: his to elect. Reopen: his word.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "A second lane for orders with disjoint surfaces is the operator's to elect. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "The operator's word.",
+          "targets": [],
+          "at": "2026-11-25T17:25:04.146Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3162748fb9071c3f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::4ff6585d010a67053c9fe7b217c291f1f8bd047003547384f8f8b84d6b6f143d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f5141aa2770ce98b842a1256e623ab5c3241b59ceebbd7c6cf3fb34ad08026f8",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "One termination order.",
+          "summary": "1. **One termination order.** The room's rule on what returns an order, what a verification after a repair reads and the bound at the second and third failed judgment, carried into the verifier's and the reviewer's text, the fix briefing's count of returns and a hold in the lifecycle, absorbing WO-293 and WO-296. Deferred: the role text it edits is rewritten by WO-288, so its base is unknown until that order closes or is held. Reopen: WO-288 closes or is held.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The room's rule on what returns an order, what a verification after a repair reads and the bound at the second and third failed judgment, carried into the verifier's and the reviewer's text and the lifecycle. The role text it edits is rewritten by WO-288, so its base is unknown until that order closes or is held. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "WO-288 closes or is held.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.003Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-578f964f16fe2683",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::724622883628cfc61adbb8038d80efeef42039b0338d1247763f307239ccd1ef",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1f2beb32fa5dc00b22e4d1421f8c905a287850c0886c1c1e32bd10da1d7eeab0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A review worker's result as one whole JSON payload, bound to its launch and tree",
+          "summary": "3. **A review worker's result as one whole JSON payload, bound to its launch and tree**, with a missing, malformed or second result leaving the review incomplete. Deferred: it is written against the recorder as WO-288 leaves it. Reopen: WO-288 closes or is held.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The first move of what programs read: a whole result bound to its launch and tree. It is written against the recorder as WO-288 leaves it. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "WO-288 closes or is held.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.261Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fea471a7baaa90b4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::88ec313a603ac2a96ae94a9a292ff178a1a86b6f9d09bbd68596635cefb7005f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "97deebd43e5ff8c29ede83295dc405312650e5906cc6cb8ceca865cee9e00583",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "The refuter predicts each criterion's outcome before it sees the planner's",
+          "summary": "2. **The refuter predicts each criterion's outcome before it sees the planner's**, as one change to the refuter's prompt in place of WO-295's order. Deferred with the first. Reopen: WO-288 closes or is held.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "One change to the refuter's prompt in place of WO-295's order, deferred with the termination order. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "WO-288 closes or is held.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.133Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6d7c37ce1696a22b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::92ca4f8de98db6d57a11ed84e751f2ac946a5f950aad983cbb0f6f7df4f96a33",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "becc1f1dce8e977f493fec893058e018adc104fca461b95e7dead2eda45795fc",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A grant for the operator's absence",
+          "summary": "9. **A grant for the operator's absence**: named orders, the effects allowed, an expiry and a stop condition, with the merge kept his. Nothing could move in his four days away. Deferred: it is his to elect. Reopen: his word.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Nothing in the kit could move in the operator's four days away. A grant is his to elect. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "The operator's word.",
+          "targets": [],
+          "at": "2026-11-25T17:25:04.020Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b3ceaf6f2c564b39",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::a0660a1bb4ad5273ccf5192600234fbd65feb520638708e15a995d4b7d0e5639",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4781462150de4469be6b06fe5fe56e082f2296e3561d4fd85417f72ed2228d14",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "The retirement of the queue form's section and of WO-088.",
+          "summary": "11. **The retirement of the queue form's section and of WO-088.** The room proposes both. Deferred: he made the form an option and placed that order. Reopen: his word.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The room proposes both. The operator made the form an option and placed that order. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "The operator's word.",
+          "targets": [],
+          "at": "2026-11-25T17:25:04.273Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9af3ddb9e3579ba4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::a2723572bf813bc1a01242fc763a43417dbcf7ff67c8319fd8465efac248bb7c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "22554ece9df9b4c92fa0f2f0add54718bf73197ca4227541b3cd7c0eea094d26",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A verdict's facts given as JSON to the command that records them, and an order's fields and criteria as one JSON block between exact marker lines.",
+          "summary": "4. **A verdict's facts given as JSON to the command that records them, and an order's fields and criteria as one JSON block between exact marker lines.** Deferred: each follows the move before it. Reopen: the third candidate has landed and its reader has returned no order.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The second and third moves of what programs read. Each follows the move before it. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "The whole-worker-result order has landed and its reader has returned no order.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.388Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0e7b1826b8c4f3b3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::d7ef2ed90e287ac102fb6ba74bd83d054bc7a90b7034aca361e1a0c121bd6b85",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1e086a995dbb9083e50acdbe4ae325d0a7f07ddacaf046f7b84ceec71b36a501",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "A checkpoint that names the suites whose declared sources changed",
+          "summary": "12. **A checkpoint that names the suites whose declared sources changed**, the third recommendation of this pass's critic of the critics. Declined for now as machinery. Reopen: a complete run fails on a consumer nobody traced in two of the next five deliveries.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined for now as machinery: after a repair the affected consumers are judged again under the room's rule. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "A complete run fails on a consumer nobody traced in two of the next five deliveries.",
+          "targets": [],
+          "at": "2026-11-25T17:25:04.399Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9d4b96cc77554c42",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::d9f72d4277a0e20a7a99ffc6b646e487e0bdb0bea9792b0152cd472bbe47cd6e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8eca561f5b1a7bec3e48dabe07a4735c38c88e788cd68fb92e8a54536b4c379c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "The evidence command starting a gate when it is run without its wait.",
+          "summary": "13. **The evidence command starting a gate when it is run without its wait.** Deferred: a default to change, in a file WO-288 edits. Reopen: WO-288 closes or is held.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "A default to change, in a file WO-288 edits. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "WO-288 closes or is held.",
+          "targets": [],
+          "at": "2026-11-25T17:25:04.526Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-950ca98f45b0026e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25::ff7202cadb0e935bb8e8a8b83540af693dc60d329d622c48ddd214e7287697e3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b8a6660f75110942332ee78281bf06e1cce4518971643d27353cbf59e42b39b5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-room-on-orders-that-do-not-end-recorded-2026-11-25",
+          "title": "The re-cuts of WO-289, WO-290 and WO-292.",
+          "summary": "6. **The re-cuts of WO-289, WO-290 and WO-292.** WO-289 so that a session is observed to go on and to honor a pause, WO-290 held for a recurrence after it, WO-292 to the room's form of criterion. Deferred: all three are written against WO-288's unmerged text. Reopen: WO-288 closes or is held.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "All three orders are written against WO-288's unmerged text. [the 2026-11-25 pass (docs/planning/passes/data-is-the-record-2026-11-25.md)]",
+          "reopenWhen": "WO-288 closes or is held.",
+          "targets": [],
+          "at": "2026-11-25T17:25:03.643Z"
+        }
+      ]
     }
   ]
 }
