@@ -670,7 +670,77 @@ with the room's assessment, and wait for his confirmation.
 
 ## The criteria review
 
-Written after the review ran, below.
+Before the refutation, the kit's review helper read the planning subject
+twice on fresh workers (`npm run worker -- review --kind criteria --host
+claude --subject planning`, with nineteen captures of the operator's
+messages). The host reported claude-opus-5-5 at xhigh each time. Every
+finding was checked against `main`'s code before it was acted on, and none
+was declined.
+
+**The first read** ran as two batches in 0 h 17 min and 22.9 million
+tokens. It found seventeen things, fourteen when the batches' repeats are
+counted once, and three of them blocking. All were in text this pass
+wrote.
+
+| Finding | What was done |
+| --- | --- |
+| Blocking, found by both batches. WO-291's ninth criterion could not fail at the base. It asked that a refusal hold two forms of the repository line, and the base's refusal holds the longer form, which contains the shorter | The row asks for one literal that joins the two forms with `or`, which the base's message does not hold |
+| Blocking. Three of the four orders carried the first draft of the rule on what returns an order, which all four seats had blocked | All four carry section 4's words, set as a list |
+| Blocking. WO-298's first criterion was wrong for every target order. It read a remote-tracking ref, and the kit's target publish pushes from a lane of its own and leaves none | The target's answer is read from the order's log of target publications, which that publish writes. A fixture's log is written by the store's own writer |
+| Found by both batches. WO-298's typed dependency gated it the wrong way round: a planning deferral is met when the named order closes, and this reserve starts when WO-288 is held | The block is removed. The condition is in the order's placement and its known issues |
+| WO-297 missed a consumer of the rule it edits: WO-276's rule table records how each shared rule opens and its size, and a document case rebuilds the page | Step 4 regenerates the table. The pass then searched the committed files for both texts the order changes, found no other file that a case reads, and the order says so |
+| WO-297 left a passage of product 07 false | The write-backs name it |
+| WO-294's first three criteria left their fixture open: a drive's status runs the order worktree's own scripts, which must admit the names main does not know | The order says so, and how the fixture arranges it |
+| WO-294's third criterion compared two trees that differ by construction | Restated as one result. The restatement was wrong, and the second read found it |
+| Found by both batches. WO-298's third criterion named no observable for a publish that goes on, and a suite with no publish fixture | The observable is the line the publish prints after the sign-off judgment and before any push. The cases go beside the existing fixture, the Preflight names that suite, and the rows use the table's own refusal and advisory wording |
+| WO-291 added two behaviors with no scenario: an activation with no started worktree, and a fetch stopped at its limit | One row each |
+| WO-291's seventh step would have written a branch's name into a record whose reader admits a commit or `unknown` | The step says the name is the board's projection |
+| The sequence did not say whether WO-297 and WO-288 are a lane pair | One sentence: they are not, and running both at once is the operator's to say |
+| WO-298's first criterion named no command for a target's publish | The Design holds both publish commands in full |
+| WO-297's second criterion asked that the hook's facts end with the sentence, and other lines can follow the day's line | The row reads the day's line |
+
+The reviewers answered each of the nineteen messages as acted on or
+reviewed, and none as missing. Two of those answers carry the same note:
+the Opus seat signed the plan's second draft and has not read the three
+clauses adopted after it.
+
+**The helper recorded no report for that read.** A worker returns its
+findings as JSON that a schema checks, and inside that JSON a report in
+Markdown whose table of items the helper reads afterwards. Nine cells of
+the table held a disposition with a note after it, where the helper admits
+three bare words. The round has no record, so a second round, which
+rechecks a recorded report, could not be opened on it. The three files the
+helper kept are in the ignored reviews lane. This is the class section 5
+describes, a contract kept in prose inside a typed result and checked
+after its writer has gone, and it is evidence for the third candidate of
+this pass.
+
+**The second read** was of the repairs alone: the same command with
+`--since` the tree the first read saw. It ran 0 h 10 min and 10.8 million
+tokens, was recorded, and found nine things, one blocking.
+
+| Finding | What was done |
+| --- | --- |
+| Blocking. The restated third criterion of WO-294 named a case whose first run stops on an authored conflict, ran the order worktree's own script where the gap is in main's, and said to run it from the main checkout, where it would integrate main. The planner had named a fixture it had not read | Restated from the code: main's copy of the script, run in the order's worktree, on the suite's fixture with no authored conflict. Its control is the path helper's strict load |
+| WO-291's fetch at a target start did not say how it runs. Every other fetch of a target clone goes through the host lane, so that the clone's own transport configuration and hooks run nothing | The Design and step 4 name the lane, and a sixth row of criterion 1 plants an upload program and a hook and asserts that neither ran |
+| WO-298's accounts could pass while naming a command that cannot publish | Both commands are in the Design in full, and the rows ask for them with the order's id |
+| WO-298 did not name the existing cases its change reaches | The Observed gap lists them. Tracing every reader of the stop then showed that `resume: status` reads the same route, and that its suite asserts the old answer on a fixture with no `origin`: a fourth row pins that, and the Preflight names the suite |
+| A merged branch whose ref was pruned would have read as never published | The order's own branch is unpublished only when it has no ref and `origin/main` does not hold its tip. A fifth row pins it on an existing case |
+| The request-file form of the target publish writes to a store this route does not read | Stated as a known issue with what reopens it |
+| WO-291 widens a line that a program reads out of an order's Markdown header, against the operator's direction of this pass, and said nothing of it | A known issue names the tension and the move that replaces the reader |
+| WO-291's eighth criterion asked for an instruction and gave no text | The row holds the literal |
+| WO-298 ended without a newline | Corrected |
+
+It did not reach WO-291's criteria 4 to 6 against the board and the
+derived contract, or the existing case behind WO-294's sixth criterion.
+
+There was no third read. After two, a third would have been the loop this
+pass describes: the first read's blockers were reproduced and repaired,
+the second judged the repairs, and the refutation below reads the whole
+subject. Four of the second read's nine findings came from text the
+planner wrote while repairing the first, which is the argument for a control that
+fails before the change: a planner's reading of a fixture is a claim until
+something runs.
 
 ## The refutation
 
